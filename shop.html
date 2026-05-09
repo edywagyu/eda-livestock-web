@@ -212,6 +212,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img.has-img, .restaurant-card-img.has-img, .journal-card-img.has-img { background: transparent; }
 .product-card-img.has-img img, .restaurant-card-img.has-img img, .journal-card-img.has-img img { width: 100%; height: 100%; object-fit: cover; }
 .product-card-img.has-img::after, .restaurant-card-img.has-img::after, .journal-card-img.has-img::after, .member-photo.has-img::after { display: none; }
+.product-card-img.has-img { background: transparent; }
 
 /* Gallery */
 .gallery-grid { columns: 3; column-gap: 16px; }
@@ -1571,7 +1572,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ SHOP HERO ================ */
 .shop-hero {
   position: relative;
-  min-height: 70vh;
+  min-height: auto;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -1924,7 +1925,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card:hover .product-card-img img {
   transform: scale(1.06);
 }
-.product-card-img::before {
+/* hover overlay for product cards with images */
+.product-card-img.has-img::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -1934,7 +1936,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   transition: opacity 0.5s ease;
   pointer-events: none;
 }
-.product-card:hover .product-card-img::before {
+.product-card:hover .product-card-img.has-img::before {
   opacity: 1;
 }
 
@@ -2268,10 +2270,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card:hover { transform: translateY(-2px); }
 .product-card-img {
   aspect-ratio: 1;
-  background: var(--color-paper);
+  background: linear-gradient(145deg, var(--color-forest) 0%, var(--color-forest-deep) 100%);
   position: relative;
   overflow: hidden;
   margin-bottom: 20px;
+  transition: background 0.4s ease;
 }
 .product-card-img::after {
   content: attr(data-label);
@@ -2281,22 +2284,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 15px;
   letter-spacing: var(--tracking-widest);
-  color: var(--color-ink-muted);
+  color: rgba(212,169,59,0.35);
   text-align: center;
   padding: 0 16px;
+}
+.product-card:hover .product-card-img:not(.has-img) {
+  background: linear-gradient(145deg, #134a38 0%, var(--color-forest-deep) 100%);
+}
+.product-card:hover .product-card-img:not(.has-img)::after {
+  color: rgba(212,169,59,0.55);
 }
 .product-card-img .badge {
   position: absolute;
   top: 12px; left: 12px;
-  background: var(--color-forest);
+  background: rgba(212,169,59,0.15);
   color: var(--color-gold);
   font-family: var(--font-display);
   font-size: 10px;
   letter-spacing: var(--tracking-widest);
   padding: 6px 10px;
   z-index: 2;
+  border: 1px solid rgba(212,169,59,0.25);
+  backdrop-filter: blur(4px);
 }
 .product-tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .product-tag { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); }
@@ -3097,8 +3108,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   }
 
   /* ---- Shop Hero ---- */
-  .shop-hero { min-height: 55vh; }
-  .shop-hero-content { padding-top: 88px; padding-bottom: 32px; }
+  .shop-hero { min-height: auto; }
+  .shop-hero-content { padding-top: 80px; padding-bottom: 32px; }
   .shop-hero-title { font-size: 40px; }
   .shop-hero-sub { font-size: 13px; }
   .shop-hero-sub br { display: none; }
@@ -3609,18 +3620,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <span class="text-gold">Your Table.</span>
     </h1>
     <p class="shop-hero-sub">
-      宮崎の自社牧場から最短2日。<br class="hide-sp"/>
-      A5黒毛和牛を、抗生物質・ホルモン剤・成長促進剤を一切使わず、<br class="hide-sp"/>
-      30ヶ月以上かけて育てています。
+      家族に食べさせるものだから、安心できるお肉を。<br class="hide-sp"/>
+      抗生物質・ホルモン剤・成長促進剤を一切使わず、<br class="hide-sp"/>
+      30ヶ月以上かけて大切に育てました。
     </p>
     <div class="shop-hero-badges">
       <div class="shop-hero-badge">
         <span class="shop-hero-badge-num">4</span>
         <span class="shop-hero-badge-label">年連続<br/>内閣総理大臣賞 血統</span>
-      </div>
-      <div class="shop-hero-badge">
-        <span class="shop-hero-badge-num">13</span>
-        <span class="shop-hero-badge-label">カ国以上に<br/>輸出実績</span>
       </div>
       <div class="shop-hero-badge">
         <span class="shop-hero-badge-num">BMS10</span>
@@ -3639,6 +3646,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-trust-item"><strong>Four Seasons</strong> Otemachi 採用</div>
       <div class="shop-trust-item"><strong>Tokyo DisneySea</strong> マゼランズ採用</div>
       <div class="shop-trust-item"><strong>Peninsula</strong> 東京 採用</div>
+      <div class="shop-trust-item">冷凍便で<strong>最短2日</strong>お届け</div>
       <div class="shop-trust-item">¥11,000以上 <strong>送料無料</strong></div>
     </div>
   </div>
@@ -4257,7 +4265,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           Eat Better,<br/><span class="text-gold">Every Month.</span>
         </h2>
         <p style="color: rgba(255,255,255,0.8); line-height: 1.85; font-size: 15px; margin-bottom: 32px;">
-          江田和牛と平飼い鶏が毎月届く、定期便プラン。<br/><br/>
+          毎月届くから、買い忘れなし。<br/>
+          忙しい日でも、子どもたちに安心なお肉を。<br/><br/>
           <strong style="color: var(--color-gold);">STARTER</strong> — 約1,600g / ¥11,980 / 8品 / <strong style="color: var(--color-gold);">初月50%OFF</strong><br/>
           <strong style="color: var(--color-gold);">REGULAR</strong> — 約3,200g / ¥19,980 / 16品 / <strong style="color: var(--color-gold);">初月20%OFF</strong><br/><br/>
           いつでもスキップ・解約OK。LINEで管理。<br/>
@@ -4342,7 +4351,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <tr><th>配送</th><td>ヤマト運輸 / 佐川急便 / 日本郵便（クール冷凍便）</td></tr>
       <tr><th>送料</th><td>¥11,000以上で全国送料無料</td></tr>
       <tr><th>支払い</th><td>Visa / Mastercard / JCB / AMEX / Apple Pay / Google Pay / Shop Pay / コンビニ払い</td></tr>
-      <tr><th>輸出認証</th><td>EU・アメリカ・香港・シンガポール等 13カ国以上の輸出実績</td></tr>
+      <tr><th>輸出認証</th><td>EU・アメリカ向け 国際衛生基準クリア</td></tr>
     </table>
 
     <h3 style="margin-top: 48px;">ふるさと納税</h3>
@@ -4402,7 +4411,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <li><a href="press.html">Press & Media</a></li>
           <li><a href="press-kit.html">Press Kit</a></li>
           <li><a href="awards.html">Awards</a></li>
-          <li><a href="investors.html">Investors</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
         </ul>
