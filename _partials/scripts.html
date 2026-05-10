@@ -151,7 +151,7 @@
 
   /* ======== CART SYSTEM ======== */
   (function() {
-    const STORE = 'https://eda-livestock-ec.com';
+    const GAS_API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
     const CART_KEY = 'eda-cart';
     const FREE_SHIP = 11000;
 
@@ -291,12 +291,43 @@
       });
     }
 
-    /* --- Checkout → Shopify cart permalink --- */
+    /* --- Checkout → Stripe via GAS API --- */
     if (checkBtn) {
-      checkBtn.addEventListener('click', () => {
+      checkBtn.addEventListener('click', async () => {
         if (items.length === 0) return;
-        const parts = items.map(i => `${i.variantId}:${i.qty}`).join(',');
-        window.location.href = `${STORE}/cart/${parts}`;
+
+        /* ボタンをローディング状態に */
+        checkBtn.disabled = true;
+        const originalText = checkBtn.textContent;
+        checkBtn.textContent = '決済ページへ移動中...';
+
+        try {
+          const res = await fetch(GAS_API_URL + '?action=create_checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              items: items.map(i => ({
+                title: i.title,
+                variant: i.variant,
+                price: i.price,
+                qty: i.qty,
+                variantId: i.variantId
+              }))
+            })
+          });
+
+          const result = await res.json();
+
+          if (result.url) {
+            window.location.href = result.url;
+          } else {
+            throw new Error(result.error || '決済セッションの作成に失敗しました');
+          }
+        } catch (err) {
+          alert('決済エラー: ' + err.message + '\nもう一度お試しください。');
+          checkBtn.disabled = false;
+          checkBtn.textContent = originalText;
+        }
       });
     }
 
