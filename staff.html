@@ -1288,7 +1288,7 @@ ul { list-style: none; padding: 0; margin: 0; }
       <div class="pills">
         <div class="pill active" data-sub="campaigns" onclick="switchSub('promo','campaigns')">キャンペーン</div>
         <div class="pill" data-sub="coupons" onclick="switchSub('promo','coupons')">クーポン</div>
-        <div class="pill" data-sub="flows" onclick="switchSub('promo','flows')">ステップ配信</div>
+        <div class="pill" data-sub="flows" onclick="switchSub('promo','flows')">自動化</div>
         <div class="pill" data-sub="line-blast" onclick="switchSub('promo','line-blast')">一斉配信</div>
       </div>
 
@@ -1310,17 +1310,18 @@ ul { list-style: none; padding: 0; margin: 0; }
         <div id="couponList"></div>
       </div>
 
-      <!-- ステップ配信（ドリップキャンペーン） -->
+      <!-- 自動化（条件トリガー & ステップ配信） -->
       <div class="subsection" id="sub-flows">
         <div class="card" style="background:#FFF3CD;border-left:4px solid var(--gold);padding:14px 16px;margin-bottom:14px">
           <div style="font-size:13px;line-height:1.7;color:#664D03">
-            <strong>🔔 ステップ配信とは</strong><br>
-            「LINE追加から7日後に20%OFFクーポンを送る」など、<strong>トリガー（きっかけ）</strong>に応じて<strong>遅延付きで自動配信</strong>する仕組みです。
+            <strong>🤖 自動化ルールとは</strong><br>
+            <strong>WHEN（いつ）</strong> + <strong>IF（誰に）</strong> + <strong>THEN（何をする）</strong> で自動配信ルールを作成。<br>
+            例：「6ヶ月注文なしの高所得顧客 → 20%OFFクーポンを自動送信」
           </div>
         </div>
         <button class="btn-add" onclick="openForm('flow')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          新しいステップ配信を作成
+          新しい自動化ルールを作成
         </button>
         <div id="flowList"></div>
       </div>
@@ -1637,6 +1638,53 @@ const DEMO_FLOWS = [
       { delay: '即時', name: '加入御礼 + 配送スケジュール', message: '定期便にご加入ありがとうございます！毎月1日にお届けします', coupon: null, delivered: 88 },
       { delay: '7日前（毎月）', name: '次回配送リマインド', message: '来月の定期便を○日にお届け予定です。スキップ・部位変更はマイページから', coupon: null, delivered: 67 }
     ]
+  },
+
+  // ★ 条件型自動化ルール（複合条件）
+  {
+    id: 'AUTO001', trigger: 'daily_check', triggerLabel: '毎日朝9時にチェック', icon: '🤖', active: true, friendsCount: 23,
+    conditions: [
+      { label: '高所得想定エリア', icon: '💰' },
+      { label: '最終購入から180日以上', icon: '⏰' },
+      { label: 'LINE連携済', icon: '💬' }
+    ],
+    steps: [
+      { delay: '即発火', name: '高所得休眠顧客 復活クーポン', message: 'お久しぶりです🐂\n特別な20%OFFクーポンをお届けします。今月末まで有効です。', coupon: 'REVIVE20', delivered: 23 }
+    ],
+    stats: { triggered: 23, converted: 7, revenue: 245000 }
+  },
+  {
+    id: 'AUTO002', trigger: 'daily_check', triggerLabel: '毎日チェック', icon: '🎯', active: true, friendsCount: 5,
+    conditions: [
+      { label: 'VIP顧客', icon: '👑' },
+      { label: '誕生日月', icon: '🎂' }
+    ],
+    steps: [
+      { delay: '月初', name: 'VIP誕生日特典', message: '🎂お誕生日おめでとうございます！VIPお客様限定の特別ギフト + 20%OFFクーポンをお届けします', coupon: 'VIP-BD20', delivered: 5 }
+    ],
+    stats: { triggered: 5, converted: 4, revenue: 178000 }
+  },
+  {
+    id: 'AUTO003', trigger: 'daily_check', triggerLabel: '毎日チェック', icon: '⚠️', active: true, friendsCount: 3,
+    conditions: [
+      { label: '定期便会員', icon: '📦' },
+      { label: '直近2ヶ月で2回スキップ', icon: '⏸' }
+    ],
+    steps: [
+      { delay: '即発火', name: '定期便解約予兆 - 引き止め', message: 'お困りごとがございますか？お肉の量や部位の変更も承ります。お気軽にLINEでご相談ください', coupon: null, delivered: 3 }
+    ],
+    stats: { triggered: 3, converted: 2, revenue: 0 }
+  },
+  {
+    id: 'AUTO004', trigger: 'order_completed', triggerLabel: '注文完了時', icon: '🎁', active: true, friendsCount: 47,
+    conditions: [
+      { label: '購入額 ¥20,000以上', icon: '💴' },
+      { label: '初回購入', icon: '🆕' }
+    ],
+    steps: [
+      { delay: '即時', name: '高額初回購入者へ感謝', message: '高額のご注文ありがとうございます！今後ともよろしくお願いします。次回使える10%OFFクーポンをプレゼント', coupon: 'BIG-FIRST10', delivered: 47 }
+    ],
+    stats: { triggered: 47, converted: 18, revenue: 412000 }
   }
 ];
 
@@ -2309,20 +2357,49 @@ function renderFlows(flows) {
         </div>
       </div>
     `).join('');
+
+    // 条件チップ（IF）
+    const condHtml = f.conditions && f.conditions.length ? `
+      <div style="padding:10px 14px;background:#FEF9E7;border-bottom:1px solid var(--bone)">
+        <div style="font-size:9px;color:var(--gold-soft);font-weight:700;letter-spacing:.04em;margin-bottom:6px">IF — 条件</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${f.conditions.map(c => `<span style="background:#fff;border:1px solid var(--gold);color:var(--forest-deep);padding:4px 10px;border-radius:14px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px"><span>${escapeHtml(c.icon)}</span>${escapeHtml(c.label)}</span>`).join('')}
+        </div>
+      </div>
+    ` : '';
+
+    // 成果ステータス（コンバージョン）
+    const statsHtml = f.stats ? `
+      <div style="padding:10px 16px;background:linear-gradient(90deg,#FAF7F0,#F5EFE3);display:flex;justify-content:space-around;gap:8px;text-align:center">
+        <div><div style="font-size:14px;font-weight:700;color:var(--forest);font-variant-numeric:tabular-nums">${f.stats.triggered}</div><div style="font-size:9px;color:var(--muted)">発火</div></div>
+        <div style="width:1px;background:var(--bone)"></div>
+        <div><div style="font-size:14px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums">${f.stats.converted}</div><div style="font-size:9px;color:var(--muted)">成果</div></div>
+        <div style="width:1px;background:var(--bone)"></div>
+        <div><div style="font-size:14px;font-weight:700;color:var(--gold-soft);font-variant-numeric:tabular-nums">${f.stats.triggered > 0 ? Math.round(f.stats.converted / f.stats.triggered * 100) : 0}%</div><div style="font-size:9px;color:var(--muted)">成果率</div></div>
+        ${f.stats.revenue ? `<div style="width:1px;background:var(--bone)"></div><div><div style="font-size:14px;font-weight:700;color:var(--forest);font-variant-numeric:tabular-nums">¥${Math.round(f.stats.revenue / 1000)}k</div><div style="font-size:9px;color:var(--muted)">売上</div></div>` : ''}
+      </div>
+    ` : `
+      <div style="padding:10px 16px;background:#fafafa;font-size:11px;color:var(--muted);text-align:center">
+        このトリガーで対象になった顧客: ${f.friendsCount}名
+      </div>
+    `;
+
     return `
       <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${f.active ? 'linear-gradient(90deg,#0F3D2E,#143D2B)' : '#f5f5f7'};color:${f.active ? '#fff' : 'var(--muted)'}">
           <div style="font-size:24px">${f.icon}</div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:10px;letter-spacing:.04em;opacity:.7">トリガー</div>
+            <div style="font-size:10px;letter-spacing:.04em;opacity:.7">WHEN — トリガー</div>
             <div style="font-size:14px;font-weight:700">${escapeHtml(f.triggerLabel)}</div>
           </div>
           <span class="cust-tag" style="background:${f.active ? '#06C755' : '#9CA3AF'};color:#fff">${f.active ? '配信中' : '停止中'}</span>
         </div>
-        <div style="padding:14px 4px 14px 0">${stepHtml}</div>
-        <div style="padding:10px 16px;background:#fafafa;font-size:11px;color:var(--muted);text-align:center">
-          このトリガーで対象になった顧客: ${f.friendsCount}名
+        ${condHtml}
+        <div style="padding:14px 4px 14px 0">
+          <div style="font-size:9px;color:var(--gold-soft);font-weight:700;letter-spacing:.04em;padding:0 16px 4px 36px">THEN — アクション</div>
+          ${stepHtml}
         </div>
+        ${statsHtml}
       </div>
     `;
   }).join('');
@@ -2407,10 +2484,25 @@ function renderProductForm(p) {
       <input type="number" id="pf-weight" value="${p.weight || ''}" placeholder="500">
     </div>
 
-    <div class="form-field" style="background:var(--paper);padding:10px;border-radius:8px;font-size:11px;color:var(--muted);line-height:1.6">
-      💡 ECサイトに公開すると <code>shop.html</code> に自動表示されます。<br>
-      下書き保存後、公開ボタンで反映できます。
+    <div class="form-field">
+      <label>公開ステータス</label>
+      <select id="pf-published">
+        <option value="false" ${!p.published ? 'selected' : ''}>下書き（shop.htmlに表示しない）</option>
+        <option value="true"  ${p.published ? 'selected' : ''}>公開（shop.htmlに表示する）</option>
+      </select>
     </div>
+
+    <div class="form-field" style="background:var(--paper);padding:10px;border-radius:8px;font-size:11px;color:var(--muted);line-height:1.6">
+      💡 「公開」を選ぶと <code>shop.html</code> の「新着商品」セクションに自動表示されます。<br>
+      在庫0の商品は公開でも非表示になります。
+    </div>
+
+    ${editingProduct ? `
+    <div class="form-field" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--paper)">
+      <button type="button" onclick="deleteProduct()" style="background:none;border:1px solid #e74c3c;color:#e74c3c;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%">
+        🗑 この商品を削除
+      </button>
+    </div>` : ''}
   `;
 }
 
@@ -2474,9 +2566,109 @@ function escapeAttr(s) {
   return String(s || '').replace(/'/g, '%27').replace(/"/g, '%22');
 }
 
+/* ================ AUTOMATION CONDITIONS BUILDER ================ */
+const CONDITION_OPTIONS = {
+  segment: { label: '顧客セグメント', icon: '🎯', values: ['VIP', 'リピーター', '新規', '休眠'] },
+  income: { label: '想定世帯年収', icon: '💰', values: ['高所得', '中所得', '一般'] },
+  last_order: { label: '最終購入から', icon: '⏰', values: ['7日以上', '30日以上', '90日以上', '180日以上', '365日以上'] },
+  total_spent: { label: '累計購入額', icon: '💴', values: ['¥10,000以上', '¥50,000以上', '¥100,000以上', '¥200,000以上', '¥500,000以上'] },
+  order_count: { label: '購入回数', icon: '🔢', values: ['初回（1回目）', '3回以上', '6回以上', '12回以上'] },
+  subscription: { label: '定期便ステータス', icon: '📦', values: ['加入中', '未加入', 'スキップ中', '解約'] },
+  line_status: { label: 'LINE連携', icon: '💬', values: ['連携済', '未連携'] },
+  organic_pref: { label: 'オーガニック志向', icon: '🌱', values: ['YES', 'NO', '未回答'] },
+  birthday: { label: '誕生日', icon: '🎂', values: ['今月', '今週', '今日'] }
+};
+
+function addCondition(preset) {
+  const list = document.getElementById('conditionList');
+  if (!list) return;
+  const idx = list.children.length;
+  const fieldOptions = Object.entries(CONDITION_OPTIONS).map(([k, v]) =>
+    `<option value="${k}" ${preset && preset.field === k ? 'selected' : ''}>${v.icon} ${v.label}</option>`
+  ).join('');
+
+  const div = document.createElement('div');
+  div.className = 'variant-row';
+  div.style.background = '#FEF9E7';
+  div.style.border = '1px solid #FDE68A';
+  div.innerHTML = `
+    <select onchange="updateConditionValues(this, ${idx})" style="flex:1.4;padding:8px;font-size:12px;border:1.5px solid var(--bone);border-radius:6px;background:#fff">
+      ${fieldOptions}
+    </select>
+    <select id="condval-${idx}" style="flex:1.6;padding:8px;font-size:12px;border:1.5px solid var(--bone);border-radius:6px;background:#fff"></select>
+    <button type="button" onclick="this.parentElement.remove()">×</button>
+  `;
+  list.appendChild(div);
+
+  // populate values for the first option
+  const firstField = div.querySelector('select');
+  updateConditionValues(firstField, idx);
+
+  // apply preset value if given
+  if (preset && preset.value) {
+    const valSelect = document.getElementById('condval-' + idx);
+    if (valSelect) valSelect.value = preset.value;
+  }
+}
+
+function updateConditionValues(fieldSelect, idx) {
+  const field = fieldSelect.value;
+  const opts = CONDITION_OPTIONS[field];
+  const valSelect = document.getElementById('condval-' + idx);
+  if (!valSelect || !opts) return;
+  valSelect.innerHTML = opts.values.map(v => `<option>${v}</option>`).join('');
+}
+
+function applyFlowPreset(preset) {
+  // Clear conditions
+  const list = document.getElementById('conditionList');
+  if (list) list.innerHTML = '';
+
+  const presets = {
+    'high-dormant': {
+      ruleName: '高所得休眠顧客の復活キャンペーン',
+      trigger: 'daily_check',
+      conditions: [
+        { field: 'income', value: '高所得' },
+        { field: 'last_order', value: '180日以上' },
+        { field: 'line_status', value: '連携済' }
+      ]
+    },
+    'vip-bday': {
+      ruleName: 'VIP誕生日特典',
+      trigger: 'daily_check',
+      conditions: [
+        { field: 'segment', value: 'VIP' },
+        { field: 'birthday', value: '今月' }
+      ]
+    },
+    'first-big': {
+      ruleName: '高額初回購入者へ感謝',
+      trigger: 'order_completed',
+      conditions: [
+        { field: 'order_count', value: '初回（1回目）' },
+        { field: 'total_spent', value: '¥10,000以上' }
+      ]
+    },
+    'line-7d': {
+      ruleName: 'LINE追加7日後 期限付きクーポン',
+      trigger: 'line_friend_added',
+      conditions: []
+    }
+  };
+
+  const p = presets[preset];
+  if (!p) return;
+
+  document.getElementById('ruleName').value = p.ruleName;
+  document.getElementById('flowTrigger').value = p.trigger;
+  p.conditions.forEach(c => addCondition(c));
+  toast('テンプレートを読み込みました', 'success');
+}
+
 /* ================ FORM SHEET (create dialogs) ================ */
 function openForm(type) {
-  const titles = { campaign: 'キャンペーンを作成', coupon: 'クーポンを作成', set: 'セット商品を作成', flow: 'ステップ配信を作成' };
+  const titles = { campaign: 'キャンペーンを作成', coupon: 'クーポンを作成', set: 'セット商品を作成', flow: '自動化ルールを作成' };
   const bodies = {
     campaign: `
       <div class="form-field"><label>キャンペーン名</label><input type="text" placeholder="例: 母の日特集 2026"></div>
@@ -2531,28 +2723,61 @@ function openForm(type) {
         <select><option>焼肉</option><option>すき焼き</option><option>しゃぶしゃぶ</option><option>ギフト</option><option>食べ比べ</option></select>
       </div>`,
     flow: `
-      <div class="form-field"><label>トリガー（きっかけ）</label>
+      <div class="form-field">
+        <label style="margin-bottom:8px">📚 テンプレートから始める（任意）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button type="button" class="filter-btn" onclick="applyFlowPreset('high-dormant')" style="background:#FEF3C7;color:#92400E">高所得×6ヶ月休眠 → 20%OFF</button>
+          <button type="button" class="filter-btn" onclick="applyFlowPreset('vip-bday')" style="background:#FCE7F3;color:#9D174D">VIP×誕生日月 → 特典</button>
+          <button type="button" class="filter-btn" onclick="applyFlowPreset('first-big')" style="background:#D1FAE5;color:#065F46">初回×¥20k+ → 御礼</button>
+          <button type="button" class="filter-btn" onclick="applyFlowPreset('line-7d')" style="background:#DBEAFE;color:#1E40AF">LINE追加7日後</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>ルール名</label>
+        <input type="text" id="ruleName" placeholder="例: 高所得休眠顧客の復活キャンペーン">
+      </div>
+
+      <div class="form-field" style="background:#0F3D2E;color:#D4A93B;padding:8px 12px;border-radius:8px;font-weight:700;font-size:12px;letter-spacing:0.06em;margin-bottom:8px">
+        ① WHEN — いつ判定する？
+      </div>
+      <div class="form-field"><label>トリガー</label>
         <select id="flowTrigger">
-          <option value="line_friend_added">LINE友だち追加</option>
-          <option value="first_purchase">初回購入完了</option>
-          <option value="any_purchase">購入のたび</option>
-          <option value="dormant_30days">30日購入なし</option>
-          <option value="dormant_60days">60日購入なし</option>
-          <option value="dormant_90days">90日購入なし（休眠）</option>
-          <option value="birthday_month">誕生日月</option>
-          <option value="subscription_started">定期便加入</option>
-          <option value="subscription_renewed">定期便継続（毎月）</option>
-          <option value="cart_abandoned">カート放棄（3時間）</option>
+          <optgroup label="🎯 イベント発生時（リアルタイム）">
+            <option value="line_friend_added">LINE友だち追加</option>
+            <option value="first_purchase">初回購入完了</option>
+            <option value="any_purchase">購入完了（毎回）</option>
+            <option value="order_completed">注文完了</option>
+            <option value="cart_abandoned">カート放棄（3時間）</option>
+            <option value="subscription_started">定期便加入</option>
+            <option value="subscription_skipped">定期便スキップ</option>
+            <option value="subscription_cancelled">定期便解約</option>
+          </optgroup>
+          <optgroup label="📅 定期チェック（条件マッチで発火）">
+            <option value="daily_check">毎日チェック（朝9時）</option>
+            <option value="weekly_check">毎週月曜チェック</option>
+            <option value="monthly_check">毎月1日チェック</option>
+          </optgroup>
         </select>
+      </div>
+
+      <div class="form-field" style="background:#FEF9E7;color:#664D03;padding:8px 12px;border-radius:8px;font-weight:700;font-size:12px;letter-spacing:0.06em;margin-top:14px;margin-bottom:8px;border:1px solid var(--gold)">
+        ② IF — 誰に？（条件・空白なら全員）
+      </div>
+      <div id="conditionList"></div>
+      <button type="button" onclick="addCondition()" style="width:100%;padding:10px;background:#fff;border:1.5px dashed var(--gold);border-radius:10px;color:var(--gold-soft);font-weight:600;font-size:13px;margin-bottom:8px">+ 条件を追加</button>
+
+      <div class="form-field" style="background:#06C755;color:#fff;padding:8px 12px;border-radius:8px;font-weight:700;font-size:12px;letter-spacing:0.06em;margin-top:14px;margin-bottom:8px">
+        ③ THEN — 何をする？
       </div>
       <div class="form-row">
         <div class="form-field"><label>送信タイミング</label>
           <select>
-            <option value="0">即時</option>
+            <option value="immediate">即時（条件マッチで即発火）</option>
             <option value="1h">1時間後</option>
             <option value="1d">1日後</option>
             <option value="3d">3日後</option>
-            <option value="7d" selected>7日後</option>
+            <option value="7d">7日後</option>
             <option value="14d">14日後</option>
             <option value="30d">30日後</option>
             <option value="60d">60日後</option>
@@ -2563,16 +2788,24 @@ function openForm(type) {
           <select>
             <option value="">なし</option>
             <option value="WELCOME10">WELCOME10 (10%OFF)</option>
-            <option value="NEWBIE20">NEWBIE20 (20%OFF・新規限定)</option>
+            <option value="NEWBIE20">NEWBIE20 (20%OFF・新規)</option>
             <option value="REPEAT10">REPEAT10 (10%OFF・リピート)</option>
-            <option value="COMEBACK20">COMEBACK20 (20%OFF・休眠復活)</option>
+            <option value="REVIVE20">REVIVE20 (20%OFF・復活)</option>
+            <option value="VIP-BD20">VIP-BD20 (20%OFF・VIP誕生日)</option>
             <option value="BIRTHDAY15">BIRTHDAY15 (15%OFF・誕生日)</option>
           </select>
         </div>
       </div>
-      <div class="form-field"><label>メッセージタイトル</label><input type="text" placeholder="例: 友だち追加から1週間 — 期間限定20%OFFクーポン"></div>
       <div class="form-field"><label>メッセージ本文</label>
-        <textarea rows="5" placeholder="お友だち追加から1週間が経ちました🐂&#10;&#10;ご購入の検討の後押しに、期間限定20%OFFクーポンをプレゼント！&#10;&#10;クーポンコード: NEWBIE20&#10;有効期限: 7日間"></textarea>
+        <textarea rows="4" placeholder="お久しぶりです🐂&#10;特別な20%OFFクーポンをお届けします。&#10;今月末まで有効です。"></textarea>
+      </div>
+      <div class="form-field"><label>その他のアクション（オプション）</label>
+        <select multiple size="3" style="height:auto">
+          <option>顧客タグを追加（例：復活案内済）</option>
+          <option>担当者にSlack通知</option>
+          <option>スプシに記録</option>
+          <option>同じユーザに30日間は再発火しない（重複防止）</option>
+        </select>
       </div>
       <div class="form-field"><label>有効化</label>
         <select><option value="active">配信中（即有効化）</option><option value="paused">停止中で保存</option></select>
@@ -2611,6 +2844,7 @@ function saveProduct() {
     price: parseInt(document.getElementById('pf-price').value) || 0,
     stock: parseInt(document.getElementById('pf-stock').value) || 0,
     weight: parseInt(document.getElementById('pf-weight').value) || 0,
+    published: document.getElementById('pf-published').value === 'true',
     images: editingImages.slice()
   };
 
@@ -2639,6 +2873,33 @@ function saveProduct() {
       closeForm();
     } else {
       toast('保存失敗: ' + (res.error || 'unknown'), 'error');
+    }
+  }).catch(e => toast('通信エラー: ' + e.message, 'error'));
+}
+
+function deleteProduct() {
+  if (!editingProduct) return;
+  if (!confirm(`「${editingProduct.name}」を削除します。よろしいですか？\n（画像はDriveに残ります）`)) return;
+
+  if (isDemoMode()) {
+    inventoryCache = inventoryCache.filter(p => p.variantId !== editingProduct.variantId);
+    renderInventory();
+    toast('🎭 デモ: 削除しました（実際は保存されません）', 'success');
+    closeForm();
+    return;
+  }
+
+  fetch(GAS_URL + '?action=staff_product_delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ variantId: editingProduct.variantId })
+  }).then(r => r.json()).then(res => {
+    if (res.success) {
+      toast('削除しました', 'success');
+      loadInventory();
+      closeForm();
+    } else {
+      toast('削除失敗: ' + (res.error || 'unknown'), 'error');
     }
   }).catch(e => toast('通信エラー: ' + e.message, 'error'));
 }
