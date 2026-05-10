@@ -734,6 +734,221 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .order-item { font-size: 12px; }
   .order-total-price { font-size: 18px; }
   .sub-card { padding: 20px 16px; }
+  .sub-action-btn { font-size: 12px !important; padding: 9px 12px !important; }
+  .reward-prog-card { padding: 18px 16px !important; }
+  .coupon-card { padding: 14px 14px !important; }
+}
+
+/* ==== Subscription Action Buttons ==== */
+.sub-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 16px;
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 10px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sub-action-btn:hover { border-color: var(--color-gold); transform: translateY(-1px); }
+.sub-action-btn.cancel { color: #C8102E; margin-left: auto; border-color: #FECACA; }
+.sub-action-btn.cancel:hover { border-color: #C8102E; background: #FEF2F2; }
+
+/* ==== 4-Purchase Reward Progress ==== */
+.reward-prog-card {
+  background: linear-gradient(135deg, #0F3D2E 0%, #143D2B 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 22px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.reward-prog-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(212,169,59,0.25), transparent 70%);
+  border-radius: 50%;
+}
+.reward-prog-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-gold);
+  margin: 0 0 4px;
+}
+.reward-prog-title {
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.reward-prog-sub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin: 0 0 18px;
+}
+.reward-prog-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-bottom: 16px;
+  z-index: 1;
+}
+.reward-prog-line {
+  position: absolute;
+  top: 18px; left: 18px; right: 18px;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  z-index: -1;
+}
+.reward-prog-line-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #D4A93B, #E5B547);
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+.reward-prog-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  text-align: center;
+}
+.reward-prog-dot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  border: 2px solid rgba(255,255,255,0.15);
+  position: relative;
+}
+.reward-prog-dot.done {
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  border-color: var(--color-gold);
+}
+.reward-prog-dot.next {
+  background: rgba(212,169,59,0.2);
+  color: var(--color-gold);
+  border-color: var(--color-gold);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,169,59,0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(212,169,59,0); }
+}
+.reward-prog-step-label {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+.reward-prog-next {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(212,169,59,0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+.reward-prog-next strong { color: var(--color-gold); }
+
+/* ==== Coupons ==== */
+.coupon-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 16px;
+  margin-bottom: 10px;
+  border: 1.5px dashed var(--color-gold);
+  position: relative;
+  overflow: hidden;
+}
+.coupon-card.expired { opacity: 0.5; border-style: solid; border-color: var(--color-bone); }
+.coupon-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.coupon-value {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--color-forest);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.coupon-status {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+.coupon-status.active { background: #D1FAE5; color: #065F46; }
+.coupon-status.expiring { background: #FEF3C7; color: #92400E; animation: pulse 2s infinite; }
+.coupon-status.used { background: #F3F4F6; color: #6B7280; }
+.coupon-status.expired { background: #FEE2E2; color: #991B1B; }
+.coupon-name {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 4px 0 6px;
+}
+.coupon-meta {
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+}
+.coupon-code-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--color-bone);
+}
+.coupon-code-text {
+  flex: 1;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-forest);
+  letter-spacing: 0.06em;
+  background: var(--color-paper);
+  padding: 6px 10px;
+  border-radius: 6px;
+  user-select: all;
+}
+.coupon-copy-btn {
+  background: var(--color-forest);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.coupon-copy-btn.copied { background: #06C755; }
+
+@media (max-width: 640px) {
+  .reward-prog-step-label { font-size: 8px; }
   .line-cta { padding: 24px 16px; }
   .site-footer { padding: 40px 0 20px; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
@@ -847,10 +1062,38 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
     </div>
 
+    <!-- 4回購入 進捗（基盤顧客チャレンジ） -->
+    <div id="rewardProgressSection" class="fade-in fade-in-d1" style="display:none;margin-bottom:32px"></div>
+
+    <!-- 保有クーポン -->
+    <div id="couponsSection" class="fade-in fade-in-d1" style="display:none;margin-bottom:32px">
+      <h3 class="dash-section-title">YOUR COUPONS</h3>
+      <div id="couponsList"></div>
+    </div>
+
     <!-- Subscription Section -->
     <div id="subSection" style="display:none;">
       <h3 class="dash-section-title fade-in fade-in-d1">SUBSCRIPTION</h3>
       <div class="sub-card fade-in fade-in-d1" id="subCard"></div>
+
+      <!-- 定期便アクション -->
+      <div id="subActions" class="fade-in fade-in-d2" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+        <button class="sub-action-btn skip" onclick="subSkip()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+          次回をスキップ
+        </button>
+        <button class="sub-action-btn change" onclick="subChange()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          プラン変更
+        </button>
+        <button class="sub-action-btn pause" onclick="subPause()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          一時停止
+        </button>
+        <button class="sub-action-btn cancel" onclick="subCancel()">
+          解約する
+        </button>
+      </div>
     </div>
 
     <!-- Order History -->
@@ -1059,6 +1302,12 @@ function renderDashboard(customer, orders) {
     badgeArea.innerHTML = '';
   }
 
+  /* 4回購入 進捗 */
+  renderRewardProgress(customer.total_orders || orders.length || 0);
+
+  /* 保有クーポン */
+  renderCoupons(customer.coupons || generateDemoCoupons(customer.total_orders || 0));
+
   /* Orders */
   renderOrders(orders);
 
@@ -1130,6 +1379,147 @@ function renderOrders(orders) {
   });
 
   container.innerHTML = html;
+}
+
+/* ---- Render Reward Progress (4-purchase journey) ---- */
+function renderRewardProgress(count) {
+  const sec = document.getElementById('rewardProgressSection');
+  if (!sec) return;
+  sec.style.display = '';
+
+  const stages = [
+    { num: 1, reward: '20%OFF', code: 'WELCOME20' },
+    { num: 2, reward: '🍗 鳥セット 無料', code: 'CHK-FREE' },
+    { num: 3, reward: '🍔 ハンバーグ 無料', code: 'BURGER-FREE' },
+    { num: 4, reward: '👑 年間10%OFF', code: 'ANNUAL10' }
+  ];
+  const next = Math.min(count + 1, 4);
+  const fillPct = count >= 4 ? 100 : Math.max(0, Math.min(100, (count / 4) * 100));
+
+  let stepsHtml = '';
+  stages.forEach((s, i) => {
+    const isDone = count >= s.num;
+    const isNext = !isDone && (s.num === next);
+    const cls = isDone ? 'done' : (isNext ? 'next' : '');
+    stepsHtml += `
+      <div class="reward-prog-step">
+        <div class="reward-prog-dot ${cls}">${isDone ? '✓' : s.num}</div>
+        <div class="reward-prog-step-label">${escapeHtml(s.reward.split(' ')[0])}</div>
+      </div>
+    `;
+  });
+
+  let nextMsg = '';
+  if (count >= 4) {
+    nextMsg = `<strong>🎊 基盤顧客認定済み</strong><br>ANNUAL10 でご注文時に <strong>1年間10%OFF</strong> が適用されます`;
+  } else {
+    const nx = stages[next - 1];
+    nextMsg = `あと <strong>${4 - count}回</strong> のご購入で <strong>${escapeHtml(nx.reward)}</strong> をプレゼント<br>次回（${next}回目）の特典: <strong>${escapeHtml(nx.reward)}</strong> が自動付与されます`;
+  }
+
+  sec.innerHTML = `
+    <div class="reward-prog-card">
+      <p class="reward-prog-eyebrow">CUSTOMER REWARDS</p>
+      <h3 class="reward-prog-title">基盤顧客チャレンジ</h3>
+      <p class="reward-prog-sub">これまでのご購入: <strong style="color:var(--color-gold)">${count}回</strong></p>
+      <div class="reward-prog-steps">
+        <div class="reward-prog-line"><div class="reward-prog-line-fill" style="width:${fillPct}%"></div></div>
+        ${stepsHtml}
+      </div>
+      <div class="reward-prog-next">${nextMsg}</div>
+    </div>
+  `;
+}
+
+/* ---- Render Coupons ---- */
+function renderCoupons(coupons) {
+  const sec = document.getElementById('couponsSection');
+  const list = document.getElementById('couponsList');
+  if (!sec || !list) return;
+  if (!coupons || coupons.length === 0) {
+    sec.style.display = 'none';
+    return;
+  }
+  sec.style.display = '';
+  list.innerHTML = coupons.map(c => {
+    const status = c.status || 'active';
+    const stCls = status;
+    const stLabel = { active: '有効', expiring: '期限間近', used: '使用済', expired: '失効' }[status] || '有効';
+    const cardCls = (status === 'expired' || status === 'used') ? 'coupon-card expired' : 'coupon-card';
+    return `
+      <div class="${cardCls}">
+        <div class="coupon-head">
+          <div>
+            <div class="coupon-value">${escapeHtml(c.value || '')}</div>
+            <div class="coupon-name">${escapeHtml(c.name || '')}</div>
+          </div>
+          <span class="coupon-status ${stCls}">${stLabel}</span>
+        </div>
+        <div class="coupon-meta">${escapeHtml(c.description || '')}<br>${escapeHtml(c.expires || '')}</div>
+        ${(status === 'active' || status === 'expiring') ? `
+          <div class="coupon-code-row">
+            <span class="coupon-code-text" id="cpn-${escapeHtml(c.code)}">${escapeHtml(c.code)}</span>
+            <button class="coupon-copy-btn" onclick="copyCoupon('${escapeHtml(c.code)}', this)">コピー</button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function copyCoupon(code, btn) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ コピー済';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+    });
+  }
+}
+
+/* デモ用クーポン生成（GAS未デプロイ時） */
+function generateDemoCoupons(orderCount) {
+  const all = [];
+  if (orderCount === 0) {
+    all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', expires: '2026/05/24まで', status: 'expiring' });
+  }
+  if (orderCount >= 1 && orderCount < 2) {
+    all.push({ code: 'CHK-FREE', value: '無料', name: '🍗 鳥もも・むねセット', description: '次回ご注文時に自動付与（¥4,200相当）', expires: '2026/06/10まで', status: 'active' });
+  }
+  if (orderCount >= 2 && orderCount < 3) {
+    all.push({ code: 'BURGER-FREE', value: '無料', name: '🍔 無添加ハンバーグ2個', description: '3回目購入特典', expires: '2026/06/10まで', status: 'active' });
+  }
+  if (orderCount >= 3) {
+    all.push({ code: 'ANNUAL10', value: '10%OFF', name: '👑 年間10%OFF（30日以内利用必須）', description: '30日以内に使うと1年間10%OFF / 併用不可', expires: '2026/06/10まで（要利用）', status: 'expiring' });
+  }
+  // 過去のクーポン
+  all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
+  return all;
+}
+
+/* ---- Subscription Actions ---- */
+function subSkip() {
+  if (!confirm('次回の定期便配送をスキップしますか？\n（次々回から再開されます）')) return;
+  toast('次回配送をスキップしました（公式LINEでご連絡もお送りしました）');
+}
+function subChange() {
+  alert('プラン変更はLINEでご連絡ください\nhttps://line.me/R/ti/p/@706sgiuq');
+}
+function subPause() {
+  if (!confirm('定期便を一時停止しますか？\nいつでも再開できます')) return;
+  toast('定期便を一時停止しました');
+}
+function subCancel() {
+  if (!confirm('本当に定期便を解約しますか？\n継続利用で得られる年間特典が失効します')) return;
+  toast('解約申請を受け付けました。担当者からご連絡します');
+}
+function toast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#0F3D2E;color:#fff;padding:14px 24px;border-radius:24px;font-size:13px;font-weight:600;z-index:1000;box-shadow:0 4px 16px rgba(0,0,0,0.2);max-width:90%;text-align:center';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
 }
 
 /* ---- Render Subscription ---- */
