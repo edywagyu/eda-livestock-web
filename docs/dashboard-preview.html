@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EC管理ダッシュボード | 江田畜産</title>
+<style>
+:root{--green:#0F3D2E;--gold:#D4A93B;--cream:#FAF7F0;--dark:#1a1a1a;--gray:#888;--red:#e74c3c;--blue:#3498db}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Hiragino Kaku Gothic ProN",-apple-system,sans-serif;background:var(--cream);color:var(--dark);min-height:100vh}
+.top-bar{background:var(--green);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.top-bar h1{color:white;font-size:18px;letter-spacing:0.05em;display:flex;align-items:center;gap:10px}
+.top-bar h1 span{color:var(--gold);font-size:22px}
+.top-bar-right{display:flex;gap:12px;align-items:center}
+.top-bar-right a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:12px;padding:6px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;transition:all 0.2s}
+.top-bar-right a:hover{color:white;border-color:var(--gold);background:rgba(212,169,59,0.15)}
+.top-bar .live-dot{width:8px;height:8px;background:#2ecc71;border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.container{max-width:1200px;margin:0 auto;padding:24px 32px}
+.greeting{margin-bottom:24px}
+.greeting-date{font-size:12px;color:var(--gray);letter-spacing:0.1em;text-transform:uppercase}
+.greeting-text{font-size:22px;font-weight:bold;color:var(--green);margin-top:4px}
+.alert-bar{background:white;border-left:4px solid var(--gold);border-radius:8px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 6px rgba(0,0,0,0.04)}
+.alert-bar.urgent{border-left-color:var(--red)}
+.alert-icon{font-size:20px;flex-shrink:0}
+.alert-text{font-size:13px;flex:1}
+.alert-text strong{color:var(--green)}
+.alert-action{font-size:12px;padding:6px 16px;background:var(--green);color:white;border-radius:6px;text-decoration:none;font-weight:bold;white-space:nowrap}
+.alert-action:hover{background:var(--gold);color:var(--green)}
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:white;border-radius:12px;padding:20px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,0.04);transition:transform 0.15s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.08)}
+.stat-card.highlight{background:var(--green);color:white}
+.stat-icon{font-size:24px;margin-bottom:8px}
+.stat-num{font-size:36px;font-weight:800;color:var(--green);letter-spacing:-0.02em;line-height:1}
+.stat-card.highlight .stat-num{color:var(--gold)}
+.stat-label{font-size:11px;color:var(--gray);margin-top:6px;letter-spacing:0.04em}
+.stat-card.highlight .stat-label{color:rgba(255,255,255,0.7)}
+.stat-sub{font-size:11px;color:var(--gold);margin-top:4px;font-weight:600}
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:28px}
+.card{background:white;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,0.04);overflow:hidden}
+.card-header{padding:16px 20px;border-bottom:1px solid #f0ebe0;display:flex;align-items:center;justify-content:space-between}
+.card-header h2{font-size:15px;color:var(--green);display:flex;align-items:center;gap:8px}
+.card-header h2 span{font-size:18px}
+.card-header .card-count{font-size:11px;color:var(--gray);background:#f5f0e5;padding:3px 10px;border-radius:20px}
+.card-body{padding:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f9f6f0;color:var(--gray);padding:10px 14px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;border-bottom:1px solid #f0ebe0}
+td{padding:10px 14px;border-bottom:1px solid #f5f0e5;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover{background:#faf8f2}
+.td-id{font-weight:700;color:var(--green);font-size:12px}
+.td-name{font-weight:600}
+.td-product{font-size:12px;color:var(--gray);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-amount{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.b-paid{background:#d4edda;color:#155724}
+.b-pending{background:#fff3cd;color:#856404}
+.b-hold{background:#f8d7da;color:#721c24}
+.b-unshipped{background:#fff3cd;color:#856404}
+.b-prep{background:#cce5ff;color:#004085}
+.b-shipped{background:#d4edda;color:#155724}
+.b-delivered{background:#e2e3e5;color:#383d41}
+.b-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.b-dot-amber{background:#f0ad4e}
+.b-dot-green{background:#27ae60}
+.b-dot-blue{background:#3498db}
+.b-dot-gray{background:#888}
+.quick-actions{list-style:none;padding:8px 0}
+.quick-actions li{border-bottom:1px solid #f5f0e5}
+.quick-actions li:last-child{border-bottom:none}
+.quick-actions a{display:flex;align-items:center;gap:12px;padding:14px 20px;text-decoration:none;color:var(--dark);transition:background 0.15s}
+.quick-actions a:hover{background:#f9f6f0}
+.qa-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.qa-icon.green{background:rgba(15,61,46,0.1);color:var(--green)}
+.qa-icon.gold{background:rgba(212,169,59,0.15);color:#b8860b}
+.qa-icon.blue{background:rgba(52,152,219,0.12);color:var(--blue)}
+.qa-icon.red{background:rgba(231,76,60,0.1);color:var(--red)}
+.qa-text{font-size:13px;font-weight:600}
+.qa-sub{font-size:11px;color:var(--gray);font-weight:400}
+.line-meter{margin:20px 20px 16px}
+.line-meter-bar{height:8px;background:#f0ebe0;border-radius:4px;overflow:hidden;margin:8px 0 4px}
+.line-meter-fill{height:100%;background:linear-gradient(90deg,#06c755,#00b900);border-radius:4px;transition:width 0.6s}
+.line-meter-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--gray)}
+.line-stat-row{display:flex;gap:16px;padding:0 20px 16px}
+.line-stat{flex:1;text-align:center;padding:12px 0;background:#f9f6f0;border-radius:8px}
+.line-stat-num{font-size:22px;font-weight:800;color:#06c755}
+.line-stat-label{font-size:10px;color:var(--gray);margin-top:2px}
+.footer{text-align:center;padding:20px;font-size:11px;color:var(--gray)}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}.container{padding:16px}}
+@media(max-width:600px){.stat-grid{grid-template-columns:1fr}.top-bar{padding:12px 16px}.top-bar h1{font-size:15px}}
+</style></head><body>
+
+<!-- Top bar -->
+<div class="top-bar">
+<h1><span>&#x1F404;</span> 江田畜産 EC管理</h1>
+<div class="top-bar-right">
+<a href="#">&#x1F6D2; ECサイト</a>
+<a href="#">&#x1F464; マイページ</a>
+<a href="#">&#x1F4E6; 配送CSV</a>
+</div></div>
+
+<div class="container">
+
+<!-- Greeting -->
+<div class="greeting">
+<div class="greeting-date">2026年5月10日（土）</div>
+<div class="greeting-text">ダッシュボード</div>
+</div>
+
+<!-- Alert -->
+<div class="alert-bar urgent">
+<div class="alert-icon">&#x1F6A8;</div>
+<div class="alert-text"><strong>3件</strong>の注文が未発送です。配送ラベルを出力して発送してください。</div>
+<a href="#" class="alert-action">CSV出力</a>
+</div>
+
+<!-- Stats -->
+<div class="stat-grid">
+<div class="stat-card highlight"><div class="stat-icon">&#x1F4B0;</div><div class="stat-num">&yen;128万</div><div class="stat-label">累計売上</div></div>
+<div class="stat-card"><div class="stat-icon">&#x1F4E6;</div><div class="stat-num">47</div><div class="stat-label">総受注数</div><div class="stat-sub">今日 +2</div></div>
+<div class="stat-card"><div class="stat-icon">&#x1F6A8;</div><div class="stat-num">3</div><div class="stat-label">未発送</div></div>
+<div class="stat-card"><div class="stat-icon">&#x1F464;</div><div class="stat-num">34</div><div class="stat-label">顧客数</div><div class="stat-sub">LINE連携 71%</div></div>
+<div class="stat-card"><div class="stat-icon">&#x1F4AC;</div><div class="stat-num">156</div><div class="stat-label">LINE通信数</div><div class="stat-sub" style="color:var(--red)">2件 未対応</div></div>
+</div>
+
+<!-- Two-col -->
+<div class="grid-2">
+
+<!-- Orders table -->
+<div class="card">
+<div class="card-header"><h2><span>&#x1F4CB;</span> 直近の受注</h2><span class="card-count">最新 8件</span></div>
+<div class="card-body">
+<table>
+<tr><th>受注ID</th><th>日付</th><th>顧客</th><th>商品</th><th style="text-align:right">金額</th><th>決済</th><th>配送</th></tr>
+<tr><td class="td-id">#1047</td><td>05/10</td><td class="td-name">田中 美咲</td><td class="td-product">Starterセット / 和牛サーロイン</td><td class="td-amount">&yen;15,800</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-unshipped"><span class="b-dot b-dot-amber"></span>未発送</span></td></tr>
+<tr><td class="td-id">#1046</td><td>05/10</td><td class="td-name">佐藤 健太</td><td class="td-product">A5リブロースステーキ 400g</td><td class="td-amount">&yen;8,900</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-unshipped"><span class="b-dot b-dot-amber"></span>未発送</span></td></tr>
+<tr><td class="td-id">#1045</td><td>05/09</td><td class="td-name">山田 花子</td><td class="td-product">Natural Box / 平飼い鶏もも</td><td class="td-amount">&yen;22,400</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-prep"><span class="b-dot b-dot-blue"></span>発送準備中</span></td></tr>
+<tr><td class="td-id">#1044</td><td>05/09</td><td class="td-name">鈴木 大輔</td><td class="td-product">和牛すき焼きセット</td><td class="td-amount">&yen;12,500</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-shipped"><span class="b-dot b-dot-green"></span>発送済</span></td></tr>
+<tr><td class="td-id">#1043</td><td>05/08</td><td class="td-name">高橋 愛</td><td class="td-product">Regularセット</td><td class="td-amount">&yen;18,000</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-shipped"><span class="b-dot b-dot-green"></span>発送済</span></td></tr>
+<tr><td class="td-id">#1042</td><td>05/07</td><td class="td-name">伊藤 裕子</td><td class="td-product">A5サーロインステーキ 200g x3</td><td class="td-amount">&yen;17,400</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-delivered"><span class="b-dot b-dot-gray"></span>配達完了</span></td></tr>
+<tr><td class="td-id">#1041</td><td>05/06</td><td class="td-name">渡辺 翔太</td><td class="td-product">平飼い鶏むねセット</td><td class="td-amount">&yen;4,200</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-delivered"><span class="b-dot b-dot-gray"></span>配達完了</span></td></tr>
+<tr><td class="td-id">#1040</td><td>05/05</td><td class="td-name">小林 恵美</td><td class="td-product">Starterセット / ギフト包装</td><td class="td-amount">&yen;15,800</td><td><span class="badge b-paid">決済済</span></td><td><span class="badge b-delivered"><span class="b-dot b-dot-gray"></span>配達完了</span></td></tr>
+</table>
+</div></div>
+
+<!-- Sidebar -->
+<div>
+
+<!-- Quick actions -->
+<div class="card" style="margin-bottom:16px">
+<div class="card-header"><h2><span>&#x26A1;</span> クイックアクション</h2></div>
+<div class="card-body">
+<ul class="quick-actions">
+<li><a href="#"><div class="qa-icon green">&#x1F4E6;</div><div><div class="qa-text">配送ラベル CSV</div><div class="qa-sub">未発送 3件をB2形式で出力</div></div></a></li>
+<li><a href="#"><div class="qa-icon gold">&#x1F4CA;</div><div><div class="qa-text">スプレッドシートを開く</div><div class="qa-sub">注文・顧客データを直接編集</div></div></a></li>
+<li><a href="#"><div class="qa-icon blue">&#x1F4B3;</div><div><div class="qa-text">Stripe管理画面</div><div class="qa-sub">決済・返金の管理</div></div></a></li>
+<li><a href="#"><div class="qa-icon red">&#x1F6D2;</div><div><div class="qa-text">ECサイトを確認</div><div class="qa-sub">お客様視点でショップを開く</div></div></a></li>
+</ul>
+</div></div>
+
+<!-- LINE status -->
+<div class="card">
+<div class="card-header"><h2><span style="color:#06c755">&#x1F4AC;</span> LINE連携状況</h2></div>
+<div class="card-body">
+<div class="line-meter">
+<div style="font-size:13px;font-weight:600;color:var(--green)">LINE連携率 <span style="color:#06c755">71%</span></div>
+<div class="line-meter-bar"><div class="line-meter-fill" style="width:71%"></div></div>
+<div class="line-meter-labels"><span>24人が連携済み</span><span>全 34人</span></div>
+</div>
+<div class="line-stat-row">
+<div class="line-stat"><div class="line-stat-num">24</div><div class="line-stat-label">友だち</div></div>
+<div class="line-stat"><div class="line-stat-num">2</div><div class="line-stat-label">未対応</div></div>
+</div>
+</div></div>
+
+</div>
+</div>
+
+<div class="footer">江田畜産株式会社 EC管理システム &mdash; 14:30 更新</div>
+
+</div>
+</body></html>
