@@ -1080,6 +1080,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <!-- Delivery Timeline -->
       <div class="timeline-card">
         <h3 class="timeline-title">DELIVERY STATUS</h3>
+
+        <!-- 到着予定日 大きく表示 -->
+        <div style="background:linear-gradient(135deg,#0F3D2E,#143D2B);color:#fff;padding:16px 20px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
+          <div style="font-size:28px">📅</div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:#D4A93B;letter-spacing:0.04em;font-weight:700">到着予定日</div>
+            <div id="bigArrivalDate" style="font-size:20px;font-weight:700;margin-top:2px">--月--日（--）</div>
+            <div style="font-size:11px;opacity:0.7;margin-top:2px">発送後2〜3日でお届けします</div>
+          </div>
+        </div>
+
         <div class="timeline">
           <div class="timeline-step done">
             <div class="timeline-line done"></div>
@@ -1323,6 +1334,14 @@ function renderOrder(order) {
   /* Estimated delivery */
   if (order.estimated_delivery) {
     document.getElementById('timelineDelivery').textContent = formatDate(order.estimated_delivery);
+    const big = document.getElementById('bigArrivalDate');
+    if (big) {
+      const d = new Date(order.estimated_delivery);
+      if (!isNaN(d.getTime())) {
+        const days = ['日','月','火','水','木','金','土'];
+        big.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）頃';
+      }
+    }
   }
 
   /* Summary items */

@@ -1320,6 +1320,18 @@ ul { list-style: none; padding: 0; margin: 0; }
           <div id="funnelChart"></div>
         </div>
 
+        <!-- 4回購入特典（編集可能） -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;border:2px solid var(--gold)">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:linear-gradient(90deg,#0F3D2E,#143D2B);color:#fff">
+            <div>
+              <div style="font-size:10px;letter-spacing:.04em;opacity:.7">REWARDS</div>
+              <div style="font-size:14px;font-weight:700">4回購入特典マスタ</div>
+            </div>
+            <button onclick="openRewardsForm()" style="background:var(--gold);color:var(--forest-deep);font-weight:700;padding:6px 14px;border-radius:14px;font-size:12px">編集</button>
+          </div>
+          <div id="rewardList"></div>
+        </div>
+
         <div class="card" style="background:#FFF3CD;border-left:4px solid var(--gold);padding:14px 16px;margin-bottom:14px">
           <div style="font-size:13px;line-height:1.7;color:#664D03">
             <strong>🤖 自動化ルールとは</strong><br>
@@ -1600,12 +1612,20 @@ const DEMO_PRODUCTS = [
   { productId: 'P007', variantId: 'CHK-TB-500',  name: '大分平飼い鶏 手羽先', variant: '500g', price: 1200, stock: 9,  temp: '冷凍', category: '鶏', sku: 'EDA-CHK-TB-500', weight: 500, description: 'ジューシーな手羽先。揚げ物・焼き物に。', images: [] }
 ];
 const DEMO_ORDERS = [
-  { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd' },
-  { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh' },
-  { id: '#1021', customerName: '鈴木 一郎', total: 9800,  items: '宮崎和牛リブロース 300g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '', lineUid: '' },
-  { id: '#1020', customerName: '山田 美香', total: 4800,  items: '平飼い鶏もも 2kg', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012', lineUid: '' },
-  { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109', lineUid: 'U9999xyzz' }
+  { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd', paymentMethod: 'Visa **** 4242', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 18 },
+  { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh', paymentMethod: 'Apple Pay (Mastercard)', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 12 },
+  { id: '#1021', customerName: '鈴木 一郎', total: 9800,  items: '宮崎和牛リブロース 300g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '', lineUid: '', paymentMethod: 'JCB **** 8888', orderDate: '2026-05-11', estimatedArrival: '2026-05-14', purchaseCount: 6 },
+  { id: '#1020', customerName: '山田 美香', total: 4800,  items: '平飼い鶏もも 2kg', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012', lineUid: '', paymentMethod: 'Google Pay (Visa)', orderDate: '2026-05-09', estimatedArrival: '2026-05-12', purchaseCount: 4 },
+  { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109', lineUid: 'U9999xyzz', paymentMethod: 'Visa **** 1111', orderDate: '2026-05-07', estimatedArrival: '2026-05-10', purchaseCount: 1 }
 ];
+
+/* ★ 4回購入特典マスタ（編集可能） */
+const REWARD_PROGRAM = {
+  stage1: { label: '1回目購入特典', code: 'WELCOME20', name: '20%OFFクーポン', desc: '初回購入時に発行', icon: '🎁', color: '#3498DB' },
+  stage2: { label: '2回目購入特典', code: 'CHK-FREE', name: '鳥もも・むねセット無料', desc: '2回目決済完了で自動付与', icon: '🍗', color: '#9b59b6' },
+  stage3: { label: '3回目購入特典', code: 'BURGER-FREE', name: '無添加ハンバーグ2個 無料', desc: '3回目決済完了で自動付与', icon: '🍔', color: '#e67e22' },
+  stage4: { label: '4回目購入特典', code: 'LIFETIME10', name: '全品10%OFF（永続）', desc: '基盤顧客認定 + 永続割引', icon: '👑', color: '#D4A93B' }
+};
 
 const DEMO_CUSTOMERS = [
   { id: 'C001', name: '田中 太郎', email: 'tanaka@example.com', phone: '090-1234-5678', zip: '1060032', address: '東京都港区六本木6-10', orderCount: 18, totalSpent: 412000, lastOrder: '2026-05-09', segment: 'vip', income: 'high', lineLinked: true, subPlan: 'Regular', surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'weekly' },
@@ -1706,15 +1726,26 @@ const DEMO_FLOWS = [
     stats: { triggered: 47, converted: 18, revenue: 412000 }
   },
 
-  // ========== 1回目化（LINE友だち → 初回購入） ==========
+  // ========== 配送通知（2段階） ==========
+  {
+    id: 'SHIP-NOTIFY', trigger: 'order_shipped', triggerLabel: '伝票番号入力時', icon: '📦', active: true, stage: 'retention', friendsCount: 234,
+    conditions: [{ label: 'LINE連携済', icon: '💬' }],
+    steps: [
+      { delay: '即時', name: '発送のお知らせ + 写真', message: '【発送のお知らせ】\nご注文の商品を発送しました🐂\n\n📅 お届け予定: ○月○日（○）\n📦 追跡番号: ○○○○-○○○○-○○○○\n\n到着までもう少しお待ちください！', coupon: null, delivered: 234 },
+      { delay: 'お届け日 朝7時', name: '本日お届けリマインド', message: '【本日お届け予定】\nおはようございます🌅\n本日 ○月○日 にご注文の商品をお届け予定です。\n\n冷蔵庫の準備をお願いします❄️\n配達時間帯のご変更はLINEまたは追跡画面から', coupon: null, delivered: 198 }
+    ],
+    stats: { triggered: 234, converted: 198, revenue: 0 }
+  },
+
+  // ========== 1回目化（LINE友だち → 初回購入）★更新：1回目特典＝20%OFF ==========
   {
     id: 'STAGE1-A', trigger: 'line_friend_added', triggerLabel: 'LINE友だち追加', icon: '🎉', active: true, stage: 'first', friendsCount: 1062,
     conditions: [],
     steps: [
-      { delay: '即時', name: 'ようこそ + 10%OFFクーポン', message: 'ご登録ありがとうございます！今すぐ使える10%OFFクーポン WELCOME10 をどうぞ🐂', coupon: 'WELCOME10', delivered: 1062 },
+      { delay: '即時', name: 'ようこそ + 20%OFFクーポン', message: 'ご登録ありがとうございます🐂\n\n🎁 初回購入特典として 20%OFFクーポン をプレゼント！\nクーポンコード: WELCOME20\n有効期限: 14日間', coupon: 'WELCOME20', delivered: 1062 },
       { delay: '3日後', name: '商品紹介・お客様の声', message: '実際にお召し上がりになったお客様のレビューと、人気部位のご紹介です', coupon: null, delivered: 891 },
-      { delay: '7日後', name: '【期限間近】20%OFFクーポン', message: '友だち追加から1週間 — 今だけ20%OFF！残り3日です', coupon: 'NEWBIE20', delivered: 624 },
-      { delay: '14日後', name: '¥3,000 OFFクーポン（強い特典）', message: '初回限定 ¥3,000 OFF — 今までためらっていた方へ', coupon: 'TRY3000', delivered: 387 },
+      { delay: '7日後', name: '【期限間近】20%OFFは残り7日', message: '友だち追加から1週間 — まだ20%OFFが使えます。期限まで残り7日！', coupon: 'WELCOME20', delivered: 624 },
+      { delay: '13日後', name: '【最終日】20%OFFは明日まで', message: '20%OFFクーポンの期限が明日までです。お見逃しなく🐂', coupon: 'WELCOME20', delivered: 387 },
       { delay: '30日後', name: '友だち紹介で更にお得', message: 'お友だちにもご紹介ください。あなたとお友だち両方に20%OFF', coupon: 'REFER20', delivered: 198 }
     ],
     stats: { triggered: 1062, converted: 245, revenue: 2940000 }
@@ -1731,40 +1762,40 @@ const DEMO_FLOWS = [
     stats: { triggered: 87, converted: 34, revenue: 287000 }
   },
 
-  // ========== 2回目化（1回目購入 → 2回目購入） ==========
+  // ========== 2回目化（1回目購入 → 2回目購入）★特典＝鳥もも・むねセット無料 ==========
   {
     id: 'STAGE2-A', trigger: 'order_completed', triggerLabel: '初回購入完了', icon: '🛍️', active: true, stage: 'repeat', friendsCount: 234,
     conditions: [{ label: '初回購入', icon: '🆕' }],
     steps: [
-      { delay: '即時', name: 'お礼 + 配送スケジュール', message: '初めてのご注文ありがとうございます！心を込めて準備します', coupon: null, delivered: 234 },
-      { delay: '5日後（受取後）', name: 'いかがでしたか？+ 食べ方提案', message: 'お届けした和牛、お味はいかがでしたか？おすすめの調理法はこちらです🍳', coupon: null, delivered: 198 },
-      { delay: '14日後', name: 'クロスセル：別部位提案', message: 'サーロインを召し上がったあなたにぴったりの部位、ヒレもおすすめです', coupon: 'REPEAT10', delivered: 156 },
-      { delay: '30日後', name: '在庫切れタイミング想定', message: '前回ご購入から1ヶ月 — そろそろお肉の補充はいかがですか？', coupon: 'REORDER15', delivered: 98 },
-      { delay: '45日後', name: '【最後の背中押し】期限付き', message: 'リピーター限定 20%OFF — 残り3日', coupon: 'REPEAT20', delivered: 67 }
+      { delay: '即時', name: 'お礼 + 次回特典の予告', message: '初めてのご注文ありがとうございます🐂\n\n次回ご注文時、🍗 鳥もも・むねセット を無料でお付けします（CHK-FREE自動適用）。\n\n発送準備が整い次第、ご連絡します！', coupon: 'CHK-FREE', delivered: 234 },
+      { delay: '5日後（受取後）', name: 'いかがでしたか？', message: 'お届けした商品、お味はいかがでしたか？\n\n📌 次回は鳥もも・むねセット無料です。お忘れなく！', coupon: null, delivered: 198 },
+      { delay: '14日後', name: 'クロスセル：別部位提案', message: 'サーロインを召し上がったあなたにぴったり、ヒレ200gのご紹介です', coupon: null, delivered: 156 },
+      { delay: '30日後', name: '在庫切れタイミング想定', message: '前回ご購入から1ヶ月 — 鳥もも・むねセット無料の特典、お忘れではありませんか？', coupon: 'CHK-FREE', delivered: 98 },
+      { delay: '45日後', name: '【特典期限間近】', message: '🍗 鳥もも・むねセット無料 のチャンスは残り14日です', coupon: 'CHK-FREE', delivered: 67 }
     ],
     stats: { triggered: 234, converted: 100, revenue: 1280000 }
   },
 
-  // ========== 3回目化（2回目購入 → 3回目購入：習慣化） ==========
+  // ========== 3回目化（2回目 → 3回目：習慣化）★特典＝無添加ハンバーグ2個無料 ==========
   {
     id: 'STAGE3-A', trigger: 'order_completed', triggerLabel: '2回目購入完了', icon: '🔁', active: true, stage: 'habit', friendsCount: 100,
     conditions: [{ label: '購入回数 = 2回目', icon: '2️⃣' }],
     steps: [
-      { delay: '即時', name: 'リピート御礼 + 定期便提案', message: '2度目のご利用ありがとうございます！毎月お得に届く定期便もご検討ください（月¥6,800〜）', coupon: null, delivered: 100 },
-      { delay: '10日後', name: '希少部位の限定オファー', message: 'お得意様限定で、希少部位ヒレ200gを通常より20%OFFでご提供', coupon: 'TIER-FILE20', delivered: 84 },
-      { delay: '25日後', name: 'タイミング合わせ', message: 'そろそろお肉が恋しくなる頃 — ¥2,000 OFFクーポン', coupon: 'TIMING2000', delivered: 56 }
+      { delay: '即時', name: 'リピート御礼 + 3回目特典の予告', message: '2度目のご利用ありがとうございます🙏\n\n次回（3回目）ご注文時には、🍔 無添加ハンバーグ2個 を無料でプレゼントします！\n\nクーポンコード: BURGER-FREE（自動適用）\n有効期限: 30日間', coupon: 'BURGER-FREE', delivered: 100 },
+      { delay: '10日後', name: '定期便提案', message: '毎月お得に届く定期便もぜひご検討ください（月¥6,800〜）', coupon: null, delivered: 84 },
+      { delay: '25日後', name: 'タイミング合わせ', message: '🍔 無添加ハンバーグ2個無料 の特典が残っています。そろそろお肉が恋しくなる頃ではないですか？', coupon: 'BURGER-FREE', delivered: 56 }
     ],
     stats: { triggered: 100, converted: 67, revenue: 856000 }
   },
 
-  // ========== 基盤化（3回目 → 4回目） ==========
+  // ========== 基盤化（3回目 → 4回目：永続10%OFF） ==========
   {
     id: 'STAGE4-A', trigger: 'order_completed', triggerLabel: '3回目購入完了', icon: '👑', active: true, stage: 'base', friendsCount: 67,
     conditions: [{ label: '購入回数 = 3回目', icon: '3️⃣' }],
     steps: [
-      { delay: '即時', name: 'VIP昇格通知 ✨', message: '🎊 あなたは上位5%のお客様です！今後はVIP特典をご利用いただけます', coupon: null, delivered: 67 },
-      { delay: '7日後', name: '基盤顧客特典：会員価格', message: 'VIPメンバー専用ページのご案内（一般非公開の限定商品もアクセス可）', coupon: null, delivered: 64 },
-      { delay: '20日後', name: '4回目で完全基盤化', message: 'あと1回ご注文で「基盤顧客」入り — 永続15%OFFが付与されます', coupon: 'BASE-IN15', delivered: 43 }
+      { delay: '即時', name: 'VIP昇格 + 4回目特典の予告', message: '🎊 あなたは上位5%のお客様です！\n\n次回（4回目）ご注文で 基盤顧客 認定。\n以後 全商品 永続10%OFF が適用されます。\n\nあと1回で完全ロックインです🐂', coupon: null, delivered: 67 },
+      { delay: '7日後', name: '基盤顧客特典：会員専用ページ', message: 'VIPメンバー専用ページ — 一般非公開の限定商品にアクセスできます', coupon: null, delivered: 64 },
+      { delay: '20日後', name: '4回目で完全基盤化', message: 'あと1回ご注文で「基盤顧客」入り — 全品 永続10%OFF が永久に使えます', coupon: null, delivered: 43 }
     ],
     stats: { triggered: 67, converted: 52, revenue: 728000 }
   },
@@ -1772,7 +1803,7 @@ const DEMO_FLOWS = [
     id: 'STAGE4-B', trigger: 'order_completed', triggerLabel: '4回目購入完了 🎊', icon: '🏆', active: true, stage: 'base', friendsCount: 52,
     conditions: [{ label: '購入回数 = 4回目', icon: '4️⃣' }],
     steps: [
-      { delay: '即時', name: '基盤顧客 認定', message: '🎉 あなたは正式な基盤顧客です！永続15%OFF権利を付与しました。今後ともよろしくお願いします', coupon: 'BASE-LIFETIME15', delivered: 52 }
+      { delay: '即時', name: '基盤顧客 認定 + 永続10%OFF', message: '🎉 あなたは正式な基盤顧客です！\n\n以後、全商品 永続10%OFF が自動適用されます。\nクーポンコード: LIFETIME10\n\n今後ともよろしくお願いします🐂', coupon: 'LIFETIME10', delivered: 52 }
     ],
     stats: { triggered: 52, converted: 52, revenue: 0 }
   },
@@ -2112,41 +2143,87 @@ function renderShipDetail() {
   document.getElementById('shipContent').innerHTML = `
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
-      <div class="detail-row"><span class="label">顧客名</span><span class="value">${escapeHtml(o.customerName || '')}</span></div>
+      <div class="detail-row"><span class="label">受注日</span><span class="value">${escapeHtml(o.orderDate || '')}</span></div>
+      <div class="detail-row"><span class="label">顧客名</span><span class="value">${escapeHtml(o.customerName || '')}${o.purchaseCount ? ' <span style="font-size:11px;color:var(--gold-soft)">' + o.purchaseCount + '回目</span>' : ''}</span></div>
       <div class="detail-row"><span class="label">電話</span><span class="value">${escapeHtml(o.phone || '')}</span></div>
       <div class="detail-row"><span class="label">郵便番号</span><span class="value">${escapeHtml(o.zip || '')}</span></div>
       <div class="detail-row"><span class="label">住所</span><span class="value">${escapeHtml((o.address || '') + ' ' + (o.address2 || ''))}</span></div>
       <div class="detail-row"><span class="label">商品</span><span class="value">${escapeHtml(o.items || '')}</span></div>
       <div class="detail-row"><span class="label">合計</span><span class="value">¥${Number(o.total || 0).toLocaleString()}</span></div>
+      <div class="detail-row"><span class="label">💳 決済方法</span><span class="value" style="font-family:'SF Mono',Menlo,monospace;font-size:13px">${escapeHtml(o.paymentMethod || '-')}</span></div>
+      <div class="detail-row"><span class="label">📅 お届け予定</span><span class="value" style="color:var(--green);font-weight:700">${escapeHtml(o.estimatedArrival || '-')}</span></div>
       <div class="detail-row"><span class="label">配送STS</span><span class="value">${escapeHtml(o.shipStatus || '')}</span></div>
       ${o.tracking ? `<div class="detail-row"><span class="label">伝票番号</span><span class="value">${escapeHtml(o.tracking)}</span></div>` : ''}
     </div>
 
     ${isShipped ? `
       <div class="card" style="text-align:center;color:var(--green);font-weight:600">
-        ✓ 発送済み — LINE通知送信済
+        ✓ 発送済み — LINE通知送信済（発送 + 当日朝の2回通知予約済み）
       </div>
     ` : `
       <div class="detail-card">
         <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">伝票番号を入力</div>
         <input type="text" class="tracking-input" id="trackingInput" placeholder="0000-0000-0000" inputmode="numeric" autocomplete="off">
+
+        <!-- 発送写真UP -->
+        <div style="margin-top:14px">
+          <label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:6px">📷 発送商品の写真（任意・LINEに添付）</label>
+          <div id="shipPhotoSlot" style="aspect-ratio:16/10;border-radius:10px;background:var(--paper);border:2px dashed var(--bone);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;overflow:hidden;position:relative" onclick="pickShipPhoto()">
+            <div style="text-align:center;font-size:12px"><div style="font-size:32px;margin-bottom:4px">📸</div>タップして撮影 or 画像選択</div>
+          </div>
+          <input type="file" id="shipPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="handleShipPhoto(event)">
+          <p style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5">※ 梱包後の商品写真をアップすると、LINEに「発送しました」の文章と一緒に送信されます</p>
+        </div>
+
         ${o.lineUid ? `
-          <div style="margin-top:10px;padding:10px;background:#E8FAF0;border-radius:8px;font-size:12px;color:#065F46;display:flex;align-items:center;gap:8px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-            <span>このお客様はLINE連携済 — 発送ボタンを押すと自動通知されます</span>
+          <div style="margin-top:14px;padding:10px;background:#E8FAF0;border-radius:8px;font-size:12px;color:#065F46;line-height:1.6">
+            <div style="font-weight:700;margin-bottom:4px">💬 LINE自動通知（2段階）</div>
+            <div>① <strong>発送完了時</strong> → 写真 + 「商品が発送されました」+ 追跡URL</div>
+            <div>② <strong>${escapeHtml(o.estimatedArrival || 'お届け日')}朝7時</strong> → 「本日商品が届きます」</div>
           </div>
         ` : `
-          <div style="margin-top:10px;padding:10px;background:#FEF3C7;border-radius:8px;font-size:12px;color:#92400E">
-            ⚠️ このお客様はLINE未連携です。発送通知メールが送信されます。
+          <div style="margin-top:14px;padding:10px;background:#FEF3C7;border-radius:8px;font-size:12px;color:#92400E">
+            ⚠️ このお客様はLINE未連携です。メール通知のみとなります。
           </div>
         `}
         <button class="btn-primary" id="shipBtn" onclick="confirmShip()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          発送完了 → ${o.lineUid ? 'LINE通知' : 'メール通知'}
+          発送完了 → ${o.lineUid ? 'LINE通知（写真付き）' : 'メール通知'}
         </button>
       </div>
     `}
   `;
+}
+
+let shipPhotoData = null;
+
+function pickShipPhoto() {
+  document.getElementById('shipPhotoInput').click();
+}
+
+function handleShipPhoto(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    shipPhotoData = e.target.result;
+    const slot = document.getElementById('shipPhotoSlot');
+    slot.innerHTML = `
+      <img src="${shipPhotoData}" style="width:100%;height:100%;object-fit:cover">
+      <button onclick="event.stopPropagation();removeShipPhoto()" style="position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(231,76,60,.95);color:#fff;font-size:16px;font-weight:700;border:2px solid #fff">×</button>
+    `;
+    toast('写真を添付しました', 'success');
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function removeShipPhoto() {
+  shipPhotoData = null;
+  const slot = document.getElementById('shipPhotoSlot');
+  if (slot) {
+    slot.innerHTML = '<div style="text-align:center;font-size:12px;color:var(--muted)"><div style="font-size:32px;margin-bottom:4px">📸</div>タップして撮影 or 画像選択</div>';
+  }
 }
 
 async function confirmShip() {
@@ -2161,12 +2238,14 @@ async function confirmShip() {
   // Demo mode
   if (isDemoMode()) {
     setTimeout(() => {
-      toast('🎭 デモ: LINE通知は送信されません', 'success');
+      const photoMsg = shipPhotoData ? '写真付き ' : '';
+      toast('🎭 デモ: ' + photoMsg + 'LINE通知2回（発送＋当日朝）予約しました', 'success');
       selectedOrder.shipStatus = '発送済';
       selectedOrder.tracking = tracking;
       renderShipDetail();
       const idx = ordersCache.findIndex(o => o.id === selectedOrder.id);
       if (idx >= 0) ordersCache[idx] = selectedOrder;
+      shipPhotoData = null;
     }, 600);
     return;
   }
@@ -2175,7 +2254,13 @@ async function confirmShip() {
     const res = await fetch(GAS_URL + '?action=staff_ship', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ orderId: selectedOrder.id, tracking })
+      body: JSON.stringify({
+        orderId: selectedOrder.id,
+        tracking,
+        photo: shipPhotoData,
+        scheduleArrivalReminder: true,
+        estimatedArrival: selectedOrder.estimatedArrival
+      })
     });
     const data = await res.json();
     if (data.success) {
@@ -2469,8 +2554,33 @@ let flowStageFilter = 'all';
 function loadFlows() {
   if (isDemoMode()) {
     renderFunnel();
+    renderRewards();
     renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
   }
+}
+
+function renderRewards() {
+  const el = document.getElementById('rewardList');
+  if (!el) return;
+  const stages = ['stage1', 'stage2', 'stage3', 'stage4'];
+  let html = '';
+  stages.forEach((s, i) => {
+    const r = REWARD_PROGRAM[s];
+    html += `
+      <div style="padding:14px 16px;${i < 3 ? 'border-bottom:1px solid var(--bone);' : ''}display:flex;align-items:center;gap:12px">
+        <div style="width:42px;height:42px;border-radius:50%;background:${r.color}22;color:${r.color};display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${r.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+            <span style="font-size:10px;font-weight:700;color:${r.color};background:${r.color}22;padding:2px 8px;border-radius:8px">${i + 1}回目</span>
+            <span class="coupon-code" style="font-size:11px;padding:2px 8px">${r.code}</span>
+          </div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink);line-height:1.3">${escapeHtml(r.name)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${escapeHtml(r.desc)}</div>
+        </div>
+      </div>
+    `;
+  });
+  el.innerHTML = html;
 }
 
 function renderFunnel() {
@@ -2809,6 +2919,38 @@ function updateConditionValues(fieldSelect, idx) {
   valSelect.innerHTML = opts.values.map(v => `<option>${v}</option>`).join('');
 }
 
+/* ================ REWARDS FORM (編集) ================ */
+function openRewardsForm() {
+  document.getElementById('formTitle').textContent = '4回購入特典マスタ';
+  let html = '<p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 16px">各回数到達時に自動付与される特典。コード・名称・LINE文章を編集できます。</p>';
+  ['stage1', 'stage2', 'stage3', 'stage4'].forEach((s, i) => {
+    const r = REWARD_PROGRAM[s];
+    html += `
+      <div style="background:${r.color}11;border-left:4px solid ${r.color};padding:12px 14px;border-radius:8px;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:${r.color};margin-bottom:8px">${r.icon} ${i + 1}回目購入時</div>
+        <div class="form-row">
+          <div class="form-field" style="flex:1.4"><label>クーポンコード</label><input type="text" id="rw-${s}-code" value="${escapeHtml(r.code)}" style="font-family:'SF Mono',monospace;text-transform:uppercase"></div>
+          <div class="form-field" style="flex:2"><label>特典名</label><input type="text" id="rw-${s}-name" value="${escapeHtml(r.name)}"></div>
+        </div>
+        <div class="form-field"><label>LINE通知メッセージ</label><textarea id="rw-${s}-msg" rows="3" placeholder="特典付与時にLINEで送る文章">${escapeHtml(getRewardMessage(s))}</textarea></div>
+      </div>
+    `;
+  });
+  document.getElementById('formBody').innerHTML = html;
+  document.getElementById('formSheet').classList.add('open');
+  window._formType = 'rewards';
+}
+
+function getRewardMessage(stage) {
+  const defaults = {
+    stage1: 'ご登録ありがとうございます🐂\n\n初回購入特典として 20%OFFクーポン をお届けします。\n\nクーポンコード: WELCOME20\n有効期限: 14日間',
+    stage2: '2回目のご利用ありがとうございます！\n\n感謝の気持ちを込めて、次回ご注文時に\n🍗 鳥もも・むねセット 無料 \nをプレゼントします。\n\nクーポンコード: CHK-FREE\n有効期限: 30日間',
+    stage3: '3回ものご利用、本当にありがとうございます🙏\n\n習慣化のお祝いに、無添加ハンバーグ2個を無料でプレゼントします。\n\nクーポンコード: BURGER-FREE\n有効期限: 30日間',
+    stage4: '🎊 基盤顧客に認定されました！\n\n4回ものご利用、本当にありがとうございます。\nあなたは上位5%のお客様です。\n\n以後、全商品 永続10%OFF が適用されます。\nクーポンコード: LIFETIME10（自動適用）'
+  };
+  return REWARD_PROGRAM[stage]._customMsg || defaults[stage] || '';
+}
+
 function applyFlowPreset(preset) {
   // Clear conditions
   const list = document.getElementById('conditionList');
@@ -3014,7 +3156,34 @@ function submitForm() {
     saveProduct();
     return;
   }
+  if (window._formType === 'rewards') {
+    saveRewards();
+    return;
+  }
   toast(isDemoMode() ? '🎭 デモ: 保存したフリ' : '保存しました', 'success');
+  closeForm();
+}
+
+function saveRewards() {
+  ['stage1', 'stage2', 'stage3', 'stage4'].forEach(s => {
+    const codeEl = document.getElementById('rw-' + s + '-code');
+    const nameEl = document.getElementById('rw-' + s + '-name');
+    const msgEl = document.getElementById('rw-' + s + '-msg');
+    if (codeEl) REWARD_PROGRAM[s].code = codeEl.value.trim();
+    if (nameEl) REWARD_PROGRAM[s].name = nameEl.value.trim();
+    if (msgEl) REWARD_PROGRAM[s]._customMsg = msgEl.value;
+  });
+  renderRewards();
+
+  if (isDemoMode()) {
+    toast('🎭 デモ: 特典マスタを更新しました', 'success');
+  } else {
+    fetch(GAS_URL + '?action=staff_rewards_save', {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ rewards: REWARD_PROGRAM })
+    }).then(() => toast('特典マスタを更新しました', 'success'))
+      .catch(e => toast('保存失敗: ' + e.message, 'error'));
+  }
   closeForm();
 }
 
