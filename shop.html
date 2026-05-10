@@ -3564,6 +3564,115 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .product-buy { flex-direction: column; }
   .variant-select { width: 100%; }
 }
+
+/* ============================================================
+   Dynamic Products Section (Sheet-driven)
+   ============================================================ */
+.dyn-products { background: var(--color-cream); padding: 60px 0 40px; }
+.dyn-products[hidden] { display: none; }
+.dyn-products-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; }
+.dyn-products-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--color-forest);
+  margin: 0;
+}
+.dyn-products-head .dyn-pill {
+  display: inline-block; background: var(--color-gold); color: var(--color-forest-deep);
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 4px 12px; border-radius: 20px;
+}
+.dyn-products-grid {
+  display: grid; gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.dyn-card {
+  background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  transition: transform .25s var(--ease-out-expo), box-shadow .25s;
+  display: flex; flex-direction: column;
+}
+.dyn-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
+.dyn-card-img {
+  position: relative; padding-top: 75%;
+  background: #f5f0e5 center / cover no-repeat; cursor: pointer;
+}
+.dyn-card-img-count {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(0,0,0,0.55); color: #fff; font-size: 11px;
+  padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px);
+}
+.dyn-card-img-placeholder {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: rgba(15,61,46,0.25);
+}
+.dyn-card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.dyn-card-cat {
+  font-size: 10px; letter-spacing: .08em; color: var(--color-ink-muted); text-transform: uppercase;
+}
+.dyn-card-name { font-size: 15px; font-weight: 700; color: var(--color-forest); line-height: 1.3; }
+.dyn-card-desc {
+  font-size: 12px; color: var(--color-ink-muted); line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden; min-height: 56px;
+}
+.dyn-card-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px;
+}
+.dyn-card-price { font-size: 17px; font-weight: 700; color: var(--color-forest); font-variant-numeric: tabular-nums; }
+.dyn-card-add {
+  background: var(--color-forest); color: #fff; border: none; border-radius: 8px;
+  padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .2s;
+}
+.dyn-card-add:hover { background: var(--color-gold); color: var(--color-forest-deep); }
+.dyn-card-add.added { background: #2ecc71; }
+
+/* ---- Image gallery lightbox ---- */
+.dyn-gallery {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.dyn-gallery.open { display: flex; }
+.dyn-gallery-frame {
+  position: relative; max-width: min(900px, 100%); max-height: 100%;
+  display: flex; flex-direction: column; align-items: center;
+}
+.dyn-gallery-img {
+  max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 6px;
+  user-select: none; -webkit-user-select: none;
+}
+.dyn-gallery-close {
+  position: absolute; top: -50px; right: 0; background: rgba(255,255,255,0.1);
+  color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%;
+  font-size: 22px; cursor: pointer; transition: background .2s;
+}
+.dyn-gallery-close:hover { background: rgba(255,255,255,0.25); }
+.dyn-gallery-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.12); border: none; color: #fff; width: 44px; height: 44px;
+  border-radius: 50%; font-size: 22px; cursor: pointer; transition: background .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.dyn-gallery-nav:hover { background: rgba(255,255,255,0.3); }
+.dyn-gallery-nav.prev { left: 12px; }
+.dyn-gallery-nav.next { right: 12px; }
+.dyn-gallery-thumbs {
+  display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center;
+}
+.dyn-gallery-thumbs img {
+  width: 56px; height: 56px; object-fit: cover; border-radius: 4px;
+  cursor: pointer; opacity: 0.5; transition: opacity .2s, transform .15s;
+}
+.dyn-gallery-thumbs img.active,
+.dyn-gallery-thumbs img:hover { opacity: 1; transform: scale(1.05); }
+
+@media (max-width: 600px) {
+  .dyn-products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .dyn-card-body { padding: 10px 12px 12px; }
+  .dyn-card-name { font-size: 13px; }
+  .dyn-card-desc { font-size: 11px; min-height: 44px; -webkit-line-clamp: 2; }
+  .dyn-card-add { padding: 6px 10px; font-size: 11px; }
+  .dyn-gallery-thumbs img { width: 44px; height: 44px; }
+}
 </style>
 </head>
 <body>
@@ -3843,6 +3952,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </div>
   </div>
 </section>
+
+<!-- ========= DYNAMIC PRODUCTS (Sheet-driven via GAS) ========= -->
+<section class="dyn-products" id="dynProducts" hidden>
+  <div class="container">
+    <div class="dyn-products-head reveal">
+      <h2>新着商品</h2>
+      <span class="dyn-pill">JUST IN</span>
+    </div>
+    <div class="dyn-products-grid reveal" id="dynProductsGrid"></div>
+  </div>
+</section>
+
+<!-- Lightbox for dynamic-product image gallery -->
+<div class="dyn-gallery" id="dynGallery" onclick="if(event.target===this)dynGalleryClose()">
+  <div class="dyn-gallery-frame">
+    <button class="dyn-gallery-close" onclick="dynGalleryClose()" aria-label="閉じる">×</button>
+    <button class="dyn-gallery-nav prev" onclick="dynGalleryStep(-1)" aria-label="前へ">‹</button>
+    <img class="dyn-gallery-img" id="dynGalleryImg" alt="">
+    <button class="dyn-gallery-nav next" onclick="dynGalleryStep(1)" aria-label="次へ">›</button>
+    <div class="dyn-gallery-thumbs" id="dynGalleryThumbs"></div>
+  </div>
+</div>
 
 <!-- ========= CATEGORY TABS ========= -->
 <section class="shop-snippet section" id="products">
@@ -4847,6 +4978,391 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     /* --- Expose for other pages --- */
     window.edaCart = { addToCart, openCart, renderCart };
   })();
+</script>
+
+<!-- ========= DYNAMIC PRODUCTS LOADER (Sheet → shop.html) ========= -->
+<script>
+(function() {
+  /* GAS Web App URL — staff.html の設定と同じ URL を入れる。
+     優先順位: window.PUBLIC_GAS_URL > localStorage('eda-staff-gas-url') > meta tag */
+  function getGasUrl() {
+    if (window.PUBLIC_GAS_URL) return window.PUBLIC_GAS_URL;
+    var stored = localStorage.getItem('eda-staff-gas-url');
+    if (stored) return stored;
+    var meta = document.querySelector('meta[name="gas-url"]');
+    return meta ? meta.getAttribute('content') : '';
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function escAttr(s) { return String(s == null ? '' : s).replace(/"/g, '&quot;'); }
+
+  /* ---- Lightbox state (exposed via window for inline onclick) ---- */
+  var galleryImages = [];
+  var galleryIndex = 0;
+
+  window.dynGalleryOpen = function(images, startIdx) {
+    if (!images || !images.length) return;
+    galleryImages = images.slice();
+    galleryIndex = Math.max(0, Math.min(startIdx || 0, galleryImages.length - 1));
+    document.getElementById('dynGallery').classList.add('open');
+    dynGalleryRender();
+    document.body.style.overflow = 'hidden';
+  };
+  window.dynGalleryClose = function() {
+    document.getElementById('dynGallery').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  window.dynGalleryStep = function(delta) {
+    if (!galleryImages.length) return;
+    galleryIndex = (galleryIndex + delta + galleryImages.length) % galleryImages.length;
+    dynGalleryRender();
+  };
+  window.dynGalleryGoto = function(idx) {
+    galleryIndex = idx;
+    dynGalleryRender();
+  };
+
+  function dynGalleryRender() {
+    var img = document.getElementById('dynGalleryImg');
+    var thumbs = document.getElementById('dynGalleryThumbs');
+    img.src = galleryImages[galleryIndex];
+    thumbs.innerHTML = galleryImages.map(function(url, i) {
+      return '<img src="' + escAttr(url) + '" class="' + (i === galleryIndex ? 'active' : '') + '" onclick="dynGalleryGoto(' + i + ')" alt="">';
+    }).join('');
+    var prev = document.querySelector('.dyn-gallery-nav.prev');
+    var next = document.querySelector('.dyn-gallery-nav.next');
+    var multi = galleryImages.length > 1;
+    if (prev) prev.style.display = multi ? '' : 'none';
+    if (next) next.style.display = multi ? '' : 'none';
+  }
+
+  /* keyboard nav */
+  document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('dynGallery').classList.contains('open')) return;
+    if (e.key === 'Escape') dynGalleryClose();
+    else if (e.key === 'ArrowLeft') dynGalleryStep(-1);
+    else if (e.key === 'ArrowRight') dynGalleryStep(1);
+  });
+
+  /* touch swipe */
+  (function() {
+    var startX = null;
+    var gallery = document.getElementById('dynGallery');
+    if (!gallery) return;
+    gallery.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    gallery.addEventListener('touchend', function(e) {
+      if (startX == null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) dynGalleryStep(dx > 0 ? -1 : 1);
+      startX = null;
+    });
+  })();
+
+  /* ---- Render product cards ---- */
+  function renderDynProducts(products) {
+    var section = document.getElementById('dynProducts');
+    var grid = document.getElementById('dynProductsGrid');
+    if (!products || !products.length) {
+      section.hidden = true;
+      return;
+    }
+    section.hidden = false;
+
+    grid.innerHTML = products.map(function(p, i) {
+      var imgs = Array.isArray(p.images) ? p.images : [];
+      var first = imgs[0] || '';
+      var imgStyle = first ? 'background-image:url(\'' + escAttr(first) + '\')' : '';
+      var placeholder = first ? '' : '<div class="dyn-card-img-placeholder">📷</div>';
+      var imgCount = imgs.length > 1 ? '<span class="dyn-card-img-count">📷 ' + imgs.length + '</span>' : '';
+
+      return ''
+        + '<div class="dyn-card">'
+        +   '<div class="dyn-card-img" style="' + imgStyle + '" onclick="window.__dynOpen(' + i + ')">'
+        +     placeholder + imgCount
+        +   '</div>'
+        +   '<div class="dyn-card-body">'
+        +     '<div class="dyn-card-cat">' + escHtml(p.category || '') + (p.variant ? ' · ' + escHtml(p.variant) : '') + '</div>'
+        +     '<div class="dyn-card-name">' + escHtml(p.name || '') + '</div>'
+        +     (p.description
+              ? '<div class="dyn-card-desc">' + escHtml(p.description) + '</div>'
+              : '<div class="dyn-card-desc"></div>')
+        +     '<div class="dyn-card-foot">'
+        +       '<span class="dyn-card-price">¥' + Number(p.price || 0).toLocaleString() + '</span>'
+        +       '<button class="dyn-card-add" onclick="window.__dynAdd(' + i + ', this)">カートに追加</button>'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+    }).join('');
+
+    /* attach handlers via window to keep them simple inline-callable */
+    window.__dynOpen = function(idx) {
+      var p = products[idx];
+      if (p && p.images && p.images.length) dynGalleryOpen(p.images, 0);
+    };
+    window.__dynAdd = function(idx, btn) {
+      var p = products[idx];
+      if (!p) return;
+      if (window.edaCart && typeof window.edaCart.addToCart === 'function') {
+        window.edaCart.addToCart(p.variantId, p.price, p.name, p.variant || '', (p.images || [])[0] || '');
+      }
+      btn.classList.add('added');
+      var orig = btn.textContent;
+      btn.textContent = '追加しました ✓';
+      setTimeout(function() { btn.classList.remove('added'); btn.textContent = orig; }, 1200);
+    };
+
+    /* re-observe new reveal targets */
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('#dynProducts .reveal').forEach(function(el) { io.observe(el); });
+    }
+  }
+
+  /* ---- Fetch from GAS ---- */
+  var GAS_URL = getGasUrl();
+  if (!GAS_URL) {
+    /* GAS未設定の場合、新着セクションを表示しない（静的な既存商品のみで動作） */
+    return;
+  }
+
+  fetch(GAS_URL + '?action=public_products')
+    .then(function(r) { return r.json(); })
+    .then(function(data) { renderDynProducts(data.products || []); })
+    .catch(function(e) {
+      console.warn('Failed to load dynamic products:', e);
+      var section = document.getElementById('dynProducts');
+      if (section) section.hidden = true;
+    });
+})();
+</script>
+
+<!-- ============ COUPON POP (右下フローティング) ============ -->
+<style>
+.coupon-pop {
+  position: fixed;
+  bottom: 88px;
+  right: 16px;
+  z-index: 95;
+  width: min(320px, calc(100vw - 32px));
+  background: linear-gradient(135deg, #0F3D2E 0%, #143D2B 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 24px rgba(15, 61, 46, 0.28), 0 2px 8px rgba(0,0,0,0.08);
+  border: 2px solid #D4A93B;
+  transform: translateY(150%);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+  cursor: pointer;
+}
+.coupon-pop.show { transform: translateY(0); opacity: 1; }
+.coupon-pop.minimized {
+  width: auto;
+  padding: 10px 14px;
+}
+.coupon-pop.minimized .coupon-pop-body,
+.coupon-pop.minimized .coupon-pop-cta { display: none; }
+.coupon-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.coupon-pop.minimized .coupon-pop-head { margin: 0; }
+.coupon-pop-eyebrow {
+  font-family: 'Bebas Neue', 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #D4A93B;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.coupon-pop-eyebrow .pulse-dot {
+  width: 6px; height: 6px;
+  background: #D4A93B;
+  border-radius: 50%;
+  animation: cpop-pulse 1.6s ease-in-out infinite;
+}
+@keyframes cpop-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.4); }
+}
+.coupon-pop-close {
+  width: 22px; height: 22px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 0;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.coupon-pop-body { margin-bottom: 10px; }
+.coupon-pop-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  line-height: 1.4;
+}
+.coupon-pop-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: #D4A93B;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.coupon-pop-meta {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.coupon-pop-cta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.coupon-pop-code {
+  flex: 1;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.12);
+  padding: 8px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  border: 1px dashed rgba(212, 169, 59, 0.4);
+}
+.coupon-pop-copy {
+  background: #D4A93B;
+  color: #0A2D21;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.coupon-pop-copy:active { transform: scale(0.96); }
+.coupon-pop-copy.copied { background: #06C755; color: #fff; }
+.coupon-pop-toggle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  color: #D4A93B;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 640px) {
+  .coupon-pop { bottom: 80px; right: 12px; }
+}
+</style>
+
+<!-- 右下クーポンポップ -->
+<div class="coupon-pop" id="couponPop" onclick="toggleCouponPop(event)">
+  <div class="coupon-pop-head">
+    <div class="coupon-pop-eyebrow"><span class="pulse-dot"></span><span id="cpopEyebrow">YOUR COUPON</span></div>
+    <button class="coupon-pop-close" onclick="event.stopPropagation();dismissCouponPop()" aria-label="閉じる">×</button>
+  </div>
+  <div class="coupon-pop-body">
+    <div class="coupon-pop-title" id="cpopTitle">初回購入20%OFFクーポン</div>
+    <div class="coupon-pop-value" id="cpopValue">-20%</div>
+    <div class="coupon-pop-meta" id="cpopMeta">14日以内のご注文で適用</div>
+  </div>
+  <div class="coupon-pop-cta">
+    <span class="coupon-pop-code" id="cpopCode">WELCOME20</span>
+    <button class="coupon-pop-copy" id="cpopCopy" onclick="event.stopPropagation();copyPopCoupon()">COPY</button>
+  </div>
+</div>
+
+<script>
+/* ===== クーポンPOP ロジック ===== */
+(function couponPopInit() {
+  // ローカル保有クーポン取得（mypage連携 / localStorage）
+  function getActiveCoupon() {
+    // localStorage に保存されたクーポンリスト（mypageから同期 / GAS連携）
+    try {
+      var stored = JSON.parse(localStorage.getItem('eda-active-coupons') || '[]');
+      var active = stored.find(function(c) { return c.status === 'active' || c.status === 'expiring'; });
+      if (active) return active;
+    } catch (e) {}
+
+    // ログイン情報なし → 初回訪問者向けデフォルト
+    var visited = localStorage.getItem('eda-visited');
+    if (!visited) {
+      // 初回訪問者: WELCOME20 をPOPで提示
+      return {
+        code: 'WELCOME20',
+        value: '-20%',
+        title: '初回購入20%OFFクーポン',
+        meta: '14日以内のご注文で適用 / LINE友だち限定'
+      };
+    }
+    return null;
+  }
+
+  // 表示
+  var pop = document.getElementById('couponPop');
+  var dismissedAt = parseInt(localStorage.getItem('eda-coupon-pop-dismissed') || '0');
+  var hoursSince = (Date.now() - dismissedAt) / 3600000;
+
+  if (hoursSince < 24) return; // 24時間以内に閉じられたら表示しない
+
+  var coupon = getActiveCoupon();
+  if (!coupon) return;
+
+  // POPに反映
+  document.getElementById('cpopTitle').textContent = coupon.title;
+  document.getElementById('cpopValue').textContent = coupon.value;
+  document.getElementById('cpopMeta').textContent = coupon.meta;
+  document.getElementById('cpopCode').textContent = coupon.code;
+
+  // 訪問記録
+  localStorage.setItem('eda-visited', '1');
+
+  // 3秒後に表示
+  setTimeout(function() { pop.classList.add('show'); }, 2500);
+})();
+
+function toggleCouponPop(e) {
+  e.stopPropagation();
+  document.getElementById('couponPop').classList.toggle('minimized');
+}
+
+function dismissCouponPop() {
+  document.getElementById('couponPop').classList.remove('show');
+  localStorage.setItem('eda-coupon-pop-dismissed', String(Date.now()));
+}
+
+function copyPopCoupon() {
+  var code = document.getElementById('cpopCode').textContent;
+  var btn = document.getElementById('cpopCopy');
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(function() {
+      btn.textContent = '✓ COPIED';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 1500);
+    });
+  }
+}
 </script>
 
 </body>
