@@ -512,6 +512,321 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   box-shadow: 0 4px 16px rgba(6, 199, 85, 0.25);
 }
 
+/* ================ LINE TRACKING CARD (PRIMARY) ================ */
+.line-track-card {
+  background: white;
+  border-radius: 16px;
+  padding: 36px 28px 32px;
+  margin-bottom: 24px;
+  border: 2px solid #06C755;
+  box-shadow: 0 4px 24px rgba(6, 199, 85, 0.12), 0 2px 8px rgba(15, 61, 46, 0.04);
+  text-align: center;
+  position: relative;
+  animation: fadeInUp 0.6s var(--ease-out-expo) 0.65s both;
+}
+.line-track-badge {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #06C755;
+  color: white;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: var(--tracking-widest);
+  padding: 5px 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(6, 199, 85, 0.3);
+}
+.line-track-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E8FAF0, #D0F5E0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto 16px;
+}
+.line-track-title {
+  font-family: var(--font-jp-serif);
+  font-size: 19px;
+  color: var(--color-forest);
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.line-track-desc {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  margin: 0 0 24px;
+  line-height: 1.7;
+}
+.line-track-benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+.line-track-benefit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-family: var(--font-jp);
+  color: var(--color-ink);
+  line-height: 1.4;
+}
+.ltb-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: #F0FBF5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.line-track-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px;
+  background: #06C755;
+  color: white;
+  font-family: var(--font-jp);
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.5, 0, 0, 1);
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(6, 199, 85, 0.3);
+}
+.line-track-btn:hover {
+  background: #05B04C;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(6, 199, 85, 0.35);
+}
+.line-track-copy {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed rgba(6, 199, 85, 0.3);
+}
+.line-track-copy-label {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  margin: 0 0 10px;
+}
+.line-track-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-paper);
+  border-radius: 8px;
+  padding: 10px 16px;
+}
+.line-track-copy-num {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  color: var(--color-forest);
+}
+.line-track-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: var(--color-forest);
+  color: white;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.line-track-copy-btn:hover {
+  background: var(--color-forest-deep);
+}
+.line-track-copy-btn.copied {
+  background: #06C755;
+}
+.timeline-line-note {
+  margin: 20px 0 0;
+  font-size: 12px;
+  color: #06C755;
+  font-weight: 500;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.timeline-line-note::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #06C755;
+  animation: notePulse 2s ease-in-out infinite;
+}
+@keyframes notePulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* ================ SURVEY CARD ================ */
+.survey-card {
+  background: white;
+  border-radius: 12px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--color-bone);
+  box-shadow: 0 2px 12px rgba(15, 61, 46, 0.04);
+  animation: fadeInUp 0.6s var(--ease-out-expo) 0.85s both;
+}
+.survey-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.survey-title {
+  font-family: var(--font-jp-serif);
+  font-size: 16px;
+  color: var(--color-forest);
+  margin: 0;
+}
+.survey-badge {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-ink-muted);
+  background: var(--color-paper);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+.survey-q {
+  margin-bottom: 24px;
+}
+.survey-q:last-of-type {
+  margin-bottom: 28px;
+}
+.survey-label {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0 0 10px;
+  display: block;
+}
+.survey-toggle {
+  display: flex;
+  gap: 8px;
+}
+.survey-toggle-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 8px;
+  background: white;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.survey-toggle-btn:hover {
+  border-color: var(--color-gold);
+}
+.survey-toggle-btn.selected {
+  background: var(--color-forest);
+  color: white;
+  border-color: var(--color-forest);
+}
+.survey-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.survey-tag {
+  padding: 9px 16px;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 20px;
+  background: white;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.survey-tag:hover {
+  border-color: var(--color-gold);
+}
+.survey-tag.selected {
+  background: var(--color-forest);
+  color: white;
+  border-color: var(--color-forest);
+}
+.survey-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-forest);
+  color: white;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.survey-submit:hover {
+  background: var(--color-forest-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 61, 46, 0.15);
+}
+.survey-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+.survey-done {
+  text-align: center;
+  padding: 24px 16px;
+}
+.survey-done-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #E8FAF0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  color: #06C755;
+}
+.survey-done-text {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-forest);
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.survey-done-sub {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
 /* Loading */
 .page-loading {
   display: flex;
@@ -593,6 +908,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .timeline-step-label { font-size: 11px; }
   .timeline-step-sub { font-size: 10px; }
   .timeline-line { top: 15px; left: calc(50% + 15px); right: calc(-50% + 15px); }
+  .survey-card { padding: 20px 16px; }
+  .survey-tag { padding: 8px 12px; font-size: 12px; }
+  .line-track-card { padding: 28px 16px 24px; }
+  .line-track-icon { width: 52px; height: 52px; }
+  .line-track-title { font-size: 17px; }
+  .line-track-benefits { grid-template-columns: 1fr; gap: 10px; }
+  .line-track-btn { font-size: 15px; padding: 16px; }
+  .line-track-copy-num { font-size: 17px; }
   .line-cta-card { padding: 24px 16px; }
   .site-footer { padding: 40px 0 20px; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
@@ -697,6 +1020,63 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </div>
       </div>
 
+      <!-- ★ LINE TRACKING — PRIMARY ACTION ★ -->
+      <div class="line-track-card">
+        <div class="line-track-badge">STEP 2</div>
+        <div class="line-track-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color:#06C755">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+          </svg>
+        </div>
+        <h3 class="line-track-title">配送状況はLINEでお届けします</h3>
+        <p class="line-track-desc">公式LINEを追加すると、この注文の配送状況をリアルタイムで通知します。</p>
+
+        <div class="line-track-benefits">
+          <div class="line-track-benefit">
+            <span class="ltb-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06C755" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 7h8M8 11h5"/></svg>
+            </span>
+            <span>発送したらLINEで即通知</span>
+          </div>
+          <div class="line-track-benefit">
+            <span class="ltb-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06C755" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </span>
+            <span>追跡番号もLINEに届く</span>
+          </div>
+          <div class="line-track-benefit">
+            <span class="ltb-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06C755" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+            </span>
+            <span>届いたらお知らせ</span>
+          </div>
+          <div class="line-track-benefit">
+            <span class="ltb-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06C755" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
+            </span>
+            <span>初回10%OFFクーポンを発行</span>
+          </div>
+        </div>
+
+        <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="line-track-btn" id="lineTrackBtn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+          </svg>
+          LINEで配送を追跡する
+        </a>
+
+        <div class="line-track-copy">
+          <p class="line-track-copy-label">追加後、以下の注文番号を送信してください</p>
+          <div class="line-track-copy-row">
+            <span class="line-track-copy-num" id="lineCopyNum">#----</span>
+            <button class="line-track-copy-btn" id="copyOrderBtn" onclick="copyOrderNumber()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              コピー
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- Delivery Timeline -->
       <div class="timeline-card">
         <h3 class="timeline-title">DELIVERY STATUS</h3>
@@ -725,43 +1105,79 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <p class="timeline-step-sub" id="timelineDelivery">2-4日</p>
           </div>
         </div>
+        <p class="timeline-line-note">各ステップをLINEで通知します</p>
       </div>
 
-      <!-- Actions -->
+      <!-- ★ SURVEY (optional) ★ -->
+      <div class="survey-card" id="surveyCard">
+        <div class="survey-header">
+          <h3 class="survey-title">教えてください</h3>
+          <span class="survey-badge">30秒・任意</span>
+        </div>
+
+        <div id="surveyForm">
+          <!-- Q1: オーガニック -->
+          <div class="survey-q">
+            <label class="survey-label">無添加・オーガニックに気を使っていますか？</label>
+            <div class="survey-toggle" data-name="organic">
+              <button type="button" class="survey-toggle-btn" data-value="YES">はい</button>
+              <button type="button" class="survey-toggle-btn" data-value="NO">いいえ</button>
+            </div>
+          </div>
+
+          <!-- Q2: きっかけ -->
+          <div class="survey-q">
+            <label class="survey-label">江田畜産を知ったきっかけ</label>
+            <div class="survey-tags" data-name="source" data-multi="false">
+              <button type="button" class="survey-tag" data-value="Instagram">Instagram</button>
+              <button type="button" class="survey-tag" data-value="友人・知人">友人・知人</button>
+              <button type="button" class="survey-tag" data-value="Google検索">Google検索</button>
+              <button type="button" class="survey-tag" data-value="テレビ・メディア">テレビ・メディア</button>
+              <button type="button" class="survey-tag" data-value="ふるさと納税">ふるさと納税</button>
+              <button type="button" class="survey-tag" data-value="その他">その他</button>
+            </div>
+          </div>
+
+          <!-- Q3: よく使うお肉 -->
+          <div class="survey-q">
+            <label class="survey-label">よく使うお肉（複数選択OK）</label>
+            <div class="survey-tags" data-name="meats" data-multi="true">
+              <button type="button" class="survey-tag" data-value="とりむね">とりむね</button>
+              <button type="button" class="survey-tag" data-value="鶏もも">鶏もも</button>
+              <button type="button" class="survey-tag" data-value="手羽先">手羽先</button>
+              <button type="button" class="survey-tag" data-value="牛もも">牛もも</button>
+              <button type="button" class="survey-tag" data-value="牛サーロイン">牛サーロイン</button>
+            </div>
+          </div>
+
+          <button type="button" class="survey-submit" id="surveySubmit" onclick="submitSurvey()">送信する</button>
+        </div>
+
+        <!-- Success state (hidden) -->
+        <div id="surveyDone" style="display:none;">
+          <div class="survey-done">
+            <div class="survey-done-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
+            </div>
+            <p class="survey-done-text">ありがとうございます！</p>
+            <p class="survey-done-sub">今後の商品開発の参考にさせていただきます</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions (secondary) -->
       <div class="complete-actions">
-        <a href="mypage.html" class="btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/>
-          </svg>
-          MY PAGE
-        </a>
         <a href="shop.html" class="btn-secondary">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
           BACK TO SHOP
         </a>
-      </div>
-
-      <!-- LINE CTA -->
-      <div class="line-cta-card">
-        <div class="line-cta-head">
-          <div class="line-icon-circle">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-            </svg>
-          </div>
-          <h3 class="line-cta-title">配送通知をLINEで受け取る</h3>
-        </div>
-        <p class="line-cta-desc">
-          LINE友だち追加で、発送通知や配達完了をリアルタイムで受け取れます。<br>
-          お得なクーポンや限定情報もお届けします。
-        </p>
-        <a href="https://lin.ee/XXXXXXXXX" target="_blank" rel="noopener" class="line-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+        <a href="mypage.html" class="btn-secondary" style="font-size:12px;padding:12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/>
           </svg>
-          友だち追加
+          MY PAGE
         </a>
       </div>
     </div>
@@ -891,7 +1307,12 @@ if (header) {
 /* ---- Render Order ---- */
 function renderOrder(order) {
   /* Order number */
-  document.getElementById('orderNumber').textContent = '#' + (order.order_number || order.id || '----');
+  const orderNum = order.order_number || order.id || '----';
+  document.getElementById('orderNumber').textContent = '#' + orderNum;
+
+  /* LINE copy element */
+  const lineCopy = document.getElementById('lineCopyNum');
+  if (lineCopy) lineCopy.textContent = '#' + orderNum;
 
   /* Timeline date */
   if (order.date) {
@@ -945,6 +1366,117 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/* ---- Copy Order Number ---- */
+function copyOrderNumber() {
+  const numEl = document.getElementById('lineCopyNum');
+  const btn = document.getElementById('copyOrderBtn');
+  if (!numEl) return;
+
+  const text = numEl.textContent.trim();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showCopied(btn);
+    }).catch(function() {
+      fallbackCopy(text, btn);
+    });
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showCopied(btn); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+/* ---- Survey ---- */
+(function initSurvey() {
+  /* Toggle buttons (YES/NO) */
+  document.querySelectorAll('.survey-toggle').forEach(function(group) {
+    group.querySelectorAll('.survey-toggle-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        group.querySelectorAll('.survey-toggle-btn').forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+      });
+    });
+  });
+
+  /* Tag buttons (single or multi select) */
+  document.querySelectorAll('.survey-tags').forEach(function(group) {
+    var isMulti = group.getAttribute('data-multi') === 'true';
+    group.querySelectorAll('.survey-tag').forEach(function(tag) {
+      tag.addEventListener('click', function() {
+        if (isMulti) {
+          tag.classList.toggle('selected');
+        } else {
+          group.querySelectorAll('.survey-tag').forEach(function(t) { t.classList.remove('selected'); });
+          tag.classList.add('selected');
+        }
+      });
+    });
+  });
+})();
+
+function submitSurvey() {
+  var btn = document.getElementById('surveySubmit');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+
+  /* Collect answers */
+  var organic = '';
+  var organicSel = document.querySelector('.survey-toggle[data-name="organic"] .selected');
+  if (organicSel) organic = organicSel.getAttribute('data-value');
+
+  var source = '';
+  var sourceSel = document.querySelector('.survey-tags[data-name="source"] .selected');
+  if (sourceSel) source = sourceSel.getAttribute('data-value');
+
+  var meats = [];
+  document.querySelectorAll('.survey-tags[data-name="meats"] .selected').forEach(function(t) {
+    meats.push(t.getAttribute('data-value'));
+  });
+
+  /* Get session_id from URL */
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get('session_id') || '';
+
+  /* POST to GAS */
+  fetch(GAS_API_URL + '?action=submit_survey', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      session_id: sessionId,
+      organic: organic,
+      source: source,
+      meats: meats.join(', ')
+    })
+  }).then(function() {
+    document.getElementById('surveyForm').style.display = 'none';
+    document.getElementById('surveyDone').style.display = '';
+  }).catch(function() {
+    /* 送信失敗してもUI上は成功表示（データ損失は許容） */
+    document.getElementById('surveyForm').style.display = 'none';
+    document.getElementById('surveyDone').style.display = '';
+  });
+}
+
+function showCopied(btn) {
+  if (!btn) return;
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> コピー済';
+  btn.classList.add('copied');
+  setTimeout(function() {
+    btn.innerHTML = orig;
+    btn.classList.remove('copied');
+  }, 2000);
 }
 </script>
 </body>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC決済テスト | EDA-LIVESTOCK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #0F3D2E;
+  --forest-deep: #0A2D21;
+  --gold: #D4A93B;
+  --cream: #FAF7F0;
+  --paper: #F5EFE3;
+  --bone: #EFE8D7;
+  --ink: #1A1A1A;
+  --muted: #5C5C5C;
+  --red: #C8102E;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--cream);
+  min-height: 100vh;
+}
+
+/* TEST BANNER */
+.test-banner {
+  background: repeating-linear-gradient(
+    45deg,
+    #fff3cd,
+    #fff3cd 10px,
+    #ffe69c 10px,
+    #ffe69c 20px
+  );
+  text-align: center;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #664d03;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #ffcd39;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.test-banner span { background: #fff3cd; padding: 2px 8px; border-radius: 4px; }
+
+/* HEADER */
+.header {
+  background: var(--forest);
+  padding: 20px 0;
+  text-align: center;
+}
+.header h1 {
+  color: white;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+.header p { color: rgba(255,255,255,0.6); font-size: 12px; margin: 4px 0 0; }
+
+/* CONTAINER */
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+/* SETUP CARD */
+.setup-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 2px solid var(--gold);
+  box-shadow: 0 2px 12px rgba(15, 61, 46, 0.04);
+}
+.setup-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 16px;
+  color: var(--forest);
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+.setup-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+.setup-field {
+  margin-bottom: 12px;
+}
+.setup-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.setup-input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--bone);
+  border-radius: 8px;
+  font-family: 'Inter', monospace;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--paper);
+  transition: border-color 0.2s;
+}
+.setup-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: white;
+}
+.setup-save {
+  width: 100%;
+  padding: 12px;
+  background: var(--forest);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.setup-save:hover { background: var(--forest-deep); }
+.setup-saved {
+  text-align: center;
+  font-size: 13px;
+  color: #06C755;
+  font-weight: 600;
+  margin-top: 8px;
+  display: none;
+}
+
+/* STATUS */
+.status-bar {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-bar.ok { background: #d4edda; color: #155724; }
+.status-bar.warn { background: #fff3cd; color: #664d03; }
+.status-bar.error { background: #f8d7da; color: #721c24; }
+
+/* PRODUCT CARD */
+.product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--bone);
+  box-shadow: 0 2px 12px rgba(15, 61, 46, 0.04);
+  margin-bottom: 20px;
+}
+.product-img {
+  height: 200px;
+  background: linear-gradient(135deg, var(--forest) 0%, var(--forest-deep) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 64px;
+}
+.product-body { padding: 24px; }
+.product-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 18px;
+  color: var(--forest);
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+.product-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+.product-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--forest);
+  letter-spacing: 0.04em;
+  margin: 0 0 20px;
+}
+.product-price small {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.buy-btn {
+  width: 100%;
+  padding: 18px;
+  background: var(--forest);
+  color: white;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.buy-btn:hover {
+  background: var(--forest-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(15, 61, 46, 0.2);
+}
+.buy-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+.buy-btn.loading {
+  background: var(--muted);
+}
+
+/* TEST INFO */
+.test-info {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--bone);
+}
+.test-info h3 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--forest);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.test-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.test-table th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--paper);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.test-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--bone);
+}
+.test-table code {
+  background: var(--paper);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 13px;
+  color: var(--forest);
+  user-select: all;
+}
+.test-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 16px 0 0;
+  line-height: 1.6;
+}
+
+/* STEPS */
+.steps {
+  margin-bottom: 20px;
+}
+.steps h3 {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--forest);
+  margin: 0 0 12px;
+}
+.step {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bone);
+  font-size: 13px;
+}
+.step:last-child { border-bottom: none; }
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--forest);
+  color: var(--gold);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-text { color: var(--ink); }
+.step-text strong { color: var(--forest); }
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 11px;
+  color: var(--muted);
+}
+</style>
+</head>
+<body>
+
+<!-- TEST MODE BANNER -->
+<div class="test-banner">
+  <span>&#x26A0;&#xFE0F; TEST MODE &mdash; 実際の課金は発生しません</span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>EDA-LIVESTOCK EC CHECKOUT TEST</h1>
+  <p>決済フロー動作確認ページ</p>
+</div>
+
+<div class="container">
+
+  <!-- SETUP: GAS URL -->
+  <div class="setup-card" id="setupCard">
+    <h3 class="setup-title">&#x1F527; 初期設定</h3>
+    <p class="setup-desc">GAS Web App の URL を入力してください。<br>Apps Script → デプロイ → ウェブアプリ で取得した URL です。</p>
+
+    <div class="setup-field">
+      <label class="setup-label">GAS Web App URL</label>
+      <input type="url" class="setup-input" id="gasUrlInput"
+             placeholder="https://script.google.com/macros/s/XXXXX/exec"
+             value="">
+    </div>
+
+    <button class="setup-save" onclick="saveConfig()">保存して接続テスト</button>
+    <p class="setup-saved" id="setupSaved">&#x2705; 接続OK &mdash; 保存しました</p>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar warn" id="statusBar">
+    &#x26A0;&#xFE0F; GAS URL が設定されていません。上のフォームから設定してください。
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="steps">
+    <h3>テストの流れ</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">下の<strong>「テスト購入する」</strong>を押す</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text"><strong>Stripe テスト決済</strong>ページへリダイレクト（テストカード番号を使う）</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">決済完了 → <strong>注文完了ページ</strong>へ戻る（LINE追加カード + アンケート表示）</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text"><strong>スプレッドシート</strong>に注文が自動記録される</div>
+    </div>
+  </div>
+
+  <!-- PRODUCT -->
+  <div class="product-card">
+    <div class="product-img">&#x1F404;</div>
+    <div class="product-body">
+      <h2 class="product-name">宮崎和牛 A5 サーロインステーキ</h2>
+      <p class="product-desc">テスト用商品です。実際の課金は発生しません。<br>Stripe テストモードで動作確認用。</p>
+      <p class="product-price">&yen;1 <small>（税込・テスト価格）</small></p>
+      <button class="buy-btn" id="buyBtn" onclick="testCheckout()" disabled>
+        テスト購入する（&yen;1）
+      </button>
+    </div>
+  </div>
+
+  <!-- TEST CARD INFO -->
+  <div class="test-info">
+    <h3>&#x1F4B3; テスト用カード番号</h3>
+    <table class="test-table">
+      <tr><th>カード番号</th><th>有効期限</th><th>CVC</th><th>結果</th></tr>
+      <tr>
+        <td><code>4242 4242 4242 4242</code></td>
+        <td><code>12/34</code></td>
+        <td><code>123</code></td>
+        <td>&#x2705; 成功</td>
+      </tr>
+      <tr>
+        <td><code>4000 0000 0000 9995</code></td>
+        <td><code>12/34</code></td>
+        <td><code>123</code></td>
+        <td>&#x274C; 残高不足</td>
+      </tr>
+      <tr>
+        <td><code>4000 0000 0000 3220</code></td>
+        <td><code>12/34</code></td>
+        <td><code>123</code></td>
+        <td>&#x1F504; 3Dセキュア</td>
+      </tr>
+    </table>
+    <p class="test-note">
+      &#x2139;&#xFE0F; メールアドレス・住所は何でもOK（例: test@example.com）<br>
+      Apple Pay テスト: Safari でStripeページを開くとApple Payボタンが表示されます（Dashboard側で有効化後）
+    </p>
+  </div>
+
+</div>
+
+<div class="footer">
+  EDA-LIVESTOCK EC Test Page &mdash; Stripe Test Mode Only
+</div>
+
+<script>
+/* ---- Config ---- */
+var GAS_URL = localStorage.getItem('eda-test-gas-url') || '';
+
+function init() {
+  var input = document.getElementById('gasUrlInput');
+  var status = document.getElementById('statusBar');
+  var btn = document.getElementById('buyBtn');
+
+  if (GAS_URL) {
+    input.value = GAS_URL;
+    status.className = 'status-bar ok';
+    status.innerHTML = '&#x2705; GAS接続済み &mdash; テスト購入できます';
+    btn.disabled = false;
+    document.getElementById('setupCard').style.borderColor = '#d4edda';
+  }
+}
+
+function saveConfig() {
+  var url = document.getElementById('gasUrlInput').value.trim();
+  if (!url || !url.startsWith('https://script.google.com/')) {
+    alert('正しい GAS Web App URL を入力してください。\nhttps://script.google.com/macros/s/XXXXX/exec の形式です。');
+    return;
+  }
+
+  GAS_URL = url;
+  localStorage.setItem('eda-test-gas-url', url);
+
+  /* Connection test */
+  var status = document.getElementById('statusBar');
+  status.className = 'status-bar warn';
+  status.innerHTML = '&#x23F3; 接続テスト中...';
+
+  fetch(url + '?action=dashboard', { mode: 'no-cors' })
+    .then(function() {
+      status.className = 'status-bar ok';
+      status.innerHTML = '&#x2705; GAS接続済み &mdash; テスト購入できます';
+      document.getElementById('buyBtn').disabled = false;
+      document.getElementById('setupSaved').style.display = '';
+      document.getElementById('setupCard').style.borderColor = '#d4edda';
+    })
+    .catch(function(err) {
+      status.className = 'status-bar ok';
+      status.innerHTML = '&#x2705; URL保存済み &mdash; テスト購入できます（CORS制限により接続テスト省略）';
+      document.getElementById('buyBtn').disabled = false;
+      document.getElementById('setupSaved').style.display = '';
+      document.getElementById('setupCard').style.borderColor = '#d4edda';
+    });
+}
+
+/* ---- Checkout ---- */
+async function testCheckout() {
+  if (!GAS_URL) {
+    alert('先にGAS URLを設定してください');
+    return;
+  }
+
+  var btn = document.getElementById('buyBtn');
+  btn.disabled = true;
+  btn.textContent = 'Stripe に接続中...';
+  btn.classList.add('loading');
+
+  try {
+    var res = await fetch(GAS_URL + '?action=create_checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        items: [{
+          title: '宮崎和牛 A5 サーロインステーキ（テスト）',
+          variant: 'テスト商品',
+          price: 1,
+          qty: 1,
+          variantId: 'test-001'
+        }]
+      })
+    });
+
+    var result = await res.json();
+
+    if (result.url) {
+      window.location.href = result.url;
+    } else {
+      throw new Error(result.error || 'Checkout Session 作成失敗');
+    }
+  } catch (err) {
+    var status = document.getElementById('statusBar');
+    status.className = 'status-bar error';
+    status.innerHTML = '&#x274C; エラー: ' + err.message;
+
+    btn.disabled = false;
+    btn.textContent = 'テスト購入する（¥1）';
+    btn.classList.remove('loading');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
