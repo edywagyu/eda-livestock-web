@@ -158,28 +158,29 @@ ul { list-style: none; padding: 0; margin: 0; }
 /* ============ STAT GRID ============ */
 .stat-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
   margin-bottom: 16px;
 }
 .stat {
   background: #fff;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 12px 10px;
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
 }
 .stat-num {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--forest);
   line-height: 1;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   font-variant-numeric: tabular-nums;
 }
 .stat-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--muted);
   font-weight: 500;
+  line-height: 1.3;
 }
 .stat-num.urgent { color: var(--red); }
 .stat-num.success { color: var(--green); }
@@ -1024,8 +1025,16 @@ ul { list-style: none; padding: 0; margin: 0; }
           <div class="stat-label">今日の注文</div>
         </div>
         <div class="stat">
+          <div class="stat-num urgent" id="todayShip">-</div>
+          <div class="stat-label">本日発送</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="tomorrowShip">-</div>
+          <div class="stat-label">明日発送</div>
+        </div>
+        <div class="stat">
           <div class="stat-num urgent" id="pendingShip">-</div>
-          <div class="stat-label">未発送</div>
+          <div class="stat-label">未発送計</div>
         </div>
         <div class="stat">
           <div class="stat-num success" id="todayRevenue">-</div>
@@ -1135,7 +1144,9 @@ ul { list-style: none; padding: 0; margin: 0; }
         <button class="filter-btn" data-filter="repeater">リピーター</button>
         <button class="filter-btn" data-filter="new">新規</button>
         <button class="filter-btn" data-filter="dormant">休眠</button>
+        <button class="filter-btn" data-filter="subscriber">定期便会員</button>
         <button class="filter-btn" data-filter="high-income">高所得</button>
+        <button class="filter-btn" data-filter="line-not-linked">LINE未連携</button>
       </div>
 
       <div id="custList"></div>
@@ -1146,7 +1157,8 @@ ul { list-style: none; padding: 0; margin: 0; }
       <div class="pills">
         <div class="pill active" data-sub="campaigns" onclick="switchSub('promo','campaigns')">キャンペーン</div>
         <div class="pill" data-sub="coupons" onclick="switchSub('promo','coupons')">クーポン</div>
-        <div class="pill" data-sub="line-blast" onclick="switchSub('promo','line-blast')">LINE配信</div>
+        <div class="pill" data-sub="flows" onclick="switchSub('promo','flows')">ステップ配信</div>
+        <div class="pill" data-sub="line-blast" onclick="switchSub('promo','line-blast')">一斉配信</div>
       </div>
 
       <!-- キャンペーン -->
@@ -1167,6 +1179,21 @@ ul { list-style: none; padding: 0; margin: 0; }
         <div id="couponList"></div>
       </div>
 
+      <!-- ステップ配信（ドリップキャンペーン） -->
+      <div class="subsection" id="sub-flows">
+        <div class="card" style="background:#FFF3CD;border-left:4px solid var(--gold);padding:14px 16px;margin-bottom:14px">
+          <div style="font-size:13px;line-height:1.7;color:#664D03">
+            <strong>🔔 ステップ配信とは</strong><br>
+            「LINE追加から7日後に20%OFFクーポンを送る」など、<strong>トリガー（きっかけ）</strong>に応じて<strong>遅延付きで自動配信</strong>する仕組みです。
+          </div>
+        </div>
+        <button class="btn-add" onclick="openForm('flow')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新しいステップ配信を作成
+        </button>
+        <div id="flowList"></div>
+      </div>
+
       <!-- LINE一斉配信 -->
       <div class="subsection" id="sub-line-blast">
         <div class="card">
@@ -1174,21 +1201,29 @@ ul { list-style: none; padding: 0; margin: 0; }
           <p style="margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.6">セグメントを選んで対象顧客にLINEメッセージを一斉送信</p>
           <div class="form-field">
             <label>配信対象</label>
-            <select id="blastSegment">
-              <option value="all">全員（LINE友だち全員）</option>
-              <option value="vip">VIP顧客のみ</option>
+            <select id="blastSegment" onchange="updateBlastCount()">
+              <option value="all">全員</option>
+              <option value="vip">VIP顧客</option>
               <option value="repeater">リピーター</option>
-              <option value="new">新規顧客（過去30日）</option>
-              <option value="dormant">休眠顧客（90日以上注文なし）</option>
+              <option value="new">新規顧客（30日以内）</option>
+              <option value="dormant">休眠顧客（90日以上）</option>
+              <option value="subscriber">定期便会員</option>
               <option value="high-income">高所得想定エリア</option>
             </select>
           </div>
+
+          <!-- リアルタイム対象人数 -->
+          <div id="blastCount" style="background:var(--paper);border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px"></div>
+
           <div class="form-field">
             <label>メッセージ</label>
             <textarea id="blastMessage" rows="5" placeholder="例: いつもありがとうございます！今週末まで全商品10%OFFキャンペーン実施中です🐂"></textarea>
           </div>
-          <button class="btn-primary" onclick="sendLineBlast()">配信する</button>
-          <p style="margin:12px 0 0;font-size:11px;color:var(--muted);text-align:center">対象人数は自動算出されます</p>
+          <button class="btn-primary" onclick="sendLineBlast()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+            LINE配信する
+          </button>
+          <p style="margin:12px 0 0;font-size:11px;color:var(--muted);text-align:center;line-height:1.6">⚠️ LINE連携済みの友だちのみに届きます<br>未連携の顧客にはメールで配信ご検討ください</p>
         </div>
       </div>
     </section>
@@ -1414,23 +1449,64 @@ const DEMO_PRODUCTS = [
   { variantId: 'CHK-TB-500',  name: '大分平飼い鶏 手羽先', variant: '500g', price: 1200, stock: 9,  temp: '冷凍' }
 ];
 const DEMO_ORDERS = [
-  { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '' },
-  { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101' },
-  { id: '#1021', customerName: '鈴木 一郎', total: 9800,  items: '宮崎和牛リブロース 300g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '' },
-  { id: '#1020', customerName: '山田 美香', total: 4800,  items: '平飼い鶏もも 2kg', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012' },
-  { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109' }
+  { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd' },
+  { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh' },
+  { id: '#1021', customerName: '鈴木 一郎', total: 9800,  items: '宮崎和牛リブロース 300g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '', lineUid: '' },
+  { id: '#1020', customerName: '山田 美香', total: 4800,  items: '平飼い鶏もも 2kg', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012', lineUid: '' },
+  { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109', lineUid: 'U9999xyzz' }
 ];
 
 const DEMO_CUSTOMERS = [
-  { id: 'C001', name: '田中 太郎', email: 'tanaka@example.com', phone: '090-1234-5678', zip: '1060032', address: '東京都港区六本木6-10', orderCount: 18, totalSpent: 412000, lastOrder: '2026-05-09', segment: 'vip', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'weekly' },
-  { id: 'C002', name: '佐藤 花子', email: 'sato@example.com', phone: '080-9876-5432', zip: '1500041', address: '東京都渋谷区神南1-1-1', orderCount: 12, totalSpent: 287000, lastOrder: '2026-05-08', segment: 'vip', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン', frequency: 'biweekly' },
-  { id: 'C003', name: '鈴木 一郎', email: 'suzuki@example.com', phone: '070-1112-2233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', orderCount: 6, totalSpent: 78000, lastOrder: '2026-05-07', segment: 'repeater', income: 'mid', lineLinked: true, surveyOrganic: 'NO', surveyMeats: '鶏もも, とりむね', frequency: 'monthly' },
-  { id: 'C004', name: '山田 美香', email: 'yamada@example.com', phone: '080-5556-6677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', orderCount: 4, totalSpent: 32000, lastOrder: '2026-05-04', segment: 'repeater', income: 'mid', lineLinked: false, surveyOrganic: 'YES', surveyMeats: '鶏もも', frequency: 'monthly' },
-  { id: 'C005', name: '中村 健', email: 'nakamura@example.com', phone: '090-3334-4455', zip: '1500041', address: '東京都渋谷区神南1-1-1', orderCount: 1, totalSpent: 11500, lastOrder: '2026-05-10', segment: 'new', income: 'high', lineLinked: true, surveyOrganic: '', surveyMeats: '', frequency: 'first' },
-  { id: 'C006', name: '高橋 美奈', email: 'takahashi@example.com', phone: '080-2223-3344', zip: '5300001', address: '大阪府大阪市北区梅田2-2', orderCount: 1, totalSpent: 9800, lastOrder: '2026-05-09', segment: 'new', income: 'mid', lineLinked: false, surveyOrganic: '', surveyMeats: '', frequency: 'first' },
-  { id: 'C007', name: '渡辺 浩', email: 'watanabe@example.com', phone: '090-4445-5566', zip: '1500041', address: '東京都品川区東品川3-1-1', orderCount: 8, totalSpent: 156000, lastOrder: '2026-01-15', segment: 'dormant', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'lapsed' },
-  { id: 'C008', name: '伊藤 桜', email: 'ito@example.com', phone: '070-6667-7788', zip: '2310023', address: '神奈川県横浜市中区山下町1', orderCount: 3, totalSpent: 24000, lastOrder: '2026-02-08', segment: 'dormant', income: 'mid', lineLinked: false, surveyOrganic: '', surveyMeats: '鶏もも, 手羽先', frequency: 'lapsed' },
-  { id: 'C009', name: '小林 太郎', email: 'kobayashi@example.com', phone: '090-8889-9900', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', orderCount: 22, totalSpent: 524000, lastOrder: '2026-05-10', segment: 'vip', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン, ヒレ', frequency: 'weekly' }
+  { id: 'C001', name: '田中 太郎', email: 'tanaka@example.com', phone: '090-1234-5678', zip: '1060032', address: '東京都港区六本木6-10', orderCount: 18, totalSpent: 412000, lastOrder: '2026-05-09', segment: 'vip', income: 'high', lineLinked: true, subPlan: 'Regular', surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'weekly' },
+  { id: 'C002', name: '佐藤 花子', email: 'sato@example.com', phone: '080-9876-5432', zip: '1500041', address: '東京都渋谷区神南1-1-1', orderCount: 12, totalSpent: 287000, lastOrder: '2026-05-08', segment: 'vip', income: 'high', lineLinked: true, subPlan: 'Natural Box', surveyOrganic: 'YES', surveyMeats: '牛サーロイン', frequency: 'biweekly' },
+  { id: 'C003', name: '鈴木 一郎', email: 'suzuki@example.com', phone: '070-1112-2233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', orderCount: 6, totalSpent: 78000, lastOrder: '2026-05-07', segment: 'repeater', income: 'mid', lineLinked: true, subPlan: 'Starter', surveyOrganic: 'NO', surveyMeats: '鶏もも, とりむね', frequency: 'monthly' },
+  { id: 'C004', name: '山田 美香', email: 'yamada@example.com', phone: '080-5556-6677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', orderCount: 4, totalSpent: 32000, lastOrder: '2026-05-04', segment: 'repeater', income: 'mid', lineLinked: false, subPlan: '', surveyOrganic: 'YES', surveyMeats: '鶏もも', frequency: 'monthly' },
+  { id: 'C005', name: '中村 健', email: 'nakamura@example.com', phone: '090-3334-4455', zip: '1500041', address: '東京都渋谷区神南1-1-1', orderCount: 1, totalSpent: 11500, lastOrder: '2026-05-10', segment: 'new', income: 'high', lineLinked: true, subPlan: '', surveyOrganic: '', surveyMeats: '', frequency: 'first' },
+  { id: 'C006', name: '高橋 美奈', email: 'takahashi@example.com', phone: '080-2223-3344', zip: '5300001', address: '大阪府大阪市北区梅田2-2', orderCount: 1, totalSpent: 9800, lastOrder: '2026-05-09', segment: 'new', income: 'mid', lineLinked: false, subPlan: '', surveyOrganic: '', surveyMeats: '', frequency: 'first' },
+  { id: 'C007', name: '渡辺 浩', email: 'watanabe@example.com', phone: '090-4445-5566', zip: '1500041', address: '東京都品川区東品川3-1-1', orderCount: 8, totalSpent: 156000, lastOrder: '2026-01-15', segment: 'dormant', income: 'high', lineLinked: true, subPlan: '', surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'lapsed' },
+  { id: 'C008', name: '伊藤 桜', email: 'ito@example.com', phone: '070-6667-7788', zip: '2310023', address: '神奈川県横浜市中区山下町1', orderCount: 3, totalSpent: 24000, lastOrder: '2026-02-08', segment: 'dormant', income: 'mid', lineLinked: false, subPlan: '', surveyOrganic: '', surveyMeats: '鶏もも, 手羽先', frequency: 'lapsed' },
+  { id: 'C009', name: '小林 太郎', email: 'kobayashi@example.com', phone: '090-8889-9900', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', orderCount: 22, totalSpent: 524000, lastOrder: '2026-05-10', segment: 'vip', income: 'high', lineLinked: true, subPlan: 'Regular', surveyOrganic: 'YES', surveyMeats: '牛サーロイン, ヒレ', frequency: 'weekly' },
+  { id: 'C010', name: '木村 結衣', email: 'kimura@example.com', phone: '090-7778-1122', zip: '1500001', address: '東京都港区赤坂1-2-3', orderCount: 9, totalSpent: 198000, lastOrder: '2026-05-08', segment: 'vip', income: 'high', lineLinked: false, subPlan: '', surveyOrganic: 'YES', surveyMeats: '牛サーロイン', frequency: 'biweekly' },
+  { id: 'C011', name: '松本 健一', email: 'matsumoto@example.com', phone: '080-3344-5566', zip: '5300001', address: '大阪府大阪市福島区5-1', orderCount: 2, totalSpent: 18000, lastOrder: '2026-04-25', segment: 'repeater', income: 'mid', lineLinked: false, subPlan: '', surveyOrganic: 'NO', surveyMeats: '鶏もも', frequency: 'monthly' }
+];
+
+const DEMO_FLOWS = [
+  {
+    id: 'FLOW001', trigger: 'line_friend_added', triggerLabel: 'LINE友だち追加', icon: '🎉', active: true, friendsCount: 1062,
+    steps: [
+      { delay: '即時', name: 'ようこそメッセージ + クーポン', message: 'ご登録ありがとうございます！初回10%OFFクーポンをプレゼント🐂', coupon: 'WELCOME10', delivered: 1062 },
+      { delay: '7日後', name: '初回購入促進・期限付き20%OFF', message: '友だち追加から1週間 — 期間限定20%OFFクーポンをプレゼント！', coupon: 'NEWBIE20', delivered: 387 },
+      { delay: '30日後', name: '食の好みアンケート', message: 'よろしければお食事の好みを教えてください', coupon: null, delivered: 142 }
+    ]
+  },
+  {
+    id: 'FLOW002', trigger: 'first_purchase', triggerLabel: '初回購入完了', icon: '🛍️', active: true, friendsCount: 234,
+    steps: [
+      { delay: '即時', name: 'お礼メッセージ', message: 'お買い上げありがとうございます！発送準備が整い次第、追跡情報をお送りします。', coupon: null, delivered: 234 },
+      { delay: '14日後', name: 'リピート促進', message: 'お味はいかがでしたか？次回ご利用時にお使いいただけるクーポンをお送りします', coupon: 'REPEAT10', delivered: 89 },
+      { delay: '30日後', name: 'レシピ提案', message: '購入された部位に合うレシピをご紹介します🍳', coupon: null, delivered: 47 }
+    ]
+  },
+  {
+    id: 'FLOW003', trigger: 'dormant_90days', triggerLabel: '90日購入なし（休眠）', icon: '💤', active: true, friendsCount: 47,
+    steps: [
+      { delay: '即時', name: '復活クーポン', message: 'お久しぶりです！特別な20%OFFクーポンをご用意しました', coupon: 'COMEBACK20', delivered: 47 },
+      { delay: '14日後', name: 'フォローアップ', message: 'いかがお過ごしですか？お困りごとがあればお聞かせください', coupon: null, delivered: 18 }
+    ]
+  },
+  {
+    id: 'FLOW004', trigger: 'birthday_month', triggerLabel: '誕生日月', icon: '🎂', active: false, friendsCount: 0,
+    steps: [
+      { delay: '月初', name: '誕生日特典', message: 'お誕生日おめでとうございます🎉 15%OFFクーポンをプレゼント', coupon: 'BIRTHDAY15', delivered: 0 }
+    ]
+  },
+  {
+    id: 'FLOW005', trigger: 'subscription_started', triggerLabel: '定期便加入', icon: '📦', active: true, friendsCount: 88,
+    steps: [
+      { delay: '即時', name: '加入御礼 + 配送スケジュール', message: '定期便にご加入ありがとうございます！毎月1日にお届けします', coupon: null, delivered: 88 },
+      { delay: '7日前（毎月）', name: '次回配送リマインド', message: '来月の定期便を○日にお届け予定です。スキップ・部位変更はマイページから', coupon: null, delivered: 67 }
+    ]
+  }
 ];
 
 const DEMO_SETS = [
@@ -1493,7 +1569,7 @@ function switchTab(tab) {
   if (tab === 'orders')  loadOrders();
   if (tab === 'ship' && !selectedOrder) renderShipEmpty();
   if (tab === 'cust')    loadCustomers();
-  if (tab === 'promo')   { loadCampaigns(); loadCoupons(); }
+  if (tab === 'promo')   { loadCampaigns(); loadCoupons(); loadFlows(); if(customersCache.length===0) loadCustomers(); setTimeout(updateBlastCount, 100); }
 
   window.scrollTo(0, 0);
 }
@@ -1526,7 +1602,9 @@ function saveGasUrl() {
 async function loadDashboard() {
   if (isDemoMode()) {
     document.getElementById('todayOrders').textContent = '5';
-    document.getElementById('pendingShip').textContent = '3';
+    document.getElementById('todayShip').textContent = '2';
+    document.getElementById('tomorrowShip').textContent = '4';
+    document.getElementById('pendingShip').textContent = '6';
     document.getElementById('todayRevenue').textContent = '¥152k';
     document.getElementById('lowStock').textContent = '2';
     return;
@@ -1535,6 +1613,8 @@ async function loadDashboard() {
     const res = await fetch(GAS_URL + '?action=staff_dashboard');
     const data = await res.json();
     document.getElementById('todayOrders').textContent = data.todayOrders || 0;
+    document.getElementById('todayShip').textContent = data.todayShip || 0;
+    document.getElementById('tomorrowShip').textContent = data.tomorrowShip || 0;
     document.getElementById('pendingShip').textContent = data.pendingShip || 0;
     document.getElementById('todayRevenue').textContent = '¥' + Math.round((data.todayRevenue || 0) / 1000) + 'k';
     document.getElementById('lowStock').textContent = data.lowStock || 0;
@@ -1734,15 +1814,25 @@ function renderShipDetail() {
 
     ${isShipped ? `
       <div class="card" style="text-align:center;color:var(--green);font-weight:600">
-        ✓ 発送済み — LINE通知済み
+        ✓ 発送済み — LINE通知送信済
       </div>
     ` : `
       <div class="detail-card">
         <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">伝票番号を入力</div>
         <input type="text" class="tracking-input" id="trackingInput" placeholder="0000-0000-0000" inputmode="numeric" autocomplete="off">
+        ${o.lineUid ? `
+          <div style="margin-top:10px;padding:10px;background:#E8FAF0;border-radius:8px;font-size:12px;color:#065F46;display:flex;align-items:center;gap:8px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+            <span>このお客様はLINE連携済 — 発送ボタンを押すと自動通知されます</span>
+          </div>
+        ` : `
+          <div style="margin-top:10px;padding:10px;background:#FEF3C7;border-radius:8px;font-size:12px;color:#92400E">
+            ⚠️ このお客様はLINE未連携です。発送通知メールが送信されます。
+          </div>
+        `}
         <button class="btn-primary" id="shipBtn" onclick="confirmShip()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          発送完了 → LINE通知
+          発送完了 → ${o.lineUid ? 'LINE通知' : 'メール通知'}
         </button>
       </div>
     `}
@@ -1896,6 +1986,8 @@ function renderCustomers() {
     if (q && !(c.name + c.email + c.phone).toLowerCase().includes(q)) return false;
     if (custFilter === 'all') return true;
     if (custFilter === 'high-income') return c.income === 'high';
+    if (custFilter === 'subscriber') return !!c.subPlan;
+    if (custFilter === 'line-not-linked') return !c.lineLinked;
     return c.segment === custFilter;
   });
 
@@ -1905,14 +1997,17 @@ function renderCustomers() {
     const initial = (c.name || '?').charAt(0);
     const segTag = { vip: '<span class="cust-tag tag-vip">VIP</span>', repeater: '<span class="cust-tag tag-rep">リピーター</span>', new: '<span class="cust-tag tag-new">新規</span>', dormant: '<span class="cust-tag tag-dormant">休眠</span>' }[c.segment] || '';
     const incomeTag = { high: '<span class="cust-tag tag-income-high">高所得想定</span>', mid: '<span class="cust-tag tag-income-mid">中所得想定</span>', low: '<span class="cust-tag tag-income-low">一般</span>' }[c.income] || '';
-    const lineIcon = c.lineLinked ? '<span style="color:#06C755;font-size:11px;font-weight:700">●LINE</span>' : '';
+    const subTag = c.subPlan ? `<span class="cust-tag" style="background:linear-gradient(90deg,#0F3D2E,#143D2B);color:#D4A93B">📦 ${escapeHtml(c.subPlan)}</span>` : '';
+    const lineIcon = c.lineLinked
+      ? '<span style="color:#06C755;font-size:11px;font-weight:700">●LINE</span>'
+      : '<span style="color:#9CA3AF;font-size:11px;font-weight:600">○LINE未連携</span>';
     return `
       <div class="customer-card" onclick="showCustomerDetail('${c.id}')">
         <div class="cust-avatar">${escapeHtml(initial)}</div>
         <div class="cust-body">
           <div class="cust-name">${escapeHtml(c.name)} ${lineIcon}</div>
           <div class="cust-meta">${c.orderCount}回購入 · ¥${c.totalSpent.toLocaleString()} · 最終 ${escapeHtml(c.lastOrder)}</div>
-          <div class="cust-tags">${segTag}${incomeTag}${c.surveyOrganic === 'YES' ? '<span class="cust-tag" style="background:#D1FAE5;color:#065F46">オーガニック志向</span>' : ''}</div>
+          <div class="cust-tags">${segTag}${subTag}${incomeTag}${c.surveyOrganic === 'YES' ? '<span class="cust-tag" style="background:#D1FAE5;color:#065F46">オーガニック志向</span>' : ''}</div>
         </div>
       </div>
     `;
@@ -1996,30 +2091,107 @@ function renderCoupons(items) {
 }
 
 /* ================ LINE BLAST ================ */
-function sendLineBlast() {
+function getBlastTargets() {
   const seg = document.getElementById('blastSegment').value;
+  let targets = customersCache.slice();
+  if (seg === 'high-income') targets = targets.filter(c => c.income === 'high');
+  else if (seg === 'subscriber') targets = targets.filter(c => !!c.subPlan);
+  else if (seg !== 'all') targets = targets.filter(c => c.segment === seg);
+  const linked = targets.filter(c => c.lineLinked);
+  return { all: targets, linked: linked, segment: seg };
+}
+
+function updateBlastCount() {
+  const { all, linked } = getBlastTargets();
+  const unlinked = all.length - linked.length;
+  const reachRate = all.length ? Math.round(linked.length / all.length * 100) : 0;
+  const html = `
+    <div style="display:flex;gap:14px;margin-bottom:8px">
+      <div style="flex:1;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--forest);font-variant-numeric:tabular-nums">${linked.length}</div>
+        <div style="font-size:10px;color:var(--muted)">配信可能（LINE連携済）</div>
+      </div>
+      <div style="width:1px;background:var(--bone)"></div>
+      <div style="flex:1;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums">${unlinked}</div>
+        <div style="font-size:10px;color:var(--muted)">LINE未連携</div>
+      </div>
+      <div style="width:1px;background:var(--bone)"></div>
+      <div style="flex:1;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--gold-soft);font-variant-numeric:tabular-nums">${reachRate}%</div>
+        <div style="font-size:10px;color:var(--muted)">到達率</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;padding-top:8px;border-top:1px solid var(--bone)">対象 ${all.length} 名 のうち ${linked.length} 名 へ配信</div>
+  `;
+  document.getElementById('blastCount').innerHTML = html;
+}
+
+function sendLineBlast() {
   const msg = document.getElementById('blastMessage').value.trim();
   if (!msg) { toast('メッセージを入力してください', 'error'); return; }
-  // 対象者数推定
-  let count = customersCache.length;
-  if (seg !== 'all') {
-    if (seg === 'high-income') count = customersCache.filter(c => c.income === 'high').length;
-    else count = customersCache.filter(c => c.segment === seg).length;
-  }
-  const lineCount = customersCache.filter(c => c.lineLinked).length;
-  if (!confirm(seg + ' 対象 ' + count + '名（うちLINE連携 ' + lineCount + '名）にメッセージを送信します。実行しますか？')) return;
+  const { linked, segment } = getBlastTargets();
+  if (linked.length === 0) { toast('対象セグメントにLINE連携済の顧客がいません', 'error'); return; }
+  if (!confirm(segment + ' のLINE連携済 ' + linked.length + '名 に配信します。実行しますか？')) return;
   if (isDemoMode()) {
-    toast('🎭 デモ: ' + lineCount + '名へ配信したフリ', 'success');
+    toast('🎭 デモ: ' + linked.length + '名へ配信したフリ', 'success');
   } else {
-    // TODO: GAS endpoint
-    toast('配信中... (' + lineCount + '名)');
+    fetch(GAS_URL + '?action=staff_line_blast', {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ segment, message: msg })
+    }).then(() => toast('配信完了 (' + linked.length + '名)', 'success'))
+      .catch(e => toast('配信失敗: ' + e.message, 'error'));
   }
   document.getElementById('blastMessage').value = '';
 }
 
+/* ================ FLOWS (ステップ配信) ================ */
+function loadFlows() {
+  if (isDemoMode()) renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
+}
+function renderFlows(flows) {
+  const list = document.getElementById('flowList');
+  if (!list) return;
+  list.innerHTML = flows.map(f => {
+    const stepHtml = f.steps.map((s, i) => `
+      <div style="position:relative;padding:10px 12px 10px 36px;border-left:2px solid ${f.active && s.delivered > 0 ? 'var(--green)' : 'var(--bone)'};margin-left:14px">
+        <div style="position:absolute;left:-9px;top:14px;width:16px;height:16px;border-radius:50%;background:${f.active && s.delivered > 0 ? 'var(--green)' : '#fff'};border:2px solid ${f.active && s.delivered > 0 ? 'var(--green)' : 'var(--bone)'}"></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;color:var(--gold-soft);font-weight:700;letter-spacing:.04em">⏱ ${escapeHtml(s.delay)}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin:2px 0 4px">${escapeHtml(s.name)}</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px">${escapeHtml(s.message.slice(0,60))}${s.message.length>60?'...':''}</div>
+            ${s.coupon ? `<span class="coupon-code" style="font-size:11px;padding:2px 8px">${escapeHtml(s.coupon)}</span>` : ''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:14px;font-weight:700;color:var(--forest);font-variant-numeric:tabular-nums">${s.delivered}</div>
+            <div style="font-size:9px;color:var(--muted)">配信済</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    return `
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${f.active ? 'linear-gradient(90deg,#0F3D2E,#143D2B)' : '#f5f5f7'};color:${f.active ? '#fff' : 'var(--muted)'}">
+          <div style="font-size:24px">${f.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:10px;letter-spacing:.04em;opacity:.7">トリガー</div>
+            <div style="font-size:14px;font-weight:700">${escapeHtml(f.triggerLabel)}</div>
+          </div>
+          <span class="cust-tag" style="background:${f.active ? '#06C755' : '#9CA3AF'};color:#fff">${f.active ? '配信中' : '停止中'}</span>
+        </div>
+        <div style="padding:14px 4px 14px 0">${stepHtml}</div>
+        <div style="padding:10px 16px;background:#fafafa;font-size:11px;color:var(--muted);text-align:center">
+          このトリガーで対象になった顧客: ${f.friendsCount}名
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 /* ================ FORM SHEET (create dialogs) ================ */
 function openForm(type) {
-  const titles = { campaign: 'キャンペーンを作成', coupon: 'クーポンを作成', set: 'セット商品を作成' };
+  const titles = { campaign: 'キャンペーンを作成', coupon: 'クーポンを作成', set: 'セット商品を作成', flow: 'ステップ配信を作成' };
   const bodies = {
     campaign: `
       <div class="form-field"><label>キャンペーン名</label><input type="text" placeholder="例: 母の日特集 2026"></div>
@@ -2072,6 +2244,53 @@ function openForm(type) {
       </div>
       <div class="form-field"><label>カテゴリ</label>
         <select><option>焼肉</option><option>すき焼き</option><option>しゃぶしゃぶ</option><option>ギフト</option><option>食べ比べ</option></select>
+      </div>`,
+    flow: `
+      <div class="form-field"><label>トリガー（きっかけ）</label>
+        <select id="flowTrigger">
+          <option value="line_friend_added">LINE友だち追加</option>
+          <option value="first_purchase">初回購入完了</option>
+          <option value="any_purchase">購入のたび</option>
+          <option value="dormant_30days">30日購入なし</option>
+          <option value="dormant_60days">60日購入なし</option>
+          <option value="dormant_90days">90日購入なし（休眠）</option>
+          <option value="birthday_month">誕生日月</option>
+          <option value="subscription_started">定期便加入</option>
+          <option value="subscription_renewed">定期便継続（毎月）</option>
+          <option value="cart_abandoned">カート放棄（3時間）</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>送信タイミング</label>
+          <select>
+            <option value="0">即時</option>
+            <option value="1h">1時間後</option>
+            <option value="1d">1日後</option>
+            <option value="3d">3日後</option>
+            <option value="7d" selected>7日後</option>
+            <option value="14d">14日後</option>
+            <option value="30d">30日後</option>
+            <option value="60d">60日後</option>
+            <option value="90d">90日後</option>
+          </select>
+        </div>
+        <div class="form-field"><label>クーポン添付</label>
+          <select>
+            <option value="">なし</option>
+            <option value="WELCOME10">WELCOME10 (10%OFF)</option>
+            <option value="NEWBIE20">NEWBIE20 (20%OFF・新規限定)</option>
+            <option value="REPEAT10">REPEAT10 (10%OFF・リピート)</option>
+            <option value="COMEBACK20">COMEBACK20 (20%OFF・休眠復活)</option>
+            <option value="BIRTHDAY15">BIRTHDAY15 (15%OFF・誕生日)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field"><label>メッセージタイトル</label><input type="text" placeholder="例: 友だち追加から1週間 — 期間限定20%OFFクーポン"></div>
+      <div class="form-field"><label>メッセージ本文</label>
+        <textarea rows="5" placeholder="お友だち追加から1週間が経ちました🐂&#10;&#10;ご購入の検討の後押しに、期間限定20%OFFクーポンをプレゼント！&#10;&#10;クーポンコード: NEWBIE20&#10;有効期限: 7日間"></textarea>
+      </div>
+      <div class="form-field"><label>有効化</label>
+        <select><option value="active">配信中（即有効化）</option><option value="paused">停止中で保存</option></select>
       </div>`
   };
   document.getElementById('formTitle').textContent = titles[type] || '新規作成';
