@@ -573,6 +573,386 @@ ul { list-style: none; padding: 0; margin: 0; }
 /* ============ HIDE/SHOW SECTIONS ============ */
 .section { display: none; }
 .section.active { display: block; }
+
+/* ============ PILLS (sub-tabs) ============ */
+.pills {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -16px 16px;
+  padding: 0 16px 4px;
+  scrollbar-width: none;
+}
+.pills::-webkit-scrollbar { display: none; }
+.pill {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid var(--bone);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: all .15s;
+}
+.pill.active { background: var(--forest); color: #fff; border-color: var(--forest); }
+.pill:active { transform: scale(0.96); }
+.subsection { display: none; }
+.subsection.active { display: block; }
+
+/* ============ CUSTOMER CARD ============ */
+.customer-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  display: flex;
+  gap: 12px;
+}
+.cust-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--forest), var(--forest-light));
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.cust-body { flex: 1; min-width: 0; }
+.cust-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cust-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.cust-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.cust-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+.tag-vip { background: linear-gradient(90deg,#D4A93B,#E5B547); color: #fff; }
+.tag-rep { background: #DBEAFE; color: #1E40AF; }
+.tag-new { background: #D1FAE5; color: #065F46; }
+.tag-dormant { background: #FEF3C7; color: #92400E; }
+.tag-blocked { background: #FEE2E2; color: #991B1B; }
+.tag-income-high { background: #FCE7F3; color: #9D174D; }
+.tag-income-mid { background: #E0E7FF; color: #3730A3; }
+.tag-income-low { background: #F3F4F6; color: #374151; }
+
+/* ============ FILTER BAR ============ */
+.filter-bar {
+  background: #fff;
+  border-radius: 12px;
+  padding: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: all .15s;
+}
+.filter-btn.active { background: var(--forest); color: #fff; }
+
+/* ============ CAMPAIGN/COUPON CARD ============ */
+.promo-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  position: relative;
+}
+.promo-status {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+.status-active { background: #D1FAE5; color: #065F46; }
+.status-scheduled { background: #DBEAFE; color: #1E40AF; }
+.status-ended { background: #F3F4F6; color: #6B7280; }
+.status-paused { background: #FEF3C7; color: #92400E; }
+.promo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 4px;
+  padding-right: 80px;
+}
+.promo-period {
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+.promo-body {
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.promo-stats {
+  display: flex;
+  gap: 18px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bone);
+}
+.promo-stat-num {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--forest);
+  font-variant-numeric: tabular-nums;
+}
+.promo-stat-label {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ============ COUPON CODE ============ */
+.coupon-code {
+  display: inline-block;
+  font-family: 'SF Mono', Menlo, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  background: var(--paper);
+  color: var(--forest-deep);
+  border-radius: 6px;
+  border: 1px dashed var(--gold);
+}
+
+/* ============ SET BUNDLE ============ */
+.set-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.set-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.set-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.set-price-wrap { text-align: right; flex-shrink: 0; }
+.set-price { font-size: 18px; font-weight: 700; color: var(--forest); font-variant-numeric: tabular-nums; }
+.set-original { font-size: 11px; color: var(--muted); text-decoration: line-through; }
+.set-discount {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 4px;
+}
+.set-items {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ============ SUBSCRIPTION PLAN ============ */
+.sub-plan {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  border: 2px solid transparent;
+}
+.sub-plan.featured { border-color: var(--gold); }
+.sub-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--forest);
+  margin-bottom: 4px;
+}
+.sub-tagline { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.sub-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.sub-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--forest-deep);
+  font-variant-numeric: tabular-nums;
+}
+.sub-period { font-size: 12px; color: var(--muted); }
+.sub-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: var(--ink);
+}
+.sub-items-list li { padding: 3px 0; }
+.sub-items-list li::before { content: '✓ '; color: var(--green); font-weight: 700; }
+.sub-stats-row {
+  display: flex;
+  gap: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bone);
+}
+.sub-stat-num { font-size: 14px; font-weight: 700; color: var(--forest); font-variant-numeric: tabular-nums; }
+.sub-stat-label { font-size: 10px; color: var(--muted); }
+
+/* ============ CTA BUTTONS ============ */
+.btn-add {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: var(--forest-deep);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-add:active { background: var(--gold-soft); }
+
+/* ============ SEGMENT INSIGHTS ============ */
+.segment-insights {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.seg-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  border-left: 4px solid;
+}
+.seg-card .seg-num { font-size: 22px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.seg-card .seg-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.seg-vip { border-left-color: var(--gold); }
+.seg-rep { border-left-color: var(--blue); }
+.seg-new { border-left-color: var(--green); }
+.seg-dormant { border-left-color: var(--amber); }
+
+/* ============ MODAL / FORM SHEET ============ */
+.form-sheet {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 250;
+  display: none;
+  align-items: flex-end;
+}
+.form-sheet.open { display: flex; }
+.form-content {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  border-radius: 16px 16px 0 0;
+  padding: 8px 0 calc(20px + var(--safe-bottom));
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp .25s ease-out;
+}
+.form-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--bone);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.form-header h3 { margin: 0; font-size: 16px; color: var(--forest); }
+.form-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 18px;
+}
+.form-body { padding: 16px 20px 0; }
+.form-field { margin-bottom: 14px; }
+.form-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--bone);
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--paper);
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus { outline: 0; border-color: var(--gold); background: #fff; }
+.form-row { display: flex; gap: 8px; }
+.form-row > * { flex: 1; }
+.form-actions {
+  padding: 12px 20px 0;
+  display: flex;
+  gap: 8px;
+}
+.form-cancel {
+  flex: 1;
+  padding: 14px;
+  background: var(--paper);
+  color: var(--muted);
+  border-radius: 10px;
+  font-weight: 600;
+}
+.form-submit {
+  flex: 2;
+  padding: 14px;
+  background: var(--forest);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+}
 </style>
 </head>
 <body>
@@ -659,7 +1039,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 
       <div class="section-label">クイックアクション</div>
       <div class="card" style="padding:6px 0">
-        <div class="settings-item" onclick="switchTab('inv')">
+        <div class="settings-item" onclick="switchTab('catalog');switchSub('catalog','inv')">
           <div class="settings-item-icon" style="background:#FEF3C7;color:#92400E"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
           <div class="settings-item-text">
             <div class="settings-item-title">棚卸する</div>
@@ -670,21 +1050,29 @@ ul { list-style: none; padding: 0; margin: 0; }
         <div class="settings-item" onclick="switchTab('orders')">
           <div class="settings-item-icon" style="background:#DBEAFE;color:#1E40AF"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div class="settings-item-text">
-            <div class="settings-item-title">注文を見る</div>
-            <div class="settings-item-sub">未発送・全注文</div>
+            <div class="settings-item-title">注文・発送</div>
+            <div class="settings-item-sub">伝票入力 → LINE通知</div>
           </div>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
-        <div class="settings-item" onclick="switchTab('ship')">
-          <div class="settings-item-icon" style="background:#D1FAE5;color:#065F46"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="settings-item" onclick="switchTab('promo');switchSub('promo','campaigns')">
+          <div class="settings-item-icon" style="background:#FCE7F3;color:#9D174D"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/></svg></div>
           <div class="settings-item-text">
-            <div class="settings-item-title">発送処理</div>
-            <div class="settings-item-sub">伝票番号を入力 → LINE通知</div>
+            <div class="settings-item-title">キャンペーン</div>
+            <div class="settings-item-sub">クーポン・販促管理</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="settings-item" onclick="switchTab('cust')">
+          <div class="settings-item-icon" style="background:#E0E7FF;color:#3730A3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div>
+          <div class="settings-item-text">
+            <div class="settings-item-title">顧客セグメント</div>
+            <div class="settings-item-sub">VIP・休眠・LINE一斉配信</div>
           </div>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
         <div class="settings-item" onclick="downloadCSV()">
-          <div class="settings-item-icon" style="background:#FCE7F3;color:#9D174D"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <div class="settings-item-icon" style="background:#D1FAE5;color:#065F46"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
           <div class="settings-item-text">
             <div class="settings-item-title">配送ラベルCSV</div>
             <div class="settings-item-sub">ヤマトB2クラウド形式</div>
@@ -694,18 +1082,115 @@ ul { list-style: none; padding: 0; margin: 0; }
       </div>
     </section>
 
-    <!-- ============ INVENTORY ============ -->
-    <section class="section" id="sec-inv">
-      <div class="section-label">在庫管理</div>
+    <!-- ============ CATALOG (商品) ============ -->
+    <section class="section" id="sec-catalog">
+      <div class="pills">
+        <div class="pill active" data-sub="inv" onclick="switchSub('catalog','inv')">在庫</div>
+        <div class="pill" data-sub="sets" onclick="switchSub('catalog','sets')">セット</div>
+        <div class="pill" data-sub="subs" onclick="switchSub('catalog','subs')">定期便</div>
+      </div>
+
+      <!-- 在庫 -->
+      <div class="subsection active" id="sub-inv">
+        <div class="search-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="invSearch" placeholder="商品名で検索...">
+        </div>
+        <div class="refresh-btn" onclick="loadInventory()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          更新する
+        </div>
+        <div id="invList"></div>
+      </div>
+
+      <!-- セット商品 -->
+      <div class="subsection" id="sub-sets">
+        <button class="btn-add" onclick="openForm('set')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新しいセットを作成
+        </button>
+        <div id="setList"></div>
+      </div>
+
+      <!-- 定期便プラン -->
+      <div class="subsection" id="sub-subs">
+        <div class="section-label">定期便プラン管理</div>
+        <div id="subList"></div>
+      </div>
+    </section>
+
+    <!-- ============ CUSTOMERS (顧客) ============ -->
+    <section class="section" id="sec-cust">
+      <div class="section-label">顧客セグメント</div>
+      <div class="segment-insights" id="segInsights"></div>
+
       <div class="search-bar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="invSearch" placeholder="商品名で検索...">
+        <input type="text" id="custSearch" placeholder="名前・電話・メールで検索...">
       </div>
-      <div class="refresh-btn" onclick="loadInventory()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        更新する
+
+      <div class="filter-bar" id="custFilter">
+        <button class="filter-btn active" data-filter="all">全員</button>
+        <button class="filter-btn" data-filter="vip">VIP</button>
+        <button class="filter-btn" data-filter="repeater">リピーター</button>
+        <button class="filter-btn" data-filter="new">新規</button>
+        <button class="filter-btn" data-filter="dormant">休眠</button>
+        <button class="filter-btn" data-filter="high-income">高所得</button>
       </div>
-      <div id="invList"></div>
+
+      <div id="custList"></div>
+    </section>
+
+    <!-- ============ PROMO (販促) ============ -->
+    <section class="section" id="sec-promo">
+      <div class="pills">
+        <div class="pill active" data-sub="campaigns" onclick="switchSub('promo','campaigns')">キャンペーン</div>
+        <div class="pill" data-sub="coupons" onclick="switchSub('promo','coupons')">クーポン</div>
+        <div class="pill" data-sub="line-blast" onclick="switchSub('promo','line-blast')">LINE配信</div>
+      </div>
+
+      <!-- キャンペーン -->
+      <div class="subsection active" id="sub-campaigns">
+        <button class="btn-add" onclick="openForm('campaign')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新しいキャンペーン
+        </button>
+        <div id="campaignList"></div>
+      </div>
+
+      <!-- クーポン -->
+      <div class="subsection" id="sub-coupons">
+        <button class="btn-add" onclick="openForm('coupon')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新しいクーポン
+        </button>
+        <div id="couponList"></div>
+      </div>
+
+      <!-- LINE一斉配信 -->
+      <div class="subsection" id="sub-line-blast">
+        <div class="card">
+          <h3 style="margin:0 0 8px;font-size:15px;color:var(--forest)">📢 LINE一斉配信</h3>
+          <p style="margin:0 0 16px;font-size:12px;color:var(--muted);line-height:1.6">セグメントを選んで対象顧客にLINEメッセージを一斉送信</p>
+          <div class="form-field">
+            <label>配信対象</label>
+            <select id="blastSegment">
+              <option value="all">全員（LINE友だち全員）</option>
+              <option value="vip">VIP顧客のみ</option>
+              <option value="repeater">リピーター</option>
+              <option value="new">新規顧客（過去30日）</option>
+              <option value="dormant">休眠顧客（90日以上注文なし）</option>
+              <option value="high-income">高所得想定エリア</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>メッセージ</label>
+            <textarea id="blastMessage" rows="5" placeholder="例: いつもありがとうございます！今週末まで全商品10%OFFキャンペーン実施中です🐂"></textarea>
+          </div>
+          <button class="btn-primary" onclick="sendLineBlast()">配信する</button>
+          <p style="margin:12px 0 0;font-size:11px;color:var(--muted);text-align:center">対象人数は自動算出されます</p>
+        </div>
+      </div>
     </section>
 
     <!-- ============ ORDERS ============ -->
@@ -718,9 +1203,12 @@ ul { list-style: none; padding: 0; margin: 0; }
       <div id="orderList"></div>
     </section>
 
-    <!-- ============ SHIP ============ -->
+    <!-- ============ SHIP (sub-section, accessed via order tap) ============ -->
     <section class="section" id="sec-ship">
-      <div class="section-label" id="shipLabel">発送処理</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <button onclick="switchTab('orders')" style="width:32px;height:32px;border-radius:50%;background:#fff;color:var(--forest);font-size:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)">‹</button>
+        <div class="section-label" id="shipLabel" style="margin:0;padding:0">発送処理</div>
+      </div>
       <div id="shipContent">
         <div class="empty">
           <div class="empty-icon">📦</div>
@@ -737,17 +1225,21 @@ ul { list-style: none; padding: 0; margin: 0; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       <span>ホーム</span>
     </div>
-    <div class="tab" data-tab="inv" onclick="switchTab('inv')">
+    <div class="tab" data-tab="catalog" onclick="switchTab('catalog')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-      <span>在庫</span>
+      <span>商品</span>
     </div>
     <div class="tab" data-tab="orders" onclick="switchTab('orders')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span>注文</span>
     </div>
-    <div class="tab" data-tab="ship" onclick="switchTab('ship')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      <span>発送</span>
+    <div class="tab" data-tab="cust" onclick="switchTab('cust')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3a4 4 0 0 1 0 8M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      <span>顧客</span>
+    </div>
+    <div class="tab" data-tab="promo" onclick="switchTab('promo')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+      <span>販促</span>
     </div>
   </nav>
 
@@ -775,6 +1267,21 @@ ul { list-style: none; padding: 0; margin: 0; }
       <div class="settings-item-text">
         <div class="settings-item-title">ログアウト</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM SHEET (modal for create/edit) -->
+<div class="form-sheet" id="formSheet" onclick="if(event.target===this)closeForm()">
+  <div class="form-content">
+    <div class="form-header">
+      <h3 id="formTitle">新規作成</h3>
+      <button class="form-close" onclick="closeForm()">×</button>
+    </div>
+    <div class="form-body" id="formBody"></div>
+    <div class="form-actions">
+      <button class="form-cancel" onclick="closeForm()">キャンセル</button>
+      <button class="form-submit" id="formSubmit" onclick="submitForm()">保存</button>
     </div>
   </div>
 </div>
@@ -914,6 +1421,59 @@ const DEMO_ORDERS = [
   { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109' }
 ];
 
+const DEMO_CUSTOMERS = [
+  { id: 'C001', name: '田中 太郎', email: 'tanaka@example.com', phone: '090-1234-5678', zip: '1060032', address: '東京都港区六本木6-10', orderCount: 18, totalSpent: 412000, lastOrder: '2026-05-09', segment: 'vip', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'weekly' },
+  { id: 'C002', name: '佐藤 花子', email: 'sato@example.com', phone: '080-9876-5432', zip: '1500041', address: '東京都渋谷区神南1-1-1', orderCount: 12, totalSpent: 287000, lastOrder: '2026-05-08', segment: 'vip', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン', frequency: 'biweekly' },
+  { id: 'C003', name: '鈴木 一郎', email: 'suzuki@example.com', phone: '070-1112-2233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', orderCount: 6, totalSpent: 78000, lastOrder: '2026-05-07', segment: 'repeater', income: 'mid', lineLinked: true, surveyOrganic: 'NO', surveyMeats: '鶏もも, とりむね', frequency: 'monthly' },
+  { id: 'C004', name: '山田 美香', email: 'yamada@example.com', phone: '080-5556-6677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', orderCount: 4, totalSpent: 32000, lastOrder: '2026-05-04', segment: 'repeater', income: 'mid', lineLinked: false, surveyOrganic: 'YES', surveyMeats: '鶏もも', frequency: 'monthly' },
+  { id: 'C005', name: '中村 健', email: 'nakamura@example.com', phone: '090-3334-4455', zip: '1500041', address: '東京都渋谷区神南1-1-1', orderCount: 1, totalSpent: 11500, lastOrder: '2026-05-10', segment: 'new', income: 'high', lineLinked: true, surveyOrganic: '', surveyMeats: '', frequency: 'first' },
+  { id: 'C006', name: '高橋 美奈', email: 'takahashi@example.com', phone: '080-2223-3344', zip: '5300001', address: '大阪府大阪市北区梅田2-2', orderCount: 1, totalSpent: 9800, lastOrder: '2026-05-09', segment: 'new', income: 'mid', lineLinked: false, surveyOrganic: '', surveyMeats: '', frequency: 'first' },
+  { id: 'C007', name: '渡辺 浩', email: 'watanabe@example.com', phone: '090-4445-5566', zip: '1500041', address: '東京都品川区東品川3-1-1', orderCount: 8, totalSpent: 156000, lastOrder: '2026-01-15', segment: 'dormant', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン, 牛もも', frequency: 'lapsed' },
+  { id: 'C008', name: '伊藤 桜', email: 'ito@example.com', phone: '070-6667-7788', zip: '2310023', address: '神奈川県横浜市中区山下町1', orderCount: 3, totalSpent: 24000, lastOrder: '2026-02-08', segment: 'dormant', income: 'mid', lineLinked: false, surveyOrganic: '', surveyMeats: '鶏もも, 手羽先', frequency: 'lapsed' },
+  { id: 'C009', name: '小林 太郎', email: 'kobayashi@example.com', phone: '090-8889-9900', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', orderCount: 22, totalSpent: 524000, lastOrder: '2026-05-10', segment: 'vip', income: 'high', lineLinked: true, surveyOrganic: 'YES', surveyMeats: '牛サーロイン, ヒレ', frequency: 'weekly' }
+];
+
+const DEMO_SETS = [
+  { id: 'SET001', name: '焼肉プレミアムセット 4人前', items: 'サーロイン×2 / リブロース×1 / カルビ×2 / モモ×1', items_qty: 6, originalPrice: 32400, price: 27500, discount: 15, stock: 8, salesMonth: 12 },
+  { id: 'SET002', name: 'すき焼きセット 3-4人前', items: 'サーロイン×3 / 野菜セット×1 / 割り下', items_qty: 5, originalPrice: 24000, price: 19800, discount: 17, stock: 5, salesMonth: 9 },
+  { id: 'SET003', name: 'ギフトボックス 高級', items: 'サーロイン×1 / ヒレ×1 / 化粧箱', items_qty: 3, originalPrice: 28000, price: 25800, discount: 8, stock: 12, salesMonth: 18 },
+  { id: 'SET004', name: '平飼い鶏 食べ比べ', items: 'もも×1kg / むね×1kg / 手羽先×500g', items_qty: 3, originalPrice: 6400, price: 5800, discount: 9, stock: 24, salesMonth: 31 }
+];
+
+const DEMO_SUBS = [
+  { id: 'SUB-STR', name: 'Starter', tagline: '少人数向け・お試し', price: 6800, period: '/月', items: ['平飼い鶏もも 1kg', '平飼い鶏むね 1kg', '小冊子・レシピ'], subscribers: 23, mrr: 156400, featured: false },
+  { id: 'SUB-REG', name: 'Regular', tagline: '4人家族向け 一番人気', price: 12800, period: '/月', items: ['宮崎和牛 サーロイン 500g', '平飼い鶏もも 1.5kg', '平飼い鶏手羽先 500g', '希少部位サンプル'], subscribers: 47, mrr: 601600, featured: true },
+  { id: 'SUB-NAT', name: 'Natural Box', tagline: 'オーガニック志向 月一お楽しみ', price: 18800, period: '/月', items: ['宮崎和牛 厳選部位 800g', '平飼い鶏 旬の部位 1kg', 'オーガニック野菜', '産地レシピブック'], subscribers: 18, mrr: 338400, featured: false }
+];
+
+const DEMO_CAMPAIGNS = [
+  { id: 'CAM001', name: '母の日特集 2026', period: '2026/05/01 〜 2026/05/12', desc: 'ギフトセット全品 15%OFF + 送料無料', status: 'active', orders: 47, revenue: 1234500, target: 'ギフトセット全品' },
+  { id: 'CAM002', name: '初回限定LINE登録10%OFF', period: '通年（自動配信）', desc: 'LINE友だち追加で10%OFFクーポン自動発行', status: 'active', orders: 156, revenue: 1890000, target: '新規LINE友だち' },
+  { id: 'CAM003', name: 'BBQシーズン到来！', period: '2026/05/20 〜 2026/06/30', desc: '焼肉セット 20%OFF / リピート割', status: 'scheduled', orders: 0, revenue: 0, target: '焼肉セット' },
+  { id: 'CAM004', name: 'お正月福袋 2026', period: '2025/12/26 〜 2026/01/05', desc: '通常¥30,000 → ¥19,800 福袋限定販売', status: 'ended', orders: 89, revenue: 1762200, target: '福袋限定商品' }
+];
+
+const DEMO_COUPONS = [
+  { id: 'CP001', code: 'WELCOME10', desc: '初回購入10%OFF', type: 'percent', value: 10, minPurchase: 5000, used: 47, limit: null, expires: 'なし', status: 'active' },
+  { id: 'CP002', code: 'MOTHER2026', desc: '母の日キャンペーン¥1,000OFF', type: 'fixed', value: 1000, minPurchase: 8000, used: 23, limit: 100, expires: '2026/05/12', status: 'active' },
+  { id: 'CP003', code: 'BIRTHDAY15', desc: '誕生日月15%OFF', type: 'percent', value: 15, minPurchase: 0, used: 12, limit: null, expires: 'なし', status: 'active' },
+  { id: 'CP004', code: 'COMEBACK20', desc: '休眠顧客復活20%OFF', type: 'percent', value: 20, minPurchase: 5000, used: 4, limit: 50, expires: '2026/06/30', status: 'active' },
+  { id: 'CP005', code: 'XMAS2025', desc: 'クリスマス特典', type: 'percent', value: 10, minPurchase: 10000, used: 89, limit: null, expires: '2025/12/25', status: 'ended' }
+];
+
+/* 郵便番号 → 想定世帯年収（簡易ルックアップ。実装時はGISデータ連携） */
+function estimateIncomeByZip(zip) {
+  if (!zip) return 'mid';
+  var z = String(zip).replace(/-/g, '').slice(0, 4);
+  // 高所得想定エリア（港区、渋谷、目黒、世田谷一部、千代田 等）
+  var high = ['1060','1070','1500','1510','1520','1530','1540','1530','1080','1530','1410','1510','1080','2320','2310','1100','1010','1020','1030','1040','1050'];
+  // 一般所得（地方都市・郊外）
+  var low = ['8810','8820','8830','8840','8890','8800'];
+  if (high.indexOf(z) >= 0) return 'high';
+  if (low.indexOf(z) >= 0) return 'low';
+  return 'mid';
+}
+
 function logout() {
   localStorage.removeItem(SESSION_KEY);
   pinBuffer = '';
@@ -928,12 +1488,21 @@ function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'sec-' + tab));
 
-  if (tab === 'home') loadDashboard();
-  if (tab === 'inv') loadInventory();
-  if (tab === 'orders') loadOrders();
+  if (tab === 'home')    loadDashboard();
+  if (tab === 'catalog') { loadInventory(); loadSets(); loadSubs(); }
+  if (tab === 'orders')  loadOrders();
   if (tab === 'ship' && !selectedOrder) renderShipEmpty();
+  if (tab === 'cust')    loadCustomers();
+  if (tab === 'promo')   { loadCampaigns(); loadCoupons(); }
 
   window.scrollTo(0, 0);
+}
+
+function switchSub(parent, sub) {
+  const section = document.getElementById('sec-' + parent);
+  if (!section) return;
+  section.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.sub === sub));
+  section.querySelectorAll('.subsection').forEach(s => s.classList.toggle('active', s.id === 'sub-' + sub));
 }
 
 /* ================ SETTINGS ================ */
@@ -1238,6 +1807,285 @@ function downloadCSV() {
 function escapeHtml(str) {
   return String(str || '')
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ================ SETS ================ */
+function loadSets() {
+  if (isDemoMode()) renderSets(JSON.parse(JSON.stringify(DEMO_SETS)));
+}
+function renderSets(sets) {
+  const list = document.getElementById('setList');
+  if (!list) return;
+  if (!sets.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">🎁</div><div class="empty-text">セット商品を追加しましょう</div></div>'; return; }
+  list.innerHTML = sets.map(s => `
+    <div class="set-card">
+      <div class="set-header">
+        <div>
+          <div class="set-name">${escapeHtml(s.name)}</div>
+          <div class="set-items" style="margin-top:4px">${escapeHtml(s.items)}</div>
+        </div>
+        <div class="set-price-wrap">
+          <div class="set-price">¥${s.price.toLocaleString()}<span class="set-discount">−${s.discount}%</span></div>
+          <div class="set-original">¥${s.originalPrice.toLocaleString()}</div>
+        </div>
+      </div>
+      <div class="promo-stats" style="margin-top:8px">
+        <div><div class="promo-stat-num">${s.stock}</div><div class="promo-stat-label">在庫</div></div>
+        <div><div class="promo-stat-num">${s.salesMonth}</div><div class="promo-stat-label">今月販売</div></div>
+        <div><div class="promo-stat-num">¥${Math.round(s.price * s.salesMonth / 1000)}k</div><div class="promo-stat-label">月間売上</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ================ SUBSCRIPTIONS ================ */
+function loadSubs() {
+  if (isDemoMode()) renderSubs(JSON.parse(JSON.stringify(DEMO_SUBS)));
+}
+function renderSubs(subs) {
+  const list = document.getElementById('subList');
+  if (!list) return;
+  list.innerHTML = subs.map(s => `
+    <div class="sub-plan ${s.featured ? 'featured' : ''}">
+      <div class="sub-name">${escapeHtml(s.name)}${s.featured ? ' <span class="cust-tag tag-vip">人気</span>' : ''}</div>
+      <div class="sub-tagline">${escapeHtml(s.tagline)}</div>
+      <div class="sub-price-row">
+        <div class="sub-price">¥${s.price.toLocaleString()}</div>
+        <div class="sub-period">${escapeHtml(s.period)}</div>
+      </div>
+      <ul class="sub-items-list">
+        ${s.items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}
+      </ul>
+      <div class="sub-stats-row">
+        <div><div class="sub-stat-num">${s.subscribers}</div><div class="sub-stat-label">加入者</div></div>
+        <div><div class="sub-stat-num">¥${Math.round(s.mrr / 1000)}k</div><div class="sub-stat-label">月間収益</div></div>
+        <div><div class="sub-stat-num">¥${Math.round(s.mrr * 12 / 10000)}万</div><div class="sub-stat-label">年間想定</div></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ================ CUSTOMERS ================ */
+let customersCache = [];
+let custFilter = 'all';
+
+function loadCustomers() {
+  if (isDemoMode()) {
+    customersCache = JSON.parse(JSON.stringify(DEMO_CUSTOMERS));
+    renderSegmentInsights();
+    renderCustomers();
+    return;
+  }
+}
+
+function renderSegmentInsights() {
+  const seg = { vip: 0, repeater: 0, new: 0, dormant: 0 };
+  customersCache.forEach(c => seg[c.segment] !== undefined && seg[c.segment]++);
+  document.getElementById('segInsights').innerHTML = `
+    <div class="seg-card seg-vip"><div class="seg-num">${seg.vip}</div><div class="seg-label">VIP</div></div>
+    <div class="seg-card seg-rep"><div class="seg-num">${seg.repeater}</div><div class="seg-label">リピーター</div></div>
+    <div class="seg-card seg-new"><div class="seg-num">${seg.new}</div><div class="seg-label">新規（30日）</div></div>
+    <div class="seg-card seg-dormant"><div class="seg-num">${seg.dormant}</div><div class="seg-label">休眠（90日+）</div></div>
+  `;
+}
+
+function renderCustomers() {
+  const q = (document.getElementById('custSearch').value || '').toLowerCase();
+  const list = document.getElementById('custList');
+  let filtered = customersCache.filter(c => {
+    if (q && !(c.name + c.email + c.phone).toLowerCase().includes(q)) return false;
+    if (custFilter === 'all') return true;
+    if (custFilter === 'high-income') return c.income === 'high';
+    return c.segment === custFilter;
+  });
+
+  if (!filtered.length) { list.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">該当する顧客がいません</div></div>'; return; }
+
+  list.innerHTML = filtered.map(c => {
+    const initial = (c.name || '?').charAt(0);
+    const segTag = { vip: '<span class="cust-tag tag-vip">VIP</span>', repeater: '<span class="cust-tag tag-rep">リピーター</span>', new: '<span class="cust-tag tag-new">新規</span>', dormant: '<span class="cust-tag tag-dormant">休眠</span>' }[c.segment] || '';
+    const incomeTag = { high: '<span class="cust-tag tag-income-high">高所得想定</span>', mid: '<span class="cust-tag tag-income-mid">中所得想定</span>', low: '<span class="cust-tag tag-income-low">一般</span>' }[c.income] || '';
+    const lineIcon = c.lineLinked ? '<span style="color:#06C755;font-size:11px;font-weight:700">●LINE</span>' : '';
+    return `
+      <div class="customer-card" onclick="showCustomerDetail('${c.id}')">
+        <div class="cust-avatar">${escapeHtml(initial)}</div>
+        <div class="cust-body">
+          <div class="cust-name">${escapeHtml(c.name)} ${lineIcon}</div>
+          <div class="cust-meta">${c.orderCount}回購入 · ¥${c.totalSpent.toLocaleString()} · 最終 ${escapeHtml(c.lastOrder)}</div>
+          <div class="cust-tags">${segTag}${incomeTag}${c.surveyOrganic === 'YES' ? '<span class="cust-tag" style="background:#D1FAE5;color:#065F46">オーガニック志向</span>' : ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showCustomerDetail(id) {
+  const c = customersCache.find(x => x.id === id);
+  if (!c) return;
+  // 簡易ダイアログ表示（実装時は専用ページに）
+  toast(c.name + ' の詳細: ' + c.orderCount + '回 / ¥' + c.totalSpent.toLocaleString());
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('custSearch')?.addEventListener('input', renderCustomers);
+  document.querySelectorAll('#custFilter .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#custFilter .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      custFilter = btn.dataset.filter;
+      renderCustomers();
+    });
+  });
+});
+
+/* ================ CAMPAIGNS ================ */
+function loadCampaigns() {
+  if (isDemoMode()) renderCampaigns(JSON.parse(JSON.stringify(DEMO_CAMPAIGNS)));
+}
+function renderCampaigns(items) {
+  const list = document.getElementById('campaignList');
+  if (!list) return;
+  list.innerHTML = items.map(c => {
+    const stCls = { active: 'status-active', scheduled: 'status-scheduled', ended: 'status-ended', paused: 'status-paused' }[c.status] || '';
+    const stLabel = { active: '配信中', scheduled: '予約済', ended: '終了', paused: '停止中' }[c.status] || '';
+    return `
+      <div class="promo-card">
+        <span class="promo-status ${stCls}">${stLabel}</span>
+        <div class="promo-title">${escapeHtml(c.name)}</div>
+        <div class="promo-period">📅 ${escapeHtml(c.period)}</div>
+        <div class="promo-body">${escapeHtml(c.desc)}<br><small style="color:var(--muted)">対象: ${escapeHtml(c.target)}</small></div>
+        <div class="promo-stats">
+          <div><div class="promo-stat-num">${c.orders}</div><div class="promo-stat-label">注文数</div></div>
+          <div><div class="promo-stat-num">¥${Math.round(c.revenue / 1000)}k</div><div class="promo-stat-label">売上</div></div>
+          <div><div class="promo-stat-num">¥${c.orders ? Math.round(c.revenue / c.orders).toLocaleString() : '-'}</div><div class="promo-stat-label">客単価</div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ================ COUPONS ================ */
+function loadCoupons() {
+  if (isDemoMode()) renderCoupons(JSON.parse(JSON.stringify(DEMO_COUPONS)));
+}
+function renderCoupons(items) {
+  const list = document.getElementById('couponList');
+  if (!list) return;
+  list.innerHTML = items.map(c => {
+    const stCls = c.status === 'active' ? 'status-active' : 'status-ended';
+    const stLabel = c.status === 'active' ? '有効' : '終了';
+    const valueText = c.type === 'percent' ? c.value + '%OFF' : '¥' + c.value.toLocaleString() + 'OFF';
+    const usagePct = c.limit ? Math.round((c.used / c.limit) * 100) : null;
+    return `
+      <div class="promo-card">
+        <span class="promo-status ${stCls}">${stLabel}</span>
+        <div class="promo-title"><span class="coupon-code">${escapeHtml(c.code)}</span></div>
+        <div class="promo-period">${escapeHtml(c.desc)}</div>
+        <div class="promo-body" style="margin-bottom:8px">
+          <strong>${valueText}</strong>${c.minPurchase ? ' · ¥' + c.minPurchase.toLocaleString() + '以上' : ''}<br>
+          <small style="color:var(--muted)">期限: ${escapeHtml(c.expires)}</small>
+        </div>
+        <div class="promo-stats">
+          <div><div class="promo-stat-num">${c.used}</div><div class="promo-stat-label">使用回数</div></div>
+          <div><div class="promo-stat-num">${c.limit ? c.limit + '件' : '無制限'}</div><div class="promo-stat-label">利用上限</div></div>
+          ${usagePct !== null ? `<div><div class="promo-stat-num">${usagePct}%</div><div class="promo-stat-label">消化率</div></div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ================ LINE BLAST ================ */
+function sendLineBlast() {
+  const seg = document.getElementById('blastSegment').value;
+  const msg = document.getElementById('blastMessage').value.trim();
+  if (!msg) { toast('メッセージを入力してください', 'error'); return; }
+  // 対象者数推定
+  let count = customersCache.length;
+  if (seg !== 'all') {
+    if (seg === 'high-income') count = customersCache.filter(c => c.income === 'high').length;
+    else count = customersCache.filter(c => c.segment === seg).length;
+  }
+  const lineCount = customersCache.filter(c => c.lineLinked).length;
+  if (!confirm(seg + ' 対象 ' + count + '名（うちLINE連携 ' + lineCount + '名）にメッセージを送信します。実行しますか？')) return;
+  if (isDemoMode()) {
+    toast('🎭 デモ: ' + lineCount + '名へ配信したフリ', 'success');
+  } else {
+    // TODO: GAS endpoint
+    toast('配信中... (' + lineCount + '名)');
+  }
+  document.getElementById('blastMessage').value = '';
+}
+
+/* ================ FORM SHEET (create dialogs) ================ */
+function openForm(type) {
+  const titles = { campaign: 'キャンペーンを作成', coupon: 'クーポンを作成', set: 'セット商品を作成' };
+  const bodies = {
+    campaign: `
+      <div class="form-field"><label>キャンペーン名</label><input type="text" placeholder="例: 母の日特集 2026"></div>
+      <div class="form-row">
+        <div class="form-field"><label>開始日</label><input type="date"></div>
+        <div class="form-field"><label>終了日</label><input type="date"></div>
+      </div>
+      <div class="form-field"><label>割引内容</label>
+        <select><option>15%OFF</option><option>20%OFF</option><option>¥1,000 OFF</option><option>送料無料</option><option>BOGO（1個買うと1個無料）</option></select>
+      </div>
+      <div class="form-field"><label>対象</label>
+        <select><option>全商品</option><option>ギフトセット</option><option>セット商品</option><option>定期便</option><option>特定商品</option></select>
+      </div>
+      <div class="form-field"><label>サイトに表示</label>
+        <select><option>表示する（バナー）</option><option>非表示（クーポンのみ）</option></select>
+      </div>`,
+    coupon: `
+      <div class="form-field"><label>クーポンコード</label><input type="text" placeholder="例: WELCOME10" style="text-transform:uppercase"></div>
+      <div class="form-field"><label>説明</label><input type="text" placeholder="例: 初回購入10%OFF"></div>
+      <div class="form-row">
+        <div class="form-field"><label>割引タイプ</label><select><option>10%OFF</option><option>15%OFF</option><option>20%OFF</option><option>¥1,000 OFF</option><option>¥3,000 OFF</option></select></div>
+        <div class="form-field"><label>最低購入額</label><input type="number" placeholder="5000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>利用上限（空白=無制限）</label><input type="number" placeholder="100"></div>
+        <div class="form-field"><label>有効期限</label><input type="date"></div>
+      </div>
+      <div class="form-field"><label>自動配信</label>
+        <select>
+          <option>手動配布のみ</option>
+          <option>新規LINE友だちに自動配信</option>
+          <option>誕生日月の顧客に配信</option>
+          <option>休眠顧客（90日以上）に配信</option>
+        </select>
+      </div>`,
+    set: `
+      <div class="form-field"><label>セット名</label><input type="text" placeholder="例: 焼肉プレミアムセット 4人前"></div>
+      <div class="form-field"><label>含む商品（チェックを付けて数量）</label>
+        <div style="background:var(--paper);padding:10px;border-radius:8px;font-size:12px;line-height:2">
+          ☐ 宮崎和牛 サーロイン 500g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 宮崎和牛 リブロース 300g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 宮崎和牛 ヒレ 200g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 平飼い鶏 もも肉 1kg × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 平飼い鶏 むね肉 1kg × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>セット価格</label><input type="number" placeholder="27500"></div>
+        <div class="form-field"><label>初期在庫</label><input type="number" placeholder="10"></div>
+      </div>
+      <div class="form-field"><label>カテゴリ</label>
+        <select><option>焼肉</option><option>すき焼き</option><option>しゃぶしゃぶ</option><option>ギフト</option><option>食べ比べ</option></select>
+      </div>`
+  };
+  document.getElementById('formTitle').textContent = titles[type] || '新規作成';
+  document.getElementById('formBody').innerHTML = bodies[type] || '';
+  document.getElementById('formSheet').classList.add('open');
+  window._formType = type;
+}
+function closeForm() {
+  document.getElementById('formSheet').classList.remove('open');
+}
+function submitForm() {
+  // デモモードでは形式的に保存処理
+  toast(isDemoMode() ? '🎭 デモ: 保存したフリ' : '保存しました', 'success');
+  closeForm();
 }
 
 /* ================ DEMO QUICK ENTRY ================ */
