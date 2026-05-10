@@ -602,10 +602,16 @@ ul { list-style: none; padding: 0; margin: 0; }
     <button class="numpad-btn del" data-key="del">⌫</button>
   </div>
   <div class="login-hint" id="loginHint">4桁のPINを入力</div>
+  <div style="font-size:10px;opacity:0.4;margin-top:8px">デモ体験は <strong style="color:var(--gold);opacity:1">1234</strong></div>
 </div>
 
 <!-- APP -->
 <div class="app" id="app" style="display:none">
+
+  <!-- DEMO BANNER -->
+  <div id="demoBanner" style="display:none;background:#fff3cd;color:#664d03;padding:8px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid #ffd166">
+    🎭 デモモード — 表示はサンプル / 保存は無効
+  </div>
 
   <!-- TOP BAR -->
   <header class="topbar">
@@ -821,22 +827,42 @@ function renderPin() {
 }
 
 async function checkPin() {
+  // GAS未接続 → デモモード（PIN 1234）
   if (!GAS_URL) {
-    showPinError('GAS URL未設定 — ⚙ボタンから設定');
+    if (pinBuffer === '1234') {
+      sessionStorage.setItem('eda-staff-demo', '1');
+      localStorage.setItem(SESSION_KEY, '1');
+      enterApp();
+    } else {
+      showPinError('デモモード: PINは 1234');
+    }
     return;
   }
+  // GAS接続 → サーバー認証
   try {
     const res = await fetch(GAS_URL + '?action=staff_login&pin=' + pinBuffer);
     const data = await res.json();
     if (data.success) {
+      sessionStorage.removeItem('eda-staff-demo');
       localStorage.setItem(SESSION_KEY, '1');
       enterApp();
     } else {
       showPinError(data.error || 'PINが違います');
     }
   } catch (e) {
-    showPinError('接続エラー: ' + e.message);
+    // 接続失敗時もデモモードフォールバック
+    if (pinBuffer === '1234') {
+      sessionStorage.setItem('eda-staff-demo', '1');
+      localStorage.setItem(SESSION_KEY, '1');
+      enterApp();
+    } else {
+      showPinError('接続エラー — PIN 1234 でデモ');
+    }
   }
+}
+
+function isDemoMode() {
+  return sessionStorage.getItem('eda-staff-demo') === '1' || !GAS_URL;
 }
 
 function showPinError(msg) {
@@ -852,8 +878,27 @@ function showPinError(msg) {
 function enterApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = '';
+  document.getElementById('demoBanner').style.display = isDemoMode() ? 'block' : 'none';
   loadDashboard();
 }
+
+/* ================ DEMO DATA ================ */
+const DEMO_PRODUCTS = [
+  { variantId: 'WAGYU-SL-500', name: '宮崎和牛 サーロイン', variant: '500g', price: 12800, stock: 12, temp: '冷凍' },
+  { variantId: 'WAGYU-RB-300', name: '宮崎和牛 リブロース', variant: '300g', price: 9800, stock: 4, temp: '冷凍' },
+  { variantId: 'WAGYU-FL-200', name: '宮崎和牛 ヒレ', variant: '200g', price: 11500, stock: 7, temp: '冷凍' },
+  { variantId: 'WAGYU-RP-300', name: '宮崎和牛 ランプ', variant: '300g', price: 7800, stock: 15, temp: '冷凍' },
+  { variantId: 'CHK-MM-1KG',  name: '大分平飼い鶏 もも肉', variant: '1kg', price: 2400, stock: 25, temp: '冷凍' },
+  { variantId: 'CHK-MN-1KG',  name: '大分平飼い鶏 むね肉', variant: '1kg', price: 1800, stock: 0,  temp: '冷凍' },
+  { variantId: 'CHK-TB-500',  name: '大分平飼い鶏 手羽先', variant: '500g', price: 1200, stock: 9,  temp: '冷凍' }
+];
+const DEMO_ORDERS = [
+  { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '' },
+  { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101' },
+  { id: '#1021', customerName: '鈴木 一郎', total: 9800,  items: '宮崎和牛リブロース 300g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '' },
+  { id: '#1020', customerName: '山田 美香', total: 4800,  items: '平飼い鶏もも 2kg', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012' },
+  { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109' }
+];
 
 function logout() {
   localStorage.removeItem(SESSION_KEY);
@@ -896,7 +941,13 @@ function saveGasUrl() {
 
 /* ================ DASHBOARD ================ */
 async function loadDashboard() {
-  if (!GAS_URL) return;
+  if (isDemoMode()) {
+    document.getElementById('todayOrders').textContent = '5';
+    document.getElementById('pendingShip').textContent = '3';
+    document.getElementById('todayRevenue').textContent = '¥152k';
+    document.getElementById('lowStock').textContent = '2';
+    return;
+  }
   try {
     const res = await fetch(GAS_URL + '?action=staff_dashboard');
     const data = await res.json();
@@ -911,10 +962,15 @@ async function loadDashboard() {
 
 /* ================ INVENTORY ================ */
 async function loadInventory() {
-  if (!GAS_URL) return;
   const list = document.getElementById('invList');
-  list.innerHTML = '<div class="empty">読み込み中...</div>';
 
+  if (isDemoMode()) {
+    inventoryCache = JSON.parse(JSON.stringify(DEMO_PRODUCTS));
+    renderInventory();
+    return;
+  }
+
+  list.innerHTML = '<div class="empty">読み込み中...</div>';
   try {
     const res = await fetch(GAS_URL + '?action=staff_inventory');
     const data = await res.json();
@@ -976,6 +1032,19 @@ async function saveStock(variantId, btn) {
   btn.disabled = true;
   btn.textContent = '保存中';
 
+  // Demo mode: 表示だけ更新
+  if (isDemoMode()) {
+    setTimeout(() => {
+      btn.textContent = '✓ デモ';
+      btn.classList.add('saved');
+      const item = inventoryCache.find(p => p.variantId === variantId);
+      if (item) item.stock = val;
+      toast('🎭 デモ: 実際は保存されません', 'success');
+      setTimeout(() => { btn.textContent = '保存'; btn.classList.remove('saved'); btn.disabled = false; }, 1500);
+    }, 400);
+    return;
+  }
+
   try {
     const res = await fetch(GAS_URL + '?action=staff_update_stock', {
       method: 'POST',
@@ -987,7 +1056,6 @@ async function saveStock(variantId, btn) {
       btn.textContent = '✓ 完了';
       btn.classList.add('saved');
       setTimeout(() => { btn.textContent = '保存'; btn.classList.remove('saved'); btn.disabled = false; }, 1500);
-      // Update cache
       const item = inventoryCache.find(p => p.variantId === variantId);
       if (item) item.stock = val;
       toast('在庫を更新しました', 'success');
@@ -1003,10 +1071,15 @@ async function saveStock(variantId, btn) {
 
 /* ================ ORDERS ================ */
 async function loadOrders() {
-  if (!GAS_URL) return;
   const list = document.getElementById('orderList');
-  list.innerHTML = '<div class="empty">読み込み中...</div>';
 
+  if (isDemoMode()) {
+    ordersCache = JSON.parse(JSON.stringify(DEMO_ORDERS));
+    renderOrders();
+    return;
+  }
+
+  list.innerHTML = '<div class="empty">読み込み中...</div>';
   try {
     const res = await fetch(GAS_URL + '?action=staff_orders');
     const data = await res.json();
@@ -1101,6 +1174,19 @@ async function confirmShip() {
   btn.disabled = true;
   btn.classList.add('loading');
   btn.innerHTML = '送信中...';
+
+  // Demo mode
+  if (isDemoMode()) {
+    setTimeout(() => {
+      toast('🎭 デモ: LINE通知は送信されません', 'success');
+      selectedOrder.shipStatus = '発送済';
+      selectedOrder.tracking = tracking;
+      renderShipDetail();
+      const idx = ordersCache.findIndex(o => o.id === selectedOrder.id);
+      if (idx >= 0) ordersCache[idx] = selectedOrder;
+    }, 600);
+    return;
+  }
 
   try {
     const res = await fetch(GAS_URL + '?action=staff_ship', {
