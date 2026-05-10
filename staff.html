@@ -1312,6 +1312,14 @@ ul { list-style: none; padding: 0; margin: 0; }
 
       <!-- 自動化（条件トリガー & ステップ配信） -->
       <div class="subsection" id="sub-flows">
+
+        <!-- ファネル可視化 -->
+        <div class="card" style="padding:18px 16px;margin-bottom:14px;background:linear-gradient(160deg,#FAF7F0 0%,#fff 100%)">
+          <div style="font-size:11px;color:var(--gold-soft);font-weight:700;letter-spacing:.06em;margin-bottom:4px">CUSTOMER LIFECYCLE</div>
+          <div style="font-size:14px;font-weight:700;color:var(--forest);margin-bottom:14px">基盤顧客化ファネル — LINE友だちを4回買わせる</div>
+          <div id="funnelChart"></div>
+        </div>
+
         <div class="card" style="background:#FFF3CD;border-left:4px solid var(--gold);padding:14px 16px;margin-bottom:14px">
           <div style="font-size:13px;line-height:1.7;color:#664D03">
             <strong>🤖 自動化ルールとは</strong><br>
@@ -1319,6 +1327,17 @@ ul { list-style: none; padding: 0; margin: 0; }
             例：「6ヶ月注文なしの高所得顧客 → 20%OFFクーポンを自動送信」
           </div>
         </div>
+
+        <!-- ステージ別フィルタ -->
+        <div class="filter-bar" id="flowStageFilter" style="margin-bottom:12px">
+          <button class="filter-btn active" data-stage="all">全て</button>
+          <button class="filter-btn" data-stage="first">1回目化</button>
+          <button class="filter-btn" data-stage="repeat">2回目化</button>
+          <button class="filter-btn" data-stage="habit">3回目化</button>
+          <button class="filter-btn" data-stage="base">基盤化</button>
+          <button class="filter-btn" data-stage="retention">離反防止</button>
+        </div>
+
         <button class="btn-add" onclick="openForm('flow')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           新しい自動化ルールを作成
@@ -1676,7 +1695,7 @@ const DEMO_FLOWS = [
     stats: { triggered: 3, converted: 2, revenue: 0 }
   },
   {
-    id: 'AUTO004', trigger: 'order_completed', triggerLabel: '注文完了時', icon: '🎁', active: true, friendsCount: 47,
+    id: 'AUTO004', trigger: 'order_completed', triggerLabel: '注文完了時', icon: '🎁', active: true, friendsCount: 47, stage: 'first',
     conditions: [
       { label: '購入額 ¥20,000以上', icon: '💴' },
       { label: '初回購入', icon: '🆕' }
@@ -1685,7 +1704,111 @@ const DEMO_FLOWS = [
       { delay: '即時', name: '高額初回購入者へ感謝', message: '高額のご注文ありがとうございます！今後ともよろしくお願いします。次回使える10%OFFクーポンをプレゼント', coupon: 'BIG-FIRST10', delivered: 47 }
     ],
     stats: { triggered: 47, converted: 18, revenue: 412000 }
+  },
+
+  // ========== 1回目化（LINE友だち → 初回購入） ==========
+  {
+    id: 'STAGE1-A', trigger: 'line_friend_added', triggerLabel: 'LINE友だち追加', icon: '🎉', active: true, stage: 'first', friendsCount: 1062,
+    conditions: [],
+    steps: [
+      { delay: '即時', name: 'ようこそ + 10%OFFクーポン', message: 'ご登録ありがとうございます！今すぐ使える10%OFFクーポン WELCOME10 をどうぞ🐂', coupon: 'WELCOME10', delivered: 1062 },
+      { delay: '3日後', name: '商品紹介・お客様の声', message: '実際にお召し上がりになったお客様のレビューと、人気部位のご紹介です', coupon: null, delivered: 891 },
+      { delay: '7日後', name: '【期限間近】20%OFFクーポン', message: '友だち追加から1週間 — 今だけ20%OFF！残り3日です', coupon: 'NEWBIE20', delivered: 624 },
+      { delay: '14日後', name: '¥3,000 OFFクーポン（強い特典）', message: '初回限定 ¥3,000 OFF — 今までためらっていた方へ', coupon: 'TRY3000', delivered: 387 },
+      { delay: '30日後', name: '友だち紹介で更にお得', message: 'お友だちにもご紹介ください。あなたとお友だち両方に20%OFF', coupon: 'REFER20', delivered: 198 }
+    ],
+    stats: { triggered: 1062, converted: 245, revenue: 2940000 }
+  },
+  {
+    id: 'STAGE1-B', trigger: 'cart_abandoned', triggerLabel: 'カート放棄（3時間）', icon: '🛒', active: true, stage: 'first', friendsCount: 87,
+    conditions: [
+      { label: '購入回数 = 0', icon: '🆕' }
+    ],
+    steps: [
+      { delay: '3時間後', name: 'カートに戻ってきて', message: 'お忘れではありませんか？カートに商品が残っています。送料無料クーポンでお試しください', coupon: 'CART-FREE-SHIP', delivered: 87 },
+      { delay: '24時間後', name: '【最後のオファー】20%OFF', message: '昨日カートに入れていただいた商品 — 24時間限定で20%OFF', coupon: 'CART24-20', delivered: 42 }
+    ],
+    stats: { triggered: 87, converted: 34, revenue: 287000 }
+  },
+
+  // ========== 2回目化（1回目購入 → 2回目購入） ==========
+  {
+    id: 'STAGE2-A', trigger: 'order_completed', triggerLabel: '初回購入完了', icon: '🛍️', active: true, stage: 'repeat', friendsCount: 234,
+    conditions: [{ label: '初回購入', icon: '🆕' }],
+    steps: [
+      { delay: '即時', name: 'お礼 + 配送スケジュール', message: '初めてのご注文ありがとうございます！心を込めて準備します', coupon: null, delivered: 234 },
+      { delay: '5日後（受取後）', name: 'いかがでしたか？+ 食べ方提案', message: 'お届けした和牛、お味はいかがでしたか？おすすめの調理法はこちらです🍳', coupon: null, delivered: 198 },
+      { delay: '14日後', name: 'クロスセル：別部位提案', message: 'サーロインを召し上がったあなたにぴったりの部位、ヒレもおすすめです', coupon: 'REPEAT10', delivered: 156 },
+      { delay: '30日後', name: '在庫切れタイミング想定', message: '前回ご購入から1ヶ月 — そろそろお肉の補充はいかがですか？', coupon: 'REORDER15', delivered: 98 },
+      { delay: '45日後', name: '【最後の背中押し】期限付き', message: 'リピーター限定 20%OFF — 残り3日', coupon: 'REPEAT20', delivered: 67 }
+    ],
+    stats: { triggered: 234, converted: 100, revenue: 1280000 }
+  },
+
+  // ========== 3回目化（2回目購入 → 3回目購入：習慣化） ==========
+  {
+    id: 'STAGE3-A', trigger: 'order_completed', triggerLabel: '2回目購入完了', icon: '🔁', active: true, stage: 'habit', friendsCount: 100,
+    conditions: [{ label: '購入回数 = 2回目', icon: '2️⃣' }],
+    steps: [
+      { delay: '即時', name: 'リピート御礼 + 定期便提案', message: '2度目のご利用ありがとうございます！毎月お得に届く定期便もご検討ください（月¥6,800〜）', coupon: null, delivered: 100 },
+      { delay: '10日後', name: '希少部位の限定オファー', message: 'お得意様限定で、希少部位ヒレ200gを通常より20%OFFでご提供', coupon: 'TIER-FILE20', delivered: 84 },
+      { delay: '25日後', name: 'タイミング合わせ', message: 'そろそろお肉が恋しくなる頃 — ¥2,000 OFFクーポン', coupon: 'TIMING2000', delivered: 56 }
+    ],
+    stats: { triggered: 100, converted: 67, revenue: 856000 }
+  },
+
+  // ========== 基盤化（3回目 → 4回目） ==========
+  {
+    id: 'STAGE4-A', trigger: 'order_completed', triggerLabel: '3回目購入完了', icon: '👑', active: true, stage: 'base', friendsCount: 67,
+    conditions: [{ label: '購入回数 = 3回目', icon: '3️⃣' }],
+    steps: [
+      { delay: '即時', name: 'VIP昇格通知 ✨', message: '🎊 あなたは上位5%のお客様です！今後はVIP特典をご利用いただけます', coupon: null, delivered: 67 },
+      { delay: '7日後', name: '基盤顧客特典：会員価格', message: 'VIPメンバー専用ページのご案内（一般非公開の限定商品もアクセス可）', coupon: null, delivered: 64 },
+      { delay: '20日後', name: '4回目で完全基盤化', message: 'あと1回ご注文で「基盤顧客」入り — 永続15%OFFが付与されます', coupon: 'BASE-IN15', delivered: 43 }
+    ],
+    stats: { triggered: 67, converted: 52, revenue: 728000 }
+  },
+  {
+    id: 'STAGE4-B', trigger: 'order_completed', triggerLabel: '4回目購入完了 🎊', icon: '🏆', active: true, stage: 'base', friendsCount: 52,
+    conditions: [{ label: '購入回数 = 4回目', icon: '4️⃣' }],
+    steps: [
+      { delay: '即時', name: '基盤顧客 認定', message: '🎉 あなたは正式な基盤顧客です！永続15%OFF権利を付与しました。今後ともよろしくお願いします', coupon: 'BASE-LIFETIME15', delivered: 52 }
+    ],
+    stats: { triggered: 52, converted: 52, revenue: 0 }
+  },
+
+  // ========== 離反防止 ==========
+  {
+    id: 'RET-A', trigger: 'daily_check', triggerLabel: '毎日チェック', icon: '⚠️', active: true, stage: 'retention', friendsCount: 18,
+    conditions: [
+      { label: '購入回数 1〜2回', icon: '🔁' },
+      { label: '最終購入から30日以上', icon: '⏰' }
+    ],
+    steps: [
+      { delay: '即発火', name: 'ストール離脱の阻止', message: 'ご無沙汰しております。久しぶりのご利用に¥1,000 OFFクーポンをどうぞ', coupon: 'COMEBACK1000', delivered: 18 }
+    ],
+    stats: { triggered: 18, converted: 9, revenue: 124000 }
+  },
+  {
+    id: 'RET-B', trigger: 'daily_check', triggerLabel: '毎日チェック', icon: '🚨', active: true, stage: 'retention', friendsCount: 5,
+    conditions: [
+      { label: '基盤顧客（4回+）', icon: '👑' },
+      { label: '最終購入から60日以上', icon: '⏰' }
+    ],
+    steps: [
+      { delay: '即発火', name: '基盤顧客の離反警報', message: '担当者から個別フォロー（手動対応推奨）+ 個別オファー作成', coupon: 'VIP-PERSONAL', delivered: 5 }
+    ],
+    stats: { triggered: 5, converted: 4, revenue: 187000 }
   }
+];
+
+/* ファネル統計（ライブ計算が理想だが、まずは集計値を表示） */
+const FUNNEL_STATS = [
+  { label: 'LINE友だち', count: 1062, color: '#06C755', icon: '💬', detail: '公式LINE登録者全員', conversion: null },
+  { label: '1回目購入', count: 245, color: '#3498DB', icon: '🛒', detail: '初回購入を完了', conversion: 23 },
+  { label: '2回目購入', count: 100, color: '#9b59b6', icon: '🔁', detail: 'リピート購入', conversion: 41 },
+  { label: '3回目購入', count: 67, color: '#e67e22', icon: '✨', detail: '習慣化の入口', conversion: 67 },
+  { label: '基盤顧客（4回+）', count: 52, color: '#D4A93B', icon: '👑', detail: 'LTV5倍・離反率1/4', conversion: 78 }
 ];
 
 const DEMO_SETS = [
@@ -2218,6 +2341,14 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCustomers();
     });
   });
+  document.querySelectorAll('#flowStageFilter .filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#flowStageFilter .filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      flowStageFilter = btn.dataset.stage;
+      renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
+    });
+  });
 });
 
 /* ================ CAMPAIGNS ================ */
@@ -2332,14 +2463,73 @@ function sendLineBlast() {
   document.getElementById('blastMessage').value = '';
 }
 
-/* ================ FLOWS (ステップ配信) ================ */
+/* ================ FLOWS (自動化) ================ */
+let flowStageFilter = 'all';
+
 function loadFlows() {
-  if (isDemoMode()) renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
+  if (isDemoMode()) {
+    renderFunnel();
+    renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
+  }
+}
+
+function renderFunnel() {
+  const el = document.getElementById('funnelChart');
+  if (!el) return;
+  let html = '';
+  FUNNEL_STATS.forEach((s, i) => {
+    const widthPct = i === 0 ? 100 : Math.max(20, Math.round(s.count / FUNNEL_STATS[0].count * 100));
+    html += `
+      <div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <div style="width:30px;height:30px;border-radius:8px;background:${s.color}22;color:${s.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${s.icon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+              <span style="font-size:13px;font-weight:700;color:var(--ink)">${s.label}</span>
+              <span style="font-size:18px;font-weight:700;color:${s.color};font-variant-numeric:tabular-nums">${s.count.toLocaleString()}</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">${s.detail}</div>
+          </div>
+        </div>
+        <div style="margin-left:40px;height:6px;background:#f0ebe0;border-radius:3px;overflow:hidden">
+          <div style="width:${widthPct}%;height:100%;background:linear-gradient(90deg,${s.color},${s.color}dd);border-radius:3px"></div>
+        </div>
+        ${s.conversion !== null ? `<div style="margin-left:40px;font-size:10px;color:var(--muted);margin-top:3px">↳ 前段階から <strong style="color:${s.color}">${s.conversion}%</strong> が次に進む</div>` : ''}
+      </div>
+    `;
+  });
+  // ボトル ネック表示
+  const minConv = Math.min(...FUNNEL_STATS.filter(s => s.conversion !== null).map(s => s.conversion));
+  const bottleneck = FUNNEL_STATS.find(s => s.conversion === minConv);
+  html += `
+    <div style="margin-top:14px;padding:10px 12px;background:#FEF2F2;border-left:4px solid var(--red);border-radius:6px;font-size:11px;line-height:1.6;color:#991B1B">
+      <strong>⚠️ ボトルネック:</strong> ${escapeHtml(bottleneck.label)}遷移が <strong>${minConv}%</strong> — ここを伸ばすと全体LTVが伸びます
+    </div>
+  `;
+  el.innerHTML = html;
 }
 function renderFlows(flows) {
   const list = document.getElementById('flowList');
   if (!list) return;
-  list.innerHTML = flows.map(f => {
+  let filtered = flows;
+  if (flowStageFilter !== 'all') {
+    filtered = flows.filter(f => f.stage === flowStageFilter);
+  }
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">🤖</div><div class="empty-text">該当するルールがありません</div></div>';
+    return;
+  }
+  list.innerHTML = filtered.map(f => {
+    const stageLabels = {
+      first: { label: '🛒 1回目化', color: '#3498DB' },
+      repeat: { label: '🔁 2回目化', color: '#9b59b6' },
+      habit: { label: '✨ 3回目化', color: '#e67e22' },
+      base: { label: '👑 基盤化', color: '#D4A93B' },
+      retention: { label: '⚠️ 離反防止', color: '#e74c3c' }
+    };
+    const stageBadge = f.stage && stageLabels[f.stage]
+      ? `<span style="background:${stageLabels[f.stage].color}22;color:${stageLabels[f.stage].color};font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;margin-left:6px">${stageLabels[f.stage].label}</span>`
+      : '';
     const stepHtml = f.steps.map((s, i) => `
       <div style="position:relative;padding:10px 12px 10px 36px;border-left:2px solid ${f.active && s.delivered > 0 ? 'var(--green)' : 'var(--bone)'};margin-left:14px">
         <div style="position:absolute;left:-9px;top:14px;width:16px;height:16px;border-radius:50%;background:${f.active && s.delivered > 0 ? 'var(--green)' : '#fff'};border:2px solid ${f.active && s.delivered > 0 ? 'var(--green)' : 'var(--bone)'}"></div>
@@ -2389,7 +2579,7 @@ function renderFlows(flows) {
         <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${f.active ? 'linear-gradient(90deg,#0F3D2E,#143D2B)' : '#f5f5f7'};color:${f.active ? '#fff' : 'var(--muted)'}">
           <div style="font-size:24px">${f.icon}</div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:10px;letter-spacing:.04em;opacity:.7">WHEN — トリガー</div>
+            <div style="font-size:10px;letter-spacing:.04em;opacity:.7">WHEN — トリガー${stageBadge}</div>
             <div style="font-size:14px;font-weight:700">${escapeHtml(f.triggerLabel)}</div>
           </div>
           <span class="cust-tag" style="background:${f.active ? '#06C755' : '#9CA3AF'};color:#fff">${f.active ? '配信中' : '停止中'}</span>
