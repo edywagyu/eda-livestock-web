@@ -1660,74 +1660,178 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ LINE BANNER ================ */
-.shop-line-banner {
+/* ============ 配送カウントダウンバー ============ */
+.ship-countdown-bar {
   background: var(--color-cream);
-  padding: 32px 0 0;
+  padding: 24px 0 0;
 }
-.shop-line-inner {
+.ship-cd-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  background: linear-gradient(135deg, #06C755 0%, #04A847 100%);
-  padding: 28px 40px;
+  gap: 16px;
+  background: linear-gradient(135deg, #0F3D2E 0%, #143D2B 100%);
+  padding: 18px 28px;
   color: white;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
+  border: 1.5px solid rgba(212, 169, 59, 0.3);
 }
-.shop-line-inner::before {
+.ship-cd-inner::before {
   content: '';
   position: absolute;
-  top: -40px; right: -40px;
-  width: 160px; height: 160px;
-  background: rgba(255,255,255,0.08);
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(212, 169, 59, 0.15), transparent 70%);
+}
+.ship-cd-icon {
+  width: 48px; height: 48px;
   border-radius: 50%;
-}
-.shop-line-left { position: relative; z-index: 1; }
-.shop-line-tag {
-  display: inline-block;
-  background: rgba(255,255,255,0.2);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 4px 12px;
-  margin-bottom: 8px;
-}
-.shop-line-title {
-  font-family: var(--font-jp);
-  font-size: clamp(18px, 2.4vw, 26px);
-  font-weight: 700;
-  margin: 0 0 4px;
-}
-.shop-line-title strong {
-  font-size: 1.2em;
-}
-.shop-line-text {
-  font-size: 13px;
-  line-height: 1.6;
-  opacity: 0.9;
-  margin: 0;
-  max-width: 520px;
-}
-.shop-line-btn {
-  display: inline-flex;
+  background: rgba(212, 169, 59, 0.18);
+  color: var(--color-gold);
+  display: flex;
   align-items: center;
-  gap: 8px;
-  background: white;
-  color: #06C755;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 14px 28px;
-  white-space: nowrap;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  justify-content: center;
+  flex-shrink: 0;
   position: relative;
   z-index: 1;
+}
+.ship-cd-content { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.ship-cd-headline {
+  font-family: var(--font-jp);
+  font-size: clamp(14px, 2vw, 17px);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.ship-cd-headline strong { color: var(--color-gold); }
+.ship-cd-meta {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+.ship-cd-meta strong { color: #FFB81C; font-variant-numeric: tabular-nums; }
+.ship-cd-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 11px 20px;
+  white-space: nowrap;
+  border-radius: 8px;
   text-decoration: none;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
 }
-.shop-line-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+.ship-cd-cta:hover { background: #E5B547; transform: translateY(-1px); }
+
+@media (max-width: 720px) {
+  .ship-cd-inner { padding: 14px 16px; flex-wrap: wrap; gap: 12px; }
+  .ship-cd-icon { width: 38px; height: 38px; }
+  .ship-cd-cta { width: 100%; justify-content: center; padding: 10px; }
 }
+
+/* ============ 贈答用ハイライト ============ */
+.gift-highlight {
+  background: linear-gradient(135deg, #FAF7F0 0%, #F5EFE3 100%);
+  padding: var(--space-section-sm) 0;
+}
+.gift-hi-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.gift-hi-content h2 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 4.5vw, 44px);
+  color: var(--color-forest);
+  margin: 0 0 16px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+.gift-hi-content p {
+  color: var(--color-ink-muted);
+  line-height: 1.85;
+  font-size: 15px;
+  margin: 0 0 24px;
+}
+.gift-hi-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+}
+.gift-hi-features li {
+  font-size: 13px;
+  color: var(--color-forest);
+  font-weight: 500;
+}
+.gift-hi-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.gift-hi-card {
+  background: white;
+  border-radius: 14px;
+  padding: 24px 16px;
+  text-align: center;
+  border: 1px solid var(--color-bone);
+  box-shadow: 0 2px 12px rgba(15, 61, 46, 0.04);
+  transition: transform 0.3s var(--ease-out-expo);
+}
+.gift-hi-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-gold);
+  box-shadow: 0 8px 24px rgba(212, 169, 59, 0.18);
+}
+.gift-hi-emoji {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.gift-hi-card strong {
+  display: block;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-forest);
+  margin: 4px 0 4px;
+}
+.gift-hi-card small {
+  font-size: 11px;
+  color: var(--color-ink-muted);
+}
+@media (max-width: 720px) {
+  .gift-hi-inner { grid-template-columns: 1fr; gap: 32px; }
+  .gift-hi-features { grid-template-columns: 1fr; }
+}
+
+/* ============ セクション順序制御（EC優先） ============ */
+.shop-main-wrap { display: flex; flex-direction: column; }
+.shop-main-wrap > section { order: 99; }   /* デフォルト 末尾寄り */
+.shop-main-wrap > .ship-countdown-bar { order: 1; }
+.shop-main-wrap > #products       { order: 10; }  /* All Products 最上 */
+.shop-main-wrap > #subscription   { order: 20; }  /* 定期便 */
+.shop-main-wrap > #gift-highlight { order: 30; }  /* 贈答用 */
+.shop-main-wrap > #about-wagyu    { order: 40; }  /* 4つの理由 */
+.shop-main-wrap > #science        { order: 50; }  /* 透明な育て方 */
+.shop-main-wrap > #reviews        { order: 60; }  /* お客様の声 */
+.shop-main-wrap > #hajimete       { order: 70; }  /* はじめての方へ */
+.shop-main-wrap > #dynProducts    { order: 75; }  /* 動的商品 */
+.shop-main-wrap > #guide          { order: 80; }  /* 保存ガイド */
+.shop-main-wrap > #faq            { order: 85; }  /* FAQ */
+.shop-main-wrap > .shop-how       { order: 90; }  /* HOW IT WORKS */
+.shop-main-wrap > .article-body   { order: 95; }  /* SPECS */
 
 /* ================ STARTER / FIRST-TIME ================ */
 .shop-starter {
@@ -2806,6 +2910,61 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-family: var(--font-display); font-size: 24px;
   color: var(--color-forest); letter-spacing: 0.04em;
 }
+/* ============ 配送日時指定 ============ */
+.delivery-picker {
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-bone);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 14px;
+}
+.delivery-picker-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-forest);
+  margin-bottom: 8px;
+}
+.delivery-picker-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.delivery-picker-row label {
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+.delivery-picker-row select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-bone);
+  border-radius: 6px;
+  font-size: 12px;
+  background: white;
+  font-family: var(--font-jp);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235C5C5C' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+.delivery-picker-row select:focus { outline: 0; border-color: var(--color-gold); }
+.delivery-picker-note {
+  font-size: 10px;
+  color: var(--color-ink-muted);
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+.delivery-picker-note strong { color: var(--color-forest); }
+
 .cart-shipping-note {
   font-size: 11px; color: var(--color-ink-muted);
   margin-bottom: 16px; line-height: 1.6;
@@ -3768,19 +3927,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </div>
 
-<!-- ========= LINE BANNER ========= -->
-<section class="shop-line-banner reveal">
+<div class="shop-main-wrap">
+
+<!-- ========= 配送カウントダウンバー ========= -->
+<section class="ship-countdown-bar reveal">
   <div class="container">
-    <div class="shop-line-inner">
-      <div class="shop-line-left">
-        <span class="shop-line-tag">初回限定</span>
-        <h3 class="shop-line-title">LINE追加で<strong>10%OFF</strong></h3>
-        <p class="shop-line-text">公式LINEのお友だち追加で、すぐに使える10%OFFクーポンを発行。配送追跡・再注文・お問い合わせもLINEで完結します。</p>
+    <div class="ship-cd-inner">
+      <div class="ship-cd-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       </div>
-      <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="shop-line-btn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
-        友だち追加で10%OFF
-      </a>
+      <div class="ship-cd-content">
+        <div class="ship-cd-headline" id="shipCdHeadline">本日 13:00 までのご注文で <strong>5月13日（火）</strong>着</div>
+        <div class="ship-cd-meta" id="shipCdMeta">残り <strong>0時間 00分</strong> — 冷凍便（クール宅急便）でお届け</div>
+      </div>
+      <a href="#products" class="ship-cd-cta">商品を見る →</a>
     </div>
   </div>
 </section>
@@ -4514,6 +4674,50 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
+<!-- ========= 贈答用ハイライト ========= -->
+<section class="gift-highlight" id="gift-highlight">
+  <div class="container">
+    <div class="gift-hi-inner">
+      <div class="gift-hi-content">
+        <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block;">For Special Occasions</span>
+        <h2>大切な方への贈り物に。</h2>
+        <p>のし対応・木箱入れ・直接配送承ります。<br/>父の日・母の日・お中元・お歳暮・内祝い・出産祝い…<br/>「健康に気を遣う方へ届けたい」想いを、お肉に込めて。</p>
+        <ul class="gift-hi-features">
+          <li>✓ のし・名入れ無料</li>
+          <li>✓ 化粧箱・木箱包装対応</li>
+          <li>✓ 直接配送 / メッセージカード添付可</li>
+          <li>✓ 法人・大口注文にも対応</li>
+        </ul>
+        <a href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;" class="btn btn-gold">ギフト商品を見る <span class="btn-arrow"></span></a>
+      </div>
+      <div class="gift-hi-visual">
+        <div class="gift-hi-card">
+          <div class="gift-hi-emoji">🎁</div>
+          <strong>贈答用 化粧箱</strong>
+          <small>江田和牛サーロイン 500g+</small>
+        </div>
+        <div class="gift-hi-card">
+          <div class="gift-hi-emoji">🌸</div>
+          <strong>母の日特集</strong>
+          <small>5月限定セット</small>
+        </div>
+        <div class="gift-hi-card">
+          <div class="gift-hi-emoji">🎄</div>
+          <strong>お歳暮・お中元</strong>
+          <small>年2回の定番</small>
+        </div>
+        <div class="gift-hi-card">
+          <div class="gift-hi-emoji">👶</div>
+          <strong>出産・内祝い</strong>
+          <small>のし・命名対応</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /.shop-main-wrap -->
+
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
@@ -4599,6 +4803,33 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       ¥11,000以上で<strong>送料無料</strong>。冷凍便でお届け。
     </div>
     <div class="cart-delivery-note" id="cartDelivery"></div>
+
+    <!-- 配送日時指定 -->
+    <div class="delivery-picker">
+      <div class="delivery-picker-head">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>お届け日時を指定（任意）</span>
+      </div>
+      <div class="delivery-picker-row">
+        <label>お届け日</label>
+        <select id="deliveryDate" onchange="updateDeliveryNote()">
+          <option value="">指定なし（最短）</option>
+        </select>
+      </div>
+      <div class="delivery-picker-row">
+        <label>時間帯</label>
+        <select id="deliveryTime">
+          <option value="">指定なし</option>
+          <option value="0812">午前中（8〜12時）</option>
+          <option value="1416">14時 〜 16時</option>
+          <option value="1618">16時 〜 18時</option>
+          <option value="1820">18時 〜 20時</option>
+          <option value="1921">19時 〜 21時</option>
+        </select>
+      </div>
+      <p class="delivery-picker-note" id="deliveryPickerNote">指定なしの場合、最短日でお届けします</p>
+    </div>
+
     <button class="btn-checkout" id="cartCheckout">レジに進む — Checkout</button>
     <button class="cart-continue" id="cartContinue">買い物を続ける</button>
   </div>
@@ -5311,6 +5542,67 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <script>
 /* ===== クーポンPOP ロジック ===== */
+/* ============ 配送カウントダウンバー ============ */
+(function shipCountdownInit() {
+  const CUTOFF_HOUR = 13; // 13:00 まで注文 → 翌日発送 → 翌々日着
+  const headlineEl = document.getElementById('shipCdHeadline');
+  const metaEl = document.getElementById('shipCdMeta');
+  if (!headlineEl || !metaEl) return;
+
+  const days = ['日','月','火','水','木','金','土'];
+
+  function nextBusinessDay(d) {
+    const next = new Date(d.getTime() + 24 * 3600000);
+    while (next.getDay() === 0 || next.getDay() === 6) {
+      next.setDate(next.getDate() + 1);
+    }
+    return next;
+  }
+
+  function calcArrival() {
+    const now = new Date();
+    const isWeekend = (now.getDay() === 0 || now.getDay() === 6);
+    let shipDate; // 発送日
+    let isInTime = false;
+
+    if (!isWeekend && now.getHours() < CUTOFF_HOUR) {
+      // 平日 13時前 → 今日発送（翌日着）
+      shipDate = new Date(now);
+      isInTime = true;
+    } else {
+      // 平日 13時以降 or 週末 → 次の営業日発送
+      shipDate = nextBusinessDay(now);
+    }
+    // 翌日着想定
+    const arrival = new Date(shipDate.getTime() + 24 * 3600000);
+    return { arrival, shipDate, isInTime, now };
+  }
+
+  function update() {
+    const { arrival, shipDate, isInTime, now } = calcArrival();
+    const m = arrival.getMonth() + 1;
+    const d = arrival.getDate();
+    const w = days[arrival.getDay()];
+
+    if (isInTime) {
+      // 残り時間
+      const cutoff = new Date(now);
+      cutoff.setHours(CUTOFF_HOUR, 0, 0, 0);
+      const diffMs = cutoff - now;
+      const hours = Math.floor(diffMs / 3600000);
+      const minutes = Math.floor((diffMs % 3600000) / 60000);
+      headlineEl.innerHTML = `本日 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>着`;
+      metaEl.innerHTML = `残り <strong>${hours}時間 ${String(minutes).padStart(2,'0')}分</strong> — 冷凍便（クール宅急便）でお届け`;
+    } else {
+      headlineEl.innerHTML = `次回 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>着予定`;
+      metaEl.innerHTML = `現在は受付時間外です — 平日 ${CUTOFF_HOUR}:00 までのご注文で翌日発送`;
+    }
+  }
+
+  update();
+  setInterval(update, 60000); // 1分ごと更新
+})();
+
 (function couponPopInit() {
   // ローカル保有クーポン取得（mypage連携 / localStorage）
   function getActiveCoupon() {

@@ -182,6 +182,61 @@
     if (overlay)   overlay.addEventListener('click', closeCart);
     if (contBtn)   contBtn.addEventListener('click', closeCart);
 
+    /* --- 配送日プルダウン生成（最短〜14日後） --- */
+    (function populateDeliveryDates() {
+      const sel = document.getElementById('deliveryDate');
+      if (!sel) return;
+      const days = ['日','月','火','水','木','金','土'];
+      const now = new Date();
+      const cutoffHour = 13;
+      // 最短発送日（13時前なら今日、それ以降は翌営業日）
+      let firstShip = new Date(now);
+      const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+      if (now.getHours() >= cutoffHour || isWeekend(firstShip)) {
+        do {
+          firstShip.setDate(firstShip.getDate() + 1);
+        } while (isWeekend(firstShip));
+      }
+      // 最短お届け = 発送翌日
+      const earliest = new Date(firstShip);
+      earliest.setDate(earliest.getDate() + 1);
+
+      // 14日先までを選択肢に
+      for (let i = 0; i < 14; i++) {
+        const d = new Date(earliest);
+        d.setDate(earliest.getDate() + i);
+        const m = d.getMonth() + 1;
+        const day = d.getDate();
+        const w = days[d.getDay()];
+        const val = d.toISOString().slice(0, 10);
+        const label = i === 0
+          ? `${m}月${day}日（${w}）— 最短`
+          : `${m}月${day}日（${w}）`;
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = label;
+        sel.appendChild(opt);
+      }
+    })();
+
+    /* 配送指定の表示更新（cartCheckoutに値を反映するために使用） */
+    window.updateDeliveryNote = function() {
+      const dateEl = document.getElementById('deliveryDate');
+      const timeEl = document.getElementById('deliveryTime');
+      const note = document.getElementById('deliveryPickerNote');
+      if (!note) return;
+      const dt = dateEl ? dateEl.value : '';
+      const tm = timeEl ? timeEl.options[timeEl.selectedIndex]?.text : '';
+      if (dt) {
+        const d = new Date(dt);
+        const m = d.getMonth() + 1;
+        const day = d.getDate();
+        note.innerHTML = `<strong>${m}月${day}日</strong> ${tm && tm !== '指定なし' ? '・' + tm : ''} にお届け予定`;
+      } else {
+        note.textContent = '指定なしの場合、最短日でお届けします';
+      }
+    };
+
     /* --- Save --- */
     function save() { localStorage.setItem(CART_KEY, JSON.stringify(items)); }
 
@@ -302,6 +357,8 @@
         checkBtn.textContent = '決済ページへ移動中...';
 
         try {
+          const dateEl = document.getElementById('deliveryDate');
+          const timeEl = document.getElementById('deliveryTime');
           const res = await fetch(GAS_API_URL + '?action=create_checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -312,7 +369,9 @@
                 price: i.price,
                 qty: i.qty,
                 variantId: i.variantId
-              }))
+              })),
+              deliveryDate: dateEl ? dateEl.value : '',
+              deliveryTime: timeEl ? timeEl.value : ''
             })
           });
 
