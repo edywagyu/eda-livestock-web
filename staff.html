@@ -1000,6 +1000,36 @@ ul { list-style: none; padding: 0; margin: 0; }
   flex-shrink: 0;
 }
 
+/* ============ FLOW TOGGLE SWITCH ============ */
+.flow-toggle {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.flow-toggle input { opacity: 0; width: 0; height: 0; }
+.flow-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: rgba(255,255,255,0.25);
+  border-radius: 12px;
+  transition: 0.25s;
+}
+.flow-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 3px; top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.25s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.flow-toggle input:checked + .flow-toggle-slider { background: var(--gold); }
+.flow-toggle input:checked + .flow-toggle-slider:before { transform: translateX(18px); }
+
 /* ============ MODAL / FORM SHEET ============ */
 .form-sheet {
   position: fixed;
@@ -2703,7 +2733,14 @@ function renderFlows(flows) {
             <div style="font-size:10px;letter-spacing:.04em;opacity:.7">WHEN — トリガー${stageBadge}</div>
             <div style="font-size:14px;font-weight:700">${escapeHtml(f.triggerLabel)}</div>
           </div>
-          <span class="cust-tag" style="background:${f.active ? '#06C755' : '#9CA3AF'};color:#fff">${f.active ? '配信中' : '停止中'}</span>
+          <!-- ON/OFFトグル -->
+          <label class="flow-toggle" onclick="event.stopPropagation()">
+            <input type="checkbox" ${f.active ? 'checked' : ''} onchange="toggleFlow('${f.id}', this.checked)">
+            <span class="flow-toggle-slider"></span>
+          </label>
+          <button onclick="event.stopPropagation();editFlow('${f.id}')" style="background:rgba(255,255,255,${f.active ? '0.15' : '1'});color:${f.active ? '#fff' : 'var(--forest)'};border:${f.active ? 'none' : '1px solid var(--bone)'};border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
         </div>
         ${condHtml}
         <div style="padding:14px 4px 14px 0">
@@ -2714,6 +2751,37 @@ function renderFlows(flows) {
       </div>
     `;
   }).join('');
+}
+
+function toggleFlow(flowId, isActive) {
+  const flow = DEMO_FLOWS.find(f => f.id === flowId);
+  if (flow) {
+    flow.active = isActive;
+    renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
+    toast(isActive ? '✅ ON にしました' : '⏸ OFF にしました', 'success');
+    if (!isDemoMode()) {
+      fetch(GAS_URL + '?action=staff_flow_toggle', {
+        method: 'POST', headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ flowId, active: isActive })
+      }).catch(() => {});
+    }
+  }
+}
+
+function editFlow(flowId) {
+  const flow = DEMO_FLOWS.find(f => f.id === flowId);
+  if (!flow) return;
+  openForm('flow');
+  // フォーム読み込み後にプリセット適用
+  setTimeout(() => {
+    const ruleNameEl = document.getElementById('ruleName');
+    if (ruleNameEl) ruleNameEl.value = flow.steps && flow.steps[0] ? flow.steps[0].name : flow.triggerLabel;
+    const triggerEl = document.getElementById('flowTrigger');
+    if (triggerEl) triggerEl.value = flow.trigger;
+    if (flow.conditions && flow.conditions.length) {
+      flow.conditions.forEach(c => addCondition({ field: 'segment', value: c.label }));
+    }
+  }, 100);
 }
 
 /* ================ PRODUCT FORM (create/edit) ================ */
