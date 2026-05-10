@@ -1,0 +1,20 @@
+{
+  "name": "江田畜産 STAFF",
+  "short_name": "EDA Staff",
+  "description": "江田畜産 業務管理 - 在庫・注文・発送",
+  "start_url": "/eda-livestock-web/staff.html",
+  "scope": "/eda-livestock-web/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F3D2E",
+  "theme_color": "#0F3D2E",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "public/images/logo/eda-livestock-logo-transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
