@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="EDA Staff">
 <meta name="theme-color" content="#0F3D2E">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="manifest" href="staff-manifest.json">
 <link rel="apple-touch-icon" href="public/images/logo/eda-livestock-logo-transparent.png">
 <title>江田畜産 STAFF</title>
@@ -602,7 +605,11 @@ ul { list-style: none; padding: 0; margin: 0; }
     <button class="numpad-btn del" data-key="del">⌫</button>
   </div>
   <div class="login-hint" id="loginHint">4桁のPINを入力</div>
-  <div style="font-size:10px;opacity:0.4;margin-top:8px">デモ体験は <strong style="color:var(--gold);opacity:1">1234</strong></div>
+
+  <button id="demoQuickBtn" onclick="enterDemoQuick()"
+          style="margin-top:24px;padding:12px 28px;background:var(--gold);color:var(--forest-deep);font-weight:700;border-radius:24px;font-size:13px;letter-spacing:0.04em">
+    🎭 デモを試す（PIN不要）
+  </button>
 </div>
 
 <!-- APP -->
@@ -827,37 +834,44 @@ function renderPin() {
 }
 
 async function checkPin() {
-  // GAS未接続 → デモモード（PIN 1234）
-  if (!GAS_URL) {
-    if (pinBuffer === '1234') {
-      sessionStorage.setItem('eda-staff-demo', '1');
-      localStorage.setItem(SESSION_KEY, '1');
-      enterApp();
-    } else {
-      showPinError('デモモード: PINは 1234');
+  // ★ PIN 1234 は何があっても通す（GASがあれば本番、無ければデモ）
+  if (pinBuffer === '1234') {
+    if (GAS_URL) {
+      try {
+        const res = await fetch(GAS_URL + '?action=staff_login&pin=1234');
+        const data = await res.json();
+        if (data && data.success) {
+          sessionStorage.removeItem('eda-staff-demo');
+          localStorage.setItem(SESSION_KEY, '1');
+          enterApp();
+          return;
+        }
+      } catch (e) {}
     }
+    // GAS未接続 or 認証失敗 → デモモード
+    sessionStorage.setItem('eda-staff-demo', '1');
+    localStorage.setItem(SESSION_KEY, '1');
+    enterApp();
     return;
   }
-  // GAS接続 → サーバー認証
+
+  // それ以外のPIN：GAS認証必須
+  if (!GAS_URL) {
+    showPinError('PINは 1234（デモ体験）');
+    return;
+  }
   try {
     const res = await fetch(GAS_URL + '?action=staff_login&pin=' + pinBuffer);
     const data = await res.json();
-    if (data.success) {
+    if (data && data.success) {
       sessionStorage.removeItem('eda-staff-demo');
       localStorage.setItem(SESSION_KEY, '1');
       enterApp();
     } else {
-      showPinError(data.error || 'PINが違います');
+      showPinError('PINが違います');
     }
   } catch (e) {
-    // 接続失敗時もデモモードフォールバック
-    if (pinBuffer === '1234') {
-      sessionStorage.setItem('eda-staff-demo', '1');
-      localStorage.setItem(SESSION_KEY, '1');
-      enterApp();
-    } else {
-      showPinError('接続エラー — PIN 1234 でデモ');
-    }
+    showPinError('接続エラー — 1234でデモ');
   }
 }
 
@@ -1226,11 +1240,38 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-/* ================ INIT ================ */
-if (localStorage.getItem(SESSION_KEY) === '1') {
+/* ================ DEMO QUICK ENTRY ================ */
+function enterDemoQuick() {
+  sessionStorage.setItem('eda-staff-demo', '1');
+  localStorage.setItem(SESSION_KEY, '1');
   enterApp();
 }
-renderPin();
+
+/* ================ INIT ================ */
+(function init() {
+  // URL パラメータ処理
+  const params = new URLSearchParams(window.location.search);
+
+  // ?reset=1 → 全クリア
+  if (params.get('reset') === '1') {
+    localStorage.clear();
+    sessionStorage.clear();
+    location.replace(location.pathname);
+    return;
+  }
+
+  // ?demo=1 → 即デモ起動（PIN不要）
+  if (params.get('demo') === '1') {
+    enterDemoQuick();
+    return;
+  }
+
+  // 通常起動：保存セッションがあれば自動ログイン
+  if (localStorage.getItem(SESSION_KEY) === '1') {
+    enterApp();
+  }
+  renderPin();
+})();
 </script>
 </body>
 </html>
