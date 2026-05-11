@@ -2588,31 +2588,88 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ DIAGNOSTIC QUIZ ================ */
 .quiz-section {
+  /* 診察室の壁 × 方眼紙のような臨床感 */
   background:
-    radial-gradient(circle at 50% 0%, rgba(15,61,46,0.04), transparent 50%),
-    linear-gradient(180deg, #F8F4EB 0%, #EDE5D2 100%);
+    radial-gradient(circle at 50% 100%, rgba(15,61,46,0.06), transparent 50%),
+    linear-gradient(180deg, #F0EEE6 0%, #E8E5DA 100%);
   padding: 80px 0;
   position: relative;
   overflow: hidden;
 }
+.quiz-section::before {
+  /* 方眼紙グリッド（細罫線 + 5マスごとに濃い罫線）→ 診察カルテ感 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(15,61,46,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,61,46,0.08) 1px, transparent 1px),
+    linear-gradient(rgba(15,61,46,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,61,46,0.035) 1px, transparent 1px);
+  background-size: 150px 150px, 150px 150px, 30px 30px, 30px 30px;
+  pointer-events: none;
+}
+.quiz-section::after {
+  /* 上部の金線（診療シートのヘッダー風） */
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(212,169,59,0.35) 20%,
+    rgba(212,169,59,0.55) 50%,
+    rgba(212,169,59,0.35) 80%,
+    transparent 100%);
+  pointer-events: none;
+}
+/* 四隅のL字マーカー（実際の医療チャート風） */
+.quiz-section .container {
+  position: relative;
+}
+.quiz-section .container::before,
+.quiz-section .container::after {
+  content: '';
+  position: absolute;
+  width: 36px; height: 36px;
+  border: 2px solid rgba(15,61,46,0.22);
+  pointer-events: none;
+  z-index: 0;
+}
+.quiz-section .container::before {
+  top: -32px; left: clamp(20px, 4vw, 56px);
+  border-right: 0; border-bottom: 0;
+}
+.quiz-section .container::after {
+  bottom: -32px; right: clamp(20px, 4vw, 56px);
+  border-left: 0; border-top: 0;
+}
 
 /* ============ 🎁 50%OFF プレゼントバナー（緑×金で本サイトのブランドと統一） ============ */
 .quiz-gift-banner {
-  max-width: 760px;
-  margin: 0 auto 32px;
+  max-width: 100%;
+  margin: 24px auto 28px;
   background:
-    radial-gradient(circle at 85% 25%, rgba(212,169,59,0.18), transparent 50%),
+    radial-gradient(circle at 85% 25%, rgba(212,169,59,0.22), transparent 55%),
     linear-gradient(135deg, #143D2B 0%, #0F3D2E 50%, #0A2D21 100%);
-  border-radius: 20px;
-  padding: 32px 36px;
+  border-radius: 18px;
+  padding: 28px 28px 26px;
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 28px;
+  grid-template-columns: 96px 1fr;
+  gap: 22px;
   align-items: center;
-  box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(212,169,59,0.18);
-  border: 1.5px solid rgba(212,169,59,0.5);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(212,169,59,0.18);
+  border: 1.5px solid rgba(212,169,59,0.55);
+  /* 出現アニメ：プレゼントが届いた感 */
+  animation: quizGiftAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes quizGiftAppear {
+  0%   { opacity: 0; transform: translateY(-12px) scale(0.92); }
+  60%  { opacity: 1; transform: translateY(4px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 .quiz-gift-banner::before {
   /* 金色ストライプ模様 */
@@ -2679,8 +2736,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ギフトボックス（CSS のみで作成） */
 .quiz-gift-box {
-  width: 110px;
-  height: 110px;
+  width: 96px;
+  height: 96px;
   position: relative;
   margin: 0 auto;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
@@ -7944,63 +8001,9 @@ function toggleUnboxingSound() {
 }
 </script>
 
-<!-- ========= お肉事情診断 + 今月入会50%OFF プレゼントバナー ========= -->
+<!-- ========= お肉事情診断（回答後に50%OFFプレゼントバナーを表示） ========= -->
 <section class="quiz-section" id="quiz">
   <div class="container">
-
-    <!-- 🎁 今月入会で50%OFF プレゼントバナー（診断の前に置く） -->
-    <div class="quiz-gift-banner reveal">
-      <div class="quiz-gift-ribbon">
-        <span class="quiz-gift-ribbon-month" id="quizGiftMonth">5月</span>
-        <span class="quiz-gift-ribbon-label">限定</span>
-      </div>
-      <div class="quiz-gift-box">
-        <div class="quiz-gift-box-lid"></div>
-        <div class="quiz-gift-box-body">
-          <div class="quiz-gift-bow">
-            <span class="quiz-gift-bow-left"></span>
-            <span class="quiz-gift-bow-right"></span>
-            <span class="quiz-gift-bow-center"></span>
-          </div>
-        </div>
-      </div>
-      <div class="quiz-gift-content">
-        <span class="quiz-gift-tag">
-          <span class="quiz-gift-tag-dot"></span>
-          PRESENT FOR YOU
-        </span>
-        <h3 class="quiz-gift-title">
-          <span class="quiz-gift-month-label" id="quizGiftMonthLabel">今月</span>入会で、
-          <span class="quiz-gift-percent">50<small>%</small></span>
-          <span class="quiz-gift-off">OFF</span>
-        </h3>
-        <p class="quiz-gift-desc">
-          診断後、ご提案プランの<strong>初月50%OFF</strong>クーポンを自動発行。<br class="hide-sp"/>
-          いつでもスキップ・解約OK / 解約縛りなし。
-        </p>
-        <div class="quiz-gift-stats">
-          <div class="quiz-gift-stat">
-            <span class="quiz-gift-stat-num">−¥6,400</span>
-            <span class="quiz-gift-stat-label">最大お得額(レギュラー)</span>
-          </div>
-          <div class="quiz-gift-stat">
-            <span class="quiz-gift-stat-num">¥0</span>
-            <span class="quiz-gift-stat-label">毎回送料</span>
-          </div>
-          <div class="quiz-gift-stat">
-            <span class="quiz-gift-stat-num">無料</span>
-            <span class="quiz-gift-stat-label">スキップ・解約</span>
-          </div>
-        </div>
-        <p class="quiz-gift-fine">
-          ※ 適用条件: <span id="quizGiftDeadline">月末</span>までに定期便ご注文の方 / 初月のみ50%OFF
-        </p>
-      </div>
-      <div class="quiz-gift-sparkles" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
-    </div>
-
     <div class="quiz-card">
       <div class="quiz-card-body">
         <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
@@ -9076,21 +9079,17 @@ function toggleUnboxingSound() {
   window._refreshWeeklyMenu = render;
 })();
 
-/* ============ 🎁 今月限定50%OFF：月・締切・残日数を自動更新 ============ */
+/* ============ 🎁 今月限定50%OFF：月・締切・残日数を自動更新 ============
+   診断結果バナー（quizGiftMonth 系）は renderResult() 内で
+   毎回 new Date() から計算するため、ここでは
+   定期コース帯の subPromoMonth / subPromoDaysLeft のみ更新する。
+   ============================================================ */
 (function monthEndPromoInit() {
   function update() {
     const now = new Date();
     const m = now.getMonth() + 1;
     const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     const daysLeft = Math.max(1, lastDay - now.getDate() + 1); // 当日も含めて残日数
-
-    // 診断クイズ前の50%OFFプレゼントバナー
-    const giftMonth = document.getElementById('quizGiftMonth');
-    const giftMonthLabel = document.getElementById('quizGiftMonthLabel');
-    const giftDeadline = document.getElementById('quizGiftDeadline');
-    if (giftMonth) giftMonth.textContent = m + '月';
-    if (giftMonthLabel) giftMonthLabel.textContent = m + '月';
-    if (giftDeadline) giftDeadline.textContent = m + '月' + lastDay + '日';
 
     // 定期コース 初月50%OFF 締切バー
     const subPromoMonth = document.getElementById('subPromoMonth');
@@ -9254,6 +9253,13 @@ function toggleUnboxingSound() {
       use_kids: 'お子さま中心'
     }[use];
 
+    // 現在月と月末日を計算（月変わりで自動更新）
+    const _now = new Date();
+    const _m = _now.getMonth() + 1;
+    const _lastDay = new Date(_now.getFullYear(), _now.getMonth() + 1, 0).getDate();
+    const _halfPrice = Math.round(planPrice / 2);
+    const _saveFromHalf = planPrice - _halfPrice;
+
     c.innerHTML = `
       <div class="quiz-result">
         <p class="quiz-result-eyebrow">RECOMMENDED FOR YOU</p>
@@ -9262,6 +9268,59 @@ function toggleUnboxingSound() {
           <strong>${familyLabel}</strong> × <strong>${useLabel}</strong> のあなたに最適。<br/>
           ${planDesc}。
         </p>
+
+        <!-- 🎁 今月入会で50%OFF プレゼントバナー -->
+        <div class="quiz-gift-banner">
+          <div class="quiz-gift-ribbon">
+            <span class="quiz-gift-ribbon-month">${_m}月</span>
+            <span class="quiz-gift-ribbon-label">限定</span>
+          </div>
+          <div class="quiz-gift-box">
+            <div class="quiz-gift-box-lid"></div>
+            <div class="quiz-gift-box-body">
+              <div class="quiz-gift-bow">
+                <span class="quiz-gift-bow-left"></span>
+                <span class="quiz-gift-bow-right"></span>
+                <span class="quiz-gift-bow-center"></span>
+              </div>
+            </div>
+          </div>
+          <div class="quiz-gift-content">
+            <span class="quiz-gift-tag">
+              <span class="quiz-gift-tag-dot"></span>
+              PRESENT FOR YOU
+            </span>
+            <h3 class="quiz-gift-title">
+              <span class="quiz-gift-month-label">${_m}月</span>入会で、
+              <span class="quiz-gift-percent">50<small>%</small></span>
+              <span class="quiz-gift-off">OFF</span>
+            </h3>
+            <p class="quiz-gift-desc">
+              <strong>${plan}定期便</strong>の初月50%OFFクーポンを自動発行。<br class="hide-sp"/>
+              いつでもスキップ・解約OK / 解約縛りなし。
+            </p>
+            <div class="quiz-gift-stats">
+              <div class="quiz-gift-stat">
+                <span class="quiz-gift-stat-num">−¥${_saveFromHalf.toLocaleString()}</span>
+                <span class="quiz-gift-stat-label">初月のお得額</span>
+              </div>
+              <div class="quiz-gift-stat">
+                <span class="quiz-gift-stat-num">¥0</span>
+                <span class="quiz-gift-stat-label">毎回送料</span>
+              </div>
+              <div class="quiz-gift-stat">
+                <span class="quiz-gift-stat-num">無料</span>
+                <span class="quiz-gift-stat-label">スキップ・解約</span>
+              </div>
+            </div>
+            <p class="quiz-gift-fine">
+              ※ 適用条件: <strong>${_m}月${_lastDay}日</strong> までに定期便ご注文の方 / 初月のみ50%OFF
+            </p>
+          </div>
+          <div class="quiz-gift-sparkles" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
 
         <div class="quiz-result-stats">
           <div class="quiz-result-stat">
