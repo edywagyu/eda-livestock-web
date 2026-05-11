@@ -2073,35 +2073,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .ship-cd-icon svg { width: 30px; height: 30px; }
 .ship-cd-content { flex: 1; min-width: 0; position: relative; z-index: 1; }
 .ship-cd-headline {
-  font-family: var(--font-jp);
-  font-size: clamp(16px, 2.4vw, 22px);
+  font-family: var(--font-jp-serif);
+  font-size: clamp(18px, 2.8vw, 26px);
   font-weight: 700;
-  line-height: 1.4;
-  margin-bottom: 6px;
-  letter-spacing: -0.005em;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  color: white;
 }
 .ship-cd-headline strong {
   color: var(--color-gold);
-  font-size: 1.15em;
+  font-size: 1.35em;
   font-family: var(--font-display);
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin: 0 4px;
+  text-shadow: 0 2px 12px rgba(212,169,59,0.4);
 }
 .ship-cd-meta {
-  font-size: 13px;
-  color: rgba(255,255,255,0.75);
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.82);
   line-height: 1.5;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
+  font-family: var(--font-jp);
+  font-weight: 600;
 }
 .ship-cd-meta strong {
-  color: #FFB81C;
+  color: var(--color-gold);
   font-variant-numeric: tabular-nums;
   font-family: var(--font-display);
-  font-size: 1.2em;
-  letter-spacing: 0.04em;
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 .ship-cd-meta-divider {
   width: 4px; height: 4px;
@@ -2111,18 +2117,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .ship-cd-remain {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: rgba(212,169,59,0.18);
-  border: 1px solid rgba(212,169,59,0.4);
-  color: var(--color-gold);
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(255,107,107,0.25), rgba(212,169,59,0.18));
+  border: 1px solid rgba(255,107,107,0.5);
+  color: white;
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 3px 10px;
-  border-radius: 12px;
+  letter-spacing: -0.01em;
+  padding: 5px 12px;
+  border-radius: 14px;
   font-variant-numeric: tabular-nums;
   margin-left: 2px;
+  animation: shipCdRemainPulse 1.6s ease-in-out infinite;
+}
+@keyframes shipCdRemainPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.4); }
+  50%      { box-shadow: 0 0 0 6px rgba(255,107,107,0); }
+}
+.ship-cd-remain::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #FF6B6B;
+  box-shadow: 0 0 8px #FF6B6B;
+  animation: remainDot 0.8s ease-in-out infinite;
+}
+@keyframes remainDot {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
 }
 .ship-cd-note {
   display: inline-flex;
@@ -2171,111 +2194,163 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .ship-cd-cta { width: 100%; justify-content: center; padding: 12px; }
 }
 
-/* ============ 定期便：月次サイクル可視化（縦中央揃え・整列強化） ============ */
+/* ============ 定期便：タイムライン型 月次サイクル可視化 ============ */
 .sub-cycle-visual {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
   align-items: stretch;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(212,169,59,0.2);
-  border-radius: 14px;
-  padding: 18px 18px;
-  margin-bottom: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  flex-wrap: nowrap;
+  gap: 0;
+  background:
+    radial-gradient(circle at 85% 30%, rgba(212,169,59,0.10), transparent 55%),
+    linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(212,169,59,0.3);
+  border-radius: 16px;
+  padding: 22px 24px 24px;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
 }
-.sub-cycle-visual::-webkit-scrollbar { display: none; }
+.sub-cycle-visual::before {
+  /* 上部に進行ライン（金色グラデ） */
+  content: '';
+  position: absolute;
+  top: 56px; left: 8%; right: 22%;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--color-gold) 12%,
+    var(--color-gold) 88%,
+    transparent 100%);
+  z-index: 0;
+  pointer-events: none;
+}
 .sub-cycle-month {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
   gap: 6px;
   flex-shrink: 0;
-  min-width: 84px;
-  padding-top: 14px;
+  position: relative;
+  z-index: 1;
 }
 .sub-cycle-label {
+  font-family: var(--font-display);
   font-size: 10px;
-  color: rgba(255,255,255,0.6);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.55);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   white-space: nowrap;
-  text-align: center;
   height: 14px;
   line-height: 14px;
+  text-align: center;
 }
 .sub-cycle-num {
-  width: 68px; height: 42px;
-  border-radius: 10px;
-  background: rgba(212,169,59,0.18);
-  border: 1.5px solid var(--color-gold);
-  color: var(--color-gold);
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 60%),
+    linear-gradient(135deg, var(--color-gold), #B8902F);
+  color: var(--color-forest-deep);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+  box-shadow:
+    0 8px 20px rgba(212,169,59,0.35),
+    inset 0 -2px 6px rgba(0,0,0,0.15),
+    inset 0 2px 4px rgba(255,255,255,0.25);
+  border: 2px solid rgba(255,255,255,0.4);
+  position: relative;
+}
+/* 真ん中の "翌月1日 お届け" だけ強調 */
+.sub-cycle-month:nth-child(3) .sub-cycle-num {
+  width: 76px; height: 76px;
+  font-size: 26px;
+  box-shadow:
+    0 12px 28px rgba(212,169,59,0.5),
+    0 0 0 6px rgba(212,169,59,0.12),
+    inset 0 -2px 6px rgba(0,0,0,0.15),
+    inset 0 2px 4px rgba(255,255,255,0.25);
+  animation: subCycleHighlight 3s ease-in-out infinite;
+}
+@keyframes subCycleHighlight {
+  0%, 100% { box-shadow: 0 12px 28px rgba(212,169,59,0.5), 0 0 0 6px rgba(212,169,59,0.12), inset 0 -2px 6px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.25); }
+  50%      { box-shadow: 0 12px 28px rgba(212,169,59,0.6), 0 0 0 10px rgba(212,169,59,0.06), inset 0 -2px 6px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.25); }
 }
 .sub-cycle-time {
-  font-size: 9.5px;
+  font-size: 10px;
   color: var(--color-gold);
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   height: 12px;
   line-height: 12px;
   font-variant-numeric: tabular-nums;
 }
 .sub-cycle-arrow {
-  color: rgba(212,169,59,0.45);
-  font-size: 16px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;       /* 矢印を縦中央 */
-  justify-content: center;
-  /* 数字ボックスの中央高さ（padding-top 14 + label 14 + gap 6 + box/2 21）≒ 55px に合わせる */
-  padding-top: 34px;
+  display: none; /* 旧矢印を非表示。タイムラインで代替 */
 }
 .sub-cycle-loop {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  padding: 8px 14px;
-  border-radius: 20px;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+  color: var(--color-gold);
+  padding: 10px 16px;
+  border: 1.5px solid rgba(212,169,59,0.5);
+  border-radius: 14px;
+  font-family: var(--font-jp);
   font-weight: 700;
-  font-size: 12px;
-  margin-left: 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
   flex-shrink: 0;
-  align-self: center;        /* バーの中で縦中央 */
+  align-self: center;
   white-space: nowrap;
-  animation: subCyclePulse 3s ease-in-out infinite;
+  margin-left: 12px;
+  position: relative;
+  z-index: 1;
+}
+.sub-cycle-loop::before {
+  content: '↻';
+  font-size: 18px;
+  line-height: 1;
+  animation: subCycleLoop 4s linear infinite;
+}
+@keyframes subCycleLoop {
+  to { transform: rotate(360deg); }
 }
 .sub-cycle-loop small {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.02em;
-}
-@keyframes subCyclePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212,169,59,0.4); }
-  50%      { box-shadow: 0 0 0 10px rgba(212,169,59,0); }
+  color: rgba(255,255,255,0.7);
 }
 @media (max-width: 720px) {
-  .sub-cycle-visual { padding: 14px 12px; gap: 4px; }
-  .sub-cycle-month { min-width: 70px; }
-  .sub-cycle-num { width: 56px; height: 36px; font-size: 15px; }
-  .sub-cycle-time { font-size: 9px; }
-  .sub-cycle-arrow { font-size: 13px; padding-top: 30px; }
-  .sub-cycle-loop { font-size: 11px; padding: 6px 10px; }
-  .sub-cycle-loop small { font-size: 10px; }
+  .sub-cycle-visual {
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 18px 12px 18px;
+    gap: 0;
+  }
+  .sub-cycle-visual::before { top: 48px; left: 12%; right: 12%; }
+  .sub-cycle-num { width: 52px; height: 52px; font-size: 17px; }
+  .sub-cycle-month:nth-child(3) .sub-cycle-num { width: 60px; height: 60px; font-size: 19px; }
+  .sub-cycle-time { font-size: 8.5px; }
+  .sub-cycle-label { font-size: 8px; letter-spacing: 0.14em; }
+  .sub-cycle-loop {
+    grid-column: 1 / -1;
+    margin: 14px auto 0;
+    flex-direction: row;
+    padding: 6px 14px;
+  }
+  .sub-cycle-loop::before { font-size: 14px; }
+  .sub-cycle-loop small { font-size: 10.5px; }
 }
 
 /* ============ 定期便プラン（再設計） ============ */
@@ -4145,51 +4220,54 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ポラロイド風動画フレーム（傾きなし・真っ直ぐ） */
 .unboxing-video {
   position: relative;
-  aspect-ratio: 4 / 5;
-  background: white;
-  padding: 14px 14px 56px;
-  border-radius: 6px;
-  overflow: visible;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
   box-shadow: var(--shadow-xl);
   width: 100%;
-  max-width: 420px;
+  max-width: 720px;
   margin: 0 auto;
   transition: transform 0.4s var(--ease-out-expo);
 }
-.unboxing-video:hover { transform: scale(1.02); }
-.unboxing-video::after {
-  /* ポラロイド下のキャプション */
-  content: 'EDA · UNBOXING';
-  position: absolute;
-  bottom: 16px;
-  left: 0; right: 0;
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--color-ink-muted);
-}
+.unboxing-video:hover { transform: scale(1.01); }
 .unboxing-video iframe,
 .unboxing-video video {
   width: 100%;
   height: 100%;
-  aspect-ratio: 4 / 5;
   border: 0;
   display: block;
   object-fit: cover;
-  border-radius: 2px;
-  transform: scale(1.05);
+}
+/* 右下に小さなキャプションバッジ */
+.unboxing-video::after {
+  content: 'EDA · UNBOXING';
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--color-gold);
+  background: rgba(15,61,46,0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(212,169,59,0.35);
+  font-weight: 700;
 }
 .unboxing-sound-btn {
   position: absolute;
-  bottom: 64px;
-  right: 22px;
-  width: 36px;
-  height: 36px;
+  bottom: 14px;
+  left: 14px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: rgba(15, 61, 46, 0.92);
+  background: rgba(15, 61, 46, 0.85);
+  backdrop-filter: blur(8px);
   color: white;
-  border: 1.5px solid rgba(255,255,255,0.6);
+  border: 1.5px solid rgba(212,169,59,0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4279,8 +4357,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 @media (max-width: 880px) {
   .unboxing-section { padding: 56px 0; }
   .unboxing-head { margin-bottom: 32px; }
-  .unboxing-layout { grid-template-columns: 1fr; gap: 32px; }
-  .unboxing-video { max-width: 320px; }
+  .unboxing-layout { grid-template-columns: 1fr; gap: 24px; }
+  .unboxing-video { max-width: 100%; }
 }
 
 /* ================ 商品カード hover強化 ================ */
@@ -4966,24 +5044,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ DELIVERY ESTIMATE ================ */
 .delivery-estimate {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--color-forest);
   margin: 6px 0 10px;
-  line-height: 1.5;
+  line-height: 1.4;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  font-family: var(--font-jp);
+  font-weight: 600;
   opacity: 0;
   animation: deliveryFadeIn 0.6s ease 0.3s forwards;
 }
 .delivery-estimate svg {
   flex-shrink: 0;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   display: block;
   color: var(--color-gold);
+  /* 視覚的中央揃え - 文字ベースラインに合わせる */
   position: relative;
-  top: 0;
+  top: -1px;
 }
 .delivery-estimate span {
   flex: 1;
@@ -4991,7 +5072,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 1.4;
+  line-height: 1;
+}
+.delivery-estimate strong {
+  color: var(--color-forest);
+  font-weight: 700;
 }
 @keyframes deliveryFadeIn {
   to { opacity: 0.75; }
@@ -7099,20 +7184,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .freezer-band-bullet { font-size: 11.5px; gap: 6px; justify-content: flex-start; }
   .fb-check { width: 18px; height: 18px; font-size: 10px; }
 
-  /* UNBOXING — 動画を横長16:9 / 1-4ステップは非表示 */
+  /* UNBOXING — 動画 16:9 / 1-4ステップは非表示 */
   .unboxing-section { padding: 32px 0; }
   .unboxing-head { margin-bottom: 18px; }
   .unboxing-head h2 { font-size: 22px; line-height: 1.4; }
   .unboxing-head .unboxing-lead { font-size: 12.5px; line-height: 1.7; }
   .unboxing-layout { gap: 16px; grid-template-columns: 1fr !important; }
-  .unboxing-video {
-    max-width: 100%;
-    aspect-ratio: 16 / 9;
-    padding: 10px 10px 36px;
-  }
-  .unboxing-video video,
-  .unboxing-video iframe { aspect-ratio: 16 / 9; }
-  .unboxing-video::after { font-size: 9px; bottom: 12px; }
+  .unboxing-video { max-width: 100%; aspect-ratio: 16 / 9; }
+  .unboxing-video::after { font-size: 9px; bottom: 8px; right: 10px; padding: 3px 8px; }
+  .unboxing-sound-btn { width: 32px; height: 32px; bottom: 10px; left: 10px; }
   /* 4ステップは モバイルでは非表示（CTAボタンは別途残す） */
   .unboxing-steps .unboxing-step { display: none; }
   .unboxing-cta-row {
@@ -7602,7 +7682,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </span>
     <h1 class="shop-hero-title hero-anim-title">
       <span class="hero-line"><span class="hero-word">無投薬</span><span class="hero-word">／</span><span class="hero-word">オーガニック</span></span>
-      <span class="hero-line"><span class="hero-word text-gold">お肉専門</span><span class="hero-word text-gold">オンラインショップ</span></span>
+      <span class="hero-line"><span class="hero-word text-gold">江田畜産</span><span class="hero-word text-gold">オンラインショップ</span></span>
     </h1>
     <p class="shop-hero-sub hero-anim-sub">
       <strong>江田畜産</strong>—— 抗生物質・ホルモン剤 不使用、<br class="hide-sp"/>
@@ -8287,12 +8367,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span class="sub-head-main">定期コース</span>
         </h2>
         <p class="sub-head-bullets">
-          <span><strong>初月50%OFF</strong></span>
-          <span><strong>毎回送料無料</strong></span>
-          <span><strong>解約縛りなし</strong></span>
+          <span><strong>初月半額</strong></span>
+          <span><strong>配送無料</strong></span>
+          <span><strong>スキップ可能</strong></span>
+          <span><strong>カスタム可能</strong></span>
         </p>
         <p class="sub-head-fine">
-          月1回 自動でお届け / いつでもスキップ・解約OK
+          月1回 自動でお届け / 解約は3ヶ月継続後より可能
         </p>
       </div>
 
@@ -8314,7 +8395,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <span class="sub-cycle-label">次回</span>
             <span class="sub-cycle-num" id="subCycleNext">7/1</span>
           </div>
-          <div class="sub-cycle-loop">🔁<small>以降 毎月1日</small></div>
+          <div class="sub-cycle-loop"><small>以降 毎月1日</small></div>
         </div>
         <div class="sub-promo-banner">
           <div class="sub-promo-banner-num">50<small style="font-size:20px;font-weight:700;">%</small><span style="display:block;font-size:13px;letter-spacing:0.2em;margin-top:-2px;font-weight:700;">OFF</span></div>
@@ -8333,8 +8414,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-sub-plans-wrap">
         <div class="sub-plans-grid">
           <a href="subscription.html?plan=starter" class="sub-plan-mini">
-            <div class="sub-plan-cycle">毎月お届け</div>
-            <div class="sub-plan-name">スターター</div>
+            <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
+            <div class="sub-plan-name">ふたり食卓便</div>
             <div class="sub-plan-target">1-2人家族 / 約1.2kg</div>
             <div class="sub-plan-items">
               🐓 平飼い鶏もも 1kg<br/>
@@ -8351,8 +8432,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
-            <div class="sub-plan-cycle">毎月お届け</div>
-            <div class="sub-plan-name">レギュラー</div>
+            <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
+            <div class="sub-plan-name">家族の食卓便</div>
             <div class="sub-plan-target">3-4人家族 / 約2.5kg</div>
             <div class="sub-plan-items">
               🐓 平飼い鶏もも 1kg<br/>
@@ -8369,8 +8450,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           </a>
 
           <a href="subscription.html?plan=volume" class="sub-plan-mini">
-            <div class="sub-plan-cycle">毎月お届け</div>
-            <div class="sub-plan-name">ボリューム</div>
+            <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
+            <div class="sub-plan-name">大家族のごちそう便</div>
             <div class="sub-plan-target">5人以上 / 約4.0kg</div>
             <div class="sub-plan-items">
               🐓 平飼い鶏もも 1kg ×2<br/>
@@ -8391,20 +8472,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <!-- 4. 4つの特徴（プランの下に横並びで補強） -->
       <div class="shop-sub-features">
         <div class="shop-sub-feature">
-          <strong>📦 必要な量を自動で</strong>
-          <p>1ヶ月で使い切れる量を自動配送。多すぎず、少なすぎず。</p>
+          <strong>50%OFF 初月半額</strong>
+          <p>初回限定で半額。本物の和牛＋平飼い鶏を、まず気軽に。</p>
         </div>
         <div class="shop-sub-feature">
-          <strong>⏸ スキップ・変更自由</strong>
-          <p>LINEで「来月だけスキップ」「赤身多めに」が即できます。</p>
+          <strong>¥0 配送無料</strong>
+          <p>毎回、金額に関係なく送料無料。冷凍便でお届け。</p>
         </div>
         <div class="shop-sub-feature">
-          <strong>🚫 解約縛りなし</strong>
-          <p>1回だけ試してOK。気に入らなければ次回は届きません。</p>
+          <strong>⏸ スキップ可能</strong>
+          <p>「今月はいらない」をLINEで1タップ。翌月から再開。</p>
         </div>
         <div class="shop-sub-feature">
-          <strong>🚚 毎回送料無料</strong>
-          <p>金額にかかわらず、定期便は送料無料でお届けします。</p>
+          <strong>🥩 カスタム可能</strong>
+          <p>「鶏多め」「赤身中心」「ステーキ追加」など、LINEで自由に。</p>
         </div>
       </div>
 
@@ -8413,7 +8494,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <a href="#quiz" class="btn btn-gold" style="font-size:13px">あなたのプラン診断 →</a>
         <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
       </div>
-      <p class="shop-sub-fine">※ 初月のみ50%OFF / 2回目以降は通常価格 / いつでもスキップ・解約OK</p>
+      <p class="shop-sub-fine">※ 初月のみ50%OFF / 2回目以降は通常価格 / 解約は3ヶ月継続後より可能</p>
 
     </div>
   </div>
@@ -8982,10 +9063,11 @@ function toggleUnboxingSound() {
   /* Populate delivery estimates on product cards */
   (function() {
     const info = getDeliveryDate();
-    const truckSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 16V6h11v10H1zM12 8h4l3 4v4h-5"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg>';
+    // 中央に重心がある優美なトラックアイコン（24×24 ベース、視覚中心 y=12）
+    const truckSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V15H14V9H2Z"/><path d="M14 11H18L21 14V15H14"/><circle cx="6" cy="17" r="1.4" fill="currentColor"/><circle cx="17" cy="17" r="1.4" fill="currentColor"/></svg>';
     const label = info.isToday14
-      ? truckSvg + '<span>' + info.text + 'にお届け</span>'
-      : truckSvg + '<span>最短 ' + info.text + 'にお届け</span>';
+      ? truckSvg + '<span>最短 <strong>' + info.text + '</strong> にお届け</span>'
+      : truckSvg + '<span>最短 <strong>' + info.text + '</strong> にお届け</span>';
     document.querySelectorAll('.product-card[data-variants]').forEach(function(card) {
       var existing = card.querySelector('.delivery-estimate');
       if (existing) return;
@@ -9769,43 +9851,46 @@ function toggleUnboxingSound() {
     const [fam, freq, meat, use, budget] = answers;
 
     // ベースプラン選択
-    let plan, planPrice, planWeight, planDesc, addons = [];
+    let plan, planKey, planPrice, planWeight, planDesc, addons = [];
 
     // ロジック: 家族構成 + 頻度 + 予算 でプラン決定
     const isLight = (fam === 'fam_12' || (freq === 'freq_low' && budget === 'budget_low'));
     const isBig = (fam === 'fam_5plus' || (fam === 'fam_34_big' && freq === 'freq_high') || budget === 'budget_high');
 
     if (isLight) {
-      plan = 'スターター';
+      plan = 'ふたり食卓便';
+      planKey = 'starter';
       planPrice = 6980;
       planWeight = '約1.2kg';
       planDesc = '1-2人家族・お試し向け';
     } else if (isBig) {
-      plan = 'ボリューム';
+      plan = '大家族のごちそう便';
+      planKey = 'volume';
       planPrice = 19800;
       planWeight = '約4.0kg';
       planDesc = '5人以上の大家族・ヘビーユーザー向け';
     } else {
-      plan = 'レギュラー';
+      plan = '家族の食卓便';
+      planKey = 'regular';
       planPrice = 12800;
       planWeight = '約2.5kg';
       planDesc = '4人家族・週末に和牛も楽しみたい';
     }
 
-    // アドオン提案
-    if (use === 'use_kids' && plan !== 'ボリューム') {
+    // アドオン提案（planKey で判定）
+    if (use === 'use_kids' && planKey !== 'volume') {
       addons.push({ name: '🍔 和牛ハンバーグ 4個', price: 2400, reason: '子ども人気の定番' });
     }
-    if (meat === 'meat_chicken' || (use === 'use_healthy' && plan === 'スターター')) {
+    if (meat === 'meat_chicken' || (use === 'use_healthy' && planKey === 'starter')) {
       addons.push({ name: '🐓 平飼い鶏もも 1kg', price: 1280, reason: '高頻度の鶏肉ユーザー向け' });
     }
-    if (use === 'use_weekend' && plan === 'スターター') {
+    if (use === 'use_weekend' && planKey === 'starter') {
       addons.push({ name: '🥩 サーロインステーキ ×2', price: 6460, reason: '週末ステーキ用' });
     }
-    if (fam === 'fam_5plus' && plan !== 'ボリューム') {
+    if (fam === 'fam_5plus' && planKey !== 'volume') {
       addons.push({ name: '🐓 平飼い鶏もも 1kg ×2', price: 2452, reason: '大家族のたんぱく源強化' });
     }
-    if (use === 'use_daily' && plan === 'ボリューム') {
+    if (use === 'use_daily' && planKey === 'volume') {
       addons.push({ name: '🍳 和牛切り落とし ×2', price: 3040, reason: '平日ごはん用追加' });
     }
 
@@ -9839,7 +9924,7 @@ function toggleUnboxingSound() {
     c.innerHTML = `
       <div class="quiz-result">
         <p class="quiz-result-eyebrow">RECOMMENDED FOR YOU</p>
-        <h3 class="quiz-result-plan">${plan}定期便</h3>
+        <h3 class="quiz-result-plan">${plan}</h3>
         <p class="quiz-result-desc">
           <strong>${familyLabel}</strong> × <strong>${useLabel}</strong> のあなたに最適。<br/>
           ${planDesc}。
@@ -9923,7 +10008,7 @@ function toggleUnboxingSound() {
         ` : ''}
 
         <div class="quiz-actions">
-          <a href="subscription.html" class="btn btn-gold">${plan}定期便を見る →</a>
+          <a href="subscription.html?plan=${planKey}" class="btn btn-gold">${plan}を見る →</a>
           <a href="#products" class="btn" style="border-color:var(--color-bone);color:var(--color-forest)">単品も見る</a>
         </div>
         <button class="quiz-restart" onclick="window._quizRestart()">もう一度診断する</button>
