@@ -72,16 +72,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 20px 0;
-  transition: all 0.4s var(--ease-out-expo);
-  background: linear-gradient(180deg, rgba(15, 61, 46, 0.4) 0%, transparent 100%);
+  z-index: 1000;
+  padding: 16px 0;
+  transition: all 0.35s var(--ease-out-expo);
+  /* 常に十分不透明な背景 → 下のセクションと被って読みづらいのを防ぐ */
+  background: rgba(15, 61, 46, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 169, 59, 0.18);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
 }
 .site-header.scrolled {
-  background: rgba(15, 61, 46, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 14px 0;
+  background: rgba(15, 61, 46, 0.97);
+  padding: 12px 0;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
 }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand-mark {
@@ -1884,26 +1888,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ TRUST STRIP ================ */
 .shop-trust-strip {
-  background: var(--color-forest-deep);
-  border-bottom: 1px solid rgba(212,169,59,0.15);
-  padding: 16px 0;
+  background: linear-gradient(180deg, #FAF6EE 0%, #F2EBD9 100%);
+  border-top: 1px solid rgba(212,169,59,0.35);
+  border-bottom: 1px solid rgba(212,169,59,0.25);
+  padding: 18px 0;
   overflow: hidden;
+  position: relative;
+}
+.shop-trust-strip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(212,169,59,0.06) 50%, transparent 100%);
+  pointer-events: none;
 }
 .shop-trust-inner {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 32px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 .shop-trust-item {
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: var(--tracking-wider);
-  color: rgba(255,255,255,0.7);
+  font-family: var(--font-jp);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-muted);
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 .shop-trust-item strong {
-  color: var(--color-gold);
+  color: var(--color-forest);
+  font-weight: 700;
 }
 
 /* ================ LINE BANNER ================ */
@@ -2050,10 +2069,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border: 1px solid rgba(212,169,59,0.2);
   border-radius: 14px;
   padding: 14px 18px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  justify-content: center;
+  flex-wrap: nowrap;
 }
 .sub-cycle-visual::-webkit-scrollbar { display: none; }
 .sub-cycle-month {
@@ -2227,15 +2248,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* 初月50%OFF メインバナー */
 .sub-promo-banner {
-  background: linear-gradient(90deg, var(--color-gold) 0%, #E5B547 100%);
+  background: linear-gradient(135deg, var(--color-gold) 0%, #E5B547 100%);
   color: var(--color-forest-deep);
   border-radius: 14px;
-  padding: 14px 20px;
-  margin-bottom: 20px;
+  padding: 16px 22px;
+  margin-bottom: 0;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   font-family: var(--font-jp);
+  box-shadow: 0 8px 24px rgba(212,169,59,0.25);
 }
 .sub-promo-banner-num {
   font-family: var(--font-display);
@@ -2259,49 +2281,57 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
+  gap: 8px 14px;
   background: var(--color-paper);
   border-radius: 10px;
   padding: 12px 14px;
   margin: 10px 0 12px;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 11.5px;
+  line-height: 1.55;
   border: 1px solid rgba(212, 169, 59, 0.18);
 }
 .product-stat-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   color: var(--color-ink-muted);
   font-family: var(--font-jp);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* nowrap+ellipsis をやめ、自然に折り返す */
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   min-width: 0;
+  line-height: 1.55;
 }
 .product-stat-item strong {
   color: var(--color-forest);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .product-stat-item.wide {
   grid-column: 1 / -1;
-  white-space: normal;
+  background: white;
+  border: 1px solid rgba(212,169,59,0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 2px;
   line-height: 1.55;
 }
 .product-stat-icon {
   font-size: 13px;
   flex-shrink: 0;
+  line-height: 1.4;
 }
 
-/* ============ 冷凍庫イメージバンド（フルブリード） ============ */
+/* ============ 冷凍庫イメージバンド（フルブリード・シネマモード） ============ */
 .freezer-band {
   padding: 0;
   background: transparent;
 }
 .freezer-band-wide {
   position: relative;
-  min-height: 600px;
+  min-height: 640px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -2313,13 +2343,45 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   height: 100%;
   object-fit: cover;
   z-index: 0;
+  animation: freezerBandZoom 22s ease-in-out infinite alternate;
+}
+@keyframes freezerBandZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
 }
 .freezer-band-overlay {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(15,61,46,0.92) 0%, rgba(15,61,46,0.78) 40%, rgba(15,61,46,0.35) 70%, rgba(15,61,46,0.15) 100%);
+    linear-gradient(90deg, rgba(15,61,46,0.94) 0%, rgba(15,61,46,0.82) 38%, rgba(15,61,46,0.32) 72%, rgba(15,61,46,0.10) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.15) 100%);
   z-index: 1;
+}
+.freezer-band-overlay::before,
+.freezer-band-overlay::after {
+  /* シネマ風 上下黒帯 */
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 28px;
+  background: rgba(0,0,0,0.45);
+  z-index: 1;
+}
+.freezer-band-overlay::before { top: 0; }
+.freezer-band-overlay::after  { bottom: 0; }
+.freezer-band-corner-badge {
+  position: absolute;
+  top: 48px; right: 36px;
+  z-index: 3;
+  background: rgba(212,169,59,0.92);
+  color: var(--color-forest-deep);
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  padding: 8px 16px;
+  border-radius: 22px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(212,169,59,0.3);
 }
 .freezer-band-content {
   position: relative;
@@ -3065,6 +3127,74 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-bottom: 1px solid rgba(255,255,255,0.1);
   padding: 48px 0;
 }
+.stats-band-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.stats-band-sub-lead {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  margin: 10px 0 0;
+  line-height: 1.7;
+}
+.stat-band-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(212,169,59,0.9);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+  font-weight: 700;
+}
+.stat-band-live::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  margin-right: 4px;
+  animation: liveBlink 1.6s ease-in-out infinite;
+}
+@keyframes liveBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212,169,59,0.6); }
+  50%      { opacity: 0.4; box-shadow: 0 0 0 6px rgba(212,169,59,0); }
+}
+.stats-band-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+  position: relative;
+  z-index: 1;
+}
+.stats-line-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #06C755;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 8px 24px rgba(6,199,85,0.3), 0 2px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s var(--ease-out-expo);
+}
+.stats-line-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(6,199,85,0.4), 0 4px 8px rgba(0,0,0,0.12);
+}
+.stats-line-btn .stats-line-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+.stats-line-btn small {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: 0.9;
+  background: rgba(255,255,255,0.18);
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-left: 4px;
+}
 .stat-band-item {
   padding: 12px 24px;
   position: relative;
@@ -3108,53 +3238,119 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 @media (max-width: 720px) {
   .stats-band-grid { grid-template-columns: repeat(2, 1fr); padding: 32px 0; }
+  .stats-band-grid--3 { grid-template-columns: 1fr; gap: 24px; padding: 28px 0; }
   .stat-band-item + .stat-band-item::before { display: none; }
+  .stats-line-btn { font-size: 13px; padding: 12px 20px; }
+  .stats-line-btn small { display: none; }
 }
 
-/* ================ 開封動画セクション ================ */
+/* ================ 開封動画セクション（タイムライン型に再設計） ================ */
 .unboxing-section {
   padding: 96px 0;
-  background: var(--color-cream);
+  background:
+    linear-gradient(180deg, #FFFCF5 0%, #F7F1E2 100%);
+  position: relative;
 }
-.unboxing-inner {
-  max-width: 1080px;
-  margin: 0 auto;
+.unboxing-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,169,59,0.4), transparent);
+}
+.unboxing-head {
+  text-align: center;
+  margin: 0 auto 56px;
+  max-width: 720px;
+}
+.unboxing-head .unboxing-eyebrow {
+  display: inline-block;
+  background: white;
+  border: 1px solid rgba(212,169,59,0.35);
+  padding: 6px 16px;
+  border-radius: 18px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+.unboxing-head h2 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(26px, 4vw, 40px);
+  color: var(--color-forest);
+  margin: 0 0 14px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+.unboxing-head .unboxing-lead {
+  color: var(--color-ink-muted);
+  line-height: 1.9;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 動画＋ステップ横並び */
+.unboxing-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
+  grid-template-columns: 0.85fr 1fr;
+  gap: 56px;
   align-items: center;
+  max-width: 1180px;
+  margin: 0 auto;
 }
+
+/* ポラロイド風動画フレーム */
 .unboxing-video {
   position: relative;
-  aspect-ratio: 1 / 1;
-  background: #000;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 28px 72px rgba(15,61,46,0.22), 0 4px 12px rgba(0,0,0,0.08);
+  aspect-ratio: 4 / 5;
+  background: white;
+  padding: 14px 14px 56px;
+  border-radius: 6px;
+  overflow: visible;
+  box-shadow:
+    0 32px 80px rgba(15,61,46,0.20),
+    0 4px 16px rgba(0,0,0,0.08);
   width: 100%;
-  max-width: 460px;
+  max-width: 420px;
   margin: 0 auto;
+  transform: rotate(-1.5deg);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.unboxing-video:hover { transform: rotate(0deg) scale(1.02); }
+.unboxing-video::after {
+  /* ポラロイド下のキャプション */
+  content: 'EDA · UNBOXING';
+  position: absolute;
+  bottom: 16px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--color-ink-muted);
 }
 .unboxing-video iframe,
 .unboxing-video video {
   width: 100%;
   height: 100%;
+  aspect-ratio: 4 / 5;
   border: 0;
   display: block;
   object-fit: cover;
-  transform: scale(1.18);  /* 上下の黒淵をズームで隠す */
+  border-radius: 2px;
+  transform: scale(1.05);
 }
 .unboxing-sound-btn {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
+  bottom: 64px;
+  right: 22px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(15, 61, 46, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 61, 46, 0.92);
   color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3164,67 +3360,81 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .unboxing-sound-btn:hover {
   background: var(--color-forest);
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
-.unboxing-content h2 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(22px, 3.2vw, 32px);
-  color: var(--color-forest);
-  margin: 0 0 16px;
-  line-height: 1.4;
-  font-weight: 700;
-  letter-spacing: -0.005em;
-}
-.unboxing-eyebrow {
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  color: var(--color-gold-soft);
-  margin: 0 0 14px;
-  font-weight: 600;
-}
-.unboxing-content p {
-  color: var(--color-ink-muted);
-  line-height: 1.9;
-  font-size: 14px;
-  margin: 0 0 22px;
-}
-.unboxing-features {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 28px;
+
+/* 4ステップ タイムライン */
+.unboxing-steps {
   display: grid;
-  gap: 10px;
+  gap: 14px;
+  position: relative;
 }
-.unboxing-features li {
-  display: flex;
+.unboxing-step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--color-ink);
-  font-weight: 500;
-  padding: 10px 14px;
+  padding: 18px 22px;
   background: white;
-  border-radius: 10px;
-  border: 1px solid var(--color-bone);
+  border-radius: 14px;
+  border: 1px solid rgba(212,169,59,0.18);
+  box-shadow: 0 4px 14px rgba(15,61,46,0.04);
+  position: relative;
+  transition: all 0.3s var(--ease-out-expo);
 }
-.unboxing-features li::before {
-  content: '✓';
+.unboxing-step:hover {
+  transform: translateX(4px);
+  border-color: var(--color-gold);
+  box-shadow: 0 8px 22px rgba(15,61,46,0.08);
+}
+.unboxing-step-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
   color: var(--color-gold);
-  font-weight: 700;
-  background: var(--color-forest);
-  width: 22px; height: 22px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  flex-shrink: 0;
+  font-size: 26px;
+  position: relative;
 }
-@media (max-width: 720px) {
+.unboxing-step-num {
+  position: absolute;
+  top: -8px; right: -8px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+}
+.unboxing-step-body strong {
+  display: block;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.unboxing-step-body p {
+  font-size: 12.5px;
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+.unboxing-cta-row {
+  margin-top: 4px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+@media (max-width: 880px) {
   .unboxing-section { padding: 56px 0; }
-  .unboxing-inner { grid-template-columns: 1fr; gap: 28px; }
-  .unboxing-video { max-width: 360px; }
+  .unboxing-head { margin-bottom: 32px; }
+  .unboxing-layout { grid-template-columns: 1fr; gap: 32px; }
+  .unboxing-video { max-width: 320px; transform: rotate(0); }
 }
 
 /* ================ 商品カード hover強化 ================ */
@@ -4019,17 +4229,91 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ SUBSCRIPTION CTA ================ */
 .shop-sub-cta {
-  background: var(--color-forest-deep);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(212,169,59,0.10), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(212,169,59,0.06), transparent 50%),
+    linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
   padding: var(--space-section) 0;
+  position: relative;
+  overflow: hidden;
+}
+.shop-sub-cta::before {
+  /* 上部に金の細いハイライト */
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 240px; height: 4px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0.7;
 }
 .shop-sub-inner {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 48px;
-  align-items: start;
+  display: block;
+  max-width: 1180px;
+  margin: 0 auto;
 }
-.shop-sub-right img {
-  border: 1px solid rgba(212,169,59,0.15);
+.shop-sub-head {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.shop-sub-head .eyebrow {
+  display: inline-block;
+  margin-bottom: 18px;
+}
+.shop-sub-head h2 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 4.4vw, 44px);
+  line-height: 1.3;
+  color: white;
+  margin: 0 0 18px;
+  font-weight: 700;
+}
+.shop-sub-head p {
+  color: rgba(255,255,255,0.78);
+  line-height: 1.9;
+  font-size: 14px;
+  margin: 0 auto;
+  max-width: 640px;
+}
+
+/* 配送サイクル＋プロモバナー横並びゾーン */
+.shop-sub-band {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  max-width: 920px;
+  margin: 0 auto 40px;
+  align-items: stretch;
+}
+
+/* プラン陳列ゾーン */
+.shop-sub-plans-wrap {
+  max-width: 1080px;
+  margin: 0 auto 48px;
+}
+
+/* 特徴4カード（プランの下に横並び） */
+.shop-sub-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  max-width: 1080px;
+  margin: 0 auto 32px;
+}
+
+/* CTAボタン中央寄せ */
+.shop-sub-cta-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.shop-sub-fine {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin-top: 14px;
+  letter-spacing: 0.02em;
 }
 
 /* ================ HOW IT WORKS ================ */
@@ -4263,28 +4547,33 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: var(--color-ink-muted);
 }
 
-/* ================ SUBSCRIPTION FEATURES ================ */
-.shop-sub-features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
+/* ================ SUBSCRIPTION FEATURE CARDS (再設計) ================ */
 .shop-sub-feature {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(212,169,59,0.12);
-  padding: 24px 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,169,59,0.15);
+  border-radius: 12px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: all 0.3s var(--ease-out-expo);
+}
+.shop-sub-feature:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(212,169,59,0.4);
+  transform: translateY(-2px);
 }
 .shop-sub-feature strong {
   display: block;
   font-family: var(--font-jp);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-gold);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 .shop-sub-feature p {
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.65;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.62);
   margin: 0;
 }
 
@@ -4961,18 +5250,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   display: flex; align-items: stretch; gap: 8px;
   margin-top: 12px; padding-top: 12px;
   border-top: 1px solid var(--color-bone);
+  flex-wrap: wrap;
 }
 .variant-select {
-  flex: 1; min-width: 0;
-  padding: 10px 12px; border-radius: 6px;
+  flex: 1 1 100%;
+  min-width: 0;
+  width: 100%;
+  padding: 10px 32px 10px 12px; border-radius: 6px;
   border: 1px solid var(--color-bone);
   background: white; font-family: var(--font-jp);
   font-size: 12px; color: var(--color-ink);
   cursor: pointer; appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
-  padding-right: 28px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   transition: border-color 0.2s;
 }
 .variant-select:hover { border-color: var(--color-gold); }
@@ -5000,8 +5296,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   100% { transform: scale(1); }
 }
 
-.product-card .product-buy .variant-select { font-size: 11px; }
-.product-card .product-buy { flex-wrap: wrap; }
+.product-card .product-buy {
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+.product-card .product-buy .variant-select {
+  font-size: 11px;
+  width: 100%;
+  flex: 1 1 100%;
+}
+.product-card .product-buy .btn-add-cart {
+  width: 100%;
+  padding: 10px 16px;
+}
 
 /* Cart badge on header */
 .cart-badge {
@@ -5051,11 +5358,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .shop-starter-grid { grid-template-columns: repeat(2, 1fr); }
   .shop-starter-grid .starter-card:last-child { grid-column: 1 / -1; max-width: 50%; }
   .shop-proof-grid { grid-template-columns: 1fr; }
-  .shop-sub-inner { grid-template-columns: 1fr; gap: 32px; }
   .wagyu-guide-grid { grid-template-columns: repeat(2, 1fr); }
   .science-grid { grid-template-columns: 1fr; }
   .guide-grid { grid-template-columns: repeat(2, 1fr); }
-  .shop-sub-features { grid-template-columns: 1fr 1fr; }
+  .shop-sub-features { grid-template-columns: repeat(2, 1fr); }
+  .shop-sub-band { grid-template-columns: 1fr; }
 }
 /* ================ HORIZONTAL SWIPE UTIL ================ */
 .swipe-row {
@@ -5343,9 +5650,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* ---- Subscription CTA ---- */
   .shop-sub-cta { padding: 48px 0; }
-  .shop-sub-inner { grid-template-columns: 1fr; gap: 32px; }
-  .shop-sub-features { grid-template-columns: 1fr; gap: 12px; }
-  .shop-sub-feature { padding: 16px; }
+  .shop-sub-band { grid-template-columns: 1fr; gap: 12px; }
+  .shop-sub-features { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .shop-sub-feature { padding: 14px 12px; }
 
   /* ---- How it works ---- */
   .shop-how-grid { flex-direction: column; align-items: center; }
@@ -6049,7 +6356,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 冷凍庫イメージバンド（フルブリード） ========= -->
+<!-- ========= 冷凍庫イメージバンド（シネマモード・フルブリード） ========= -->
 <section class="freezer-band">
   <div class="freezer-band-wide">
     <img src="public/images/products/drive/premium-slice.jpg"
@@ -6057,6 +6364,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
          class="freezer-band-bg"
          loading="lazy">
     <div class="freezer-band-overlay"></div>
+    <div class="freezer-band-corner-badge">EDA · FROZEN STOCK</div>
     <div class="container freezer-band-content">
       <div class="freezer-band-eyebrow">FROZEN STOCK</div>
       <h2 class="freezer-band-title">冷凍庫に、<br/>江田畜産がある安心。</h2>
@@ -6442,8 +6750,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <section class="shop-sub-cta" id="subscription">
   <div class="container">
     <div class="shop-sub-inner reveal">
-      <div class="shop-sub-left">
-        <!-- 定期便ビジュアル：月次サイクル -->
+
+      <!-- 1. ヘッドコピー -->
+      <div class="shop-sub-head">
+        <span class="eyebrow text-gold has-dash">Monthly Subscription — Always Stocked</span>
+        <h2>冷凍庫に、<span style="color: var(--color-gold);">安心</span>を切らさない。</h2>
+        <p>
+          毎月（または2週間ごとに）届くから、買い物の手間ゼロ。<br class="hide-sp"/>
+          忙しい平日も、安心できるお肉が冷凍庫にある安心感を。
+        </p>
+      </div>
+
+      <!-- 2. サイクル＋50%OFFバナーを横並び -->
+      <div class="shop-sub-band">
         <div class="sub-cycle-visual">
           <div class="sub-cycle-month">
             <span class="sub-cycle-label">本日 ご注文</span>
@@ -6461,17 +6780,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           </div>
           <div class="sub-cycle-loop">🔁<small>以降 毎月1日</small></div>
         </div>
-
-        <span class="eyebrow text-gold has-dash" style="margin-bottom: 16px; display: block;">Monthly Subscription — Always Stocked</span>
-        <h2 style="font-family: var(--font-jp-serif); font-size: clamp(26px, 4.2vw, 42px); line-height: 1.3; color: white; margin: 0 0 20px; font-weight: 700;">
-          冷凍庫に、安心を切らさない。
-        </h2>
-        <p style="color: rgba(255,255,255,0.85); line-height: 1.85; font-size: 15px; margin-bottom: 28px;">
-          毎月（または2週間ごとに）届くから、買い物の手間ゼロ。<br/>
-          忙しい平日も、安心できるお肉が冷凍庫にある安心感。<br/>
-          いつでもスキップ・変更・解約OK、解約縛りなし。
-        </p>
-        <!-- 初月50%OFFバナー -->
         <div class="sub-promo-banner">
           <div class="sub-promo-banner-num">50<small style="font-size:14px">%</small></div>
           <div class="sub-promo-banner-text">
@@ -6479,8 +6787,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <span style="opacity:0.8">どのプランも初回お試し価格でスタート</span>
           </div>
         </div>
+      </div>
 
-        <!-- プラン一覧（3プラン） -->
+      <!-- 3. プラン一覧（メイン陳列） -->
+      <div class="shop-sub-plans-wrap">
         <div class="sub-plans-grid">
           <div class="sub-plan-mini">
             <div class="sub-plan-cycle">毎月お届け</div>
@@ -6533,33 +6843,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             </div>
           </div>
         </div>
+      </div>
 
-        <div style="display:flex; gap: 10px; flex-wrap: wrap;">
-          <a href="#quiz" class="btn btn-gold" style="font-size:13px">あなたのプラン診断 →</a>
-          <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
+      <!-- 4. 4つの特徴（プランの下に横並びで補強） -->
+      <div class="shop-sub-features">
+        <div class="shop-sub-feature">
+          <strong>📦 必要な量を自動で</strong>
+          <p>1ヶ月で使い切れる量を自動配送。多すぎず、少なすぎず。</p>
         </div>
-        <p style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:12px">※ 2回目以降は通常価格 / いつでもスキップ・解約OK / 解約縛りなし</p>
-      </div>
-      <div class="shop-sub-right">
-        <div class="shop-sub-features">
-          <div class="shop-sub-feature">
-            <strong>📦 必要な量を自動で</strong>
-            <p>1ヶ月で使い切れる量を自動配送。多すぎず、少なすぎず。</p>
-          </div>
-          <div class="shop-sub-feature">
-            <strong>⏸ スキップ・変更自由</strong>
-            <p>LINEで「来月だけスキップ」「赤身多めに変更」が即できます。</p>
-          </div>
-          <div class="shop-sub-feature">
-            <strong>🚫 解約縛りなし</strong>
-            <p>1回だけ試してOK。気に入らなければ次回からは届きません。</p>
-          </div>
-          <div class="shop-sub-feature">
-            <strong>🚚 毎回送料無料</strong>
-            <p>金額にかかわらず、定期便は送料無料でお届けします。</p>
-          </div>
+        <div class="shop-sub-feature">
+          <strong>⏸ スキップ・変更自由</strong>
+          <p>LINEで「来月だけスキップ」「赤身多めに」が即できます。</p>
+        </div>
+        <div class="shop-sub-feature">
+          <strong>🚫 解約縛りなし</strong>
+          <p>1回だけ試してOK。気に入らなければ次回は届きません。</p>
+        </div>
+        <div class="shop-sub-feature">
+          <strong>🚚 毎回送料無料</strong>
+          <p>金額にかかわらず、定期便は送料無料でお届けします。</p>
         </div>
       </div>
+
+      <!-- 5. CTAボタン中央 -->
+      <div class="shop-sub-cta-row">
+        <a href="#quiz" class="btn btn-gold" style="font-size:13px">あなたのプラン診断 →</a>
+        <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
+      </div>
+      <p class="shop-sub-fine">※ 2回目以降は通常価格 / いつでもスキップ・解約OK / 解約縛りなし</p>
+
     </div>
   </div>
 </section>
@@ -6624,10 +6936,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 開封動画セクション ========= -->
+<!-- ========= 開封動画セクション（ポラロイド＋4ステップ タイムライン） ========= -->
 <section class="unboxing-section" id="unboxing">
   <div class="container">
-    <div class="unboxing-inner">
+    <div class="unboxing-head">
+      <span class="unboxing-eyebrow">UNBOXING · OPEN-TO-EAT</span>
+      <h2>玄関で受け取って、フライパンまで。</h2>
+      <p class="unboxing-lead">江田畜産のお肉は<strong>小分け真空パック</strong>で冷凍便。受け取ったらそのまま冷凍庫へ。必要な分だけ、ストレスゼロで召し上がっていただけます。</p>
+    </div>
+
+    <div class="unboxing-layout">
       <div class="unboxing-video">
         <video
           src="public/video/unboxing.mp4"
@@ -6640,21 +6958,44 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           id="unboxingVideo">
         </video>
         <button class="unboxing-sound-btn" id="unboxingSoundBtn" onclick="toggleUnboxingSound()" aria-label="音声 ON/OFF">
-          <svg id="muteIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-          <svg id="soundIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <svg id="muteIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          <svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </button>
       </div>
-      <div class="unboxing-content">
-        <p class="unboxing-eyebrow">UNBOXING</p>
-        <h2>届いたら、<br/>こうやって届きます。</h2>
-        <p>江田畜産のお肉は<strong>小分け真空パック</strong>で冷凍便でお届け。<br/>受け取ったらそのまま冷凍庫へ。必要な分だけ取り出して、冷蔵庫で半日解凍するだけ。</p>
-        <ul class="unboxing-features">
-          <li>真空パックで風味そのまま冷凍 6ヶ月</li>
-          <li>箱を開けたらそのまま冷凍庫に入る設計</li>
-          <li>解凍は冷蔵庫で半日（ステーキは8時間）</li>
-          <li>のし対応・贈答用化粧箱もご用意</li>
-        </ul>
-        <a href="#products" class="btn btn-gold" style="font-size:13px">商品を見る →</a>
+
+      <div class="unboxing-steps">
+        <div class="unboxing-step">
+          <div class="unboxing-step-icon">📦<span class="unboxing-step-num">1</span></div>
+          <div class="unboxing-step-body">
+            <strong>玄関で受け取る</strong>
+            <p>冷凍便で安全に到着。1.4kg程度のコンパクト箱、不在時は再配達。</p>
+          </div>
+        </div>
+        <div class="unboxing-step">
+          <div class="unboxing-step-icon">❄️<span class="unboxing-step-num">2</span></div>
+          <div class="unboxing-step-body">
+            <strong>そのまま冷凍庫へ</strong>
+            <p>小分け真空パックで省スペース。賞味期限<strong>6ヶ月</strong>でゆっくり消費。</p>
+          </div>
+        </div>
+        <div class="unboxing-step">
+          <div class="unboxing-step-icon">🌡<span class="unboxing-step-num">3</span></div>
+          <div class="unboxing-step-body">
+            <strong>冷蔵庫で半日解凍</strong>
+            <p>朝、必要な分を冷蔵庫へ。夕方には調理OK。ドリップが出にくい設計。</p>
+          </div>
+        </div>
+        <div class="unboxing-step">
+          <div class="unboxing-step-icon">🍳<span class="unboxing-step-num">4</span></div>
+          <div class="unboxing-step-body">
+            <strong>フライパンへ</strong>
+            <p>あとは塩を振って焼くだけ。30ヶ月のびのび育てた江田畜産の味を。</p>
+          </div>
+        </div>
+        <div class="unboxing-cta-row">
+          <a href="#products" class="btn btn-gold" style="font-size:13px">商品を見る →</a>
+          <a href="#subscription" class="btn" style="font-size:13px; border-color: var(--color-forest); color: var(--color-forest);">定期便で常備する</a>
+        </div>
       </div>
     </div>
   </div>
@@ -6736,34 +7077,37 @@ function toggleUnboxingSound() {
   </div>
 </section>
 
-<!-- ========= スタッツバンド ========= -->
-<section class="stats-band">
+<!-- ========= 江田畜産の利用者（3指標 / LINEは自動更新） ========= -->
+<section class="stats-band" id="stats-band">
   <div class="container">
     <div class="stats-band-head">
-      <p class="stats-band-eyebrow">BY THE NUMBERS</p>
-      <h2 class="stats-band-title">数字で見る、江田畜産。</h2>
+      <p class="stats-band-eyebrow">OUR CUSTOMERS</p>
+      <h2 class="stats-band-title">江田畜産の利用者。</h2>
+      <p class="stats-band-sub-lead">家族の冷凍庫の常備品として、選ばれ続けています。</p>
     </div>
-    <div class="stats-band-grid">
+    <div class="stats-band-grid stats-band-grid--3">
       <div class="stat-band-item">
-        <div class="stat-band-num" data-count="1062"><small>+</small></div>
-        <div class="stat-band-label">愛用ファミリー</div>
-        <div class="stat-band-sub">2026年5月時点</div>
+        <div class="stat-band-num" data-count="800" data-line-count><small>人</small></div>
+        <div class="stat-band-label">公式LINE 友だち</div>
+        <div class="stat-band-sub">最新情報を毎週お届け<br/><span class="stat-band-live">● ライブ更新中</span></div>
       </div>
       <div class="stat-band-item">
-        <div class="stat-band-num" data-count="87"><small>%</small></div>
+        <div class="stat-band-num" data-count="120"><small>世帯</small></div>
+        <div class="stat-band-label">月間 愛用ファミリー</div>
+        <div class="stat-band-sub">2026年5月時点 / 全国</div>
+      </div>
+      <div class="stat-band-item">
+        <div class="stat-band-num" data-count="80"><small>%+</small></div>
         <div class="stat-band-label">リピート率</div>
-        <div class="stat-band-sub">3回以上の購入</div>
+        <div class="stat-band-sub">2回目以上のご購入</div>
       </div>
-      <div class="stat-band-item">
-        <div class="stat-band-num" data-count="30"><small>ヶ月+</small></div>
-        <div class="stat-band-label">のびのび肥育</div>
-        <div class="stat-band-sub">一般的な和牛は24-28ヶ月</div>
-      </div>
-      <div class="stat-band-item">
-        <div class="stat-band-num" data-count="0"></div>
-        <div class="stat-band-label">抗生物質・ホルモン剤</div>
-        <div class="stat-band-sub">完全不使用</div>
-      </div>
+    </div>
+    <div class="stats-band-cta">
+      <a href="https://lin.ee/" class="stats-line-btn" target="_blank" rel="noopener">
+        <span class="stats-line-icon">💬</span>
+        <span>公式LINEに友だち追加</span>
+        <small>初回クーポン進呈</small>
+      </a>
     </div>
   </div>
 </section>
@@ -8000,6 +8344,50 @@ function toggleUnboxingSound() {
     });
   }, { threshold: 0.4 });
   els.forEach(el => obs.observe(el));
+})();
+
+/* ============ LINE友だち数 自動更新（GAS経由） ============ */
+(function lineCountInit() {
+  const lineEl = document.querySelector('[data-line-count]');
+  if (!lineEl) return;
+
+  function getGasUrl() {
+    if (window.PUBLIC_GAS_URL) return window.PUBLIC_GAS_URL;
+    const stored = localStorage.getItem('eda-staff-gas-url');
+    if (stored) return stored;
+    const meta = document.querySelector('meta[name="gas-url"]');
+    return meta ? meta.getAttribute('content') : '';
+  }
+
+  const GAS_URL = getGasUrl();
+  if (!GAS_URL) return; // GAS未設定なら hardcoded 値で動作（800）
+
+  // 5分以内のキャッシュがあれば再利用
+  try {
+    const cache = JSON.parse(localStorage.getItem('eda-line-friends') || 'null');
+    if (cache && (Date.now() - cache.t) < 5 * 60 * 1000 && typeof cache.n === 'number') {
+      lineEl.dataset.count = String(cache.n);
+    }
+  } catch (e) {}
+
+  // 最新を取得 → data-count を更新（アニメ前なら自然に反映、アニメ後ならテキスト直書き）
+  fetch(GAS_URL + '?action=line_friends', { method: 'GET' })
+    .then(r => r.json())
+    .then(data => {
+      const n = parseInt((data && (data.count || data.friends || data.n)), 10);
+      if (!Number.isFinite(n) || n <= 0) return;
+      lineEl.dataset.count = String(n);
+      // 既にアニメ完了済みなら直接書き換え
+      if (lineEl.dataset.animated === '1') {
+        const small = lineEl.querySelector('small');
+        lineEl.textContent = n.toLocaleString();
+        if (small) lineEl.appendChild(small);
+      }
+      try {
+        localStorage.setItem('eda-line-friends', JSON.stringify({ n: n, t: Date.now() }));
+      } catch (e) {}
+    })
+    .catch(() => { /* 失敗時は hardcoded 値で表示 */ });
 })();
 </script>
 
