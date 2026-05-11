@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shop | オンラインショップ | EDA-LIVESTOCK</title>
 <meta name="description" content="江田和牛と平飼い鶏のオンラインショップ。最短2日でお届け、¥11,000以上で送料無料。">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
  * ================================================================ */
@@ -24,10 +24,10 @@
   --color-ink-muted: #5C5C5C;
   --color-red: #C8102E;
   --color-line: rgba(212, 169, 59, 0.18);
-  --font-display: 'Bebas Neue', 'Oswald', 'Noto Sans JP', sans-serif;
-  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
-  --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
-  --font-jp-serif: 'Noto Serif JP', serif;
+  --font-display: 'Cormorant Garamond', 'Bebas Neue', 'Shippori Mincho', serif;
+  --font-body: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-jp: 'Noto Sans JP', 'Hiragino Sans', -apple-system, sans-serif;
+  --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', 'YuMincho', serif;
   --tracking-tight: -0.01em;
   --tracking-wide: 0.04em;
   --tracking-wider: 0.12em;
@@ -1595,6 +1595,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   to   { transform: translateX(-50%); }
 }
 
+/* ================ Hero 背景ロゴ ================ */
+.hero-bg-mark {
+  position: absolute;
+  right: clamp(40px, 8vw, 140px);
+  bottom: clamp(60px, 12vh, 160px);
+  width: clamp(180px, 24vw, 360px);
+  height: auto;
+  opacity: 0.18;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  filter: brightness(1.8) blur(1px);
+  animation: heroBgFloat 12s ease-in-out infinite alternate;
+}
+@keyframes heroBgFloat {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to   { transform: translate(-12px, -16px) rotate(2deg); }
+}
+@media (max-width: 720px) {
+  .hero-bg-mark { display: none; }
+}
+
 /* ================ HERO (改) ================ */
 .shop-hero {
   position: relative;
@@ -1843,82 +1865,138 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ LINE BANNER ================ */
-/* ============ 配送カウントダウンバー ============ */
+/* ============ 配送カウントダウンバー（強化） ============ */
 .ship-countdown-bar {
   background: var(--color-cream);
-  padding: 24px 0 0;
+  padding: 32px 0 0;
 }
 .ship-cd-inner {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: linear-gradient(135deg, #0F3D2E 0%, #143D2B 100%);
-  padding: 18px 28px;
+  gap: 20px;
+  background:
+    linear-gradient(135deg, #0F3D2E 0%, #143D2B 50%, #0A2D21 100%);
+  padding: 24px 32px;
   color: white;
-  border-radius: 12px;
+  border-radius: 18px;
   position: relative;
   overflow: hidden;
-  border: 1.5px solid rgba(212, 169, 59, 0.3);
+  border: 2px solid var(--color-gold);
+  box-shadow: 0 16px 48px rgba(15, 61, 46, 0.18), 0 4px 12px rgba(0,0,0,0.06);
 }
 .ship-cd-inner::before {
   content: '';
   position: absolute;
-  top: -30px; right: -30px;
-  width: 120px; height: 120px;
-  background: radial-gradient(circle, rgba(212, 169, 59, 0.15), transparent 70%);
+  inset: 0;
+  background:
+    radial-gradient(circle at 90% 30%, rgba(212,169,59,0.25), transparent 50%),
+    radial-gradient(circle at 10% 80%, rgba(212,169,59,0.1), transparent 50%);
+  pointer-events: none;
 }
+/* ストライプ流れエフェクト */
+.ship-cd-inner::after {
+  content: '';
+  position: absolute;
+  inset: -100% 0 -100% -100%;
+  width: 80px;
+  background: linear-gradient(90deg, transparent, rgba(212,169,59,0.18), transparent);
+  animation: shipCdSweep 4s ease-in-out infinite;
+  transform: skewX(-20deg);
+  pointer-events: none;
+}
+@keyframes shipCdSweep {
+  0%   { left: -10%; }
+  60%  { left: 110%; }
+  100% { left: 110%; }
+}
+
 .ship-cd-icon {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: rgba(212, 169, 59, 0.18);
-  color: var(--color-gold);
+  width: 64px; height: 64px;
+  border-radius: 16px;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   position: relative;
   z-index: 1;
+  box-shadow: 0 8px 20px rgba(212,169,59,0.4);
+  animation: shipCdBounce 2.4s ease-in-out infinite;
 }
+@keyframes shipCdBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+.ship-cd-icon svg { width: 30px; height: 30px; }
 .ship-cd-content { flex: 1; min-width: 0; position: relative; z-index: 1; }
 .ship-cd-headline {
   font-family: var(--font-jp);
-  font-size: clamp(14px, 2vw, 17px);
+  font-size: clamp(16px, 2.4vw, 22px);
   font-weight: 700;
   line-height: 1.4;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
 }
-.ship-cd-headline strong { color: var(--color-gold); }
+.ship-cd-headline strong {
+  color: var(--color-gold);
+  font-size: 1.15em;
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  margin: 0 4px;
+}
 .ship-cd-meta {
-  font-size: 12px;
-  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
-.ship-cd-meta strong { color: #FFB81C; font-variant-numeric: tabular-nums; }
+.ship-cd-meta strong {
+  color: #FFB81C;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-display);
+  font-size: 1.2em;
+  letter-spacing: 0.04em;
+}
+.ship-cd-meta-divider {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(212,169,59,0.5);
+}
 .ship-cd-cta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: var(--color-gold);
   color: var(--color-forest-deep);
-  font-family: var(--font-display);
-  font-size: 13px;
+  font-family: var(--font-jp);
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 11px 20px;
+  letter-spacing: 0.02em;
+  padding: 14px 24px;
   white-space: nowrap;
-  border-radius: 8px;
+  border-radius: 30px;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 0.25s var(--ease-out-expo);
   position: relative;
   z-index: 1;
   flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(212,169,59,0.35);
 }
-.ship-cd-cta:hover { background: #E5B547; transform: translateY(-1px); }
+.ship-cd-cta:hover {
+  background: #E5B547;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(212,169,59,0.5);
+}
 
 @media (max-width: 720px) {
-  .ship-cd-inner { padding: 14px 16px; flex-wrap: wrap; gap: 12px; }
-  .ship-cd-icon { width: 38px; height: 38px; }
-  .ship-cd-cta { width: 100%; justify-content: center; padding: 10px; }
+  .ship-cd-inner { padding: 18px 18px; flex-wrap: wrap; gap: 14px; }
+  .ship-cd-icon { width: 52px; height: 52px; }
+  .ship-cd-icon svg { width: 24px; height: 24px; }
+  .ship-cd-cta { width: 100%; justify-content: center; padding: 12px; }
 }
 
 /* ============ 定期便：月次サイクル可視化 ============ */
@@ -1940,13 +2018,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   flex-shrink: 0;
-  min-width: 56px;
+  min-width: 76px;
+}
+.sub-cycle-label {
+  font-size: 9px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 .sub-cycle-num {
-  width: 40px; height: 40px;
-  border-radius: 50%;
+  width: 60px; height: 38px;
+  border-radius: 10px;
   background: rgba(212,169,59,0.18);
   border: 1.5px solid var(--color-gold);
   color: var(--color-gold);
@@ -1956,11 +2041,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-family: var(--font-display);
   font-size: 18px;
   font-weight: 700;
-}
-.sub-cycle-month span:last-child {
-  font-size: 10px;
-  color: rgba(255,255,255,0.55);
-  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 .sub-cycle-arrow {
   color: rgba(212,169,59,0.4);
@@ -3102,13 +3183,32 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-color: var(--color-forest);
 }
 
-/* ============ 商品グリッド：横スライド（モバイル + 牛肉セクション） ============ */
+/* ============ 商品グリッド：牛肉・鶏肉は常に横スクロール ============ */
 .product-grid[data-cat="beef"],
 .product-grid[data-cat="chicken"] {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  align-items: stretch;
+  display: flex !important;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold) transparent;
+  margin-left: calc(clamp(20px, 4vw, 56px) * -1);
+  margin-right: calc(clamp(20px, 4vw, 56px) * -1);
+  padding-left: clamp(20px, 4vw, 56px);
+  padding-right: clamp(20px, 4vw, 56px);
+}
+.product-grid[data-cat="beef"]::-webkit-scrollbar,
+.product-grid[data-cat="chicken"]::-webkit-scrollbar { height: 6px; }
+.product-grid[data-cat="beef"]::-webkit-scrollbar-thumb,
+.product-grid[data-cat="chicken"]::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
+.product-grid[data-cat="beef"]::-webkit-scrollbar-track,
+.product-grid[data-cat="chicken"]::-webkit-scrollbar-track { background: transparent; }
+.product-grid[data-cat="beef"] .product-card,
+.product-grid[data-cat="chicken"] .product-card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
 }
 .product-card {
   display: flex;
@@ -3171,22 +3271,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 @media (max-width: 900px) {
-  .product-grid[data-cat="beef"],
-  .product-grid[data-cat="chicken"] {
-    grid-template-columns: none;
-    display: flex !important;
-    gap: 14px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 12px;
-    /* スクロール可能ヒント：右側にグラデーション */
-    background: linear-gradient(90deg, transparent 92%, rgba(15,61,46,0.04));
-  }
   .product-grid[data-cat="beef"] .product-card,
   .product-grid[data-cat="chicken"] .product-card {
-    flex: 0 0 260px;
-    scroll-snap-align: start;
+    flex: 0 0 240px;
   }
 }
 
@@ -3206,16 +3293,78 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .use-tag:hover { border-color: var(--color-gold); }
 
-/* ============ 贈答用ハイライト ============ */
+/* ============ 贈答用（シンプル・テキスト中心） ============ */
 .gift-highlight {
   background: linear-gradient(135deg, #FAF7F0 0%, #F5EFE3 100%);
-  padding: 100px 0;
+  padding: 80px 0;
 }
-.gift-hi-inner {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 56px;
+.gift-simple-inner { text-align: center; }
+.gift-simple-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 4.5vw, 42px);
+  color: var(--color-forest);
+  margin: 0 0 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.gift-simple-lead {
+  font-size: 14px;
+  color: var(--color-ink-muted);
+  line-height: 1.9;
+  margin: 0 0 28px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.gift-simple-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+}
+.gift-simple-features li {
+  font-size: 13px;
+  color: var(--color-forest);
+  font-weight: 500;
+}
+.gift-simple-occasions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+.gift-occ-link {
+  display: inline-flex;
   align-items: center;
+  background: white;
+  border: 1px solid var(--color-bone);
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--color-forest);
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s var(--ease-out-expo);
+}
+.gift-occ-link:hover {
+  border-color: var(--color-gold);
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-weight: 700;
+  transform: translateY(-2px);
+}
+@media (max-width: 720px) {
+  .gift-simple-features { flex-direction: column; align-items: center; gap: 6px; }
+}
+
+/* ↓ 旧 gift-hi-* CSSは未使用 ↓ */
+.gift-hi-inner {
+  display: none;
 }
 .gift-hi-photo {
   position: relative;
@@ -5510,6 +5659,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <!-- ========= SHOP HERO ========= -->
 <section class="shop-hero">
+  <img class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/>
   <div class="shop-hero-bg">
     <div class="shop-hero-overlay"></div>
   </div>
@@ -5583,12 +5733,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <div class="container">
     <div class="wagyu-guide-head reveal">
       <span class="eyebrow text-gold has-dash">Why Eda</span>
-      <h2 style="font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); color: var(--color-forest); margin: 16px 0 8px;">
-        家族に選ぶ、4つの理由。
+      <h2 style="font-family: var(--font-jp-serif); font-size: clamp(28px, 4.5vw, 44px); color: var(--color-forest); margin: 16px 0 14px; font-weight:700; line-height:1.3;">
+        家庭でこそ、選ばれる理由。
       </h2>
-      <p style="color: var(--color-ink-muted); max-width: 720px; line-height: 1.85; font-size: 15px;">
-        毎日の食卓を、もっとラクに。もっと豊かに。<br/>
-        高品質なお肉が冷凍庫にあるという、新しい当たり前を。
+      <p style="color: var(--color-ink-muted); max-width: 640px; line-height: 1.9; font-size: 14px;">
+        高級レストランで選ばれている品質を、毎日の食卓に。<br/>
+        買い物の手間も、食材選びの不安も、いっぺんに解決します。
       </p>
     </div>
 
@@ -5717,8 +5867,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <div class="container">
     <div class="freezer-band-inner">
       <div class="freezer-band-img">
-        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1200&q=80"
-             alt="冷凍庫に常備された江田畜産の小分けパック"
+        <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?auto=format&fit=crop&w=1200&q=80"
+             alt="冷凍庫に整然と並んだ江田畜産の真空小分けパック"
              loading="lazy">
       </div>
       <div class="freezer-band-content">
@@ -5798,7 +5948,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
     <div class="product-grid cols-4 reveal" data-cat="beef">
       <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
-        <div class="product-card-img" data-label="SIRLOIN"><span class="badge">Premium</span></div>
+        <div class="product-card-img" data-label="SIRLOIN"></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,400〜</span></div>
         <p class="product-name">サーロインステーキ</p>
         <p class="product-desc">背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。お子さまから大人まで満足できる、家庭用の主役ステーキ。</p>
@@ -5828,7 +5978,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <div class="product-card" data-variants='[{"id":50830132314410,"t":"1つ","p":1000},{"id":50830132347178,"t":"2つセット","p":2000},{"id":50830132379946,"t":"3つセット","p":3000}]'>
-        <div class="product-card-img" data-label="CUBE STEAK"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">¥1,000〜</span></div>
+        <div class="product-card-img" data-label="CUBE STEAK"></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Cube</span><span class="product-price">¥1,000〜</span></div>
         <p class="product-name">サイコロステーキ</p>
         <p class="product-desc">ステーキ用の正肉を一口大にカット。フライパンで転がすだけ。ガーリックライスの上に、サラダに添える。お子さまにも大人気。</p>
@@ -6106,13 +6256,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-sub-left">
         <!-- 定期便ビジュアル：月次サイクル -->
         <div class="sub-cycle-visual">
-          <div class="sub-cycle-month"><span class="sub-cycle-num">1</span><span>毎月1日</span></div>
+          <div class="sub-cycle-month">
+            <span class="sub-cycle-label">本日 ご注文</span>
+            <span class="sub-cycle-num">1/20</span>
+          </div>
           <div class="sub-cycle-arrow">→</div>
-          <div class="sub-cycle-month"><span class="sub-cycle-num">2</span><span>2月1日</span></div>
+          <div class="sub-cycle-month">
+            <span class="sub-cycle-label">翌月1日 お届け</span>
+            <span class="sub-cycle-num">2/1</span>
+          </div>
           <div class="sub-cycle-arrow">→</div>
-          <div class="sub-cycle-month"><span class="sub-cycle-num">3</span><span>3月1日</span></div>
-          <div class="sub-cycle-arrow">→</div>
-          <div class="sub-cycle-loop">🔁<small>毎月自動でお届け</small></div>
+          <div class="sub-cycle-month">
+            <span class="sub-cycle-label">次回</span>
+            <span class="sub-cycle-num">3/1</span>
+          </div>
+          <div class="sub-cycle-loop">🔁<small>以降 毎月1日</small></div>
         </div>
 
         <span class="eyebrow text-gold has-dash" style="margin-bottom: 16px; display: block;">Monthly Subscription — Always Stocked</span>
@@ -6421,34 +6579,31 @@ function toggleUnboxingSound() {
   </div>
 </section>
 
-<!-- ========= 贈答用（実写真入り） ========= -->
+<!-- ========= 贈答用（テキスト中心・シンプル） ========= -->
 <section class="gift-highlight" id="gift-highlight">
-  <div class="container">
-    <div class="gift-hi-inner">
-      <div class="gift-hi-photo">
-        <img src="public/images/products/drive/gift-box.jpg" alt="江田畜産 御歳暮ギフトボックス（のし対応・化粧箱入り）" loading="lazy">
-        <div class="gift-hi-photo-caption">
-          <span class="gift-hi-photo-tag">のし対応 / 化粧箱</span>
-          <p>御歳暮・お中元・内祝い、すべての贈答シーンに。</p>
-        </div>
+  <div class="container" style="max-width:820px">
+    <div class="gift-simple-inner">
+      <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block; text-align:center;">For Someone You Care</span>
+      <h2 class="gift-simple-title">気遣いの贈り物に。</h2>
+      <p class="gift-simple-lead">健康を大切にされる方への、特別な贈り物。江田畜産オリジナル化粧箱・のし無料・直接配送対応。冷凍で6ヶ月日持ちするから、相手の都合に合わせて召し上がっていただけます。</p>
+
+      <ul class="gift-simple-features">
+        <li>✓ のし・名入れ 無料</li>
+        <li>✓ オリジナル化粧箱</li>
+        <li>✓ 直接配送・カード同梱</li>
+        <li>✓ 賞味期限6ヶ月で日持ち</li>
+      </ul>
+
+      <!-- 用途選択肢 -->
+      <div class="gift-simple-occasions">
+        <a class="gift-occ-link" href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;">👶 出産・内祝い</a>
+        <a class="gift-occ-link" href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;">🌸 母の日・父の日</a>
+        <a class="gift-occ-link" href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;">🎁 お中元・お歳暮</a>
+        <a class="gift-occ-link" href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;">🏢 法人ギフト</a>
       </div>
-      <div class="gift-hi-content">
-        <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block;">For Someone You Care</span>
-        <h2>気遣いの贈り物に。</h2>
-        <p>健康を大切にされる方への、特別な贈り物。<br/>江田畜産オリジナル化粧箱・のし無料・直接配送対応。<br/>冷凍で6ヶ月日持ちするから、相手の都合に合わせて召し上がっていただけます。</p>
-        <ul class="gift-hi-features">
-          <li>✓ のし・名入れ 無料</li>
-          <li>✓ オリジナル化粧箱</li>
-          <li>✓ 直接配送・カード同梱</li>
-          <li>✓ 賞味期限6ヶ月で日持ち</li>
-        </ul>
-        <div class="gift-hi-occasions">
-          <span class="gift-hi-occ">👶 出産・内祝い</span>
-          <span class="gift-hi-occ">🌸 母の日・父の日</span>
-          <span class="gift-hi-occ">🎁 お中元・お歳暮</span>
-          <span class="gift-hi-occ">🏢 法人ギフト</span>
-        </div>
-        <a href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;" class="btn btn-gold" style="margin-top:8px">ギフト商品を見る <span class="btn-arrow"></span></a>
+
+      <div style="text-align:center;margin-top:28px">
+        <a href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;" class="btn btn-gold">ギフト商品一覧 <span class="btn-arrow"></span></a>
       </div>
     </div>
   </div>
@@ -7170,18 +7325,22 @@ function toggleUnboxingSound() {
     if (!seed) return;
     const status = statusPool[hashStr(seed) % statusPool.length];
     card.dataset.status = status;
-    // バッジ表示（既存badgeに上書きしない）
+    // バッジ表示（ステータスがあれば既存badgeを置き換え）
     if (status !== 'none' && statusBadges[status] && !card.querySelector('.status-badge-injected')) {
       const b = statusBadges[status];
+      // 既存badge（無添加など）を残しつつ、ステータスバッジは上に重ねる
+      const existing = imgEl.querySelectorAll('.badge:not(.status-badge-injected)');
+      existing.forEach((el, idx) => {
+        // 無添加 や 希少部位 のような重要なバッジは残す
+        const t = el.textContent.trim();
+        if (t !== '無添加' && t !== '希少部位') el.remove();
+      });
       const badge = document.createElement('span');
       badge.className = 'status-badge-injected badge';
       badge.style.cssText = `background:${b.bg};color:${b.color};font-size:10px;font-weight:700;letter-spacing:0.04em;border-radius:10px`;
       badge.textContent = b.label;
-      // 既存のbadgeがあれば上に重ねる
-      const existingBadge = imgEl.querySelector('.badge');
-      if (existingBadge) {
-        badge.style.top = '46px';
-      }
+      const remaining = imgEl.querySelectorAll('.badge:not(.status-badge-injected)');
+      if (remaining.length > 0) badge.style.top = '46px';
       imgEl.appendChild(badge);
     }
   });
