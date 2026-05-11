@@ -402,6 +402,99 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   margin-bottom: 20px;
   flex: 1;
 }
+.sub-plan-items b {
+  display: block;
+  font-size: 11.5px;
+  color: var(--color-forest);
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+/* ====== プランスペック一覧 (合計/商品/産地/...) ====== */
+.sub-plan-spec {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  background: rgba(15,61,46,0.05);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sub-plan-spec li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+.sub-plan-spec li b {
+  flex-shrink: 0;
+  width: 64px;
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: var(--color-forest);
+  font-family: var(--font-jp);
+}
+.sub-plan-spec li span {
+  flex: 1;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+
+/* ====== VIP プランカード (subscription.html) ====== */
+.sub-plan-card--vip {
+  background: linear-gradient(180deg, #FFFEF5 0%, #FFFCE8 100%);
+  border: 2px solid var(--color-gold);
+  position: relative;
+}
+.sub-plan-card--vip::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #B89030, #FFE594, #D4A93B, #FFE594, #B89030);
+  border-radius: 14px 14px 0 0;
+}
+.sub-plan-tag--vip {
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
+  color: var(--color-forest-deep) !important;
+}
+.sub-plan-vip-perk-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background:
+    radial-gradient(circle at 0% 50%, rgba(212,169,59,0.15), transparent 70%),
+    linear-gradient(135deg, #0F3D2E, #143D2B);
+  color: white;
+  border-radius: 10px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(212,169,59,0.45);
+}
+.sub-plan-vip-perk-row > span {
+  font-size: 22px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(212,169,59,0.5));
+}
+.sub-plan-vip-perk-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+}
+.sub-plan-vip-perk-row strong {
+  font-size: 12px;
+  color: var(--color-gold);
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+.sub-plan-vip-perk-row small {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.75);
+}
 .sub-plan-pricing { margin-bottom: 16px; }
 .sub-plan-old-price {
   font-family: var(--font-display);
@@ -1498,18 +1591,28 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
       <article class="sub-plan-card" data-plan="starter">
         <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
         <div class="sub-plan-name">ミニプラン</div>
-        <div class="sub-plan-target">1-2人家族 / 約1.6kg / 5品</div>
+        <div class="sub-plan-target">1-2人家族 / 約1.6kg / 全 8品</div>
+        <ul class="sub-plan-spec">
+          <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
+          <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
+          <li><b>加工場所</b><span>宮崎</span></li>
+          <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
+          <li><b>保管方法</b><span>冷凍</span></li>
+        </ul>
         <div class="sub-plan-items">
-          🥩 和牛切り落とし 200g<br/>
+          <b>お届け例:</b><br/>
+          🥩 赤身スライス 200g<br/>
+          🔥 赤身焼肉 200g<br/>
           🥩 サイコロステーキ 200g<br/>
-          🍔 和牛ハンバーグ 200g(2個)<br/>
-          🐓 平飼い鶏もも 500g<br/>
-          🐓 平飼い鶏ミンチ 300g
+          🍔 和牛ミンチ 200g<br/>
+          🐓 鶏モモ 200g<br/>
+          🐓 鶏ムネ 200g×2<br/>
+          🐓 鶏ミンチ 200g
         </div>
         <div class="sub-plan-pricing">
           <div class="sub-plan-old-price">通常 ¥6,980</div>
           <div class="sub-plan-price">¥3,490<small>/初月</small></div>
-          <div class="sub-plan-savings">初月 ¥3,490 OFF</div>
+          <div class="sub-plan-savings">初月 ¥3,490 OFF / 個別 ¥8,200 より約15%お得</div>
         </div>
         <div class="sub-plan-select-btn">このプランを選ぶ →</div>
       </article>
@@ -1518,40 +1621,65 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
         <span class="sub-plan-tag">人気 No.1</span>
         <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
         <div class="sub-plan-name">プロプラン</div>
-        <div class="sub-plan-target">3-4人家族 / 約3.2kg / 8品</div>
+        <div class="sub-plan-target">3-4人家族 / 約3.2kg / 全 16品</div>
+        <ul class="sub-plan-spec">
+          <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
+          <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
+          <li><b>加工場所</b><span>宮崎</span></li>
+          <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
+          <li><b>保管方法</b><span>冷凍</span></li>
+        </ul>
         <div class="sub-plan-items">
-          🥩 和牛切り落とし 200g×2<br/>
-          🥩 サイコロステーキ 200g<br/>
-          🥩 バラ焼肉 150g<br/>
-          🍖 サーロイン 200g<br/>
-          🍔 和牛ハンバーグ 400g(4個)<br/>
-          🐓 平飼い鶏もも 500g×2<br/>
-          🐓 平飼い鶏むね 500g<br/>
-          🐓 平飼い鶏ミンチ 300g
+          <b>お届け例:</b><br/>
+          🥩 赤身スライス 200g×2<br/>
+          🔥 赤身焼肉 200g×2<br/>
+          🥩 サイコロステーキ 200g×2<br/>
+          🍔 和牛ミンチ 200g<br/>
+          🐓 鶏モモ 200g×3<br/>
+          🐓 鶏ムネ 200g×3<br/>
+          🐓 鶏ミンチ 200g×3
         </div>
         <div class="sub-plan-pricing">
           <div class="sub-plan-old-price">通常 ¥12,800</div>
           <div class="sub-plan-price">¥6,400<small>/初月</small></div>
-          <div class="sub-plan-savings">初月 ¥6,400 OFF</div>
+          <div class="sub-plan-savings">初月 ¥6,400 OFF / 個別 ¥15,000 より約15%お得</div>
         </div>
         <div class="sub-plan-select-btn">このプランを選ぶ →</div>
       </article>
 
-      <article class="sub-plan-card" data-plan="volume">
+      <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
+        <span class="sub-plan-tag sub-plan-tag--vip">👑 VIP</span>
         <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
         <div class="sub-plan-name">VIPプラン</div>
-        <div class="sub-plan-target">5人以上 / 約4.0kg / 5品</div>
+        <div class="sub-plan-target">5人以上 / 約4.4kg / 全 22品</div>
+        <ul class="sub-plan-spec">
+          <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
+          <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
+          <li><b>加工場所</b><span>宮崎</span></li>
+          <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
+          <li><b>保管方法</b><span>冷凍</span></li>
+        </ul>
         <div class="sub-plan-items">
-          🐓 平飼い鶏もも 500g×2<br/>
-          🐓 平飼い鶏むね 500g<br/>
-          🥩 和牛切り落とし 200g×2<br/>
-          🍖 サーロイン 200g×2<br/>
-          🍔 和牛ハンバーグ 600g(6個)
+          <b>お届け例:</b><br/>
+          💎 ヒレステーキ 200g<br/>
+          🥩 赤身ステーキ 200g×2<br/>
+          🥩 サーロインステーキ 200g×2<br/>
+          🍔 和牛ミンチ 200g×2<br/>
+          🐓 鶏モモ 200g×5<br/>
+          🐓 鶏ムネ 200g×5<br/>
+          🐓 鶏ミンチ 200g×5
+        </div>
+        <div class="sub-plan-vip-perk-row">
+          <span>🌿</span>
+          <div>
+            <strong>有機JAS 黒毛和牛 優先案内</strong>
+            <small>2026年夏 解禁・月20頭限定の優先購入権</small>
+          </div>
         </div>
         <div class="sub-plan-pricing">
-          <div class="sub-plan-old-price">通常 ¥19,800</div>
-          <div class="sub-plan-price">¥9,900<small>/初月</small></div>
-          <div class="sub-plan-savings">初月 ¥9,900 OFF</div>
+          <div class="sub-plan-old-price">通常 ¥27,400</div>
+          <div class="sub-plan-price">¥13,700<small>/初月</small></div>
+          <div class="sub-plan-savings">初月 ¥13,700 OFF / 個別 ¥32,200 より約15%お得</div>
         </div>
         <div class="sub-plan-select-btn">このプランを選ぶ →</div>
       </article>
@@ -2032,47 +2160,72 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 const PLANS = {
   starter: {
     name: 'ミニプラン',
-    target: '1-2人家族 · 約1.6kg · 全 5品',
+    target: '1-2人家族 · 約1.6kg · 全 8品',
     regular: 6980,
     half: 3490,
     weight: '約1.6kg',
+    productCount: 8,
+    origin: '肉(宮崎) / 鶏(大分)',
+    process: '宮崎',
+    feed: '抗生物質 / ホルモンフリー',
+    storage: '冷凍',
+    individual: 8200,
+    savingsPct: 15,
     items: [
-      { name: '和牛切り落とし', qty: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
-      { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
-      { name: '和牛ハンバーグ', qty: '200g (2個)', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
-      { name: '平飼い鶏もも', qty: '500g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
-      { name: '平飼い鶏ミンチ', qty: '300g', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'そぼろ・離乳食に' }
+      { name: '赤身スライス',     qty: '200g',      img: 'public/images/products/drive/wagyu-slice.jpg',     desc: 'しゃぶしゃぶ・すき焼きに' },
+      { name: '赤身焼肉',         qty: '200g',      img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '網焼き・タレ焼肉に' },
+      { name: 'サイコロステーキ', qty: '200g',      img: 'public/images/products/drive/cube-steak.jpg',     desc: '転がすだけで完結' },
+      { name: '和牛ミンチ',       qty: '200g',      img: 'public/images/products/drive/minced.jpg',         desc: 'ハンバーグ・ボロネーゼに' },
+      { name: '鶏モモ',           qty: '200g',      img: 'public/images/products/drive/chicken-thigh.jpg',  desc: '無投薬・平飼い・万能部位' },
+      { name: '鶏ムネ',           qty: '200g × 2',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
+      { name: '鶏ミンチ',         qty: '200g',      img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
     ]
   },
   regular: {
     name: 'プロプラン',
-    target: '3-4人家族 · 約3.2kg · 全 8品',
+    target: '3-4人家族 · 約3.2kg · 全 16品',
     regular: 12800,
     half: 6400,
     weight: '約3.2kg',
+    productCount: 16,
+    origin: '肉(宮崎) / 鶏(大分)',
+    process: '宮崎',
+    feed: '抗生物質 / ホルモンフリー',
+    storage: '冷凍',
+    individual: 15000,
+    savingsPct: 15,
     items: [
-      { name: '和牛切り落とし', qty: '200g × 2', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
-      { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
-      { name: 'バラ焼肉', qty: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '週末の焼肉に' },
-      { name: 'サーロインステーキ', qty: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '主役の一枚' },
-      { name: '和牛ハンバーグ', qty: '400g (4個)', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
-      { name: '平飼い鶏もも', qty: '500g × 2', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
-      { name: '平飼い鶏むね', qty: '500g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
-      { name: '平飼い鶏ミンチ', qty: '300g', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'そぼろ・離乳食に' }
+      { name: '赤身スライス',     qty: '200g × 2',  img: 'public/images/products/drive/wagyu-slice.jpg',     desc: 'しゃぶしゃぶ・すき焼きに' },
+      { name: '赤身焼肉',         qty: '200g × 2',  img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '週末の焼肉に' },
+      { name: 'サイコロステーキ', qty: '200g × 2',  img: 'public/images/products/drive/cube-steak.jpg',     desc: '転がすだけで完結' },
+      { name: '和牛ミンチ',       qty: '200g',      img: 'public/images/products/drive/minced.jpg',         desc: 'ハンバーグ・ボロネーゼに' },
+      { name: '鶏モモ',           qty: '200g × 3',  img: 'public/images/products/drive/chicken-thigh.jpg',  desc: '無投薬・万能部位' },
+      { name: '鶏ムネ',           qty: '200g × 3',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
+      { name: '鶏ミンチ',         qty: '200g × 3',  img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
     ]
   },
   volume: {
     name: 'VIPプラン',
-    target: '5人以上 · 約4.0kg · 全 5品',
-    regular: 19800,
-    half: 9900,
-    weight: '約4.0kg',
+    target: '5人以上 · 約4.4kg · 全 22品',
+    regular: 27400,
+    half: 13700,
+    weight: '約4.4kg',
+    productCount: 22,
+    origin: '肉(宮崎) / 鶏(大分)',
+    process: '宮崎',
+    feed: '抗生物質 / ホルモンフリー',
+    storage: '冷凍',
+    individual: 32200,
+    savingsPct: 15,
+    vipPerk: '🌿 有機JAS 黒毛和牛 優先案内 (2026年夏 解禁・月20頭限定の優先購入権)',
     items: [
-      { name: '平飼い鶏もも', qty: '500g × 2', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
-      { name: '平飼い鶏むね', qty: '500g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
-      { name: '和牛切り落とし', qty: '200g × 2', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
-      { name: 'サーロインステーキ', qty: '200g × 2', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
-      { name: '和牛ハンバーグ', qty: '600g (6個)', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' }
+      { name: '💎 ヒレステーキ',     qty: '200g',      img: 'public/images/products/drive/fillet.jpg',         desc: '希少部位・最高峰の赤身' },
+      { name: '赤身ステーキ',       qty: '200g × 2',  img: 'public/images/products/drive/red-meat.jpg',       desc: 'モモ系赤身・脂少なめ' },
+      { name: 'サーロインステーキ', qty: '200g × 2',  img: 'public/images/products/drive/sirloin.jpg',        desc: '週末の主役' },
+      { name: '和牛ミンチ',         qty: '200g × 2',  img: 'public/images/products/drive/minced.jpg',         desc: 'ハンバーグ・ボロネーゼに' },
+      { name: '鶏モモ',             qty: '200g × 5',  img: 'public/images/products/drive/chicken-thigh.jpg',  desc: '無投薬・万能部位' },
+      { name: '鶏ムネ',             qty: '200g × 5',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
+      { name: '鶏ミンチ',           qty: '200g × 5',  img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
     ]
   }
 };
