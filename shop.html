@@ -2237,6 +2237,77 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ============ 定期便：タイムライン型 月次サイクル可視化 ============ */
+/* ====== シンプル定期サイクル（再設計版） ====== */
+.sub-cycle-simple {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,169,59,0.25);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 0;
+  flex-wrap: wrap;
+}
+.sub-cycle-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 64px;
+}
+.sub-cycle-step-label {
+  font-family: var(--font-jp);
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.sub-cycle-step-date {
+  font-family: var(--font-numeric);
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.sub-cycle-step-date--small {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-jp);
+  letter-spacing: 0.02em;
+}
+.sub-cycle-step-time {
+  font-family: var(--font-numeric);
+  font-size: 10.5px;
+  color: var(--color-gold);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  margin-top: 1px;
+}
+/* メインの「初回お届け」だけ強調 */
+.sub-cycle-step--main .sub-cycle-step-label {
+  color: var(--color-gold);
+}
+.sub-cycle-step--main .sub-cycle-step-date {
+  color: var(--color-gold);
+  font-size: 26px;
+}
+.sub-cycle-step--loop .sub-cycle-step-date--small {
+  color: rgba(255,255,255,0.85);
+}
+.sub-cycle-sep {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: rgba(212,169,59,0.5);
+  font-weight: 400;
+  user-select: none;
+}
+
+/* ====== 旧サイクル（互換のため残置） ====== */
 .sub-cycle-visual {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
@@ -2375,6 +2446,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: rgba(255,255,255,0.7);
 }
 @media (max-width: 720px) {
+  /* シンプル版モバイル */
+  .sub-cycle-simple { gap: 8px; padding: 14px 10px; }
+  .sub-cycle-step { min-width: 52px; }
+  .sub-cycle-step-label { font-size: 9.5px; letter-spacing: 0.04em; }
+  .sub-cycle-step-date { font-size: 18px; }
+  .sub-cycle-step--main .sub-cycle-step-date { font-size: 22px; }
+  .sub-cycle-step-date--small { font-size: 12.5px; }
+  .sub-cycle-step-time { font-size: 9.5px; }
+  .sub-cycle-sep { font-size: 14px; }
+
   .sub-cycle-visual {
     grid-template-columns: 1fr 1fr 1fr;
     padding: 18px 12px 18px;
@@ -2440,6 +2521,102 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-weight: 700;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(212,169,59,0.4);
+}
+.sub-plan-tag--vip {
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+  color: var(--color-forest-deep);
+  letter-spacing: 0.12em;
+  padding: 5px 16px;
+  font-family: var(--font-jp);
+  font-size: 10.5px;
+}
+
+/* ====== プラン左上の小ロゴバッジ ====== */
+.sub-plan-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border: 1.5px solid rgba(212,169,59,0.45);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.sub-plan-badge--mini {
+  background: linear-gradient(135deg, rgba(110,180,130,0.25), rgba(40,90,50,0.4));
+  border-color: rgba(110,180,130,0.6);
+}
+.sub-plan-badge--pro {
+  background: linear-gradient(135deg, rgba(255,229,148,0.3), rgba(184,144,48,0.45));
+  border-color: rgba(255,229,148,0.7);
+}
+.sub-plan-badge--vip {
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+  border-color: #FFE594;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  box-shadow:
+    0 6px 18px rgba(212,169,59,0.5),
+    inset 0 1px 2px rgba(255,255,255,0.4);
+  animation: vipBadgeShine 3s ease-in-out infinite;
+}
+@keyframes vipBadgeShine {
+  0%, 100% { box-shadow: 0 6px 18px rgba(212,169,59,0.5), inset 0 1px 2px rgba(255,255,255,0.4); }
+  50%      { box-shadow: 0 8px 22px rgba(212,169,59,0.7), 0 0 0 5px rgba(212,169,59,0.12), inset 0 1px 2px rgba(255,255,255,0.4); }
+}
+
+/* ====== VIP プラン全体（金枠＆ダーク背景） ====== */
+.sub-plan-mini--vip {
+  background: linear-gradient(160deg, rgba(212,169,59,0.20), rgba(15,61,46,0.6));
+  border-color: var(--color-gold);
+  border-width: 2px;
+  padding: 23px 19px 21px;
+  box-shadow: 0 8px 24px rgba(212,169,59,0.18);
+}
+
+/* ====== VIP 限定オーガニック優先案内パネル ====== */
+.sub-plan-vip-perk {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background:
+    radial-gradient(circle at 0% 50%, rgba(212,169,59,0.18), transparent 70%),
+    linear-gradient(135deg, rgba(15,61,46,0.7), rgba(10,45,33,0.8));
+  border: 1px solid rgba(212,169,59,0.45);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 0 0 14px;
+}
+.sub-plan-vip-perk-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 0 4px rgba(212,169,59,0.5));
+  flex-shrink: 0;
+}
+.sub-plan-vip-perk-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.3;
+}
+.sub-plan-vip-perk-text strong {
+  font-family: var(--font-jp);
+  font-size: 11.5px;
+  color: var(--color-gold);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.sub-plan-vip-perk-text small {
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.01em;
 }
 .sub-plan-cycle {
   font-family: var(--font-display);
@@ -4676,11 +4853,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: white;
 }
 
-/* ギフト商品 2点グリッド */
+/* ギフト商品 3点グリッド（松・竹・梅） */
 .gift-products-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   margin-top: 20px;
 }
 .gift-product-card {
@@ -4718,6 +4895,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-size: 20px;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(212,169,59,0.4);
+}
+/* 竹は深緑 / 梅は紅梅 */
+.gift-product-rank.rank-take {
+  background: linear-gradient(135deg, #1B5E3F, #0F3D2E);
+  color: #FFE594;
+  box-shadow: 0 4px 12px rgba(15,61,46,0.4);
+}
+.gift-product-rank.rank-ume {
+  background: linear-gradient(135deg, #C44569, #8E2746);
+  color: #FFEFE5;
+  box-shadow: 0 4px 12px rgba(142,39,70,0.4);
 }
 .gift-product-body {
   flex: 1;
@@ -4774,8 +4962,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 @media (max-width: 720px) {
   .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
   .gift-hi-features { grid-template-columns: 1fr; }
-  /* ギフト2枚は横並び維持（コンパクトに） */
-  .gift-products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  /* ギフト3枚は横並び維持（コンパクトに） — モバイルでは2-1段組 or 横スクロール風 */
+  .gift-products-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
   .gift-product-card { flex-direction: column; border-radius: 12px; }
   .gift-product-img { flex: 0 0 130px; height: 130px; }
   .gift-product-body { padding: 12px 10px 14px; }
@@ -6048,23 +6236,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .organic-wagyu-price {
   color: var(--color-gold) !important;
 }
+/* product-buy 内で中央配置 */
+.product-card--organic-wagyu .product-buy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 0 2px;
+}
 .organic-wagyu-cta {
-  display: block;
-  width: 100%;
-  padding: 11px;
-  background: linear-gradient(135deg, var(--color-gold), #B89030);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 28px;
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
   color: var(--color-forest-deep) !important;
-  border-radius: 8px;
+  border-radius: 24px;
   text-align: center;
   font-family: var(--font-jp);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-decoration: none;
-  transition: all 0.2s;
+  border: 1px solid rgba(255,229,148,0.6);
+  box-shadow:
+    0 6px 18px rgba(212,169,59,0.32),
+    inset 0 1px 2px rgba(255,255,255,0.35);
+  transition: all 0.25s var(--ease-out-expo);
+  white-space: nowrap;
 }
 .organic-wagyu-cta:hover {
-  background: linear-gradient(135deg, #FFE594, var(--color-gold));
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #FFEFB0, #FFE594, var(--color-gold));
+  box-shadow:
+    0 10px 28px rgba(212,169,59,0.5),
+    inset 0 1px 2px rgba(255,255,255,0.4);
 }
 .product-tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .product-tag { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); }
@@ -8457,55 +8663,42 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <!-- ===== 有機JAS 黒毛和牛（2026年夏解禁・牛肉タブの最右端） ===== -->
-      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-sort-price="999999" data-variants='[]'>
+      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999999" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SIRLOIN">
           <span class="badge badge-organic">ORGANIC</span>
           <div class="organic-wagyu-overlay">COMING SOON</div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Sirloin</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS サーロイン</p>
-        <p class="product-desc">2026年夏 解禁。<strong>世界初の有機JAS認証</strong>黒毛和牛サーロイン。</p>
+        <p class="product-desc"><strong>世界初の有機JAS認証</strong>黒毛和牛サーロイン。発売前優先案内。</p>
         <div class="product-buy">
-          <a href="organic.html" class="organic-wagyu-cta">優先案内に登録 →</a>
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
         </div>
       </article>
 
-      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-sort-price="999998" data-variants='[]'>
+      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999998" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC RIBEYE">
           <span class="badge badge-organic">ORGANIC</span>
           <div class="organic-wagyu-overlay">COMING SOON</div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Ribeye</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS リブアイ</p>
-        <p class="product-desc">2026年夏 解禁。霜降りと赤身の完璧なバランス。希少な有機リブアイ。</p>
+        <p class="product-desc">霜降りと赤身の完璧なバランス。希少な有機リブアイ。発売前優先案内。</p>
         <div class="product-buy">
-          <a href="organic.html" class="organic-wagyu-cta">優先案内に登録 →</a>
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
         </div>
       </article>
 
-      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-sort-price="999997" data-variants='[]'>
+      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999997" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC FILLET">
           <span class="badge badge-organic">ORGANIC</span>
           <div class="organic-wagyu-overlay">COMING SOON</div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Fillet</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS ヒレ</p>
-        <p class="product-desc">2026年夏 解禁。希少部位のヒレ、有機JAS認証。最高峰の一品。</p>
+        <p class="product-desc">希少部位のヒレ、有機JAS認証。最高峰の一品。発売前優先案内。</p>
         <div class="product-buy">
-          <a href="organic.html" class="organic-wagyu-cta">優先案内に登録 →</a>
-        </div>
-      </article>
-
-      <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-sort-price="999996" data-variants='[]'>
-        <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SLICE">
-          <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">COMING SOON</div>
-        </div>
-        <div class="product-tag-row"><span class="product-tag">Organic · Slice</span><span class="product-price organic-wagyu-price">¥— —</span></div>
-        <p class="product-name">有機JAS しゃぶしゃぶ用</p>
-        <p class="product-desc">2026年夏 解禁。有機JAS認証のしゃぶしゃぶ用赤身スライス。</p>
-        <div class="product-buy">
-          <a href="organic.html" class="organic-wagyu-cta">優先案内に登録 →</a>
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
         </div>
       </article>
     </div>
@@ -8756,25 +8949,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </p>
       </div>
 
-      <!-- 2. サイクル＋50%OFFバナーを横並び -->
+      <!-- 2. サイクル＋50%OFFバナーを横並び（シンプル版） -->
       <div class="shop-sub-band">
-        <div class="sub-cycle-visual" id="subCycleVisual">
-          <div class="sub-cycle-month">
-            <span class="sub-cycle-label">本日 ご注文</span>
-            <span class="sub-cycle-num" id="subCycleToday">5/11</span>
+        <div class="sub-cycle-simple" id="subCycleVisual">
+          <div class="sub-cycle-step">
+            <span class="sub-cycle-step-label">ご注文</span>
+            <span class="sub-cycle-step-date" id="subCycleToday">5/12</span>
           </div>
-          <div class="sub-cycle-arrow">→</div>
-          <div class="sub-cycle-month">
-            <span class="sub-cycle-label" id="subCycleFirstLabel">初回お届け</span>
-            <span class="sub-cycle-num" id="subCycleFirst">6/1</span>
-            <span class="sub-cycle-time" id="subCycleFirstTime">18:00-20:00</span>
+          <span class="sub-cycle-sep">→</span>
+          <div class="sub-cycle-step sub-cycle-step--main">
+            <span class="sub-cycle-step-label" id="subCycleFirstLabel">初回お届け</span>
+            <span class="sub-cycle-step-date" id="subCycleFirst">6/1</span>
+            <span class="sub-cycle-step-time" id="subCycleFirstTime">18:00-20:00</span>
           </div>
-          <div class="sub-cycle-arrow">→</div>
-          <div class="sub-cycle-month">
-            <span class="sub-cycle-label">次回</span>
-            <span class="sub-cycle-num" id="subCycleNext">7/1</span>
+          <span class="sub-cycle-sep">→</span>
+          <div class="sub-cycle-step sub-cycle-step--loop">
+            <span class="sub-cycle-step-label">以降</span>
+            <span class="sub-cycle-step-date sub-cycle-step-date--small">毎月1日</span>
           </div>
-          <div class="sub-cycle-loop"><small>以降 毎月1日</small></div>
         </div>
         <div class="sub-promo-banner">
           <div class="sub-promo-banner-num">50<small style="font-size:20px;font-weight:700;">%</small><span style="display:block;font-size:13px;letter-spacing:0.2em;margin-top:-2px;font-weight:700;">OFF</span></div>
@@ -8793,6 +8985,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-sub-plans-wrap">
         <div class="sub-plans-grid">
           <a href="subscription.html?plan=starter" class="sub-plan-mini">
+            <div class="sub-plan-badge sub-plan-badge--mini">🌱</div>
             <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
             <div class="sub-plan-name">ミニプラン</div>
             <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
@@ -8813,6 +9006,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
+            <div class="sub-plan-badge sub-plan-badge--pro">🏆</div>
             <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
             <div class="sub-plan-name">プロプラン</div>
             <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
@@ -8834,7 +9028,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <div class="sub-plan-cta-link">🛒 購入する →</div>
           </a>
 
-          <a href="subscription.html?plan=volume" class="sub-plan-mini">
+          <a href="subscription.html?plan=volume" class="sub-plan-mini sub-plan-mini--vip">
+            <span class="sub-plan-tag sub-plan-tag--vip">VIP 限定特典</span>
+            <div class="sub-plan-badge sub-plan-badge--vip">👑</div>
             <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
             <div class="sub-plan-name">VIPプラン</div>
             <div class="sub-plan-target">5人以上 / 約4.0kg</div>
@@ -8844,6 +9040,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               🥩 和牛切り落とし 200g×2<br/>
               🍖 サーロインステーキ 200g×2<br/>
               🍔 和牛ハンバーグ 600g(6個)
+            </div>
+            <div class="sub-plan-vip-perk">
+              <span class="sub-plan-vip-perk-icon">🌿</span>
+              <div class="sub-plan-vip-perk-text">
+                <strong>有機JAS 黒毛和牛 優先案内</strong>
+                <small>2026年夏 解禁・月20頭限定の優先購入権</small>
+              </div>
             </div>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥19,800</div>
@@ -8954,7 +9157,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <li><span class="organic-tease-point-icon">✓</span>月間 20 頭限定 / 完全予約制</li>
         </ul>
         <div class="organic-tease-cta">
-          <a href="organic.html" class="organic-tease-btn">優先案内に登録 →</a>
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-tease-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+            LINE で優先案内に登録 →
+          </a>
           <p class="organic-tease-fine">※ 解禁日が決まり次第、登録者から順にご案内</p>
         </div>
       </div>
@@ -9422,34 +9628,48 @@ function toggleUnboxingSound() {
       </div>
     </div>
 
-    <!-- ギフト商品 2点 -->
+    <!-- ギフト商品 3点（松・竹・梅） -->
     <div class="gift-products-grid">
       <div class="gift-product-card">
-        <div class="gift-product-img" style="background-image:url('public/images/products/drive/sirloin.jpg')">
+        <div class="gift-product-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')">
           <span class="gift-product-rank">松</span>
         </div>
         <div class="gift-product-body">
-          <h3>サーロインステーキ ギフト【松】</h3>
-          <p>江田畜産の自慢のサーロインステーキを<strong>2枚（合計500g）</strong>。抗生物質・ホルモン剤不使用、30ヶ月以上のびのび育てた本物のお肉。<strong>健康志向の方への贈り物</strong>として喜ばれる、安心して召し上がっていただける逸品です。</p>
+          <h3>ヒレステーキ ギフト【松】</h3>
+          <p>江田畜産が誇る希少部位、<strong>ヒレ</strong>を<strong>450g</strong>。きめ細かな赤身で、脂身が少なく食べやすい最上ランク。<strong>大切な方への最高峰の贈り物</strong>として喜ばれる、抗生物質・ホルモン剤不使用の本物の和牛ヒレです。</p>
           <div class="gift-product-meta">
-            <span class="gift-product-vol">サーロインステーキ 2枚 / 合計 500g</span>
+            <span class="gift-product-vol">ヒレステーキ / 合計 450g</span>
             <span class="gift-product-price">¥16,800<small style="display:block;font-size:11px;color:var(--color-ink-muted);font-weight:600;margin-top:2px;">送料込み・税込</small></span>
           </div>
-          <button onclick="orderGift('matsu', 16800, 'サーロインステーキ ギフト【松】 2枚500g')" class="gift-product-cta">🎁 贈り物として注文 →</button>
+          <button onclick="orderGift('matsu', 16800, 'ヒレステーキ ギフト【松】 450g')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
       </div>
       <div class="gift-product-card">
         <div class="gift-product-img" style="background-image:url('public/images/products/drive/red-meat.jpg')">
-          <span class="gift-product-rank">竹</span>
+          <span class="gift-product-rank rank-take">竹</span>
         </div>
         <div class="gift-product-body">
           <h3>赤身ステーキ ギフト【竹】</h3>
-          <p>脂身が少なく<strong>鉄分・たんぱく質</strong>がしっかり摂れる赤身ステーキを<strong>2枚（合計500g）</strong>。健康を気遣う方、ご年配の方、筋トレ層への贈り物に最適。無投薬・ホルモン剤不使用で、安心の本物のお肉です。</p>
+          <p>脂身が少なく<strong>鉄分・たんぱく質</strong>がしっかり摂れる赤身ステーキを<strong>750g</strong>のボリュームで。健康を気遣う方、ご年配の方、筋トレ層への贈り物に最適。無投薬・ホルモン剤不使用で、安心の本物のお肉です。</p>
           <div class="gift-product-meta">
-            <span class="gift-product-vol">赤身ステーキ 2枚 / 合計 500g</span>
+            <span class="gift-product-vol">赤身ステーキ / 合計 750g</span>
             <span class="gift-product-price">¥12,800<small style="display:block;font-size:11px;color:var(--color-ink-muted);font-weight:600;margin-top:2px;">送料込み・税込</small></span>
           </div>
-          <button onclick="orderGift('take', 12800, '赤身ステーキ ギフト【竹】 2枚500g')" class="gift-product-cta">🎁 贈り物として注文 →</button>
+          <button onclick="orderGift('take', 12800, '赤身ステーキ ギフト【竹】 750g')" class="gift-product-cta">🎁 贈り物として注文 →</button>
+        </div>
+      </div>
+      <div class="gift-product-card">
+        <div class="gift-product-img" style="background-image:url('public/images/products/drive/hamburg.jpg')">
+          <span class="gift-product-rank rank-ume">梅</span>
+        </div>
+        <div class="gift-product-body">
+          <h3>和牛ハンバーグ ギフト【梅】</h3>
+          <p>江田和牛100%・無投薬の<strong>手作りハンバーグを5個</strong>。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。冷凍庫にストックすればいつでも本格和牛の味わいを楽しめる、心遣いの贈り物です。</p>
+          <div class="gift-product-meta">
+            <span class="gift-product-vol">和牛ハンバーグ 5個 / 100g×5</span>
+            <span class="gift-product-price">¥5,980<small style="display:block;font-size:11px;color:var(--color-ink-muted);font-weight:600;margin-top:2px;">送料込み・税込</small></span>
+          </div>
+          <button onclick="orderGift('ume', 5980, '和牛ハンバーグ ギフト【梅】 5個')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
       </div>
     </div>
@@ -9773,15 +9993,28 @@ body.has-sticky-cart .floating-phone-btn {
     });
   });
 
-  /* ======== DELIVERY DATE CALCULATOR ======== */
+  /* ======== DELIVERY DATE CALCULATOR ========
+     3段階締切バケット:
+       〜10:00  → +2日 (本日10時まで → 2日後)
+       〜17:00  → +3日 (本日17時まで → 3日後)
+       〜22:00  → +3日 (本日22時まで → 3日後)
+       22:00〜  → 翌日基点で+2日 = 今日から+3日
+     ※ 日曜着はスキップ
+   */
   function getDeliveryDate() {
     const DAYS_JP = ['日','月','火','水','木','金','土'];
     const now = new Date();
     /* JST offset */
     const jst = new Date(now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000);
     const hour = jst.getHours();
-    /* Before 14:00 JST → +2 days, after → +3 days */
-    let addDays = hour < 14 ? 2 : 3;
+
+    let addDays;
+    let bucketLabel;
+    if (hour < 10)      { addDays = 2; bucketLabel = '本日10:00まで'; }
+    else if (hour < 17) { addDays = 3; bucketLabel = '本日17:00まで'; }
+    else if (hour < 22) { addDays = 3; bucketLabel = '本日22:00まで'; }
+    else                { addDays = 3; bucketLabel = '明日10:00まで'; } // 22時以降は翌日朝までの注文として扱う
+
     const delivery = new Date(jst);
     delivery.setDate(delivery.getDate() + addDays);
     /* Skip Sunday */
@@ -9789,7 +10022,7 @@ body.has-sticky-cart .floating-phone-btn {
     const m = delivery.getMonth() + 1;
     const d = delivery.getDate();
     const day = DAYS_JP[delivery.getDay()];
-    return { text: m + '月' + d + '日（' + day + '）', isToday14: hour < 14 };
+    return { text: m + '月' + d + '日（' + day + '）', addDays: addDays, bucketLabel: bucketLabel, isMorning: hour < 10 };
   }
 
   /* Populate delivery estimates on product cards */
@@ -9801,6 +10034,8 @@ body.has-sticky-cart .floating-phone-btn {
       ? truckSvg + '<span>最短 <strong>' + info.text + '</strong> にお届け</span>'
       : truckSvg + '<span>最短 <strong>' + info.text + '</strong> にお届け</span>';
     document.querySelectorAll('.product-card[data-variants]').forEach(function(card) {
+      // COMING SOON 等、配送日が出ないべきカードはスキップ
+      if (card.dataset.noDelivery === '1') return;
       var existing = card.querySelector('.delivery-estimate');
       if (existing) return;
       var el = document.createElement('p');
@@ -10416,23 +10651,25 @@ body.has-sticky-cart .floating-phone-btn {
 
 /* ============ 今週のメニュー（自動週次切替） ============ */
 (function weeklyMenuInit() {
-  /* レシピ毎の主役肉商品（カート追加用）— ingredient → product id */
+  /* レシピ毎の主役肉商品（カート追加用）— ingredient → product id
+     ※「今週のごはん」連携はオーガニック以外（標準ライン）に固定。
+        オーガニック商品はティザー or 別CTA経由のみ。 */
   const RECIPE_PRODUCTS = {
     'サーロインステーキ':  { id: 50830136082730, price: 3400, title: 'サーロインステーキ', img: 'public/images/products/drive/sirloin.jpg' },
     '和牛の牛丼':          { id: 50830303822122, price: 1600, title: '和牛切り落とし',     img: 'public/images/products/drive/kiriotoshi.jpg' },
-    '平飼い鶏の唐揚げ':    { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '平飼い鶏の唐揚げ':    { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ',       img: 'public/images/products/drive/chicken-thigh.jpg' },
     '和牛ハンバーグ':      { id: 50830191427882, price:  760, title: '江田和牛ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
     '和牛のすき焼き':      { id: 50830187200810, price: 2600, title: '赤身スライス',       img: 'public/images/products/drive/wagyu-slice.jpg' },
-    '鶏ももの照り焼き':    { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '鶏ももの照り焼き':    { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ',       img: 'public/images/products/drive/chicken-thigh.jpg' },
     '和牛のしゃぶしゃぶ':  { id: 50830187200810, price: 2600, title: '赤身スライス',       img: 'public/images/products/drive/wagyu-slice.jpg' },
-    '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: '和牛ローストビーフ',img: 'public/images/products/drive/hamburg.jpg' },
-    '無投薬チキンカレー':  { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
-    '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 1280, title: 'オーガニックチキン ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
+    '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: '和牛ローストビーフ', img: 'public/images/products/drive/hamburg.jpg' },
+    '無投薬チキンカレー':  { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ',       img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 1280, title: '平飼い鶏 ムネ',       img: 'public/images/products/drive/chicken-breast.jpg' },
     '和牛の肉じゃが':      { id: 50830303822122, price: 1600, title: '和牛切り落とし',     img: 'public/images/products/drive/kiriotoshi.jpg' },
     '焼肉プレート':        { id: 50830137655594, price: 1900, title: 'バラ焼肉',           img: 'public/images/products/drive/yakiniku-brisket.jpg' },
     '鶏ミンチのそぼろ丼':  { id: 50830210793770, price: 1000, title: '平飼い鶏 ミンチ',     img: 'public/images/products/drive/chicken-minced.jpg' },
-    'ローストチキン':      { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
-    '和牛のサイコロステーキ': { id: 50830132314410, price: 1000, title: 'サイコロステーキ',img: 'public/images/products/drive/cube-steak.jpg' }
+    'ローストチキン':      { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ',       img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '和牛のサイコロステーキ': { id: 50830132314410, price: 1000, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
   };
 
   /* クリックで主役肉をカートに追加 */
@@ -11163,67 +11400,100 @@ body.has-sticky-cart .floating-phone-btn {
   setInterval(update, 60 * 60 * 1000);
 })();
 
-/* ============ 配送カウントダウンバー（時間帯連動・基本3日後着） ============ */
+/* ============ 配送カウントダウンバー（3段階締切・時間帯連動） ============
+   締切バケット:
+     ▸ 〜10:00  → +2日後にお届け / 次の締切「本日 10:00」
+     ▸ 〜17:00  → +3日後にお届け / 次の締切「本日 17:00」
+     ▸ 〜22:00  → +3日後にお届け / 次の締切「本日 22:00」（最終）
+     ▸ 22:00 以降 → 翌日10:00 締切扱い / +3日後（明日基点で2日後相当）
+   ※ 日曜日着はスキップして月曜に繰り上げ
+   ============================================================ */
 (function shipCountdownInit() {
-  const CUTOFF_HOUR = 22;        // 22:00 まで受付
-  const DELIVERY_DAYS = 3;       // 基本3日後にお届け
   const headlineEl = document.getElementById('shipCdHeadline');
   const metaEl = document.getElementById('shipCdMeta');
   if (!headlineEl || !metaEl) return;
 
   const days = ['日','月','火','水','木','金','土'];
 
-  /* 時間帯ごとのトーン切替（朝・昼・夕・夜・深夜） */
-  function timeOfDay(h) {
-    if (h < 5)  return { tag: '🌙', lead: '深夜のご注文も',     mood: 'late' };
-    if (h < 11) return { tag: '☀️', lead: '朝のうちにご注文で', mood: 'morning' };
-    if (h < 14) return { tag: '🍱', lead: 'お昼のご注文で',     mood: 'noon' };
-    if (h < 18) return { tag: '🥩', lead: '夕方のご注文で',     mood: 'afternoon' };
-    return       { tag: '🌃', lead: '今夜のご注文で',           mood: 'night' };
-  }
+  // 3段階の締切バケット定義
+  const CUTOFF_BUCKETS = [
+    { until: 10, label: '10:00', addDays: 2, tag: '☀️', lead: '朝のうちにご注文で' },
+    { until: 17, label: '17:00', addDays: 3, tag: '🥩', lead: '午後のご注文で'     },
+    { until: 22, label: '22:00', addDays: 3, tag: '🌃', lead: '夜のご注文で'        }
+  ];
 
-  function calc() {
-    const now = new Date();
-    const beforeCutoff = now.getHours() < CUTOFF_HOUR;
-
-    // 注文受付日（締切前=本日 / 締切後=翌日扱い）
-    const orderDay = new Date(now);
-    orderDay.setHours(12, 0, 0, 0); // 時刻リセット
-    if (!beforeCutoff) {
-      orderDay.setDate(orderDay.getDate() + 1);
+  function pickBucket(hour) {
+    // hour < 10 → bucket[0], hour < 17 → bucket[1], hour < 22 → bucket[2]
+    for (const b of CUTOFF_BUCKETS) {
+      if (hour < b.until) return b;
     }
-
-    // お届け日 = 注文日 + 3日
-    const arrival = new Date(orderDay);
-    arrival.setDate(arrival.getDate() + DELIVERY_DAYS);
-
-    return { now, beforeCutoff, arrival };
+    return null; // 22:00 以降は翌日扱い
   }
 
-  function remainText(now) {
+  function calcArrival(orderBase, addDays) {
+    const arrival = new Date(orderBase);
+    arrival.setHours(12, 0, 0, 0);
+    arrival.setDate(arrival.getDate() + addDays);
+    // 日曜着は翌月曜にスキップ
+    if (arrival.getDay() === 0) arrival.setDate(arrival.getDate() + 1);
+    return arrival;
+  }
+
+  function remainText(now, targetHour) {
     const cutoff = new Date(now);
-    cutoff.setHours(CUTOFF_HOUR, 0, 0, 0);
+    cutoff.setHours(targetHour, 0, 0, 0);
+    if (cutoff <= now) cutoff.setDate(cutoff.getDate() + 1); // 翌日締切
     const diffMs = cutoff - now;
     if (diffMs <= 0) return null;
     const hours = Math.floor(diffMs / 3600000);
     const minutes = Math.floor((diffMs % 3600000) / 60000);
+    if (hours < 1) return `あと ${minutes}分`;
     return `${hours}時間${String(minutes).padStart(2,'0')}分`;
   }
 
   function update() {
-    const { now, beforeCutoff, arrival } = calc();
+    const now = new Date();
+    const hour = now.getHours();
+    const bucket = pickBucket(hour);
+
+    let arrival, cutoffLabel, addDays, tag, lead, isToday, remain;
+
+    if (bucket) {
+      // 本日内の締切に間に合う
+      arrival = calcArrival(now, bucket.addDays);
+      cutoffLabel = bucket.label;
+      addDays = bucket.addDays;
+      tag = bucket.tag;
+      lead = bucket.lead;
+      isToday = true;
+      remain = remainText(now, bucket.until);
+    } else {
+      // 22:00 以降 → 翌日 10:00 締切（明日朝までに注文すれば +2 from tomorrow = +3 from today）
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      arrival = calcArrival(tomorrow, 2);
+      cutoffLabel = '明日 10:00';
+      addDays = 3;
+      tag = '🌙';
+      lead = '深夜のご注文も';
+      isToday = false;
+      remain = remainText(now, 10);
+    }
+
     const m = arrival.getMonth() + 1;
     const d = arrival.getDate();
     const w = days[arrival.getDay()];
 
-    if (beforeCutoff) {
-      const tod = timeOfDay(now.getHours());
-      const remain = remainText(now);
-      headlineEl.innerHTML = `${tod.tag} ${tod.lead} <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
-      metaEl.innerHTML = `本日 <strong>22:00</strong> まで受付中${remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : ''} <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span>`;
+    headlineEl.innerHTML = `${tag} ${lead} <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
+
+    if (isToday) {
+      metaEl.innerHTML = `本日 <strong>${cutoffLabel}</strong> まで受付中` +
+        (remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : '') +
+        ` <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span>`;
     } else {
-      headlineEl.innerHTML = `🌙 明日 <strong>22:00</strong> までのご注文で <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
-      metaEl.innerHTML = `本日の受付は終了 — 明日 22:00 まで受付 <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span>`;
+      metaEl.innerHTML = `<strong>${cutoffLabel}</strong> まで受付` +
+        (remain ? ` <span class="ship-cd-remain">あと ${remain}</span>` : '') +
+        ` <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span>`;
     }
   }
 
