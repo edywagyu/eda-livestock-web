@@ -1429,11 +1429,65 @@ function renderSummary() {
   btn.disabled = (cartItems.length === 0 && !subscription);
 }
 
-/* ---- 配送日オプション ---- */
+/* ---- 配送日オプション ----
+   ▸ 定期便あり: お届け日は「毎月1日」固定 (時間帯のみ選択可)
+   ▸ 単品/ギフトのみ: 最短日（3日後〜）+ 14日先まで選択可
+*/
 function buildDeliveryDateOptions() {
   const select = document.getElementById('checkoutDeliveryDate');
   const days = ['日','月','火','水','木','金','土'];
   const now = new Date();
+  const defaultLabel = document.getElementById('deliveryDateDefault');
+  const dateField = select ? select.closest('.dest-field') : null;
+
+  // 定期便モードの場合: 毎月1日固定
+  if (subscription && PLANS[subscription.plan]) {
+    // 翌月1日を計算
+    const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const m = nextFirst.getMonth() + 1;
+    const dd = nextFirst.getDate();
+    const w = days[nextFirst.getDay()];
+    const label = `${m}月${dd}日（${w}）`;
+
+    // select を読み取り専用化（HTML上は disabled で固定値表示）
+    select.innerHTML = `<option selected>${label}</option>`;
+    select.disabled = true;
+    select.style.background = 'rgba(212,169,59,0.10)';
+    select.style.cursor = 'not-allowed';
+
+    // ラベル変更
+    if (defaultLabel) {
+      defaultLabel.textContent = '定期便 · 毎月1日 固定';
+      defaultLabel.style.color = 'var(--color-gold)';
+    }
+
+    // 既存の補足説明を入れ替え
+    if (dateField) {
+      let note = dateField.querySelector('.delivery-sub-note');
+      if (!note) {
+        note = document.createElement('small');
+        note.className = 'delivery-sub-note';
+        note.style.cssText = 'display:block;margin-top:6px;font-size:11px;color:var(--color-gold);font-weight:600';
+        dateField.appendChild(note);
+      }
+      note.innerHTML = '⭐ 定期便のお届けは <strong>毎月1日</strong> に固定です。時間帯のみご指定ください。';
+    }
+    return;
+  }
+
+  // 単品/ギフトモード
+  select.disabled = false;
+  select.style.background = '';
+  select.style.cursor = '';
+  if (defaultLabel) {
+    defaultLabel.textContent = '最短: 自動';
+    defaultLabel.style.color = '';
+  }
+  if (dateField) {
+    const note = dateField.querySelector('.delivery-sub-note');
+    if (note) note.remove();
+  }
+
   const start = new Date(now);
   start.setDate(start.getDate() + 3);
   let html = '<option value="">最短日でお届け（3日後〜）</option>';
