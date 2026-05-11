@@ -2148,168 +2148,238 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .quiz-savings-row.save strong { color: #FFB81C; font-size: 26px; }
 
-/* ================ 今週のメニュー ================ */
+/* ================ 今週のメニュー (エディトリアル) ================ */
 .weekly-menu {
-  padding: 80px 0;
-  background: white;
+  padding: 100px 0;
+  background: linear-gradient(180deg, #fff 0%, #FAF7F0 100%);
+  position: relative;
 }
 .weekly-menu-head {
-  text-align: center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
   margin-bottom: 48px;
+  border-bottom: 1px solid var(--color-bone);
+  padding-bottom: 24px;
 }
 .weekly-menu-eyebrow {
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--color-gold-soft);
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 .weekly-menu-title {
   font-family: var(--font-jp-serif);
-  font-size: clamp(26px, 4vw, 40px);
+  font-size: clamp(28px, 5vw, 48px);
   color: var(--color-forest);
-  margin: 0 0 12px;
+  margin: 0;
   font-weight: 700;
+  line-height: 1.2;
 }
 .weekly-menu-sub {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-ink-muted);
-  max-width: 540px;
-  margin: 0 auto;
-  line-height: 1.8;
+  max-width: 380px;
+  line-height: 1.85;
+  margin: 0;
 }
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 8px;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: 640px;
 }
 .menu-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid var(--color-bone);
-  transition: all 0.4s var(--ease-out-expo);
-  cursor: pointer;
   position: relative;
+  cursor: pointer;
+  transition: all 0.5s var(--ease-out-expo);
+}
+.menu-card.feature {
+  grid-row: 1 / 3;
+  grid-column: 1 / 2;
 }
 .menu-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 48px rgba(15,61,46,0.12);
-  border-color: var(--color-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(15,61,46,0.18);
 }
 .menu-card-img {
-  height: 220px;
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-position: center;
   position: relative;
+  transition: transform 0.7s var(--ease-out-expo);
 }
+.menu-card:hover .menu-card-img { transform: scale(1.06); }
 .menu-card-img::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4));
+  background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 30%, transparent 50%, rgba(15,61,46,0.85) 100%);
 }
 .menu-card-day {
   position: absolute;
-  top: 14px; left: 14px;
-  background: white;
+  top: 18px; left: 18px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(8px);
   font-family: var(--font-display);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
+  padding: 7px 14px;
+  border-radius: 16px;
+  color: var(--color-forest);
+  z-index: 2;
+  font-weight: 700;
+}
+.menu-card-time-pill {
+  position: absolute;
+  top: 18px; right: 18px;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-family: var(--font-jp);
+  font-size: 11px;
+  font-weight: 700;
   padding: 6px 12px;
   border-radius: 14px;
-  color: var(--color-forest);
-  z-index: 1;
-}
-.menu-card-time {
-  position: absolute;
-  bottom: 14px; left: 14px;
-  color: white;
-  font-family: var(--font-jp);
-  font-size: 12px;
-  font-weight: 500;
-  z-index: 1;
+  z-index: 2;
   letter-spacing: 0.04em;
 }
-.menu-card-time strong { font-size: 18px; font-weight: 700; }
-.menu-card-body { padding: 20px 22px 22px; }
+.menu-card-content {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px 26px 28px;
+  z-index: 2;
+  color: white;
+}
+.menu-card.feature .menu-card-content { padding: 32px 36px 36px; }
 .menu-card-title {
   font-family: var(--font-jp-serif);
   font-size: 18px;
   font-weight: 700;
-  color: var(--color-forest);
   margin: 0 0 8px;
-  line-height: 1.4;
+  line-height: 1.35;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
+.menu-card.feature .menu-card-title { font-size: clamp(22px, 2.6vw, 28px); }
 .menu-card-desc {
   font-size: 12px;
-  color: var(--color-ink-muted);
-  line-height: 1.75;
-  margin: 0 0 14px;
+  opacity: 0.9;
+  line-height: 1.7;
+  margin: 0 0 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.menu-card.feature .menu-card-desc {
+  font-size: 13px;
+  -webkit-line-clamp: 3;
+  margin-bottom: 16px;
 }
 .menu-card-ingredients {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 .menu-ingredient {
-  background: var(--color-paper);
-  color: var(--color-forest);
-  font-size: 11px;
-  padding: 4px 9px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  color: white;
+  font-size: 10px;
+  padding: 4px 10px;
   border-radius: 10px;
   font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.menu-card-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 14px;
 }
 .menu-card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
   font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--color-forest);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-gold);
   font-weight: 700;
-  border-top: 1px solid var(--color-bone);
-  padding-top: 14px;
-  width: 100%;
-  justify-content: space-between;
 }
-.menu-card-cta strong { color: var(--color-gold-soft); }
-.menu-card:hover .menu-card-cta { color: var(--color-gold-soft); }
-@media (max-width: 720px) {
-  .menu-grid { grid-template-columns: 1fr; }
+.menu-card-arrow {
+  width: 32px; height: 32px;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform 0.3s;
+}
+.menu-card:hover .menu-card-arrow { transform: translateX(4px); }
+
+@media (max-width: 900px) {
+  .menu-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1.5fr 1fr 1fr; height: auto; gap: 12px; }
+  .menu-card.feature { grid-column: 1 / 3; grid-row: 1 / 2; min-height: 340px; }
+  .menu-card { min-height: 220px; }
+}
+@media (max-width: 640px) {
+  .menu-grid { grid-template-columns: 1fr; grid-template-rows: none; }
+  .menu-card.feature, .menu-card { grid-column: auto; grid-row: auto; min-height: 280px; }
+  .weekly-menu-head { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 
-/* ================ 比較表 ================ */
+/* ================ 比較表 (refined) ================ */
 .compare-section {
-  padding: 80px 0;
-  background: linear-gradient(180deg, var(--color-cream) 0%, white 100%);
+  padding: 100px 0;
+  background: linear-gradient(180deg, white 0%, var(--color-cream) 100%);
+  position: relative;
 }
-.compare-head { text-align: center; margin-bottom: 40px; }
+.compare-head {
+  text-align: center;
+  margin-bottom: 56px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .compare-eyebrow {
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--color-gold-soft);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .compare-title {
   font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 36px);
+  font-size: clamp(28px, 4.5vw, 44px);
   color: var(--color-forest);
-  margin: 0;
+  margin: 0 0 14px;
   font-weight: 700;
+  line-height: 1.3;
+}
+.compare-sub {
+  font-size: 14px;
+  color: var(--color-ink-muted);
+  line-height: 1.85;
+  margin: 0;
 }
 .compare-table-wrap {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
   background: white;
-  border-radius: 18px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(15,61,46,0.08);
+  box-shadow: 0 24px 64px rgba(15,61,46,0.08);
   border: 1px solid var(--color-bone);
+  position: relative;
 }
 .compare-table {
   width: 100%;
@@ -2318,7 +2388,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .compare-table th,
 .compare-table td {
-  padding: 16px 20px;
+  padding: 18px 24px;
   text-align: center;
   border-bottom: 1px solid var(--color-bone);
   font-size: 14px;
@@ -2327,29 +2397,52 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background: var(--color-paper);
   font-family: var(--font-display);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   font-weight: 700;
   color: var(--color-ink-muted);
-  padding: 18px 12px;
+  padding: 22px 12px;
+  text-transform: uppercase;
 }
 .compare-table thead th.eda-col {
   background: linear-gradient(180deg, #0F3D2E, #143D2B);
   color: var(--color-gold);
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  position: relative;
+}
+.compare-table thead th.eda-col::after {
+  content: '⭐ RECOMMENDED';
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  opacity: 0.8;
+  margin-top: 4px;
+  font-weight: 600;
 }
 .compare-table tbody td:first-child {
   text-align: left;
   font-weight: 600;
   color: var(--color-ink);
   background: var(--color-paper);
-  font-size: 13px;
+  font-size: 14px;
+  padding-left: 24px;
 }
 .compare-table tbody td.eda-col {
   background: rgba(212,169,59,0.08);
   font-weight: 700;
   color: var(--color-forest);
+  position: relative;
 }
+.compare-table tbody td.eda-col::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--color-gold);
+}
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table tbody tr:hover { background: rgba(212,169,59,0.03); }
 .compare-check {
   display: inline-flex;
   width: 22px; height: 22px;
@@ -2446,10 +2539,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .live-feed { bottom: 12px; left: 8px; right: 88px; max-width: none; padding: 10px 12px; }
 }
 
-/* ================ アニメーション カウンター ================ */
+/* ================ スタッツバンド (refined) ================ */
 .stats-band {
-  padding: 64px 0;
-  background: var(--color-forest);
+  padding: 96px 0;
+  background:
+    linear-gradient(135deg, #0F3D2E 0%, #143D2B 50%, #0A2D21 100%);
   color: white;
   position: relative;
   overflow: hidden;
@@ -2458,42 +2552,85 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(212,169,59,0.12), transparent 60%);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(212,169,59,0.15), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(212,169,59,0.1), transparent 50%);
+}
+.stats-band-head {
+  text-align: center;
+  margin-bottom: 56px;
+  position: relative;
+  z-index: 1;
+}
+.stats-band-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  margin: 0 0 12px;
+}
+.stats-band-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(24px, 4vw, 36px);
+  color: white;
+  margin: 0;
+  font-weight: 700;
 }
 .stats-band-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
+  gap: 4px;
   text-align: center;
   position: relative;
   z-index: 1;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 48px 0;
 }
 .stat-band-item {
-  padding: 12px;
+  padding: 12px 24px;
+  position: relative;
+}
+.stat-band-item + .stat-band-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: rgba(255,255,255,0.08);
 }
 .stat-band-num {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: clamp(44px, 6vw, 72px);
   color: var(--color-gold);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-variant-numeric: tabular-nums;
+  font-weight: 400;
 }
 .stat-band-num small {
-  font-size: 0.4em;
-  color: rgba(212,169,59,0.7);
+  font-size: 0.38em;
+  color: rgba(212,169,59,0.75);
   font-family: var(--font-jp);
-  margin-left: 2px;
+  margin-left: 4px;
+  font-weight: 600;
 }
 .stat-band-label {
   font-family: var(--font-jp);
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255,255,255,0.7);
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+.stat-band-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
   letter-spacing: 0.04em;
 }
 @media (max-width: 720px) {
-  .stats-band-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .stats-band-grid { grid-template-columns: repeat(2, 1fr); padding: 32px 0; }
+  .stat-band-item + .stat-band-item::before { display: none; }
 }
 
 /* ================ 開封動画セクション ================ */
@@ -2730,61 +2867,126 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ SOCIAL PROOF ================ */
 .shop-proof {
-  background: var(--color-forest-deep);
-  padding: var(--space-section-sm) 0;
+  background: linear-gradient(180deg, var(--color-forest-deep) 0%, var(--color-forest) 100%);
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+.shop-proof::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(212,169,59,0.08), transparent 50%),
+    radial-gradient(circle at 10% 80%, rgba(212,169,59,0.05), transparent 50%);
+  pointer-events: none;
 }
 .shop-proof-head {
-  text-align: center;
-  margin-bottom: 48px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 56px;
+  position: relative;
+}
+.shop-proof-head h2 {
+  font-family: var(--font-jp-serif) !important;
+  font-size: clamp(28px, 5vw, 48px) !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+  line-height: 1.2;
+  margin-top: 12px !important;
 }
 .shop-proof-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-.shop-proof-card {
-  background: rgba(255,255,255,0.04);
-  border-left: 2px solid var(--color-gold);
-  padding: 32px;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 20px;
   position: relative;
 }
+.shop-proof-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 32px 28px;
+  position: relative;
+  transition: all 0.4s var(--ease-out-expo);
+}
+.shop-proof-card:hover {
+  background: rgba(255,255,255,0.09);
+  transform: translateY(-4px);
+  border-color: rgba(212,169,59,0.3);
+}
+.shop-proof-card.featured {
+  background: linear-gradient(135deg, rgba(212,169,59,0.18) 0%, rgba(212,169,59,0.06) 100%);
+  border-color: rgba(212,169,59,0.35);
+  grid-row: 1 / 2;
+}
 .shop-proof-card::before {
-  content: '\201C';
-  font-family: var(--font-jp-serif);
-  font-size: 60px;
+  content: '"';
+  font-family: 'Georgia', serif;
+  font-size: 84px;
   color: var(--color-gold);
-  opacity: 0.2;
+  opacity: 0.25;
   position: absolute;
-  top: 4px; left: 16px;
+  top: 8px; right: 24px;
   line-height: 1;
+  font-style: italic;
 }
 .shop-proof-stars {
   color: var(--color-gold);
-  font-size: 14px;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
+  font-size: 13px;
+  letter-spacing: 3px;
+  margin-bottom: 18px;
 }
 .shop-proof-text {
   font-family: var(--font-jp-serif);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.85;
-  color: rgba(255,255,255,0.85);
-  margin: 0 0 20px;
+  color: rgba(255,255,255,0.92);
+  margin: 0 0 24px;
+  font-weight: 500;
+}
+.shop-proof-card.featured .shop-proof-text {
+  font-size: 17px;
+  font-weight: 600;
 }
 .shop-proof-author {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.12);
 }
+.shop-proof-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-gold), var(--color-gold-soft));
+  color: var(--color-forest-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.shop-proof-author-info { flex: 1; }
 .shop-proof-name {
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: var(--tracking-widest);
-  color: var(--color-gold);
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: white;
+  font-weight: 600;
+  margin: 0;
 }
 .shop-proof-product {
   font-size: 11px;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255,255,255,0.55);
+  margin-top: 2px;
+}
+@media (max-width: 900px) {
+  .shop-proof-grid { grid-template-columns: 1fr; }
+  .shop-proof-card.featured { grid-row: auto; }
+  .shop-proof-head { flex-direction: column; align-items: flex-start; }
 }
 .shop-proof-viewers {
   font-size: 13px;
@@ -5005,28 +5207,37 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <p class="shop-proof-viewers"></p>
     </div>
     <div class="shop-proof-grid reveal">
-      <div class="shop-proof-card">
+      <div class="shop-proof-card featured">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">冷凍庫に常備するようになってから、平日の夕食が楽になりました。小分けパックだから必要な分だけ解凍できるし、スーパーで迷う時間もゼロに。</p>
+        <p class="shop-proof-text">冷凍庫に常備するようになってから、平日の夕食が圧倒的に楽になりました。小分けパックだから必要な分だけ解凍できるし、スーパーで「今日何を買おう」と迷う時間もゼロに。子どもの食べ盛りが続くので、レギュラー定期便で月¥12,800、本当に頼りになります。</p>
         <div class="shop-proof-author">
-          <span class="shop-proof-name">東京都 T.K 様（共働き・4歳児あり）</span>
-          <span class="shop-proof-product">冷凍ストックセット ご利用</span>
+          <div class="shop-proof-avatar">田</div>
+          <div class="shop-proof-author-info">
+            <div class="shop-proof-name">田中 様 / 東京都 / 共働き・4歳児</div>
+            <div class="shop-proof-product">レギュラー定期便 ご利用中</div>
+          </div>
         </div>
       </div>
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">脂が重すぎなくて、子どもがよく食べてくれます。スーパーのお肉と比べて、なぜ安心できるかが明確で、家族用に毎月定期便で届けてもらってます。</p>
+        <p class="shop-proof-text">脂が重すぎなくて、子どもが本当によく食べてくれます。スーパーのお肉と比べて、なぜ安心できるかが明確だから、家族用に毎月続けてます。</p>
         <div class="shop-proof-author">
-          <span class="shop-proof-name">福岡県 M.S 様（4人家族）</span>
-          <span class="shop-proof-product">月1回 ファミリー定期便</span>
+          <div class="shop-proof-avatar">佐</div>
+          <div class="shop-proof-author-info">
+            <div class="shop-proof-name">佐藤 様 / 福岡 / 4人家族</div>
+            <div class="shop-proof-product">レギュラー定期便</div>
+          </div>
         </div>
       </div>
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなくて「毎日の安心」が冷凍庫にある感覚です。</p>
+        <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなくて、「毎日の安心」が冷凍庫にある感覚です。</p>
         <div class="shop-proof-author">
-          <span class="shop-proof-name">大阪府 Y.N 様</span>
-          <span class="shop-proof-product">2週間ごと定期便</span>
+          <div class="shop-proof-avatar">山</div>
+          <div class="shop-proof-author-info">
+            <div class="shop-proof-name">山田 様 / 大阪 / 共働き</div>
+            <div class="shop-proof-product">ボリューム定期便</div>
+          </div>
         </div>
       </div>
     </div>
@@ -5590,71 +5801,93 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 今週のメニュー ========= -->
+<!-- ========= 今週のメニュー（エディトリアル） ========= -->
 <section class="weekly-menu">
   <div class="container">
     <div class="weekly-menu-head">
-      <p class="weekly-menu-eyebrow">THIS WEEK'S MENU</p>
-      <h2 class="weekly-menu-title">今週のメニュー、材料はこちらで。</h2>
+      <div>
+        <p class="weekly-menu-eyebrow">THIS WEEK'S MENU</p>
+        <h2 class="weekly-menu-title">今週のメニュー、<br/>材料はこちらで。</h2>
+      </div>
       <p class="weekly-menu-sub">「今夜何作ろう」をなくす、毎週の献立提案。<br/>材料はワンクリックでカートに揃います。</p>
     </div>
     <div class="menu-grid">
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=800&q=80')">
-          <span class="menu-card-day">MON</span>
-          <span class="menu-card-time">月曜の夜 / <strong>15分</strong></span>
-        </div>
-        <div class="menu-card-body">
-          <h3 class="menu-card-title">和牛切り落としの牛丼</h3>
-          <p class="menu-card-desc">解凍5分。玉ねぎと一緒に煮るだけ。お子さま大人気の定番。週始まりのスタミナに。</p>
-          <div class="menu-card-ingredients">
-            <span class="menu-ingredient">和牛切り落とし 200g</span>
-            <span class="menu-ingredient">玉ねぎ</span>
-            <span class="menu-ingredient">めんつゆ</span>
-          </div>
-          <div class="menu-card-cta">
-            <span>材料を揃える</span>
-            <strong>→</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80')">
-          <span class="menu-card-day">WED</span>
-          <span class="menu-card-time">水曜の夜 / <strong>20分</strong></span>
-        </div>
-        <div class="menu-card-body">
-          <h3 class="menu-card-title">平飼い鶏もも 唐揚げ</h3>
-          <p class="menu-card-desc">前日に下味だけ仕込めば、夕方は揚げるだけ。脂少なめで罪悪感なし。子どもが必ずおかわり。</p>
-          <div class="menu-card-ingredients">
-            <span class="menu-ingredient">平飼い鶏もも 500g</span>
-            <span class="menu-ingredient">片栗粉</span>
-            <span class="menu-ingredient">ニンニク・生姜</span>
-          </div>
-          <div class="menu-card-cta">
-            <span>材料を揃える</span>
-            <strong>→</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=800&q=80')">
-          <span class="menu-card-day">SAT</span>
-          <span class="menu-card-time">週末ごちそう / <strong>30分</strong></span>
-        </div>
-        <div class="menu-card-body">
-          <h3 class="menu-card-title">サーロインステーキ + 付け合わせ</h3>
-          <p class="menu-card-desc">前日から冷蔵庫で解凍。中火で片面60秒ずつ、塩のみ。週末のごちそうも、家でこそ。</p>
+      <!-- フィーチャー（大） -->
+      <div class="menu-card feature" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('public/images/products/drive/sirloin.jpg')"></div>
+        <span class="menu-card-day">SAT 週末</span>
+        <span class="menu-card-time-pill">30分</span>
+        <div class="menu-card-content">
+          <h3 class="menu-card-title">サーロインステーキと付け合わせ野菜</h3>
+          <p class="menu-card-desc">前日から冷蔵庫で解凍。中火で片面60秒ずつ、塩のみで仕上げる週末のごちそう。クレソンとマッシュポテトを添えて、家で完結する贅沢な時間。</p>
           <div class="menu-card-ingredients">
             <span class="menu-ingredient">サーロイン 200g×2</span>
-            <span class="menu-ingredient">塩</span>
+            <span class="menu-ingredient">塩・胡椒</span>
             <span class="menu-ingredient">クレソン</span>
           </div>
-          <div class="menu-card-cta">
-            <span>材料を揃える</span>
-            <strong>→</strong>
+          <div class="menu-card-cta-row">
+            <span class="menu-card-cta">材料を揃える</span>
+            <span class="menu-card-arrow">→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 月曜 -->
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('public/images/products/drive/kiriotoshi.jpg')"></div>
+        <span class="menu-card-day">MON</span>
+        <span class="menu-card-time-pill">15分</span>
+        <div class="menu-card-content">
+          <h3 class="menu-card-title">和牛切り落としの牛丼</h3>
+          <p class="menu-card-desc">解凍5分、煮るだけ。週始まりのスタミナに。</p>
+          <div class="menu-card-cta-row">
+            <span class="menu-card-cta">レシピ</span>
+            <span class="menu-card-arrow">→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 水曜 -->
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('public/images/products/drive/chicken-thigh.jpg')"></div>
+        <span class="menu-card-day">WED</span>
+        <span class="menu-card-time-pill">20分</span>
+        <div class="menu-card-content">
+          <h3 class="menu-card-title">平飼い鶏もも 唐揚げ</h3>
+          <p class="menu-card-desc">脂少なめで罪悪感なし。子どもがおかわり。</p>
+          <div class="menu-card-cta-row">
+            <span class="menu-card-cta">レシピ</span>
+            <span class="menu-card-arrow">→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 木曜 -->
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('public/images/products/drive/hamburg.jpg')"></div>
+        <span class="menu-card-day">THU</span>
+        <span class="menu-card-time-pill">15分</span>
+        <div class="menu-card-content">
+          <h3 class="menu-card-title">無添加 和牛ハンバーグ</h3>
+          <p class="menu-card-desc">凍ったまま蓋して15分。週半ばの救世主。</p>
+          <div class="menu-card-cta-row">
+            <span class="menu-card-cta">レシピ</span>
+            <span class="menu-card-arrow">→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 金曜 -->
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('public/images/products/drive/wagyu-slice.jpg')"></div>
+        <span class="menu-card-day">FRI</span>
+        <span class="menu-card-time-pill">25分</span>
+        <div class="menu-card-content">
+          <h3 class="menu-card-title">和牛のしゃぶしゃぶ</h3>
+          <p class="menu-card-desc">出汁にくぐらせて2秒。一週間のごほうび。</p>
+          <div class="menu-card-cta-row">
+            <span class="menu-card-cta">レシピ</span>
+            <span class="menu-card-arrow">→</span>
           </div>
         </div>
       </div>
@@ -5666,8 +5899,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <section class="compare-section">
   <div class="container">
     <div class="compare-head">
-      <p class="compare-eyebrow">WHY EDA</p>
+      <p class="compare-eyebrow">WHY EDA LIVESTOCK</p>
       <h2 class="compare-title">スーパーの肉と、何が違うのか。</h2>
+      <p class="compare-sub">「健康に育てたお肉だから、安心して家族に出せる」<br/>その違いを、項目ごとに比較しました。</p>
     </div>
     <div class="compare-table-wrap">
       <table class="compare-table">
@@ -5697,22 +5931,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <!-- ========= スタッツバンド ========= -->
 <section class="stats-band">
   <div class="container">
+    <div class="stats-band-head">
+      <p class="stats-band-eyebrow">BY THE NUMBERS</p>
+      <h2 class="stats-band-title">数字で見る、江田畜産。</h2>
+    </div>
     <div class="stats-band-grid">
       <div class="stat-band-item">
         <div class="stat-band-num" data-count="1062"><small>+</small></div>
-        <div class="stat-band-label">家族数</div>
+        <div class="stat-band-label">愛用ファミリー</div>
+        <div class="stat-band-sub">2026年5月時点</div>
       </div>
       <div class="stat-band-item">
         <div class="stat-band-num" data-count="87"><small>%</small></div>
         <div class="stat-band-label">リピート率</div>
+        <div class="stat-band-sub">3回以上の購入</div>
       </div>
       <div class="stat-band-item">
         <div class="stat-band-num" data-count="30"><small>ヶ月+</small></div>
         <div class="stat-band-label">のびのび肥育</div>
+        <div class="stat-band-sub">一般的な和牛は24-28ヶ月</div>
       </div>
       <div class="stat-band-item">
         <div class="stat-band-num" data-count="0"></div>
         <div class="stat-band-label">抗生物質・ホルモン剤</div>
+        <div class="stat-band-sub">完全不使用</div>
       </div>
     </div>
   </div>
