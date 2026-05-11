@@ -596,6 +596,56 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .summary-trust-item { display: inline-flex; align-items: center; gap: 4px; }
 
+/* 電話で質問カード */
+.contact-phone-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 14px;
+  padding: 18px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.25s var(--ease-out-expo);
+  box-shadow: var(--shadow-sm);
+}
+.contact-phone-card:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.contact-phone-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+  color: var(--color-gold);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.contact-phone-body { flex: 1; min-width: 0; }
+.contact-phone-label {
+  font-family: var(--font-jp);
+  font-size: 12.5px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.contact-phone-num {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--color-forest);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+}
+.contact-phone-hours {
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+
 /* Mini cart drawer for mobile */
 .mobile-summary-bar {
   display: none;
@@ -791,19 +841,11 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
               </div>
             </label>
             <label class="payment-option">
-              <input type="radio" name="payment" value="line">
-              <span class="payment-option-icon">💬</span>
+              <input type="radio" name="payment" value="bank">
+              <span class="payment-option-icon">🏦</span>
               <div class="payment-option-body">
-                <div class="payment-option-name">LINE Pay</div>
-                <div class="payment-option-desc">LINE 友だち追加で簡単決済</div>
-              </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="cvs">
-              <span class="payment-option-icon">🏪</span>
-              <div class="payment-option-body">
-                <div class="payment-option-name">コンビニ後払い</div>
-                <div class="payment-option-desc">商品到着後、7日以内にお支払い</div>
+                <div class="payment-option-name">銀行振込</div>
+                <div class="payment-option-desc">ご注文確認メールに振込先を記載 · 入金確認後の発送</div>
               </div>
             </label>
           </div>
@@ -830,9 +872,22 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
           <div class="summary-trust">
             <span class="summary-trust-item">🔒 SSL</span>
             <span class="summary-trust-item">✓ 利用規約に同意</span>
-            <span class="summary-trust-item">📞 24h サポート</span>
           </div>
         </div>
+
+        <!-- 電話で質問 (担当者直通) -->
+        <a href="tel:08057930708" class="contact-phone-card">
+          <div class="contact-phone-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="contact-phone-body">
+            <div class="contact-phone-label">電話で質問する</div>
+            <div class="contact-phone-num">担当者に直通 · 080-5793-0708</div>
+            <div class="contact-phone-hours">平日 9:00〜18:00 / 不在の際は折り返します</div>
+          </div>
+        </a>
       </div>
 
     </div>
@@ -864,6 +919,7 @@ const PLANS = {
 /* ---- 状態 ---- */
 let cartItems = [];
 let subscription = null;        // { plan: 'regular' } or null
+let senderName = '';            // ギフト時の依頼人名（注文者）
 let destinations = [
   { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
 ];
@@ -1047,6 +1103,11 @@ function renderDestinations() {
           ${ isGift ? `
             <div class="gift-options">
               <div class="gift-options-head">🎁 ギフト用オプション</div>
+              <div class="dest-field" style="margin-bottom: 12px;">
+                <label>依頼人名（差出人として記載されます）<span class="required">*</span></label>
+                <input type="text" value="${dest.fromName || ''}" placeholder="例: 江田 友輝"
+                       oninput="updateDestField(${dIdx}, 'fromName', this.value)" required>
+              </div>
               <div class="gift-noshi-row">
                 <label class="gift-noshi-option ${dest.noshi === 'oseibo' ? 'selected' : ''}">
                   <input type="radio" name="noshi-${dIdx}" value="oseibo" ${dest.noshi === 'oseibo' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'oseibo')">
@@ -1064,11 +1125,6 @@ function renderDestinations() {
                   <input type="radio" name="noshi-${dIdx}" value="none" ${dest.noshi === 'none' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'none')">
                   のし不要
                 </label>
-              </div>
-              <div class="dest-field">
-                <label>メッセージカード（任意・40文字以内）</label>
-                <textarea maxlength="40" placeholder="例: いつもありがとうございます。"
-                          oninput="updateDestField(${dIdx}, 'message', this.value)">${dest.message || ''}</textarea>
               </div>
               <p style="font-size: 11px; color: var(--color-ink-muted); margin: 8px 0 0;">
                 ※ 価格・伝票は同梱しません。受取人には金額が分かりません。
