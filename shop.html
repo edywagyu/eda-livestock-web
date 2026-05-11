@@ -37,6 +37,11 @@
   --space-section-sm: clamp(48px, 8vw, 96px);
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+  /* Shadow tokens — 全体で統一感のある影 */
+  --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
+  --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 16px 48px rgba(15, 61, 46, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-xl: 0 28px 72px rgba(15, 61, 46, 0.20), 0 6px 18px rgba(0,0,0,0.08);
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
@@ -2247,6 +2252,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   transform: translateY(-4px);
   background: rgba(255,255,255,0.08);
   border-color: rgba(212,169,59,0.4);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.25);
 }
 .sub-plan-mini.featured {
   background: linear-gradient(160deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04));
@@ -2362,6 +2368,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-weight: 600;
 }
 .sub-promo-banner-text strong { font-size: 14px; }
+.sub-promo-deadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: rgba(15, 61, 46, 0.12);
+  border: 1px solid rgba(15, 61, 46, 0.2);
+  padding: 3px 10px;
+  border-radius: 12px;
+  color: var(--color-forest-deep);
+}
+.sub-promo-deadline strong {
+  font-size: 13px !important;
+  font-family: var(--font-display);
+  color: var(--color-forest-deep) !important;
+  font-variant-numeric: tabular-nums;
+}
+.sub-promo-deadline-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #DC2626;
+  animation: subPromoDot 1.4s ease-in-out infinite;
+}
+@keyframes subPromoDot {
+  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+  50%      { transform: scale(1.3); opacity: 0.6; box-shadow: 0 0 0 6px rgba(220,38,38,0); }
+}
 
 @media (max-width: 720px) {
   .sub-plans-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -2457,6 +2492,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 18px;
   margin: 0 0 18px;
   font-weight: 700;
+  box-shadow: var(--shadow-sm);
 }
 .freezer-band-title {
   font-family: var(--font-jp-serif);
@@ -2512,9 +2548,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin: 0 auto;
   border-radius: 18px;
   overflow: hidden;
-  box-shadow:
-    0 28px 64px rgba(15,61,46,0.18),
-    0 6px 18px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-xl);
 }
 .freezer-band-photo img {
   width: 100%;
@@ -2562,11 +2596,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   overflow: hidden;
 }
 
-/* ============ 🎁 50%OFF プレゼントバナー ============ */
+/* ============ 🎁 50%OFF プレゼントバナー（緑×金で本サイトのブランドと統一） ============ */
 .quiz-gift-banner {
   max-width: 760px;
   margin: 0 auto 32px;
-  background: linear-gradient(135deg, #B91C1C 0%, #8B0F0F 60%, #5D0A0A 100%);
+  background:
+    radial-gradient(circle at 85% 25%, rgba(212,169,59,0.18), transparent 50%),
+    linear-gradient(135deg, #143D2B 0%, #0F3D2E 50%, #0A2D21 100%);
   border-radius: 20px;
   padding: 32px 36px;
   position: relative;
@@ -2575,11 +2611,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   grid-template-columns: 110px 1fr;
   gap: 28px;
   align-items: center;
-  box-shadow:
-    0 24px 60px rgba(185, 28, 28, 0.35),
-    0 6px 16px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255,255,255,0.15);
-  border: 1.5px solid rgba(212,169,59,0.4);
+  box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(212,169,59,0.18);
+  border: 1.5px solid rgba(212,169,59,0.5);
 }
 .quiz-gift-banner::before {
   /* 金色ストライプ模様 */
@@ -2674,16 +2707,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 0 0 6px 6px;
 }
 .quiz-gift-box-body::before {
-  /* 縦のリボンストライプ */
+  /* 縦のリボンストライプ（深緑でブランド統一） */
   content: '';
   position: absolute;
   left: 50%; transform: translateX(-50%);
   top: -28px; bottom: 0;
   width: 14px;
-  background: linear-gradient(180deg, #B91C1C, #8B0F0F);
+  background: linear-gradient(180deg, #143D2B, #0A2D21);
   box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
-/* リボンの蝶結び */
+/* リボンの蝶結び（深緑） */
 .quiz-gift-bow {
   position: absolute;
   top: -20px;
@@ -2696,7 +2729,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   position: absolute;
   top: 0;
   width: 24px; height: 26px;
-  background: radial-gradient(circle at 50% 50%, #DC2626, #8B0F0F);
+  background: radial-gradient(circle at 50% 50%, #1A4F3A, #0A2D21);
   border-radius: 50% 60% 50% 60%;
 }
 .quiz-gift-bow-left  { left: 0;  transform: rotate(-18deg); }
@@ -2706,7 +2739,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   left: 50%; top: 6px;
   transform: translateX(-50%);
   width: 14px; height: 14px;
-  background: linear-gradient(180deg, #DC2626, #8B0F0F);
+  background: linear-gradient(180deg, #1A4F3A, #0A2D21);
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
@@ -2901,7 +2934,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background: white;
   border-radius: 16px;
   padding: 0;
-  box-shadow: 0 24px 64px rgba(15,61,46,0.12), 0 4px 12px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-lg);
   position: relative;
   z-index: 1;
   border: 1px solid var(--color-bone);
@@ -3827,9 +3860,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   padding: 14px 14px 56px;
   border-radius: 6px;
   overflow: visible;
-  box-shadow:
-    0 32px 80px rgba(15,61,46,0.20),
-    0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-xl);
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
@@ -3896,14 +3927,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background: white;
   border-radius: 14px;
   border: 1px solid rgba(212,169,59,0.18);
-  box-shadow: 0 4px 14px rgba(15,61,46,0.04);
+  box-shadow: var(--shadow-sm);
   position: relative;
   transition: all 0.3s var(--ease-out-expo);
 }
 .unboxing-step:hover {
   transform: translateX(4px);
   border-color: var(--color-gold);
-  box-shadow: 0 8px 22px rgba(15,61,46,0.08);
+  box-shadow: var(--shadow-md);
 }
 .unboxing-step-icon {
   width: 56px; height: 56px;
@@ -3928,13 +3959,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-size: 11px;
   font-weight: 700;
 }
-.unboxing-step-body strong {
+/* ステップ見出しのみ（直下の strong）block 表示 */
+.unboxing-step-body > strong {
   display: block;
   font-family: var(--font-jp);
   font-size: 14px;
   color: var(--color-forest);
   font-weight: 700;
   margin-bottom: 3px;
+}
+/* 段落内の strong（数字強調など）はインライン */
+.unboxing-step-body p strong {
+  display: inline;
+  color: var(--color-gold);
+  font-weight: 700;
 }
 .unboxing-step-body p {
   font-size: 12.5px;
@@ -4008,6 +4046,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin-right: calc(clamp(20px, 4vw, 56px) * -1);
   padding-left: clamp(20px, 4vw, 56px);
   padding-right: clamp(20px, 4vw, 56px);
+  align-items: stretch;          /* ★ カード高さを行内で揃える */
 }
 .product-grid[data-cat="beef"]::-webkit-scrollbar,
 .product-grid[data-cat="chicken"]::-webkit-scrollbar { height: 6px; }
@@ -4028,6 +4067,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   overflow: hidden;
   border: 1px solid var(--color-bone);
   transition: all 0.35s var(--ease-out-expo);
+  box-shadow: var(--shadow-sm);
+}
+.product-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: rgba(212,169,59,0.4);
 }
 .product-card .product-card-img { margin-bottom: 0; }
 .product-card .product-tag-row,
@@ -5883,6 +5927,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .variant-select:hover { border-color: var(--color-gold); }
 .variant-select:focus { outline: none; border-color: var(--color-gold); }
+/* 単一バリアント用の静的ラベル（ドロップダウンと同じ枠＝高さ揃え用） */
+.variant-select--static {
+  cursor: default;
+  background-image: none;
+  padding-right: 12px;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+}
+.variant-select--static:hover { border-color: var(--color-bone); }
 
 .btn-add-cart {
   padding: 10px 16px; border-radius: 6px;
@@ -6656,7 +6710,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .unboxing-step { padding: 12px 14px; grid-template-columns: 44px 1fr; gap: 12px; }
   .unboxing-step-icon { width: 44px; height: 44px; font-size: 20px; border-radius: 10px; }
   .unboxing-step-num { width: 18px; height: 18px; font-size: 9px; }
-  .unboxing-step-body strong { font-size: 13px; }
+  .unboxing-step-body > strong { font-size: 13px; }
   .unboxing-step-body p { font-size: 11.5px; line-height: 1.5; }
 
   /* 商品セクション */
@@ -7658,7 +7712,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="sub-promo-banner-num">50<small style="font-size:14px">%</small></div>
           <div class="sub-promo-banner-text">
             <strong>初月50%OFF</strong>キャンペーン実施中<br/>
-            <span style="opacity:0.8">どのプランも初回お試し価格でスタート</span>
+            <span class="sub-promo-deadline">
+              <span class="sub-promo-deadline-dot"></span>
+              <span id="subPromoMonth">5月</span>末まで・残り <strong id="subPromoDaysLeft">20</strong>日
+            </span>
           </div>
         </div>
       </div>
@@ -7814,8 +7871,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <section class="unboxing-section" id="unboxing">
   <div class="container">
     <div class="unboxing-head">
-      <span class="unboxing-eyebrow">UNBOXING · OPEN-TO-EAT</span>
-      <h2>玄関で受け取って、フライパンまで。</h2>
+      <span class="unboxing-eyebrow">UNBOXING · 開封のひととき</span>
+      <h2>開封動画</h2>
       <p class="unboxing-lead">江田畜産のお肉は<strong>小分け真空パック</strong>で冷凍便。受け取ったらそのまま冷凍庫へ。必要な分だけ、ストレスゼロで召し上がっていただけます。</p>
     </div>
 
@@ -8574,6 +8631,10 @@ function toggleUnboxingSound() {
           html += `<option value="${i}">${v.t} — ¥${v.p.toLocaleString()}</option>`;
         });
         html += '</select>';
+      } else {
+        // 単一バリアント時もカード高さを揃えるため、ドロップダウンと同じ枠で価格を表示
+        const v = variants[0];
+        html += `<div class="variant-select variant-select--static">${v.t} — ¥${v.p.toLocaleString()}</div>`;
       }
       html += '<button class="btn-add-cart">カートに追加</button>';
       buyEl.innerHTML = html;
@@ -9015,17 +9076,31 @@ function toggleUnboxingSound() {
   window._refreshWeeklyMenu = render;
 })();
 
-/* ============ 🎁 今月限定50%OFF バナーの月/締切を自動更新 ============ */
-(function quizGiftMonthInit() {
-  const now = new Date();
-  const m = now.getMonth() + 1;
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-  const monthEl = document.getElementById('quizGiftMonth');
-  const monthLabelEl = document.getElementById('quizGiftMonthLabel');
-  const deadlineEl = document.getElementById('quizGiftDeadline');
-  if (monthEl) monthEl.textContent = m + '月';
-  if (monthLabelEl) monthLabelEl.textContent = m + '月';
-  if (deadlineEl) deadlineEl.textContent = m + '月' + lastDay + '日';
+/* ============ 🎁 今月限定50%OFF：月・締切・残日数を自動更新 ============ */
+(function monthEndPromoInit() {
+  function update() {
+    const now = new Date();
+    const m = now.getMonth() + 1;
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysLeft = Math.max(1, lastDay - now.getDate() + 1); // 当日も含めて残日数
+
+    // 診断クイズ前の50%OFFプレゼントバナー
+    const giftMonth = document.getElementById('quizGiftMonth');
+    const giftMonthLabel = document.getElementById('quizGiftMonthLabel');
+    const giftDeadline = document.getElementById('quizGiftDeadline');
+    if (giftMonth) giftMonth.textContent = m + '月';
+    if (giftMonthLabel) giftMonthLabel.textContent = m + '月';
+    if (giftDeadline) giftDeadline.textContent = m + '月' + lastDay + '日';
+
+    // 定期コース 初月50%OFF 締切バー
+    const subPromoMonth = document.getElementById('subPromoMonth');
+    const subPromoDaysLeft = document.getElementById('subPromoDaysLeft');
+    if (subPromoMonth) subPromoMonth.textContent = m + '月';
+    if (subPromoDaysLeft) subPromoDaysLeft.textContent = String(daysLeft);
+  }
+  update();
+  // 1時間ごと再計算（深夜0時越え→残日数が翌日には自動更新）
+  setInterval(update, 60 * 60 * 1000);
 })();
 
 /* ============ 診断クイズ ============ */
