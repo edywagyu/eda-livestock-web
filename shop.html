@@ -2561,6 +2561,329 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   position: relative;
   overflow: hidden;
 }
+
+/* ============ 🎁 50%OFF プレゼントバナー ============ */
+.quiz-gift-banner {
+  max-width: 760px;
+  margin: 0 auto 32px;
+  background: linear-gradient(135deg, #B91C1C 0%, #8B0F0F 60%, #5D0A0A 100%);
+  border-radius: 20px;
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 28px;
+  align-items: center;
+  box-shadow:
+    0 24px 60px rgba(185, 28, 28, 0.35),
+    0 6px 16px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(212,169,59,0.4);
+}
+.quiz-gift-banner::before {
+  /* 金色ストライプ模様 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(45deg,
+      transparent 0,
+      transparent 22px,
+      rgba(212,169,59,0.04) 22px,
+      rgba(212,169,59,0.04) 24px);
+  pointer-events: none;
+}
+.quiz-gift-banner::after {
+  /* 上部にラメ感 */
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 60%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), transparent);
+  pointer-events: none;
+}
+
+/* 左上のリボン（今月限定） */
+.quiz-gift-ribbon {
+  position: absolute;
+  top: -2px; left: 22px;
+  background: linear-gradient(180deg, var(--color-gold), #B8902F);
+  color: var(--color-forest-deep);
+  padding: 8px 14px 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  line-height: 1.2;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+.quiz-gift-ribbon::after {
+  /* リボン下端の三角ノッチ */
+  content: '';
+  position: absolute;
+  bottom: -7px; left: 0; right: 0;
+  height: 8px;
+  background:
+    linear-gradient(135deg, transparent 50%, #B8902F 50%) 0 0 / 50% 100% no-repeat,
+    linear-gradient(225deg, transparent 50%, #B8902F 50%) 100% 0 / 50% 100% no-repeat;
+}
+.quiz-gift-ribbon-month {
+  font-size: 16px;
+  font-family: var(--font-jp-serif);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.quiz-gift-ribbon-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  margin-top: -2px;
+}
+
+/* ギフトボックス（CSS のみで作成） */
+.quiz-gift-box {
+  width: 110px;
+  height: 110px;
+  position: relative;
+  margin: 0 auto;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+  animation: giftBoxBob 3s ease-in-out infinite;
+}
+@keyframes giftBoxBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-6px) rotate(2deg); }
+}
+.quiz-gift-box-lid {
+  position: absolute;
+  top: 0;
+  left: -4px;
+  right: -4px;
+  height: 28px;
+  background: linear-gradient(180deg, #E5B547, var(--color-gold) 50%, #B8902F);
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.quiz-gift-box-body {
+  position: absolute;
+  top: 26px; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, var(--color-gold), #B8902F);
+  border-radius: 0 0 6px 6px;
+}
+.quiz-gift-box-body::before {
+  /* 縦のリボンストライプ */
+  content: '';
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: -28px; bottom: 0;
+  width: 14px;
+  background: linear-gradient(180deg, #B91C1C, #8B0F0F);
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+/* リボンの蝶結び */
+.quiz-gift-bow {
+  position: absolute;
+  top: -20px;
+  left: 50%; transform: translateX(-50%);
+  width: 60px; height: 26px;
+  z-index: 2;
+}
+.quiz-gift-bow-left,
+.quiz-gift-bow-right {
+  position: absolute;
+  top: 0;
+  width: 24px; height: 26px;
+  background: radial-gradient(circle at 50% 50%, #DC2626, #8B0F0F);
+  border-radius: 50% 60% 50% 60%;
+}
+.quiz-gift-bow-left  { left: 0;  transform: rotate(-18deg); }
+.quiz-gift-bow-right { right: 0; transform: rotate(18deg); }
+.quiz-gift-bow-center {
+  position: absolute;
+  left: 50%; top: 6px;
+  transform: translateX(-50%);
+  width: 14px; height: 14px;
+  background: linear-gradient(180deg, #DC2626, #8B0F0F);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* コンテンツ */
+.quiz-gift-content {
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+.quiz-gift-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212,169,59,0.18);
+  border: 1px solid rgba(212,169,59,0.5);
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  padding: 5px 12px;
+  border-radius: 14px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.quiz-gift-tag-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  animation: giftDot 1.4s ease-in-out infinite;
+}
+@keyframes giftDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.5); opacity: 0.4; }
+}
+.quiz-gift-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(22px, 3.5vw, 32px);
+  color: white;
+  margin: 0 0 12px;
+  line-height: 1.3;
+  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.quiz-gift-month-label { color: var(--color-gold); }
+.quiz-gift-percent {
+  font-family: var(--font-display);
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: baseline;
+  text-shadow: 0 4px 16px rgba(212,169,59,0.5);
+}
+.quiz-gift-percent small {
+  font-size: 0.45em;
+  margin-left: 2px;
+  font-weight: 700;
+}
+.quiz-gift-off {
+  font-family: var(--font-display);
+  color: var(--color-gold);
+  font-size: 0.7em;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+.quiz-gift-desc {
+  color: rgba(255,255,255,0.92);
+  font-size: 13.5px;
+  line-height: 1.75;
+  margin: 0 0 18px;
+}
+.quiz-gift-desc strong {
+  color: var(--color-gold);
+  font-weight: 700;
+}
+.quiz-gift-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.quiz-gift-stat {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(212,169,59,0.25);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.quiz-gift-stat-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.quiz-gift-stat-label {
+  display: block;
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+.quiz-gift-fine {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.55);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* キラキラ（金色のドット）— ランダム配置の星 */
+.quiz-gift-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.quiz-gift-sparkles span {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--color-gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-gold);
+  animation: giftSparkle 2.4s ease-in-out infinite;
+}
+.quiz-gift-sparkles span:nth-child(1) { top: 14%;  left: 38%; animation-delay: 0s; }
+.quiz-gift-sparkles span:nth-child(2) { top: 28%;  right: 8%; animation-delay: 0.4s; }
+.quiz-gift-sparkles span:nth-child(3) { bottom: 22%; left: 22%; animation-delay: 0.8s; }
+.quiz-gift-sparkles span:nth-child(4) { top: 8%; right: 26%; animation-delay: 1.2s; }
+.quiz-gift-sparkles span:nth-child(5) { bottom: 14%; right: 18%; animation-delay: 1.6s; }
+@keyframes giftSparkle {
+  0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+  50%      { transform: scale(1) rotate(180deg); opacity: 1; }
+}
+
+@media (max-width: 720px) {
+  .quiz-gift-banner {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 24px 20px 22px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .quiz-gift-ribbon {
+    position: relative;
+    top: auto; left: auto;
+    align-self: flex-start;
+    margin-bottom: 8px;
+  }
+  .quiz-gift-box {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+  }
+  .quiz-gift-box-lid { height: 20px; }
+  .quiz-gift-box-body { top: 18px; }
+  .quiz-gift-bow { top: -14px; width: 44px; height: 18px; }
+  .quiz-gift-bow-left, .quiz-gift-bow-right { width: 18px; height: 18px; }
+  .quiz-gift-bow-center { width: 10px; height: 10px; top: 4px; }
+  .quiz-gift-title { font-size: 22px; justify-content: center; }
+  .quiz-gift-percent { font-size: 1.7em; }
+  .quiz-gift-desc { font-size: 12.5px; }
+  .quiz-gift-desc br { display: none; }
+  .quiz-gift-stats { gap: 6px; }
+  .quiz-gift-stat { padding: 8px 4px; }
+  .quiz-gift-stat-num { font-size: 14px; }
+  .quiz-gift-stat-label { font-size: 9px; }
+  .quiz-gift-fine { font-size: 9.5px; }
+}
 .quiz-section::before {
   content: '';
   position: absolute;
@@ -7564,21 +7887,77 @@ function toggleUnboxingSound() {
 }
 </script>
 
-<!-- ========= 冷凍庫ストック診断 ========= -->
+<!-- ========= お肉事情診断 + 今月入会50%OFF プレゼントバナー ========= -->
 <section class="quiz-section" id="quiz">
   <div class="container">
+
+    <!-- 🎁 今月入会で50%OFF プレゼントバナー（診断の前に置く） -->
+    <div class="quiz-gift-banner reveal">
+      <div class="quiz-gift-ribbon">
+        <span class="quiz-gift-ribbon-month" id="quizGiftMonth">5月</span>
+        <span class="quiz-gift-ribbon-label">限定</span>
+      </div>
+      <div class="quiz-gift-box">
+        <div class="quiz-gift-box-lid"></div>
+        <div class="quiz-gift-box-body">
+          <div class="quiz-gift-bow">
+            <span class="quiz-gift-bow-left"></span>
+            <span class="quiz-gift-bow-right"></span>
+            <span class="quiz-gift-bow-center"></span>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-gift-content">
+        <span class="quiz-gift-tag">
+          <span class="quiz-gift-tag-dot"></span>
+          PRESENT FOR YOU
+        </span>
+        <h3 class="quiz-gift-title">
+          <span class="quiz-gift-month-label" id="quizGiftMonthLabel">今月</span>入会で、
+          <span class="quiz-gift-percent">50<small>%</small></span>
+          <span class="quiz-gift-off">OFF</span>
+        </h3>
+        <p class="quiz-gift-desc">
+          診断後、ご提案プランの<strong>初月50%OFF</strong>クーポンを自動発行。<br class="hide-sp"/>
+          いつでもスキップ・解約OK / 解約縛りなし。
+        </p>
+        <div class="quiz-gift-stats">
+          <div class="quiz-gift-stat">
+            <span class="quiz-gift-stat-num">−¥6,400</span>
+            <span class="quiz-gift-stat-label">最大お得額(レギュラー)</span>
+          </div>
+          <div class="quiz-gift-stat">
+            <span class="quiz-gift-stat-num">¥0</span>
+            <span class="quiz-gift-stat-label">毎回送料</span>
+          </div>
+          <div class="quiz-gift-stat">
+            <span class="quiz-gift-stat-num">無料</span>
+            <span class="quiz-gift-stat-label">スキップ・解約</span>
+          </div>
+        </div>
+        <p class="quiz-gift-fine">
+          ※ 適用条件: <span id="quizGiftDeadline">月末</span>までに定期便ご注文の方 / 初月のみ50%OFF
+        </p>
+      </div>
+      <div class="quiz-gift-sparkles" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
     <div class="quiz-card">
       <div class="quiz-card-body">
-        <span class="quiz-eyebrow">EDA FREEZER DIAGNOSIS</span>
-        <h2 class="quiz-title">冷凍庫ストック診断<br/><strong>あなたに最適なプラン</strong>を3問でご提案</h2>
-        <p class="quiz-sub">家族構成・お肉を使う頻度・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約30秒・回答は記録されません。</p>
+        <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
+        <h2 class="quiz-title">お肉事情診断<br/><strong>あなたに最適なプラン</strong>を5問でご提案</h2>
+        <p class="quiz-sub">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約60秒・回答は記録されません。</p>
 
         <div class="quiz-progress">
-          <span class="quiz-progress-label">Q.<span id="quizCurrentQ">1</span> / <span id="quizTotalQ">3</span></span>
+          <span class="quiz-progress-label">Q.<span id="quizCurrentQ">1</span> / <span id="quizTotalQ">5</span></span>
           <div class="quiz-progress-bars">
             <div class="quiz-progress-dot active" data-step="1"></div>
             <div class="quiz-progress-dot" data-step="2"></div>
             <div class="quiz-progress-dot" data-step="3"></div>
+            <div class="quiz-progress-dot" data-step="4"></div>
+            <div class="quiz-progress-dot" data-step="5"></div>
           </div>
         </div>
 
@@ -8634,6 +9013,19 @@ function toggleUnboxingSound() {
   }
   render();
   window._refreshWeeklyMenu = render;
+})();
+
+/* ============ 🎁 今月限定50%OFF バナーの月/締切を自動更新 ============ */
+(function quizGiftMonthInit() {
+  const now = new Date();
+  const m = now.getMonth() + 1;
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const monthEl = document.getElementById('quizGiftMonth');
+  const monthLabelEl = document.getElementById('quizGiftMonthLabel');
+  const deadlineEl = document.getElementById('quizGiftDeadline');
+  if (monthEl) monthEl.textContent = m + '月';
+  if (monthLabelEl) monthLabelEl.textContent = m + '月';
+  if (deadlineEl) deadlineEl.textContent = m + '月' + lastDay + '日';
 })();
 
 /* ============ 診断クイズ ============ */
