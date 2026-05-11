@@ -1319,6 +1319,7 @@ ul { list-style: none; padding: 0; margin: 0; }
         <div class="pill active" data-sub="campaigns" onclick="switchSub('promo','campaigns')">キャンペーン</div>
         <div class="pill" data-sub="coupons" onclick="switchSub('promo','coupons')">クーポン</div>
         <div class="pill" data-sub="flows" onclick="switchSub('promo','flows')">自動化</div>
+        <div class="pill" data-sub="menu" onclick="switchSub('promo','menu')">今週のメニュー</div>
         <div class="pill" data-sub="line-blast" onclick="switchSub('promo','line-blast')">一斉配信</div>
       </div>
 
@@ -1385,6 +1386,24 @@ ul { list-style: none; padding: 0; margin: 0; }
           新しい自動化ルールを作成
         </button>
         <div id="flowList"></div>
+      </div>
+
+      <!-- 今週のメニュー編集 -->
+      <div class="subsection" id="sub-menu">
+        <div class="card" style="background:#FFF3CD;border-left:4px solid var(--gold);padding:14px 16px;margin-bottom:14px">
+          <div style="font-size:13px;line-height:1.7;color:#664D03">
+            <strong>📅 今週のメニューはshop.htmlに自動表示されます</strong><br>
+            毎週ISO週番号でレシピプールから5品を自動選択。「変なメニューが出たら」ここで手動上書きできます。
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h3 style="margin:0;font-size:15px;color:var(--forest)">今週の5メニュー</h3>
+            <button onclick="resetWeeklyMenu()" style="background:transparent;color:var(--muted);font-size:12px;text-decoration:underline">自動選択に戻す</button>
+          </div>
+          <div id="weeklyMenuEdit"></div>
+          <button class="btn-primary" onclick="saveWeeklyMenu()" style="margin-top:14px">保存して shop に反映</button>
+        </div>
       </div>
 
       <!-- LINE一斉配信 -->
@@ -1934,7 +1953,7 @@ function switchTab(tab) {
   if (tab === 'orders')  loadOrders();
   if (tab === 'ship' && !selectedOrder) renderShipEmpty();
   if (tab === 'cust')    loadCustomers();
-  if (tab === 'promo')   { loadCampaigns(); loadCoupons(); loadFlows(); if(customersCache.length===0) loadCustomers(); setTimeout(updateBlastCount, 100); }
+  if (tab === 'promo')   { loadCampaigns(); loadCoupons(); loadFlows(); renderWeeklyMenuEdit(); if(customersCache.length===0) loadCustomers(); setTimeout(updateBlastCount, 100); }
 
   window.scrollTo(0, 0);
 }
@@ -2469,6 +2488,93 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ================ CAMPAIGNS ================ */
+/* ================ 今週のメニュー編集 ================ */
+const MENU_RECIPE_POOL = [
+  { name: 'サーロインステーキ', day: '週末', time: 30, desc: '塩のみで完結。江田畜産の和牛で。' },
+  { name: '和牛の牛丼', day: '月曜', time: 15, desc: '解凍5分、煮るだけ。子どもおかわり必至。' },
+  { name: '平飼い鶏の唐揚げ', day: '火曜', time: 20, desc: '前夜に下味、揚げるだけ。' },
+  { name: '無添加 和牛ハンバーグ', day: '水曜', time: 15, desc: '凍ったまま15分蒸し焼き。' },
+  { name: '和牛のすき焼き', day: '木曜', time: 25, desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。' },
+  { name: '鶏ももの照り焼き', day: '金曜', time: 20, desc: '皮目パリッ、中ジューシー。' },
+  { name: '和牛のしゃぶしゃぶ', day: '週末', time: 30, desc: '出汁に2秒くぐらせて。' },
+  { name: '和牛のローストビーフ', day: '日曜', time: 40, desc: '低温でじっくり。日曜のメイン。' },
+  { name: '和牛入りカレー', day: '月曜', time: 25, desc: '切り落としで贅沢に。' },
+  { name: '鶏むね蒸し鶏 サラダ', day: '火曜', time: 15, desc: 'ヘルシー志向に。' },
+  { name: '和牛の肉じゃが', day: '水曜', time: 20, desc: '切り落とし200gで4人前。' },
+  { name: '焼肉プレート', day: '木曜', time: 30, desc: 'バラ焼肉×塩タレ。' },
+  { name: '鶏ミンチのそぼろ丼', day: '金曜', time: 20, desc: 'お子さま大喜び・お弁当にも。' },
+  { name: 'ローストチキン', day: '週末', time: 35, desc: '丸鶏感覚で。週末ホムパに。' },
+  { name: '和牛のサイコロステーキ', day: '月曜', time: 15, desc: '転がすだけ。' }
+];
+
+function getWeeklyMenuCurrent() {
+  try {
+    const o = localStorage.getItem('eda-weekly-menu-override');
+    if (o) return JSON.parse(o);
+  } catch (e) {}
+  return null;
+}
+
+function renderWeeklyMenuEdit() {
+  const el = document.getElementById('weeklyMenuEdit');
+  if (!el) return;
+  // 現在の選択を取得（オーバーライドがなければ自動選択を再現）
+  const cur = getWeeklyMenuCurrent();
+  const defaults = cur || pickAutoWeekly();
+
+  const opts = MENU_RECIPE_POOL.map((r, i) => `<option value="${i}">${r.name} (${r.day}・${r.time}分)</option>`).join('');
+  el.innerHTML = defaults.map((rec, slotIdx) => {
+    const recIdx = MENU_RECIPE_POOL.findIndex(r => r.name === rec.name);
+    return `
+      <div style="background:var(--paper);border-radius:8px;padding:10px 12px;margin-bottom:8px">
+        <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:4px">スロット ${slotIdx + 1}${slotIdx === 0 ? '（フィーチャー大）' : ''}</div>
+        <select id="menu-slot-${slotIdx}" style="width:100%;padding:8px;border:1px solid var(--bone);border-radius:6px;font-size:13px;background:#fff">
+          ${opts.replace(`value="${recIdx}"`, `value="${recIdx}" selected`)}
+        </select>
+      </div>
+    `;
+  }).join('');
+}
+
+function pickAutoWeekly() {
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const weekNum = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+  const featured = MENU_RECIPE_POOL.filter(r => r.day === '週末' || r.day === '日曜');
+  const others = MENU_RECIPE_POOL.filter(r => r.day !== '週末' && r.day !== '日曜');
+  const picked = [featured[weekNum % featured.length]];
+  for (let i = 0; i < 4; i++) {
+    picked.push(others[(weekNum + i * 3) % others.length]);
+  }
+  return picked;
+}
+
+function saveWeeklyMenu() {
+  const picked = [];
+  for (let i = 0; i < 5; i++) {
+    const sel = document.getElementById('menu-slot-' + i);
+    if (sel) {
+      const idx = parseInt(sel.value);
+      picked.push(MENU_RECIPE_POOL[idx]);
+    }
+  }
+  // ローカルに保存（shopページがlocalStorageから読み取る）
+  localStorage.setItem('eda-weekly-menu-override', JSON.stringify(picked));
+  toast('今週のメニューを保存しました', 'success');
+  if (!isDemoMode()) {
+    fetch(GAS_URL + '?action=staff_weekly_menu_save', {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ menu: picked })
+    }).catch(() => {});
+  }
+}
+
+function resetWeeklyMenu() {
+  localStorage.removeItem('eda-weekly-menu-override');
+  toast('自動選択モードに戻しました', 'success');
+  renderWeeklyMenuEdit();
+}
+
 function loadCampaigns() {
   if (isDemoMode()) renderCampaigns(JSON.parse(JSON.stringify(DEMO_CAMPAIGNS)));
 }
