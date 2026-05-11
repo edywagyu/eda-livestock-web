@@ -1633,32 +1633,56 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   to   { transform: translateX(-50%); }
 }
 
-/* ================ 数字専用フォント（読みやすさ最優先） ================ */
+/* ================ 数字専用フォント（読みやすさ最優先） ================
+   Cormorant Garamond (display) は数字の判別が悪い (例: 3,060 が 3.060 に見える)
+   →価格・日付・カウント・パーセント等の数値は Inter（sans-serif）で表示
+   ================================================================ */
 .product-price,
 .product-stat-item,
 .product-stat-item strong,
 .cart-subtotal-price,
 .sticky-cart-total,
 .sub-plan-price,
+.sub-plan-price small,
 .sub-plan-old-price,
 .sub-plan-savings,
 .sub-promo-banner-num,
 .sub-cycle-num,
+.sub-cycle-time,
 .quiz-result-stat-num,
 .quiz-result-plan,
 .quiz-savings-row strong,
 .quiz-addon-price,
+.quiz-gift-price-strike,
+.quiz-gift-price-now,
+.quiz-gift-percent,
+.quiz-gift-stat-num,
 .stat-band-num,
 .ship-cd-headline strong,
 .ship-cd-meta strong,
+.ship-cd-remain,
+.organic-tease-cd-num,
 .compare-table tbody td,
 .compare-table thead th,
 .shop-hero-badge-num,
 .shop-trust-item,
-.shop-trust-item strong {
+.shop-trust-item strong,
+.delivery-estimate,
+.delivery-estimate strong,
+.contact-phone-num,
+.sub-addons-suggest-price del,
+.sub-addons-suggest-price strong,
+.sub-addon-price,
+.sub-promo-banner-text strong,
+.sub-promo-deadline strong,
+.gift-product-price,
+.gift-product-vol,
+.summary-row.total strong,
+.checkout-summary-row strong,
+.checkout-summary-row.total strong {
   font-family: var(--font-numeric) !important;
   font-feature-settings: 'tnum' 1, 'lnum' 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.01em !important;
 }
 .product-price { font-weight: 600; font-size: 16px; color: var(--color-forest); }
 .product-stat-item strong { font-weight: 700; }
@@ -8780,7 +8804,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="sub-plans-grid">
           <a href="subscription.html?plan=starter" class="sub-plan-mini">
             <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
-            <div class="sub-plan-name">ふたり食卓便</div>
+            <div class="sub-plan-name">ミニプラン</div>
             <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
             <div class="sub-plan-items">
               🥩 和牛切り落とし 200g<br/>
@@ -8800,7 +8824,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
             <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
-            <div class="sub-plan-name">家族の食卓便</div>
+            <div class="sub-plan-name">プロプラン</div>
             <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
             <div class="sub-plan-items">
               🥩 和牛切り落とし 200g×2<br/>
@@ -8822,7 +8846,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=volume" class="sub-plan-mini">
             <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
-            <div class="sub-plan-name">大家族のごちそう便</div>
+            <div class="sub-plan-name">VIPプラン</div>
             <div class="sub-plan-target">5人以上 / 約4.0kg</div>
             <div class="sub-plan-items">
               🐓 平飼い鶏もも 500g×2<br/>
@@ -10108,6 +10132,44 @@ function toggleUnboxingSound() {
 
 /* ============ 今週のメニュー（自動週次切替） ============ */
 (function weeklyMenuInit() {
+  /* レシピ毎の主役肉商品（カート追加用）— ingredient → product id */
+  const RECIPE_PRODUCTS = {
+    'サーロインステーキ':  { id: 50830136082730, price: 3400, title: 'サーロインステーキ', img: 'public/images/products/drive/sirloin.jpg' },
+    '和牛の牛丼':          { id: 50830303822122, price: 1600, title: '和牛切り落とし',     img: 'public/images/products/drive/kiriotoshi.jpg' },
+    '平飼い鶏の唐揚げ':    { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '和牛ハンバーグ':      { id: 50830191427882, price:  760, title: '江田和牛ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
+    '和牛のすき焼き':      { id: 50830187200810, price: 2600, title: '赤身スライス',       img: 'public/images/products/drive/wagyu-slice.jpg' },
+    '鶏ももの照り焼き':    { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '和牛のしゃぶしゃぶ':  { id: 50830187200810, price: 2600, title: '赤身スライス',       img: 'public/images/products/drive/wagyu-slice.jpg' },
+    '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: '和牛ローストビーフ',img: 'public/images/products/drive/hamburg.jpg' },
+    '無投薬チキンカレー':  { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 1280, title: 'オーガニックチキン ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
+    '和牛の肉じゃが':      { id: 50830303822122, price: 1600, title: '和牛切り落とし',     img: 'public/images/products/drive/kiriotoshi.jpg' },
+    '焼肉プレート':        { id: 50830137655594, price: 1900, title: 'バラ焼肉',           img: 'public/images/products/drive/yakiniku-brisket.jpg' },
+    '鶏ミンチのそぼろ丼':  { id: 50830210793770, price: 1000, title: '平飼い鶏 ミンチ',     img: 'public/images/products/drive/chicken-minced.jpg' },
+    'ローストチキン':      { id: 50830293172522, price: 1280, title: 'オーガニックチキン モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+    '和牛のサイコロステーキ': { id: 50830132314410, price: 1000, title: 'サイコロステーキ',img: 'public/images/products/drive/cube-steak.jpg' }
+  };
+
+  /* クリックで主役肉をカートに追加 */
+  window._addRecipeToCart = function(recipeName) {
+    const p = RECIPE_PRODUCTS[recipeName];
+    if (!p) return;
+    if (window.edaCart && window.edaCart.addToCart) {
+      window.edaCart.addToCart(p.id, p.price, p.title, '1つ', p.img);
+    } else {
+      // フォールバック: localStorage 直接更新
+      try {
+        const cart = JSON.parse(localStorage.getItem('eda-cart') || '[]');
+        const existing = cart.find(i => i.variantId === p.id);
+        if (existing) existing.qty++;
+        else cart.push({ variantId: p.id, price: p.price, title: p.title, variant: '1つ', img: p.img, qty: 1 });
+        localStorage.setItem('eda-cart', JSON.stringify(cart));
+        alert('✓ ' + p.title + ' をカートに追加しました');
+      } catch (e) {}
+    }
+  };
+
   // レシピプール（料理名・完成料理写真・所要時間・主要食材）
   const RECIPES = [
     { day: '週末', day_en: 'SAT', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
@@ -10166,8 +10228,16 @@ function toggleUnboxingSound() {
     const weekNum = getISOWeek(now);
     if (label) label.textContent = `${now.getMonth() + 1}月第${Math.ceil(now.getDate() / 7)}週`;
     const recipes = pickRecipes(weekNum);
-    grid.innerHTML = recipes.map((r, i) => `
-      <div class="menu-card${i === 0 ? ' feature' : ''}" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+    grid.innerHTML = recipes.map((r, i) => {
+      const hasProduct = !!RECIPE_PRODUCTS[r.name];
+      const ctaText = hasProduct
+        ? (i === 0 ? '🛒 材料をカートに追加' : '+ カート追加')
+        : 'レシピ';
+      const onclickJs = hasProduct
+        ? `_addRecipeToCart('${r.name.replace(/'/g, "\\'")}'); event.stopPropagation();`
+        : `document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});`;
+      return `
+      <div class="menu-card${i === 0 ? ' feature' : ''}" onclick="${onclickJs}">
         <div class="menu-card-img" style="background-image:url('${r.img}')"></div>
         <span class="menu-card-day">${r.day_en} ${r.day}</span>
         <span class="menu-card-time-pill">${r.time}分</span>
@@ -10179,12 +10249,12 @@ function toggleUnboxingSound() {
             ${r.ingredients.map(ing => `<span class="menu-ingredient">${ing}</span>`).join('')}
           </div>` : ''}
           <div class="menu-card-cta-row">
-            <span class="menu-card-cta">${i === 0 ? '材料を揃える' : 'レシピ'}</span>
+            <span class="menu-card-cta">${ctaText}</span>
             <span class="menu-card-arrow">→</span>
           </div>
         </div>
       </div>
-    `).join('');
+    `;}).join('');
   }
   render();
   window._refreshWeeklyMenu = render;
@@ -10311,19 +10381,19 @@ function toggleUnboxingSound() {
     const isBig = (fam === 'fam_5plus' || (fam === 'fam_34_big' && freq === 'freq_high') || budget === 'budget_high');
 
     if (isLight) {
-      plan = 'ふたり食卓便';
+      plan = 'ミニプラン';
       planKey = 'starter';
       planPrice = 6980;
       planWeight = '約1.2kg';
       planDesc = '1-2人家族・お試し向け';
     } else if (isBig) {
-      plan = '大家族のごちそう便';
+      plan = 'VIPプラン';
       planKey = 'volume';
       planPrice = 19800;
       planWeight = '約4.0kg';
       planDesc = '5人以上の大家族・ヘビーユーザー向け';
     } else {
-      plan = '家族の食卓便';
+      plan = 'プロプラン';
       planKey = 'regular';
       planPrice = 12800;
       planWeight = '約2.5kg';

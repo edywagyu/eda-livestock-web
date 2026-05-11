@@ -26,6 +26,7 @@
   --color-ink-muted: #5C5C5C;
   --color-red: #C8102E;
   --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+  --font-numeric: 'Inter', -apple-system, sans-serif;
   --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
   --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
   --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
@@ -51,6 +52,19 @@ a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
 ul { list-style: none; padding: 0; margin: 0; }
 h1, h2, h3, h4 { font-weight: 400; margin: 0; }
+
+/* ===== 数字専用フォント（Cormorant Garamond の判読性問題を回避） ===== */
+.order-item-price,
+.order-item-price small,
+.summary-line-item,
+.summary-row,
+.summary-row strong,
+.summary-row.total strong,
+.contact-phone-num {
+  font-family: var(--font-numeric) !important;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: -0.01em !important;
+}
 
 .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
 
@@ -911,9 +925,9 @@ const SUB_KEY = 'eda-subscription-pending';
 
 /* ---- プラン定義 (subscription と整合) ---- */
 const PLANS = {
-  starter: { name: 'ふたり食卓便', regular: 6980, half: 3490 },
-  regular: { name: '家族の食卓便', regular: 12800, half: 6400 },
-  volume:  { name: '大家族のごちそう便', regular: 19800, half: 9900 }
+  starter: { name: 'ミニプラン', regular: 6980, half: 3490 },
+  regular: { name: 'プロプラン', regular: 12800, half: 6400 },
+  volume:  { name: 'VIPプラン', regular: 19800, half: 9900 }
 };
 
 /* ---- 状態 ---- */
