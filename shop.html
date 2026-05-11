@@ -4708,16 +4708,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   line-height: 1.5;
   display: flex;
   align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 6px;
   opacity: 0;
   animation: deliveryFadeIn 0.6s ease 0.3s forwards;
 }
 .delivery-estimate svg {
   flex-shrink: 0;
-  margin-right: 2px;
+  width: 14px;
+  height: 14px;
+  display: block;
+  color: var(--color-gold);
+  position: relative;
+  top: 0;
+}
+.delivery-estimate span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.4;
 }
 @keyframes deliveryFadeIn {
   to { opacity: 0.75; }
@@ -5069,44 +5079,102 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ WAGYU GUIDE ================ */
+/* ============ Why Eda — エディトリアル風カード ============ */
 .wagyu-guide {
   background: var(--color-cream);
 }
 .wagyu-guide-head {
   text-align: center;
-  margin-bottom: 56px;
+  margin-bottom: 64px;
+}
+.wagyu-guide-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 4.5vw, 44px);
+  color: var(--color-forest);
+  margin: 16px 0 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+.wagyu-guide-lead {
+  color: var(--color-ink-muted);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.9;
+  font-size: 14.5px;
 }
 .wagyu-guide-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
+  gap: 24px;
 }
 .wagyu-guide-card {
   background: white;
-  padding: 40px 36px;
-  border: 1px solid var(--color-line);
+  padding: 36px 32px 32px;
+  border: 1px solid var(--color-bone);
+  border-radius: 14px;
   position: relative;
+  transition: all 0.4s var(--ease-out-expo);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
 }
-.wagyu-guide-num {
+.wagyu-guide-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212,169,59,0.45);
+  box-shadow: var(--shadow-md);
+}
+.wagyu-guide-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-bone);
+  margin-bottom: -4px;
+}
+.wagyu-guide-num-label {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: 11px;
+  letter-spacing: 0.24em;
   color: var(--color-gold);
-  line-height: 1;
-  margin-bottom: 16px;
-  opacity: 0.7;
+  font-weight: 700;
 }
-.wagyu-guide-card h4 {
-  font-family: var(--font-jp);
-  font-size: 17px;
+.wagyu-guide-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.wagyu-guide-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.wagyu-guide-card-title {
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
   font-weight: 700;
   color: var(--color-forest);
-  margin: 0 0 12px;
+  margin: 0;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
 }
-.wagyu-guide-card p {
+.wagyu-guide-card-text {
   font-size: 13.5px;
-  line-height: 1.85;
+  line-height: 1.95;
   color: var(--color-ink-muted);
   margin: 0;
+}
+.wagyu-guide-card-text strong {
+  color: var(--color-forest);
+  font-weight: 700;
 }
 
 /* ================ WAGYU SCIENCE ================ */
@@ -6340,11 +6408,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .shop-cat-desc { font-size: 13px; }
 
   /* ---- Wagyu Guide ---- */
-  .wagyu-guide-grid { grid-template-columns: 1fr; gap: 20px; }
-  .wagyu-guide-card { padding: 28px 20px; }
-  .wagyu-guide-num { font-size: 36px; }
-  .wagyu-guide-card h4 { font-size: 15px; }
-  .wagyu-guide-card p { font-size: 13px; }
+  .wagyu-guide-grid { grid-template-columns: 1fr; gap: 16px; }
+  .wagyu-guide-card { padding: 24px 20px 22px; gap: 14px; }
+  .wagyu-guide-card-head { padding-bottom: 16px; }
+  .wagyu-guide-icon { width: 36px; height: 36px; }
+  .wagyu-guide-icon svg { width: 18px; height: 18px; }
+  .wagyu-guide-card-title { font-size: 16px; }
+  .wagyu-guide-card-text { font-size: 13px; line-height: 1.85; }
 
   /* ---- Wagyu Science ---- */
   .wagyu-science { padding: 48px 0; }
@@ -6850,17 +6920,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .compare-section h2 { font-size: 22px !important; }
   .compare-row { padding: 10px 12px; font-size: 11.5px; }
 
-  /* 4つの理由 (about-wagyu) */
+  /* Why Eda (about-wagyu) */
   .wagyu-guide { padding: 36px 0 !important; }
-  .wagyu-guide-head { margin-bottom: 24px !important; }
-  .wagyu-guide-head h2 { font-size: 22px !important; }
-  .wagyu-guide-head p { font-size: 12.5px !important; line-height: 1.7 !important; }
-  .wagyu-guide-head p br { display: none; }
-  .wagyu-guide-card { padding: 20px 16px !important; }
-  .wagyu-guide-num { font-size: 32px !important; }
-  .wagyu-guide-card h4 { font-size: 14px !important; line-height: 1.45 !important; }
-  .wagyu-guide-card p { font-size: 12px !important; line-height: 1.7 !important; }
-  .wagyu-guide-card p br { display: none; }
+  .wagyu-guide-head { margin-bottom: 28px !important; }
+  .wagyu-guide-title { font-size: 22px !important; margin: 12px 0 12px !important; }
+  .wagyu-guide-lead { font-size: 12.5px; line-height: 1.7; }
+  .wagyu-guide-lead br { display: none; }
+  .wagyu-guide-grid { gap: 12px !important; }
+  .wagyu-guide-card { padding: 20px 18px !important; gap: 12px; }
+  .wagyu-guide-card-head { padding-bottom: 12px; }
+  .wagyu-guide-num-label { font-size: 10px; }
+  .wagyu-guide-icon { width: 32px; height: 32px; }
+  .wagyu-guide-icon svg { width: 16px; height: 16px; }
+  .wagyu-guide-card-title { font-size: 15px !important; line-height: 1.5 !important; }
+  .wagyu-guide-card-text { font-size: 12.5px !important; line-height: 1.85 !important; }
 
   /* スタッツバンド */
   .stats-band { padding: 40px 0; }
@@ -7161,46 +7234,86 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 安心して選べる理由 ========= -->
+<!-- ========= Why Eda — 家庭でこそ、選ばれる理由 ========= -->
 <section class="wagyu-guide section" id="about-wagyu">
   <div class="container">
     <div class="wagyu-guide-head reveal">
       <span class="eyebrow text-gold has-dash">Why Eda</span>
-      <h2 style="font-family: var(--font-jp-serif); font-size: clamp(28px, 4.5vw, 44px); color: var(--color-forest); margin: 16px 0 14px; font-weight:700; line-height:1.3;">
-        家庭でこそ、選ばれる理由。
-      </h2>
-      <p style="color: var(--color-ink-muted); max-width: 640px; line-height: 1.9; font-size: 14px;">
-        高級レストランで選ばれている品質を、毎日の食卓に。<br/>
+      <h2 class="wagyu-guide-title">家庭でこそ、選ばれる理由。</h2>
+      <p class="wagyu-guide-lead">
+        高級レストランで選ばれている品質を、毎日の食卓に。<br class="hide-sp"/>
         買い物の手間も、食材選びの不安も、いっぺんに解決します。
       </p>
     </div>
 
     <div class="wagyu-guide-grid reveal">
-      <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">⚡</div>
-        <h4>もっと、<br/>使いやすく。</h4>
-        <p>すべて<strong>小分け真空パック・冷凍</strong>。必要な分だけ取り出して、冷蔵庫で半日解凍するだけ。凍ったまま調理できるハンバーグや切り落としもあり、忙しい平日の夕食が15分で完成。子どもの夕飯、急な来客、お弁当のおかず——どんなシーンにも対応できる柔軟性が、毎日の生活を変えます。</p>
-      </div>
 
-      <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">🛒</div>
-        <h4>選ぶ手間が、<br/>省けた。</h4>
-        <p>「今日は何にしよう」とスーパーで悩む時間がゼロに。<strong>診断クイズで最適な定期便</strong>をご提案。あとは毎月決まった日にお届けするだけ。買い物リストにお肉を入れる必要も、産地や添加物表示を読む必要もありません。<strong>選ぶストレスからの解放</strong>こそ、共働き家庭・忙しいご家族への最大のギフトです。</p>
-      </div>
+      <article class="wagyu-guide-card">
+        <div class="wagyu-guide-card-head">
+          <span class="wagyu-guide-num-label">01</span>
+          <span class="wagyu-guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 L4 14 H12 L11 22 L20 10 H12 L13 2 Z"/>
+            </svg>
+          </span>
+        </div>
+        <h3 class="wagyu-guide-card-title">15分で完成、忙しい平日の味方。</h3>
+        <p class="wagyu-guide-card-text">
+          すべて<strong>小分け真空パック・冷凍</strong>。必要な分だけ取り出して、冷蔵庫で半日解凍するだけ。凍ったまま調理できるハンバーグや切り落としもあり、平日の夕食が15分で完成します。
+        </p>
+      </article>
 
-      <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">👨‍🍳</div>
-        <h4>高級レストランの<br/>お肉を、家庭で。</h4>
-        <p>江田和牛は、リッツ・カールトン、フォーシーズンズ、ペニンシュラなど<strong>国内外の一流ホテル・レストランで採用</strong>されている品質。同じお肉を、ご家庭でも。外食1回分の予算で、家族4人が数回楽しめる贅沢。記念日のごちそうも、平日の特別な夜も、レストランに行かずに完結します。</p>
-      </div>
+      <article class="wagyu-guide-card">
+        <div class="wagyu-guide-card-head">
+          <span class="wagyu-guide-num-label">02</span>
+          <span class="wagyu-guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 4 L20 4 L17 14 L7 14 L5 7 H3"/>
+              <circle cx="9" cy="19" r="1.5"/>
+              <circle cx="16" cy="19" r="1.5"/>
+            </svg>
+          </span>
+        </div>
+        <h3 class="wagyu-guide-card-title">「今日は何にしよう」がなくなる。</h3>
+        <p class="wagyu-guide-card-text">
+          スーパーで悩む時間がゼロに。<strong>診断クイズで最適な定期便</strong>をご提案し、毎月決まった日にお届け。<strong>選ぶストレスからの解放</strong>こそ、共働き家庭への最大のギフトです。
+        </p>
+      </article>
 
-      <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">6<span style="font-size: 16px; color: var(--color-ink-muted);">ヶ月</span></div>
-        <h4>6ヶ月以上 日持ち、<br/>無駄になりません。</h4>
-        <p>真空パック冷凍だから、<strong>賞味期限は6ヶ月以上</strong>。たくさん届いても「使い切れない」「傷みそう」という心配がありません。冷凍庫にゆっくり貯めておけば、いつでも好きな分を解凍して使えます。<strong>食品ロスゼロ</strong>で、結果的に家計にも、地球にも優しい買い方です。</p>
-      </div>
+      <article class="wagyu-guide-card">
+        <div class="wagyu-guide-card-head">
+          <span class="wagyu-guide-num-label">03</span>
+          <span class="wagyu-guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11 L12 4 L21 11"/>
+              <path d="M5 10 V20 H19 V10"/>
+              <path d="M9 20 V14 H15 V20"/>
+            </svg>
+          </span>
+        </div>
+        <h3 class="wagyu-guide-card-title">一流ホテルの品質を、ご家庭で。</h3>
+        <p class="wagyu-guide-card-text">
+          江田和牛は、リッツ・カールトン、フォーシーズンズ、ペニンシュラなど<strong>国内外の一流ホテルで採用</strong>される品質。外食1回分の予算で、家族4人が数回楽しめる贅沢を、レストランに行かずに完結します。
+        </p>
+      </article>
+
+      <article class="wagyu-guide-card">
+        <div class="wagyu-guide-card-head">
+          <span class="wagyu-guide-num-label">04</span>
+          <span class="wagyu-guide-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7 V12 L15 14"/>
+            </svg>
+          </span>
+        </div>
+        <h3 class="wagyu-guide-card-title">賞味期限6ヶ月で、食品ロスゼロ。</h3>
+        <p class="wagyu-guide-card-text">
+          真空パック冷凍だから、<strong>賞味期限は6ヶ月以上</strong>。冷凍庫にゆっくり貯めておけば、いつでも好きな分を解凍して使えます。<strong>食品ロスゼロ</strong>で、家計にも地球にも優しい買い方です。
+        </p>
+      </article>
+
     </div>
-
   </div>
 </section>
 
@@ -8426,9 +8539,10 @@ function toggleUnboxingSound() {
   /* Populate delivery estimates on product cards */
   (function() {
     const info = getDeliveryDate();
+    const truckSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 16V6h11v10H1zM12 8h4l3 4v4h-5"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg>';
     const label = info.isToday14
-      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><path d="M1 16V6h11v10H1zM12 8h4l3 4v4h-5"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg>' + info.text + 'にお届け'
-      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px;"><path d="M1 16V6h11v10H1zM12 8h4l3 4v4h-5"/><circle cx="5.5" cy="18.5" r="1.8"/><circle cx="17" cy="18.5" r="1.8"/></svg>最短 ' + info.text + 'にお届け';
+      ? truckSvg + '<span>' + info.text + 'にお届け</span>'
+      : truckSvg + '<span>最短 ' + info.text + 'にお届け</span>';
     document.querySelectorAll('.product-card[data-variants]').forEach(function(card) {
       var existing = card.querySelector('.delivery-estimate');
       if (existing) return;
