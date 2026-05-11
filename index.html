@@ -2845,6 +2845,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .variant-select:hover { border-color: var(--color-gold); }
 .variant-select:focus { outline: none; border-color: var(--color-gold); }
+.variant-select--static {
+  cursor: default;
+  background-image: none;
+  padding-right: 12px;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+}
+.variant-select--static:hover { border-color: var(--color-bone); }
+.product-desc-mini {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--color-ink-muted);
+  margin: 4px 0 10px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: 36px;
+}
 
 .btn-add-cart {
   padding: 10px 16px; border-radius: 6px;
@@ -3607,7 +3627,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <span class="eyebrow text-gold">江田畜産株式会社 — Since 2023, Miyazaki</span>
     </div>
     <h1 class="hero-title">
-      Livestock for<br/>
+      Livestock for<br class="hide-sp"/>
       <span class="accent">The Next Century.</span>
     </h1>
     <p class="hero-subtitle">
@@ -3724,7 +3744,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div>
         <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Our Manifesto</span>
         <h2 class="about-jp">
-          牛・生産者・消費者、<br/>
+          牛・生産者・消費者、<br class="hide-sp"/>
           <em>三方よし</em>を、和牛で。
         </h2>
       </div>
@@ -3748,7 +3768,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="philosophy-head reveal">
       <span class="eyebrow text-gold has-dash">Our Philosophy</span>
       <h2 class="philosophy-title">
-        Not the Rank,<br/>
+        Not the Rank,<br class="hide-sp"/>
         <span class="em">But How They're Raised.</span>
       </h2>
       <p class="lead" style="max-width: 760px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
@@ -3824,7 +3844,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div>
         <span class="eyebrow text-gold has-dash">Global Presence</span>
         <h2 class="global-headline">
-          Farm to<br/>
+          Farm to<br class="hide-sp"/>
           <span class="accent">The World.</span>
         </h2>
         <p class="global-text">
@@ -3878,7 +3898,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="reveal" style="text-align: center; margin-bottom: 64px;">
       <span class="eyebrow text-gold has-dash">Chefs' Voice</span>
       <h2 class="philosophy-title">
-        Praised by<br/>
+        Praised by<br class="hide-sp"/>
         <span class="em">The World's Best Chefs.</span>
       </h2>
     </div>
@@ -3914,11 +3934,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="section-head-row reveal">
       <div class="section-head-title">
         <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Find Eda Wagyu</span>
-        <h2>Where to<br/>Taste It.</h2>
+        <h2>Where to<br class="hide-sp"/>Taste It.</h2>
       </div>
       <div style="max-width: 380px;">
         <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
-          ザ・リッツ・カールトン東京・福岡、フォーシーズンズ東京、ザ・ペニンシュラ東京、東京ステーションホテル、マンダリンオリエンタル東京、香港 city'super まで。
+          ザ・リッツ・カールトン東京・福岡、フォーシーズンズ東京、東京ステーションホテル、香港 city'super まで。
         </p>
       </div>
     </div>
@@ -3949,34 +3969,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span class="restaurant-tag">Hotel · French</span>
           <h3 class="restaurant-name">Tokyo Station Hotel</h3>
           <p class="restaurant-loc">「ブラン ルージュ」「カメリア」 · 東京駅丸の内駅舎内</p>
-          <div class="restaurant-actions">
-            <a href="#" class="restaurant-action">Website</a>
-            <a href="#" class="restaurant-action">Map</a>
-            <a href="#" class="restaurant-action primary">Reserve</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7560%2C35.6725%2C139.7600%2C35.6765&layer=mapnik&marker=35.6745%2C139.7580" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
-        <div class="restaurant-card-body">
-          <span class="restaurant-tag">Hotel</span>
-          <h3 class="restaurant-name">Mandarin Oriental, Tokyo</h3>
-          <p class="restaurant-loc">日本橋 · 中央区</p>
-          <div class="restaurant-actions">
-            <a href="#" class="restaurant-action">Website</a>
-            <a href="#" class="restaurant-action">Map</a>
-            <a href="#" class="restaurant-action primary">Reserve</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7651%2C35.6792%2C139.7691%2C35.6832&layer=mapnik&marker=35.6812%2C139.7671" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
-        <div class="restaurant-card-body">
-          <span class="restaurant-tag">Hotel</span>
-          <h3 class="restaurant-name">The Peninsula Tokyo</h3>
-          <p class="restaurant-loc">有楽町 · 千代田区</p>
           <div class="restaurant-actions">
             <a href="#" class="restaurant-action">Website</a>
             <a href="#" class="restaurant-action">Map</a>
@@ -4026,7 +4018,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="section-head-row reveal">
       <div class="section-head-title">
         <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Online Shop</span>
-        <h2>Farm to<br/>Your Table.</h2>
+        <h2>Farm to<br class="hide-sp"/>Your Table.</h2>
       </div>
       <div style="max-width: 380px;">
         <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
@@ -4038,32 +4030,44 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
     <div class="product-grid reveal">
       <div class="product-card" data-variants='[{"id":50830187200810,"t":"1つ","p":2600}]'>
-        <div class="product-card-img has-img"><img src="public/images/products/red-meat-steak.jpg" alt="赤身スライス"/><span class="badge">Best Seller</span></div>
+        <div class="product-card-img has-img">
+          <img src="public/images/products/drive/wagyu-slice.jpg" alt="江田和牛 赤身スライス"/>
+          <span class="badge">Best Seller</span>
+        </div>
         <div class="product-tag-row">
           <span class="product-tag">Wagyu · Slice</span>
           <span class="product-price">¥2,600</span>
         </div>
         <p class="product-name">江田和牛 赤身スライス</p>
+        <p class="product-desc-mini">しゃぶしゃぶ・すき焼きに。和牛の旨みをダイレクトに。</p>
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460}]'>
-        <div class="product-card-img has-img"><img src="public/images/products/sirloin-steak.jpg" alt="サーロステーキ"/><span class="badge">Premium</span></div>
+      <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
+        <div class="product-card-img has-img">
+          <img src="public/images/products/drive/sirloin.jpg" alt="サーロインステーキ"/>
+          <span class="badge">Premium</span>
+        </div>
         <div class="product-tag-row">
           <span class="product-tag">Steak · Sirloin</span>
           <span class="product-price">¥3,400〜</span>
         </div>
-        <p class="product-name">サーロステーキ</p>
+        <p class="product-name">サーロインステーキ</p>
+        <p class="product-desc-mini">家庭用ステーキの主役。きめ細かなサシと赤身のバランス。</p>
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300}]'>
-        <div class="product-card-img has-img"><img src="public/images/products/roubo-01.jpg" alt="和牛生ハム"/><span class="badge">ANA First Class</span></div>
-        <div class="product-tag-row">
-          <span class="product-tag">Raw Ham</span>
-          <span class="product-price">¥1,250〜</span>
+      <div class="product-card" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191460650,"t":"2つセット【5%オフ】","p":1440},{"id":50830191493418,"t":"3つセット【10%オフ】","p":2050}]'>
+        <div class="product-card-img has-img">
+          <img src="public/images/products/drive/hamburg.jpg" alt="和牛ハンバーグ"/>
+          <span class="badge">Daily Stock</span>
         </div>
-        <p class="product-name">和牛生ハム</p>
+        <div class="product-tag-row">
+          <span class="product-tag">Hamburg</span>
+          <span class="product-price">¥760〜</span>
+        </div>
+        <p class="product-name">江田和牛ハンバーグ</p>
+        <p class="product-desc-mini">凍ったまま15分蒸し焼き。お子さまの夕食に。</p>
         <div class="product-buy"></div>
       </div>
     </div>
@@ -4083,7 +4087,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="sub-banner-body">
       <span class="eyebrow text-gold has-dash">Monthly Subscription</span>
       <h2>
-        Eat Better,<br/>
+        Eat Better,<br class="hide-sp"/>
         <span class="accent">Every Month.</span>
       </h2>
       <p>
@@ -4105,7 +4109,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="section-head-row reveal">
       <div class="section-head-title">
         <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Journal</span>
-        <h2>Stories from<br/>The Farm.</h2>
+        <h2>Stories from<br class="hide-sp"/>The Farm.</h2>
       </div>
       <div style="max-width: 380px;">
         <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
@@ -4159,7 +4163,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="members-head reveal">
       <span class="eyebrow text-gold has-dash">Our Team</span>
       <h2 class="philosophy-title">
-        A New Generation,<br/>
+        A New Generation,<br class="hide-sp"/>
         <span class="em" style="color: var(--color-gold);">In Their 20s.</span>
       </h2>
       <p class="lead" style="max-width: 640px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
@@ -4243,25 +4247,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
       <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
         <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— World's First —</div>
-        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">世界初<br/>有機JAS認証黒毛和牛</h3>
+        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">世界初<br class="hide-sp"/>有機JAS認証黒毛和牛</h3>
         <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">2026.1 取得 / 鹿児島有機農業協会 No.1002</p>
       </article>
 
       <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
         <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— National Award —</div>
-        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">日本初・4年連続<br/>内閣総理大臣賞 受賞血統</h3>
+        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">日本初・4年連続<br class="hide-sp"/>内閣総理大臣賞 受賞血統</h3>
         <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">江田和牛が採用する血統が4年連続で受賞</p>
       </article>
 
       <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
         <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— ANA First Class —</div>
-        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">ANAファーストクラス<br/>機内食 採用</h3>
+        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">ANAファーストクラス<br class="hide-sp"/>機内食 採用</h3>
         <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">江田和牛 生ハム 40g がVIP向け機内食に</p>
       </article>
 
       <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
         <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— MAFF —</div>
-        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">農林水産省<br/>輸出人材確保事業 採択</h3>
+        <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3;">農林水産省<br class="hide-sp"/>輸出人材確保事業 採択</h3>
         <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">2025.2 / 政府公式プロジェクト採択企業</p>
       </article>
 
@@ -4275,7 +4279,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="reveal" style="text-align: center; margin-bottom: clamp(48px, 6vw, 80px);">
       <span class="eyebrow text-gold has-dash">Our Journey</span>
       <h2 class="philosophy-title">
-        Three Years,<br/>
+        Three Years,<br class="hide-sp"/>
         <span class="em">Of Building.</span>
       </h2>
       <p class="lead" style="max-width: 640px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
@@ -4391,7 +4395,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div>
         <span class="eyebrow text-gold has-dash">Stay Connected</span>
         <h2 class="cta-title">
-          Subscribe to<br/>
+          Subscribe to<br class="hide-sp"/>
           <span class="text-gold">Our Story.</span>
         </h2>
       </div>
@@ -4845,6 +4849,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           html += `<option value="${i}">${v.t} — ¥${v.p.toLocaleString()}</option>`;
         });
         html += '</select>';
+      } else {
+        const v = variants[0];
+        html += `<div class="variant-select variant-select--static">${v.t} — ¥${v.p.toLocaleString()}</div>`;
       }
       html += '<button class="btn-add-cart">カートに追加</button>';
       buyEl.innerHTML = html;
