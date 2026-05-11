@@ -5779,17 +5779,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card:hover .product-card-img { transform: scale(1.04); }
 .product-card-img .badge {
   position: absolute;
-  top: 12px; left: 12px;
-  background: rgba(255,255,255,0.95);
+  top: 14px; left: 14px;
+  background: white;
   color: var(--color-forest);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: var(--tracking-widest);
-  padding: 6px 12px;
+  font-family: var(--font-jp);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
   z-index: 2;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 700;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: 1.5px solid var(--color-bone);
   backdrop-filter: blur(4px);
 }
 .product-tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -8416,37 +8417,43 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <a href="subscription.html?plan=starter" class="sub-plan-mini">
             <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
             <div class="sub-plan-name">ふたり食卓便</div>
-            <div class="sub-plan-target">1-2人家族 / 約1.2kg</div>
+            <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
             <div class="sub-plan-items">
-              🐓 平飼い鶏もも 1kg<br/>
               🥩 和牛切り落とし 200g<br/>
-              🥩 和牛ミンチ 200g
+              🥩 サイコロステーキ 200g<br/>
+              🍔 和牛ハンバーグ 200g(2個)<br/>
+              🐓 平飼い鶏もも 500g<br/>
+              🐓 平飼い鶏ミンチ 300g
             </div>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥6,980</div>
               <div class="sub-plan-price">¥3,490<small>/初月</small></div>
               <div class="sub-plan-savings">−¥3,490 OFF</div>
             </div>
-            <div class="sub-plan-cta-link">詳細を見る →</div>
+            <div class="sub-plan-cta-link">🛒 購入する →</div>
           </a>
 
           <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
             <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
             <div class="sub-plan-name">家族の食卓便</div>
-            <div class="sub-plan-target">3-4人家族 / 約2.5kg</div>
+            <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
             <div class="sub-plan-items">
-              🐓 平飼い鶏もも 1kg<br/>
-              🥩 和牛切り落とし 300g<br/>
-              🥩 サイコロステーキ 300g<br/>
-              🍔 和牛ハンバーグ ×2個
+              🥩 和牛切り落とし 200g×2<br/>
+              🥩 サイコロステーキ 200g<br/>
+              🥩 バラ焼肉 150g<br/>
+              🍖 サーロイン 200g<br/>
+              🍔 和牛ハンバーグ 400g(4個)<br/>
+              🐓 平飼い鶏もも 500g×2<br/>
+              🐓 平飼い鶏むね 500g<br/>
+              🐓 平飼い鶏ミンチ 300g
             </div>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥12,800</div>
               <div class="sub-plan-price">¥6,400<small>/初月</small></div>
               <div class="sub-plan-savings">−¥6,400 OFF</div>
             </div>
-            <div class="sub-plan-cta-link">詳細を見る →</div>
+            <div class="sub-plan-cta-link">🛒 購入する →</div>
           </a>
 
           <a href="subscription.html?plan=volume" class="sub-plan-mini">
@@ -8454,17 +8461,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <div class="sub-plan-name">大家族のごちそう便</div>
             <div class="sub-plan-target">5人以上 / 約4.0kg</div>
             <div class="sub-plan-items">
-              🐓 平飼い鶏もも 1kg ×2<br/>
-              🥩 和牛切り落とし 500g<br/>
-              🥩 サーロインステーキ 200g<br/>
-              🍔 和牛ハンバーグ ×4個
+              🐓 平飼い鶏もも 500g×2<br/>
+              🐓 平飼い鶏むね 500g<br/>
+              🥩 和牛切り落とし 200g×2<br/>
+              🍖 サーロインステーキ 200g×2<br/>
+              🍔 和牛ハンバーグ 600g(6個)
             </div>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥19,800</div>
               <div class="sub-plan-price">¥9,900<small>/初月</small></div>
               <div class="sub-plan-savings">−¥9,900 OFF</div>
             </div>
-            <div class="sub-plan-cta-link">詳細を見る →</div>
+            <div class="sub-plan-cta-link">🛒 購入する →</div>
           </a>
         </div>
       </div>
@@ -8735,10 +8743,12 @@ function toggleUnboxingSound() {
       </div>
     </div>
     <div class="stats-band-cta">
-      <a href="https://lin.ee/" class="stats-line-btn" target="_blank" rel="noopener">
-        <span class="stats-line-icon">💬</span>
-        <span>公式LINEに友だち追加</span>
-        <small>初回クーポン進呈</small>
+      <a href="https://line.me/R/ti/p/@706sgiuq" class="stats-line-btn" target="_blank" rel="noopener">
+        <span class="stats-line-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+        </span>
+        <span>1タップで友だち追加</span>
+        <small>初回10%OFFクーポン</small>
       </a>
     </div>
   </div>
@@ -9585,10 +9595,10 @@ function toggleUnboxingSound() {
       });
       const badge = document.createElement('span');
       badge.className = 'status-badge-injected badge';
-      badge.style.cssText = `background:${b.bg};color:${b.color};font-size:10px;font-weight:700;letter-spacing:0.04em;border-radius:10px`;
+      badge.style.cssText = `background:${b.bg};color:${b.color};font-size:12px;font-weight:700;letter-spacing:0.03em;border-radius:12px;padding:7px 13px;`;
       badge.textContent = b.label;
       const remaining = imgEl.querySelectorAll('.badge:not(.status-badge-injected)');
-      if (remaining.length > 0) badge.style.top = '46px';
+      if (remaining.length > 0) badge.style.top = '52px';
       imgEl.appendChild(badge);
     }
   });

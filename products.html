@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商品一覧 | All Products | EDA-LIVESTOCK</title>
+<meta name="description" content="江田畜産 全商品一覧。江田和牛・平飼い鶏のすべてを一覧で。クリックで詳細とカート追加へ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-forest: #0F3D2E;
+  --color-forest-deep: #0A2D21;
+  --color-gold: #D4A93B;
+  --color-gold-soft: #B8932F;
+  --color-cream: #FAF7F0;
+  --color-paper: #F5EFE3;
+  --color-bone: #EFE8D7;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #5C5C5C;
+  --color-red: #C8102E;
+  --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  --font-jp-serif: 'Shippori Mincho', serif;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --shadow-sm: 0 2px 8px rgba(15,61,46,0.06);
+  --shadow-md: 0 8px 24px rgba(15,61,46,0.10);
+  --shadow-lg: 0 16px 48px rgba(15,61,46,0.14);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  margin: 0; font-family: var(--font-body);
+  font-size: 16px; line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
+ul { list-style: none; padding: 0; margin: 0; }
+h1, h2, h3, h4 { font-weight: 400; margin: 0; }
+
+.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+
+/* ============ HEADER ============ */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 16px 0;
+  background: rgba(15, 61, 46, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 169, 59, 0.18);
+}
+.site-header.scrolled { background: rgba(15, 61, 46, 0.97); }
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand-mark { display: flex; align-items: center; gap: 12px; color: white; flex-shrink: 0; }
+.brand-mark img { height: 44px; }
+.primary-nav { flex: 1; display: flex; justify-content: center; }
+.nav-list { display: flex; gap: 28px; }
+.nav-list a {
+  font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+  color: white; padding: 8px 0; white-space: nowrap;
+  position: relative;
+}
+.nav-list a.current::after,
+.nav-list a:hover::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: var(--color-gold);
+}
+.nav-utils { display: flex; align-items: center; gap: 24px; }
+.nav-icon { color: white; display: flex; }
+.nav-icon:hover { color: var(--color-gold); }
+.lang-toggle { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.24em; color: white; }
+.lang-toggle .active { color: var(--color-gold); }
+
+/* ============ HERO ============ */
+.products-hero {
+  padding: 120px 0 32px;
+  background: linear-gradient(180deg, #FFFCF5 0%, var(--color-cream) 100%);
+  text-align: center;
+}
+.products-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--color-gold);
+  background: white;
+  border: 1px solid rgba(212,169,59,0.35);
+  padding: 6px 14px;
+  border-radius: 18px;
+  margin-bottom: 18px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+.products-hero h1 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 4.4vw, 44px);
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.products-hero p {
+  font-size: 14px;
+  color: var(--color-ink-muted);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.85;
+}
+
+/* ============ FILTER PILLS ============ */
+.products-filter {
+  background: var(--color-cream);
+  padding: 24px 0;
+  position: sticky;
+  top: 76px;
+  z-index: 50;
+  border-bottom: 1px solid var(--color-bone);
+}
+.products-filter-inner {
+  display: flex; gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.products-filter-inner::-webkit-scrollbar { display: none; }
+.filter-pill {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 18px;
+  font-family: var(--font-jp);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--color-gold); color: var(--color-forest); }
+.filter-pill.active {
+  background: var(--color-forest);
+  color: var(--color-gold);
+  border-color: var(--color-forest);
+}
+
+/* ============ PRODUCTS GRID ============ */
+.products-section { padding: 48px 0 80px; }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.p-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-bone);
+  transition: all 0.35s var(--ease-out-expo);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.p-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(212,169,59,0.4);
+}
+.p-card-img {
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  background-color: #000;
+  position: relative;
+}
+.p-card-img .badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: white;
+  color: var(--color-forest);
+  font-family: var(--font-jp);
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+.p-card-img .badge.hot {
+  background: var(--color-red);
+  color: white;
+}
+.p-card-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.p-card-cat {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.p-card-name {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.p-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex: 1;
+}
+.p-card-weight {
+  font-family: var(--font-jp);
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+.p-card-price {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-forest);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.p-card-price small {
+  font-family: var(--font-jp);
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+.p-card-actions {
+  display: flex;
+  gap: 6px;
+}
+.p-card-btn-add {
+  flex: 1;
+  padding: 9px 8px;
+  background: var(--color-forest);
+  color: white;
+  border-radius: 8px;
+  font-family: var(--font-jp);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-align: center;
+  transition: all 0.25s var(--ease-out-expo);
+}
+.p-card-btn-add:hover { background: var(--color-forest-deep); }
+.p-card-btn-add.added { background: var(--color-gold); color: var(--color-forest-deep); }
+.p-card-btn-detail {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-paper);
+  border-radius: 8px;
+  color: var(--color-forest);
+  transition: background 0.2s;
+}
+.p-card-btn-detail:hover { background: var(--color-bone); }
+
+/* ============ STICKY CART BAR ============ */
+.sticky-cart-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: var(--color-forest);
+  color: white;
+  border-radius: 30px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 90;
+  box-shadow: 0 16px 40px rgba(15,61,46,0.35);
+  border: 1.5px solid var(--color-gold);
+  transition: transform 0.4s var(--ease-out-expo);
+  max-width: calc(100vw - 32px);
+}
+.sticky-cart-bar.visible { transform: translateX(-50%) translateY(0); }
+.sticky-cart-info {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 700;
+}
+.sticky-cart-count {
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-family: var(--font-display);
+  font-size: 14px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+.sticky-cart-total {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-gold);
+  font-weight: 700;
+}
+.sticky-cart-btn {
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-family: var(--font-jp);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 18px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ============ FOOTER ============ */
+.site-footer {
+  background: var(--color-forest-deep);
+  color: rgba(255,255,255,0.7);
+  padding: 48px 0 24px;
+  margin-top: 80px;
+}
+.footer-bottom {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 960px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .primary-nav { display: none; }
+}
+@media (max-width: 720px) {
+  .products-hero { padding: 100px 0 24px; }
+  .products-hero h1 { font-size: 24px; }
+  .products-hero p { font-size: 12.5px; }
+  .products-filter { padding: 14px 0; top: 64px; }
+  .filter-pill { padding: 6px 12px; font-size: 11.5px; }
+  .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .p-card-body { padding: 10px 12px 12px; }
+  .p-card-name { font-size: 13px; }
+  .p-card-weight { font-size: 10.5px; }
+  .p-card-price { font-size: 16px; }
+  .p-card-btn-add { font-size: 11px; padding: 10px 6px; min-height: 38px; }
+  .p-card-btn-detail { width: 32px; height: 32px; }
+  .sticky-cart-bar { padding: 10px 16px; gap: 10px; }
+  .sticky-cart-info { font-size: 11.5px; gap: 6px; }
+  .sticky-cart-btn { font-size: 11px; padding: 6px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========= HEADER ========= -->
+<header class="site-header" id="siteHeader">
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK">
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a class="current" href="products.html">Products</a></li>
+        <li><a href="subscription.html">Subscription</a></li>
+        <li><a href="journal.html">Journal</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle"><span class="active">JA</span> / <span>EN</span></div>
+      <a href="checkout.html" aria-label="Cart" class="nav-icon" title="カート">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6"/>
+          <circle cx="9" cy="20" r="1.4" fill="currentColor"/>
+          <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ========= HERO ========= -->
+<section class="products-hero">
+  <div class="container">
+    <span class="products-hero-eyebrow">ALL PRODUCTS · 全商品一覧</span>
+    <h1>江田畜産の、すべて。</h1>
+    <p>江田和牛・平飼い鶏、現在販売中の全アイテム。クリックで詳細とカート追加へ。</p>
+  </div>
+</section>
+
+<!-- ========= FILTER ========= -->
+<div class="products-filter">
+  <div class="container">
+    <div class="products-filter-inner">
+      <button class="filter-pill active" data-cat="all">すべて</button>
+      <button class="filter-pill" data-cat="steak">🥩 ステーキ</button>
+      <button class="filter-pill" data-cat="slice">🥩 スライス・切り落とし</button>
+      <button class="filter-pill" data-cat="yakiniku">🔥 焼肉</button>
+      <button class="filter-pill" data-cat="processed">🍔 加工品</button>
+      <button class="filter-pill" data-cat="chicken">🐓 平飼い鶏</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========= PRODUCTS GRID ========= -->
+<section class="products-section">
+  <div class="container">
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</section>
+
+<!-- ========= STICKY CART BAR ========= -->
+<div class="sticky-cart-bar" id="stickyCartBar">
+  <div class="sticky-cart-info">
+    <span class="sticky-cart-count" id="stickyCartCount">0</span>
+    <span class="sticky-cart-total" id="stickyCartTotal">¥0</span>
+  </div>
+  <a href="checkout.html" class="sticky-cart-btn">レジに進む →</a>
+</div>
+
+<!-- ========= FOOTER ========= -->
+<footer class="site-footer">
+  <div class="container footer-bottom">
+    © 2026 Eda Livestock Co., Ltd. · <a href="contact.html" style="color: var(--color-gold);">お問い合わせ</a>
+  </div>
+</footer>
+
+<script>
+/* ============ 商品マスター ============ */
+const PRODUCTS = [
+  { id: 50830136082730, name: 'サーロインステーキ', cat: 'steak', price: 3400, weight: '200g', img: 'public/images/products/drive/sirloin.jpg', badge: 'プレミアム' },
+  { id: 50830190379306, name: '赤身ステーキ', cat: 'steak', price: 3400, weight: '250g', img: 'public/images/products/drive/red-meat.jpg', badge: '' },
+  { id: 50830132314410, name: 'サイコロステーキ', cat: 'steak', price: 1000, weight: '200g', img: 'public/images/products/drive/cube-steak.jpg', badge: '' },
+  { id: 50830187200810, name: '赤身スライス', cat: 'slice', price: 2600, weight: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', badge: 'Best Seller' },
+  { id: 50830303822122, name: '和牛切り落とし', cat: 'slice', price: 1600, weight: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', badge: '毎日使える' },
+  { id: 50830137655594, name: 'バラ焼肉', cat: 'yakiniku', price: 1900, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', badge: '' },
+  { id: 50830287143210, name: '和牛ホルモン', cat: 'yakiniku', price: 840, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', badge: '' },
+  { id: 50830191427882, name: '江田和牛ハンバーグ', cat: 'processed', price: 760, weight: '100g/個', img: 'public/images/products/drive/hamburg.jpg', badge: '' },
+  { id: 50982670532906, name: '和牛ローストビーフ', cat: 'processed', price: 3000, weight: '100g', img: 'public/images/products/drive/hamburg.jpg', badge: '' },
+  { id: 50877844750634, name: '和牛生ハム', cat: 'processed', price: 1250, weight: '40g', img: 'public/images/products/drive/wagyu-slice.jpg', badge: 'ANA First' },
+  { id: 50830250475818, name: '平飼い鶏 ムネ', cat: 'chicken', price: 1280, weight: '500g', img: 'public/images/products/drive/chicken-breast.jpg', badge: '' },
+  { id: 50830293172522, name: '平飼い鶏 モモ', cat: 'chicken', price: 1280, weight: '500g', img: 'public/images/products/drive/chicken-thigh.jpg', badge: '万能' },
+  { id: 50830210793770, name: '平飼い鶏 ミンチ', cat: 'chicken', price: 1000, weight: '300g', img: 'public/images/products/drive/chicken-minced.jpg', badge: '' }
+];
+
+/* ============ カート（shop.html と共有） ============ */
+const CART_KEY = 'eda-cart';
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) {}
+
+function saveCart() {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  renderStickyCart();
+}
+
+function addToCart(p) {
+  const existing = cart.find(i => i.variantId === p.id);
+  if (existing) existing.qty++;
+  else cart.push({ variantId: p.id, price: p.price, title: p.name, variant: '1つ', img: p.img, qty: 1 });
+  saveCart();
+}
+
+function renderStickyCart() {
+  const bar = document.getElementById('stickyCartBar');
+  const count = document.getElementById('stickyCartCount');
+  const total = document.getElementById('stickyCartTotal');
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  if (totalQty > 0) {
+    count.textContent = totalQty + '点';
+    total.textContent = '¥' + totalPrice.toLocaleString();
+    bar.classList.add('visible');
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+/* ============ 商品グリッド描画 ============ */
+function renderProducts(filterCat) {
+  const grid = document.getElementById('productsGrid');
+  const filtered = filterCat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filterCat);
+  const catLabels = {
+    steak: 'STEAK', slice: 'SLICE', yakiniku: 'YAKINIKU', processed: 'PROCESSED', chicken: 'CHICKEN'
+  };
+  grid.innerHTML = filtered.map(p => {
+    const inCart = cart.find(i => i.variantId === p.id);
+    const badgeHtml = p.badge ? `<span class="badge ${p.badge.includes('Best') ? 'hot' : ''}">${p.badge}</span>` : '';
+    return `
+      <article class="p-card" data-id="${p.id}">
+        <div class="p-card-img" style="background-image:url('${p.img}')">${badgeHtml}</div>
+        <div class="p-card-body">
+          <div class="p-card-cat">${catLabels[p.cat]}</div>
+          <div class="p-card-name">${p.name}</div>
+          <div class="p-card-meta">
+            <span class="p-card-weight">${p.weight}</span>
+            <span class="p-card-price">¥${p.price.toLocaleString()}<small></small></span>
+          </div>
+          <div class="p-card-actions">
+            <button class="p-card-btn-add ${inCart ? 'added' : ''}" onclick="event.stopPropagation(); addToCart(PRODUCTS.find(x=>x.id===${p.id})); renderProducts('${filterCat}');">
+              ${inCart ? '✓ 追加済み' : '+ カート'}
+            </button>
+            <a href="shop.html#products" class="p-card-btn-detail" onclick="event.stopPropagation();" aria-label="詳細を見る">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+/* ============ フィルタ ============ */
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    renderProducts(pill.dataset.cat);
+  });
+});
+
+/* ============ ヘッダー scroll ============ */
+window.addEventListener('scroll', () => {
+  document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+/* ============ 初期化 ============ */
+renderProducts('all');
+renderStickyCart();
+</script>
+
+</body>
+</html>
