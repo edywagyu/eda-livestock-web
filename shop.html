@@ -9590,9 +9590,9 @@ function toggleUnboxingSound() {
 <style>
 .floating-phone-btn {
   position: fixed;
-  left: 16px;
+  right: 16px;
   bottom: 16px;
-  z-index: 90;
+  z-index: 92; /* sticky-cart-bar(90)より上 */
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -9608,6 +9608,10 @@ function toggleUnboxingSound() {
 .floating-phone-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(15,61,46,0.5);
+}
+/* モバイルで sticky-cart-bar が出ているときは電話ボタンを上に持ち上げる */
+body.has-sticky-cart .floating-phone-btn {
+  bottom: 78px; /* sticky-cart-bar の高さ分を回避 */
 }
 .floating-phone-icon {
   width: 36px; height: 36px;
@@ -9644,13 +9648,14 @@ function toggleUnboxingSound() {
 }
 @media (max-width: 720px) {
   .floating-phone-btn {
-    left: 12px; bottom: 12px;
+    right: 12px; bottom: 12px;
     padding: 8px 14px 8px 10px;
     gap: 8px;
   }
   .floating-phone-icon { width: 32px; height: 32px; }
   .floating-phone-text strong { font-size: 11.5px; }
   .floating-phone-text small { font-size: 9px; }
+  body.has-sticky-cart .floating-phone-btn { bottom: 74px; }
 }
 </style>
 
@@ -9935,8 +9940,10 @@ function toggleUnboxingSound() {
           stickyCount.textContent = totalQty + '点';
           stickyTotal.textContent = '¥' + subtotal.toLocaleString();
           stickyBar.classList.add('visible');
+          document.body.classList.add('has-sticky-cart');
         } else {
           stickyBar.classList.remove('visible');
+          document.body.classList.remove('has-sticky-cart');
         }
       }
     }
