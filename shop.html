@@ -2073,6 +2073,81 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin-top: 16px;
 }
 
+/* ============ クイズ結果: アドオン + 節約 ============ */
+.quiz-addons {
+  background: linear-gradient(135deg, #FEF9E7 0%, rgba(254, 249, 231, 0.5) 100%);
+  border: 1.5px dashed var(--color-gold);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 0 0 20px;
+  text-align: left;
+}
+.quiz-addons-head { margin-bottom: 10px; }
+.quiz-addons-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+}
+.quiz-addon {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(212, 169, 59, 0.2);
+}
+.quiz-addon:last-child { border-bottom: none; }
+.quiz-addon-info { flex: 1; min-width: 0; }
+.quiz-addon-name {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-forest);
+}
+.quiz-addon-reason {
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  margin-top: 2px;
+}
+.quiz-addon-price {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.quiz-savings {
+  background: var(--color-forest);
+  color: white;
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 0 0 24px;
+  text-align: left;
+}
+.quiz-savings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  font-size: 13px;
+}
+.quiz-savings-row strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+.quiz-savings-row.strike { opacity: 0.6; text-decoration: line-through; font-size: 12px; padding: 4px 0; }
+.quiz-savings-row.save {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(212, 169, 59, 0.3);
+}
+.quiz-savings-row.save strong { color: #FFB81C; font-size: 26px; }
+
 /* ================ 今週のメニュー ================ */
 .weekly-menu {
   padding: 80px 0;
@@ -5016,15 +5091,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <p style="color: var(--color-ink-muted); font-size: 14px; margin: 8px 0 0;">小分けパック・抗生物質ホルモン剤不使用・賞味期限6ヶ月</p>
     </div>
 
-    <!-- 用途別フィルタ -->
+    <!-- カテゴリフィルタ（3カテゴリ） -->
     <div class="tab-row reveal" style="margin-bottom: 24px;">
       <button class="tab active" data-filter="all">すべて</button>
-      <button class="tab" data-filter="set">🥩 冷凍ストックセット</button>
-      <button class="tab" data-filter="slice">🍳 平日ごはん用</button>
-      <button class="tab" data-filter="chicken">🐓 平飼い鶏</button>
-      <button class="tab" data-filter="processed">⏱ 時短・加工品</button>
-      <button class="tab" data-filter="steak">🥩 焼くだけ</button>
-      <button class="tab" data-filter="outlet">💸 訳あり・お得</button>
+      <button class="tab" data-filter="beef">🥩 牛肉</button>
+      <button class="tab" data-filter="chicken">🐓 鶏肉</button>
       <button class="tab" data-filter="gift">🎁 ギフト</button>
     </div>
 
@@ -5038,13 +5109,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <span class="use-tag">⚡ 時短料理</span>
     </div>
 
-    <!-- ===== ステーキ ===== -->
-    <div class="shop-cat-head reveal" data-cat="steak">
-      <h2 class="shop-cat-title">ステーキ <span>/ Steak</span></h2>
-      <p class="shop-cat-desc">部位ごとに食感も味わいも異なります。共通しているのは、すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>30ヶ月以上のびのび育てた</strong>江田和牛であること。焼き方の基本：①冷蔵庫から出して30分常温に戻す ②フライパンを中火で温める ③塩をふり、片面60秒ずつ ④弱火で好みの焼き加減に ⑤アルミホイルで3分休ませる。</p>
+    <!-- ===== 牛肉 ===== -->
+    <div class="shop-cat-head reveal" data-cat="beef">
+      <h2 class="shop-cat-title">牛肉 <span>/ Wagyu Beef</span></h2>
+      <p class="shop-cat-desc">すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>30ヶ月以上のびのび育てた</strong>江田和牛。日常使いの切り落としから、週末ステーキ、無添加ハンバーグまで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
     </div>
 
-    <div class="product-grid cols-4 reveal" data-cat="steak">
+    <div class="product-grid cols-4 reveal" data-cat="beef">
       <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
         <div class="product-card-img" data-label="SIRLOIN"><span class="badge">Premium</span></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,400〜</span></div>
@@ -5075,21 +5146,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50853957501226,"t":"1つ","p":3500},{"id":50853957533994,"t":"2つ【5%オフ】","p":6650},{"id":50853957566762,"t":"3つ【10%オフ】","p":9450}]'>
-        <div class="product-card-img" data-label="MISUJI"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">希少部位</span></div>
-        <div class="product-tag-row"><span class="product-tag">Steak · Misuji</span><span class="product-price">¥3,500〜</span></div>
-        <p class="product-name">ミスジステーキ</p>
-        <p class="product-desc">肩甲骨の裏側——一頭からわずか2〜3kgしか取れない希少部位。やわらかさはヒレに匹敵。週末のごちそう用に。</p>
-        <div class="product-stats">
-          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,750</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,750</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 200g</div>
-        </div>
-        <div class="product-buy"></div>
-      </div>
-
       <div class="product-card" data-variants='[{"id":50830132314410,"t":"1つ","p":1000},{"id":50830132347178,"t":"2つセット","p":2000},{"id":50830132379946,"t":"3つセット","p":3000}]'>
         <div class="product-card-img" data-label="CUBE STEAK"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">¥1,000〜</span></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Cube</span><span class="product-price">¥1,000〜</span></div>
@@ -5106,13 +5162,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
     </div>
 
-    <!-- ===== スライス・焼肉 ===== -->
-    <div class="shop-cat-head reveal" data-cat="slice" style="margin-top: 80px;">
-      <h2 class="shop-cat-title">スライス・焼肉 <span>/ Slice & Yakiniku</span></h2>
-      <p class="shop-cat-desc">しゃぶしゃぶは「くぐらせる」が正解。出汁の温度は70〜80℃（沸騰させない）。肉を入れて2〜3秒、ほんのりピンクが残るくらいで引き上げます。すき焼きは割り下をあまり煮立てず、肉を広げて片面だけ軽く。焼肉はサッと中火で、焼きすぎないのがコツ。</p>
-    </div>
-
-    <div class="product-grid cols-4 reveal" data-cat="slice">
+    <div class="product-grid cols-4 reveal" data-cat="beef" style="margin-top: 24px">
       <div class="product-card" data-variants='[{"id":50830187200810,"t":"1つ","p":2600}]'>
         <div class="product-card-img" data-label="WAGYU SLICE"><span class="badge" style="background: var(--color-red); color: white;">Best Seller</span></div>
         <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥2,600</span></div>
@@ -5144,22 +5194,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50834248073514,"t":"1つ","p":1800}]'>
-        <div class="product-card-img" data-label="SENBONSUJI"><span class="badge">New</span></div>
-        <div class="product-tag-row"><span class="product-tag">Yakiniku · Rare</span><span class="product-price">¥1,800</span></div>
-        <p class="product-name">センボンスジ焼肉カット</p>
-        <p class="product-desc">前脚の深層にある希少部位。名前の通り「千本の細い筋」が入り、コリコリとした独特の歯ごたえ。噛むほどに旨みが溢れ出す、焼肉通・ホルモン好きに刺さる通好みのカット。しっかり目に焼いて、岩塩と黒胡椒で。</p>
-        <div class="product-buy"></div>
-      </div>
     </div>
 
-    <!-- ===== 加工品 ===== -->
-    <div class="shop-cat-head reveal" data-cat="processed" style="margin-top: 80px;">
-      <h2 class="shop-cat-title">加工品 <span>/ Processed</span></h2>
-      <p class="shop-cat-desc">添加物・保存料を使わず、お肉本来の味で勝負する加工品ライン。<strong>化学調味料・保存料 完全無添加</strong>の100%和牛ハンバーグ、低温調理のローストビーフ、無添加の生ハム。お子さまの夕食にも、急な来客にも、安心して出せる常備品です。</p>
-    </div>
-
-    <div class="product-grid cols-4 reveal" data-cat="processed">
+    <div class="product-grid cols-4 reveal" data-cat="beef" style="margin-top: 24px">
       <div class="product-card" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300},{"id":50877844816170,"t":"3つセット【10%オフ】","p":3300}]'>
         <div class="product-card-img" data-label="RAW HAM"><span class="badge">無添加</span></div>
         <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250〜</span></div>
@@ -5183,14 +5220,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":51352875532586,"t":"1つ","p":1300},{"id":51352875565354,"t":"2つセット","p":2470},{"id":51352875598122,"t":"3つセット","p":3500}]'>
-        <div class="product-card-img" data-label="HAMBURG XL"><span class="badge">特大 150g</span></div>
-        <div class="product-tag-row"><span class="product-tag">Hamburg · XL</span><span class="product-price">¥1,300〜</span></div>
-        <p class="product-name">【特大】江田和牛ハンバーグ</p>
-        <p class="product-desc">通常サイズの約1.5倍、150gの特大ハンバーグ。肉々しさをダイレクトに味わいたい方に。メインディッシュとしてステーキの代わりに——デミグラスソースや和風おろしポン酢で。食べ応え十分。</p>
-        <div class="product-buy"></div>
-      </div>
-
       <div class="product-card" data-variants='[{"id":50982670532906,"t":"1つ (100g)","p":3000},{"id":50982670565674,"t":"2つセット【5%オフ】","p":5700},{"id":50982670598442,"t":"3つセット【10%オフ】","p":8000}]'>
         <div class="product-card-img" data-label="ROAST BEEF"></div>
         <div class="product-tag-row"><span class="product-tag">Roast Beef</span><span class="product-price">¥3,000〜</span></div>
@@ -5210,8 +5239,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
     <!-- ===== 平飼い鶏 ===== -->
     <div class="shop-cat-head reveal" data-cat="chicken" style="margin-top: 80px;">
-      <h2 class="shop-cat-title">平飼い鶏 <span>/ Free-Range Chicken</span></h2>
-      <p class="shop-cat-desc">大分県産・平飼い飼育の無投薬鶏肉。ケージではなく、地面の上を自由に歩き回る「平飼い」方式で育てています。運動量が多い分、身が引き締まり、旨みが凝縮。抗生物質・成長促進剤は一切不使用。和牛のサイドメニューにも、日常のたんぱく源としても。</p>
+      <h2 class="shop-cat-title">鶏肉 <span>/ Free-Range Chicken</span></h2>
+      <p class="shop-cat-desc">大分県産・平飼い飼育の<strong>無投薬</strong>鶏肉。地面の上を自由に歩き回る「平飼い」方式で運動量が多く、身が引き締まって旨みが濃い。和牛のサイドにも、日常のたんぱく源にも。</p>
     </div>
 
     <div class="product-grid cols-4 reveal" data-cat="chicken">
@@ -5246,109 +5275,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50973243572522,"t":"1つ","p":2250},{"id":50973243605290,"t":"2つセット【5%オフ】","p":4270}]'>
-        <div class="product-card-img" data-label="CHICKEN SET"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">セット10%お得</span></div>
-        <div class="product-tag-row"><span class="product-tag">Chicken · Set</span><span class="product-price">¥2,250〜</span></div>
-        <p class="product-name">平飼い鶏肉 詰め合わせ</p>
-        <p class="product-desc">ムネ・モモ・ミンチをバランスよく。<strong>2週間分のたんぱく源</strong>。冷凍庫に入れておけば、平日のメニューに困りません。</p>
-        <div class="product-stats">
-          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>約10食分</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥225</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>合計 <strong>約1.5kg</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>3袋小分け</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 2週間のストック向け</div>
-        </div>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":50965952889130,"t":"1つ","p":3000},{"id":50965952921898,"t":"2つセット【5%オフ】","p":5700},{"id":50965952954666,"t":"3つセット【10%オフ】","p":8000}]'>
-        <div class="product-card-img" data-label="PREMIUM SET"></div>
-        <div class="product-tag-row"><span class="product-tag">Chicken · Premium Set</span><span class="product-price">¥3,000〜</span></div>
-        <p class="product-name">平飼い鶏 プレミアムセット</p>
-        <p class="product-desc">通常セットの約2倍のボリューム。手羽先・手羽元も含む、部位のバリエーションが豊富なプレミアム構成。家族4人で1週間分の鶏肉をまかなえます。大容量だからこそ実現するコストパフォーマンス。</p>
-        <div class="product-buy"></div>
-      </div>
     </div>
 
-    <!-- ===== セット ===== -->
-    <div class="shop-cat-head reveal" data-cat="set" style="margin-top: 80px;">
-      <h2 class="shop-cat-title">セット <span>/ Value Sets</span></h2>
-      <p class="shop-cat-desc">複数の部位を組み合わせた、バラ買いよりお得なセット商品。ご家族の食卓からホームパーティー、BBQまで。¥11,000以上で送料無料になるため、セット購入は送料面でもお得です。</p>
-    </div>
-
-    <div class="product-grid cols-4 reveal" data-cat="set">
-      <div class="product-card" data-variants='[{"id":51201024753962,"t":"1つ","p":6100},{"id":51201024786730,"t":"2つセット【5%オフ】","p":11500},{"id":51201079542058,"t":"3つセット【10%オフ】","p":16400}]'>
-        <div class="product-card-img" data-label="STEAK SET"><span class="badge" style="background: var(--color-red); color: white;">人気 No.1</span></div>
-        <div class="product-tag-row"><span class="product-tag">Set · Steak</span><span class="product-price">¥6,100〜</span></div>
-        <p class="product-name">江田和牛ステーキセット</p>
-        <p class="product-desc">サーロイン、赤身、ミスジなど複数部位のステーキを詰め合わせ。部位ごとの味わいの違いを食べ比べできる、当店一番人気のセット。贈答にも、ご自宅の特別な日にも。一枚ずつ個包装・冷凍なので、好きな時に好きな分だけ解凍可能。</p>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":51121403855146,"t":"4個セット","p":2400},{"id":51121403887914,"t":"6個セット","p":3600}]'>
-        <div class="product-card-img" data-label="HAMBURG SET"></div>
-        <div class="product-tag-row"><span class="product-tag">Set · Hamburg</span><span class="product-price">¥2,400〜</span></div>
-        <p class="product-name">江田和牛ハンバーグセット</p>
-        <p class="product-desc">和牛100%ハンバーグの4個または6個セット。冷凍庫にストックしておけば、忙しい日のメインが15分で完成。お子さまのお弁当にも。まとめ買いで1個あたり約¥600——単品より約20%お得。</p>
-        <div class="product-buy"></div>
-      </div>
-    </div>
-
-    <!-- ===== 訳あり ===== -->
-    <div class="shop-cat-head reveal" data-cat="outlet" style="margin-top: 80px;">
-      <h2 class="shop-cat-title">訳あり <span>/ Outlet</span></h2>
-      <p class="shop-cat-desc">形崩れ、カット時の端材、規格外サイズなど——「見た目」だけが理由のアウトレット品。<strong>育て方も、お肉の質も正規品とまったく同じ</strong>。ご自宅用なら断然お得です。<strong style="color: var(--color-red);">在庫限り・なくなり次第終了。</strong></p>
-    </div>
-
-    <div class="product-grid cols-4 reveal" data-cat="outlet">
-      <div class="product-card" data-variants='[{"id":51070921867562,"t":"1つ","p":3700},{"id":51070921900330,"t":"2つ【5%オフ】","p":7000},{"id":51070921933098,"t":"3つ【10%オフ】","p":9990}]'>
-        <div class="product-card-img" data-label="FILLET"><span class="badge" style="background: var(--color-red); color: white;">Outlet</span></div>
-        <div class="product-tag-row"><span class="product-tag">Steak · Fillet</span><span class="product-price">¥3,700〜</span></div>
-        <p class="product-name">【訳あり】ヒレステーキ</p>
-        <p class="product-desc">「肉の女王」ヒレ——一頭から約3kgしか取れない最希少部位。赤身でありながら極上のやわらかさ。脂肪が少なく上品な味わいで、胃もたれしにくい。訳あり理由はカット時の形崩れのみ。レアで、わさびと醤油で。</p>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":50839616323882,"t":"1つ","p":2560},{"id":50839616356650,"t":"2つ【5%オフ】","p":4860},{"id":50839616389418,"t":"3つ【10%オフ】","p":6900}]'>
-        <div class="product-card-img" data-label="RED MEAT"><span class="badge" style="background: var(--color-red); color: white;">Outlet</span></div>
-        <div class="product-tag-row"><span class="product-tag">Steak · Red Meat</span><span class="product-price">¥2,560〜</span></div>
-        <p class="product-name">【訳あり】赤身ステーキ</p>
-        <p class="product-desc">正規品と同じ江田和牛赤身ステーキのアウトレット。サイズ不揃いが理由で、味も育て方も完全に同等。ご自宅用には断然お得。正規品¥3,400→訳あり¥2,560で約25%OFF。</p>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":50839796744490,"t":"1つ","p":1500},{"id":50839796777258,"t":"2つセット【5%オフ】","p":2850},{"id":50839796810026,"t":"3つセット【10%オフ】","p":4050}]'>
-        <div class="product-card-img" data-label="YAKINIKU"><span class="badge" style="background: var(--color-red); color: white;">Outlet</span></div>
-        <div class="product-tag-row"><span class="product-tag">Yakiniku</span><span class="product-price">¥1,500〜</span></div>
-        <p class="product-name">【訳あり】バラ焼肉</p>
-        <p class="product-desc">正規品と同じバラ肉の焼肉カット。カットサイズの不揃いが訳あり理由。焼肉はそもそも一口サイズに切って食べるもの——味への影響はゼロ。正規品¥1,900→訳あり¥1,500で約20%OFF。</p>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":51070921277738,"t":"1つ","p":1200},{"id":51070921310506,"t":"2つ","p":2400},{"id":51070921343274,"t":"3つ","p":3600}]'>
-        <div class="product-card-img" data-label="SLICE"><span class="badge" style="background: var(--color-red); color: white;">Outlet</span></div>
-        <div class="product-tag-row"><span class="product-tag">Slice</span><span class="product-price">¥1,200〜</span></div>
-        <p class="product-name">【訳あり】赤身切り落とし</p>
-        <p class="product-desc">スライス時の端材を集めた切り落とし。部位はランダムですが、すべて江田和牛。肉じゃが、牛丼、すき焼き、肉うどんなど普段の食卓に使えば、正規品との差は皆無。お子さまの夕食にも安心して使えます。</p>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":51294897471786,"t":"1つ","p":950},{"id":51294897504554,"t":"2つ【5%オフ】","p":1800},{"id":51294897537322,"t":"3つ【10%オフ】","p":2560}]'>
-        <div class="product-card-img" data-label="MINCED"><span class="badge" style="background: var(--color-red); color: white;">Outlet</span></div>
-        <div class="product-tag-row"><span class="product-tag">Minced</span><span class="product-price">¥950〜</span></div>
-        <p class="product-name">【訳あり】和牛ミンチ</p>
-        <p class="product-desc">江田和牛のミンチ。ハンバーグ、ミートソース、餃子、麻婆豆腐——加工調理用に最適。一般スーパーの合挽きミンチでは絶対に出せない、和牛の脂の甘みがダイレクトに料理を格上げします。</p>
-        <div class="product-buy"></div>
-      </div>
-
-      <div class="product-card" data-variants='[{"id":50952401912106,"t":"1つ","p":3150}]'>
-        <div class="product-card-img" data-label="MISUJI"><span class="badge" style="background: var(--color-red); color: white;">Outlet</span></div>
-        <div class="product-tag-row"><span class="product-tag">Steak · Misuji</span><span class="product-price">¥3,150</span></div>
-        <p class="product-name">【訳あり】ミスジステーキ</p>
-        <p class="product-desc">希少部位ミスジのアウトレット。正規品¥3,500→訳あり¥3,150で約10%OFF。形崩れのみが理由で、あのやわらかなような食感と濃い旨みはそのまま。数量限定のため、見つけたらお早めに。</p>
-        <div class="product-buy"></div>
-      </div>
-    </div>
+    <!-- 訳あり は会員限定 — 通常表示から削除（マイページからのみアクセス可） -->
 
     <!-- ===== ギフト ===== -->
     <div class="shop-cat-head reveal" data-cat="gift" style="margin-top: 80px;">
@@ -5503,33 +5432,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           忙しい平日も、安心できるお肉が冷凍庫にある安心感。<br/>
           いつでもスキップ・変更・解約OK、解約縛りなし。
         </p>
-        <!-- プラン一覧 -->
-        <div class="sub-plans-grid">
+        <!-- プラン一覧（3プラン） -->
+        <div class="sub-plans-grid" style="grid-template-columns: 1fr 1fr 1fr">
           <div class="sub-plan-mini">
-            <div class="sub-plan-name">月1回 ライト</div>
-            <div class="sub-plan-desc">2-3人家族 / 約1,600g / 8品</div>
+            <div class="sub-plan-name">スターター</div>
+            <div class="sub-plan-desc">1-2人 / 約1.2kg<br/>鶏もも + 切り落とし + ミンチ</div>
             <div class="sub-plan-price">¥6,980<small>/月</small></div>
           </div>
           <div class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気</span>
-            <div class="sub-plan-name">月1回 ファミリー</div>
-            <div class="sub-plan-desc">4-5人家族 / 約3,200g / 16品</div>
+            <div class="sub-plan-name">レギュラー</div>
+            <div class="sub-plan-desc">3-4人 / 約2.5kg<br/>鶏もも + 切り落とし + サイコロ + ハンバーグ</div>
             <div class="sub-plan-price">¥12,800<small>/月</small></div>
           </div>
           <div class="sub-plan-mini">
-            <div class="sub-plan-name">2週間ごと</div>
-            <div class="sub-plan-desc">毎週ヘビーユーザー / 約1,800g</div>
-            <div class="sub-plan-price">¥7,800<small>/回</small></div>
-          </div>
-          <div class="sub-plan-mini">
-            <div class="sub-plan-name">赤身中心 ヘルシー</div>
-            <div class="sub-plan-desc">脂ひかえめ / 筋トレ・健康志向</div>
-            <div class="sub-plan-price">¥9,800<small>/月</small></div>
+            <div class="sub-plan-name">ボリューム</div>
+            <div class="sub-plan-desc">5人+ / 約4.0kg<br/>鶏もも×2 + 切り落とし + サーロイン + ハンバーグ×4</div>
+            <div class="sub-plan-price">¥19,800<small>/月</small></div>
           </div>
         </div>
         <div style="display:flex; gap: 10px; flex-wrap: wrap;">
-          <a href="subscription.html" class="btn btn-gold" style="font-size:13px">冷凍庫に常備する →</a>
-          <a href="subscription.html#starter" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">月1回ライトから始める</a>
+          <a href="#quiz" class="btn btn-gold" style="font-size:13px">プラン診断する →</a>
+          <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
         </div>
       </div>
       <div class="shop-sub-right">
@@ -6527,28 +6451,45 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 (function quizInit() {
   const questions = [
     {
-      q: '何人家族でお食事されますか？',
+      q: 'ご家族の構成は？',
       opts: [
-        { e: '👤', t: '1-2人', tag: 'small' },
-        { e: '👨‍👩‍👧', t: '3-4人', tag: 'medium' },
-        { e: '👨‍👩‍👧‍👦', t: '5人以上', tag: 'large' }
+        { e: '👤', t: '1-2人（夫婦・一人暮らし）', tag: 'fam_12' },
+        { e: '👨‍👩‍👧', t: '3-4人（未就学児あり）', tag: 'fam_34_small' },
+        { e: '👨‍👩‍👧‍👦', t: '3-4人（小学生〜中学生）', tag: 'fam_34_big' },
+        { e: '👨‍👩‍👧‍👦', t: '5人以上の大家族', tag: 'fam_5plus' }
       ]
     },
     {
       q: 'お肉を使う頻度はどれくらい？',
       opts: [
-        { e: '🍴', t: '週2-3回', tag: 'light' },
-        { e: '🥩', t: '週4-5回', tag: 'medium' },
-        { e: '🍳', t: 'ほぼ毎日', tag: 'heavy' }
+        { e: '🍴', t: '週1-2回（外食多め）', tag: 'freq_low' },
+        { e: '🥩', t: '週3-4回（標準）', tag: 'freq_mid' },
+        { e: '🍳', t: 'ほぼ毎日（メインたんぱく源）', tag: 'freq_high' }
       ]
     },
     {
-      q: '一番大事にしたいことは？',
+      q: '鶏肉と牛肉、どっちを多く使う？',
       opts: [
-        { e: '👶', t: '子どもの安心', tag: 'kids' },
-        { e: '💪', t: '健康・たんぱく質', tag: 'health' },
-        { e: '⚡', t: '時短・手軽さ', tag: 'easy' },
-        { e: '🌿', t: 'オーガニック志向', tag: 'organic' }
+        { e: '🐓', t: '鶏肉中心（コスパ・ヘルシー）', tag: 'meat_chicken' },
+        { e: '⚖️', t: 'バランス重視', tag: 'meat_balanced' },
+        { e: '🥩', t: '牛肉中心（しっかり食べたい）', tag: 'meat_beef' }
+      ]
+    },
+    {
+      q: 'よく作る料理は？（一番多いもの）',
+      opts: [
+        { e: '🍛', t: '平日ごはん（カレー・牛丼・炒め物）', tag: 'use_daily' },
+        { e: '🍖', t: '週末ごちそう（焼肉・ステーキ）', tag: 'use_weekend' },
+        { e: '🥗', t: 'ヘルシー志向（赤身・鶏中心）', tag: 'use_healthy' },
+        { e: '🍔', t: '子どもメニュー（ハンバーグ・唐揚げ）', tag: 'use_kids' }
+      ]
+    },
+    {
+      q: '月のお肉予算は？',
+      opts: [
+        { e: '💰', t: '¥8,000以下（まずは試したい）', tag: 'budget_low' },
+        { e: '💰💰', t: '¥10,000〜15,000（標準）', tag: 'budget_mid' },
+        { e: '💰💰💰', t: '¥18,000以上（しっかり常備）', tag: 'budget_high' }
       ]
     }
   ];
@@ -6559,7 +6500,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     const c = document.getElementById('quizContent');
     if (!c) return;
     if (step < questions.length) {
-      // 進捗ドット
+      // 進捗ドット数を質問数に合わせる
+      const dots = document.querySelector('.quiz-progress');
+      if (dots && dots.children.length !== questions.length) {
+        dots.innerHTML = questions.map((_, i) =>
+          `<div class="quiz-progress-dot${i === 0 ? ' active' : ''}"></div>`
+        ).join('');
+      }
       document.querySelectorAll('.quiz-progress-dot').forEach((d, i) => {
         d.classList.toggle('active', i <= step);
       });
@@ -6574,51 +6521,149 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             </button>
           `).join('')}
         </div>
+        ${step > 0 ? '<button class="quiz-restart" onclick="window._quizBack()" style="margin-top:20px">← 前の質問に戻る</button>' : ''}
       `;
     } else {
-      // 結果計算
-      const fam = answers[0];
-      const freq = answers[1];
-      const pri = answers[2];
-      let plan = '月1回 ファミリー';
-      let price = '¥12,800';
-      let weight = '約3,200g';
-      let portions = '16食分';
-      let desc = '4人家族向けの一番人気プラン。';
-      if (fam === 'small' && freq !== 'heavy') {
-        plan = '月1回 ライト'; price = '¥6,980'; weight = '約1,600g'; portions = '8食分';
-        desc = '1-2人家族にちょうど良い、お試しから始められるプラン。';
-      } else if (fam === 'large' || freq === 'heavy') {
-        plan = '2週間ごと'; price = '¥7,800/回'; weight = '約1,800g'; portions = '9食分';
-        desc = 'ヘビーユーザー向け。2週間に1度、新鮮なお肉を切らさず常備。';
-      } else if (pri === 'health') {
-        plan = '赤身中心 ヘルシー'; price = '¥9,800'; weight = '約2,000g'; portions = '10食分';
-        desc = '脂ひかえめ・赤身中心の、健康・筋トレ志向の方向けプラン。';
-      }
-      const priLabel = { kids: 'お子さまの安心', health: '健康・たんぱく質', easy: '時短・手軽', organic: 'オーガニック志向' }[pri];
-      c.innerHTML = `
-        <div class="quiz-result">
-          <p class="quiz-result-eyebrow">RECOMMENDED FOR YOU</p>
-          <h3 class="quiz-result-plan">${plan}</h3>
-          <p class="quiz-result-desc">${desc}<br/>「${priLabel}」を大切にされる方にぴったりです。</p>
-          <div class="quiz-result-stats">
-            <div class="quiz-result-stat"><div class="quiz-result-stat-num">${price}</div><div class="quiz-result-stat-label">月額</div></div>
-            <div class="quiz-result-stat"><div class="quiz-result-stat-num">${weight}</div><div class="quiz-result-stat-label">内容量</div></div>
-            <div class="quiz-result-stat"><div class="quiz-result-stat-num">${portions}</div><div class="quiz-result-stat-label">目安</div></div>
-          </div>
-          <div class="quiz-actions">
-            <a href="subscription.html" class="btn btn-gold">${plan} を見る →</a>
-            <a href="#products" class="btn" style="border-color:var(--color-bone);color:var(--color-forest)">単品も見る</a>
-          </div>
-          <button class="quiz-restart" onclick="window._quizRestart()">もう一度診断する</button>
-        </div>
-      `;
+      renderResult(c);
     }
   }
+
+  function renderResult(c) {
+    const [fam, freq, meat, use, budget] = answers;
+
+    // ベースプラン選択
+    let plan, planPrice, planWeight, planDesc, addons = [];
+
+    // ロジック: 家族構成 + 頻度 + 予算 でプラン決定
+    const isLight = (fam === 'fam_12' || (freq === 'freq_low' && budget === 'budget_low'));
+    const isBig = (fam === 'fam_5plus' || (fam === 'fam_34_big' && freq === 'freq_high') || budget === 'budget_high');
+
+    if (isLight) {
+      plan = 'スターター';
+      planPrice = 6980;
+      planWeight = '約1.2kg';
+      planDesc = '1-2人家族・お試し向け';
+    } else if (isBig) {
+      plan = 'ボリューム';
+      planPrice = 19800;
+      planWeight = '約4.0kg';
+      planDesc = '5人以上の大家族・ヘビーユーザー向け';
+    } else {
+      plan = 'レギュラー';
+      planPrice = 12800;
+      planWeight = '約2.5kg';
+      planDesc = '4人家族・週末に和牛も楽しみたい';
+    }
+
+    // アドオン提案
+    if (use === 'use_kids' && plan !== 'ボリューム') {
+      addons.push({ name: '🍔 和牛ハンバーグ 4個', price: 2400, reason: '子ども人気の定番' });
+    }
+    if (meat === 'meat_chicken' || (use === 'use_healthy' && plan === 'スターター')) {
+      addons.push({ name: '🐓 平飼い鶏もも 1kg', price: 1280, reason: '高頻度の鶏肉ユーザー向け' });
+    }
+    if (use === 'use_weekend' && plan === 'スターター') {
+      addons.push({ name: '🥩 サーロインステーキ ×2', price: 6460, reason: '週末ステーキ用' });
+    }
+    if (fam === 'fam_5plus' && plan !== 'ボリューム') {
+      addons.push({ name: '🐓 平飼い鶏もも 1kg ×2', price: 2452, reason: '大家族のたんぱく源強化' });
+    }
+    if (use === 'use_daily' && plan === 'ボリューム') {
+      addons.push({ name: '🍳 和牛切り落とし ×2', price: 3040, reason: '平日ごはん用追加' });
+    }
+
+    // 単品換算で計算
+    const planRetailValue = Math.round(planPrice * 1.25); // 定期便は単品比で約20%お得想定
+    const addonTotal = addons.reduce((s, a) => s + a.price, 0);
+    const subscribeTotal = planPrice + addonTotal;
+    const retailTotal = planRetailValue + Math.round(addonTotal * 1.1);
+    const savings = retailTotal - subscribeTotal;
+
+    const familyLabel = {
+      fam_12: '1-2人家族',
+      fam_34_small: '3-4人（未就学児あり）',
+      fam_34_big: '3-4人（小中学生あり）',
+      fam_5plus: '5人以上の大家族'
+    }[fam];
+    const useLabel = {
+      use_daily: '平日ごはん中心',
+      use_weekend: '週末ごちそう派',
+      use_healthy: 'ヘルシー志向',
+      use_kids: 'お子さま中心'
+    }[use];
+
+    c.innerHTML = `
+      <div class="quiz-result">
+        <p class="quiz-result-eyebrow">RECOMMENDED FOR YOU</p>
+        <h3 class="quiz-result-plan">${plan}定期便</h3>
+        <p class="quiz-result-desc">
+          <strong>${familyLabel}</strong> × <strong>${useLabel}</strong> のあなたに最適。<br/>
+          ${planDesc}。
+        </p>
+
+        <div class="quiz-result-stats">
+          <div class="quiz-result-stat">
+            <div class="quiz-result-stat-num">¥${planPrice.toLocaleString()}</div>
+            <div class="quiz-result-stat-label">月額</div>
+          </div>
+          <div class="quiz-result-stat">
+            <div class="quiz-result-stat-num">${planWeight}</div>
+            <div class="quiz-result-stat-label">内容量</div>
+          </div>
+          <div class="quiz-result-stat">
+            <div class="quiz-result-stat-num">¥${Math.round(planPrice / 25).toLocaleString()}</div>
+            <div class="quiz-result-stat-label">1食換算</div>
+          </div>
+        </div>
+
+        ${addons.length > 0 ? `
+          <div class="quiz-addons">
+            <div class="quiz-addons-head">
+              <span class="quiz-addons-eyebrow">+ あなた専用 追加おすすめ</span>
+            </div>
+            ${addons.map(a => `
+              <div class="quiz-addon">
+                <div class="quiz-addon-info">
+                  <div class="quiz-addon-name">${a.name}</div>
+                  <div class="quiz-addon-reason">${a.reason}</div>
+                </div>
+                <div class="quiz-addon-price">+¥${a.price.toLocaleString()}</div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <div class="quiz-savings">
+          <div class="quiz-savings-row">
+            <span>定期便合計</span>
+            <strong>¥${subscribeTotal.toLocaleString()}/月</strong>
+          </div>
+          <div class="quiz-savings-row strike">
+            <span>単品購入なら</span>
+            <span>¥${retailTotal.toLocaleString()}</span>
+          </div>
+          <div class="quiz-savings-row save">
+            <span>💰 お得額</span>
+            <strong>¥${savings.toLocaleString()} 節約</strong>
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <a href="subscription.html" class="btn btn-gold">${plan}定期便を見る →</a>
+          <a href="#products" class="btn" style="border-color:var(--color-bone);color:var(--color-forest)">単品も見る</a>
+        </div>
+        <button class="quiz-restart" onclick="window._quizRestart()">もう一度診断する</button>
+      </div>
+    `;
+  }
+
   window._quizAnswer = function(i) {
     answers[step] = questions[step].opts[i].tag;
     step++;
     render();
+  };
+  window._quizBack = function() {
+    if (step > 0) { step--; answers.pop(); render(); }
   };
   window._quizRestart = function() {
     answers.length = 0;
