@@ -2027,6 +2027,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 50%;
   background: rgba(212,169,59,0.5);
 }
+.ship-cd-remain {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(212,169,59,0.18);
+  border: 1px solid rgba(212,169,59,0.4);
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
 .ship-cd-cta {
   display: inline-flex;
   align-items: center;
@@ -6229,8 +6245,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       </div>
       <div class="ship-cd-content">
-        <div class="ship-cd-headline" id="shipCdHeadline">本日 13:00 までのご注文で <strong>5月13日（火）</strong>に冷凍庫へ</div>
-        <div class="ship-cd-meta" id="shipCdMeta">残り <strong>0時間 00分</strong> — 小分け冷凍でお届け</div>
+        <div class="ship-cd-headline" id="shipCdHeadline">本日のご注文で <strong>3日後</strong>にお届け</div>
+        <div class="ship-cd-meta" id="shipCdMeta">本日 <strong>22:00</strong> まで受付中 — ご注文から3日後 冷凍便でお届け</div>
       </div>
       <a href="#products" class="ship-cd-cta">商品を見る →</a>
     </div>
@@ -8555,59 +8571,67 @@ function toggleUnboxingSound() {
 
 <script>
 /* ===== クーポンPOP ロジック ===== */
-/* ============ 配送カウントダウンバー ============ */
+/* ============ 配送カウントダウンバー（時間帯連動・基本3日後着） ============ */
 (function shipCountdownInit() {
-  const CUTOFF_HOUR = 13; // 13:00 まで注文 → 翌日発送 → 翌々日着
+  const CUTOFF_HOUR = 22;        // 22:00 まで受付
+  const DELIVERY_DAYS = 3;       // 基本3日後にお届け
   const headlineEl = document.getElementById('shipCdHeadline');
   const metaEl = document.getElementById('shipCdMeta');
   if (!headlineEl || !metaEl) return;
 
   const days = ['日','月','火','水','木','金','土'];
 
-  function nextBusinessDay(d) {
-    const next = new Date(d.getTime() + 24 * 3600000);
-    while (next.getDay() === 0 || next.getDay() === 6) {
-      next.setDate(next.getDate() + 1);
-    }
-    return next;
+  /* 時間帯ごとのトーン切替（朝・昼・夕・夜・深夜） */
+  function timeOfDay(h) {
+    if (h < 5)  return { tag: '🌙', lead: '深夜のご注文も',     mood: 'late' };
+    if (h < 11) return { tag: '☀️', lead: '朝のうちにご注文で', mood: 'morning' };
+    if (h < 14) return { tag: '🍱', lead: 'お昼のご注文で',     mood: 'noon' };
+    if (h < 18) return { tag: '🥩', lead: '夕方のご注文で',     mood: 'afternoon' };
+    return       { tag: '🌃', lead: '今夜のご注文で',           mood: 'night' };
   }
 
-  function calcArrival() {
+  function calc() {
     const now = new Date();
-    const isWeekend = (now.getDay() === 0 || now.getDay() === 6);
-    let shipDate; // 発送日
-    let isInTime = false;
+    const beforeCutoff = now.getHours() < CUTOFF_HOUR;
 
-    if (!isWeekend && now.getHours() < CUTOFF_HOUR) {
-      // 平日 13時前 → 今日発送（翌日着）
-      shipDate = new Date(now);
-      isInTime = true;
-    } else {
-      // 平日 13時以降 or 週末 → 次の営業日発送
-      shipDate = nextBusinessDay(now);
+    // 注文受付日（締切前=本日 / 締切後=翌日扱い）
+    const orderDay = new Date(now);
+    orderDay.setHours(12, 0, 0, 0); // 時刻リセット
+    if (!beforeCutoff) {
+      orderDay.setDate(orderDay.getDate() + 1);
     }
-    // 翌日着想定
-    const arrival = new Date(shipDate.getTime() + 24 * 3600000);
-    return { arrival, shipDate, isInTime, now };
+
+    // お届け日 = 注文日 + 3日
+    const arrival = new Date(orderDay);
+    arrival.setDate(arrival.getDate() + DELIVERY_DAYS);
+
+    return { now, beforeCutoff, arrival };
+  }
+
+  function remainText(now) {
+    const cutoff = new Date(now);
+    cutoff.setHours(CUTOFF_HOUR, 0, 0, 0);
+    const diffMs = cutoff - now;
+    if (diffMs <= 0) return null;
+    const hours = Math.floor(diffMs / 3600000);
+    const minutes = Math.floor((diffMs % 3600000) / 60000);
+    return `${hours}時間${String(minutes).padStart(2,'0')}分`;
   }
 
   function update() {
-    const { arrival, shipDate, isInTime, now } = calcArrival();
+    const { now, beforeCutoff, arrival } = calc();
     const m = arrival.getMonth() + 1;
     const d = arrival.getDate();
     const w = days[arrival.getDay()];
 
-    if (isInTime) {
-      const cutoff = new Date(now);
-      cutoff.setHours(CUTOFF_HOUR, 0, 0, 0);
-      const diffMs = cutoff - now;
-      const hours = Math.floor(diffMs / 3600000);
-      const minutes = Math.floor((diffMs % 3600000) / 60000);
-      headlineEl.innerHTML = `本日 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>に冷凍庫へ`;
-      metaEl.innerHTML = `残り <strong>${hours}時間 ${String(minutes).padStart(2,'0')}分</strong> — 小分け冷凍でお届け`;
+    if (beforeCutoff) {
+      const tod = timeOfDay(now.getHours());
+      const remain = remainText(now);
+      headlineEl.innerHTML = `${tod.tag} ${tod.lead} <strong>${m}月${d}日（${w}）</strong>にお届け`;
+      metaEl.innerHTML = `本日 <strong>22:00</strong> まで受付中${remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : ''} — ご注文から3日後 冷凍便でお届け`;
     } else {
-      headlineEl.innerHTML = `次回 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>にお届け`;
-      metaEl.innerHTML = `受付時間外 — 平日 ${CUTOFF_HOUR}:00 までのご注文で翌日発送`;
+      headlineEl.innerHTML = `🌙 明日 <strong>22:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>にお届け`;
+      metaEl.innerHTML = `本日の受付は終了しました — 明日 22:00 まで受付 / ご注文から3日後 冷凍便でお届け`;
     }
   }
 
