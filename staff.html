@@ -1112,6 +1112,9 @@ ul { list-style: none; padding: 0; margin: 0; }
   font-weight: 700;
 }
 </style>
+
+<!-- ★ 商品マスター（shop.html と共有・単一データソース）— ?v= を更新するとキャッシュ突破 -->
+<script src="public/data/products-master.js?v=2026.05.12-001"></script>
 </head>
 <body>
 
@@ -1156,6 +1159,11 @@ ul { list-style: none; padding: 0; margin: 0; }
   <!-- DEMO BANNER -->
   <div id="demoBanner" style="display:none;background:#fff3cd;color:#664d03;padding:8px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid #ffd166">
     🎭 デモモード — 表示はサンプル / 保存は無効
+  </div>
+
+  <!-- 商品マスター同期ステータス -->
+  <div id="masterSyncBadge" style="display:none;background:#D1FAE5;color:#065F46;padding:6px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid #6EE7B7">
+    <span id="masterSyncBadgeText">🔄 商品マスター同期中...</span>
   </div>
 
   <!-- TOP BAR -->
@@ -1647,14 +1655,38 @@ function enterApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = '';
   document.getElementById('demoBanner').style.display = isDemoMode() ? 'block' : 'none';
+
+  // 商品マスター同期ステータス表示
+  const syncBadge = document.getElementById('masterSyncBadge');
+  const syncText = document.getElementById('masterSyncBadgeText');
+  if (syncBadge && syncText) {
+    if (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.version) {
+      syncBadge.style.background = '#D1FAE5';
+      syncBadge.style.color = '#065F46';
+      syncBadge.style.borderColor = '#6EE7B7';
+      syncText.textContent = '✅ 商品マスター v' + window.EDA_PRODUCTS_MASTER.version + ' — shop.html と同期済 (' + window.EDA_PRODUCTS_MASTER.products.length + '品)';
+      syncBadge.style.display = 'block';
+      // 3秒後にフェードアウト
+      setTimeout(() => { syncBadge.style.transition = 'opacity 0.6s'; syncBadge.style.opacity = '0'; }, 3000);
+      setTimeout(() => { syncBadge.style.display = 'none'; }, 3700);
+    } else {
+      syncBadge.style.background = '#FEE2E2';
+      syncBadge.style.color = '#991B1B';
+      syncBadge.style.borderColor = '#FCA5A5';
+      syncText.textContent = '⚠️ 商品マスター未読込 — フォールバック表示中（公式商品とズレる可能性あり）';
+      syncBadge.style.display = 'block';
+    }
+  }
+
   loadDashboard();
 }
 
 /* ================ DEMO DATA ================
-   shop.html / subscription.html と同期した実商品リスト
-   ここで編集 → 保存ボタンで GAS 経由 Google Sheet に反映 → shop.html へ自動同期
+   ★ 商品マスター: public/data/products-master.js が単一データソース
+   - window.EDA_PRODUCTS_MASTER が読み込まれていれば、それを優先使用
+   - 読み込み失敗時は以下のフォールバック配列を使用
    ================================================================ */
-const DEMO_PRODUCTS = [
+const DEMO_PRODUCTS_FALLBACK = [
   /* ===== 牛肉 ステーキ系 ===== */
   { productId: 'P001', variantId: 'SIRLOIN',          name: 'サーロインステーキ',           variant: '1枚 200g',  price: 3400, stock: 18, temp: '冷凍', category: '牛肉', sku: 'EDA-SIRLOIN-200', weight: 200, description: '背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。', images: ['public/images/products/drive/sirloin.jpg'] },
   { productId: 'P002', variantId: 'RED-MEAT',         name: '赤身ステーキ',                 variant: '1枚 250g',  price: 3400, stock: 15, temp: '冷凍', category: '牛肉', sku: 'EDA-REDMEAT-250', weight: 250, description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。', images: ['public/images/products/drive/red-meat.jpg'] },
@@ -1689,6 +1721,27 @@ const DEMO_PRODUCTS = [
   { productId: 'P021', variantId: 'ORG-WAGYU-FILLET',  name: '有機JAS ヒレ',                 variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-FILLET',  weight: 0, description: '2026年夏 解禁。希少部位のヒレ、有機JAS認証。最高峰の一品。', images: [] },
   { productId: 'P022', variantId: 'ORG-WAGYU-SLICE',   name: '有機JAS しゃぶしゃぶ用',       variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-SLICE',   weight: 0, description: '2026年夏 解禁。有機JAS認証のしゃぶしゃぶ用赤身スライス。', images: [] }
 ];
+
+/* ============================================================
+   商品マスター解決: window.EDA_PRODUCTS_MASTER を最優先で使う
+   ------------------------------------------------------------
+   - products-master.js が読み込まれていれば、それを正本として使用
+   - カテゴリラベル等、staff.html の表示形式に合わせて正規化
+   ============================================================ */
+function resolveProductsMaster() {
+  if (typeof window !== 'undefined' && window.EDA_PRODUCTS_MASTER && Array.isArray(window.EDA_PRODUCTS_MASTER.products)) {
+    // 商品マスターのカテゴリは英語キー (beef/chicken/etc) → staff 表示用に正規化
+    return window.EDA_PRODUCTS_MASTER.products.map(p => ({
+      ...p,
+      category: p.categoryLabel || p.category, // 表示用は categoryLabel を優先
+    }));
+  }
+  console.warn('[staff.html] products-master.js が見つかりません。フォールバックを使用します。');
+  return DEMO_PRODUCTS_FALLBACK;
+}
+// DEMO_PRODUCTS は実質「マスター解決の結果」を保持する getter
+const DEMO_PRODUCTS = resolveProductsMaster();
+
 const DEMO_ORDERS = [
   { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd', paymentMethod: 'Visa **** 4242', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 18 },
   { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh', paymentMethod: 'Apple Pay (Mastercard)', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 12 },
