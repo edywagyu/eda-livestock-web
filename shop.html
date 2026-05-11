@@ -1802,6 +1802,113 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .sub-plan-mini { padding: 12px 12px; }
 }
 
+/* ============ 商品カード スペック表示 ============ */
+.product-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 8px;
+  background: var(--color-paper);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 8px 0 10px;
+  font-size: 11px;
+  line-height: 1.4;
+  border: 1px solid rgba(212, 169, 59, 0.18);
+}
+.product-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-ink-muted);
+  font-family: var(--font-jp);
+}
+.product-stat-item strong {
+  color: var(--color-forest);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.product-stat-item.wide { grid-column: 1 / -1; }
+.product-stat-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* ============ 冷凍庫イメージバンド ============ */
+.freezer-band {
+  background: linear-gradient(180deg, #FAF7F0 0%, #F5EFE3 100%);
+  padding: 56px 0;
+  border-top: 1px solid var(--color-bone);
+  border-bottom: 1px solid var(--color-bone);
+}
+.freezer-band-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 48px;
+  align-items: center;
+}
+.freezer-band-img {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background: var(--color-bone);
+  box-shadow: 0 12px 32px rgba(15, 61, 46, 0.12);
+}
+.freezer-band-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.freezer-band-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15, 61, 46, 0.1), transparent);
+  pointer-events: none;
+}
+.freezer-band-content h2 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(24px, 4vw, 38px);
+  color: var(--color-forest);
+  margin: 0 0 14px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+.freezer-band-content p {
+  color: var(--color-ink-muted);
+  font-size: 15px;
+  line-height: 1.9;
+  margin: 0 0 20px;
+}
+.freezer-band-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+.freezer-band-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-ink);
+  line-height: 1.6;
+}
+.freezer-band-list li::before {
+  content: '✓';
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+@media (max-width: 720px) {
+  .freezer-band-inner { grid-template-columns: 1fr; gap: 24px; }
+  .freezer-band-list { grid-template-columns: 1fr; }
+  .freezer-band { padding: 40px 0; }
+}
+
 /* ============ 用途タグ ============ */
 .use-tag {
   display: inline-flex;
@@ -1900,6 +2007,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap { display: flex; flex-direction: column; }
 .shop-main-wrap > section { order: 99; }   /* デフォルト 末尾寄り */
 .shop-main-wrap > .ship-countdown-bar { order: 1; }
+.shop-main-wrap > .freezer-band       { order: 5; }  /* 冷凍庫イメージ */
 .shop-main-wrap > #products       { order: 10; }  /* All Products 最上 */
 .shop-main-wrap > #subscription   { order: 20; }  /* 定期便 */
 .shop-main-wrap > #gift-highlight { order: 30; }  /* 贈答用 */
@@ -4213,6 +4321,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
+<!-- ========= 冷凍庫イメージバンド ========= -->
+<section class="freezer-band">
+  <div class="container">
+    <div class="freezer-band-inner">
+      <div class="freezer-band-img">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1200&q=80"
+             alt="冷凍庫に常備された江田畜産の小分けパック"
+             loading="lazy">
+      </div>
+      <div class="freezer-band-content">
+        <h2>冷凍庫に、<br/>江田畜産がある安心。</h2>
+        <p>抗生物質・ホルモン剤 不使用のお肉を、小分けで冷凍ストック。<br/>必要な分だけ解凍して、毎日のごはんに使えます。</p>
+        <ul class="freezer-band-list">
+          <li>平日の夕食が楽になる</li>
+          <li>スーパーで迷う時間ゼロ</li>
+          <li>急な来客にも対応</li>
+          <li>子どもの食事にも安心</li>
+          <li>賞味期限 6ヶ月で日持ち</li>
+          <li>解凍は冷蔵庫で半日</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========= DYNAMIC PRODUCTS (Sheet-driven via GAS) ========= -->
 <section class="dyn-products" id="dynProducts" hidden>
   <div class="container">
@@ -4278,8 +4411,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
         <div class="product-card-img" data-label="SIRLOIN"><span class="badge">Premium</span></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,400〜</span></div>
-        <p class="product-name">サーロステーキ</p>
-        <p class="product-desc">背中のロース芯の最上部。「ステーキの王様」と呼ばれる部位。きめ細かなサシが網目状に広がり、赤身と脂のバランスが最も優れている。焼いた瞬間の香ばしさ、噛んだ時の甘い脂——ミディアムレアで塩のみが最高の食べ方。記念日やおもてなしに。</p>
+        <p class="product-name">サーロインステーキ</p>
+        <p class="product-desc">背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。お子さまから大人まで満足できる、家庭用の主役ステーキ。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,700</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,700</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約8時間</strong>で解凍 / 200g</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
@@ -4287,7 +4427,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-card-img" data-label="RED MEAT"></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Red Meat</span><span class="product-price">¥3,400〜</span></div>
         <p class="product-name">赤身ステーキ</p>
-        <p class="product-desc">モモ系の赤身から、特に柔らかい部分を厳選カット。脂身が少なく、<strong>鉄分や良質なたんぱく質</strong>がしっかり摂れます。脂が苦手な方、お子さま、健康を意識される方にも安心して食べていただける部位です。ミディアムレアがおすすめ。</p>
+        <p class="product-desc">モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、<strong>鉄分・たんぱく質</strong>がしっかり摂れる。お子さま、健康志向、筋トレ層に。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,700</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,360</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 250g・脂少なめ</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
@@ -4295,7 +4442,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-card-img" data-label="MISUJI"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">希少部位</span></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Misuji</span><span class="product-price">¥3,500〜</span></div>
         <p class="product-name">ミスジステーキ</p>
-        <p class="product-desc">肩甲骨の裏側——一頭からわずか2〜3kgしか取れない希少部位。中央を走る一本の白い筋がコラーゲンとなり、加熱で溶けてやわらかなような食感を生みます。やわらかさはヒレに匹敵し、味の濃さはサーロイン以上。レア〜ミディアムレアで。</p>
+        <p class="product-desc">肩甲骨の裏側——一頭からわずか2〜3kgしか取れない希少部位。やわらかさはヒレに匹敵。週末のごちそう用に。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,750</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,750</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 200g</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
@@ -4303,7 +4457,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-card-img" data-label="CUBE STEAK"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">¥1,000〜</span></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Cube</span><span class="product-price">¥1,000〜</span></div>
         <p class="product-name">サイコロステーキ</p>
-        <p class="product-desc">成型肉ではなく、ステーキ用の正肉を一口大にカット。フライパンで転がすだけで、手軽に和牛のジューシーさを楽しめます。ガーリックライスの上に乗せる、サラダに添える——アレンジ自在のエントリーモデル。お子さまにも大人気。</p>
+        <p class="product-desc">ステーキ用の正肉を一口大にカット。フライパンで転がすだけ。ガーリックライスの上に、サラダに添える。お子さまにも大人気。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥500</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,000</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍 / 子ども人気・時短料理</div>
+        </div>
         <div class="product-buy"></div>
       </div>
     </div>
@@ -4324,10 +4485,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <div class="product-card" data-variants='[{"id":50830303822122,"t":"1つ","p":1600},{"id":50830303854890,"t":"2つセット","p":3040},{"id":50830303887658,"t":"3つセット","p":4320}]'>
-        <div class="product-card-img" data-label="KIRIOTOSHI"></div>
+        <div class="product-card-img" data-label="KIRIOTOSHI"><span class="badge" style="background:var(--color-red);color:#fff">毎日使える</span></div>
         <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥1,600〜</span></div>
         <p class="product-name">和牛切り落とし</p>
-        <p class="product-desc">さまざまな部位のカット端材を集めた切り落とし。味は正規カットと同等——むしろ部位ごとの味わいが混ざり、旨みの複雑さは上。肉じゃが、牛丼、チャーハン、パスタ、肉うどんなど、日常使いに最適。コスパ最強の和牛入門。</p>
+        <p class="product-desc">部位の端材を集めたお得な切り落とし。<strong>牛丼・カレー・肉じゃが・炒め物に</strong>。日常使いの定番。冷凍ストックの主役。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>3〜4人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥400</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥800</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 200g</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍 / 子ども人気・時短料理</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
@@ -4364,10 +4532,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <div class="product-card" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191460650,"t":"2つセット【5%オフ】","p":1440},{"id":50830191493418,"t":"3つセット【10%オフ】","p":2050}]'>
-        <div class="product-card-img" data-label="HAMBURG"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">¥760〜</span></div>
+        <div class="product-card-img" data-label="HAMBURG"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">無添加</span></div>
         <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760〜</span></div>
         <p class="product-name">江田和牛ハンバーグ</p>
-        <p class="product-desc">和牛100%、つなぎは最小限。化学調味料・保存料・着色料すべて無添加。割った瞬間に溢れ出す肉汁が、品質の証。凍ったままフライパンに蓋をして弱〜中火で15分蒸し焼きするだけ。お子さまの食育にも安心の一品。</p>
+        <p class="product-desc">和牛100%、化学調味料・保存料・着色料 すべて<strong>無添加</strong>。凍ったままフライパンで15分蒸し焼きするだけ。お子さまの夕食に。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥760</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g換算 <strong>¥760</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>個包装 <strong>1個 100g</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span><strong>凍ったまま</strong>15分蒸し焼きOK / 解凍不要・時短</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
@@ -4412,10 +4587,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <div class="product-card" data-variants='[{"id":50830293172522,"t":"1つ","p":1280},{"id":50830293205290,"t":"2つセット【5%オフ】","p":2432},{"id":50830293238058,"t":"3つセット【10%オフ】","p":3456}]'>
-        <div class="product-card-img" data-label="CHICKEN THIGH"></div>
+        <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge" style="background:var(--color-red);color:#fff">万能</span></div>
         <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥1,280〜</span></div>
         <p class="product-name">平飼い鶏 モモ</p>
-        <p class="product-desc">適度な脂があり、どんな調理法でも失敗しにくい万能部位。皮目をパリッと焼き上げると、中はジューシー。照り焼き、唐揚げ、グリル、煮込みまで幅広く対応。フライパンで皮目を下にして中火5分→裏返して3分がプロの基本。</p>
+        <p class="product-desc">大分県産 平飼い・無投薬。<strong>照り焼き・唐揚げ・煮込み</strong>まで何にでも使える万能部位。週末の唐揚げ、平日のグリルに。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>3〜4人前</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥320</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥256</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 500g</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 子ども人気・抗生物質不使用</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
@@ -4428,10 +4610,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <div class="product-card" data-variants='[{"id":50973243572522,"t":"1つ","p":2250},{"id":50973243605290,"t":"2つセット【5%オフ】","p":4270}]'>
-        <div class="product-card-img" data-label="CHICKEN SET"></div>
+        <div class="product-card-img" data-label="CHICKEN SET"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">セット10%お得</span></div>
         <div class="product-tag-row"><span class="product-tag">Chicken · Set</span><span class="product-price">¥2,250〜</span></div>
-        <p class="product-name">平飼い鶏肉セット</p>
-        <p class="product-desc">ムネ・モモ・ミンチをバランスよく詰め合わせたセット。まとめ買いで単品より約10%お得。平飼い鶏を初めて試す方にも、日常使いのストックにも最適。冷凍庫に入れておけば、平日のたんぱく源に困りません。</p>
+        <p class="product-name">平飼い鶏肉 詰め合わせ</p>
+        <p class="product-desc">ムネ・モモ・ミンチをバランスよく。<strong>2週間分のたんぱく源</strong>。冷凍庫に入れておけば、平日のメニューに困りません。</p>
+        <div class="product-stats">
+          <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>約10食分</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥225</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>合計 <strong>約1.5kg</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>3袋小分け</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 2週間のストック向け</div>
+        </div>
         <div class="product-buy"></div>
       </div>
 
