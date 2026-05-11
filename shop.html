@@ -2732,13 +2732,55 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ============ 贈答用ハイライト ============ */
 .gift-highlight {
   background: linear-gradient(135deg, #FAF7F0 0%, #F5EFE3 100%);
-  padding: var(--space-section-sm) 0;
+  padding: 100px 0;
 }
 .gift-hi-inner {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
   align-items: center;
+}
+.gift-hi-photo {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 61, 46, 0.18);
+  aspect-ratio: 5/4;
+  background: var(--color-bone);
+}
+.gift-hi-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+.gift-hi-photo:hover img { transform: scale(1.03); }
+.gift-hi-photo-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px 28px 22px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 100%);
+  color: white;
+}
+.gift-hi-photo-tag {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.gift-hi-photo-caption p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.6;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 .gift-hi-content h2 {
   font-family: var(--font-jp-serif);
@@ -2757,7 +2799,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .gift-hi-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px 16px;
@@ -2767,44 +2809,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: var(--color-forest);
   font-weight: 500;
 }
-.gift-hi-visual {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+.gift-hi-occasions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
 }
-.gift-hi-card {
+.gift-hi-occ {
   background: white;
-  border-radius: 14px;
-  padding: 24px 16px;
-  text-align: center;
   border: 1px solid var(--color-bone);
-  box-shadow: 0 2px 12px rgba(15, 61, 46, 0.04);
-  transition: transform 0.3s var(--ease-out-expo);
-}
-.gift-hi-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-gold);
-  box-shadow: 0 8px 24px rgba(212, 169, 59, 0.18);
-}
-.gift-hi-emoji {
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-.gift-hi-card strong {
-  display: block;
-  font-family: var(--font-jp);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--color-forest);
-  margin: 4px 0 4px;
-}
-.gift-hi-card small {
-  font-size: 11px;
-  color: var(--color-ink-muted);
+  padding: 6px 12px;
+  border-radius: 14px;
 }
 @media (max-width: 720px) {
   .gift-hi-inner { grid-template-columns: 1fr; gap: 32px; }
   .gift-hi-features { grid-template-columns: 1fr; }
+  .gift-highlight { padding: 60px 0; }
 }
 
 /* ============ セクション順序制御（EC優先） ============ */
@@ -5060,138 +5083,79 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         家族に選ぶ、4つの理由。
       </h2>
       <p style="color: var(--color-ink-muted); max-width: 720px; line-height: 1.85; font-size: 15px;">
-        すべてのお肉は宮崎県高原町の自社牧場で、一頭一頭ていねいに育てています。<br/>
-        子どもから大人まで、安心して食卓に並べられるお肉を。
+        毎日の食卓を、もっとラクに。もっと豊かに。<br/>
+        高品質なお肉が冷凍庫にあるという、新しい当たり前を。
       </p>
     </div>
 
     <div class="wagyu-guide-grid reveal">
       <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">0</div>
-        <h4>抗生物質・ホルモン剤<br/>不使用</h4>
-        <p>抗生物質、成長促進剤、ホルモン剤——江田畜産ではこれらを一切使用しません。健康管理は<strong>漢方系の生薬</strong>と、<strong>ストレスを与えない環境設計</strong>で対応しています。「予防的に薬を投与する」のではなく、「病気にならないように育てる」という考え方。EU・アメリカ向けの輸出基準にも対応する管理体制です。</p>
+        <div class="wagyu-guide-num">⚡</div>
+        <h4>もっと、<br/>使いやすく。</h4>
+        <p>すべて<strong>小分け真空パック・冷凍</strong>。必要な分だけ取り出して、冷蔵庫で半日解凍するだけ。凍ったまま調理できるハンバーグや切り落としもあり、忙しい平日の夕食が15分で完成。子どもの夕飯、急な来客、お弁当のおかず——どんなシーンにも対応できる柔軟性が、毎日の生活を変えます。</p>
       </div>
 
       <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">100<span style="font-size: 16px; color: var(--color-ink-muted);">%</span></div>
-        <h4>自家配合の飼料<br/>添加物ゼロ</h4>
-        <p>とうもろこし、大麦、ふすま、米ぬか、稲わら——飼料はすべて<strong>自家配合</strong>で、牛の月齢や体調に合わせて毎日調整します。市販の混合飼料に含まれる<strong>保存料・抗生剤・成長促進剤の入った配合飼料は使いません</strong>。何を食べているかが明確だから、お肉の質も透明です。</p>
+        <div class="wagyu-guide-num">🛒</div>
+        <h4>選ぶ手間が、<br/>省けた。</h4>
+        <p>「今日は何にしよう」とスーパーで悩む時間がゼロに。<strong>診断クイズで最適な定期便</strong>をご提案。あとは毎月決まった日にお届けするだけ。買い物リストにお肉を入れる必要も、産地や添加物表示を読む必要もありません。<strong>選ぶストレスからの解放</strong>こそ、共働き家庭・忙しいご家族への最大のギフトです。</p>
       </div>
 
       <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">30<span style="font-size: 16px; color: var(--color-ink-muted);">ヶ月+</span></div>
-        <h4>のびのび育成<br/>30ヶ月以上</h4>
-        <p>一般的な和牛の肥育期間は24〜28ヶ月。江田畜産では<strong>30ヶ月以上</strong>かけて、急がせず、牛自身のペースで育てます。開放型の牛舎で、牛が自由に動き、十分に休める環境。ストレスのない時間が、お肉の味と安全性をつくります。雌牛を中心に肥育するのも、繊細な肉質を引き出すため。</p>
+        <div class="wagyu-guide-num">👨‍🍳</div>
+        <h4>高級レストランの<br/>お肉を、家庭で。</h4>
+        <p>江田和牛は、リッツ・カールトン、フォーシーズンズ、ペニンシュラなど<strong>国内外の一流ホテル・レストランで採用</strong>されている品質。同じお肉を、ご家庭でも。外食1回分の予算で、家族4人が数回楽しめる贅沢。記念日のごちそうも、平日の特別な夜も、レストランに行かずに完結します。</p>
       </div>
 
       <div class="wagyu-guide-card">
-        <div class="wagyu-guide-num">霧島</div>
-        <h4>ミネラル豊富な<br/>地下水と自然環境</h4>
-        <p>霧島連山の麓に広がる宮崎県高原町。<strong>霧島山系のミネラル豊富な地下水</strong>を飲水に使用しています。年間平均気温17℃の温暖な気候、長い日照時間、開放型の牛舎——牛がストレスなく過ごせる環境を、土地そのものが用意してくれている産地です。</p>
+        <div class="wagyu-guide-num">6<span style="font-size: 16px; color: var(--color-ink-muted);">ヶ月</span></div>
+        <h4>6ヶ月以上 日持ち、<br/>無駄になりません。</h4>
+        <p>真空パック冷凍だから、<strong>賞味期限は6ヶ月以上</strong>。たくさん届いても「使い切れない」「傷みそう」という心配がありません。冷凍庫にゆっくり貯めておけば、いつでも好きな分を解凍して使えます。<strong>食品ロスゼロ</strong>で、結果的に家計にも、地球にも優しい買い方です。</p>
       </div>
     </div>
 
-    <!-- 平飼い鶏セクション -->
-    <div style="margin-top:48px;background:linear-gradient(135deg,#FAF7F0,#F5EFE3);border-radius:16px;padding:32px 28px;border:1px solid var(--color-bone)" class="reveal">
-      <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap">
-        <div style="width:60px;height:60px;border-radius:50%;background:var(--color-forest);color:var(--color-gold);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🐓</div>
-        <div style="flex:1;min-width:240px">
-          <h3 style="font-family:var(--font-jp-serif);font-size:22px;color:var(--color-forest);margin:0 0 8px">大分県産・平飼い鶏</h3>
-          <p style="font-size:14px;color:var(--color-ink-muted);line-height:1.85;margin:0">
-            鶏も同じ思想で。<strong>大分県の自然豊かな農場で平飼い</strong>、抗生物質・成長促進剤を使わずに育てた鶏肉です。鶏たちは地面を歩き、土をついばみ、日光を浴びて自然なペースで成長。<strong>飼育密度を低く保ち、ストレスのない環境</strong>で育てるため、お肉に弾力があり、味に深みがあります。
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
-<!-- ========= はじめての方へ ========= -->
-<section class="shop-starter section-sm" id="hajimete">
-  <div class="container">
-    <div class="shop-starter-head reveal">
-      <span class="eyebrow text-gold has-dash">For First Timers</span>
-      <h2 style="font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); color: var(--color-forest); margin: 16px 0 8px;">
-        はじめての方へ。
-      </h2>
-      <p style="color: var(--color-ink-muted); max-width: 640px; line-height: 1.8; font-size: 15px;">
-        どれを選べばいいか迷ったら、まずはこの3品から。<br class="hide-sp"/>
-        江田和牛の実力をもっとも手軽に実感できる、ベストセラーをご紹介します。
-      </p>
-    </div>
+<!-- 「はじめての方へ」セクションは削除 -->
 
-    <div class="shop-starter-grid reveal">
-      <!-- Pick 1 -->
-      <div class="starter-card">
-        <div class="starter-card-rank">01</div>
-        <div class="product-card" data-variants='[{"id":50830187200810,"t":"1つ","p":2600}]'>
-          <div class="product-card-img" data-label="WAGYU SLICE"><span class="badge" style="background: var(--color-red); color: white;">Best Seller</span></div>
-          <div class="product-tag-row"><span class="product-tag">Wagyu Slice</span><span class="product-price">¥2,600</span></div>
-          <p class="product-name">赤身スライス</p>
-          <p class="starter-desc">しゃぶしゃぶ・すき焼き・肉サラダに。約2mm厚にスライスした赤身は、70℃の出汁にくぐらせるだけで甘みが花開きます。和牛初心者に一番選ばれている定番。</p>
-          <div class="product-buy"></div>
-        </div>
-      </div>
-
-      <!-- Pick 2 -->
-      <div class="starter-card">
-        <div class="starter-card-rank">02</div>
-        <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460}]'>
-          <div class="product-card-img" data-label="SIRLOIN"><span class="badge">Premium</span></div>
-          <div class="product-tag-row"><span class="product-tag">Sirloin Steak</span><span class="product-price">¥3,400〜</span></div>
-          <p class="product-name">サーロステーキ</p>
-          <p class="starter-desc">「ステーキの王様」。背中のロース芯上部、きめ細かなサシが網目状に広がる。室温に戻して強火60秒×両面、あとは塩だけ。脂の融点25℃——舌の上で溶けます。</p>
-          <div class="product-buy"></div>
-        </div>
-      </div>
-
-      <!-- Pick 3 -->
-      <div class="starter-card">
-        <div class="starter-card-rank">03</div>
-        <div class="product-card" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300}]'>
-          <div class="product-card-img" data-label="RAW HAM"><span class="badge">添加物不使用</span></div>
-          <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250〜</span></div>
-          <p class="product-name">和牛生ハム</p>
-          <p class="starter-desc">江田和牛の赤身を低温でじっくり熟成。<strong>化学調味料・保存料は無添加</strong>。豚の生ハムとはまったく別物の、和牛ならではの深い旨み。ワイン・日本酒に。</p>
-          <div class="product-buy"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========= 透明な育て方 ========= -->
+<!-- ========= 会員限定 農場見学 ========= -->
 <section class="wagyu-science" id="science">
   <div class="container">
     <div class="wagyu-science-head reveal" style="text-align: center; margin-bottom: 56px;">
-      <span class="eyebrow text-gold has-dash">Transparent Farming</span>
-      <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 48px); color: white; margin: 16px 0 8px;">
-        どう育てたか、すべてお話しします。
+      <span class="eyebrow text-gold has-dash">Members Only Experience</span>
+      <h2 style="font-family: var(--font-jp-serif); font-size: clamp(28px, 4vw, 44px); color: white; margin: 16px 0 12px; font-weight:700;">
+        会員様は、いつでも農場見学。
       </h2>
       <p style="color: rgba(255,255,255,0.7); max-width: 640px; margin: 0 auto; line-height: 1.85; font-size: 15px;">
-        本当に良いお肉は、生産過程に隠すことがありません。<br/>
-        私たちが使うものも、使わないものも、すべてオープンに。
+        「どう育てているか」を、実際に見ていただける。<br/>
+        ご家族で宮崎の自然を体験しに、お越しください。
       </p>
     </div>
 
     <div class="science-grid reveal">
       <div class="science-stat">
-        <div class="science-stat-num">0</div>
-        <h4>使わないもの</h4>
-        <p>抗生物質、成長促進剤（ラクトパミン等）、ホルモン剤、合成保存料の入った配合飼料、化学肥料で育てた牧草——これらを<strong>一切使用していません</strong>。「効率よく太らせる」ためではなく、「健康に育てる」ことを最優先にしています。お母さんが赤ちゃんに与える食材を選ぶように、私たちも牛の餌を選んでいます。</p>
+        <div class="science-stat-num">🌾</div>
+        <h4>餌やり体験</h4>
+        <p>とうもろこし、大麦、米ぬか、稲わら——自家配合の飼料を、実際に牛に与える体験。お子さまにも大人気のプログラムです。「何を食べているか」を、自分の手で確かめていただけます。家族で訪れるご旅行にも、修学旅行や食育体験にもどうぞ。</p>
       </div>
 
       <div class="science-stat">
-        <div class="science-stat-num">漢方</div>
-        <h4>健康管理の方法</h4>
-        <p>病気の予防には<strong>漢方系の生薬</strong>を使います。免疫力を高め、ストレスを和らげ、消化を整える。西洋医薬の抗生物質に頼らなくても、東洋の知恵で牛の健康は十分に守れます。私たち江田家が長年にわたって積み重ねてきた、自然と共生する畜産の形です。</p>
+        <div class="science-stat-num">🌱</div>
+        <h4>田植え・稲刈り</h4>
+        <p>季節ごとの<strong>田植え（5月）・稲刈り（10月）</strong>体験。江田畜産が使う飼料の一部となる稲わらの収穫を、家族でご一緒に。土に触れ、自然のリズムを感じる時間は、お肉の背景にある「畜産と農の繋がり」を知るきっかけになります。</p>
       </div>
 
       <div class="science-stat">
-        <div class="science-stat-num">自家</div>
-        <h4>飼料も水も自分たちで</h4>
-        <p>飼料は<strong>自家配合</strong>。とうもろこし、大麦、ふすま、米ぬか、稲わら——すべての原料を私たちが選び、毎日ブレンドします。水は<strong>霧島山系のミネラル豊富な地下水</strong>。何を食べ、何を飲んでいるか、すべて自分たちで管理しているから、お肉に何が入っているかも明確に伝えられます。</p>
+        <div class="science-stat-num">🐂</div>
+        <h4>牛舎見学・牧場散歩</h4>
+        <p>開放型の牛舎で、のびのび過ごす牛たちを間近で見られます。江田畜産の<strong>江田家代々</strong>が積み重ねてきた飼育哲学、漢方系の生薬による健康管理の話、宮崎の自然との共生についても、ぜひ直接お聞きください。</p>
       </div>
+    </div>
+
+    <div style="text-align:center;margin-top:48px" class="reveal">
+      <p style="color:rgba(255,255,255,0.6);font-size:13px;margin:0 0 16px">定期便（スターター以上）会員様 / ご予約制 / 参加無料</p>
+      <a href="contact.html" class="btn btn-gold" style="font-size:13px">農場見学を予約する →</a>
     </div>
   </div>
 </section>
@@ -5914,11 +5878,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           </tr>
         </thead>
         <tbody>
-          <tr><td>抗生物質 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
-          <tr><td>ホルモン剤 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
-          <tr><td>成長促進剤 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>抗生物質・ホルモン剤 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
           <tr><td>飼料の中身が明確</td><td><span class="compare-cross">×</span></td><td><span class="compare-cross">×</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
-          <tr><td>生産者の顔が見える</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>配送温度帯</td><td>冷蔵</td><td>冷蔵</td><td class="eda-col"><strong>冷凍</strong></td></tr>
           <tr><td>小分けパック</td><td><span class="compare-partial">△</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
           <tr><td>賞味期限の長さ</td><td>2-5日</td><td>1-3ヶ月</td><td class="eda-col"><strong>6ヶ月</strong></td></tr>
           <tr><td>定期配送</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
@@ -5960,43 +5922,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 贈答用 ========= -->
+<!-- ========= 贈答用（実写真入り） ========= -->
 <section class="gift-highlight" id="gift-highlight">
   <div class="container">
     <div class="gift-hi-inner">
+      <div class="gift-hi-photo">
+        <img src="public/images/products/drive/gift-box.jpg" alt="江田畜産 御歳暮ギフトボックス（のし対応・化粧箱入り）" loading="lazy">
+        <div class="gift-hi-photo-caption">
+          <span class="gift-hi-photo-tag">のし対応 / 化粧箱</span>
+          <p>御歳暮・お中元・内祝い、すべての贈答シーンに。</p>
+        </div>
+      </div>
       <div class="gift-hi-content">
         <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block;">For Someone You Care</span>
         <h2>気遣いの贈り物に。</h2>
-        <p>健康を大切にされる方へ。<br/>添加物・抗生物質を気にされるご家族や、お子さまがいるご家庭への贈り物に。<br/>冷凍で日持ちするから、相手の都合に合わせて使ってもらえます。</p>
+        <p>健康を大切にされる方への、特別な贈り物。<br/>江田畜産オリジナル化粧箱・のし無料・直接配送対応。<br/>冷凍で6ヶ月日持ちするから、相手の都合に合わせて召し上がっていただけます。</p>
         <ul class="gift-hi-features">
           <li>✓ のし・名入れ 無料</li>
-          <li>✓ 化粧箱包装</li>
-          <li>✓ 直接配送 / カード同梱</li>
+          <li>✓ オリジナル化粧箱</li>
+          <li>✓ 直接配送・カード同梱</li>
           <li>✓ 賞味期限6ヶ月で日持ち</li>
         </ul>
-        <a href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;" class="btn btn-gold">ギフト商品を見る <span class="btn-arrow"></span></a>
-      </div>
-      <div class="gift-hi-visual">
-        <div class="gift-hi-card">
-          <div class="gift-hi-emoji">👶</div>
-          <strong>出産・内祝い</strong>
-          <small>健康志向のご家族へ</small>
+        <div class="gift-hi-occasions">
+          <span class="gift-hi-occ">👶 出産・内祝い</span>
+          <span class="gift-hi-occ">🌸 母の日・父の日</span>
+          <span class="gift-hi-occ">🎁 お中元・お歳暮</span>
+          <span class="gift-hi-occ">🏢 法人ギフト</span>
         </div>
-        <div class="gift-hi-card">
-          <div class="gift-hi-emoji">🌸</div>
-          <strong>母の日・父の日</strong>
-          <small>体を気遣う贈り物</small>
-        </div>
-        <div class="gift-hi-card">
-          <div class="gift-hi-emoji">🎁</div>
-          <strong>お中元・お歳暮</strong>
-          <small>定番の季節ギフト</small>
-        </div>
-        <div class="gift-hi-card">
-          <div class="gift-hi-emoji">🏢</div>
-          <strong>法人ギフト</strong>
-          <small>大口・複数配送対応</small>
-        </div>
+        <a href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;" class="btn btn-gold" style="margin-top:8px">ギフト商品を見る <span class="btn-arrow"></span></a>
       </div>
     </div>
   </div>
