@@ -2421,6 +2421,80 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .stats-band-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
 }
 
+/* ================ 開封動画セクション ================ */
+.unboxing-section {
+  padding: 80px 0;
+  background: var(--color-cream);
+}
+.unboxing-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.unboxing-video {
+  position: relative;
+  aspect-ratio: 9/16;
+  background: #000;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(15,61,46,0.18);
+  max-height: 640px;
+}
+.unboxing-video iframe,
+.unboxing-video video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.unboxing-content h2 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(26px, 4vw, 40px);
+  color: var(--color-forest);
+  margin: 0 0 16px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+.unboxing-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  margin: 0 0 12px;
+}
+.unboxing-content p {
+  color: var(--color-ink-muted);
+  line-height: 1.9;
+  font-size: 15px;
+  margin: 0 0 20px;
+}
+.unboxing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: grid;
+  gap: 8px;
+}
+.unboxing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-ink);
+}
+.unboxing-features li::before {
+  content: '✓';
+  color: var(--color-gold-soft);
+  font-weight: 700;
+}
+@media (max-width: 720px) {
+  .unboxing-inner { grid-template-columns: 1fr; gap: 24px; }
+  .unboxing-video { max-height: 500px; aspect-ratio: 4/5; }
+}
+
 /* ================ 商品カード hover強化 ================ */
 .product-card { transition: all 0.35s var(--ease-out-expo); }
 .product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(15,61,46,0.08); }
@@ -2526,6 +2600,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap > section { order: 99; }   /* デフォルト 末尾寄り */
 .shop-main-wrap > .ship-countdown-bar { order: 1; }
 .shop-main-wrap > .freezer-band       { order: 5; }  /* 冷凍庫イメージ */
+.shop-main-wrap > .unboxing-section   { order: 7; }  /* 開封動画 */
 .shop-main-wrap > #products       { order: 10; }  /* All Products 最上 */
 .shop-main-wrap > .quiz-section   { order: 15; }  /* 診断クイズ */
 .shop-main-wrap > #subscription   { order: 20; }  /* 定期便 */
@@ -3092,56 +3167,59 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin-bottom: 20px;
   transition: transform 0.5s var(--ease-out-expo);
 }
-/* グラデオーバーレイ（読みやすさ・統一感） */
+/* グラデオーバーレイ（バッジ周りだけ少し透ける感じに） */
 .product-card-img::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(15,61,46,0.18));
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 30%);
   z-index: 1;
   pointer-events: none;
 }
 /* 旧テキストラベルは非表示 */
 .product-card-img::after { display: none; }
 
-/* ============ 実写マッピング（data-label → 食材写真） ============ */
-.product-card-img[data-label="SIRLOIN"]         { background-image: url('https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="RED MEAT"]        { background-image: url('https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="MISUJI"]          { background-image: url('https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="CUBE STEAK"]      { background-image: url('https://images.unsplash.com/photo-1625937329935-287441885e9b?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="WAGYU SLICE"]     { background-image: url('https://images.unsplash.com/photo-1606851094291-6efae152bb87?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="KIRIOTOSHI"]      { background-image: url('https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="YAKINIKU BRISKET"]{ background-image: url('https://images.unsplash.com/photo-1574484184081-afea8a62f9c5?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="SENBONSUJI"]      { background-image: url('https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="RAW HAM"]         { background-image: url('https://images.unsplash.com/photo-1601001435957-74f0958a93c5?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="HAMBURG"]         { background-image: url('https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="HAMBURG XL"]      { background-image: url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="ROAST BEEF"]      { background-image: url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="OFFAL"]           { background-image: url('https://images.unsplash.com/photo-1633237308525-cd587cf71926?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="CHICKEN BREAST"]  { background-image: url('https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="CHICKEN THIGH"]   { background-image: url('https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="CHICKEN MINCED"]  { background-image: url('https://images.unsplash.com/photo-1588347818481-c7c1e6618e3d?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="CHICKEN SET"]     { background-image: url('https://images.unsplash.com/photo-1610440042657-612c34d95e9f?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="OUTLET SIRLOIN"]  { background-image: url('https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="OUTLET MISUJI"]   { background-image: url('https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="OUTLET BRISKET"]  { background-image: url('https://images.unsplash.com/photo-1574484184081-afea8a62f9c5?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="OUTLET KIRIOTOSHI"] { background-image: url('https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="OUTLET MINCE"]    { background-image: url('https://images.unsplash.com/photo-1588347818481-c7c1e6618e3d?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="GIFT BOX"]        { background-image: url('https://images.unsplash.com/photo-1607081692251-2c2cfb2a5f3a?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="GIFT SET"]        { background-image: url('https://images.unsplash.com/photo-1607081692251-2c2cfb2a5f3a?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="WAGYU SET"]       { background-image: url('https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="YAKINIKU SET"]    { background-image: url('https://images.unsplash.com/photo-1574484184081-afea8a62f9c5?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="SUKIYAKI SET"]    { background-image: url('https://images.unsplash.com/photo-1606851094291-6efae152bb87?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="STARTER SET"]     { background-image: url('https://images.unsplash.com/photo-1625937329935-287441885e9b?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="FILLET"]          { background-image: url('https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="SLICE"]           { background-image: url('https://images.unsplash.com/photo-1606851094291-6efae152bb87?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="YAKINIKU"]        { background-image: url('https://images.unsplash.com/photo-1574484184081-afea8a62f9c5?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="MINCED"]          { background-image: url('https://images.unsplash.com/photo-1588347818481-c7c1e6618e3d?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="HAMBURG SET"]     { background-image: url('https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="PREMIUM SET"]     { background-image: url('https://images.unsplash.com/photo-1607081692251-2c2cfb2a5f3a?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="STEAK SET"]       { background-image: url('https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="GIFT — 松"]       { background-image: url('https://images.unsplash.com/photo-1607081692251-2c2cfb2a5f3a?auto=format&fit=crop&w=600&q=80'); }
-.product-card-img[data-label="GIFT — 竹"]       { background-image: url('https://images.unsplash.com/photo-1607081692251-2c2cfb2a5f3a?auto=format&fit=crop&w=600&q=80'); }
+/* ============ 実写マッピング（江田畜産 実物写真） ============ */
+.product-card-img {
+  background-color: #000;  /* 黒背景の写真のためベースを黒に */
+}
+.product-card-img[data-label="SIRLOIN"]         { background-image: url('public/images/products/drive/sirloin.jpg'); }
+.product-card-img[data-label="RED MEAT"]        { background-image: url('public/images/products/drive/red-meat.jpg'); }
+.product-card-img[data-label="MISUJI"]          { background-image: url('public/images/products/drive/misuji.jpg'); }
+.product-card-img[data-label="CUBE STEAK"]      { background-image: url('public/images/products/drive/cube-steak.jpg'); }
+.product-card-img[data-label="FILLET"]          { background-image: url('public/images/products/drive/fillet.jpg'); }
+.product-card-img[data-label="WAGYU SLICE"]     { background-image: url('public/images/products/drive/wagyu-slice.jpg'); }
+.product-card-img[data-label="KIRIOTOSHI"]      { background-image: url('public/images/products/drive/kiriotoshi.jpg'); }
+.product-card-img[data-label="YAKINIKU BRISKET"]{ background-image: url('public/images/products/drive/yakiniku-brisket.jpg'); }
+.product-card-img[data-label="SENBONSUJI"]      { background-image: url('public/images/products/drive/yakiniku-brisket.jpg'); }
+.product-card-img[data-label="RAW HAM"]         { background-image: url('public/images/products/drive/wagyu-slice.jpg'); }
+.product-card-img[data-label="HAMBURG"]         { background-image: url('public/images/products/drive/hamburg.jpg'); }
+.product-card-img[data-label="HAMBURG XL"]      { background-image: url('public/images/products/drive/hamburg.jpg'); }
+.product-card-img[data-label="ROAST BEEF"]      { background-image: url('public/images/products/drive/slice-pile.jpg'); }
+.product-card-img[data-label="OFFAL"]           { background-image: url('public/images/products/drive/chicken-minced.jpg'); }
+.product-card-img[data-label="CHICKEN BREAST"]  { background-image: url('public/images/products/drive/chicken-breast.jpg'); }
+.product-card-img[data-label="CHICKEN THIGH"]   { background-image: url('public/images/products/drive/chicken-thigh.jpg'); }
+.product-card-img[data-label="CHICKEN MINCED"]  { background-image: url('public/images/products/drive/minced.jpg'); }
+.product-card-img[data-label="CHICKEN SET"]     { background-image: url('public/images/products/drive/chicken-thigh.jpg'); }
+.product-card-img[data-label="OUTLET SIRLOIN"]  { background-image: url('public/images/products/drive/sirloin-2.jpg'); }
+.product-card-img[data-label="OUTLET MISUJI"]   { background-image: url('public/images/products/drive/misuji-2.jpg'); }
+.product-card-img[data-label="OUTLET BRISKET"]  { background-image: url('public/images/products/drive/yakiniku-brisket.jpg'); }
+.product-card-img[data-label="OUTLET KIRIOTOSHI"] { background-image: url('public/images/products/drive/slice-pile.jpg'); }
+.product-card-img[data-label="OUTLET MINCE"]    { background-image: url('public/images/products/drive/minced.jpg'); }
+.product-card-img[data-label="GIFT BOX"]        { background-image: url('public/images/products/drive/premium-slice.jpg'); }
+.product-card-img[data-label="GIFT SET"]        { background-image: url('public/images/products/drive/premium-slice.jpg'); }
+.product-card-img[data-label="WAGYU SET"]       { background-image: url('public/images/products/drive/kiriotoshi.jpg'); }
+.product-card-img[data-label="YAKINIKU SET"]    { background-image: url('public/images/products/drive/yakiniku-brisket.jpg'); }
+.product-card-img[data-label="SUKIYAKI SET"]    { background-image: url('public/images/products/drive/premium-slice.jpg'); }
+.product-card-img[data-label="STARTER SET"]     { background-image: url('public/images/products/drive/cube-red.jpg'); }
+.product-card-img[data-label="SLICE"]           { background-image: url('public/images/products/drive/wagyu-slice.jpg'); }
+.product-card-img[data-label="YAKINIKU"]        { background-image: url('public/images/products/drive/yakiniku-brisket.jpg'); }
+.product-card-img[data-label="MINCED"]          { background-image: url('public/images/products/drive/minced.jpg'); }
+.product-card-img[data-label="HAMBURG SET"]     { background-image: url('public/images/products/drive/hamburg.jpg'); }
+.product-card-img[data-label="PREMIUM SET"]     { background-image: url('public/images/products/drive/premium-slice.jpg'); }
+.product-card-img[data-label="STEAK SET"]       { background-image: url('public/images/products/drive/sirloin.jpg'); }
+.product-card-img[data-label="GIFT — 松"]       { background-image: url('public/images/products/drive/premium-slice.jpg'); }
+.product-card-img[data-label="GIFT — 竹"]       { background-image: url('public/images/products/drive/wagyu-slice.jpg'); }
 
 /* ホバー時のズーム */
 .product-card:hover .product-card-img { transform: scale(1.04); }
@@ -5535,6 +5613,37 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <p style="font-size: 14px; line-height: 1.85;">
       宮崎県高原町のふるさと納税返礼品として、楽天ふるさと納税経由で江田和牛をご利用いただけます（寄付額30,000円〜）。実質自己負担2,000円で江田和牛をお楽しみいただけます。冷凍配送、賞味期限6ヶ月以上。
     </p>
+  </div>
+</section>
+
+<!-- ========= 開封動画セクション ========= -->
+<section class="unboxing-section" id="unboxing">
+  <div class="container">
+    <div class="unboxing-inner">
+      <div class="unboxing-video">
+        <!-- Canva動画埋め込みエリア -->
+        <iframe
+          loading="lazy"
+          src="https://www.canva.com/design/PLACEHOLDER/view?embed"
+          allowfullscreen
+          allow="autoplay; fullscreen"
+          frameborder="0"
+          title="開封動画 — 江田畜産">
+        </iframe>
+      </div>
+      <div class="unboxing-content">
+        <p class="unboxing-eyebrow">UNBOXING</p>
+        <h2>届いたら、こうやって届きます。</h2>
+        <p>江田畜産のお肉は<strong>小分け真空パック</strong>で冷凍便でお届け。<br/>受け取ったらそのまま冷凍庫へ。必要な分だけ取り出して、冷蔵庫で半日解凍するだけ。</p>
+        <ul class="unboxing-features">
+          <li>真空パックで風味そのまま冷凍 6ヶ月</li>
+          <li>箱を開けたらそのまま冷凍庫に入る設計</li>
+          <li>解凍は冷蔵庫で半日（ステーキは8時間）</li>
+          <li>のし対応・贈答用化粧箱もご用意</li>
+        </ul>
+        <a href="#products" class="btn btn-gold" style="font-size:13px">商品を見る →</a>
+      </div>
+    </div>
   </div>
 </section>
 
