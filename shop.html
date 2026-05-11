@@ -2389,6 +2389,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   letter-spacing: 0.04em;
 }
 .sub-plan-mini.featured .sub-plan-price { color: var(--color-gold); }
+.sub-plan-cta-link {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(212,169,59,0.2);
+  font-family: var(--font-jp);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-gold);
+  letter-spacing: 0.02em;
+  transition: all 0.2s var(--ease-out-expo);
+}
+.sub-plan-mini:hover .sub-plan-cta-link {
+  color: white;
+  letter-spacing: 0.06em;
+}
 
 /* 初月50%OFF メインバナー — 「今月だけ」緊急感を最大化 */
 .sub-promo-banner {
@@ -8312,10 +8329,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </div>
       </div>
 
-      <!-- 3. プラン一覧（メイン陳列） -->
+      <!-- 3. プラン一覧（クリックで subscription.html へ） -->
       <div class="shop-sub-plans-wrap">
         <div class="sub-plans-grid">
-          <div class="sub-plan-mini">
+          <a href="subscription.html?plan=starter" class="sub-plan-mini">
             <div class="sub-plan-cycle">毎月お届け</div>
             <div class="sub-plan-name">スターター</div>
             <div class="sub-plan-target">1-2人家族 / 約1.2kg</div>
@@ -8329,9 +8346,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               <div class="sub-plan-price">¥3,490<small>/初月</small></div>
               <div class="sub-plan-savings">−¥3,490 OFF</div>
             </div>
-          </div>
+            <div class="sub-plan-cta-link">詳細を見る →</div>
+          </a>
 
-          <div class="sub-plan-mini featured">
+          <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
             <div class="sub-plan-cycle">毎月お届け</div>
             <div class="sub-plan-name">レギュラー</div>
@@ -8347,9 +8365,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               <div class="sub-plan-price">¥6,400<small>/初月</small></div>
               <div class="sub-plan-savings">−¥6,400 OFF</div>
             </div>
-          </div>
+            <div class="sub-plan-cta-link">詳細を見る →</div>
+          </a>
 
-          <div class="sub-plan-mini">
+          <a href="subscription.html?plan=volume" class="sub-plan-mini">
             <div class="sub-plan-cycle">毎月お届け</div>
             <div class="sub-plan-name">ボリューム</div>
             <div class="sub-plan-target">5人以上 / 約4.0kg</div>
@@ -8364,7 +8383,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               <div class="sub-plan-price">¥9,900<small>/初月</small></div>
               <div class="sub-plan-savings">−¥9,900 OFF</div>
             </div>
-          </div>
+            <div class="sub-plan-cta-link">詳細を見る →</div>
+          </a>
         </div>
       </div>
 
