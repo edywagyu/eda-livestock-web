@@ -2430,114 +2430,71 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   text-align: center;
 }
 
-/* ============ 冷凍庫イメージバンド（フルブリード・シネマモード） ============ */
+/* ============ 冷凍庫イメージバンド（写真とテキストを上下に分離） ============ */
 .freezer-band {
-  padding: 0;
-  background: transparent;
-}
-.freezer-band-wide {
-  position: relative;
-  min-height: 640px;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-.freezer-band-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  animation: freezerBandZoom 22s ease-in-out infinite alternate;
-}
-@keyframes freezerBandZoom {
-  from { transform: scale(1); }
-  to   { transform: scale(1.08); }
-}
-.freezer-band-overlay {
-  position: absolute;
-  inset: 0;
+  padding: 96px 0 64px;
   background:
-    linear-gradient(90deg, rgba(15,61,46,0.94) 0%, rgba(15,61,46,0.82) 38%, rgba(15,61,46,0.32) 72%, rgba(15,61,46,0.10) 100%),
-    linear-gradient(180deg, rgba(0,0,0,0.10) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.15) 100%);
-  z-index: 1;
+    linear-gradient(180deg, var(--color-cream) 0%, #F5EFE0 100%);
 }
-.freezer-band-overlay::before,
-.freezer-band-overlay::after {
-  /* シネマ風 上下黒帯 */
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 28px;
-  background: rgba(0,0,0,0.45);
-  z-index: 1;
+.freezer-band-inner {
+  max-width: 1180px;
+  margin: 0 auto;
 }
-.freezer-band-overlay::before { top: 0; }
-.freezer-band-overlay::after  { bottom: 0; }
-.freezer-band-corner-badge {
-  position: absolute;
-  top: 48px; right: 36px;
-  z-index: 3;
-  background: rgba(212,169,59,0.92);
-  color: var(--color-forest-deep);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  padding: 8px 16px;
-  border-radius: 22px;
-  font-weight: 700;
-  box-shadow: 0 4px 16px rgba(212,169,59,0.3);
-}
-.freezer-band-content {
-  position: relative;
-  z-index: 2;
-  padding: 80px 0;
-  max-width: 720px;
+.freezer-band-text {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 48px;
 }
 .freezer-band-eyebrow {
+  display: inline-block;
   font-family: var(--font-display);
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   color: var(--color-gold);
-  margin: 0 0 14px;
-  font-weight: 600;
+  background: white;
+  border: 1px solid rgba(212,169,59,0.35);
+  padding: 6px 16px;
+  border-radius: 18px;
+  margin: 0 0 18px;
+  font-weight: 700;
 }
 .freezer-band-title {
   font-family: var(--font-jp-serif);
-  font-size: clamp(28px, 5vw, 52px);
-  color: white;
-  margin: 0 0 20px;
-  line-height: 1.25;
+  font-size: clamp(28px, 4.6vw, 48px);
+  color: var(--color-forest);
+  margin: 0 0 18px;
+  line-height: 1.3;
   font-weight: 700;
 }
+.freezer-band-title strong { color: var(--color-gold); font-weight: 700; }
 .freezer-band-lead {
-  color: rgba(255,255,255,0.85);
-  font-size: clamp(13px, 1.3vw, 15px);
+  color: var(--color-ink-muted);
+  font-size: clamp(14px, 1.3vw, 16px);
   line-height: 1.95;
-  margin: 0 0 32px;
-  max-width: 540px;
+  margin: 0 auto 32px;
+  max-width: 620px;
 }
 .freezer-band-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 32px;
-  max-width: 580px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 20px;
+  max-width: 720px;
+  margin: 0 auto;
 }
 .freezer-band-bullet {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--font-jp);
-  font-size: 14px;
-  color: white;
-  font-weight: 500;
+  font-size: 13px;
+  color: var(--color-forest);
+  font-weight: 600;
+  justify-content: center;
 }
 .fb-check {
   width: 22px; height: 22px;
   border-radius: 50%;
-  background: rgba(212,169,59,0.18);
-  border: 1px solid rgba(212,169,59,0.5);
+  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
   color: var(--color-gold);
   display: flex;
   align-items: center;
@@ -2546,12 +2503,52 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-weight: 700;
   flex-shrink: 0;
 }
+
+/* 写真フレーム（オーバーレイなし） */
+.freezer-band-photo {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow:
+    0 28px 64px rgba(15,61,46,0.18),
+    0 6px 18px rgba(0,0,0,0.06);
+}
+.freezer-band-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.freezer-band-photo-caption {
+  position: absolute;
+  bottom: 18px;
+  left: 22px;
+  background: rgba(15,61,46,0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-weight: 700;
+  border: 1px solid rgba(212,169,59,0.4);
+}
 @media (max-width: 720px) {
-  .freezer-band-wide { min-height: 520px; }
-  .freezer-band-content { padding: 64px 0; }
-  .freezer-band-grid { grid-template-columns: 1fr; gap: 10px; }
-  .freezer-band-overlay {
-    background: linear-gradient(180deg, rgba(15,61,46,0.85) 0%, rgba(15,61,46,0.7) 100%);
+  .freezer-band { padding: 56px 0 36px; }
+  .freezer-band-text { margin-bottom: 28px; }
+  .freezer-band-grid { grid-template-columns: 1fr; gap: 10px; max-width: 320px; }
+  .freezer-band-bullet { justify-content: flex-start; }
+  .freezer-band-photo img { aspect-ratio: 4 / 3; }
+  .freezer-band-photo-caption {
+    bottom: 10px; left: 12px;
+    font-size: 9px;
+    padding: 5px 10px;
   }
 }
 
@@ -6463,18 +6460,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 冷凍庫イメージバンド（シネマモード・フルブリード） ========= -->
+<!-- ========= 冷凍庫イメージバンド（テキスト上 / 写真下、オーバーレイなし） ========= -->
 <section class="freezer-band">
-  <div class="freezer-band-wide">
-    <img src="public/images/products/drive/premium-slice.jpg"
-         alt="江田畜産の真空小分けパック・冷凍ストック"
-         class="freezer-band-bg"
-         loading="lazy">
-    <div class="freezer-band-overlay"></div>
-    <div class="freezer-band-corner-badge">EDA · FROZEN STOCK</div>
-    <div class="container freezer-band-content">
-      <div class="freezer-band-eyebrow">FROZEN STOCK</div>
-      <h2 class="freezer-band-title">冷凍庫に、<br/>江田畜産がある安心。</h2>
+  <div class="container freezer-band-inner">
+    <div class="freezer-band-text reveal">
+      <span class="freezer-band-eyebrow">FROZEN STOCK</span>
+      <h2 class="freezer-band-title">冷凍庫に、<strong>江田畜産</strong>がある安心。</h2>
       <p class="freezer-band-lead">
         抗生物質・ホルモン剤 不使用のお肉を、小分けで冷凍ストック。<br/>
         必要な分だけ解凍して、毎日のごはんに使えます。
@@ -6487,6 +6478,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="freezer-band-bullet"><span class="fb-check">✓</span>賞味期限 6ヶ月で日持ち</div>
         <div class="freezer-band-bullet"><span class="fb-check">✓</span>解凍は冷蔵庫で半日</div>
       </div>
+    </div>
+
+    <!-- 写真（テキストを被せず単独で見せる） -->
+    <div class="freezer-band-photo reveal">
+      <img src="public/images/products/drive/freezer-stocked.jpg"
+           alt="江田畜産のお肉が並んだ冷凍庫"
+           loading="lazy">
+      <div class="freezer-band-photo-caption">EDA · FROZEN STOCK</div>
     </div>
   </div>
 </section>
