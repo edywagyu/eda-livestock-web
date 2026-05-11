@@ -4927,38 +4927,42 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   -webkit-mask-image: linear-gradient(90deg, transparent, black 60%);
 }
 
-/* シーズン別カラー上書き（強調版） */
+/* シーズン別カラー上書き（ブランドカラー = 深緑 × 金 の範疇で表現） */
+/* 母の日: 金色寄り（明るい・華やか） */
 .gift-season-banner[data-season="mother"] {
   background:
-    radial-gradient(ellipse at 0% 50%, rgba(255,200,220,0.45), transparent 60%),
-    radial-gradient(ellipse at 100% 0%, rgba(255,180,200,0.3), transparent 50%),
-    linear-gradient(135deg, #8E2746 0%, #C44569 40%, #E879A3 70%, #C44569 100%);
-  border-color: #FFC8DC;
-  box-shadow: 0 24px 60px rgba(196,69,105,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
+    radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.50), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,200,140,0.30), transparent 50%),
+    linear-gradient(135deg, #8E6010 0%, #B89030 40%, #FFE594 70%, #D4A93B 100%);
+  border-color: #FFE594;
+  box-shadow: 0 24px 60px rgba(184,144,48,0.45), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.5), inset 0 -2px 8px rgba(0,0,0,0.15);
 }
+/* 父の日: 深緑寄り（落ち着き・上質） */
 .gift-season-banner[data-season="father"] {
   background:
-    radial-gradient(ellipse at 0% 50%, rgba(180,220,255,0.45), transparent 60%),
-    radial-gradient(ellipse at 100% 0%, rgba(160,200,230,0.3), transparent 50%),
-    linear-gradient(135deg, #1E4F7C 0%, #2C6BAB 40%, #4F9DD8 70%, #2C6BAB 100%);
-  border-color: #B0DCFF;
-  box-shadow: 0 24px 60px rgba(46,107,171,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
+    radial-gradient(ellipse at 0% 50%, rgba(212,169,59,0.35), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,229,148,0.20), transparent 50%),
+    linear-gradient(135deg, #061410 0%, #0F3D2E 35%, #143D2B 65%, #1B5E3F 100%);
+  border-color: var(--color-gold);
+  box-shadow: 0 24px 60px rgba(15,61,46,0.5), 0 8px 24px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,229,148,0.18), inset 0 -2px 8px rgba(0,0,0,0.25);
 }
+/* お中元: 中間（緑 × 金のバランス） */
 .gift-season-banner[data-season="ochugen"] {
   background:
-    radial-gradient(ellipse at 0% 50%, rgba(200,240,200,0.45), transparent 60%),
-    radial-gradient(ellipse at 100% 0%, rgba(180,220,180,0.3), transparent 50%),
-    linear-gradient(135deg, #1F6B3D 0%, #2D8B52 40%, #5BB87C 70%, #2D8B52 100%);
-  border-color: #B0F0C0;
-  box-shadow: 0 24px 60px rgba(45,139,82,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
+    radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.40), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(212,169,59,0.25), transparent 50%),
+    linear-gradient(135deg, #143D2B 0%, #1B5E3F 35%, #B89030 75%, #D4A93B 100%);
+  border-color: #FFE594;
+  box-shadow: 0 24px 60px rgba(27,94,63,0.45), 0 8px 24px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,229,148,0.35), inset 0 -2px 8px rgba(0,0,0,0.18);
 }
+/* お歳暮: 深い金 × 黒（重厚・年末感） */
 .gift-season-banner[data-season="oseibo"] {
   background:
-    radial-gradient(ellipse at 0% 50%, rgba(255,200,160,0.45), transparent 60%),
-    radial-gradient(ellipse at 100% 0%, rgba(255,229,148,0.4), transparent 50%),
-    linear-gradient(135deg, #7C1F1F 0%, #AB2C2C 40%, #D87070 70%, #AB2C2C 100%);
-  border-color: #FFC8B0;
-  box-shadow: 0 24px 60px rgba(155,30,30,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
+    radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.45), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(212,169,59,0.30), transparent 50%),
+    linear-gradient(135deg, #060F0B 0%, #2D1F08 30%, #8E6010 65%, #D4A93B 100%);
+  border-color: #FFE594;
+  box-shadow: 0 24px 60px rgba(46,31,8,0.55), 0 8px 24px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,229,148,0.4), inset 0 -2px 8px rgba(0,0,0,0.3);
 }
 
 .gift-season-banner-inner {

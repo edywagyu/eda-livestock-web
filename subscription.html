@@ -568,14 +568,22 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .sub-detail-plan-name {
   display: inline-block;
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.18em;
+  font-family: var(--font-jp); /* 日本語見やすく */
+  font-size: 13.5px;
+  letter-spacing: 0.06em;
   background: var(--color-forest);
-  color: var(--color-gold);
-  padding: 6px 18px;
-  border-radius: 14px;
+  color: white; /* gold→white でコントラストUP */
+  padding: 8px 22px;
+  border-radius: 16px;
   font-weight: 700;
+}
+.sub-detail-plan-name strong,
+.sub-detail-plan-name b {
+  color: var(--color-gold);
+  font-family: var(--font-numeric);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 2px;
 }
 
 .sub-detail-grid {
@@ -630,11 +638,17 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   color: var(--color-ink-muted);
 }
 .sub-detail-item-qty {
-  font-family: var(--font-display);
-  font-size: 13px;
-  color: var(--color-gold-soft);
-  font-weight: 700;
+  font-family: var(--font-numeric); /* Inter で数字を見やすく */
+  font-size: 15px;
+  color: var(--color-forest); /* gold-soft が薄かったので濃緑に */
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  padding: 4px 10px;
+  background: rgba(212,169,59,0.15);
+  border-radius: 6px;
+  border: 1px solid rgba(212,169,59,0.4);
+  white-space: nowrap;
 }
 
 .sub-detail-side {
@@ -2253,8 +2267,8 @@ function selectPlan(planKey) {
 
   // 詳細セクション
   document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容';
-  document.getElementById('detailPlanLabel').textContent =
-    plan.target + ' · 月額 ¥' + plan.regular.toLocaleString();
+  document.getElementById('detailPlanLabel').innerHTML =
+    plan.target + ' · 月額 <strong>¥' + plan.regular.toLocaleString() + '</strong>';
 
   // 内容物リスト
   const itemsList = document.getElementById('detailItemsList');
