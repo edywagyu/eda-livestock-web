@@ -4853,6 +4853,134 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: white;
 }
 
+/* ============ シーズンギフトバナー（自動切替） ============ */
+.gift-season-banner {
+  position: relative;
+  background:
+    radial-gradient(circle at 0% 50%, rgba(255,229,148,0.15), transparent 60%),
+    linear-gradient(135deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04));
+  border: 1.5px solid rgba(212,169,59,0.5);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin: 0 0 28px;
+  overflow: hidden;
+}
+/* シーズン別カラー上書き */
+.gift-season-banner[data-season="mother"] {
+  background: radial-gradient(circle at 0% 50%, rgba(255,191,206,0.25), transparent 60%), linear-gradient(135deg, rgba(255,180,200,0.18), rgba(212,90,130,0.06));
+  border-color: rgba(196,69,105,0.45);
+}
+.gift-season-banner[data-season="father"] {
+  background: radial-gradient(circle at 0% 50%, rgba(160,200,230,0.25), transparent 60%), linear-gradient(135deg, rgba(70,130,180,0.18), rgba(40,90,140,0.06));
+  border-color: rgba(70,130,180,0.45);
+}
+.gift-season-banner[data-season="ochugen"] {
+  background: radial-gradient(circle at 0% 50%, rgba(180,220,180,0.25), transparent 60%), linear-gradient(135deg, rgba(120,180,140,0.18), rgba(80,140,100,0.06));
+  border-color: rgba(120,180,140,0.5);
+}
+.gift-season-banner[data-season="oseibo"] {
+  background: radial-gradient(circle at 0% 50%, rgba(255,229,148,0.30), transparent 60%), linear-gradient(135deg, rgba(196,69,69,0.20), rgba(155,30,30,0.08));
+  border-color: rgba(196,69,69,0.5);
+}
+.gift-season-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.gift-season-icon {
+  font-size: 38px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 12px rgba(212,169,59,0.4));
+  animation: giftSeasonBounce 2.8s ease-in-out infinite;
+}
+@keyframes giftSeasonBounce {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-3px) rotate(3deg); }
+}
+.gift-season-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gift-season-eyebrow {
+  font-family: var(--font-numeric);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  color: var(--color-gold);
+  text-transform: uppercase;
+}
+.gift-season-headline {
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+.gift-season-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin-top: 4px;
+}
+.gift-season-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+}
+.gift-season-meta-item strong {
+  font-size: 11px;
+  color: var(--color-gold) !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.gift-season-meta-item span {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.gift-season-deadline strong { color: #FFB4B4 !important; }
+.gift-season-deadline span { color: #FFE0E0; font-weight: 700; }
+
+.gift-season-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+  color: var(--color-forest-deep);
+  border-radius: 24px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,229,148,0.6);
+  box-shadow: 0 8px 20px rgba(212,169,59,0.32), inset 0 1px 2px rgba(255,255,255,0.35);
+  transition: all 0.25s var(--ease-out-expo);
+  white-space: nowrap;
+}
+.gift-season-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(212,169,59,0.5), inset 0 1px 2px rgba(255,255,255,0.35);
+}
+
+@media (max-width: 720px) {
+  .gift-season-banner { padding: 14px 16px; margin-bottom: 20px; }
+  .gift-season-banner-inner { flex-direction: column; align-items: stretch; gap: 12px; }
+  .gift-season-icon { font-size: 32px; align-self: flex-start; }
+  .gift-season-headline { font-size: 15px; }
+  .gift-season-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .gift-season-meta-item { font-size: 11.5px; }
+  .gift-season-cta { width: 100%; justify-content: center; padding: 11px; font-size: 12.5px; }
+}
+
 /* ギフト商品 3点グリッド（松・竹・梅） */
 .gift-products-grid {
   display: grid;
@@ -4865,6 +4993,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 16px;
   overflow: hidden;
   display: flex;
+  flex-direction: column; /* 3カラム化で横幅狭いため写真上・本文下に */
   gap: 0;
   border: 1px solid var(--color-bone);
   transition: all 0.35s var(--ease-out-expo);
@@ -4875,7 +5004,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-color: var(--color-gold);
 }
 .gift-product-img {
-  flex: 0 0 180px;
+  flex: 0 0 220px;
+  height: 220px;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -4936,8 +5066,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .gift-product-meta {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   margin-bottom: 14px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--color-bone);
@@ -4968,17 +5099,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 @media (max-width: 720px) {
   .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
   .gift-hi-features { grid-template-columns: 1fr; }
-  /* ギフト3枚は横並び維持（コンパクトに） — モバイルでは2-1段組 or 横スクロール風 */
-  .gift-products-grid { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .gift-product-card { flex-direction: column; border-radius: 12px; }
-  .gift-product-img { flex: 0 0 130px; height: 130px; }
-  .gift-product-body { padding: 12px 10px 14px; }
-  .gift-product-body h3 { font-size: 12px; line-height: 1.4; }
-  .gift-product-body p { font-size: 10.5px; line-height: 1.55; -webkit-line-clamp: 3; }
+  /* モバイル: 縦スクロール 1列 で大きめに表示（読みやすさ優先） */
+  .gift-products-grid { grid-template-columns: 1fr; gap: 14px; }
+  .gift-product-card { border-radius: 12px; }
+  .gift-product-img { flex: 0 0 180px; height: 180px; }
+  .gift-product-body { padding: 16px 16px 18px; }
+  .gift-product-body h3 { font-size: 14px; line-height: 1.4; }
+  .gift-product-body p { font-size: 11.5px; line-height: 1.65; -webkit-line-clamp: 4; }
   .gift-product-meta { gap: 4px; }
-  .gift-product-vol { font-size: 9.5px; }
-  .gift-product-price { font-size: 14px; }
-  .gift-product-cta { font-size: 10.5px; }
+  .gift-product-vol { font-size: 11px; }
+  .gift-product-price { font-size: 18px; }
+  .gift-product-cta { font-size: 12px; }
 }
 .gift-hi-photo {
   position: relative;
@@ -9634,6 +9765,33 @@ function toggleUnboxingSound() {
 <!-- ========= 贈答用（写真戻し + 2商品） ========= -->
 <section class="gift-highlight" id="gift-highlight">
   <div class="container">
+
+    <!-- ====== シーズン別ギフト受付バナー（自動切替） ====== -->
+    <div class="gift-season-banner" id="giftSeasonBanner" data-season="">
+      <div class="gift-season-banner-inner">
+        <div class="gift-season-icon" id="giftSeasonIcon">🎁</div>
+        <div class="gift-season-text">
+          <div class="gift-season-eyebrow" id="giftSeasonEyebrow">NOW ACCEPTING</div>
+          <div class="gift-season-headline" id="giftSeasonHeadline">ただいま 大切な方への贈り物 受付中</div>
+          <div class="gift-season-meta">
+            <span class="gift-season-meta-item">
+              <strong>📅 受付期間</strong>
+              <span id="giftSeasonRange">通年</span>
+            </span>
+            <span class="gift-season-meta-item">
+              <strong>🚚 出荷日</strong>
+              <span id="giftSeasonShip">ご注文後 3〜5 日以内</span>
+            </span>
+            <span class="gift-season-meta-item gift-season-deadline" id="giftSeasonDeadlineBox" style="display:none">
+              <strong>⏳ 締切まで</strong>
+              <span id="giftSeasonDeadline">残り — 日</span>
+            </span>
+          </div>
+        </div>
+        <a href="#gift-products" class="gift-season-cta" id="giftSeasonCta">予約する →</a>
+      </div>
+    </div>
+
     <div class="gift-hi-inner">
       <div class="gift-hi-photo">
         <img src="public/images/products/drive/gift-box.jpg" alt="江田畜産 御歳暮ギフトボックス（のし対応・化粧箱入り）" loading="lazy">
@@ -9662,7 +9820,7 @@ function toggleUnboxingSound() {
     </div>
 
     <!-- ギフト商品 3点（松・竹・梅） -->
-    <div class="gift-products-grid">
+    <div class="gift-products-grid" id="gift-products">
       <div class="gift-product-card">
         <div class="gift-product-img gift-product-img--fillet" style="background-image:url('public/images/products/drive/fillet.jpg')">
           <span class="gift-product-rank">松</span>
@@ -9828,16 +9986,17 @@ function toggleUnboxingSound() {
   </div>
 </aside>
 
-<!-- ========= 浮遊「電話で質問」ボタン ========= -->
-<a href="tel:08057930708" class="floating-phone-btn" aria-label="電話で質問">
+<!-- ========= 浮遊「LINE で質問」ボタン ========= -->
+<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="floating-phone-btn floating-phone-btn--line" aria-label="LINE で江田畜産に質問">
   <span class="floating-phone-icon">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    <!-- LINE 公式ロゴ風アイコン -->
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/>
     </svg>
   </span>
   <span class="floating-phone-text">
-    <strong>担当者に電話</strong>
-    <small>平日 9-18時 / 不在時は折返</small>
+    <strong>LINE で質問</strong>
+    <small>江田畜産公式 / 平日9-18時 返信</small>
   </span>
 </a>
 <style>
@@ -9874,6 +10033,18 @@ body.has-sticky-cart .floating-phone-btn {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   animation: phoneRing 2.4s ease-in-out infinite;
+}
+/* LINE バリアント: 緑バッジで LINE ブランド色に寄せる */
+.floating-phone-btn--line .floating-phone-icon {
+  background: #06C755; /* LINE 公式緑 */
+  color: white;
+}
+.floating-phone-btn--line {
+  background: linear-gradient(135deg, #06C755 0%, #0AB04C 100%);
+  border-color: rgba(255,255,255,0.4);
+}
+.floating-phone-btn--line:hover {
+  box-shadow: 0 12px 32px rgba(6,199,85,0.5);
 }
 @keyframes phoneRing {
   0%, 100% { transform: rotate(0); }
@@ -10617,14 +10788,14 @@ body.has-sticky-cart .floating-phone-btn {
     for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i);
     return Math.abs(h);
   }
-  const statusPool = ['none', 'none', 'none', 'rank1', 'rank2', 'stock-low3', 'stock-low2', 'stock-low1', 'restock', 'sale'];
+  /* 再入荷バッジ廃止。残り3つは「残少」へ統合（残り1つだけ目立たせる） */
+  const statusPool = ['none', 'none', 'none', 'rank1', 'rank2', 'stock-low3', 'stock-low2', 'stock-low1', 'sale', 'sale'];
   const statusBadges = {
     rank1:      { label: '🥇 先週1位',   color: '#D4A93B', bg: '#FEF3C7' },
     rank2:      { label: '🥈 先週2位',   color: '#92400E', bg: '#FEF3C7' },
     'stock-low3': { label: '残り3つ', color: '#92400E', bg: '#FEF3C7' },
     'stock-low2': { label: '⚠ 残り2つ', color: '#991B1B', bg: '#FEE2E2' },
     'stock-low1': { label: '🔥 残り1つ', color: '#fff', bg: '#C8102E' },
-    restock:    { label: '🆕 再入荷',   color: '#065F46', bg: '#D1FAE5' },
     sale:       { label: '💰 今週お得', color: '#9D174D', bg: '#FCE7F3' }
   };
   cards.forEach(card => {
@@ -10659,16 +10830,26 @@ body.has-sticky-cart .floating-phone-btn {
     }
   });
 
+  /* カテゴリ見出し（牛肉 / 鶏肉）— フィルタ時は非表示にして単一ストリームに */
+  const catHeads = document.querySelectorAll('.shop-cat-head');
+
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
       pills.forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       const status = pill.dataset.status;
+      const isFiltering = status !== 'all';
+
+      // カテゴリ見出しの表示切替（フィルタ時は隠して、牛肉/鶏肉跨ぎでランキング表示）
+      catHeads.forEach(h => {
+        h.style.display = isFiltering ? 'none' : '';
+      });
+
       cards.forEach(card => {
         if (status === 'all') {
           card.style.display = '';
         } else if (status === 'ranking') {
-          // 直近ランキング = 先週1位 + 先週2位
+          // 直近ランキング = 先週1位 + 先週2位 を全カテゴリ横断で
           card.style.display = (card.dataset.status === 'rank1' || card.dataset.status === 'rank2') ? '' : 'none';
         } else {
           card.style.display = card.dataset.status === status ? '' : 'none';
@@ -10875,6 +11056,110 @@ body.has-sticky-cart .floating-phone-btn {
   }
   update();
   // 1時間ごと再計算（深夜0時越え→残日数が翌日には自動更新）
+  setInterval(update, 60 * 60 * 1000);
+})();
+
+/* ============ シーズンギフトバナー（自動切替）============
+   受付期間 40日 / シーズン:
+     · 母の日:  5月第2日曜が出荷期限。40日前から受付
+     · 父の日:  6月第3日曜が出荷期限。40日前から受付
+     · お中元:  7月15日着希望が一般的 → 40日前から受付
+     · お歳暮:  12月20日着希望が一般的 → 40日前から受付
+     · 通常(大切な方へのGIFT): 上記以外
+   ============================================================ */
+(function giftSeasonInit() {
+  const banner = document.getElementById('giftSeasonBanner');
+  if (!banner) return;
+
+  // Nth日曜を取得（n=2 → 第2日曜）
+  function nthSundayOfMonth(year, monthIdx, n) {
+    const first = new Date(year, monthIdx, 1);
+    const offset = (7 - first.getDay()) % 7; // 最初の日曜までのオフセット
+    return new Date(year, monthIdx, 1 + offset + 7 * (n - 1));
+  }
+
+  function buildSeasons(year) {
+    const motherShip  = nthSundayOfMonth(year, 4, 2);  // 5月(月idx=4)第2日曜
+    const fatherShip  = nthSundayOfMonth(year, 5, 3);  // 6月(月idx=5)第3日曜
+    const ochugenShip = new Date(year, 6, 15);         // 7月15日
+    const oseiboShip  = new Date(year, 11, 20);        // 12月20日
+
+    function startOf(d) {
+      const s = new Date(d);
+      s.setDate(s.getDate() - 40);
+      s.setHours(0, 0, 0, 0);
+      return s;
+    }
+    return [
+      { key: 'mother',  label: '母の日',   emoji: '🌷',
+        eyebrow: 'MOTHER\'S DAY · 母の日',
+        headline: 'ただいま 母の日 の贈答予約受付中',
+        start: startOf(motherShip), end: motherShip, ship: motherShip },
+      { key: 'father',  label: '父の日',   emoji: '👔',
+        eyebrow: 'FATHER\'S DAY · 父の日',
+        headline: 'ただいま 父の日 の贈答予約受付中',
+        start: startOf(fatherShip), end: fatherShip, ship: fatherShip },
+      { key: 'ochugen', label: 'お中元',   emoji: '🌻',
+        eyebrow: 'CHUGEN · お中元',
+        headline: 'ただいま お中元 の贈答予約受付中',
+        start: startOf(ochugenShip), end: ochugenShip, ship: ochugenShip },
+      { key: 'oseibo',  label: 'お歳暮',   emoji: '🎍',
+        eyebrow: 'OSEIBO · お歳暮',
+        headline: 'ただいま お歳暮 の贈答予約受付中',
+        start: startOf(oseiboShip), end: oseiboShip, ship: oseiboShip }
+    ];
+  }
+
+  function fmtMD(d) {
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+  function fmtMDW(d) {
+    const days = ['日','月','火','水','木','金','土'];
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）';
+  }
+
+  function update() {
+    const now = new Date();
+    // 今年と来年のシーズンを合わせて評価（年末→年明けの遷移にも対応）
+    const seasons = [...buildSeasons(now.getFullYear()), ...buildSeasons(now.getFullYear() + 1)];
+    const active = seasons.find(s => now >= s.start && now <= s.end);
+
+    const iconEl     = document.getElementById('giftSeasonIcon');
+    const eyebrowEl  = document.getElementById('giftSeasonEyebrow');
+    const headlineEl = document.getElementById('giftSeasonHeadline');
+    const rangeEl    = document.getElementById('giftSeasonRange');
+    const shipEl     = document.getElementById('giftSeasonShip');
+    const ddlBox     = document.getElementById('giftSeasonDeadlineBox');
+    const ddlEl      = document.getElementById('giftSeasonDeadline');
+
+    if (active) {
+      banner.dataset.season = active.key;
+      iconEl.textContent     = active.emoji;
+      eyebrowEl.textContent  = active.eyebrow;
+      headlineEl.textContent = active.headline;
+      rangeEl.textContent    = fmtMD(active.start) + ' 〜 ' + fmtMD(active.end);
+      shipEl.textContent     = fmtMDW(active.ship) + '着まで対応';
+
+      const daysLeft = Math.ceil((active.end - now) / (1000 * 60 * 60 * 24));
+      if (daysLeft > 0) {
+        ddlBox.style.display = '';
+        ddlEl.textContent = '残り ' + daysLeft + ' 日';
+      } else {
+        ddlBox.style.display = 'none';
+      }
+    } else {
+      // 通常シーズン（大切な方へのGIFT）
+      banner.dataset.season = 'normal';
+      iconEl.textContent     = '🎁';
+      eyebrowEl.textContent  = 'NOW ACCEPTING · 通年';
+      headlineEl.textContent = 'ただいま 大切な方へのGIFT 受付中';
+      rangeEl.textContent    = '通年（定例の贈り物に）';
+      shipEl.textContent     = 'ご注文後 3〜5 日以内に出荷';
+      ddlBox.style.display   = 'none';
+    }
+  }
+  update();
+  // 1時間ごと再評価（日付またぎでも自動更新）
   setInterval(update, 60 * 60 * 1000);
 })();
 
