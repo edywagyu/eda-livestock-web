@@ -30,9 +30,9 @@
       images: ['public/images/products/drive/sirloin.jpg']
     },
     {
-      productId: 'P002', variantId: 'RED-MEAT', sku: 'EDA-REDMEAT-250',
-      name: '赤身ステーキ', variant: '1枚 250g',
-      price: 3400, weight: 250, stock: 15, temp: '冷凍',
+      productId: 'P002', variantId: 'RED-MEAT', sku: 'EDA-REDMEAT-200',
+      name: '赤身ステーキ', variant: '1枚 200g',
+      price: 3400, weight: 200, stock: 15, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Red Meat Steak',
       description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。',
       images: ['public/images/products/drive/red-meat.jpg']
@@ -66,9 +66,9 @@
 
     /* ===== 牛肉 焼肉系 ===== */
     {
-      productId: 'P006', variantId: 'YAKINIKU-BRISKET', sku: 'EDA-YAKI-150',
-      name: 'バラ焼肉', variant: '1袋 150g',
-      price: 1900, weight: 150, stock: 11, temp: '冷凍',
+      productId: 'P006', variantId: 'YAKINIKU-BRISKET', sku: 'EDA-YAKI-200',
+      name: 'バラ焼肉', variant: '1袋 200g',
+      price: 1500, weight: 200, stock: 11, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
       description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。',
       images: ['public/images/products/drive/yakiniku-brisket.jpg']
@@ -110,7 +110,7 @@
     {
       productId: 'P010B', variantId: 'WAGYU-MINCED', sku: 'EDA-WGYMINCED-200',
       name: '和牛ミンチ', variant: '1袋 200g',
-      price: 1500, weight: 200, stock: 14, temp: '冷凍',
+      price: 1350, weight: 200, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Minced',
       description: '江田和牛 100% の粗挽きミンチ。ハンバーグ・ボロネーゼ・タコライス・キーマカレーに。和牛100%の旨み。',
       images: ['public/images/products/drive/minced.jpg']
@@ -228,7 +228,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.05.12-004';
+  const PRODUCTS_VERSION = '2026.05.12-005';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
