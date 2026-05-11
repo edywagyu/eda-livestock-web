@@ -1929,7 +1929,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ============ 配送カウントダウンバー（強化） ============ */
 .ship-countdown-bar {
   background: var(--color-cream);
-  padding: 32px 0 0;
+  padding: 56px 0 24px;
 }
 .ship-cd-inner {
   display: flex;
@@ -2281,47 +2281,63 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px 14px;
+  gap: 0;
   background: var(--color-paper);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 4px 0;
   margin: 10px 0 12px;
-  font-size: 11.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
   border: 1px solid rgba(212, 169, 59, 0.18);
+  overflow: hidden;
 }
 .product-stat-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 6px;
   color: var(--color-ink-muted);
   font-family: var(--font-jp);
-  /* nowrap+ellipsis をやめ、自然に折り返す */
-  white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+  padding: 8px 12px;
+  white-space: nowrap;
+  overflow: hidden;
   min-width: 0;
-  line-height: 1.55;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(212,169,59,0.10);
+}
+/* 最後の行は下罫線なし（grid内では位置で判定） */
+.product-stat-item:nth-last-of-type(-n+2):not(.wide) { border-bottom: 0; }
+/* 偶数列は左罫線 */
+.product-stat-item:nth-of-type(2n) { border-left: 1px solid rgba(212,169,59,0.10); }
+.product-stat-item > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .product-stat-item strong {
   color: var(--color-forest);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .product-stat-item.wide {
   grid-column: 1 / -1;
   background: white;
-  border: 1px solid rgba(212,169,59,0.18);
-  border-radius: 8px;
-  padding: 8px 10px;
-  margin-top: 2px;
-  line-height: 1.55;
+  border-top: 1px solid rgba(212,169,59,0.18);
+  border-bottom: 0;
+  border-left: 0;
+  padding: 10px 14px;
+  white-space: normal;
+  line-height: 1.6;
+  font-size: 11.5px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 .product-stat-icon {
   font-size: 13px;
   flex-shrink: 0;
-  line-height: 1.4;
+  line-height: 1;
+  width: 16px;
+  text-align: center;
 }
 
 /* ============ 冷凍庫イメージバンド（フルブリード・シネマモード） ============ */
@@ -3300,7 +3316,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin: 0 auto;
 }
 
-/* ポラロイド風動画フレーム */
+/* ポラロイド風動画フレーム（傾きなし・真っ直ぐ） */
 .unboxing-video {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -3314,10 +3330,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
-  transform: rotate(-1.5deg);
   transition: transform 0.4s var(--ease-out-expo);
 }
-.unboxing-video:hover { transform: rotate(0deg) scale(1.02); }
+.unboxing-video:hover { transform: scale(1.02); }
 .unboxing-video::after {
   /* ポラロイド下のキャプション */
   content: 'EDA · UNBOXING';
@@ -3434,7 +3449,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .unboxing-section { padding: 56px 0; }
   .unboxing-head { margin-bottom: 32px; }
   .unboxing-layout { grid-template-columns: 1fr; gap: 32px; }
-  .unboxing-video { max-width: 320px; transform: rotate(0); }
+  .unboxing-video { max-width: 320px; }
 }
 
 /* ================ 商品カード hover強化 ================ */
@@ -6440,7 +6455,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <!-- ===== 牛肉 ===== -->
     <div class="shop-cat-head reveal" data-cat="beef">
       <h2 class="shop-cat-title">牛肉 <span>/ Wagyu Beef</span></h2>
-      <p class="shop-cat-desc">すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>30ヶ月以上のびのび育てた</strong>江田和牛。日常使いの切り落としから、週末ステーキ、無添加ハンバーグまで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
+      <p class="shop-cat-desc">すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>30ヶ月以上のびのび育てた</strong>江田和牛。日常使いの切り落としから、週末ステーキ、ハンバーグまで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
     </div>
 
     <div class="product-grid cols-4 reveal" data-cat="beef">
@@ -6453,8 +6468,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,700</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,700</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約8時間</strong>で解凍 / 200g</div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚 200g</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約8時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
       </div>
@@ -6468,8 +6483,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,700</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,360</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 250g・脂少なめ</div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚 250g</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
       </div>
@@ -6483,8 +6498,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥500</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,000</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍 / 子ども人気・時短料理</div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 200g</strong></div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
       </div>
@@ -6509,7 +6524,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥400</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥800</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 200g</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍 / 子ども人気・時短料理</div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
       </div>
@@ -6526,24 +6541,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
     <div class="product-grid cols-4 reveal" data-cat="beef" style="margin-top: 24px">
       <div class="product-card" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300},{"id":50877844816170,"t":"3つセット【10%オフ】","p":3300}]'>
-        <div class="product-card-img" data-label="RAW HAM"><span class="badge">無添加</span></div>
+        <div class="product-card-img" data-label="RAW HAM"></div>
         <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250〜</span></div>
         <p class="product-name">和牛生ハム</p>
-        <p class="product-desc">江田和牛の赤身を低温で長時間熟成した、無添加の和牛生ハム。<strong>化学調味料・保存料・着色料はすべて不使用</strong>。豚の生ハムとはまったく異なる、深みのある旨み。ワインの夜やおもてなしの一品に。</p>
+        <p class="product-desc">江田和牛の赤身を低温で長時間熟成した和牛生ハム。豚の生ハムとはまったく異なる、深みのある旨み。ワインの夜やおもてなしの一品に。</p>
         <div class="product-buy"></div>
       </div>
 
       <div class="product-card" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191460650,"t":"2つセット【5%オフ】","p":1440},{"id":50830191493418,"t":"3つセット【10%オフ】","p":2050}]'>
-        <div class="product-card-img" data-label="HAMBURG"><span class="badge" style="background:var(--color-gold);color:var(--color-forest-deep);">無添加</span></div>
+        <div class="product-card-img" data-label="HAMBURG"></div>
         <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760〜</span></div>
         <p class="product-name">江田和牛ハンバーグ</p>
-        <p class="product-desc">和牛100%、化学調味料・保存料・着色料 すべて<strong>無添加</strong>。凍ったままフライパンで15分蒸し焼きするだけ。お子さまの夕食に。</p>
+        <p class="product-desc">和牛100%のシンプル配合。凍ったままフライパンで15分蒸し焼きするだけ。お子さまの夕食に。</p>
         <div class="product-stats">
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1人前</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥760</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g換算 <strong>¥760</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">📦</span>個包装 <strong>1個 100g</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span><strong>凍ったまま</strong>15分蒸し焼きOK / 解凍不要・時短</div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span><strong>凍ったまま</strong>15分蒸し焼きOK</div>
         </div>
         <div class="product-buy"></div>
       </div>
@@ -6590,7 +6605,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥320</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥256</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 500g</strong></div>
-          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍 / 子ども人気・抗生物質不使用</div>
+          <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
       </div>
@@ -6756,7 +6771,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <span class="eyebrow text-gold has-dash">Monthly Subscription — Always Stocked</span>
         <h2>冷凍庫に、<span style="color: var(--color-gold);">安心</span>を切らさない。</h2>
         <p>
-          毎月（または2週間ごとに）届くから、買い物の手間ゼロ。<br class="hide-sp"/>
+          月1回、自動でお届け。買い物の手間ゼロ。<br class="hide-sp"/>
           忙しい平日も、安心できるお肉が冷凍庫にある安心感を。
         </p>
       </div>
@@ -6817,7 +6832,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               🐓 平飼い鶏もも 1kg<br/>
               🥩 和牛切り落とし 300g<br/>
               🥩 サイコロステーキ 300g<br/>
-              🍔 無添加ハンバーグ ×2個
+              🍔 和牛ハンバーグ ×2個
             </div>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥12,800</div>
@@ -6834,7 +6849,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               🐓 平飼い鶏もも 1kg ×2<br/>
               🥩 和牛切り落とし 500g<br/>
               🥩 サーロインステーキ 200g<br/>
-              🍔 無添加ハンバーグ ×4個
+              🍔 和牛ハンバーグ ×4個
             </div>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥19,800</div>
@@ -7150,7 +7165,7 @@ function toggleUnboxingSound() {
         </div>
         <div class="gift-product-body">
           <h3>ステーキ&ハンバーグセット【松】</h3>
-          <p>サーロイン・赤身ステーキ・無添加ハンバーグ・希少部位の食べ比べ。化粧箱入り・のし対応・カード同梱可。</p>
+          <p>サーロイン・赤身ステーキ・和牛ハンバーグ・希少部位の食べ比べ。化粧箱入り・のし対応・カード同梱可。</p>
           <div class="gift-product-meta">
             <span class="gift-product-vol">合計約 800g</span>
             <span class="gift-product-price">¥14,800</span>
@@ -7164,7 +7179,7 @@ function toggleUnboxingSound() {
         </div>
         <div class="gift-product-body">
           <h3>ステーキ&ハンバーグセット【竹】</h3>
-          <p>赤身ステーキ・無添加ハンバーグ・切り落としのバランス構成。日常使いから贈答まで、もっとも選ばれている定番セット。</p>
+          <p>赤身ステーキ・和牛ハンバーグ・切り落としのバランス構成。日常使いから贈答まで、もっとも選ばれている定番セット。</p>
           <div class="gift-product-meta">
             <span class="gift-product-vol">合計約 600g</span>
             <span class="gift-product-price">¥9,800</span>
@@ -7895,12 +7910,12 @@ function toggleUnboxingSound() {
     // バッジ表示（ステータスがあれば既存badgeを置き換え）
     if (status !== 'none' && statusBadges[status] && !card.querySelector('.status-badge-injected')) {
       const b = statusBadges[status];
-      // 既存badge（無添加など）を残しつつ、ステータスバッジは上に重ねる
+      // 既存badge を残しつつ、ステータスバッジは上に重ねる
       const existing = imgEl.querySelectorAll('.badge:not(.status-badge-injected)');
       existing.forEach((el, idx) => {
-        // 無添加 や 希少部位 のような重要なバッジは残す
+        // 希少部位 のような重要なバッジは残す
         const t = el.textContent.trim();
-        if (t !== '無添加' && t !== '希少部位') el.remove();
+        if (t !== '希少部位') el.remove();
       });
       const badge = document.createElement('span');
       badge.className = 'status-badge-injected badge';
@@ -7938,8 +7953,8 @@ function toggleUnboxingSound() {
     'WAGYU SLICE':     { meals: '3〜4人前', perMeal: '¥650',   per100g: '¥1,300', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'しゃぶしゃぶ・すき焼き' },
     'KIRIOTOSHI':      { meals: '3〜4人前', perMeal: '¥400',   per100g: '¥800',   portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短料理' },
     'YAKINIKU BRISKET':{ meals: '2〜3人前', perMeal: '¥633',   per100g: '¥1,267', portions: '真空 1袋 150g', thaw: '冷蔵庫で約4時間', tag: '焼肉・週末ごちそう' },
-    'RAW HAM':         { meals: '2人前',    perMeal: '¥625',   per100g: '¥3,125', portions: '個包装 40g',   thaw: '冷蔵庫で30分',    tag: '無添加・ワインに' },
-    'HAMBURG':         { meals: '1人前',    perMeal: '¥760',   per100g: '¥760',   portions: '個包装 1個 100g',thaw: '凍ったまま調理OK',tag: '無添加・子ども人気' },
+    'RAW HAM':         { meals: '2人前',    perMeal: '¥625',   per100g: '¥3,125', portions: '個包装 40g',   thaw: '冷蔵庫で30分',    tag: 'ワインに' },
+    'HAMBURG':         { meals: '1人前',    perMeal: '¥760',   per100g: '¥760',   portions: '個包装 1個 100g',thaw: '凍ったまま調理OK',tag: '子ども人気' },
     'ROAST BEEF':      { meals: '3〜4人前', perMeal: '¥750',   per100g: '¥3,000', portions: '真空 100g',    thaw: '冷蔵庫で約4時間', tag: 'パーティー前菜' },
     'OFFAL':           { meals: '2〜3人前', perMeal: '¥280',   per100g: '¥560',   portions: '真空 1袋 150g', thaw: '冷蔵庫で約3時間', tag: '焼肉・もつ鍋に' },
     'CHICKEN BREAST':  { meals: '3〜4人前', perMeal: '¥320',   per100g: '¥256',   portions: '真空 1袋 500g', thaw: '冷蔵庫で約6時間', tag: '高たんぱく・抗生物質不使用' },
@@ -7966,7 +7981,7 @@ function toggleUnboxingSound() {
       <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>${s.perMeal}</strong></div>
       <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>${s.per100g}</strong></div>
       <div class="product-stat-item"><span class="product-stat-icon">📦</span><strong>${s.portions}</strong></div>
-      <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span><strong>${s.thaw}</strong>で解凍 / ${s.tag}</div>
+      <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>${s.thaw}</strong>で解凍</div>
     `;
     desc.insertAdjacentElement('afterend', stats);
   });
@@ -7979,7 +7994,7 @@ function toggleUnboxingSound() {
     { day: '週末', day_en: 'SAT', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
     { day: '月曜', day_en: 'MON', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1581450840806-89720d70b5e0?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', '玉ねぎ'] },
     { day: '火曜', day_en: 'TUE', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
-    { day: '水曜', day_en: 'WED', time: 15, name: '無添加 和牛ハンバーグ', desc: '凍ったまま15分蒸し焼き。化学調味料ゼロ。', img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛ハンバーグ', '玉ねぎ'] },
+    { day: '水曜', day_en: 'WED', time: 15, name: '和牛ハンバーグ', desc: '凍ったまま15分蒸し焼き。手作りシンプル配合。', img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛ハンバーグ', '玉ねぎ'] },
     { day: '木曜', day_en: 'THU', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1583224994076-ae0acae7c45e?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
     { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1604908554007-c98caf57e29c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
     { day: '週末', day_en: 'SAT', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
@@ -8294,7 +8309,7 @@ function toggleUnboxingSound() {
     { name: '伊藤さん（愛知）', meta: '22分前 · サーロインステーキ を購入' },
     { name: '木村さん（兵庫）', meta: '29分前 · 赤身ステーキ x2 を購入' },
     { name: '高橋さん（千葉）', meta: '34分前 · 平飼い鶏セット を購入' },
-    { name: '山田さん（北海道）', meta: '41分前 · 2週間ごと定期便 開始' }
+    { name: '山田さん（北海道）', meta: '41分前 · 月1回 定期便 開始' }
   ];
   let idx = 0;
   const nameEl = document.getElementById('liveFeedName');
