@@ -4881,6 +4881,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   position: relative;
   background-color: #000;
 }
+/* 松（ヒレ）専用: fillet.jpg を綺麗にセンタリング（重心がやや上にあるので調整） */
+.gift-product-img--fillet {
+  background-size: cover;
+  background-position: center 40%; /* 肉の重心をフレーム中央へ */
+  background-color: #1a1a1a;
+}
 .gift-product-rank {
   position: absolute;
   top: 14px; left: 14px;
@@ -6211,13 +6217,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background-image:
     radial-gradient(circle at 50% 50%, rgba(212,169,59,0.15), transparent 70%),
     linear-gradient(135deg, #143D2B, #060F0B) !important;
+  min-height: 280px; /* 縦の中央配置を成立させるため十分な高さ確保 */
 }
 .organic-wagyu-overlay {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 28px;
   font-family: var(--font-display);
   font-size: 18px;
   letter-spacing: 0.22em;
@@ -6226,6 +6235,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(2px);
   z-index: 1;
+}
+/* COMING SOON テキストを span として包む（中央上）+ ボタンを下に */
+.organic-wagyu-overlay-text {
+  display: block;
+}
+/* オーバーレイ内に置く時のCTA上書き */
+.organic-wagyu-overlay .organic-wagyu-cta {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  padding: 12px 30px;
+  margin: 0;
 }
 .badge-organic-wagyu {
   background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
@@ -8528,8 +8549,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-stats">
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>1〜2人前</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥1,700</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,360</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚 250g</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,700</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1枚 200g</strong></div>
           <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約6時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
@@ -8582,15 +8603,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <!-- 和牛ミンチ（新規追加） -->
-      <div class="product-card" data-sub="slice" data-variants='[{"id":50831001234567,"t":"1つ","p":1500},{"id":50831001234568,"t":"2つセット【5%オフ】","p":2850},{"id":50831001234569,"t":"3つセット【10%オフ】","p":4050}]'>
+      <div class="product-card" data-sub="slice" data-variants='[{"id":50831001234567,"t":"1つ","p":1350},{"id":50831001234568,"t":"2つセット【5%オフ】","p":2565},{"id":50831001234569,"t":"3つセット【10%オフ】","p":3645}]'>
         <div class="product-card-img" data-label="WAGYU MINCED"></div>
-        <div class="product-tag-row"><span class="product-tag">Wagyu · Minced</span><span class="product-price">¥1,500〜</span></div>
+        <div class="product-tag-row"><span class="product-tag">Wagyu · Minced</span><span class="product-price">¥1,350〜</span></div>
         <p class="product-name">和牛ミンチ</p>
         <p class="product-desc">江田和牛 100% の粗挽きミンチ。<strong>ハンバーグ・ボロネーゼ・タコライス・キーマカレー</strong>に。和牛100%だからスーパーのミンチとは別次元の旨み。</p>
         <div class="product-stats">
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>2〜3人前</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥500</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥750</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥450</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥675</strong></div>
           <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 200g</strong></div>
           <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍</div>
         </div>
@@ -8598,16 +8619,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
 
       <!-- 焼肉系 -->
-      <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830137655594,"t":"1つ","p":1900},{"id":50830137688362,"t":"2つセット【5%オフ】","p":3800}]'>
+      <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830137655594,"t":"1つ","p":1500},{"id":50830137688362,"t":"2つセット【5%オフ】","p":2850}]'>
         <div class="product-card-img" data-label="YAKINIKU BRISKET"></div>
-        <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,900〜</span></div>
+        <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,500〜</span></div>
         <p class="product-name">バラ焼肉</p>
         <p class="product-desc">バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。網焼きで脂を落とせば外カリッ、中ジューシー。タレでも塩レモンでも。</p>
         <div class="product-stats">
           <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>2〜3人前</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥633</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥1,267</strong></div>
-          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 150g</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>¥500</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>¥750</strong></div>
+          <div class="product-stat-item"><span class="product-stat-icon">📦</span>真空 <strong>1袋 200g</strong></div>
           <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span>冷蔵庫で <strong>約4時間</strong>で解凍</div>
         </div>
         <div class="product-buy"></div>
@@ -8678,40 +8699,40 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999999" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SIRLOIN">
           <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">COMING SOON</div>
+          <div class="organic-wagyu-overlay">
+            <span class="organic-wagyu-overlay-text">COMING SOON</span>
+            <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+          </div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Sirloin</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS サーロイン</p>
         <p class="product-desc"><strong>世界初の有機JAS認証</strong>黒毛和牛サーロイン。発売前優先案内。</p>
-        <div class="product-buy">
-          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
-        </div>
       </article>
 
       <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999998" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC RIBEYE">
           <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">COMING SOON</div>
+          <div class="organic-wagyu-overlay">
+            <span class="organic-wagyu-overlay-text">COMING SOON</span>
+            <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+          </div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Ribeye</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS リブアイ</p>
         <p class="product-desc">霜降りと赤身の完璧なバランス。希少な有機リブアイ。発売前優先案内。</p>
-        <div class="product-buy">
-          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
-        </div>
       </article>
 
       <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999997" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC FILLET">
           <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">COMING SOON</div>
+          <div class="organic-wagyu-overlay">
+            <span class="organic-wagyu-overlay-text">COMING SOON</span>
+            <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+          </div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Fillet</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS ヒレ</p>
         <p class="product-desc">希少部位のヒレ、有機JAS認証。最高峰の一品。発売前優先案内。</p>
-        <div class="product-buy">
-          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
-        </div>
       </article>
     </div>
 
@@ -9643,7 +9664,7 @@ function toggleUnboxingSound() {
     <!-- ギフト商品 3点（松・竹・梅） -->
     <div class="gift-products-grid">
       <div class="gift-product-card">
-        <div class="gift-product-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')">
+        <div class="gift-product-img gift-product-img--fillet" style="background-image:url('public/images/products/drive/fillet.jpg')">
           <span class="gift-product-rank">松</span>
         </div>
         <div class="gift-product-body">
@@ -10090,10 +10111,10 @@ body.has-sticky-cart .floating-phone-btn {
         '50830191427882': { title: '江田和牛ハンバーグ', price: 760  },
         '50830187200810': { title: '赤身スライス',      price: 2600 },
         '50830303822122': { title: '和牛切り落とし',    price: 1600 },
-        '50830137655594': { title: 'バラ焼肉',          price: 1900 },
+        '50830137655594': { title: 'バラ焼肉',          price: 1500 },
         '50830132314410': { title: 'サイコロステーキ',  price: 1000 },
         '50982670532906': { title: '和牛ローストビーフ',price: 3000 },
-        '50831001234567': { title: '和牛ミンチ',        price: 1500 },
+        '50831001234567': { title: '和牛ミンチ',        price: 1350 },
         'organic-chicken-thigh':   { title: 'オーガニックチキン モモ',   price: 3840 },
         'organic-chicken-breast':  { title: 'オーガニックチキン ムネ',   price: 3840 },
         'organic-chicken-minced':  { title: 'オーガニックチキン ミンチ', price: 3000 }
@@ -10662,16 +10683,16 @@ body.has-sticky-cart .floating-phone-btn {
   // data-label別のスペックマスタ
   const STATS = {
     'SIRLOIN':         { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '冷蔵庫で約8時間', tag: 'プレミアム部位' },
-    'RED MEAT':        { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,360', portions: '真空 1枚 250g', thaw: '冷蔵庫で約6時間', tag: '脂少なめ・健康志向' },
+    'RED MEAT':        { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '冷蔵庫で約6時間', tag: '脂少なめ・健康志向' },
     'CUBE STEAK':      { meals: '1〜2人前', perMeal: '¥500',   per100g: '¥1,000', portions: '真空 1袋',      thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短' },
     'WAGYU SLICE':     { meals: '3〜4人前', perMeal: '¥650',   per100g: '¥1,300', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'しゃぶしゃぶ・すき焼き' },
     'KIRIOTOSHI':      { meals: '3〜4人前', perMeal: '¥400',   per100g: '¥800',   portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短料理' },
-    'YAKINIKU BRISKET':{ meals: '2〜3人前', perMeal: '¥633',   per100g: '¥1,267', portions: '真空 1袋 150g', thaw: '冷蔵庫で約4時間', tag: '焼肉・週末ごちそう' },
+    'YAKINIKU BRISKET':{ meals: '2〜3人前', perMeal: '¥500',   per100g: '¥750',   portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: '焼肉・週末ごちそう' },
     'RAW HAM':         { meals: '2人前',    perMeal: '¥625',   per100g: '¥3,125', portions: '個包装 40g',   thaw: '冷蔵庫で30分',    tag: 'ワインに' },
     'HAMBURG':         { meals: '1人前',    perMeal: '¥760',   per100g: '¥760',   portions: '個包装 1個 100g',thaw: '約6時間で解凍推奨',tag: '子ども人気' },
     'ROAST BEEF':      { meals: '3〜4人前', perMeal: '¥750',   per100g: '¥3,000', portions: '真空 100g',    thaw: '冷蔵庫で約4時間', tag: 'パーティー前菜' },
     'OFFAL':           { meals: '2〜3人前', perMeal: '¥280',   per100g: '¥560',   portions: '真空 1袋 150g', thaw: '冷蔵庫で約3時間', tag: '焼肉・もつ鍋に' },
-    'WAGYU MINCED':    { meals: '2〜3人前', perMeal: '¥500',   per100g: '¥750',   portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'ハンバーグ・ボロネーゼ' },
+    'WAGYU MINCED':    { meals: '2〜3人前', perMeal: '¥450',   per100g: '¥675',   portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'ハンバーグ・ボロネーゼ' },
     'CHICKEN BREAST':  { meals: '3〜4人前', perMeal: '¥320',   per100g: '¥256',   portions: '真空 1袋 500g', thaw: '流水で約20分', tag: '高たんぱく・無投薬' },
     'CHICKEN THIGH':   { meals: '3〜4人前', perMeal: '¥320',   per100g: '¥256',   portions: '真空 1袋 500g', thaw: '流水で約20分', tag: '子ども人気・万能' },
     'CHICKEN MINCED':  { meals: '3〜4人前', perMeal: '¥250',   per100g: '¥333',   portions: '真空 1袋 300g', thaw: '流水で約20分', tag: 'そぼろ丼・離乳食' },
