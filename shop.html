@@ -1574,6 +1574,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-color: var(--color-forest);
 }
 
+/* サブタブ（部位フィルタ） */
+.sub-tab-row {
+  display: flex;
+  gap: 6px;
+  margin: 16px 0 24px;
+  flex-wrap: wrap;
+}
+.sub-tab {
+  padding: 7px 14px;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  border-radius: 16px;
+  transition: all 0.2s var(--ease-out-expo);
+  white-space: nowrap;
+}
+.sub-tab:hover { border-color: var(--color-gold); color: var(--color-forest); }
+.sub-tab.active {
+  background: var(--color-forest);
+  color: var(--color-gold);
+  border-color: var(--color-forest);
+}
+
 /* ================ SHOP HERO ================ */
 /* ================ ベネフィットマーキー ================ */
 .benefit-marquee {
@@ -2076,20 +2104,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .ship-cd-cta { width: 100%; justify-content: center; padding: 12px; }
 }
 
-/* ============ 定期便：月次サイクル可視化 ============ */
+/* ============ 定期便：月次サイクル可視化（縦中央揃え・整列強化） ============ */
 .sub-cycle-visual {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(212,169,59,0.2);
   border-radius: 14px;
-  padding: 14px 18px;
+  padding: 18px 18px;
   margin-bottom: 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  justify-content: center;
   flex-wrap: nowrap;
 }
 .sub-cycle-visual::-webkit-scrollbar { display: none; }
@@ -2097,19 +2125,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  justify-content: flex-end;
+  gap: 6px;
   flex-shrink: 0;
-  min-width: 76px;
+  min-width: 84px;
+  padding-top: 14px;
 }
 .sub-cycle-label {
-  font-size: 9px;
-  color: rgba(255,255,255,0.55);
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
   font-weight: 600;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  text-align: center;
+  height: 14px;
+  line-height: 14px;
 }
 .sub-cycle-num {
-  width: 60px; height: 38px;
+  width: 68px; height: 42px;
   border-radius: 10px;
   background: rgba(212,169,59,0.18);
   border: 1.5px solid var(--color-gold);
@@ -2121,11 +2154,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.sub-cycle-time {
+  font-size: 9.5px;
+  color: var(--color-gold);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  height: 12px;
+  line-height: 12px;
+  font-variant-numeric: tabular-nums;
 }
 .sub-cycle-arrow {
-  color: rgba(212,169,59,0.4);
-  font-size: 14px;
+  color: rgba(212,169,59,0.45);
+  font-size: 16px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;       /* 矢印を縦中央 */
+  justify-content: center;
+  /* 数字ボックスの中央高さ（padding-top 14 + label 14 + gap 6 + box/2 21）≒ 55px に合わせる */
+  padding-top: 34px;
 }
 .sub-cycle-loop {
   display: flex;
@@ -2136,19 +2185,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   padding: 8px 14px;
   border-radius: 20px;
   font-weight: 700;
-  font-size: 13px;
-  margin-left: 4px;
+  font-size: 12px;
+  margin-left: 8px;
   flex-shrink: 0;
+  align-self: center;        /* バーの中で縦中央 */
+  white-space: nowrap;
   animation: subCyclePulse 3s ease-in-out infinite;
 }
 .sub-cycle-loop small {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 @keyframes subCyclePulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(212,169,59,0.4); }
   50%      { box-shadow: 0 0 0 10px rgba(212,169,59,0); }
+}
+@media (max-width: 720px) {
+  .sub-cycle-visual { padding: 14px 12px; gap: 4px; }
+  .sub-cycle-month { min-width: 70px; }
+  .sub-cycle-num { width: 56px; height: 36px; font-size: 15px; }
+  .sub-cycle-time { font-size: 9px; }
+  .sub-cycle-arrow { font-size: 13px; padding-top: 30px; }
+  .sub-cycle-loop { font-size: 11px; padding: 6px 10px; }
+  .sub-cycle-loop small { font-size: 10px; }
 }
 
 /* ============ 定期便プラン（再設計） ============ */
@@ -6468,14 +6528,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <button class="status-pill" data-status="sale">💰 今週お得</button>
     </div>
 
-    <!-- ===== 牛肉 ===== -->
+    <!-- ===== 牛肉（ステーキ・スライス・加工品すべて統合） ===== -->
     <div class="shop-cat-head reveal" data-cat="beef">
       <h2 class="shop-cat-title">牛肉 <span>/ Wagyu Beef</span></h2>
-      <p class="shop-cat-desc">すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>30ヶ月以上のびのび育てた</strong>江田和牛。日常使いの切り落としから、週末ステーキ、ハンバーグまで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
+      <p class="shop-cat-desc">すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>30ヶ月以上のびのび育てた</strong>江田和牛。ステーキ・スライス・ひき肉・加工品まで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
+    </div>
+
+    <!-- 牛肉 サブタブ（部位・調理スタイル別） -->
+    <div class="sub-tab-row reveal" data-parent-cat="beef">
+      <button class="sub-tab active" data-sub="all">すべて</button>
+      <button class="sub-tab" data-sub="steak">ステーキ</button>
+      <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
+      <button class="sub-tab" data-sub="yakiniku">焼肉</button>
+      <button class="sub-tab" data-sub="processed">加工品</button>
     </div>
 
     <div class="product-grid cols-4 reveal" data-cat="beef">
-      <div class="product-card" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
+      <!-- ステーキ系 -->
+      <div class="product-card" data-sub="steak" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
         <div class="product-card-img" data-label="SIRLOIN"></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,400〜</span></div>
         <p class="product-name">サーロインステーキ</p>
@@ -6490,7 +6560,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830190379306,"t":"1つ","p":3400},{"id":50830190412074,"t":"2つセット【5%オフ】","p":6400},{"id":50830190444842,"t":"3つセット【10%オフ】","p":9100}]'>
+      <div class="product-card" data-sub="steak" data-variants='[{"id":50830190379306,"t":"1つ","p":3400},{"id":50830190412074,"t":"2つセット【5%オフ】","p":6400},{"id":50830190444842,"t":"3つセット【10%オフ】","p":9100}]'>
         <div class="product-card-img" data-label="RED MEAT"></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Red Meat</span><span class="product-price">¥3,400〜</span></div>
         <p class="product-name">赤身ステーキ</p>
@@ -6505,7 +6575,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830132314410,"t":"1つ","p":1000},{"id":50830132347178,"t":"2つセット","p":2000},{"id":50830132379946,"t":"3つセット","p":3000}]'>
+      <div class="product-card" data-sub="steak" data-variants='[{"id":50830132314410,"t":"1つ","p":1000},{"id":50830132347178,"t":"2つセット","p":2000},{"id":50830132379946,"t":"3つセット","p":3000}]'>
         <div class="product-card-img" data-label="CUBE STEAK"></div>
         <div class="product-tag-row"><span class="product-tag">Steak · Cube</span><span class="product-price">¥1,000〜</span></div>
         <p class="product-name">サイコロステーキ</p>
@@ -6519,10 +6589,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </div>
         <div class="product-buy"></div>
       </div>
-    </div>
 
-    <div class="product-grid cols-4 reveal" data-cat="beef" style="margin-top: 24px">
-      <div class="product-card" data-variants='[{"id":50830187200810,"t":"1つ","p":2600}]'>
+      <!-- スライス・切り落とし系 -->
+      <div class="product-card" data-sub="slice" data-variants='[{"id":50830187200810,"t":"1つ","p":2600}]'>
         <div class="product-card-img" data-label="WAGYU SLICE"><span class="badge" style="background: var(--color-red); color: white;">Best Seller</span></div>
         <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥2,600</span></div>
         <p class="product-name">赤身スライス</p>
@@ -6530,7 +6599,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830303822122,"t":"1つ","p":1600},{"id":50830303854890,"t":"2つセット","p":3040},{"id":50830303887658,"t":"3つセット","p":4320}]'>
+      <div class="product-card" data-sub="slice" data-variants='[{"id":50830303822122,"t":"1つ","p":1600},{"id":50830303854890,"t":"2つセット","p":3040},{"id":50830303887658,"t":"3つセット","p":4320}]'>
         <div class="product-card-img" data-label="KIRIOTOSHI"><span class="badge" style="background:var(--color-red);color:#fff">毎日使える</span></div>
         <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥1,600〜</span></div>
         <p class="product-name">和牛切り落とし</p>
@@ -6545,7 +6614,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830137655594,"t":"1つ","p":1900},{"id":50830137688362,"t":"2つセット【5%オフ】","p":3800}]'>
+      <!-- 焼肉系 -->
+      <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830137655594,"t":"1つ","p":1900},{"id":50830137688362,"t":"2つセット【5%オフ】","p":3800}]'>
         <div class="product-card-img" data-label="YAKINIKU BRISKET"></div>
         <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,900〜</span></div>
         <p class="product-name">バラ焼肉</p>
@@ -6553,18 +6623,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-    </div>
-
-    <div class="product-grid cols-4 reveal" data-cat="beef" style="margin-top: 24px">
-      <div class="product-card" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300},{"id":50877844816170,"t":"3つセット【10%オフ】","p":3300}]'>
-        <div class="product-card-img" data-label="RAW HAM"></div>
-        <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250〜</span></div>
-        <p class="product-name">和牛生ハム</p>
-        <p class="product-desc">江田和牛の赤身を低温で長時間熟成した和牛生ハム。豚の生ハムとはまったく異なる、深みのある旨み。ワインの夜やおもてなしの一品に。</p>
+      <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830287143210,"t":"1つ","p":840},{"id":50830287175978,"t":"2つセット【5%オフ】","p":1590},{"id":50830287208746,"t":"3つセット【10%オフ】","p":2260}]'>
+        <div class="product-card-img" data-label="OFFAL"></div>
+        <div class="product-tag-row"><span class="product-tag">Offal</span><span class="product-price">¥840〜</span></div>
+        <p class="product-name">和牛ホルモン</p>
+        <p class="product-desc">小腸・大腸を中心としたミックスホルモン。鮮度が命の内臓肉を、と畜後すぐに急速冷凍。下処理済みなのでそのまま調理可能。もつ鍋、焼きホルモン、ホルモン焼きうどん。ぷりっとした食感と脂の甘み。ビールが止まらない。</p>
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191460650,"t":"2つセット【5%オフ】","p":1440},{"id":50830191493418,"t":"3つセット【10%オフ】","p":2050}]'>
+      <!-- 加工品系 -->
+      <div class="product-card" data-sub="processed" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191460650,"t":"2つセット【5%オフ】","p":1440},{"id":50830191493418,"t":"3つセット【10%オフ】","p":2050}]'>
         <div class="product-card-img" data-label="HAMBURG"></div>
         <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760〜</span></div>
         <p class="product-name">江田和牛ハンバーグ</p>
@@ -6579,7 +6647,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50982670532906,"t":"1つ (100g)","p":3000},{"id":50982670565674,"t":"2つセット【5%オフ】","p":5700},{"id":50982670598442,"t":"3つセット【10%オフ】","p":8000}]'>
+      <div class="product-card" data-sub="processed" data-variants='[{"id":50982670532906,"t":"1つ (100g)","p":3000},{"id":50982670565674,"t":"2つセット【5%オフ】","p":5700},{"id":50982670598442,"t":"3つセット【10%オフ】","p":8000}]'>
         <div class="product-card-img" data-label="ROAST BEEF"></div>
         <div class="product-tag-row"><span class="product-tag">Roast Beef</span><span class="product-price">¥3,000〜</span></div>
         <p class="product-name">和牛ローストビーフ (100g)</p>
@@ -6587,11 +6655,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
-      <div class="product-card" data-variants='[{"id":50830287143210,"t":"1つ","p":840},{"id":50830287175978,"t":"2つセット【5%オフ】","p":1590},{"id":50830287208746,"t":"3つセット【10%オフ】","p":2260}]'>
-        <div class="product-card-img" data-label="OFFAL"></div>
-        <div class="product-tag-row"><span class="product-tag">Offal</span><span class="product-price">¥840〜</span></div>
-        <p class="product-name">和牛ホルモン</p>
-        <p class="product-desc">小腸・大腸を中心としたミックスホルモン。鮮度が命の内臓肉を、と畜後すぐに急速冷凍。下処理済みなのでそのまま調理可能。もつ鍋、焼きホルモン、ホルモン焼きうどん。ぷりっとした食感と脂の甘み。ビールが止まらない。</p>
+      <div class="product-card" data-sub="processed" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300},{"id":50877844816170,"t":"3つセット【10%オフ】","p":3300}]'>
+        <div class="product-card-img" data-label="RAW HAM"></div>
+        <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250〜</span></div>
+        <p class="product-name">和牛生ハム</p>
+        <p class="product-desc">江田和牛の赤身を低温で長時間熟成した和牛生ハム。豚の生ハムとはまったく異なる、深みのある旨み。ワインの夜やおもてなしの一品に。</p>
         <div class="product-buy"></div>
       </div>
     </div>
@@ -6794,20 +6862,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
       <!-- 2. サイクル＋50%OFFバナーを横並び -->
       <div class="shop-sub-band">
-        <div class="sub-cycle-visual">
+        <div class="sub-cycle-visual" id="subCycleVisual">
           <div class="sub-cycle-month">
             <span class="sub-cycle-label">本日 ご注文</span>
-            <span class="sub-cycle-num">1/20</span>
+            <span class="sub-cycle-num" id="subCycleToday">5/11</span>
           </div>
           <div class="sub-cycle-arrow">→</div>
           <div class="sub-cycle-month">
-            <span class="sub-cycle-label">翌月1日 お届け</span>
-            <span class="sub-cycle-num">2/1</span>
+            <span class="sub-cycle-label" id="subCycleFirstLabel">初回お届け</span>
+            <span class="sub-cycle-num" id="subCycleFirst">6/1</span>
+            <span class="sub-cycle-time" id="subCycleFirstTime">18:00-20:00</span>
           </div>
           <div class="sub-cycle-arrow">→</div>
           <div class="sub-cycle-month">
             <span class="sub-cycle-label">次回</span>
-            <span class="sub-cycle-num">3/1</span>
+            <span class="sub-cycle-num" id="subCycleNext">7/1</span>
           </div>
           <div class="sub-cycle-loop">🔁<small>以降 毎月1日</small></div>
         </div>
@@ -7692,16 +7761,40 @@ function toggleUnboxingSound() {
       });
     });
 
-    /* --- Tab filter for shop page --- */
+    /* --- Tab filter for shop page (大カテゴリ) --- */
+    function applyCategoryFilter(filter) {
+      document.querySelectorAll('[data-cat]').forEach(el => {
+        if (filter === 'all') { el.style.display = ''; }
+        else { el.style.display = el.dataset.cat === filter ? '' : 'none'; }
+      });
+      // サブタブも親カテゴリに合わせて表示/非表示
+      document.querySelectorAll('.sub-tab-row[data-parent-cat]').forEach(row => {
+        if (filter === 'all') row.style.display = '';
+        else row.style.display = row.dataset.parentCat === filter ? '' : 'none';
+      });
+    }
     document.querySelectorAll('.tab[data-filter]').forEach(tab => {
       tab.addEventListener('click', () => {
         const filter = tab.dataset.filter;
         document.querySelectorAll('.tab[data-filter]').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
+        applyCategoryFilter(filter);
+      });
+    });
 
-        document.querySelectorAll('[data-cat]').forEach(el => {
-          if (filter === 'all') { el.style.display = ''; }
-          else { el.style.display = el.dataset.cat === filter ? '' : 'none'; }
+    /* --- Sub-tab filter (部位別: ステーキ・スライス・焼肉・加工品 等) --- */
+    document.querySelectorAll('.sub-tab-row').forEach(row => {
+      const parentCat = row.dataset.parentCat;
+      row.querySelectorAll('.sub-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sub = btn.dataset.sub;
+          row.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+          btn.classList.add('active');
+          // 親カテゴリの product-card のみ data-sub で絞り込み
+          document.querySelectorAll(`[data-cat="${parentCat}"] .product-card[data-sub]`).forEach(card => {
+            if (sub === 'all') card.style.display = '';
+            else card.style.display = card.dataset.sub === sub ? '' : 'none';
+          });
         });
       });
     });
@@ -8571,6 +8664,55 @@ function toggleUnboxingSound() {
 
 <script>
 /* ===== クーポンPOP ロジック ===== */
+/* ============ 定期便サイクル：本日基準で日付自動計算 ============ */
+/*
+   ルール:
+   - 本日 1〜25日 → 初回お届け: 翌月1日 18:00-20:00
+   - 本日 26日〜  → 初回お届け: 翌月5日 18:00-20:00
+   - 次回（2回目）→ 初回お届けの翌月1日
+*/
+(function subCycleInit() {
+  const todayEl = document.getElementById('subCycleToday');
+  const firstEl = document.getElementById('subCycleFirst');
+  const firstTimeEl = document.getElementById('subCycleFirstTime');
+  const firstLabelEl = document.getElementById('subCycleFirstLabel');
+  const nextEl = document.getElementById('subCycleNext');
+  if (!todayEl || !firstEl || !nextEl) return;
+
+  function fmt(d) { return (d.getMonth() + 1) + '/' + d.getDate(); }
+
+  function update() {
+    const now = new Date();
+    const day = now.getDate();
+
+    // 初回お届け日（翌月 or 翌月5日）
+    const firstDelivery = new Date(now.getFullYear(), now.getMonth(), 1);
+    if (day <= 25) {
+      // 翌月1日
+      firstDelivery.setMonth(firstDelivery.getMonth() + 1);
+      firstDelivery.setDate(1);
+      firstLabelEl.textContent = '翌月1日 お届け';
+    } else {
+      // 26日以降 → 翌月5日
+      firstDelivery.setMonth(firstDelivery.getMonth() + 1);
+      firstDelivery.setDate(5);
+      firstLabelEl.textContent = '翌月5日 お届け';
+    }
+
+    // 次回 = 初回お届けの翌月1日（例: 6/1着 → 7/1, 6/5着 → 7/1）
+    const nextDelivery = new Date(firstDelivery.getFullYear(), firstDelivery.getMonth() + 1, 1);
+
+    todayEl.textContent = fmt(now);
+    firstEl.textContent = fmt(firstDelivery);
+    if (firstTimeEl) firstTimeEl.textContent = '18:00-20:00';
+    nextEl.textContent = fmt(nextDelivery);
+  }
+
+  update();
+  // 日付が変わったとき自動更新（毎時チェック）
+  setInterval(update, 60 * 60 * 1000);
+})();
+
 /* ============ 配送カウントダウンバー（時間帯連動・基本3日後着） ============ */
 (function shipCountdownInit() {
   const CUTOFF_HOUR = 22;        // 22:00 まで受付
