@@ -1738,68 +1738,145 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .ship-cd-cta { width: 100%; justify-content: center; padding: 10px; }
 }
 
-/* ============ 定期便プランミニカード ============ */
+/* ============ 定期便プラン（再設計） ============ */
 .sub-plans-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 24px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+  align-items: stretch;
 }
 .sub-plan-mini {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 24px 20px 22px;
   position: relative;
-  transition: all .2s;
+  transition: all .3s var(--ease-out-expo);
+  display: flex;
+  flex-direction: column;
+}
+.sub-plan-mini:hover {
+  transform: translateY(-4px);
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(212,169,59,0.4);
 }
 .sub-plan-mini.featured {
-  background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.08));
+  background: linear-gradient(160deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04));
   border-color: var(--color-gold);
+  border-width: 2px;
+  padding: 23px 19px 21px;
 }
-.sub-plan-mini:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
 .sub-plan-tag {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: var(--font-display);
-  font-size: 9px;
-  letter-spacing: 0.08em;
+  font-size: 10px;
+  letter-spacing: 0.14em;
   background: var(--color-gold);
   color: var(--color-forest-deep);
-  padding: 2px 8px;
-  border-radius: 8px;
+  padding: 4px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(212,169,59,0.4);
+}
+.sub-plan-cycle {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(212,169,59,0.8);
+  margin-bottom: 8px;
   font-weight: 700;
 }
 .sub-plan-name {
-  font-family: var(--font-jp);
-  font-size: 13px;
+  font-family: var(--font-jp-serif);
+  font-size: 17px;
   font-weight: 700;
-  color: var(--color-gold);
+  color: white;
   margin-bottom: 4px;
 }
-.sub-plan-desc {
+.sub-plan-target {
   font-size: 11px;
-  color: rgba(255,255,255,0.7);
-  line-height: 1.5;
-  margin-bottom: 8px;
+  color: var(--color-gold);
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+.sub-plan-items {
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex: 1;
+}
+.sub-plan-pricing { margin-top: auto; }
+.sub-plan-old-price {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  text-decoration: line-through;
+  letter-spacing: 0.04em;
 }
 .sub-plan-price {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 26px;
   color: white;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
 }
 .sub-plan-price small {
   font-family: var(--font-jp);
   font-size: 11px;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.55);
   margin-left: 2px;
   letter-spacing: 0;
 }
+.sub-plan-savings {
+  display: inline-block;
+  margin-top: 4px;
+  background: rgba(255, 184, 28, 0.18);
+  color: #FFB81C;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+}
+.sub-plan-mini.featured .sub-plan-price { color: var(--color-gold); }
+
+/* 初月50%OFF メインバナー */
+.sub-promo-banner {
+  background: linear-gradient(90deg, var(--color-gold) 0%, #E5B547 100%);
+  color: var(--color-forest-deep);
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-jp);
+}
+.sub-promo-banner-num {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.sub-promo-banner-text {
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.sub-promo-banner-text strong { font-size: 14px; }
+
 @media (max-width: 720px) {
-  .sub-plans-grid { grid-template-columns: 1fr 1fr; }
-  .sub-plan-mini { padding: 12px 12px; }
+  .sub-plans-grid { grid-template-columns: 1fr; gap: 12px; }
 }
 
 /* ============ 商品カード スペック表示 ============ */
@@ -2933,7 +3010,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   padding: 32px 28px;
   position: relative;
   transition: all 0.4s var(--ease-out-expo);
+  display: flex;
+  flex-direction: column;
 }
+.shop-proof-card .shop-proof-text { flex: 1; }
+.shop-proof-card .shop-proof-author { margin-top: auto; }
 .shop-proof-card:hover {
   background: rgba(255,255,255,0.09);
   transform: translateY(-4px);
@@ -3187,9 +3268,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .shop-sub-inner {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 56px;
-  align-items: center;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 48px;
+  align-items: start;
 }
 .shop-sub-right img {
   border: 1px solid rgba(212,169,59,0.15);
@@ -5607,29 +5688,74 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           忙しい平日も、安心できるお肉が冷凍庫にある安心感。<br/>
           いつでもスキップ・変更・解約OK、解約縛りなし。
         </p>
-        <!-- プラン一覧（3プラン） -->
-        <div class="sub-plans-grid" style="grid-template-columns: 1fr 1fr 1fr">
-          <div class="sub-plan-mini">
-            <div class="sub-plan-name">スターター</div>
-            <div class="sub-plan-desc">1-2人 / 約1.2kg<br/>鶏もも + 切り落とし + ミンチ</div>
-            <div class="sub-plan-price">¥6,980<small>/月</small></div>
-          </div>
-          <div class="sub-plan-mini featured">
-            <span class="sub-plan-tag">人気</span>
-            <div class="sub-plan-name">レギュラー</div>
-            <div class="sub-plan-desc">3-4人 / 約2.5kg<br/>鶏もも + 切り落とし + サイコロ + ハンバーグ</div>
-            <div class="sub-plan-price">¥12,800<small>/月</small></div>
-          </div>
-          <div class="sub-plan-mini">
-            <div class="sub-plan-name">ボリューム</div>
-            <div class="sub-plan-desc">5人+ / 約4.0kg<br/>鶏もも×2 + 切り落とし + サーロイン + ハンバーグ×4</div>
-            <div class="sub-plan-price">¥19,800<small>/月</small></div>
+        <!-- 初月50%OFFバナー -->
+        <div class="sub-promo-banner">
+          <div class="sub-promo-banner-num">50<small style="font-size:14px">%</small></div>
+          <div class="sub-promo-banner-text">
+            <strong>初月50%OFF</strong>キャンペーン実施中<br/>
+            <span style="opacity:0.8">どのプランも初回お試し価格でスタート</span>
           </div>
         </div>
+
+        <!-- プラン一覧（3プラン） -->
+        <div class="sub-plans-grid">
+          <div class="sub-plan-mini">
+            <div class="sub-plan-cycle">毎月お届け</div>
+            <div class="sub-plan-name">スターター</div>
+            <div class="sub-plan-target">1-2人家族 / 約1.2kg</div>
+            <div class="sub-plan-items">
+              🐓 平飼い鶏もも 1kg<br/>
+              🥩 和牛切り落とし 200g<br/>
+              🥩 和牛ミンチ 200g
+            </div>
+            <div class="sub-plan-pricing">
+              <div class="sub-plan-old-price">¥6,980</div>
+              <div class="sub-plan-price">¥3,490<small>/初月</small></div>
+              <div class="sub-plan-savings">−¥3,490 OFF</div>
+            </div>
+          </div>
+
+          <div class="sub-plan-mini featured">
+            <span class="sub-plan-tag">人気 No.1</span>
+            <div class="sub-plan-cycle">毎月お届け</div>
+            <div class="sub-plan-name">レギュラー</div>
+            <div class="sub-plan-target">3-4人家族 / 約2.5kg</div>
+            <div class="sub-plan-items">
+              🐓 平飼い鶏もも 1kg<br/>
+              🥩 和牛切り落とし 300g<br/>
+              🥩 サイコロステーキ 300g<br/>
+              🍔 無添加ハンバーグ ×2個
+            </div>
+            <div class="sub-plan-pricing">
+              <div class="sub-plan-old-price">¥12,800</div>
+              <div class="sub-plan-price">¥6,400<small>/初月</small></div>
+              <div class="sub-plan-savings">−¥6,400 OFF</div>
+            </div>
+          </div>
+
+          <div class="sub-plan-mini">
+            <div class="sub-plan-cycle">毎月お届け</div>
+            <div class="sub-plan-name">ボリューム</div>
+            <div class="sub-plan-target">5人以上 / 約4.0kg</div>
+            <div class="sub-plan-items">
+              🐓 平飼い鶏もも 1kg ×2<br/>
+              🥩 和牛切り落とし 500g<br/>
+              🥩 サーロインステーキ 200g<br/>
+              🍔 無添加ハンバーグ ×4個
+            </div>
+            <div class="sub-plan-pricing">
+              <div class="sub-plan-old-price">¥19,800</div>
+              <div class="sub-plan-price">¥9,900<small>/初月</small></div>
+              <div class="sub-plan-savings">−¥9,900 OFF</div>
+            </div>
+          </div>
+        </div>
+
         <div style="display:flex; gap: 10px; flex-wrap: wrap;">
-          <a href="#quiz" class="btn btn-gold" style="font-size:13px">プラン診断する →</a>
+          <a href="#quiz" class="btn btn-gold" style="font-size:13px">あなたのプラン診断 →</a>
           <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
         </div>
+        <p style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:12px">※ 2回目以降は通常価格 / いつでもスキップ・解約OK / 解約縛りなし</p>
       </div>
       <div class="shop-sub-right">
         <div class="shop-sub-features">
@@ -5765,97 +5891,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 今週のメニュー（エディトリアル） ========= -->
+<!-- ========= 今週のメニュー（自動週次切替・スタッフ編集対応） ========= -->
 <section class="weekly-menu">
   <div class="container">
     <div class="weekly-menu-head">
       <div>
-        <p class="weekly-menu-eyebrow">THIS WEEK'S MENU</p>
-        <h2 class="weekly-menu-title">今週のメニュー、<br/>材料はこちらで。</h2>
+        <p class="weekly-menu-eyebrow">THIS WEEK'S MENU · <span id="weekLabel"></span></p>
+        <h2 class="weekly-menu-title">今週のごはんは、<br/>江田畜産で。</h2>
       </div>
-      <p class="weekly-menu-sub">「今夜何作ろう」をなくす、毎週の献立提案。<br/>材料はワンクリックでカートに揃います。</p>
+      <p class="weekly-menu-sub">「今夜何作ろう」をなくす、毎週入れ替わる5メニュー。<br/>材料はワンクリックでカートに揃います。</p>
     </div>
-    <div class="menu-grid">
-      <!-- フィーチャー（大） -->
-      <div class="menu-card feature" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('public/images/products/drive/sirloin.jpg')"></div>
-        <span class="menu-card-day">SAT 週末</span>
-        <span class="menu-card-time-pill">30分</span>
-        <div class="menu-card-content">
-          <h3 class="menu-card-title">サーロインステーキと付け合わせ野菜</h3>
-          <p class="menu-card-desc">前日から冷蔵庫で解凍。中火で片面60秒ずつ、塩のみで仕上げる週末のごちそう。クレソンとマッシュポテトを添えて、家で完結する贅沢な時間。</p>
-          <div class="menu-card-ingredients">
-            <span class="menu-ingredient">サーロイン 200g×2</span>
-            <span class="menu-ingredient">塩・胡椒</span>
-            <span class="menu-ingredient">クレソン</span>
-          </div>
-          <div class="menu-card-cta-row">
-            <span class="menu-card-cta">材料を揃える</span>
-            <span class="menu-card-arrow">→</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 月曜 -->
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('public/images/products/drive/kiriotoshi.jpg')"></div>
-        <span class="menu-card-day">MON</span>
-        <span class="menu-card-time-pill">15分</span>
-        <div class="menu-card-content">
-          <h3 class="menu-card-title">和牛切り落としの牛丼</h3>
-          <p class="menu-card-desc">解凍5分、煮るだけ。週始まりのスタミナに。</p>
-          <div class="menu-card-cta-row">
-            <span class="menu-card-cta">レシピ</span>
-            <span class="menu-card-arrow">→</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 水曜 -->
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('public/images/products/drive/chicken-thigh.jpg')"></div>
-        <span class="menu-card-day">WED</span>
-        <span class="menu-card-time-pill">20分</span>
-        <div class="menu-card-content">
-          <h3 class="menu-card-title">平飼い鶏もも 唐揚げ</h3>
-          <p class="menu-card-desc">脂少なめで罪悪感なし。子どもがおかわり。</p>
-          <div class="menu-card-cta-row">
-            <span class="menu-card-cta">レシピ</span>
-            <span class="menu-card-arrow">→</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 木曜 -->
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('public/images/products/drive/hamburg.jpg')"></div>
-        <span class="menu-card-day">THU</span>
-        <span class="menu-card-time-pill">15分</span>
-        <div class="menu-card-content">
-          <h3 class="menu-card-title">無添加 和牛ハンバーグ</h3>
-          <p class="menu-card-desc">凍ったまま蓋して15分。週半ばの救世主。</p>
-          <div class="menu-card-cta-row">
-            <span class="menu-card-cta">レシピ</span>
-            <span class="menu-card-arrow">→</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 金曜 -->
-      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
-        <div class="menu-card-img" style="background-image:url('public/images/products/drive/wagyu-slice.jpg')"></div>
-        <span class="menu-card-day">FRI</span>
-        <span class="menu-card-time-pill">25分</span>
-        <div class="menu-card-content">
-          <h3 class="menu-card-title">和牛のしゃぶしゃぶ</h3>
-          <p class="menu-card-desc">出汁にくぐらせて2秒。一週間のごほうび。</p>
-          <div class="menu-card-cta-row">
-            <span class="menu-card-cta">レシピ</span>
-            <span class="menu-card-arrow">→</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="menu-grid" id="weeklyMenuGrid"></div>
   </div>
 </section>
 
@@ -6642,6 +6688,134 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </div>
 
 <script>
+/* ============ 全商品にスペック表示を自動補完 ============ */
+(function autoFillProductStats() {
+  // data-label別のスペックマスタ
+  const STATS = {
+    'SIRLOIN':         { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '冷蔵庫で約8時間', tag: 'プレミアム部位' },
+    'RED MEAT':        { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,360', portions: '真空 1枚 250g', thaw: '冷蔵庫で約6時間', tag: '脂少なめ・健康志向' },
+    'CUBE STEAK':      { meals: '1〜2人前', perMeal: '¥500',   per100g: '¥1,000', portions: '真空 1袋',      thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短' },
+    'WAGYU SLICE':     { meals: '3〜4人前', perMeal: '¥650',   per100g: '¥1,300', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'しゃぶしゃぶ・すき焼き' },
+    'KIRIOTOSHI':      { meals: '3〜4人前', perMeal: '¥400',   per100g: '¥800',   portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短料理' },
+    'YAKINIKU BRISKET':{ meals: '2〜3人前', perMeal: '¥633',   per100g: '¥1,267', portions: '真空 1袋 150g', thaw: '冷蔵庫で約4時間', tag: '焼肉・週末ごちそう' },
+    'RAW HAM':         { meals: '2人前',    perMeal: '¥625',   per100g: '¥3,125', portions: '個包装 40g',   thaw: '冷蔵庫で30分',    tag: '無添加・ワインに' },
+    'HAMBURG':         { meals: '1人前',    perMeal: '¥760',   per100g: '¥760',   portions: '個包装 1個 100g',thaw: '凍ったまま調理OK',tag: '無添加・子ども人気' },
+    'ROAST BEEF':      { meals: '3〜4人前', perMeal: '¥750',   per100g: '¥3,000', portions: '真空 100g',    thaw: '冷蔵庫で約4時間', tag: 'パーティー前菜' },
+    'OFFAL':           { meals: '2〜3人前', perMeal: '¥280',   per100g: '¥560',   portions: '真空 1袋 150g', thaw: '冷蔵庫で約3時間', tag: '焼肉・もつ鍋に' },
+    'CHICKEN BREAST':  { meals: '3〜4人前', perMeal: '¥320',   per100g: '¥256',   portions: '真空 1袋 500g', thaw: '冷蔵庫で約6時間', tag: '高たんぱく・抗生物質不使用' },
+    'CHICKEN THIGH':   { meals: '3〜4人前', perMeal: '¥320',   per100g: '¥256',   portions: '真空 1袋 500g', thaw: '冷蔵庫で約6時間', tag: '子ども人気・万能' },
+    'CHICKEN MINCED':  { meals: '3〜4人前', perMeal: '¥250',   per100g: '¥333',   portions: '真空 1袋 300g', thaw: '冷蔵庫で約3時間', tag: 'そぼろ丼・離乳食' },
+    'FILLET':          { meals: '1〜2人前', perMeal: '¥1,750', per100g: '¥1,750', portions: '真空 1枚 200g', thaw: '冷蔵庫で約6時間', tag: '希少部位・最高級' }
+  };
+
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach(card => {
+    if (card.querySelector('.product-stats')) return; // すでにstatsあり
+    const imgEl = card.querySelector('.product-card-img');
+    const label = imgEl ? imgEl.getAttribute('data-label') : '';
+    const s = STATS[label];
+    if (!s) return;
+
+    const desc = card.querySelector('.product-desc');
+    if (!desc) return;
+
+    const stats = document.createElement('div');
+    stats.className = 'product-stats';
+    stats.innerHTML = `
+      <div class="product-stat-item"><span class="product-stat-icon">🍽</span><strong>${s.meals}</strong></div>
+      <div class="product-stat-item"><span class="product-stat-icon">💴</span>1食 <strong>${s.perMeal}</strong></div>
+      <div class="product-stat-item"><span class="product-stat-icon">⚖</span>100g <strong>${s.per100g}</strong></div>
+      <div class="product-stat-item"><span class="product-stat-icon">📦</span><strong>${s.portions}</strong></div>
+      <div class="product-stat-item wide"><span class="product-stat-icon">⏱</span><strong>${s.thaw}</strong>で解凍 / ${s.tag}</div>
+    `;
+    desc.insertAdjacentElement('afterend', stats);
+  });
+})();
+
+/* ============ 今週のメニュー（自動週次切替） ============ */
+(function weeklyMenuInit() {
+  // レシピプール（料理名・完成料理写真・所要時間・主要食材）
+  const RECIPES = [
+    { day: '週末', day_en: 'SAT', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
+    { day: '月曜', day_en: 'MON', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1581450840806-89720d70b5e0?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', '玉ねぎ'] },
+    { day: '火曜', day_en: 'TUE', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
+    { day: '水曜', day_en: 'WED', time: 15, name: '無添加 和牛ハンバーグ', desc: '凍ったまま15分蒸し焼き。化学調味料ゼロ。', img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛ハンバーグ', '玉ねぎ'] },
+    { day: '木曜', day_en: 'THU', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1583224994076-ae0acae7c45e?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
+    { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1604908554007-c98caf57e29c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
+    { day: '週末', day_en: 'SAT', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
+    { day: '日曜', day_en: 'SUN', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
+    { day: '月曜', day_en: 'MON', time: 25, name: '和牛入りカレー', desc: '切り落としで贅沢に。子ども喜ぶ平日メイン。', img: 'https://images.unsplash.com/photo-1604908815776-b1e1d6c1b32a?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', '玉ねぎ', '人参'] },
+    { day: '火曜', day_en: 'TUE', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1604908554007-c98caf57e29c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
+    { day: '水曜', day_en: 'WED', time: 20, name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1572448862527-d3c904757de6?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', 'じゃがいも', '人参'] },
+    { day: '木曜', day_en: 'THU', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'https://images.unsplash.com/photo-1574484184081-afea8a62f9c5?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
+    { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
+    { day: '週末', day_en: 'SAT', time: 35, name: 'ローストチキン', desc: '丸鶏感覚で。週末ホムパに。', img: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', 'ローズマリー', '塩'], featured: true },
+    { day: '月曜', day_en: 'MON', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'https://images.unsplash.com/photo-1607623488728-32ff7a8c8de0?auto=format&fit=crop&w=900&q=85', ingredients: ['サイコロステーキ', '塩'] }
+  ];
+
+  // ISO週番号でシード（同じ週は同じメニュー）
+  function getISOWeek(d) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function pickRecipes(weekNum) {
+    // スタッフ編集オーバーライド優先
+    try {
+      const override = JSON.parse(localStorage.getItem('eda-weekly-menu-override') || 'null');
+      if (override && Array.isArray(override) && override.length === 5) return override;
+    } catch (e) {}
+
+    // 週シードでシャッフル → 5つ選択（featured 1 + others 4）
+    const featured = RECIPES.filter(r => r.featured);
+    const others = RECIPES.filter(r => !r.featured);
+    const seed = weekNum;
+    function pickN(arr, n, offset) {
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        out.push(arr[(seed + offset + i * 3) % arr.length]);
+      }
+      return out;
+    }
+    const picked = [pickN(featured, 1, 0)[0], ...pickN(others, 4, 1)];
+    return picked;
+  }
+
+  function render() {
+    const grid = document.getElementById('weeklyMenuGrid');
+    const label = document.getElementById('weekLabel');
+    if (!grid) return;
+    const now = new Date();
+    const weekNum = getISOWeek(now);
+    if (label) label.textContent = `${now.getMonth() + 1}月第${Math.ceil(now.getDate() / 7)}週`;
+    const recipes = pickRecipes(weekNum);
+    grid.innerHTML = recipes.map((r, i) => `
+      <div class="menu-card${i === 0 ? ' feature' : ''}" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('${r.img}')"></div>
+        <span class="menu-card-day">${r.day_en} ${r.day}</span>
+        <span class="menu-card-time-pill">${r.time}分</span>
+        <div class="menu-card-content">
+          <h3 class="menu-card-title">${r.name}</h3>
+          <p class="menu-card-desc">${r.desc}</p>
+          ${i === 0 ? `
+          <div class="menu-card-ingredients">
+            ${r.ingredients.map(ing => `<span class="menu-ingredient">${ing}</span>`).join('')}
+          </div>` : ''}
+          <div class="menu-card-cta-row">
+            <span class="menu-card-cta">${i === 0 ? '材料を揃える' : 'レシピ'}</span>
+            <span class="menu-card-arrow">→</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  render();
+  window._refreshWeeklyMenu = render;
+})();
+
 /* ============ 診断クイズ ============ */
 (function quizInit() {
   const questions = [
