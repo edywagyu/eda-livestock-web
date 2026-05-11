@@ -1650,15 +1650,44 @@ function enterApp() {
   loadDashboard();
 }
 
-/* ================ DEMO DATA ================ */
+/* ================ DEMO DATA ================
+   shop.html / subscription.html と同期した実商品リスト
+   ここで編集 → 保存ボタンで GAS 経由 Google Sheet に反映 → shop.html へ自動同期
+   ================================================================ */
 const DEMO_PRODUCTS = [
-  { productId: 'P001', variantId: 'WAGYU-SL-500', name: '宮崎和牛 サーロイン', variant: '500g', price: 12800, stock: 12, temp: '冷凍', category: '和牛', sku: 'EDA-WGY-SL-500', weight: 500, description: '霜降りの美しさと豊かな旨味。江田畜産自社牧場で丁寧に肥育した黒毛和牛サーロインです。', images: ['https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=400', 'https://images.unsplash.com/photo-1558030006-450675393462?w=400'] },
-  { productId: 'P002', variantId: 'WAGYU-RB-300', name: '宮崎和牛 リブロース', variant: '300g', price: 9800, stock: 4, temp: '冷凍', category: '和牛', sku: 'EDA-WGY-RB-300', weight: 300, description: 'きめ細やかなサシと柔らかな食感。', images: ['https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400'] },
-  { productId: 'P003', variantId: 'WAGYU-FL-200', name: '宮崎和牛 ヒレ', variant: '200g', price: 11500, stock: 7, temp: '冷凍', category: '和牛', sku: 'EDA-WGY-FL-200', weight: 200, description: '最も柔らかな部位。希少価値の高いヒレ肉。', images: ['https://images.unsplash.com/photo-1625937329935-287441885e9b?w=400'] },
-  { productId: 'P004', variantId: 'WAGYU-RP-300', name: '宮崎和牛 ランプ', variant: '300g', price: 7800, stock: 15, temp: '冷凍', category: '和牛', sku: 'EDA-WGY-RP-300', weight: 300, description: '赤身の旨味を堪能できるランプ肉。', images: [] },
-  { productId: 'P005', variantId: 'CHK-MM-1KG',  name: '大分平飼い鶏 もも肉', variant: '1kg', price: 2400, stock: 25, temp: '冷凍', category: '鶏', sku: 'EDA-CHK-MM-1K', weight: 1000, description: '大分県産・無投薬・平飼いで育てた健康な鶏のもも肉。', images: ['https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=400'] },
-  { productId: 'P006', variantId: 'CHK-MN-1KG',  name: '大分平飼い鶏 むね肉', variant: '1kg', price: 1800, stock: 0,  temp: '冷凍', category: '鶏', sku: 'EDA-CHK-MN-1K', weight: 1000, description: 'ヘルシー志向の方に。淡白で柔らかなむね肉。', images: [] },
-  { productId: 'P007', variantId: 'CHK-TB-500',  name: '大分平飼い鶏 手羽先', variant: '500g', price: 1200, stock: 9,  temp: '冷凍', category: '鶏', sku: 'EDA-CHK-TB-500', weight: 500, description: 'ジューシーな手羽先。揚げ物・焼き物に。', images: [] }
+  /* ===== 牛肉 ステーキ系 ===== */
+  { productId: 'P001', variantId: 'SIRLOIN',          name: 'サーロインステーキ',           variant: '1枚 200g',  price: 3400, stock: 18, temp: '冷凍', category: '牛肉', sku: 'EDA-SIRLOIN-200', weight: 200, description: '背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。', images: ['public/images/products/drive/sirloin.jpg'] },
+  { productId: 'P002', variantId: 'RED-MEAT',         name: '赤身ステーキ',                 variant: '1枚 250g',  price: 3400, stock: 15, temp: '冷凍', category: '牛肉', sku: 'EDA-REDMEAT-250', weight: 250, description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。', images: ['public/images/products/drive/red-meat.jpg'] },
+  { productId: 'P003', variantId: 'CUBE-STEAK',       name: 'サイコロステーキ',             variant: '1袋 200g',  price: 1000, stock: 22, temp: '冷凍', category: '牛肉', sku: 'EDA-CUBE-200',    weight: 200, description: 'ステーキ用の正肉を一口大にカット。フライパンで転がすだけ。お子さまにも大人気。', images: ['public/images/products/drive/cube-steak.jpg'] },
+  /* ===== 牛肉 スライス・切り落とし ===== */
+  { productId: 'P004', variantId: 'WAGYU-SLICE',      name: '赤身スライス',                 variant: '1袋 200g',  price: 2600, stock: 12, temp: '冷凍', category: '牛肉', sku: 'EDA-WSLICE-200',  weight: 200, description: '約2mm厚の薄切り。しゃぶしゃぶなら出汁に数秒くぐらせるだけ。すき焼き、冷しゃぶサラダにも。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+  { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: '部位の端材を集めたお得な切り落とし。牛丼・カレー・肉じゃが・炒め物に。冷凍ストックの主役。', images: ['public/images/products/drive/kiriotoshi.jpg'] },
+  /* ===== 牛肉 焼肉系 ===== */
+  { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 150g',  price: 1900, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-150',    weight: 150, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
+  { productId: 'P007', variantId: 'OFFAL',            name: '和牛ホルモン',                 variant: '1袋 150g',  price:  840, stock:  8, temp: '冷凍', category: '牛肉', sku: 'EDA-OFFAL-150',   weight: 150, description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
+  /* ===== 牛肉 加工品 ===== */
+  { productId: 'P008', variantId: 'HAMBURG',          name: '江田和牛ハンバーグ',           variant: '1個 100g',  price:  760, stock: 40, temp: '冷凍', category: '牛肉', sku: 'EDA-HAMBURG-100', weight: 100, description: '和牛100%のシンプル配合。冷蔵庫で半日解凍してからフライパンで蒸し焼き。お子さまの夕食に。', images: ['public/images/products/drive/hamburg.jpg'] },
+  { productId: 'P009', variantId: 'ROAST-BEEF',       name: '和牛ローストビーフ',           variant: '1袋 100g',  price: 3000, stock:  6, temp: '冷凍', category: '牛肉', sku: 'EDA-ROAST-100',   weight: 100, description: '赤身を低温でじっくりロースト。解凍して薄くスライスするだけ。パーティーの前菜に。', images: ['public/images/products/drive/hamburg.jpg'] },
+  { productId: 'P010', variantId: 'RAW-HAM',          name: '和牛生ハム',                   variant: '個包装 40g', price: 1250, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-RAWHAM-40',   weight:  40, description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとはまったく異なる深みのある旨み。ワインに。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+
+  /* ===== 鶏肉 平飼い（標準） ===== */
+  { productId: 'P011', variantId: 'CHK-BREAST',       name: '平飼い鶏 ムネ',                variant: '1袋 500g',  price: 1280, stock: 20, temp: '冷凍', category: '鶏肉', sku: 'EDA-CHK-BREAST-500', weight: 500, description: '高タンパク・低脂肪のムネ肉。無投薬の平飼い鶏は身が締まって旨みが濃い。', images: ['public/images/products/drive/chicken-breast.jpg'] },
+  { productId: 'P012', variantId: 'CHK-THIGH',        name: '平飼い鶏 モモ',                variant: '1袋 500g',  price: 1280, stock: 24, temp: '冷凍', category: '鶏肉', sku: 'EDA-CHK-THIGH-500',  weight: 500, description: '大分県産 平飼い・無投薬。照り焼き・唐揚げ・煮込みまで万能。', images: ['public/images/products/drive/chicken-thigh.jpg'] },
+  { productId: 'P013', variantId: 'CHK-MINCED',       name: '平飼い鶏 ミンチ',              variant: '1袋 300g',  price: 1000, stock: 16, temp: '冷凍', category: '鶏肉', sku: 'EDA-CHK-MINCED-300', weight: 300, description: 'つくね、そぼろ、鶏団子鍋に。無投薬で離乳食にも安心。', images: ['public/images/products/drive/chicken-minced.jpg'] },
+  /* ===== 鶏肉 オーガニック（3倍価格） ===== */
+  { productId: 'P014', variantId: 'ORG-CHK-BREAST',   name: 'オーガニックチキン ムネ',      variant: '1袋 500g',  price: 3840, stock:  6, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-BREAST-500', weight: 500, description: '有機JAS認証相当の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ最高峰の一品。', images: ['public/images/products/drive/chicken-breast.jpg'] },
+  { productId: 'P015', variantId: 'ORG-CHK-THIGH',    name: 'オーガニックチキン モモ',      variant: '1袋 500g',  price: 3840, stock:  6, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-THIGH-500',  weight: 500, description: '有機JAS認証相当の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。', images: ['public/images/products/drive/chicken-thigh.jpg'] },
+  { productId: 'P016', variantId: 'ORG-CHK-MINCED',   name: 'オーガニックチキン ミンチ',    variant: '1袋 300g',  price: 3000, stock:  5, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-MINCED-300', weight: 300, description: '有機JAS認証相当の無農薬飼料・無投薬。最高級のオーガニック鶏ミンチ。離乳食・つくねに。', images: ['public/images/products/drive/chicken-minced.jpg'] },
+
+  /* ===== ギフト（送料込み） ===== */
+  { productId: 'P017', variantId: 'GIFT-MATSU',       name: 'サーロインステーキ ギフト【松】', variant: '2枚 500g', price: 16800, stock: 10, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-MATSU-500', weight: 500, description: '江田畜産の自慢のサーロインステーキを2枚（合計500g）。健康志向の方への贈り物として。送料込み・税込。', images: ['public/images/products/drive/sirloin.jpg'] },
+  { productId: 'P018', variantId: 'GIFT-TAKE',        name: '赤身ステーキ ギフト【竹】',       variant: '2枚 500g', price: 12800, stock: 12, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-TAKE-500',  weight: 500, description: '脂身少なく鉄分・たんぱく質がしっかり摂れる赤身ステーキを2枚（合計500g）。健康を気遣う方へ。送料込み・税込。', images: ['public/images/products/drive/red-meat.jpg'] },
+
+  /* ===== 有機JAS 黒毛和牛（2026年夏 解禁・予約受付前） ===== */
+  { productId: 'P019', variantId: 'ORG-WAGYU-SIRLOIN', name: '有機JAS サーロイン',           variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-SIRLOIN', weight: 0, description: '2026年夏 解禁。世界初の有機JAS認証 黒毛和牛サーロイン。月間20頭限定出荷。', images: [] },
+  { productId: 'P020', variantId: 'ORG-WAGYU-RIBEYE',  name: '有機JAS リブアイ',             variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-RIBEYE',  weight: 0, description: '2026年夏 解禁。霜降りと赤身の完璧なバランス。希少な有機リブアイ。', images: [] },
+  { productId: 'P021', variantId: 'ORG-WAGYU-FILLET',  name: '有機JAS ヒレ',                 variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-FILLET',  weight: 0, description: '2026年夏 解禁。希少部位のヒレ、有機JAS認証。最高峰の一品。', images: [] },
+  { productId: 'P022', variantId: 'ORG-WAGYU-SLICE',   name: '有機JAS しゃぶしゃぶ用',       variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-SLICE',   weight: 0, description: '2026年夏 解禁。有機JAS認証のしゃぶしゃぶ用赤身スライス。', images: [] }
 ];
 const DEMO_ORDERS = [
   { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd', paymentMethod: 'Visa **** 4242', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 18 },
@@ -2916,11 +2945,14 @@ function renderProductForm(p) {
       <div class="form-field">
         <label>カテゴリ</label>
         <select id="pf-category">
-          <option ${p.category === '和牛' ? 'selected' : ''}>和牛</option>
-          <option ${p.category === '鶏' ? 'selected' : ''}>鶏</option>
-          <option ${p.category === '加工品' ? 'selected' : ''}>加工品</option>
-          <option ${p.category === 'セット' ? 'selected' : ''}>セット</option>
+          <option ${p.category === '牛肉' ? 'selected' : ''}>牛肉</option>
+          <option ${p.category === '鶏肉' ? 'selected' : ''}>鶏肉</option>
+          <option ${p.category === '有機和牛' ? 'selected' : ''}>有機和牛</option>
           <option ${p.category === 'ギフト' ? 'selected' : ''}>ギフト</option>
+          <option ${p.category === 'セット' ? 'selected' : ''}>セット</option>
+          <option ${p.category === '加工品' ? 'selected' : ''}>加工品</option>
+          <option ${p.category === '和牛' ? 'selected' : ''}>和牛（旧）</option>
+          <option ${p.category === '鶏' ? 'selected' : ''}>鶏（旧）</option>
         </select>
       </div>
       <div class="form-field">
