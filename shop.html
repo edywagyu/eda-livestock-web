@@ -8706,7 +8706,7 @@ function toggleUnboxingSound() {
             <span class="gift-product-vol">合計約 800g</span>
             <span class="gift-product-price">¥14,800</span>
           </div>
-          <a href="contact.html?subject=ギフト" class="gift-product-cta">詳細を見る →</a>
+          <button onclick="orderGift('matsu', 14800, 'ステーキ&ハンバーグセット【松】')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
       </div>
       <div class="gift-product-card">
@@ -8720,7 +8720,7 @@ function toggleUnboxingSound() {
             <span class="gift-product-vol">合計約 600g</span>
             <span class="gift-product-price">¥9,800</span>
           </div>
-          <a href="contact.html?subject=ギフト" class="gift-product-cta">詳細を見る →</a>
+          <button onclick="orderGift('take', 9800, 'ステーキ&ハンバーグセット【竹】')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
       </div>
     </div>
@@ -9149,12 +9149,14 @@ function toggleUnboxingSound() {
       });
     }
 
-    /* --- Checkout → Shopify cart permalink --- */
+    /* --- Checkout → unified checkout.html ---
+       cart は localStorage に既に保存済み（eda-cart）。
+       checkout.html がそこから読み込み、モード自動判定する。 */
     if (checkBtn) {
       checkBtn.addEventListener('click', () => {
         if (items.length === 0) return;
-        const parts = items.map(i => `${i.variantId}:${i.qty}`).join(',');
-        window.location.href = `${STORE}/cart/${parts}`;
+        save(); // 念のため最新を保存
+        location.href = 'checkout.html';
       });
     }
 
@@ -9170,6 +9172,23 @@ function toggleUnboxingSound() {
       renderCart();
       openCart();
     }
+
+    /* --- Gift order: 単品/セットをギフトモードでcheckoutへ --- */
+    window.orderGift = function(giftId, price, title) {
+      // 一旦既存カートに gift item を追加して checkout?mode=gift で開く
+      const giftItem = {
+        variantId: 'gift-' + giftId,
+        price: price,
+        title: title,
+        variant: 'ギフトセット',
+        img: 'public/images/products/drive/gift-box.jpg',
+        qty: 1,
+        gift: true
+      };
+      items.push(giftItem);
+      save();
+      location.href = 'checkout.html?mode=gift';
+    };
 
     /* --- Initialize product cards --- */
     document.querySelectorAll('.product-card[data-variants]').forEach(card => {
