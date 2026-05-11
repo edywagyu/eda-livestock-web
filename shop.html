@@ -1919,6 +1919,54 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .hero-scroll-hint { display: none; }
 }
 
+/* ============ 📱 モバイル セクションクイックナビ ============ */
+.shop-quicknav { display: none; }
+@media (max-width: 720px) {
+  .shop-quicknav {
+    display: block;
+    position: sticky;
+    top: 56px;
+    z-index: 95;
+    background: rgba(15, 61, 46, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212, 169, 59, 0.25);
+    padding: 8px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .shop-quicknav-inner {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 16px;
+  }
+  .shop-quicknav-inner::-webkit-scrollbar { display: none; }
+  .shop-quicknav-pill {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(212,169,59,0.3);
+    color: var(--color-gold);
+    font-family: var(--font-jp);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 14px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+  }
+  .shop-quicknav-pill:hover,
+  .shop-quicknav-pill:active {
+    background: var(--color-gold);
+    color: var(--color-forest-deep);
+    border-color: var(--color-gold);
+  }
+}
+
 /* ================ TRUST STRIP ================ */
 .shop-trust-strip {
   background: linear-gradient(180deg, #FAF6EE 0%, #F2EBD9 100%);
@@ -2991,22 +3039,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .quiz-gift-price-label {
   font-family: var(--font-display);
-  font-size: 9.5px;
+  font-size: 10.5px;
   letter-spacing: 0.2em;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.92);  /* 60→92% で読みやすく */
   font-weight: 700;
   text-transform: uppercase;
 }
 .quiz-gift-price-strike {
   font-family: var(--font-display);
   font-size: 22px;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255,255,255,0.78);   /* 55→78% で視認性UP */
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   text-decoration: line-through;
-  text-decoration-color: rgba(255,200,90,0.6);
-  text-decoration-thickness: 2px;
+  text-decoration-color: rgba(255,107,107,0.85);  /* 赤線で打消し */
+  text-decoration-thickness: 2.5px;
 }
 .quiz-gift-price-now {
   font-family: var(--font-display);
@@ -6941,6 +6989,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .cart-drawer-foot { padding: 16px 20px; }
   .product-buy { flex-direction: column; }
   .variant-select { width: 100%; }
+
+  /* タップ領域確保（44pt 最低基準） */
+  .btn-add-cart { min-height: 44px; padding: 12px 16px; font-size: 13px; }
+  .variant-select { min-height: 44px; padding: 12px 32px 12px 12px; font-size: 13px; }
+  .variant-select--static { min-height: 44px; padding: 12px 32px 12px 12px; font-size: 13px; }
+  .btn { min-height: 44px; }
+  .ship-cd-cta { min-height: 44px; padding: 12px 18px; }
+  .tab, .sub-tab, .status-pill { min-height: 36px; }
+  .quiz-option { min-height: 52px; }
 }
 
 /* ============================================================
@@ -7038,6 +7095,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .sub-head-bullets { font-size: 11.5px; gap: 5px 8px; }
   .sub-head-bullets span { padding: 3px 10px; }
   .sub-head-fine { font-size: 10.5px; }
+  .shop-sub-plans-wrap { margin-bottom: 20px; }
+  .sub-plans-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 10px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -16px 0;
+    padding: 12px 16px 8px;
+  }
+  .sub-plans-grid::-webkit-scrollbar { display: none; }
+  .sub-plan-mini {
+    flex: 0 0 78vw;
+    scroll-snap-align: start;
+  }
   .shop-sub-band { margin-bottom: 24px; gap: 10px; }
   .sub-promo-banner { padding: 14px 16px; gap: 14px; }
   .sub-promo-banner-num { font-size: 38px; }
@@ -7083,14 +7157,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .compare-section h2 { font-size: 22px !important; }
   .compare-row { padding: 10px 12px; font-size: 11.5px; }
 
-  /* Why Eda (about-wagyu) */
+  /* Why Eda — 横スワイプ化（縦圧縮） */
   .wagyu-guide { padding: 36px 0 !important; }
-  .wagyu-guide-head { margin-bottom: 28px !important; }
+  .wagyu-guide-head { margin-bottom: 24px !important; }
   .wagyu-guide-title { font-size: 22px !important; margin: 12px 0 12px !important; }
   .wagyu-guide-lead { font-size: 12.5px; line-height: 1.7; }
   .wagyu-guide-lead br { display: none; }
-  .wagyu-guide-grid { gap: 12px !important; }
-  .wagyu-guide-card { padding: 20px 18px !important; gap: 12px; }
+  .wagyu-guide-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -16px;
+    padding: 4px 16px 8px;
+  }
+  .wagyu-guide-grid::-webkit-scrollbar { display: none; }
+  .wagyu-guide-card {
+    padding: 20px 18px !important;
+    gap: 12px;
+    flex: 0 0 78vw;
+    scroll-snap-align: start;
+  }
   .wagyu-guide-card-head { padding-bottom: 12px; }
   .wagyu-guide-num-label { font-size: 10px; }
   .wagyu-guide-icon { width: 32px; height: 32px; }
@@ -7109,15 +7199,67 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .stat-band-sub { font-size: 9.5px; }
   .stats-band-cta { margin-top: 28px; }
 
-  /* 農場見学 (science) */
+  /* 農場見学 (science) — 横スワイプ */
   .wagyu-science { padding: 36px 0 !important; }
   .wagyu-science-head { margin-bottom: 24px !important; }
   .wagyu-science-head h2 { font-size: 22px !important; margin: 12px 0 8px !important; }
   .wagyu-science-head p { font-size: 12.5px !important; line-height: 1.7 !important; }
   .wagyu-science-head p br { display: none; }
+  .science-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 24px -16px !important;
+    padding: 4px 16px 8px;
+  }
+  .science-grid::-webkit-scrollbar { display: none; }
+  .science-stat {
+    flex: 0 0 78vw;
+    scroll-snap-align: start;
+  }
   .science-stat h4 { font-size: 14px; }
   .science-stat p { font-size: 11.5px; line-height: 1.7; }
   .science-stat p br { display: none; }
+
+  /* 保存ガイド — 横スワイプ */
+  .guide-grid {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 12px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -16px;
+    padding: 4px 16px 8px;
+  }
+  .guide-grid::-webkit-scrollbar { display: none; }
+  .guide-card {
+    flex: 0 0 78vw;
+    scroll-snap-align: start;
+  }
+
+  /* 定期便 4特徴 — 横スワイプ */
+  .shop-sub-features {
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 10px !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -16px 20px !important;
+    padding: 4px 16px 8px;
+  }
+  .shop-sub-features::-webkit-scrollbar { display: none; }
+  .shop-sub-feature {
+    flex: 0 0 60vw;
+    scroll-snap-align: start;
+  }
 
   /* お客様の声 */
   .shop-proof { padding: 32px 0 !important; }
@@ -7378,6 +7520,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </div>
   </div>
 </div>
+
+<!-- 📱 モバイル専用 セクションクイックナビ（横スクロール） -->
+<nav class="shop-quicknav" aria-label="ショップ内ナビ">
+  <div class="shop-quicknav-inner">
+    <a href="#products" class="shop-quicknav-pill">🥩 商品一覧</a>
+    <a href="#subscription" class="shop-quicknav-pill">⭐ 定期便</a>
+    <a href="#quiz" class="shop-quicknav-pill">🔍 診断</a>
+    <a href="#gift-highlight" class="shop-quicknav-pill">🎁 ギフト</a>
+    <a href="#reviews" class="shop-quicknav-pill">💬 レビュー</a>
+    <a href="#faq" class="shop-quicknav-pill">❓ FAQ</a>
+  </div>
+</nav>
 
 <div class="shop-main-wrap">
 
@@ -8013,8 +8167,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </h2>
         <p class="sub-head-bullets">
           <span><strong>初月50%OFF</strong></span>
-          <span><strong>2回目以降も最大15%OFF</strong></span>
           <span><strong>毎回送料無料</strong></span>
+          <span><strong>解約縛りなし</strong></span>
         </p>
         <p class="sub-head-fine">
           月1回 自動でお届け / いつでもスキップ・解約OK
@@ -8135,7 +8289,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <a href="#quiz" class="btn btn-gold" style="font-size:13px">あなたのプラン診断 →</a>
         <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
       </div>
-      <p class="shop-sub-fine">※ 2回目以降は通常価格 / いつでもスキップ・解約OK / 解約縛りなし</p>
+      <p class="shop-sub-fine">※ 初月のみ50%OFF / 2回目以降は通常価格 / いつでもスキップ・解約OK</p>
 
     </div>
   </div>
@@ -9624,21 +9778,6 @@ function toggleUnboxingSound() {
             `).join('')}
           </div>
         ` : ''}
-
-        <div class="quiz-savings">
-          <div class="quiz-savings-row">
-            <span>定期便合計</span>
-            <strong>¥${subscribeTotal.toLocaleString()}/月</strong>
-          </div>
-          <div class="quiz-savings-row strike">
-            <span>単品購入なら</span>
-            <span>¥${retailTotal.toLocaleString()}</span>
-          </div>
-          <div class="quiz-savings-row save">
-            <span>💰 お得額</span>
-            <strong>¥${savings.toLocaleString()} 節約</strong>
-          </div>
-        </div>
 
         <div class="quiz-actions">
           <a href="subscription.html" class="btn btn-gold">${plan}定期便を見る →</a>
