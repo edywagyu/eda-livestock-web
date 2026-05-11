@@ -165,34 +165,42 @@
 
     /* ===== ギフトボックス（送料込み・税込） ===== */
     {
-      productId: 'P017', variantId: 'GIFT-MATSU', sku: 'EDA-GIFT-MATSU-500',
-      name: 'サーロインステーキ ギフト【松】', variant: '2枚 500g',
-      price: 16800, weight: 500, stock: 10, temp: '冷凍',
+      productId: 'P017', variantId: 'GIFT-MATSU', sku: 'EDA-GIFT-MATSU-450',
+      name: 'ヒレステーキ ギフト【松】', variant: '450g',
+      price: 16800, weight: 450, stock: 10, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · MATSU',
-      description: '江田畜産の自慢のサーロインステーキを2枚（合計500g）。健康志向の方への贈り物として。送料込み・税込。',
-      images: ['public/images/products/drive/sirloin.jpg']
+      description: '江田畜産が誇る希少部位、ヒレを450g。きめ細かな赤身で、脂身が少なく食べやすい最上ランク。大切な方への最高峰の贈り物。',
+      images: ['public/images/products/drive/premium-slice.jpg']
     },
     {
-      productId: 'P018', variantId: 'GIFT-TAKE', sku: 'EDA-GIFT-TAKE-500',
-      name: '赤身ステーキ ギフト【竹】', variant: '2枚 500g',
-      price: 12800, weight: 500, stock: 12, temp: '冷凍',
+      productId: 'P018', variantId: 'GIFT-TAKE', sku: 'EDA-GIFT-TAKE-750',
+      name: '赤身ステーキ ギフト【竹】', variant: '750g',
+      price: 12800, weight: 750, stock: 12, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · TAKE',
-      description: '脂身少なく鉄分・たんぱく質がしっかり摂れる赤身ステーキを2枚（合計500g）。健康を気遣う方へ。送料込み・税込。',
+      description: '脂身少なく鉄分・たんぱく質がしっかり摂れる赤身ステーキを750g。健康を気遣う方、ご年配の方、筋トレ層への贈り物に最適。',
       images: ['public/images/products/drive/red-meat.jpg']
+    },
+    {
+      productId: 'P019', variantId: 'GIFT-UME', sku: 'EDA-GIFT-UME-500',
+      name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 100g×5',
+      price: 5980, weight: 500, stock: 18, temp: '冷凍',
+      category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · UME',
+      description: '江田和牛100%・無投薬の手作りハンバーグを5個。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。',
+      images: ['public/images/products/drive/hamburg.jpg']
     },
 
     /* ===== 有機JAS 黒毛和牛（2026年夏 解禁・予約受付前） ===== */
     {
-      productId: 'P019', variantId: 'ORG-WAGYU-SIRLOIN', sku: 'EDA-ORG-WGY-SIRLOIN',
+      productId: 'P020', variantId: 'ORG-WAGYU-SIRLOIN', sku: 'EDA-ORG-WGY-SIRLOIN',
       name: '有機JAS サーロイン', variant: '— —',
       price: 0, weight: 0, stock: 0, temp: '冷凍',
       category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Sirloin',
       isOrganic: true, comingSoon: true,
-      description: '2026年夏 解禁。世界初の有機JAS認証 黒毛和牛サーロイン。月間20頭限定出荷。',
+      description: '世界初の有機JAS認証 黒毛和牛サーロイン。月間20頭限定出荷。',
       images: []
     },
     {
-      productId: 'P020', variantId: 'ORG-WAGYU-RIBEYE', sku: 'EDA-ORG-WGY-RIBEYE',
+      productId: 'P021', variantId: 'ORG-WAGYU-RIBEYE', sku: 'EDA-ORG-WGY-RIBEYE',
       name: '有機JAS リブアイ', variant: '— —',
       price: 0, weight: 0, stock: 0, temp: '冷凍',
       category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Ribeye',
@@ -201,27 +209,18 @@
       images: []
     },
     {
-      productId: 'P021', variantId: 'ORG-WAGYU-FILLET', sku: 'EDA-ORG-WGY-FILLET',
+      productId: 'P022', variantId: 'ORG-WAGYU-FILLET', sku: 'EDA-ORG-WGY-FILLET',
       name: '有機JAS ヒレ', variant: '— —',
       price: 0, weight: 0, stock: 0, temp: '冷凍',
       category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Fillet',
       isOrganic: true, comingSoon: true,
-      description: '2026年夏 解禁。希少部位のヒレ、有機JAS認証。最高峰の一品。',
-      images: []
-    },
-    {
-      productId: 'P022', variantId: 'ORG-WAGYU-SLICE', sku: 'EDA-ORG-WGY-SLICE',
-      name: '有機JAS しゃぶしゃぶ用', variant: '— —',
-      price: 0, weight: 0, stock: 0, temp: '冷凍',
-      category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Slice',
-      isOrganic: true, comingSoon: true,
-      description: '2026年夏 解禁。有機JAS認証のしゃぶしゃぶ用赤身スライス。',
+      description: '希少部位のヒレ、有機JAS認証。最高峰の一品。',
       images: []
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.05.12-001';
+  const PRODUCTS_VERSION = '2026.05.12-003';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
