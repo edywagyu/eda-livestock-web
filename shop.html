@@ -4993,7 +4993,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 16px;
   overflow: hidden;
   display: flex;
-  flex-direction: column; /* 3カラム化で横幅狭いため写真上・本文下に */
+  flex-direction: column;
   gap: 0;
   border: 1px solid var(--color-bone);
   transition: all 0.35s var(--ease-out-expo);
@@ -5004,8 +5004,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-color: var(--color-gold);
 }
 .gift-product-img {
-  flex: 0 0 220px;
-  height: 220px;
+  width: 100%;
+  aspect-ratio: 4/3; /* バランス重視: 縦長ではなく自然な比率に */
   background-size: cover;
   background-position: center;
   position: relative;
@@ -5058,11 +5058,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   line-height: 1.4;
 }
 .gift-product-body p {
-  font-size: 12px;
-  color: var(--color-ink-muted);
+  font-size: 12.5px;
+  color: var(--color-ink); /* 視認性UP（muted→ink） */
   line-height: 1.7;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .gift-product-meta {
   display: flex;
@@ -5084,6 +5088,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-weight: 700;
   color: var(--color-forest);
   letter-spacing: -0.01em;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.gift-product-price small {
+  font-family: var(--font-jp);
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
 }
 .gift-product-cta {
   font-family: var(--font-jp);
@@ -6337,6 +6350,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background: linear-gradient(180deg, #0A1F16, #060F0B) !important;
   border: 1.5px solid rgba(212,169,59,0.35) !important;
   color: white;
+  display: flex;
+  flex-direction: column;
 }
 .product-card--organic-wagyu .product-tag,
 .product-card--organic-wagyu .product-name { color: white !important; }
@@ -6348,16 +6363,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background-image:
     radial-gradient(circle at 50% 50%, rgba(212,169,59,0.15), transparent 70%),
     linear-gradient(135deg, #143D2B, #060F0B) !important;
-  min-height: 280px; /* 縦の中央配置を成立させるため十分な高さ確保 */
 }
 .organic-wagyu-overlay {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
   font-family: var(--font-display);
   font-size: 18px;
   letter-spacing: 0.22em;
@@ -6367,18 +6379,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   backdrop-filter: blur(2px);
   z-index: 1;
 }
-/* COMING SOON テキストを span として包む（中央上）+ ボタンを下に */
-.organic-wagyu-overlay-text {
-  display: block;
+/* 商品名・説明の下、カード下半分の黒エリア中央に CTA を配置 */
+.organic-wagyu-cta-wrap {
+  flex: 1; /* 残り垂直スペースを占有 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 0 4px;
 }
-/* オーバーレイ内に置く時のCTA上書き */
-.organic-wagyu-overlay .organic-wagyu-cta {
-  position: relative;
-  z-index: 2;
-  font-size: 13px;
-  padding: 12px 30px;
-  margin: 0;
-}
+/* CTA 自体（変更なし。中央寄せ＋金色グラデ） */
 .badge-organic-wagyu {
   background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
   color: var(--color-forest-deep) !important;
@@ -8271,7 +8280,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <li><a class="current" href="shop.html">Shop</a></li>
         <li><a href="journal.html">Journal</a></li>
         <li><a href="press.html">Press</a></li>
-        <li><a href="members.html">Members</a></li>
+
       </ul>
     </nav>
     <div class="nav-utils">
@@ -8830,40 +8839,40 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999999" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SIRLOIN">
           <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">
-            <span class="organic-wagyu-overlay-text">COMING SOON</span>
-            <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
-          </div>
+          <div class="organic-wagyu-overlay">COMING SOON</div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Sirloin</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS サーロイン</p>
         <p class="product-desc"><strong>世界初の有機JAS認証</strong>黒毛和牛サーロイン。発売前優先案内。</p>
+        <div class="organic-wagyu-cta-wrap">
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+        </div>
       </article>
 
       <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999998" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC RIBEYE">
           <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">
-            <span class="organic-wagyu-overlay-text">COMING SOON</span>
-            <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
-          </div>
+          <div class="organic-wagyu-overlay">COMING SOON</div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Ribeye</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS リブアイ</p>
         <p class="product-desc">霜降りと赤身の完璧なバランス。希少な有機リブアイ。発売前優先案内。</p>
+        <div class="organic-wagyu-cta-wrap">
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+        </div>
       </article>
 
       <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999997" data-variants='[]'>
         <div class="product-card-img organic-wagyu-img" data-label="ORGANIC FILLET">
           <span class="badge badge-organic">ORGANIC</span>
-          <div class="organic-wagyu-overlay">
-            <span class="organic-wagyu-overlay-text">COMING SOON</span>
-            <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
-          </div>
+          <div class="organic-wagyu-overlay">COMING SOON</div>
         </div>
         <div class="product-tag-row"><span class="product-tag">Organic · Fillet</span><span class="product-price organic-wagyu-price">¥— —</span></div>
         <p class="product-name">有機JAS ヒレ</p>
         <p class="product-desc">希少部位のヒレ、有機JAS認証。最高峰の一品。発売前優先案内。</p>
+        <div class="organic-wagyu-cta-wrap">
+          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+        </div>
       </article>
     </div>
 
@@ -9827,10 +9836,10 @@ function toggleUnboxingSound() {
         </div>
         <div class="gift-product-body">
           <h3>ヒレステーキ ギフト【松】</h3>
-          <p>江田畜産が誇る希少部位、<strong>ヒレ</strong>を<strong>450g</strong>。きめ細かな赤身で、脂身が少なく食べやすい最上ランク。<strong>大切な方への最高峰の贈り物</strong>として喜ばれる、抗生物質・ホルモン剤不使用の本物の和牛ヒレです。</p>
+          <p>江田畜産が誇る希少部位 ヒレ。きめ細かな赤身で、脂身が少なく食べやすい最上ランク。大切な方への最高峰の贈り物に。</p>
           <div class="gift-product-meta">
-            <span class="gift-product-vol">ヒレステーキ / 合計 450g</span>
-            <span class="gift-product-price">¥16,800<small style="display:block;font-size:11px;color:var(--color-ink-muted);font-weight:600;margin-top:2px;">送料込み・税込</small></span>
+            <span class="gift-product-vol">ヒレステーキ 450g</span>
+            <span class="gift-product-price">¥16,800<small>送料込み・税込</small></span>
           </div>
           <button onclick="orderGift('matsu', 16800, 'ヒレステーキ ギフト【松】 450g')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
@@ -9841,10 +9850,10 @@ function toggleUnboxingSound() {
         </div>
         <div class="gift-product-body">
           <h3>赤身ステーキ ギフト【竹】</h3>
-          <p>脂身が少なく<strong>鉄分・たんぱく質</strong>がしっかり摂れる赤身ステーキを<strong>750g</strong>のボリュームで。健康を気遣う方、ご年配の方、筋トレ層への贈り物に最適。無投薬・ホルモン剤不使用で、安心の本物のお肉です。</p>
+          <p>脂身少なめで鉄分・たんぱく質がしっかり摂れる赤身。健康志向・ご年配・筋トレ層への贈り物に。無投薬・ホルモン剤不使用。</p>
           <div class="gift-product-meta">
-            <span class="gift-product-vol">赤身ステーキ / 合計 750g</span>
-            <span class="gift-product-price">¥12,800<small style="display:block;font-size:11px;color:var(--color-ink-muted);font-weight:600;margin-top:2px;">送料込み・税込</small></span>
+            <span class="gift-product-vol">赤身ステーキ 750g</span>
+            <span class="gift-product-price">¥12,800<small>送料込み・税込</small></span>
           </div>
           <button onclick="orderGift('take', 12800, '赤身ステーキ ギフト【竹】 750g')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
@@ -9855,10 +9864,10 @@ function toggleUnboxingSound() {
         </div>
         <div class="gift-product-body">
           <h3>和牛ハンバーグ ギフト【梅】</h3>
-          <p>江田和牛100%・無投薬の<strong>手作りハンバーグを5個</strong>。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。冷凍庫にストックすればいつでも本格和牛の味わいを楽しめる、心遣いの贈り物です。</p>
+          <p>江田和牛100%・無投薬の手作りハンバーグ。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。</p>
           <div class="gift-product-meta">
             <span class="gift-product-vol">和牛ハンバーグ 5個 / 100g×5</span>
-            <span class="gift-product-price">¥5,980<small style="display:block;font-size:11px;color:var(--color-ink-muted);font-weight:600;margin-top:2px;">送料込み・税込</small></span>
+            <span class="gift-product-price">¥5,980<small>送料込み・税込</small></span>
           </div>
           <button onclick="orderGift('ume', 5980, '和牛ハンバーグ ギフト【梅】 5個')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
@@ -9898,8 +9907,8 @@ function toggleUnboxingSound() {
           <li><a href="organic.html">3 Brands</a></li>
           <li><a href="global.html">Global Export</a></li>
           <li><a href="journey.html">Our Journey</a></li>
-          <li><a href="members.html">Members</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
+
+
         </ul>
       </div>
       <div class="footer-col">
@@ -9907,7 +9916,7 @@ function toggleUnboxingSound() {
         <ul>
           <li><a href="shop.html">Online Shop</a></li>
           <li><a href="restaurants.html">Restaurants</a></li>
-          <li><a href="recipes.html">Recipes</a></li>
+
           <li><a href="subscription.html">Subscription</a></li>
           <li><a href="shop.html#gift">Gift</a></li>
         </ul>
