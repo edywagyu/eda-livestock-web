@@ -2294,80 +2294,97 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   flex-shrink: 0;
 }
 
-/* ============ 冷凍庫イメージバンド ============ */
+/* ============ 冷凍庫イメージバンド（フルブリード） ============ */
 .freezer-band {
-  background: linear-gradient(180deg, #FAF7F0 0%, #F5EFE3 100%);
-  padding: 56px 0;
-  border-top: 1px solid var(--color-bone);
-  border-bottom: 1px solid var(--color-bone);
+  padding: 0;
+  background: transparent;
 }
-.freezer-band-inner {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 48px;
-  align-items: center;
-}
-.freezer-band-img {
+.freezer-band-wide {
   position: relative;
-  border-radius: 16px;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
   overflow: hidden;
-  aspect-ratio: 4/3;
-  background: var(--color-bone);
-  box-shadow: 0 12px 32px rgba(15, 61, 46, 0.12);
 }
-.freezer-band-img img {
+.freezer-band-bg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  z-index: 0;
 }
-.freezer-band-img::after {
-  content: '';
+.freezer-band-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(15, 61, 46, 0.1), transparent);
-  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(15,61,46,0.92) 0%, rgba(15,61,46,0.78) 40%, rgba(15,61,46,0.35) 70%, rgba(15,61,46,0.15) 100%);
+  z-index: 1;
 }
-.freezer-band-content h2 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 4vw, 38px);
-  color: var(--color-forest);
+.freezer-band-content {
+  position: relative;
+  z-index: 2;
+  padding: 80px 0;
+  max-width: 720px;
+}
+.freezer-band-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
   margin: 0 0 14px;
-  line-height: 1.35;
+  font-weight: 600;
+}
+.freezer-band-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 5vw, 52px);
+  color: white;
+  margin: 0 0 20px;
+  line-height: 1.25;
   font-weight: 700;
 }
-.freezer-band-content p {
-  color: var(--color-ink-muted);
-  font-size: 15px;
-  line-height: 1.9;
-  margin: 0 0 20px;
+.freezer-band-lead {
+  color: rgba(255,255,255,0.85);
+  font-size: clamp(13px, 1.3vw, 15px);
+  line-height: 1.95;
+  margin: 0 0 32px;
+  max-width: 540px;
 }
-.freezer-band-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.freezer-band-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px 16px;
+  gap: 12px 32px;
+  max-width: 580px;
 }
-.freezer-band-list li {
+.freezer-band-bullet {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--color-ink);
-  line-height: 1.6;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
 }
-.freezer-band-list li::before {
-  content: '✓';
-  color: var(--color-gold-soft);
+.fb-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(212,169,59,0.18);
+  border: 1px solid rgba(212,169,59,0.5);
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
 }
 @media (max-width: 720px) {
-  .freezer-band-inner { grid-template-columns: 1fr; gap: 24px; }
-  .freezer-band-list { grid-template-columns: 1fr; }
-  .freezer-band { padding: 40px 0; }
+  .freezer-band-wide { min-height: 520px; }
+  .freezer-band-content { padding: 64px 0; }
+  .freezer-band-grid { grid-template-columns: 1fr; gap: 10px; }
+  .freezer-band-overlay {
+    background: linear-gradient(180deg, rgba(15,61,46,0.85) 0%, rgba(15,61,46,0.7) 100%);
+  }
 }
 
 /* ================ DIAGNOSTIC QUIZ ================ */
@@ -3097,14 +3114,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ 開封動画セクション ================ */
 .unboxing-section {
   padding: 96px 0;
-  background: linear-gradient(180deg, var(--color-cream) 0%, #F5EFE3 100%);
+  background: var(--color-cream);
 }
 .unboxing-inner {
   max-width: 1080px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 56px;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
   align-items: center;
 }
 .unboxing-video {
@@ -3114,9 +3131,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 28px 72px rgba(15,61,46,0.22), 0 4px 12px rgba(0,0,0,0.08);
-  max-width: 480px;
-  margin: 0 auto;
   width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
 }
 .unboxing-video iframe,
 .unboxing-video video {
@@ -3151,43 +3168,58 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .unboxing-content h2 {
   font-family: var(--font-jp-serif);
-  font-size: clamp(26px, 4vw, 40px);
+  font-size: clamp(22px, 3.2vw, 32px);
   color: var(--color-forest);
   margin: 0 0 16px;
-  line-height: 1.35;
+  line-height: 1.4;
   font-weight: 700;
+  letter-spacing: -0.005em;
 }
 .unboxing-eyebrow {
   font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--color-gold-soft);
-  margin: 0 0 12px;
+  margin: 0 0 14px;
+  font-weight: 600;
 }
 .unboxing-content p {
   color: var(--color-ink-muted);
   line-height: 1.9;
-  font-size: 15px;
-  margin: 0 0 20px;
+  font-size: 14px;
+  margin: 0 0 22px;
 }
 .unboxing-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 24px;
+  margin: 0 0 28px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 .unboxing-features li {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   font-size: 13px;
   color: var(--color-ink);
+  font-weight: 500;
+  padding: 10px 14px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--color-bone);
 }
 .unboxing-features li::before {
   content: '✓';
-  color: var(--color-gold-soft);
+  color: var(--color-gold);
   font-weight: 700;
+  background: var(--color-forest);
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
 }
 @media (max-width: 720px) {
   .unboxing-section { padding: 56px 0; }
@@ -5812,26 +5844,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </header>
 
-<!-- ========= ベネフィットマーキー ========= -->
-<div class="benefit-marquee">
-  <div class="benefit-marquee-track">
-    <span class="benefit-item">🌿 抗生物質・ホルモン剤 不使用</span>
-    <span class="benefit-item">❄️ 賞味期限6ヶ月の冷凍便</span>
-    <span class="benefit-item">🐂 30ヶ月以上のびのび肥育</span>
-    <span class="benefit-item">🐓 大分県産・平飼い鶏</span>
-    <span class="benefit-item">📦 真空小分けパック</span>
-    <span class="benefit-item">🚚 ¥11,000以上で送料無料</span>
-    <span class="benefit-item">⭐ Ritz・Four Seasons 採用品質</span>
-    <span class="benefit-item">🌿 抗生物質・ホルモン剤 不使用</span>
-    <span class="benefit-item">❄️ 賞味期限6ヶ月の冷凍便</span>
-    <span class="benefit-item">🐂 30ヶ月以上のびのび肥育</span>
-    <span class="benefit-item">🐓 大分県産・平飼い鶏</span>
-    <span class="benefit-item">📦 真空小分けパック</span>
-    <span class="benefit-item">🚚 ¥11,000以上で送料無料</span>
-    <span class="benefit-item">⭐ Ritz・Four Seasons 採用品質</span>
-  </div>
-</div>
-
 <!-- ========= SHOP HERO ========= -->
 <section class="shop-hero">
   <img class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/>
@@ -6037,26 +6049,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 冷凍庫イメージバンド ========= -->
+<!-- ========= 冷凍庫イメージバンド（フルブリード） ========= -->
 <section class="freezer-band">
-  <div class="container">
-    <div class="freezer-band-inner">
-      <div class="freezer-band-img">
-        <img src="public/images/products/drive/premium-slice.jpg"
-             alt="江田畜産の真空小分けパック・冷凍ストック"
-             loading="lazy">
-      </div>
-      <div class="freezer-band-content">
-        <h2>冷凍庫に、<br/>江田畜産がある安心。</h2>
-        <p>抗生物質・ホルモン剤 不使用のお肉を、小分けで冷凍ストック。<br/>必要な分だけ解凍して、毎日のごはんに使えます。</p>
-        <ul class="freezer-band-list">
-          <li>平日の夕食が楽になる</li>
-          <li>スーパーで迷う時間ゼロ</li>
-          <li>急な来客にも対応</li>
-          <li>子どもの食事にも安心</li>
-          <li>賞味期限 6ヶ月で日持ち</li>
-          <li>解凍は冷蔵庫で半日</li>
-        </ul>
+  <div class="freezer-band-wide">
+    <img src="public/images/products/drive/premium-slice.jpg"
+         alt="江田畜産の真空小分けパック・冷凍ストック"
+         class="freezer-band-bg"
+         loading="lazy">
+    <div class="freezer-band-overlay"></div>
+    <div class="container freezer-band-content">
+      <div class="freezer-band-eyebrow">FROZEN STOCK</div>
+      <h2 class="freezer-band-title">冷凍庫に、<br/>江田畜産がある安心。</h2>
+      <p class="freezer-band-lead">
+        抗生物質・ホルモン剤 不使用のお肉を、小分けで冷凍ストック。<br/>
+        必要な分だけ解凍して、毎日のごはんに使えます。
+      </p>
+      <div class="freezer-band-grid">
+        <div class="freezer-band-bullet"><span class="fb-check">✓</span>平日の夕食が楽になる</div>
+        <div class="freezer-band-bullet"><span class="fb-check">✓</span>スーパーで迷う時間ゼロ</div>
+        <div class="freezer-band-bullet"><span class="fb-check">✓</span>急な来客にも対応</div>
+        <div class="freezer-band-bullet"><span class="fb-check">✓</span>子どもの食事にも安心</div>
+        <div class="freezer-band-bullet"><span class="fb-check">✓</span>賞味期限 6ヶ月で日持ち</div>
+        <div class="freezer-band-bullet"><span class="fb-check">✓</span>解凍は冷蔵庫で半日</div>
       </div>
     </div>
   </div>
