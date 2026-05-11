@@ -11409,6 +11409,31 @@ body.has-sticky-cart .floating-phone-btn {
   function renderResult(c) {
     const [fam, freq, meat, use, budget] = answers;
 
+    // ★ クイズ回答を localStorage に保存（後で顧客プロフィールに紐付け）
+    try {
+      const quizPayload = {
+        answers: answers,
+        fam: fam, freq: freq, meat: meat, use: use, budget: budget,
+        ts: Date.now(),
+        sessionId: localStorage.getItem('eda-session-id') ||
+          (() => {
+            const s = 'q-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+            localStorage.setItem('eda-session-id', s);
+            return s;
+          })()
+      };
+      localStorage.setItem('eda-quiz-answers', JSON.stringify(quizPayload));
+
+      // GAS にも fire-and-forget で送信
+      const GAS_URL = localStorage.getItem('eda-gas-url') || '';
+      if (GAS_URL) {
+        fetch(GAS_URL + '?action=submit_quiz', {
+          method: 'POST',
+          body: JSON.stringify(quizPayload)
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
     // ベースプラン選択
     let plan, planKey, planPrice, planWeight, planDesc, addons = [];
 

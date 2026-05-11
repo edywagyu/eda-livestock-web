@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>EDA Livestock — 経営ダッシュボード</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A1F16;
+  --bg-2: #061410;
+  --panel: rgba(255,255,255,0.04);
+  --panel-2: rgba(255,255,255,0.07);
+  --border: rgba(212,169,59,0.18);
+  --border-strong: rgba(212,169,59,0.4);
+  --text: #F4F1E6;
+  --text-muted: rgba(244,241,230,0.62);
+  --text-dim: rgba(244,241,230,0.4);
+  --gold: #D4A93B;
+  --gold-soft: #FFE594;
+  --green: #2D8B52;
+  --red: #C8102E;
+  --blue: #4F9DD8;
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.18);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.24);
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(212,169,59,0.06), transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(45,139,82,0.05), transparent 50%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ============ LAYOUT ============ */
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+.sidebar {
+  background: rgba(0,0,0,0.32);
+  border-right: 1px solid var(--border);
+  padding: 28px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
+}
+.brand-mark {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold), #B89030);
+  color: var(--bg-2);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+}
+.brand-text {
+  display: flex; flex-direction: column;
+  line-height: 1.2;
+}
+.brand-text strong { font-size: 14px; letter-spacing: 0.02em; }
+.brand-text small { font-size: 10.5px; color: var(--text-muted); letter-spacing: 0.04em; }
+
+.nav-section { margin-bottom: 20px; }
+.nav-section-label {
+  font-size: 10px; letter-spacing: 0.18em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin: 0 12px 8px;
+  font-weight: 700;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.nav-item:hover { background: var(--panel); color: var(--text); }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(212,169,59,0.18), transparent);
+  color: var(--gold-soft);
+  border-left: 3px solid var(--gold);
+  padding-left: 9px;
+}
+.nav-item-icon { width: 18px; flex-shrink: 0; }
+.nav-item-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.main {
+  padding: 28px 32px 40px;
+  max-width: 1480px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.topbar h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.topbar-meta {
+  display: flex; gap: 14px; align-items: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.sync-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.sync-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.sync-dot.warn { background: #F59E0B; box-shadow: 0 0 8px #F59E0B; }
+.sync-dot.error { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.gas-config-btn {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.gas-config-btn:hover { border-color: var(--gold); color: var(--gold-soft); }
+
+/* ============ KPI CARDS ============ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--gold);
+}
+.kpi.green::before { background: var(--green); }
+.kpi.red::before { background: var(--red); }
+.kpi.blue::before { background: var(--blue); }
+.kpi-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.kpi-value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.kpi-value small { font-size: 14px; color: var(--text-muted); margin-left: 4px; font-weight: 600; }
+.kpi-delta {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.kpi-delta.up { color: var(--green); }
+.kpi-delta.down { color: var(--red); }
+.kpi-sub {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ============ TABS ============ */
+.section { margin-bottom: 32px; }
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap; gap: 10px;
+}
+.section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.section-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.btn-csv {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-csv:hover { border-color: var(--gold); color: var(--gold-soft); }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  overflow: auto;
+}
+
+/* ============ TABLE ============ */
+table.dash {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+table.dash thead th {
+  background: rgba(212,169,59,0.08);
+  color: var(--gold-soft);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+}
+table.dash tbody td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+table.dash tbody tr { transition: background 0.15s; }
+table.dash tbody tr:hover { background: var(--panel-2); }
+table.dash tbody td.num { text-align: right; font-weight: 700; }
+
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.chip-new      { background: rgba(45,139,82,0.18);  color: #5BB87C; }
+.chip-repeater { background: rgba(212,169,59,0.18); color: var(--gold-soft); }
+.chip-vip      { background: linear-gradient(135deg, var(--gold), #B89030); color: var(--bg-2); }
+.chip-dormant  { background: rgba(200,16,46,0.18); color: #FF7A8A; }
+.chip-paid     { background: rgba(45,139,82,0.18); color: #5BB87C; }
+.chip-pending  { background: rgba(245,158,11,0.18); color: #F59E0B; }
+.chip-shipped  { background: rgba(79,157,216,0.18); color: var(--blue); }
+.chip-delivered{ background: rgba(45,139,82,0.30); color: #7BD89E; }
+
+/* ============ GRID 2-COL ============ */
+.grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+
+/* ============ EMPTY STATE ============ */
+.empty {
+  padding: 36px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+.empty-icon { font-size: 32px; margin-bottom: 8px; opacity: 0.5; }
+
+/* ============ SURVEY ANALYSIS ============ */
+.survey-bar {
+  display: grid;
+  grid-template-columns: 140px 1fr 56px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.survey-bar-label { color: var(--text-muted); font-weight: 600; }
+.survey-bar-track {
+  background: rgba(255,255,255,0.06);
+  border-radius: 6px;
+  height: 8px;
+  overflow: hidden;
+}
+.survey-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+  border-radius: 6px;
+}
+.survey-bar-count {
+  text-align: right;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ MODAL ============ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 14px;
+  padding: 24px;
+  width: min(90vw, 480px);
+  max-height: 80vh;
+  overflow: auto;
+}
+.modal h3 { margin: 0 0 14px; font-size: 16px; }
+.modal label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.modal input[type="text"], .modal input[type="url"] {
+  width: 100%; padding: 10px 12px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn {
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-family: inherit;
+}
+.btn:hover { border-color: var(--gold); color: var(--gold-soft); }
+.btn-primary { background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color: var(--bg-2); border-color: var(--gold); }
+.btn-primary:hover { color: var(--bg-2); filter: brightness(1.1); }
+
+/* ============ TAB PANELS ============ */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============ MOBILE ============ */
+@media (max-width: 920px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+    height: auto;
+    border-right: 0;
+    border-top: 1px solid var(--border);
+    z-index: 50;
+    padding: 8px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .brand { display: none; }
+  .nav-section { margin: 0; flex-shrink: 0; }
+  .nav-section-label { display: none; }
+  .nav-item { padding: 8px 10px; font-size: 11px; white-space: nowrap; }
+  .nav-item.active { border-left: 0; border-bottom: 2px solid var(--gold); padding-left: 10px; padding-bottom: 6px; }
+  .main { padding: 16px 14px 80px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 14px; }
+  .kpi-value { font-size: 22px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  table.dash { font-size: 11.5px; }
+  table.dash thead th, table.dash tbody td { padding: 8px 6px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">江</span>
+      <span class="brand-text">
+        <strong>EDA DASHBOARD</strong>
+        <small>経営ビュー</small>
+      </span>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">— 集計 —</div>
+      <a class="nav-item active" data-tab="overview">
+        <span class="nav-item-icon">📊</span> オーバービュー
+      </a>
+      <a class="nav-item" data-tab="orders">
+        <span class="nav-item-icon">📦</span> 注文一覧
+      </a>
+      <a class="nav-item" data-tab="subscriptions">
+        <span class="nav-item-icon">⭐</span> 定期便メンバー
+      </a>
+      <a class="nav-item" data-tab="customers">
+        <span class="nav-item-icon">👥</span> 顧客 (CRM)
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">— データソース —</div>
+      <a class="nav-item" data-tab="survey">
+        <span class="nav-item-icon">📋</span> アンケート分析
+      </a>
+      <a class="nav-item" data-tab="quiz">
+        <span class="nav-item-icon">🧠</span> 診断クイズ結果
+      </a>
+      <a class="nav-item" data-tab="line">
+        <span class="nav-item-icon">💬</span> 公式LINE 集計
+      </a>
+      <a class="nav-item" data-tab="shipping">
+        <span class="nav-item-icon">🚚</span> 配送ステータス
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">— 連携 —</div>
+      <a class="nav-item" href="staff.html" target="_blank">
+        <span class="nav-item-icon">📱</span> STAFF (現場)
+      </a>
+      <a class="nav-item" data-tab="settings">
+        <span class="nav-item-icon">⚙️</span> 設定 (GAS URL)
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">📊 オーバービュー</h1>
+      <div class="topbar-meta">
+        <span class="sync-status" id="syncStatus">
+          <span class="sync-dot" id="syncDot"></span>
+          <span id="syncLabel">同期確認中…</span>
+        </span>
+        <button class="gas-config-btn" onclick="openSettings()">⚙️ GAS設定</button>
+      </div>
+    </header>
+
+    <!-- ============ TAB: OVERVIEW ============ -->
+    <div class="tab-panel active" data-tab-content="overview">
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">今月売上</div>
+          <div class="kpi-value"><span id="kpiRevenue">¥0</span></div>
+          <div class="kpi-delta up" id="kpiRevenueDelta">+0% vs 先月</div>
+          <div class="kpi-sub" id="kpiRevenueSub">注文 0件 / 平均 ¥0</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-label">定期便 アクティブ</div>
+          <div class="kpi-value"><span id="kpiActiveSub">0</span><small>世帯</small></div>
+          <div class="kpi-delta up" id="kpiSubDelta">+0 今月</div>
+          <div class="kpi-sub" id="kpiSubSub">MRR ¥0</div>
+        </div>
+        <div class="kpi blue">
+          <div class="kpi-label">LINE 友だち</div>
+          <div class="kpi-value"><span id="kpiLine">0</span><small>人</small></div>
+          <div class="kpi-delta up" id="kpiLineDelta">+0 今週</div>
+          <div class="kpi-sub" id="kpiLineSub">友だち→顧客 転換率 0%</div>
+        </div>
+        <div class="kpi red">
+          <div class="kpi-label">クイズ完了</div>
+          <div class="kpi-value"><span id="kpiQuiz">0</span><small>件</small></div>
+          <div class="kpi-delta up" id="kpiQuizDelta">+0 今週</div>
+          <div class="kpi-sub" id="kpiQuizSub">完了率 0%</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="section">
+          <div class="section-head">
+            <h2 class="section-title">最新の注文</h2>
+            <span class="section-sub" id="recentOrdersSub">直近 10 件</span>
+          </div>
+          <div class="panel">
+            <table class="dash" id="overviewOrdersTable">
+              <thead>
+                <tr><th>注文番号</th><th>顧客</th><th>金額</th><th>ステータス</th></tr>
+              </thead>
+              <tbody><tr><td colspan="4" class="empty">データ取得待ち…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-head">
+            <h2 class="section-title">アンケート集計（要約）</h2>
+            <span class="section-sub">過去30日</span>
+          </div>
+          <div class="panel" id="overviewSurveyBox">
+            <div class="empty">データ取得待ち…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: ORDERS ============ -->
+    <div class="tab-panel" data-tab-content="orders">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">📦 注文一覧</h2>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span class="section-sub" id="ordersCountLabel">0 件</span>
+            <button class="btn-csv" onclick="exportCSV('orders')">📥 CSV ダウンロード</button>
+          </div>
+        </div>
+        <div class="panel">
+          <table class="dash" id="ordersTable">
+            <thead>
+              <tr>
+                <th>注文番号</th><th>日時</th><th>顧客</th><th>商品</th>
+                <th>合計</th><th>支払</th><th>配送</th><th>モード</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="8" class="empty">データ取得待ち…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SUBSCRIPTIONS ============ -->
+    <div class="tab-panel" data-tab-content="subscriptions">
+      <div class="kpi-grid">
+        <div class="kpi green">
+          <div class="kpi-label">アクティブ</div>
+          <div class="kpi-value"><span id="subActive">0</span></div>
+          <div class="kpi-sub" id="subActiveBreak">ミニ 0 / プロ 0 / VIP 0</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">月間継続率</div>
+          <div class="kpi-value"><span id="subRetention">0</span><small>%</small></div>
+          <div class="kpi-sub">直近3ヶ月平均</div>
+        </div>
+        <div class="kpi blue">
+          <div class="kpi-label">MRR</div>
+          <div class="kpi-value"><span id="subMRR">¥0</span></div>
+          <div class="kpi-sub">月次定期収入</div>
+        </div>
+        <div class="kpi red">
+          <div class="kpi-label">チャーン</div>
+          <div class="kpi-value"><span id="subChurn">0</span></div>
+          <div class="kpi-sub" id="subChurnSub">今月解約 0世帯</div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">定期便メンバー</h2>
+          <button class="btn-csv" onclick="exportCSV('subscriptions')">📥 CSV</button>
+        </div>
+        <div class="panel">
+          <table class="dash" id="subsTable">
+            <thead>
+              <tr><th>顧客名</th><th>プラン</th><th>開始日</th><th>次回お届け</th><th>累計</th><th>状態</th></tr>
+            </thead>
+            <tbody><tr><td colspan="6" class="empty">データ取得待ち…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: CUSTOMERS (CRM) ============ -->
+    <div class="tab-panel" data-tab-content="customers">
+      <div class="kpi-grid">
+        <div class="kpi green"><div class="kpi-label">VIP</div><div class="kpi-value" id="custVIP">0</div></div>
+        <div class="kpi"><div class="kpi-label">リピーター</div><div class="kpi-value" id="custRep">0</div></div>
+        <div class="kpi blue"><div class="kpi-label">新規 (30日)</div><div class="kpi-value" id="custNew">0</div></div>
+        <div class="kpi red"><div class="kpi-label">休眠 (90日+)</div><div class="kpi-value" id="custDormant">0</div></div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">👥 顧客一覧</h2>
+          <button class="btn-csv" onclick="exportCSV('customers')">📥 CSV</button>
+        </div>
+        <div class="panel">
+          <table class="dash" id="custTable">
+            <thead>
+              <tr><th>氏名</th><th>メール / TEL</th><th>累計購入</th><th>最終購入</th><th>セグメント</th><th>LINE</th><th>アンケート</th></tr>
+            </thead>
+            <tbody><tr><td colspan="7" class="empty">データ取得待ち…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SURVEY ============ -->
+    <div class="tab-panel" data-tab-content="survey">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">📋 注文後アンケート（任意回答）</h2>
+          <span class="section-sub" id="surveyCountLabel">回答数 0 件</span>
+        </div>
+        <div class="grid-3">
+          <div class="panel">
+            <h3 style="font-size:13px;margin:0 0 14px;color:var(--gold-soft)">オーガニックへの関心</h3>
+            <div id="surveyOrganicBars"><div class="empty">データ取得待ち…</div></div>
+          </div>
+          <div class="panel">
+            <h3 style="font-size:13px;margin:0 0 14px;color:var(--gold-soft)">流入チャネル</h3>
+            <div id="surveySourceBars"><div class="empty">データ取得待ち…</div></div>
+          </div>
+          <div class="panel">
+            <h3 style="font-size:13px;margin:0 0 14px;color:var(--gold-soft)">よく食べる肉</h3>
+            <div id="surveyMeatsBars"><div class="empty">データ取得待ち…</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-head">
+            <h2 class="section-title">📝 個別回答一覧</h2>
+            <button class="btn-csv" onclick="exportCSV('survey')">📥 CSV</button>
+          </div>
+          <div class="panel">
+            <table class="dash" id="surveyTable">
+              <thead><tr><th>日時</th><th>注文番号</th><th>顧客</th><th>オーガニック</th><th>流入</th><th>好む肉</th></tr></thead>
+              <tbody><tr><td colspan="6" class="empty">データ取得待ち…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: QUIZ ============ -->
+    <div class="tab-panel" data-tab-content="quiz">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">🧠 診断クイズ結果（プラン提案ロジック検証用）</h2>
+          <span class="section-sub" id="quizCountLabel">完了 0 件</span>
+        </div>
+        <div class="grid-3">
+          <div class="panel"><h3 style="font-size:13px;margin:0 0 14px;color:var(--gold-soft)">家族構成</h3><div id="quizFamBars"><div class="empty">—</div></div></div>
+          <div class="panel"><h3 style="font-size:13px;margin:0 0 14px;color:var(--gold-soft)">使用頻度</h3><div id="quizFreqBars"><div class="empty">—</div></div></div>
+          <div class="panel"><h3 style="font-size:13px;margin:0 0 14px;color:var(--gold-soft)">予算感</h3><div id="quizBudgetBars"><div class="empty">—</div></div></div>
+        </div>
+        <div class="section">
+          <div class="section-head">
+            <h2 class="section-title">提案 → 実際購入 マッピング</h2>
+            <button class="btn-csv" onclick="exportCSV('quiz')">📥 CSV</button>
+          </div>
+          <div class="panel">
+            <table class="dash" id="quizTable">
+              <thead><tr><th>日時</th><th>家族</th><th>頻度</th><th>肉</th><th>用途</th><th>予算</th><th>提案プラン</th><th>申込</th></tr></thead>
+              <tbody><tr><td colspan="8" class="empty">データ取得待ち…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: LINE ============ -->
+    <div class="tab-panel" data-tab-content="line">
+      <div class="kpi-grid">
+        <div class="kpi green"><div class="kpi-label">友だち総数</div><div class="kpi-value" id="lineTotal">0</div><div class="kpi-sub" id="lineDelta">+0 今週</div></div>
+        <div class="kpi"><div class="kpi-label">ブロック率</div><div class="kpi-value" id="lineBlock">0<small>%</small></div></div>
+        <div class="kpi blue"><div class="kpi-label">配信開封率</div><div class="kpi-value" id="lineOpen">0<small>%</small></div></div>
+        <div class="kpi red"><div class="kpi-label">クーポン使用</div><div class="kpi-value" id="lineCoupon">0</div></div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">💬 直近の友だち追加</h2>
+          <button class="btn-csv" onclick="exportCSV('line')">📥 CSV</button>
+        </div>
+        <div class="panel">
+          <table class="dash" id="lineTable">
+            <thead><tr><th>追加日時</th><th>表示名</th><th>流入源</th><th>初回購入</th><th>累計</th><th>ステータス</th></tr></thead>
+            <tbody><tr><td colspan="6" class="empty">データ取得待ち…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SHIPPING ============ -->
+    <div class="tab-panel" data-tab-content="shipping">
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">未発送</div><div class="kpi-value" id="shipPending">0</div></div>
+        <div class="kpi blue"><div class="kpi-label">配送中</div><div class="kpi-value" id="shipInTransit">0</div></div>
+        <div class="kpi green"><div class="kpi-label">完了 (今月)</div><div class="kpi-value" id="shipDelivered">0</div></div>
+        <div class="kpi red"><div class="kpi-label">遅延 / 問題</div><div class="kpi-value" id="shipIssue">0</div></div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">🚚 配送ステータス（ヤマト連携）</h2>
+          <button class="btn-csv" onclick="exportCSV('shipping')">📥 CSV</button>
+        </div>
+        <div class="panel">
+          <table class="dash" id="shipTable">
+            <thead><tr><th>注文</th><th>送り先</th><th>追跡番号</th><th>出荷日</th><th>到着予定</th><th>ステータス</th></tr></thead>
+            <tbody><tr><td colspan="6" class="empty">データ取得待ち…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB: SETTINGS ============ -->
+    <div class="tab-panel" data-tab-content="settings">
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">⚙️ ダッシュボード設定</h2>
+        </div>
+        <div class="panel" style="padding:24px">
+          <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px">GAS デプロイURL</label>
+          <input type="url" id="settingsGasUrl" placeholder="https://script.google.com/macros/s/.../exec"
+            style="width:100%;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;margin-bottom:14px">
+          <p style="font-size:11.5px;color:var(--text-dim);margin:0 0 18px">
+            ※ Google Apps Script で公開した Web App の URL を貼り付けてください。<br/>
+            ダッシュボード / shop / subscription / order-complete すべてここから取得した URL を共有します。
+          </p>
+          <div style="display:flex;gap:10px">
+            <button class="btn btn-primary" onclick="saveGasUrl()">保存</button>
+            <button class="btn" onclick="testConnection()">接続テスト</button>
+          </div>
+          <div id="settingsTestResult" style="margin-top:14px;font-size:12px;color:var(--text-muted)"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <h2 class="section-title">📚 GAS エンドポイント仕様</h2>
+        </div>
+        <div class="panel" style="padding:20px;font-size:11.5px;line-height:1.8;font-family:'SFMono-Regular',Consolas,monospace">
+          <strong style="color:var(--gold-soft);font-size:13px">必要なアクション</strong><br/>
+          <span style="color:#5BB87C">GET</span>  ?action=public_products               ・・・ 公開商品一覧<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=dashboard&range=30d            ・・・ ダッシュボード集計<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=orders&from=YYYY-MM-DD          ・・・ 注文一覧<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=subscriptions                  ・・・ 定期便メンバー<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=customers                      ・・・ 顧客CRM<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=survey_responses                ・・・ アンケート結果<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=quiz_responses                  ・・・ 診断回答<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=line_friends                   ・・・ LINE 友だち<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=shipments                      ・・・ 配送状況<br/>
+          <span style="color:#5BB87C">GET</span>  ?action=order_status&session_id=XXX     ・・・ Stripe 後の照会<br/>
+          <br/>
+          <span style="color:#F59E0B">POST</span> ?action=submit_order                    ・・・ 注文書き込み<br/>
+          <span style="color:#F59E0B">POST</span> ?action=submit_quiz                     ・・・ クイズ回答<br/>
+          <span style="color:#F59E0B">POST</span> ?action=submit_survey                   ・・・ アンケート<br/>
+          <span style="color:#F59E0B">POST</span> ?action=log_subscription_application    ・・・ 定期申込ログ<br/>
+          <span style="color:#F59E0B">POST</span> ?action=stripe_webhook                  ・・・ 決済確定<br/>
+          <span style="color:#F59E0B">POST</span> ?action=line_webhook                    ・・・ LINE Bot<br/>
+          <br/>
+          <strong style="color:var(--gold-soft);font-size:13px">Sheets タブ構成</strong><br/>
+          📦 orders          — 注文ヘッダ (order_number, customer, total, mode, payment, ts)<br/>
+          📦 order_items     — 注文明細 (order_number, sku, qty, unit_price)<br/>
+          ⭐ subscriptions   — 定期便契約<br/>
+          👥 customers       — 顧客マスタ<br/>
+          📋 survey_responses — アンケート (organic / source / meats)<br/>
+          🧠 quiz_responses  — 診断クイズ<br/>
+          💬 line_events     — 友だち追加・ブロック・メッセージ<br/>
+          🚚 shipments       — 配送追跡<br/>
+          📊 daily_kpi       — 日次集計 (cron で毎日生成)
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>⚙️ GAS URL を設定</h3>
+    <label>Google Apps Script Web App URL</label>
+    <input type="url" id="modalGasUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">キャンセル</button>
+      <button class="btn btn-primary" onclick="saveGasUrlModal()">保存して再読み込み</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Dashboard 制御スクリプト
+   - GAS_URL は localStorage('eda-gas-url') から読込
+   - GAS が無い / 未設定の場合はデモデータを表示
+   - 各タブは描画関数を持ち、データ受信後に呼ばれる
+   ============================================================ */
+
+const GAS_URL = () => localStorage.getItem('eda-gas-url') || '';
+let cache = {}; // action名 → response data
+
+/* ====== タブ切替 ====== */
+const TAB_TITLES = {
+  overview:      '📊 オーバービュー',
+  orders:        '📦 注文一覧',
+  subscriptions: '⭐ 定期便メンバー',
+  customers:     '👥 顧客 (CRM)',
+  survey:        '📋 アンケート分析',
+  quiz:          '🧠 診断クイズ結果',
+  line:          '💬 公式LINE 集計',
+  shipping:      '🚚 配送ステータス',
+  settings:      '⚙️ 設定'
+};
+
+document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
+  item.addEventListener('click', () => {
+    const tab = item.dataset.tab;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    const panel = document.querySelector(`.tab-panel[data-tab-content="${tab}"]`);
+    if (panel) panel.classList.add('active');
+    document.getElementById('pageTitle').textContent = TAB_TITLES[tab] || tab;
+    // タブごとに必要なデータをロード
+    loadTabData(tab);
+  });
+});
+
+/* ====== GAS データ取得（fail-safe） ====== */
+async function gasGet(action, params = {}) {
+  if (cache[action]) return cache[action];
+  const url = GAS_URL();
+  if (!url) return null;
+  try {
+    const qs = Object.entries(params).map(([k, v]) => `&${k}=${encodeURIComponent(v)}`).join('');
+    const res = await fetch(url + '?action=' + action + qs);
+    const data = await res.json();
+    cache[action] = data;
+    return data;
+  } catch (e) {
+    console.error('GAS error:', action, e);
+    return null;
+  }
+}
+
+/* ====== 同期ステータス ====== */
+async function checkSync() {
+  const dot = document.getElementById('syncDot');
+  const label = document.getElementById('syncLabel');
+  if (!GAS_URL()) {
+    dot.className = 'sync-dot warn';
+    label.textContent = 'GAS 未設定 — デモデータ表示中';
+    return;
+  }
+  try {
+    const res = await fetch(GAS_URL() + '?action=ping');
+    if (res.ok) {
+      dot.className = 'sync-dot';
+      label.textContent = 'GAS 接続OK · ' + new Date().toLocaleTimeString('ja-JP');
+    } else throw new Error('http ' + res.status);
+  } catch (e) {
+    dot.className = 'sync-dot error';
+    label.textContent = 'GAS 接続失敗';
+  }
+}
+
+/* ====== 設定モーダル ====== */
+function openSettings() {
+  document.getElementById('modalGasUrl').value = GAS_URL();
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+function saveGasUrlModal() {
+  const v = document.getElementById('modalGasUrl').value.trim();
+  if (v) localStorage.setItem('eda-gas-url', v);
+  else localStorage.removeItem('eda-gas-url');
+  location.reload();
+}
+function saveGasUrl() {
+  const v = document.getElementById('settingsGasUrl').value.trim();
+  if (v) localStorage.setItem('eda-gas-url', v);
+  else localStorage.removeItem('eda-gas-url');
+  alert('保存しました。再読み込みします。');
+  location.reload();
+}
+async function testConnection() {
+  const result = document.getElementById('settingsTestResult');
+  const url = document.getElementById('settingsGasUrl').value.trim();
+  if (!url) { result.textContent = '⚠ URL を入力してください'; result.style.color = '#F59E0B'; return; }
+  result.textContent = '🔍 接続テスト中…';
+  try {
+    const res = await fetch(url + '?action=ping');
+    if (res.ok) {
+      const data = await res.json().catch(() => null);
+      result.textContent = '✓ 接続成功 ' + (data && data.version ? '(' + data.version + ')' : '');
+      result.style.color = 'var(--green)';
+    } else throw new Error('HTTP ' + res.status);
+  } catch (e) {
+    result.textContent = '✗ 接続失敗: ' + e.message;
+    result.style.color = 'var(--red)';
+  }
+}
+
+/* ====== デモデータ ====== */
+const DEMO = {
+  overview: {
+    revenue: 1842000,
+    revenueDelta: 12,
+    orders: 87,
+    avg: 21172,
+    activeSub: 47,
+    subDelta: 6,
+    mrr: 601600,
+    line: 1062,
+    lineDelta: 38,
+    lineConvRate: 22,
+    quiz: 234,
+    quizDelta: 18,
+    quizRate: 68
+  },
+  recentOrders: [
+    { num: '#1023', customer: '田中 太郎', total: 15400, status: 'pending' },
+    { num: '#1022', customer: '佐藤 花子', total: 12800, status: 'pending' },
+    { num: '#1021', customer: '鈴木 一郎', total: 9800,  status: 'shipped' },
+    { num: '#1020', customer: '山田 美香', total: 4800,  status: 'delivered' },
+    { num: '#1019', customer: '中村 健',   total: 11500, status: 'delivered' }
+  ],
+  survey: {
+    organic: { YES: 47, NO: 18, MAYBE: 22 },
+    source:  { Instagram: 38, '友人紹介': 22, '検索': 18, 'LINE広告': 12, 'その他': 6 },
+    meats:   { '牛サーロイン': 52, '牛もも': 41, '鶏もも': 38, 'ヒレ': 22, '手羽先': 16, 'ホルモン': 8 }
+  },
+  quiz: {
+    fam:    { '1-2人': 28, '3-4人': 92, '5人以上': 24 },
+    freq:   { '週1〜': 64, '月2-3回': 48, '月1回以下': 22 },
+    budget: { '〜¥5,000': 18, '¥5,000-¥10,000': 78, '¥10,000以上': 38 }
+  },
+  orders: [
+    { num: '#1023', date: '2026-05-12 11:42', customer: '田中 太郎', items: '和牛切り落とし×2', total: 15400, payment: 'Visa', shipping: 'pending', mode: 'single' },
+    { num: '#1022', date: '2026-05-12 10:08', customer: '佐藤 花子', items: 'プロプラン定期便', total: 12800, payment: 'Apple Pay', shipping: 'pending', mode: 'subscription' },
+    { num: '#1021', date: '2026-05-11 22:15', customer: '鈴木 一郎', items: '和牛ハンバーグ×4', total: 9800,  payment: 'JCB', shipping: 'shipped', mode: 'single' }
+  ],
+  subs: [
+    { name: '田中 太郎', plan: 'プロプラン', start: '2025-12-01', next: '2026-06-01', total: '6回', status: 'active' },
+    { name: '佐藤 花子', plan: 'VIPプラン',  start: '2026-02-01', next: '2026-06-01', total: '4回', status: 'active' },
+    { name: '木村 結衣', plan: 'ミニプラン',  start: '2026-04-01', next: '2026-06-01', total: '2回', status: 'active' }
+  ],
+  customers: [
+    { name: '田中 太郎', email: 'tanaka@ex.com', phone: '090-1234-5678', total: 412000, last: '2026-05-09', segment: 'vip',     line: true,  survey: 'YES' },
+    { name: '佐藤 花子', email: 'sato@ex.com',  phone: '080-9876-5432',  total: 287000, last: '2026-05-08', segment: 'vip',     line: true,  survey: 'YES' },
+    { name: '鈴木 一郎', email: 'suzuki@ex.com',phone: '070-1112-2233',  total: 78000,  last: '2026-05-07', segment: 'repeater',line: true,  survey: 'NO' },
+    { name: '山田 美香', email: 'yamada@ex.com',phone: '080-5556-6677',  total: 32000,  last: '2026-05-04', segment: 'repeater',line: false, survey: 'YES' },
+    { name: '中村 健',   email: 'nakamura@ex.com',phone: '090-3334-4455',total: 11500,  last: '2026-05-10', segment: 'new',     line: true,  survey: '' }
+  ]
+};
+
+/* ====== オーバービュー描画 ====== */
+function renderOverview(data) {
+  const d = data && data.overview ? data.overview : DEMO.overview;
+  const o = data && data.recentOrders ? data.recentOrders : DEMO.recentOrders;
+  document.getElementById('kpiRevenue').textContent = '¥' + d.revenue.toLocaleString();
+  document.getElementById('kpiRevenueDelta').textContent = '+' + d.revenueDelta + '% vs 先月';
+  document.getElementById('kpiRevenueSub').textContent = '注文 ' + d.orders + '件 / 平均 ¥' + d.avg.toLocaleString();
+  document.getElementById('kpiActiveSub').textContent = d.activeSub;
+  document.getElementById('kpiSubDelta').textContent = '+' + d.subDelta + ' 今月';
+  document.getElementById('kpiSubSub').textContent = 'MRR ¥' + d.mrr.toLocaleString();
+  document.getElementById('kpiLine').textContent = d.line.toLocaleString();
+  document.getElementById('kpiLineDelta').textContent = '+' + d.lineDelta + ' 今週';
+  document.getElementById('kpiLineSub').textContent = '友だち→顧客 転換率 ' + d.lineConvRate + '%';
+  document.getElementById('kpiQuiz').textContent = d.quiz;
+  document.getElementById('kpiQuizDelta').textContent = '+' + d.quizDelta + ' 今週';
+  document.getElementById('kpiQuizSub').textContent = '完了率 ' + d.quizRate + '%';
+
+  // recent orders
+  const tbody = document.querySelector('#overviewOrdersTable tbody');
+  tbody.innerHTML = o.map(r => `
+    <tr><td><strong>${r.num}</strong></td><td>${r.customer}</td><td class="num">¥${r.total.toLocaleString()}</td><td>${statusChip(r.status)}</td></tr>
+  `).join('');
+
+  // survey summary
+  const s = data && data.survey ? data.survey : DEMO.survey;
+  document.getElementById('overviewSurveyBox').innerHTML =
+    renderSurveyBars(s.organic, 'オーガニック関心') +
+    renderSurveyBars(s.source,  '流入チャネル') +
+    renderSurveyBars(s.meats,   'よく食べる肉');
+}
+function statusChip(status) {
+  const map = {
+    pending:   '<span class="chip chip-pending">未発送</span>',
+    paid:      '<span class="chip chip-paid">支払い済</span>',
+    shipped:   '<span class="chip chip-shipped">配送中</span>',
+    delivered: '<span class="chip chip-delivered">完了</span>'
+  };
+  return map[status] || status;
+}
+function segmentChip(segment) {
+  const map = {
+    vip:      '<span class="chip chip-vip">VIP</span>',
+    repeater: '<span class="chip chip-repeater">リピーター</span>',
+    new:      '<span class="chip chip-new">新規</span>',
+    dormant:  '<span class="chip chip-dormant">休眠</span>'
+  };
+  return map[segment] || segment;
+}
+function renderSurveyBars(obj, _label) {
+  const max = Math.max(...Object.values(obj));
+  return Object.entries(obj).map(([k, v]) => {
+    const pct = max ? (v / max * 100).toFixed(0) : 0;
+    return `
+      <div class="survey-bar">
+        <div class="survey-bar-label">${k}</div>
+        <div class="survey-bar-track"><div class="survey-bar-fill" style="width:${pct}%"></div></div>
+        <div class="survey-bar-count">${v}</div>
+      </div>`;
+  }).join('');
+}
+
+/* ====== タブ別ロード ====== */
+async function loadTabData(tab) {
+  // GAS が無いなら DEMO データで埋める
+  if (tab === 'overview') {
+    const data = await gasGet('dashboard');
+    renderOverview(data);
+  } else if (tab === 'orders') {
+    const data = await gasGet('orders');
+    const list = data && data.orders ? data.orders : DEMO.orders;
+    document.getElementById('ordersCountLabel').textContent = list.length + ' 件';
+    document.querySelector('#ordersTable tbody').innerHTML = list.map(r => `
+      <tr>
+        <td><strong>${r.num}</strong></td>
+        <td>${r.date}</td>
+        <td>${r.customer}</td>
+        <td>${r.items}</td>
+        <td class="num">¥${r.total.toLocaleString()}</td>
+        <td>${r.payment}</td>
+        <td>${statusChip(r.shipping)}</td>
+        <td><span class="chip chip-new">${r.mode}</span></td>
+      </tr>
+    `).join('');
+  } else if (tab === 'subscriptions') {
+    const list = (await gasGet('subscriptions') || {}).subs || DEMO.subs;
+    document.getElementById('subActive').textContent = list.length;
+    document.getElementById('subMRR').textContent = '¥601,600';
+    document.getElementById('subRetention').textContent = '94';
+    document.getElementById('subChurn').textContent = '3';
+    document.getElementById('subChurnSub').textContent = '今月解約 3世帯';
+    document.querySelector('#subsTable tbody').innerHTML = list.map(s => `
+      <tr><td>${s.name}</td><td>${s.plan}</td><td>${s.start}</td><td>${s.next}</td><td>${s.total}</td><td>${statusChip(s.status === 'active' ? 'delivered' : s.status)}</td></tr>
+    `).join('');
+  } else if (tab === 'customers') {
+    const list = (await gasGet('customers') || {}).customers || DEMO.customers;
+    document.getElementById('custVIP').textContent = list.filter(c => c.segment === 'vip').length;
+    document.getElementById('custRep').textContent = list.filter(c => c.segment === 'repeater').length;
+    document.getElementById('custNew').textContent = list.filter(c => c.segment === 'new').length;
+    document.getElementById('custDormant').textContent = list.filter(c => c.segment === 'dormant').length;
+    document.querySelector('#custTable tbody').innerHTML = list.map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td><div>${c.email}</div><small style="color:var(--text-dim)">${c.phone}</small></td>
+        <td class="num">¥${c.total.toLocaleString()}</td>
+        <td>${c.last}</td>
+        <td>${segmentChip(c.segment)}</td>
+        <td>${c.line ? '💬 ✓' : '—'}</td>
+        <td>${c.survey === 'YES' ? '✓ 関心あり' : c.survey === 'NO' ? '関心なし' : '—'}</td>
+      </tr>
+    `).join('');
+  } else if (tab === 'survey') {
+    const data = (await gasGet('survey_responses')) || { survey: DEMO.survey, count: 87 };
+    const s = data.survey || DEMO.survey;
+    document.getElementById('surveyCountLabel').textContent = '回答数 ' + (data.count || 87) + ' 件';
+    document.getElementById('surveyOrganicBars').innerHTML = renderSurveyBars(s.organic);
+    document.getElementById('surveySourceBars').innerHTML = renderSurveyBars(s.source);
+    document.getElementById('surveyMeatsBars').innerHTML = renderSurveyBars(s.meats);
+  } else if (tab === 'quiz') {
+    const data = (await gasGet('quiz_responses')) || { quiz: DEMO.quiz, count: 234 };
+    const q = data.quiz || DEMO.quiz;
+    document.getElementById('quizCountLabel').textContent = '完了 ' + (data.count || 234) + ' 件';
+    document.getElementById('quizFamBars').innerHTML = renderSurveyBars(q.fam);
+    document.getElementById('quizFreqBars').innerHTML = renderSurveyBars(q.freq);
+    document.getElementById('quizBudgetBars').innerHTML = renderSurveyBars(q.budget);
+  } else if (tab === 'line') {
+    document.getElementById('lineTotal').textContent = '1,062';
+    document.getElementById('lineBlock').textContent = '4';
+    document.getElementById('lineOpen').textContent  = '47';
+    document.getElementById('lineCoupon').textContent = '189';
+  } else if (tab === 'shipping') {
+    document.getElementById('shipPending').textContent = '12';
+    document.getElementById('shipInTransit').textContent = '34';
+    document.getElementById('shipDelivered').textContent = '78';
+    document.getElementById('shipIssue').textContent = '1';
+  } else if (tab === 'settings') {
+    document.getElementById('settingsGasUrl').value = GAS_URL();
+  }
+}
+
+/* ====== CSV エクスポート ====== */
+function exportCSV(kind) {
+  alert(`📥 ${kind} の CSV をダウンロードします。\n\n本番では GAS の ?action=export_csv&kind=${kind} を叩いて Sheets から取得します。`);
+}
+
+/* ====== 初期化 ====== */
+(async function init() {
+  await checkSync();
+  await loadTabData('overview');
+  setInterval(checkSync, 30000); // 30秒ごとに同期状況更新
+})();
+</script>
+
+</body>
+</html>

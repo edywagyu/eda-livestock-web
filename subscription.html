@@ -2316,15 +2316,8 @@ document.querySelectorAll('.checkout-radio input').forEach(input => {
   });
 });
 
-/* ============ チェックアウト送信 → 統合 checkout.html へ ============ */
-function handleSubmit(e) {
-  e.preventDefault();
-  // 選択中プランを localStorage に保存
-  localStorage.setItem('eda-subscription-pending', JSON.stringify({ plan: currentPlan }));
-  // 統合チェックアウトへ
-  location.href = 'checkout.html?plan=' + currentPlan;
-  return false;
-}
+/* ============ 旧 handleSubmit (重複削除済) ============
+   下記 L2530 の addon 対応版へ統合 */
 
 /* ============ 今月限定の月名を更新 ============ */
 (function updateMonth() {
@@ -2526,11 +2519,30 @@ document.querySelectorAll('.sub-addon-tab').forEach(tab => {
   });
 });
 
-// 元の handleSubmit を上書き：addons を 10%OFF 適用後の価格で cart に push
+// 統合 handleSubmit: plan + 顧客情報 + addons をまとめて localStorage に保存
 function handleSubmit(e) {
   e.preventDefault();
-  localStorage.setItem('eda-subscription-pending', JSON.stringify({ plan: currentPlan }));
+  const form = document.getElementById('checkoutForm');
+  const fd = new FormData(form);
 
+  // 顧客プロフィール (checkout.html で再利用)
+  const customer = {
+    name:    fd.get('name')    || '',
+    email:   fd.get('email')   || '',
+    phone:   fd.get('phone')   || '',
+    zip:     fd.get('zip')     || '',
+    pref:    fd.get('pref')    || '',
+    address: fd.get('address') || '',
+    timeSlot: fd.get('time_slot') || '',
+    payment:  fd.get('payment')   || 'card'
+  };
+  localStorage.setItem('eda-customer', JSON.stringify(customer));
+  localStorage.setItem('eda-subscription-pending', JSON.stringify({
+    plan: currentPlan,
+    appliedAt: new Date().toISOString()
+  }));
+
+  // アドオン (10%OFF適用後) を cart に push
   if (addedAddons.length > 0) {
     const cartItems = addedAddons.map(x => {
       const a = ADDONS.find(p => p.id === x.id);
@@ -2549,7 +2561,23 @@ function handleSubmit(e) {
     localStorage.removeItem('eda-cart');
   }
 
-  location.href = 'checkout.html?plan=' + currentPlan;
+  // GAS にも申込ログを送信（fire-and-forget - 失敗してもUX影響なし）
+  try {
+    const GAS_URL = localStorage.getItem('eda-gas-url') || '';
+    if (GAS_URL) {
+      fetch(GAS_URL + '?action=log_subscription_application', {
+        method: 'POST',
+        body: JSON.stringify({
+          plan: currentPlan,
+          customer: customer,
+          addons: addedAddons,
+          ts: Date.now()
+        })
+      }).catch(() => {});
+    }
+  } catch (e) {}
+
+  location.href = 'checkout.html?plan=' + currentPlan + '&from=subscription';
   return false;
 }
 

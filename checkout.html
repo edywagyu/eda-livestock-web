@@ -257,6 +257,16 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   background: linear-gradient(90deg, rgba(159,29,36,0.08), rgba(159,29,36,0.04));
   border-color: rgba(159,29,36,0.25);
 }
+.prefill-note {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(212,169,59,0.10);
+  border: 1px solid rgba(212,169,59,0.35);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--color-forest);
+  font-weight: 600;
+}
 .order-mode-banner-icon {
   width: 22px; height: 22px;
   border-radius: 50%;
@@ -1032,6 +1042,19 @@ function init() {
     cartItems.forEach(i => { i.gift = true; });
   }
 
+  // ★ subscription.html で入力済の顧客情報を読み込んでプリフィル
+  try {
+    const c = JSON.parse(localStorage.getItem('eda-customer') || 'null');
+    if (c) {
+      destinations[0].name    = c.name    || '';
+      destinations[0].tel     = c.phone   || '';
+      destinations[0].email   = c.email   || '';
+      destinations[0].zip     = c.zip     || '';
+      destinations[0].pref    = c.pref    || '';
+      destinations[0].address = c.address || '';
+    }
+  } catch (e) {}
+
   // すべての単品を最初は self に紐付け
   destinations[0].itemIds = cartItems.map((_, i) => i);
 
@@ -1039,6 +1062,19 @@ function init() {
   renderDestinations();
   renderSummary();
   buildDeliveryDateOptions();
+
+  // subscription 経由の場合、プリフィル済の通知
+  if (params.get('from') === 'subscription' && destinations[0].name) {
+    setTimeout(() => {
+      const banner = document.getElementById('orderModeBannerArea');
+      if (banner) {
+        const note = document.createElement('div');
+        note.className = 'prefill-note';
+        note.innerHTML = '✓ 定期便申込フォームから入力情報を引き継ぎました（編集可能）';
+        banner.appendChild(note);
+      }
+    }, 100);
+  }
 }
 
 /* ---- モード判定バナー ---- */
@@ -1445,25 +1481,73 @@ function placeOrder() {
     multi: `${destinations.length}箇所への配送`
   }[mode];
 
+  // 注文ペイロード組み立て（GAS送信用）
+  const orderNum = 'EDA-' + Date.now().toString(36).toUpperCase();
+  const total = (typeof totalAmount === 'number' && totalAmount) || calcTotalAmount();
+  const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
+  const orderPayload = {
+    order_number: orderNum,
+    mode: mode,
+    placed_at: new Date().toISOString(),
+    customer: {
+      name:    destinations[0].name,
+      email:   destinations[0].email,
+      phone:   destinations[0].tel,
+      zip:     destinations[0].zip,
+      pref:    destinations[0].pref,
+      address: destinations[0].address
+    },
+    destinations: destinations.map(d => ({
+      type: d.type,
+      name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
+      noshi: d.noshi || null, fromName: d.fromName || null, message: d.message || null,
+      items: d.itemIds.map(i => cartItems[i]).filter(Boolean)
+    })),
+    subscription: subscription,
+    payment_method: payment,
+    total: total,
+    // クイズ回答が紐付けられるなら同梱（後でクロス分析用）
+    quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
+  };
+
+  // GAS に送信（fire-and-forget）
+  try {
+    const GAS_URL = localStorage.getItem('eda-gas-url') || '';
+    if (GAS_URL) {
+      fetch(GAS_URL + '?action=submit_order', {
+        method: 'POST',
+        body: JSON.stringify(orderPayload)
+      }).catch(() => {});
+    }
+  } catch (e) {}
+
   alert(
     `✅ ${modeText}を承りました\n\n` +
-    `※ これはデモです。本番では決済処理（Stripe）に遷移します。\n\n` +
-    `LINE で配送追跡できる完了画面に遷移します。`
+    `注文番号: ${orderNum}\n\n` +
+    `※ これはデモです。本番では Stripe 決済 → GAS 経由で Sheets 自動記録 → LINE 通知が走ります。`
   );
 
   // 確定後の処理 — 注文番号を発行して order-complete.html へ
-  const orderNum = '#' + Math.floor(1000 + Math.random() * 9000);
   localStorage.setItem('eda-last-order', JSON.stringify({
     num: orderNum,
     mode: mode,
-    total: (typeof totalAmount === 'number' ? totalAmount : null),
-    date: new Date().toISOString()
+    total: total,
+    date: new Date().toISOString(),
+    payload: orderPayload
   }));
   localStorage.removeItem(CART_KEY);
   localStorage.removeItem(SUB_KEY);
   setTimeout(() => {
     location.href = 'order-complete.html?order=' + encodeURIComponent(orderNum);
   }, 500);
+}
+
+// 合計金額計算（subscription + cart 全体）
+function calcTotalAmount() {
+  let total = 0;
+  if (subscription && PLANS[subscription.plan]) total += PLANS[subscription.plan].half;
+  cartItems.forEach(it => { total += (it.price || 0) * (it.qty || 1); });
+  return total;
 }
 
 /* ---- 初期化実行 ---- */
