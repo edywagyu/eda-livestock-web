@@ -559,10 +559,46 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   line-height: 1.85;
   margin: 0;
 }
+/* Uber Eats 風カテゴリタブ */
+.sub-addons-tabs {
+  display: flex;
+  gap: 8px;
+  max-width: 1180px;
+  margin: 0 auto 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.sub-addons-tabs::-webkit-scrollbar { display: none; }
+.sub-addon-tab {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 18px;
+  font-family: var(--font-jp);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.sub-addon-tab:hover {
+  border-color: var(--color-gold);
+  color: var(--color-forest);
+}
+.sub-addon-tab.active {
+  background: var(--color-forest);
+  color: var(--color-gold);
+  border-color: var(--color-forest);
+}
+
 .sub-addons-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 12px;
   max-width: 1180px;
   margin: 0 auto 28px;
 }
@@ -631,6 +667,100 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-addon-btn:hover { background: var(--color-forest-deep); }
 .sub-addon-card.added .sub-addon-btn { background: var(--color-gold); color: var(--color-forest-deep); }
 
+/* 「これもどうですか？」レコメンド帯 */
+.sub-addons-suggest {
+  max-width: 1180px;
+  margin: 0 auto 20px;
+  background: linear-gradient(90deg, rgba(212,169,59,0.10), rgba(212,169,59,0.04));
+  border: 1.5px dashed rgba(212,169,59,0.5);
+  border-radius: 14px;
+  padding: 18px 22px;
+}
+.sub-addons-suggest-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.sub-addons-suggest-icon { font-size: 20px; }
+.sub-addons-suggest-label {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.sub-addons-suggest-discount {
+  margin-left: auto;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+}
+.sub-addons-suggest-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.sub-addons-suggest-list::-webkit-scrollbar { display: none; }
+.sub-addons-suggest-item {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid var(--color-bone);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 220px;
+}
+.sub-addons-suggest-item:hover {
+  border-color: var(--color-gold);
+  transform: translateX(2px);
+}
+.sub-addons-suggest-img {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+.sub-addons-suggest-body { flex: 1; min-width: 0; }
+.sub-addons-suggest-body strong {
+  display: block;
+  font-family: var(--font-jp);
+  font-size: 12.5px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.sub-addons-suggest-body span {
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+}
+.sub-addons-suggest-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--font-display);
+}
+.sub-addons-suggest-price del {
+  font-size: 10px;
+  color: var(--color-ink-muted);
+}
+.sub-addons-suggest-price strong {
+  font-size: 14px;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 .sub-addons-cart {
   max-width: 720px;
   margin: 0 auto;
@@ -640,6 +770,16 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   padding: 22px 26px;
   border: 1px solid rgba(212,169,59,0.3);
   box-shadow: var(--shadow-md);
+}
+.discount-tag {
+  font-size: 10px;
+  color: var(--color-gold);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: rgba(212,169,59,0.18);
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin-left: 6px;
 }
 .sub-addons-cart-head {
   display: flex; justify-content: space-between; align-items: center;
@@ -1277,11 +1417,13 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
       <article class="sub-plan-card" data-plan="starter">
         <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
         <div class="sub-plan-name">ふたり食卓便</div>
-        <div class="sub-plan-target">1-2人家族 / 約1.2kg</div>
+        <div class="sub-plan-target">1-2人家族 / 約1.6kg / 5品</div>
         <div class="sub-plan-items">
-          🐓 平飼い鶏もも 1kg<br/>
           🥩 和牛切り落とし 200g<br/>
-          🥩 和牛ミンチ 200g
+          🥩 サイコロステーキ 200g<br/>
+          🍔 和牛ハンバーグ 200g(2個)<br/>
+          🐓 平飼い鶏もも 500g<br/>
+          🐓 平飼い鶏ミンチ 300g
         </div>
         <div class="sub-plan-pricing">
           <div class="sub-plan-old-price">通常 ¥6,980</div>
@@ -1295,12 +1437,16 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
         <span class="sub-plan-tag">人気 No.1</span>
         <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
         <div class="sub-plan-name">家族の食卓便</div>
-        <div class="sub-plan-target">3-4人家族 / 約2.5kg</div>
+        <div class="sub-plan-target">3-4人家族 / 約3.2kg / 8品</div>
         <div class="sub-plan-items">
-          🐓 平飼い鶏もも 1kg<br/>
-          🥩 和牛切り落とし 300g<br/>
-          🥩 サイコロステーキ 300g<br/>
-          🍔 和牛ハンバーグ ×2個
+          🥩 和牛切り落とし 200g×2<br/>
+          🥩 サイコロステーキ 200g<br/>
+          🥩 バラ焼肉 150g<br/>
+          🍖 サーロイン 200g<br/>
+          🍔 和牛ハンバーグ 400g(4個)<br/>
+          🐓 平飼い鶏もも 500g×2<br/>
+          🐓 平飼い鶏むね 500g<br/>
+          🐓 平飼い鶏ミンチ 300g
         </div>
         <div class="sub-plan-pricing">
           <div class="sub-plan-old-price">通常 ¥12,800</div>
@@ -1313,12 +1459,13 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
       <article class="sub-plan-card" data-plan="volume">
         <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
         <div class="sub-plan-name">大家族のごちそう便</div>
-        <div class="sub-plan-target">5人以上 / 約4.0kg</div>
+        <div class="sub-plan-target">5人以上 / 約4.0kg / 5品</div>
         <div class="sub-plan-items">
-          🐓 平飼い鶏もも 1kg ×2<br/>
-          🥩 和牛切り落とし 500g<br/>
-          🥩 サーロインステーキ 200g<br/>
-          🍔 和牛ハンバーグ ×4個
+          🐓 平飼い鶏もも 500g×2<br/>
+          🐓 平飼い鶏むね 500g<br/>
+          🥩 和牛切り落とし 200g×2<br/>
+          🍖 サーロイン 200g×2<br/>
+          🍔 和牛ハンバーグ 600g(6個)
         </div>
         <div class="sub-plan-pricing">
           <div class="sub-plan-old-price">通常 ¥19,800</div>
@@ -1395,19 +1542,43 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   </div>
 </section>
 
-<!-- ========= 今月だけ追加（アドオン） ========= -->
+<!-- ========= 今月だけ追加（Uber Eats 風 全商品＋10%OFF） ========= -->
 <section class="sub-addons" id="addons">
   <div class="container">
     <div class="sub-addons-head">
-      <div class="sub-addons-eyebrow">＋ THIS MONTH ONLY</div>
-      <h2 class="sub-addons-title">今月だけ追加する？</h2>
-      <p class="sub-addons-lead">定期便と同じ箱に同梱、送料無料で追加できます。来月以降は通常の定期便のみのお届けになります。</p>
+      <div class="sub-addons-eyebrow">＋ ADD TO THIS MONTH'S BOX</div>
+      <h2 class="sub-addons-title">サブスクと一緒に、今月だけ。</h2>
+      <p class="sub-addons-lead">
+        <strong style="color: #B91C1C;">サブスクと同梱で全品 10% OFF</strong><br/>
+        定期便と同じ箱に同梱、追加送料0円。今月だけの注文なので来月以降の定期便には影響しません。
+      </p>
+    </div>
+
+    <!-- カテゴリタブ -->
+    <div class="sub-addons-tabs" id="subAddonsTabs">
+      <button class="sub-addon-tab active" data-cat="all">すべて</button>
+      <button class="sub-addon-tab" data-cat="steak">🥩 ステーキ</button>
+      <button class="sub-addon-tab" data-cat="slice">スライス</button>
+      <button class="sub-addon-tab" data-cat="yakiniku">🔥 焼肉</button>
+      <button class="sub-addon-tab" data-cat="processed">🍔 加工品</button>
+      <button class="sub-addon-tab" data-cat="chicken">🐓 鶏肉</button>
     </div>
 
     <div class="sub-addons-grid" id="subAddonsGrid">
       <!-- JS で生成 -->
     </div>
 
+    <!-- 「これもどうですか？」レコメンド帯 -->
+    <div class="sub-addons-suggest" id="subAddonsSuggest" style="display:none">
+      <div class="sub-addons-suggest-head">
+        <span class="sub-addons-suggest-icon">💡</span>
+        <span class="sub-addons-suggest-label">これもどうですか？</span>
+        <span class="sub-addons-suggest-discount">+10% OFF</span>
+      </div>
+      <div class="sub-addons-suggest-list" id="subAddonsSuggestList"></div>
+    </div>
+
+    <!-- 追加サマリーバスケット -->
     <div class="sub-addons-cart" id="subAddonsCart" style="display:none">
       <div class="sub-addons-cart-head">
         <span class="sub-addons-cart-label">追加中のアイテム</span>
@@ -1415,7 +1586,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
       </div>
       <div class="sub-addons-cart-list" id="subAddonsList"></div>
       <div class="sub-addons-cart-total">
-        <span>追加分小計</span>
+        <span>追加分小計 <span class="discount-tag">(10%OFF適用済)</span></span>
         <strong id="subAddonsTotal">¥0</strong>
       </div>
     </div>
@@ -1780,40 +1951,47 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 const PLANS = {
   starter: {
     name: 'ふたり食卓便',
-    target: '1-2人家族 · 約1.2kg',
+    target: '1-2人家族 · 約1.6kg · 全 5品',
     regular: 6980,
     half: 3490,
-    weight: '約1.2kg',
+    weight: '約1.6kg',
     items: [
-      { name: '平飼い鶏もも', qty: '1kg', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
       { name: '和牛切り落とし', qty: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
-      { name: '和牛ミンチ', qty: '200g', img: 'public/images/products/drive/minced.jpg', desc: 'そぼろ・ハンバーグに' }
+      { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
+      { name: '和牛ハンバーグ', qty: '200g (2個)', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
+      { name: '平飼い鶏もも', qty: '500g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
+      { name: '平飼い鶏ミンチ', qty: '300g', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'そぼろ・離乳食に' }
     ]
   },
   regular: {
     name: '家族の食卓便',
-    target: '3-4人家族 · 約2.5kg',
+    target: '3-4人家族 · 約3.2kg · 全 8品',
     regular: 12800,
     half: 6400,
-    weight: '約2.5kg',
+    weight: '約3.2kg',
     items: [
-      { name: '平飼い鶏もも', qty: '1kg', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
-      { name: '和牛切り落とし', qty: '300g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
-      { name: 'サイコロステーキ', qty: '300g', img: 'public/images/products/drive/cube-steak.jpg', desc: 'お子さま大人気' },
-      { name: '和牛ハンバーグ', qty: '×2個', img: 'public/images/products/drive/hamburg.jpg', desc: '15分蒸し焼きOK' }
+      { name: '和牛切り落とし', qty: '200g × 2', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
+      { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
+      { name: 'バラ焼肉', qty: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '週末の焼肉に' },
+      { name: 'サーロインステーキ', qty: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '主役の一枚' },
+      { name: '和牛ハンバーグ', qty: '400g (4個)', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
+      { name: '平飼い鶏もも', qty: '500g × 2', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
+      { name: '平飼い鶏むね', qty: '500g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
+      { name: '平飼い鶏ミンチ', qty: '300g', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'そぼろ・離乳食に' }
     ]
   },
   volume: {
     name: '大家族のごちそう便',
-    target: '5人以上 · 約4.0kg',
+    target: '5人以上 · 約4.0kg · 全 5品',
     regular: 19800,
     half: 9900,
     weight: '約4.0kg',
     items: [
-      { name: '平飼い鶏もも', qty: '1kg ×2', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
-      { name: '和牛切り落とし', qty: '500g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
-      { name: 'サーロインステーキ', qty: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '週末ステーキ' },
-      { name: '和牛ハンバーグ', qty: '×4個', img: 'public/images/products/drive/hamburg.jpg', desc: '15分蒸し焼きOK' }
+      { name: '平飼い鶏もも', qty: '500g × 2', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・大分県産' },
+      { name: '平飼い鶏むね', qty: '500g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
+      { name: '和牛切り落とし', qty: '200g × 2', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの定番' },
+      { name: 'サーロインステーキ', qty: '200g × 2', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
+      { name: '和牛ハンバーグ', qty: '600g (6個)', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' }
     ]
   }
 };
@@ -1924,28 +2102,48 @@ window.addEventListener('scroll', () => {
   document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 50);
 }, { passive: true });
 
-/* ============ 「今月だけ追加」アドオン商品 ============ */
+/* ============ 「今月だけ追加」全商品 + 10%OFF ============ */
 const ADDONS = [
-  { id: 'sirloin', name: 'サーロインステーキ', price: 3400, img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役・200g' },
-  { id: 'cube',    name: 'サイコロステーキ',   price: 1000, img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ・200g' },
-  { id: 'yakiniku',name: 'バラ焼肉',           price: 1900, img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット・150g' },
-  { id: 'hamburg', name: '和牛ハンバーグ',     price: 760,  img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分・1個' }
+  { id: 'sirloin',     cat: 'steak',     name: 'サーロインステーキ', price: 3400, weight: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
+  { id: 'red-meat',    cat: 'steak',     name: '赤身ステーキ',       price: 3400, weight: '250g', img: 'public/images/products/drive/red-meat.jpg', desc: 'ヘルシー志向に' },
+  { id: 'cube',        cat: 'steak',     name: 'サイコロステーキ',   price: 1000, weight: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
+  { id: 'wagyu-slice', cat: 'slice',     name: '赤身スライス',       price: 2600, weight: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ' },
+  { id: 'kiriotoshi',  cat: 'slice',     name: '和牛切り落とし',     price: 1600, weight: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの主役' },
+  { id: 'yakiniku',    cat: 'yakiniku',  name: 'バラ焼肉',           price: 1900, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット' },
+  { id: 'offal',       cat: 'yakiniku',  name: '和牛ホルモン',       price:  840, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: 'もつ鍋・焼肉に' },
+  { id: 'hamburg',     cat: 'processed', name: '和牛ハンバーグ',     price:  760, weight: '100g',  img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
+  { id: 'roast-beef',  cat: 'processed', name: '和牛ローストビーフ', price: 3000, weight: '100g',  img: 'public/images/products/drive/hamburg.jpg', desc: 'パーティーの前菜' },
+  { id: 'raw-ham',     cat: 'processed', name: '和牛生ハム',         price: 1250, weight: '40g',   img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'ワインに' },
+  { id: 'chicken-breast', cat: 'chicken', name: '平飼い鶏 ムネ',     price: 1280, weight: '500g',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
+  { id: 'chicken-thigh',  cat: 'chicken', name: '平飼い鶏 モモ',     price: 1280, weight: '500g',  img: 'public/images/products/drive/chicken-thigh.jpg', desc: '万能部位' },
+  { id: 'chicken-minced', cat: 'chicken', name: '平飼い鶏 ミンチ',   price: 1000, weight: '300g',  img: 'public/images/products/drive/chicken-minced.jpg', desc: '離乳食にも' }
 ];
+const ADDON_DISCOUNT = 0.10; // サブスクと同時購入で 10% OFF
 let addedAddons = []; // {id, qty}
+let currentAddonCat = 'all';
+
+function discountedPrice(p) {
+  return Math.round(p * (1 - ADDON_DISCOUNT));
+}
 
 function renderAddons() {
   const grid = document.getElementById('subAddonsGrid');
-  grid.innerHTML = ADDONS.map(a => {
+  const filtered = currentAddonCat === 'all' ? ADDONS : ADDONS.filter(a => a.cat === currentAddonCat);
+  grid.innerHTML = filtered.map(a => {
     const added = addedAddons.find(x => x.id === a.id);
+    const disc = discountedPrice(a.price);
     return `
       <div class="sub-addon-card ${added ? 'added' : ''}" data-id="${a.id}">
         <div class="sub-addon-img" style="background-image:url('${a.img}')"></div>
         <div class="sub-addon-body">
           <div class="sub-addon-name">${a.name}</div>
-          <div class="sub-addon-meta">${a.desc}</div>
-          <div class="sub-addon-price">¥${a.price.toLocaleString()}</div>
+          <div class="sub-addon-meta">${a.weight} · ${a.desc}</div>
+          <div class="sub-addon-price">
+            ¥${disc.toLocaleString()}
+            <small style="display:block;font-size:10px;color:var(--color-ink-muted);font-weight:600;text-decoration:line-through;text-decoration-color:#FF6B6B;">通常 ¥${a.price.toLocaleString()}</small>
+          </div>
           <button class="sub-addon-btn" onclick="toggleAddon('${a.id}')">
-            ${added ? '✓ 追加済み — 取り消す' : '+ 追加する'}
+            ${added ? '✓ 追加済み — 取り消す' : '+ 10%OFFで追加'}
           </button>
         </div>
       </div>
@@ -1959,6 +2157,7 @@ function toggleAddon(id) {
   else addedAddons.push({ id, qty: 1 });
   renderAddons();
   renderAddonsCart();
+  renderSuggestions();
 }
 
 function renderAddonsCart() {
@@ -1975,11 +2174,12 @@ function renderAddonsCart() {
   let total = 0;
   list.innerHTML = addedAddons.map(x => {
     const a = ADDONS.find(p => p.id === x.id);
-    total += a.price * x.qty;
+    const disc = discountedPrice(a.price);
+    total += disc * x.qty;
     return `
       <div class="row">
         <span>${a.name} × ${x.qty}</span>
-        <span>¥${(a.price * x.qty).toLocaleString()} <span class="rm" onclick="toggleAddon('${a.id}')">削除</span></span>
+        <span>¥${(disc * x.qty).toLocaleString()} <span class="rm" onclick="toggleAddon('${a.id}')">削除</span></span>
       </div>
     `;
   }).join('');
@@ -1987,27 +2187,77 @@ function renderAddonsCart() {
   totalEl.textContent = '¥' + total.toLocaleString();
 }
 
-// 元の handleSubmit を上書き：addons を cart に push して checkout へ
+/* 「これもどうですか？」レコメンド：カートに無い未追加品から3つを薦める */
+function renderSuggestions() {
+  const wrap = document.getElementById('subAddonsSuggest');
+  const list = document.getElementById('subAddonsSuggestList');
+  // 既に1品以上追加されている時のみ表示（Uber Eatsの「あと一品」感）
+  if (addedAddons.length === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+  // 未追加品からカテゴリの被らないもの3つ
+  const addedCats = addedAddons.map(x => ADDONS.find(a => a.id === x.id).cat);
+  const unadded = ADDONS.filter(a => !addedAddons.find(x => x.id === a.id));
+  // カテゴリが補完的になるよう優先
+  const suggestions = unadded
+    .map(a => ({ ...a, score: addedCats.includes(a.cat) ? 0 : 1 }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+
+  if (suggestions.length === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  list.innerHTML = suggestions.map(a => {
+    const disc = discountedPrice(a.price);
+    return `
+      <div class="sub-addons-suggest-item" onclick="toggleAddon('${a.id}')">
+        <div class="sub-addons-suggest-img" style="background-image:url('${a.img}')"></div>
+        <div class="sub-addons-suggest-body">
+          <strong>${a.name}</strong>
+          <span>${a.weight} · ${a.desc}</span>
+        </div>
+        <div class="sub-addons-suggest-price">
+          <del>¥${a.price.toLocaleString()}</del>
+          <strong>¥${disc.toLocaleString()}</strong>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* カテゴリタブ */
+document.querySelectorAll('.sub-addon-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.sub-addon-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentAddonCat = tab.dataset.cat;
+    renderAddons();
+  });
+});
+
+// 元の handleSubmit を上書き：addons を 10%OFF 適用後の価格で cart に push
 function handleSubmit(e) {
   e.preventDefault();
   localStorage.setItem('eda-subscription-pending', JSON.stringify({ plan: currentPlan }));
 
-  // addons を eda-cart に書き込む
   if (addedAddons.length > 0) {
     const cartItems = addedAddons.map(x => {
       const a = ADDONS.find(p => p.id === x.id);
+      const disc = discountedPrice(a.price);
       return {
         variantId: 'addon-' + a.id,
-        price: a.price,
-        title: a.name + '（追加）',
-        variant: '今月のみ追加',
+        price: disc,
+        title: a.name + '（今月限り 10%OFF）',
+        variant: 'サブスク同時追加',
         img: a.img,
         qty: x.qty
       };
     });
     localStorage.setItem('eda-cart', JSON.stringify(cartItems));
   } else {
-    // 念のためカートクリア（前回のクッキー残留対策）
     localStorage.removeItem('eda-cart');
   }
 
@@ -2016,6 +2266,7 @@ function handleSubmit(e) {
 }
 
 renderAddons();
+renderSuggestions();
 
 /* ============ 初期化 ============ */
 selectPlan(currentPlan);
