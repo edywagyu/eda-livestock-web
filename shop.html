@@ -1909,6 +1909,524 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .freezer-band { padding: 40px 0; }
 }
 
+/* ================ DIAGNOSTIC QUIZ ================ */
+.quiz-section {
+  background: linear-gradient(160deg, #FAF7F0 0%, #F0E9D6 100%);
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(212,169,59,0.08), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(15,61,46,0.06), transparent 40%);
+  pointer-events: none;
+}
+.quiz-card {
+  max-width: 720px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  padding: 56px 48px;
+  box-shadow: 0 20px 60px rgba(15,61,46,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--color-bone);
+}
+.quiz-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  text-align: center;
+  margin: 0 0 12px;
+}
+.quiz-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(22px, 3.5vw, 32px);
+  color: var(--color-forest);
+  text-align: center;
+  margin: 0 0 8px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+.quiz-sub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  margin: 0 0 36px;
+}
+.quiz-progress {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin: 0 0 32px;
+}
+.quiz-progress-dot {
+  width: 32px; height: 3px;
+  background: var(--color-bone);
+  border-radius: 2px;
+  transition: all 0.4s var(--ease-out-expo);
+}
+.quiz-progress-dot.active { background: var(--color-gold); width: 48px; }
+.quiz-question {
+  font-family: var(--font-jp-serif);
+  font-size: 19px;
+  color: var(--color-ink);
+  text-align: center;
+  margin: 0 0 24px;
+  font-weight: 600;
+}
+.quiz-options {
+  display: grid;
+  gap: 10px;
+}
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-bone);
+  border-radius: 14px;
+  padding: 18px 22px;
+  font-family: var(--font-jp);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out-expo);
+  text-align: left;
+}
+.quiz-option:hover {
+  border-color: var(--color-gold);
+  background: white;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(212,169,59,0.15);
+}
+.quiz-option .quiz-opt-emoji {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.quiz-result {
+  text-align: center;
+  padding: 12px 0;
+}
+.quiz-result-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  margin: 0 0 6px;
+}
+.quiz-result-plan {
+  font-family: var(--font-jp-serif);
+  font-size: 28px;
+  color: var(--color-forest);
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+.quiz-result-desc {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  line-height: 1.85;
+  margin: 0 0 24px;
+}
+.quiz-result-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 0 0 28px;
+  text-align: center;
+}
+.quiz-result-stat {
+  background: var(--color-paper);
+  border-radius: 10px;
+  padding: 14px 8px;
+}
+.quiz-result-stat-num {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-forest);
+  font-variant-numeric: tabular-nums;
+}
+.quiz-result-stat-label {
+  font-size: 10px;
+  color: var(--color-ink-muted);
+  margin-top: 2px;
+}
+.quiz-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.quiz-restart {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  text-decoration: underline;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+/* ================ 今週のメニュー ================ */
+.weekly-menu {
+  padding: 80px 0;
+  background: white;
+}
+.weekly-menu-head {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.weekly-menu-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  margin: 0 0 12px;
+}
+.weekly-menu-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(26px, 4vw, 40px);
+  color: var(--color-forest);
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+.weekly-menu-sub {
+  font-size: 14px;
+  color: var(--color-ink-muted);
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 8px;
+}
+.menu-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-bone);
+  transition: all 0.4s var(--ease-out-expo);
+  cursor: pointer;
+  position: relative;
+}
+.menu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(15,61,46,0.12);
+  border-color: var(--color-gold);
+}
+.menu-card-img {
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.menu-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4));
+}
+.menu-card-day {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: white;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  padding: 6px 12px;
+  border-radius: 14px;
+  color: var(--color-forest);
+  z-index: 1;
+}
+.menu-card-time {
+  position: absolute;
+  bottom: 14px; left: 14px;
+  color: white;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 1;
+  letter-spacing: 0.04em;
+}
+.menu-card-time strong { font-size: 18px; font-weight: 700; }
+.menu-card-body { padding: 20px 22px 22px; }
+.menu-card-title {
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-forest);
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+.menu-card-desc {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  line-height: 1.75;
+  margin: 0 0 14px;
+}
+.menu-card-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.menu-ingredient {
+  background: var(--color-paper);
+  color: var(--color-forest);
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.menu-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--color-forest);
+  font-weight: 700;
+  border-top: 1px solid var(--color-bone);
+  padding-top: 14px;
+  width: 100%;
+  justify-content: space-between;
+}
+.menu-card-cta strong { color: var(--color-gold-soft); }
+.menu-card:hover .menu-card-cta { color: var(--color-gold-soft); }
+@media (max-width: 720px) {
+  .menu-grid { grid-template-columns: 1fr; }
+}
+
+/* ================ 比較表 ================ */
+.compare-section {
+  padding: 80px 0;
+  background: linear-gradient(180deg, var(--color-cream) 0%, white 100%);
+}
+.compare-head { text-align: center; margin-bottom: 40px; }
+.compare-eyebrow {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  margin-bottom: 12px;
+}
+.compare-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(24px, 3.6vw, 36px);
+  color: var(--color-forest);
+  margin: 0;
+  font-weight: 700;
+}
+.compare-table-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(15,61,46,0.08);
+  border: 1px solid var(--color-bone);
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-jp);
+}
+.compare-table th,
+.compare-table td {
+  padding: 16px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--color-bone);
+  font-size: 14px;
+}
+.compare-table thead th {
+  background: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--color-ink-muted);
+  padding: 18px 12px;
+}
+.compare-table thead th.eda-col {
+  background: linear-gradient(180deg, #0F3D2E, #143D2B);
+  color: var(--color-gold);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.compare-table tbody td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  font-size: 13px;
+}
+.compare-table tbody td.eda-col {
+  background: rgba(212,169,59,0.08);
+  font-weight: 700;
+  color: var(--color-forest);
+}
+.compare-check {
+  display: inline-flex;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #06C755;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.compare-cross {
+  display: inline-flex;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #E5E7EB;
+  color: #9CA3AF;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+.compare-partial {
+  display: inline-flex;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #FEF3C7;
+  color: #92400E;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+@media (max-width: 720px) {
+  .compare-table th, .compare-table td { padding: 12px 6px; font-size: 12px; }
+  .compare-table tbody td:first-child { font-size: 12px; }
+}
+
+/* ================ ライブ活動フィード ================ */
+.live-feed {
+  position: fixed;
+  bottom: 20px;
+  left: 16px;
+  z-index: 90;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 320px;
+  border: 1px solid var(--color-bone);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.5s var(--ease-out-expo);
+  pointer-events: none;
+}
+.live-feed.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.live-feed-pulse {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #06C755;
+  flex-shrink: 0;
+  position: relative;
+}
+.live-feed-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: #06C755;
+  opacity: 0.4;
+  animation: livePulse 1.6s ease-out infinite;
+}
+@keyframes livePulse {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  100% { transform: scale(2); opacity: 0; }
+}
+.live-feed-body { flex: 1; min-width: 0; }
+.live-feed-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0;
+  line-height: 1.4;
+}
+.live-feed-meta {
+  font-size: 10px;
+  color: var(--color-ink-muted);
+  margin: 1px 0 0;
+}
+@media (max-width: 640px) {
+  .live-feed { bottom: 12px; left: 8px; right: 88px; max-width: none; padding: 10px 12px; }
+}
+
+/* ================ アニメーション カウンター ================ */
+.stats-band {
+  padding: 64px 0;
+  background: var(--color-forest);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.stats-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(212,169,59,0.12), transparent 60%);
+}
+.stats-band-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.stat-band-item {
+  padding: 12px;
+}
+.stat-band-num {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  color: var(--color-gold);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.stat-band-num small {
+  font-size: 0.4em;
+  color: rgba(212,169,59,0.7);
+  font-family: var(--font-jp);
+  margin-left: 2px;
+}
+.stat-band-label {
+  font-family: var(--font-jp);
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.04em;
+}
+@media (max-width: 720px) {
+  .stats-band-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+}
+
+/* ================ 商品カード hover強化 ================ */
+.product-card { transition: all 0.35s var(--ease-out-expo); }
+.product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(15,61,46,0.08); }
+.product-card-img { transition: transform 0.5s var(--ease-out-expo); overflow: hidden; }
+.product-card:hover .product-card-img { transform: scale(1.02); }
+
 /* ============ 用途タグ ============ */
 .use-tag {
   display: inline-flex;
@@ -2009,9 +2527,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap > .ship-countdown-bar { order: 1; }
 .shop-main-wrap > .freezer-band       { order: 5; }  /* 冷凍庫イメージ */
 .shop-main-wrap > #products       { order: 10; }  /* All Products 最上 */
+.shop-main-wrap > .quiz-section   { order: 15; }  /* 診断クイズ */
 .shop-main-wrap > #subscription   { order: 20; }  /* 定期便 */
+.shop-main-wrap > .weekly-menu    { order: 25; }  /* 今週のメニュー */
 .shop-main-wrap > #gift-highlight { order: 30; }  /* 贈答用 */
+.shop-main-wrap > .compare-section { order: 35; } /* 比較表 */
 .shop-main-wrap > #about-wagyu    { order: 40; }  /* 4つの理由 */
+.shop-main-wrap > .stats-band     { order: 45; }  /* スタッツバンド */
 .shop-main-wrap > #science        { order: 50; }  /* 透明な育て方 */
 .shop-main-wrap > #reviews        { order: 60; }  /* お客様の声 */
 .shop-main-wrap > #hajimete       { order: 70; }  /* はじめての方へ */
@@ -4979,6 +5501,153 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
+<!-- ========= 診断クイズ ========= -->
+<section class="quiz-section" id="quiz">
+  <div class="container">
+    <div class="quiz-card">
+      <p class="quiz-eyebrow">30 SECOND QUIZ</p>
+      <h2 class="quiz-title">あなたの冷凍庫常備プランを<br/>30秒で診断</h2>
+      <p class="quiz-sub">3つの質問にお答えください</p>
+
+      <div class="quiz-progress">
+        <div class="quiz-progress-dot active"></div>
+        <div class="quiz-progress-dot"></div>
+        <div class="quiz-progress-dot"></div>
+      </div>
+
+      <div id="quizContent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= 今週のメニュー ========= -->
+<section class="weekly-menu">
+  <div class="container">
+    <div class="weekly-menu-head">
+      <p class="weekly-menu-eyebrow">THIS WEEK'S MENU</p>
+      <h2 class="weekly-menu-title">今週のメニュー、材料はこちらで。</h2>
+      <p class="weekly-menu-sub">「今夜何作ろう」をなくす、毎週の献立提案。<br/>材料はワンクリックでカートに揃います。</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=800&q=80')">
+          <span class="menu-card-day">MON</span>
+          <span class="menu-card-time">月曜の夜 / <strong>15分</strong></span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-title">和牛切り落としの牛丼</h3>
+          <p class="menu-card-desc">解凍5分。玉ねぎと一緒に煮るだけ。お子さま大人気の定番。週始まりのスタミナに。</p>
+          <div class="menu-card-ingredients">
+            <span class="menu-ingredient">和牛切り落とし 200g</span>
+            <span class="menu-ingredient">玉ねぎ</span>
+            <span class="menu-ingredient">めんつゆ</span>
+          </div>
+          <div class="menu-card-cta">
+            <span>材料を揃える</span>
+            <strong>→</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80')">
+          <span class="menu-card-day">WED</span>
+          <span class="menu-card-time">水曜の夜 / <strong>20分</strong></span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-title">平飼い鶏もも 唐揚げ</h3>
+          <p class="menu-card-desc">前日に下味だけ仕込めば、夕方は揚げるだけ。脂少なめで罪悪感なし。子どもが必ずおかわり。</p>
+          <div class="menu-card-ingredients">
+            <span class="menu-ingredient">平飼い鶏もも 500g</span>
+            <span class="menu-ingredient">片栗粉</span>
+            <span class="menu-ingredient">ニンニク・生姜</span>
+          </div>
+          <div class="menu-card-cta">
+            <span>材料を揃える</span>
+            <strong>→</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-card" onclick="document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});">
+        <div class="menu-card-img" style="background-image:url('https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=800&q=80')">
+          <span class="menu-card-day">SAT</span>
+          <span class="menu-card-time">週末ごちそう / <strong>30分</strong></span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-title">サーロインステーキ + 付け合わせ</h3>
+          <p class="menu-card-desc">前日から冷蔵庫で解凍。中火で片面60秒ずつ、塩のみ。週末のごちそうも、家でこそ。</p>
+          <div class="menu-card-ingredients">
+            <span class="menu-ingredient">サーロイン 200g×2</span>
+            <span class="menu-ingredient">塩</span>
+            <span class="menu-ingredient">クレソン</span>
+          </div>
+          <div class="menu-card-cta">
+            <span>材料を揃える</span>
+            <strong>→</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= 比較表 ========= -->
+<section class="compare-section">
+  <div class="container">
+    <div class="compare-head">
+      <p class="compare-eyebrow">WHY EDA</p>
+      <h2 class="compare-title">スーパーの肉と、何が違うのか。</h2>
+    </div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>スーパー</th>
+            <th>一般通販</th>
+            <th class="eda-col">江田畜産</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>抗生物質 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>ホルモン剤 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>成長促進剤 不使用</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>飼料の中身が明確</td><td><span class="compare-cross">×</span></td><td><span class="compare-cross">×</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>生産者の顔が見える</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>小分けパック</td><td><span class="compare-partial">△</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+          <tr><td>賞味期限の長さ</td><td>2-5日</td><td>1-3ヶ月</td><td class="eda-col"><strong>6ヶ月</strong></td></tr>
+          <tr><td>定期配送</td><td><span class="compare-cross">×</span></td><td><span class="compare-partial">△</span></td><td class="eda-col"><span class="compare-check">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========= スタッツバンド ========= -->
+<section class="stats-band">
+  <div class="container">
+    <div class="stats-band-grid">
+      <div class="stat-band-item">
+        <div class="stat-band-num" data-count="1062"><small>+</small></div>
+        <div class="stat-band-label">家族数</div>
+      </div>
+      <div class="stat-band-item">
+        <div class="stat-band-num" data-count="87"><small>%</small></div>
+        <div class="stat-band-label">リピート率</div>
+      </div>
+      <div class="stat-band-item">
+        <div class="stat-band-num" data-count="30"><small>ヶ月+</small></div>
+        <div class="stat-band-label">のびのび肥育</div>
+      </div>
+      <div class="stat-band-item">
+        <div class="stat-band-num" data-count="0"></div>
+        <div class="stat-band-label">抗生物質・ホルモン剤</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========= 贈答用 ========= -->
 <section class="gift-highlight" id="gift-highlight">
   <div class="container">
@@ -5695,6 +6364,186 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       var section = document.getElementById('dynProducts');
       if (section) section.hidden = true;
     });
+})();
+</script>
+
+<!-- ============ ライブ活動フィード ============ -->
+<div class="live-feed" id="liveFeed">
+  <div class="live-feed-pulse"></div>
+  <div class="live-feed-body">
+    <p class="live-feed-name" id="liveFeedName">田中さん（東京）</p>
+    <p class="live-feed-meta" id="liveFeedMeta">3分前 · 和牛切り落とし を購入</p>
+  </div>
+</div>
+
+<script>
+/* ============ 診断クイズ ============ */
+(function quizInit() {
+  const questions = [
+    {
+      q: '何人家族でお食事されますか？',
+      opts: [
+        { e: '👤', t: '1-2人', tag: 'small' },
+        { e: '👨‍👩‍👧', t: '3-4人', tag: 'medium' },
+        { e: '👨‍👩‍👧‍👦', t: '5人以上', tag: 'large' }
+      ]
+    },
+    {
+      q: 'お肉を使う頻度はどれくらい？',
+      opts: [
+        { e: '🍴', t: '週2-3回', tag: 'light' },
+        { e: '🥩', t: '週4-5回', tag: 'medium' },
+        { e: '🍳', t: 'ほぼ毎日', tag: 'heavy' }
+      ]
+    },
+    {
+      q: '一番大事にしたいことは？',
+      opts: [
+        { e: '👶', t: '子どもの安心', tag: 'kids' },
+        { e: '💪', t: '健康・たんぱく質', tag: 'health' },
+        { e: '⚡', t: '時短・手軽さ', tag: 'easy' },
+        { e: '🌿', t: 'オーガニック志向', tag: 'organic' }
+      ]
+    }
+  ];
+  const answers = [];
+  let step = 0;
+
+  function render() {
+    const c = document.getElementById('quizContent');
+    if (!c) return;
+    if (step < questions.length) {
+      // 進捗ドット
+      document.querySelectorAll('.quiz-progress-dot').forEach((d, i) => {
+        d.classList.toggle('active', i <= step);
+      });
+      const q = questions[step];
+      c.innerHTML = `
+        <p class="quiz-question">${q.q}</p>
+        <div class="quiz-options">
+          ${q.opts.map((o, i) => `
+            <button class="quiz-option" onclick="window._quizAnswer(${i})">
+              <span class="quiz-opt-emoji">${o.e}</span>
+              <span>${o.t}</span>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      // 結果計算
+      const fam = answers[0];
+      const freq = answers[1];
+      const pri = answers[2];
+      let plan = '月1回 ファミリー';
+      let price = '¥12,800';
+      let weight = '約3,200g';
+      let portions = '16食分';
+      let desc = '4人家族向けの一番人気プラン。';
+      if (fam === 'small' && freq !== 'heavy') {
+        plan = '月1回 ライト'; price = '¥6,980'; weight = '約1,600g'; portions = '8食分';
+        desc = '1-2人家族にちょうど良い、お試しから始められるプラン。';
+      } else if (fam === 'large' || freq === 'heavy') {
+        plan = '2週間ごと'; price = '¥7,800/回'; weight = '約1,800g'; portions = '9食分';
+        desc = 'ヘビーユーザー向け。2週間に1度、新鮮なお肉を切らさず常備。';
+      } else if (pri === 'health') {
+        plan = '赤身中心 ヘルシー'; price = '¥9,800'; weight = '約2,000g'; portions = '10食分';
+        desc = '脂ひかえめ・赤身中心の、健康・筋トレ志向の方向けプラン。';
+      }
+      const priLabel = { kids: 'お子さまの安心', health: '健康・たんぱく質', easy: '時短・手軽', organic: 'オーガニック志向' }[pri];
+      c.innerHTML = `
+        <div class="quiz-result">
+          <p class="quiz-result-eyebrow">RECOMMENDED FOR YOU</p>
+          <h3 class="quiz-result-plan">${plan}</h3>
+          <p class="quiz-result-desc">${desc}<br/>「${priLabel}」を大切にされる方にぴったりです。</p>
+          <div class="quiz-result-stats">
+            <div class="quiz-result-stat"><div class="quiz-result-stat-num">${price}</div><div class="quiz-result-stat-label">月額</div></div>
+            <div class="quiz-result-stat"><div class="quiz-result-stat-num">${weight}</div><div class="quiz-result-stat-label">内容量</div></div>
+            <div class="quiz-result-stat"><div class="quiz-result-stat-num">${portions}</div><div class="quiz-result-stat-label">目安</div></div>
+          </div>
+          <div class="quiz-actions">
+            <a href="subscription.html" class="btn btn-gold">${plan} を見る →</a>
+            <a href="#products" class="btn" style="border-color:var(--color-bone);color:var(--color-forest)">単品も見る</a>
+          </div>
+          <button class="quiz-restart" onclick="window._quizRestart()">もう一度診断する</button>
+        </div>
+      `;
+    }
+  }
+  window._quizAnswer = function(i) {
+    answers[step] = questions[step].opts[i].tag;
+    step++;
+    render();
+  };
+  window._quizRestart = function() {
+    answers.length = 0;
+    step = 0;
+    render();
+  };
+  render();
+})();
+
+/* ============ ライブ活動フィード ============ */
+(function liveFeedInit() {
+  const feed = document.getElementById('liveFeed');
+  if (!feed) return;
+  const items = [
+    { name: '田中さん（東京）', meta: '3分前 · 和牛切り落とし を購入' },
+    { name: '佐藤さん（大阪）', meta: '8分前 · 月1回ファミリー定期便 開始' },
+    { name: '小林さん（神奈川）', meta: '12分前 · 平飼い鶏もも 1kg を購入' },
+    { name: '渡辺さん（福岡）', meta: '15分前 · 江田和牛ハンバーグ x3 を購入' },
+    { name: '伊藤さん（愛知）', meta: '22分前 · サーロインステーキ を購入' },
+    { name: '木村さん（兵庫）', meta: '29分前 · 赤身ステーキ x2 を購入' },
+    { name: '高橋さん（千葉）', meta: '34分前 · 平飼い鶏セット を購入' },
+    { name: '山田さん（北海道）', meta: '41分前 · 2週間ごと定期便 開始' }
+  ];
+  let idx = 0;
+  const nameEl = document.getElementById('liveFeedName');
+  const metaEl = document.getElementById('liveFeedMeta');
+  function showNext() {
+    const it = items[idx % items.length];
+    feed.classList.remove('show');
+    setTimeout(() => {
+      nameEl.textContent = it.name;
+      metaEl.textContent = it.meta;
+      feed.classList.add('show');
+      idx++;
+    }, 400);
+  }
+  // 8秒後に初回表示、その後15秒ごとに切り替え
+  setTimeout(showNext, 8000);
+  setInterval(showNext, 15000);
+})();
+
+/* ============ スクロール連動カウンター ============ */
+(function counterInit() {
+  const els = document.querySelectorAll('.stat-band-num');
+  if (!els.length) return;
+  const animate = (el) => {
+    const target = parseInt(el.dataset.count) || 0;
+    const small = el.querySelector('small');
+    let cur = 0;
+    const duration = 1800;
+    const start = performance.now();
+    function step(t) {
+      const p = Math.min(1, (t - start) / duration);
+      // easeOutExpo
+      const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      cur = Math.floor(target * eased);
+      el.textContent = cur.toLocaleString();
+      if (small) el.appendChild(small);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  };
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !e.target.dataset.animated) {
+        e.target.dataset.animated = '1';
+        animate(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  els.forEach(el => obs.observe(el));
 })();
 </script>
 
