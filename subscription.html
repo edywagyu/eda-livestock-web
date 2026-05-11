@@ -1091,6 +1091,22 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .checkout-form { counter-reset: step; }
 
+/* セクション補足説明 */
+.checkout-section-fine {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-ink-muted);
+  margin: -4px 0 14px;
+  padding: 10px 14px;
+  background: rgba(212,169,59,0.08);
+  border-left: 3px solid var(--color-gold);
+  border-radius: 6px;
+}
+.checkout-section-fine strong {
+  color: var(--color-forest);
+  font-weight: 700;
+}
+
 .checkout-row { display: grid; gap: 12px; }
 .checkout-row.cols2 { grid-template-columns: 1fr 1fr; }
 .checkout-field { display: flex; flex-direction: column; gap: 4px; }
@@ -1821,8 +1837,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   <div class="container">
     <div class="sub-checkout-inner">
       <div class="sub-checkout-head">
-        <div class="sub-checkout-eyebrow">CHECKOUT</div>
-        <h2 class="sub-checkout-title">定期便を始める</h2>
+        <div class="sub-checkout-eyebrow">APPLICATION FORM</div>
+        <h2 class="sub-checkout-title">定期便 申込フォーム</h2>
         <p class="sub-checkout-sub">3ステップで完了 · 初回のみご入力 · 約1分</p>
       </div>
 
@@ -1883,19 +1899,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
         </div>
 
         <div class="checkout-section">
-          <h3>お届け日・時間帯</h3>
-          <div class="checkout-radio-group">
-            <label class="checkout-radio selected">
-              <input type="radio" name="delivery_slot" value="day1" checked>
-              <strong>毎月 1日 お届け</strong>
-              <small>標準</small>
-            </label>
-            <label class="checkout-radio">
-              <input type="radio" name="delivery_slot" value="day5">
-              <strong>毎月 5日 お届け</strong>
-              <small>26日以降のお申込み</small>
-            </label>
-          </div>
+          <h3>お届け時間帯</h3>
+          <p class="checkout-section-fine">お届け日は <strong>毎月1日</strong> に固定（変更不可）。お受け取りいただける時間帯のみご指定ください。</p>
           <div class="checkout-row" style="margin-top: 12px;">
             <div class="checkout-field">
               <label>お届け時間帯</label>
@@ -1908,6 +1913,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
               </select>
             </div>
           </div>
+          <input type="hidden" name="delivery_slot" value="day1">
         </div>
 
         <div class="checkout-section">
@@ -1922,11 +1928,6 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
               <input type="radio" name="payment" value="apple">
               <strong>🍎 Apple Pay</strong>
               <small>かんたん決済</small>
-            </label>
-            <label class="checkout-radio">
-              <input type="radio" name="payment" value="line">
-              <strong>💬 LINE Pay</strong>
-              <small>LINE 友だちで簡単</small>
             </label>
           </div>
         </div>
@@ -1950,7 +1951,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
         </div>
 
         <button type="submit" class="checkout-submit">
-          🎁 定期便を始める · ¥<span id="submitAmount">6,400</span>
+          📝 定期便を申し込む · ¥<span id="submitAmount">6,400</span>
         </button>
 
         <div class="checkout-trust">
@@ -2075,7 +2076,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
       <details class="faq-item">
         <summary class="faq-q">支払い方法は？</summary>
         <div class="faq-a">
-          クレジットカード（VISA / Master / JCB / AMEX）・Apple Pay・LINE Pay に対応しています。引き落としは毎月のお届け日の前日、ご登録のカードまたはアカウントから自動で処理されます。
+          クレジットカード（VISA / Master / JCB / AMEX）・Apple Pay に対応しています。引き落としは毎月のお届け日の前日、ご登録のカードまたはアカウントから自動で処理されます。
         </div>
       </details>
 
@@ -2329,17 +2330,16 @@ function handleSubmit(e) {
   if (el) el.textContent = m + '月 限定';
 })();
 
-/* ============ 次回お届け日（1日 or 5日） ============ */
+/* ============ 次回お届け日（毎月1日固定） ============ */
 (function updateNextDelivery() {
   const now = new Date();
   const day = now.getDate();
-  const next = new Date(now.getFullYear(), now.getMonth(), 1);
-  if (day <= 25) {
-    next.setMonth(next.getMonth() + 1);
-    next.setDate(1);
-  } else {
-    next.setMonth(next.getMonth() + 1);
-    next.setDate(5);
+  // 毎月1日固定 — 当月1日を過ぎていれば翌月1日
+  const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  // (1日当日 or 過去日の場合は来月1日にする)
+  if (day === 1) {
+    // 当日 1日 の場合: 当日締切までなら今月、過ぎてたら来月
+    next.setMonth(now.getMonth() + 1);
   }
   const el = document.getElementById('detailNextDeliveryDate');
   if (el) el.textContent = (next.getMonth() + 1) + '/' + next.getDate();
