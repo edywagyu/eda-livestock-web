@@ -3510,6 +3510,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   background: linear-gradient(180deg, #fff 0%, #FAF7F0 100%);
   position: relative;
 }
+/* 下端に微かな影で次セクション（ギフト深緑）との段差を強調 */
+.weekly-menu::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 24px;
+  background: linear-gradient(180deg, transparent, rgba(15,61,46,0.06));
+  pointer-events: none;
+}
 .weekly-menu-head {
   display: flex;
   align-items: flex-end;
@@ -4411,11 +4420,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .use-tag:hover { border-color: var(--color-gold); }
 
-/* ============ 贈答用（写真+商品2点） ============ */
+/* ============ 贈答用（写真+商品2点） — 緑トーンで weekly-menu と差別化 ============ */
 .gift-highlight {
-  background: linear-gradient(135deg, #FAF7F0 0%, #F5EFE3 100%);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(212,169,59,0.10), transparent 50%),
+    linear-gradient(180deg, #143D2B 0%, #0F3D2E 100%);
   padding: 100px 0;
+  color: white;
+  position: relative;
 }
+.gift-highlight::before {
+  /* 上部に金色の細い区切り線 — weekly-menu との明確な切り分け */
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: clamp(240px, 50%, 480px); height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+.gift-highlight .eyebrow { color: var(--color-gold) !important; }
+.gift-highlight h2 { color: white !important; }
+.gift-highlight p { color: rgba(255,255,255,0.85) !important; }
+.gift-highlight strong { color: var(--color-gold) !important; }
 .gift-hi-inner {
   display: grid;
   grid-template-columns: 1.05fr 1fr;
@@ -4505,6 +4530,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: var(--color-forest);
   padding: 6px 12px;
   border-radius: 14px;
+}
+/* 暗緑背景の gift-highlight 内では白基調に */
+.gift-highlight .gift-hi-features li { color: rgba(255,255,255,0.92); }
+.gift-highlight .gift-hi-occ {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(212,169,59,0.35);
+  color: white;
 }
 
 /* ギフト商品 2点グリッド */
@@ -4603,11 +4635,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .gift-product-cta:hover { color: var(--color-forest); }
 
 @media (max-width: 720px) {
-  .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 32px; }
+  .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
   .gift-hi-features { grid-template-columns: 1fr; }
-  .gift-products-grid { grid-template-columns: 1fr; gap: 14px; }
-  .gift-product-card { flex-direction: column; }
-  .gift-product-img { flex: 0 0 200px; height: 200px; }
+  /* ギフト2枚は横並び維持（コンパクトに） */
+  .gift-products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .gift-product-card { flex-direction: column; border-radius: 12px; }
+  .gift-product-img { flex: 0 0 130px; height: 130px; }
+  .gift-product-body { padding: 12px 10px 14px; }
+  .gift-product-body h3 { font-size: 12px; line-height: 1.4; }
+  .gift-product-body p { font-size: 10.5px; line-height: 1.55; -webkit-line-clamp: 3; }
+  .gift-product-meta { gap: 4px; }
+  .gift-product-vol { font-size: 9.5px; }
+  .gift-product-price { font-size: 14px; }
+  .gift-product-cta { font-size: 10.5px; }
 }
 .gift-hi-photo {
   position: relative;
@@ -7042,19 +7082,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .freezer-band-bullet { font-size: 11.5px; gap: 6px; justify-content: flex-start; }
   .fb-check { width: 18px; height: 18px; font-size: 10px; }
 
-  /* UNBOXING */
-  .unboxing-section { padding: 36px 0; }
-  .unboxing-head { margin-bottom: 24px; }
+  /* UNBOXING — 動画を横長16:9 / 1-4ステップは非表示 */
+  .unboxing-section { padding: 32px 0; }
+  .unboxing-head { margin-bottom: 18px; }
   .unboxing-head h2 { font-size: 22px; line-height: 1.4; }
   .unboxing-head .unboxing-lead { font-size: 12.5px; line-height: 1.7; }
-  .unboxing-layout { gap: 24px; }
-  .unboxing-video { max-width: 260px; padding: 10px 10px 40px; }
+  .unboxing-layout { gap: 16px; grid-template-columns: 1fr !important; }
+  .unboxing-video {
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 10px 10px 36px;
+  }
+  .unboxing-video video,
+  .unboxing-video iframe { aspect-ratio: 16 / 9; }
   .unboxing-video::after { font-size: 9px; bottom: 12px; }
-  .unboxing-step { padding: 12px 14px; grid-template-columns: 44px 1fr; gap: 12px; }
-  .unboxing-step-icon { width: 44px; height: 44px; font-size: 20px; border-radius: 10px; }
-  .unboxing-step-num { width: 18px; height: 18px; font-size: 9px; }
-  .unboxing-step-body > strong { font-size: 13px; }
-  .unboxing-step-body p { font-size: 11.5px; line-height: 1.5; }
+  /* 4ステップは モバイルでは非表示（CTAボタンは別途残す） */
+  .unboxing-steps .unboxing-step { display: none; }
+  .unboxing-cta-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    gap: 8px;
+  }
 
   /* 商品セクション */
   .shop-snippet.section { padding: 32px 0; }
@@ -7079,11 +7128,66 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .product-stat-item { padding: 6px 10px; }
   .product-stat-item.wide { padding: 8px 12px; font-size: 11px; }
 
-  /* クイズセクション */
-  .quiz-section { padding: 36px 0; }
-  .quiz-card { padding: 28px 20px; }
-  .quiz-title { font-size: 20px !important; line-height: 1.4 !important; }
-  .quiz-sub { font-size: 12px; }
+  /* 診断クイズ — モバイル画面1枚に収まるサイズ */
+  .quiz-section { padding: 24px 0; }
+  .quiz-card { padding: 0; border-radius: 12px; }
+  .quiz-card::before { font-size: 9px; padding: 7px 16px; letter-spacing: 0.22em; }
+  .quiz-card-body { padding: 18px 18px 22px; }
+  .quiz-eyebrow { font-size: 9.5px; padding: 4px 10px; margin-bottom: 10px; letter-spacing: 0.18em; }
+  .quiz-title { font-size: 17px !important; line-height: 1.4 !important; margin-bottom: 4px !important; }
+  .quiz-sub { font-size: 11px; line-height: 1.55; margin-bottom: 14px; padding-bottom: 10px; }
+  .quiz-progress { margin-bottom: 14px; gap: 8px; }
+  .quiz-progress-label { font-size: 10px; }
+  .quiz-progress-bars { gap: 3px; }
+  .quiz-progress-dot { height: 4px; }
+  .quiz-question { font-size: 14px; margin-bottom: 12px; }
+  .quiz-options { gap: 6px; }
+  .quiz-option { padding: 12px 14px; font-size: 13px; gap: 10px; min-height: 48px; }
+  .quiz-option::before { width: 16px; height: 16px; border-width: 1.5px; }
+  .quiz-option .quiz-opt-emoji { font-size: 18px; }
+
+  /* 四隅L字マーカーを小さく / 上ヘッダースタンプを縮小 */
+  .quiz-section .container::before,
+  .quiz-section .container::after { width: 28px; height: 28px; }
+  .quiz-section .container::before { top: -20px; }
+  .quiz-section .container::after { bottom: -20px; }
+  .quiz-section .container > .quiz-stamp {
+    top: -22px; font-size: 8.5px; letter-spacing: 0.18em;
+  }
+
+  /* 結果画面の50%OFFバナーをコンパクト化 */
+  .quiz-gift-banner { padding: 18px 16px 16px; margin: 14px 0 16px; border-radius: 14px; }
+  .quiz-gift-ribbon { left: 12px; padding: 6px 10px 9px; }
+  .quiz-gift-ribbon-month { font-size: 13px; }
+  .quiz-gift-ribbon-label { font-size: 8px; }
+  .quiz-gift-tag { font-size: 9px; padding: 4px 10px; margin-bottom: 10px; }
+  .quiz-gift-title { font-size: 19px; margin-bottom: 10px; gap: 4px 8px; }
+  .quiz-gift-percent { font-size: 1.5em; }
+  .quiz-gift-price-reveal { padding: 12px 8px; gap: 8px; margin: 12px 0; }
+  .quiz-gift-price-label { font-size: 9px; letter-spacing: 0.16em; }
+  .quiz-gift-price-strike { font-size: 16px; }
+  .quiz-gift-price-now { font-size: 22px; }
+  .quiz-gift-price-arrow { font-size: 14px; }
+  .quiz-gift-bullets { gap: 4px 10px; margin-bottom: 8px; }
+  .quiz-gift-bullets li { font-size: 11px; }
+  .qgb-check { width: 14px; height: 14px; font-size: 9px; }
+  .quiz-gift-fine { font-size: 9.5px; }
+
+  /* 結果スタッツも縮小 */
+  .quiz-result-eyebrow { font-size: 9.5px; }
+  .quiz-result-plan { font-size: 22px; }
+  .quiz-result-desc { font-size: 12px; margin-bottom: 16px; }
+  .quiz-result-stats { gap: 8px; margin-bottom: 18px; }
+  .quiz-result-stat { padding: 10px 6px; }
+  .quiz-result-stat-num { font-size: 16px; }
+  .quiz-result-stat-label { font-size: 9.5px; }
+  .quiz-addons { padding: 14px 12px; margin-bottom: 16px; }
+  .quiz-addon-name { font-size: 12px; }
+  .quiz-addon-reason { font-size: 10.5px; }
+  .quiz-addon-price { font-size: 13px; }
+  .quiz-actions { gap: 8px; }
+  .quiz-actions .btn { font-size: 12px; padding: 12px 16px; }
+  .quiz-restart { font-size: 11px; margin-top: 10px; }
 
   /* 定期便 */
   .shop-sub-cta { padding: 36px 0; }
