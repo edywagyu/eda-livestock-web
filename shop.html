@@ -2342,60 +2342,115 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .sub-plan-mini.featured .sub-plan-price { color: var(--color-gold); }
 
-/* 初月50%OFF メインバナー */
+/* 初月50%OFF メインバナー — 「今月だけ」緊急感を最大化 */
 .sub-promo-banner {
-  background: linear-gradient(135deg, var(--color-gold) 0%, #E5B547 100%);
-  color: var(--color-forest-deep);
-  border-radius: 14px;
-  padding: 16px 22px;
+  background:
+    radial-gradient(circle at 80% 30%, rgba(255,200,90,0.2), transparent 55%),
+    linear-gradient(135deg, #9F1D24 0%, #7A1119 50%, #4E0A10 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 20px 24px;
   margin-bottom: 0;
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: stretch;
+  gap: 20px;
   font-family: var(--font-jp);
-  box-shadow: 0 8px 24px rgba(212,169,59,0.25);
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid rgba(212,169,59,0.55);
+  box-shadow:
+    0 16px 40px rgba(155, 29, 36, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255,213,128,0.22);
+  animation: subPromoPulse 2.4s ease-in-out infinite;
 }
+@keyframes subPromoPulse {
+  0%, 100% { box-shadow: 0 16px 40px rgba(155, 29, 36, 0.35), 0 4px 12px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,213,128,0.22); }
+  50%      { box-shadow: 0 20px 50px rgba(155, 29, 36, 0.5), 0 6px 18px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,213,128,0.3); }
+}
+.sub-promo-banner::before {
+  /* 斜めストライプ */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg,
+    transparent 0,
+    transparent 20px,
+    rgba(212,169,59,0.05) 20px,
+    rgba(212,169,59,0.05) 22px);
+  pointer-events: none;
+}
+.sub-promo-banner > * { position: relative; z-index: 1; }
+
+/* 巨大な 50% 数字 */
 .sub-promo-banner-num {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: 56px;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
   line-height: 1;
+  color: var(--color-gold);
+  text-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 .sub-promo-banner-text {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5;
   font-weight: 600;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
 }
-.sub-promo-banner-text strong { font-size: 14px; }
+.sub-promo-banner-text strong {
+  font-size: 15px;
+  color: var(--color-gold);
+}
+
+/* 締切バー：⏰ 今月末まで・残り XX 日 */
 .sub-promo-deadline {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 4px;
-  font-size: 11.5px;
-  font-weight: 600;
-  background: rgba(15, 61, 46, 0.12);
-  border: 1px solid rgba(15, 61, 46, 0.2);
-  padding: 3px 10px;
-  border-radius: 12px;
-  color: var(--color-forest-deep);
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  background: linear-gradient(90deg, rgba(255,213,128,0.25), rgba(255,213,128,0.12));
+  border: 1px solid rgba(255,213,128,0.5);
+  padding: 6px 14px;
+  border-radius: 16px;
+  color: white;
+  align-self: flex-start;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
 }
 .sub-promo-deadline strong {
-  font-size: 13px !important;
+  font-size: 17px !important;
   font-family: var(--font-display);
-  color: var(--color-forest-deep) !important;
+  color: var(--color-gold) !important;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 8px rgba(212,169,59,0.5);
+}
+.sub-promo-microcopy {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.65);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
 }
 .sub-promo-deadline-dot {
-  width: 6px; height: 6px;
+  width: 8px; height: 8px;
   border-radius: 50%;
-  background: #DC2626;
-  animation: subPromoDot 1.4s ease-in-out infinite;
+  background: #FF6B6B;
+  animation: subPromoDot 1.2s ease-in-out infinite;
 }
 @keyframes subPromoDot {
-  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
-  50%      { transform: scale(1.3); opacity: 0.6; box-shadow: 0 0 0 6px rgba(220,38,38,0); }
+  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(255,107,107,0.7); }
+  50%      { transform: scale(1.4); opacity: 0.7; box-shadow: 0 0 0 10px rgba(255,107,107,0); }
 }
 
 @media (max-width: 720px) {
@@ -2586,54 +2641,66 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   }
 }
 
-/* ================ DIAGNOSTIC QUIZ ================ */
+/* ================ DIAGNOSTIC QUIZ — ラボ/精密計測の特殊な雰囲気 ================ */
 .quiz-section {
-  /* 診察室の壁 × 方眼紙のような臨床感 */
+  /* 暗緑+黒のグラデで研究施設・暗室の雰囲気 */
   background:
-    radial-gradient(circle at 50% 100%, rgba(15,61,46,0.06), transparent 50%),
-    linear-gradient(180deg, #F0EEE6 0%, #E8E5DA 100%);
+    radial-gradient(ellipse at 20% 20%, rgba(212,169,59,0.10), transparent 45%),
+    radial-gradient(ellipse at 80% 80%, rgba(15,61,46,0.6), transparent 50%),
+    linear-gradient(135deg, #0A1F18 0%, #0F2A20 50%, #0A1812 100%);
   padding: 80px 0;
   position: relative;
   overflow: hidden;
 }
 .quiz-section::before {
-  /* 方眼紙グリッド（細罫線 + 5マスごとに濃い罫線）→ 診察カルテ感 */
+  /* 精密計測の方眼グリッド（蛍光金色） */
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(15,61,46,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15,61,46,0.08) 1px, transparent 1px),
-    linear-gradient(rgba(15,61,46,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15,61,46,0.035) 1px, transparent 1px);
+    /* 太罫（150px = 主格子） */
+    linear-gradient(rgba(212,169,59,0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,169,59,0.10) 1px, transparent 1px),
+    /* 細罫（30px = 小格子） */
+    linear-gradient(rgba(212,169,59,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,169,59,0.035) 1px, transparent 1px);
   background-size: 150px 150px, 150px 150px, 30px 30px, 30px 30px;
   pointer-events: none;
+  z-index: 0;
 }
 .quiz-section::after {
-  /* 上部の金線（診療シートのヘッダー風） */
+  /* オシロスコープ風 波形（中央の薄い水平線） */
   content: '';
   position: absolute;
-  top: 24px;
-  left: 0; right: 0;
-  height: 1px;
+  top: 50%; left: 0; right: 0;
+  height: 2px;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(212,169,59,0.35) 20%,
-    rgba(212,169,59,0.55) 50%,
-    rgba(212,169,59,0.35) 80%,
+    rgba(212,169,59,0.35) 30%,
+    rgba(212,169,59,0.7) 50%,
+    rgba(212,169,59,0.35) 70%,
     transparent 100%);
+  filter: blur(0.5px);
   pointer-events: none;
+  z-index: 0;
+  animation: quizScanline 6s ease-in-out infinite;
 }
-/* 四隅のL字マーカー（実際の医療チャート風） */
+@keyframes quizScanline {
+  0%, 100% { opacity: 0.4; transform: translateY(-50%); }
+  50%      { opacity: 0.9; transform: translateY(-50%); }
+}
+
+/* 四隅のL字マーカー＋数値ラベル（精密機器の照準クロスヘア風） */
 .quiz-section .container {
   position: relative;
+  z-index: 1;
 }
 .quiz-section .container::before,
 .quiz-section .container::after {
   content: '';
   position: absolute;
-  width: 36px; height: 36px;
-  border: 2px solid rgba(15,61,46,0.22);
+  width: 40px; height: 40px;
+  border: 2px solid rgba(212,169,59,0.5);
   pointer-events: none;
   z-index: 0;
 }
@@ -2646,23 +2713,46 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-left: 0; border-top: 0;
 }
 
-/* ============ 🎁 50%OFF プレゼントバナー（緑×金で本サイトのブランドと統一） ============ */
+/* セクション右上に DIAGNOSTIC TIMESTAMP（テクニカル風ラベル） */
+.quiz-section .container > .quiz-stamp {
+  position: absolute;
+  top: -36px; right: clamp(20px, 4vw, 56px);
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  color: rgba(212,169,59,0.75);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.quiz-section .container > .quiz-stamp::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  box-shadow: 0 0 8px var(--color-gold);
+  animation: quizStampBlink 1.4s ease-in-out infinite;
+}
+@keyframes quizStampBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ============ 🎁 50%OFF プレゼントバナー（赤×金 / 価格 before-after 明示） ============ */
 .quiz-gift-banner {
   max-width: 100%;
   margin: 24px auto 28px;
   background:
-    radial-gradient(circle at 85% 25%, rgba(212,169,59,0.22), transparent 55%),
-    linear-gradient(135deg, #143D2B 0%, #0F3D2E 50%, #0A2D21 100%);
+    radial-gradient(circle at 85% 25%, rgba(255,200,90,0.18), transparent 55%),
+    linear-gradient(135deg, #9F1D24 0%, #7A1119 50%, #4E0A10 100%);
   border-radius: 18px;
   padding: 28px 28px 26px;
   position: relative;
   overflow: hidden;
-  display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 22px;
-  align-items: center;
-  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(212,169,59,0.18);
-  border: 1.5px solid rgba(212,169,59,0.55);
+  display: block;
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255,213,128,0.22);
+  border: 1.5px solid rgba(212,169,59,0.65);
   /* 出現アニメ：プレゼントが届いた感 */
   animation: quizGiftAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
@@ -2878,35 +2968,98 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: var(--color-gold);
   font-weight: 700;
 }
-.quiz-gift-stats {
+/* 価格 before / after ボックス */
+.quiz-gift-price-reveal {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 14px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 18px 16px;
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(212,169,59,0.35);
+  border-radius: 14px;
+  position: relative;
+  z-index: 1;
 }
-.quiz-gift-stat {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(212,169,59,0.25);
-  border-radius: 10px;
-  padding: 10px 8px;
+.quiz-gift-price-from,
+.quiz-gift-price-to {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
-.quiz-gift-stat-num {
-  display: block;
+.quiz-gift-price-label {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.6);
   font-weight: 700;
-  color: var(--color-gold);
-  letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+  text-transform: uppercase;
 }
-.quiz-gift-stat-label {
-  display: block;
+.quiz-gift-price-strike {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,200,90,0.6);
+  text-decoration-thickness: 2px;
+}
+.quiz-gift-price-now {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--color-gold);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 16px rgba(212,169,59,0.4);
+  line-height: 1;
+}
+.quiz-gift-price-arrow {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-gold);
+  font-weight: 700;
+  animation: giftArrow 1.6s ease-in-out infinite;
+}
+@keyframes giftArrow {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+/* 3つの特典チェックリスト */
+.quiz-gift-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  position: relative;
+  z-index: 1;
+}
+.quiz-gift-bullets li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 600;
+}
+.qgb-check {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: #7A1119;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 10px;
-  color: rgba(255,255,255,0.7);
-  margin-top: 3px;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 .quiz-gift-fine {
   font-size: 10.5px;
@@ -2968,6 +3121,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .quiz-gift-percent { font-size: 1.7em; }
   .quiz-gift-desc { font-size: 12.5px; }
   .quiz-gift-desc br { display: none; }
+  .quiz-gift-price-reveal { padding: 14px 10px; gap: 6px; }
+  .quiz-gift-price-strike { font-size: 17px; }
+  .quiz-gift-price-now { font-size: 24px; }
+  .quiz-gift-price-arrow { font-size: 16px; }
+  .quiz-gift-bullets { gap: 4px 12px; }
+  .quiz-gift-bullets li { font-size: 11.5px; }
   .quiz-gift-stats { gap: 6px; }
   .quiz-gift-stat { padding: 8px 4px; }
   .quiz-gift-stat-num { font-size: 14px; }
@@ -6880,10 +7039,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .sub-head-bullets span { padding: 3px 10px; }
   .sub-head-fine { font-size: 10.5px; }
   .shop-sub-band { margin-bottom: 24px; gap: 10px; }
-  .sub-promo-banner { padding: 12px 16px; gap: 12px; }
-  .sub-promo-banner-num { font-size: 26px; }
-  .sub-promo-banner-text { font-size: 11.5px; }
-  .sub-promo-banner-text strong { font-size: 13px; }
+  .sub-promo-banner { padding: 14px 16px; gap: 14px; }
+  .sub-promo-banner-num { font-size: 38px; }
+  .sub-promo-banner-num small { font-size: 14px !important; }
+  .sub-promo-banner-text { font-size: 12px; }
+  .sub-promo-banner-text strong { font-size: 13.5px; }
+  .sub-promo-deadline { font-size: 11px; padding: 4px 10px; }
+  .sub-promo-deadline strong { font-size: 14px !important; }
+  .sub-promo-microcopy { font-size: 9.5px; }
   .shop-sub-plans-wrap { margin-bottom: 28px; }
   .sub-plan-mini { padding: 18px 16px 16px; }
   .sub-plan-name { font-size: 15px; }
@@ -7172,16 +7335,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <div class="container shop-hero-content">
     <span class="hero-eyebrow-anim">
       <span class="hero-dot"></span>
-      <span>EDA LIVESTOCK · Premium Daily Stock</span>
+      <span>JAPAN'S FIRST · 日本初</span>
     </span>
     <h1 class="shop-hero-title hero-anim-title">
-      <span class="hero-line"><span class="hero-word">冷凍庫</span><span class="hero-word">に、</span></span>
-      <span class="hero-line"><span class="hero-word text-gold">安心</span><span class="hero-word text-gold">できる</span><span class="hero-word text-gold">お肉を。</span></span>
+      <span class="hero-line"><span class="hero-word">無投薬</span><span class="hero-word">／</span><span class="hero-word">オーガニック</span></span>
+      <span class="hero-line"><span class="hero-word text-gold">お肉専門</span><span class="hero-word text-gold">オンラインショップ</span></span>
     </h1>
     <p class="shop-hero-sub hero-anim-sub">
-      毎日の食卓に、健康志向の<strong>江田畜産</strong>。<br class="hide-sp"/>
-      抗生物質・ホルモン剤 不使用、30ヶ月以上のびのび育てた、<br class="hide-sp"/>
-      家族にも安心して出せる、本物のお肉を。
+      <strong>江田畜産</strong>—— 抗生物質・ホルモン剤 不使用、<br class="hide-sp"/>
+      30ヶ月以上のびのび育てた本物の和牛と、無投薬の平飼い鶏。<br class="hide-sp"/>
+      日本で唯一の "毎日使える" オーガニック肉専門ECです。
     </p>
     <div class="shop-hero-cta hero-anim-cta">
       <a href="#products" class="btn btn-gold hero-btn-primary">
@@ -7842,10 +8005,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-sub-head">
         <span class="sub-head-tag">
           <span class="sub-head-tag-dot"></span>
-          BEST VALUE · 一番お得
+          BEST VALUE · 最もお得
         </span>
         <h2>
-          <span class="sub-head-emph">一番お得な</span>
+          <span class="sub-head-emph">最もお得な</span>
           <span class="sub-head-main">定期コース</span>
         </h2>
         <p class="sub-head-bullets">
@@ -7879,13 +8042,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <div class="sub-cycle-loop">🔁<small>以降 毎月1日</small></div>
         </div>
         <div class="sub-promo-banner">
-          <div class="sub-promo-banner-num">50<small style="font-size:14px">%</small></div>
+          <div class="sub-promo-banner-num">50<small style="font-size:20px;font-weight:700;">%</small><span style="display:block;font-size:13px;letter-spacing:0.2em;margin-top:-2px;font-weight:700;">OFF</span></div>
           <div class="sub-promo-banner-text">
-            <strong>初月50%OFF</strong>キャンペーン実施中<br/>
+            <strong>初月50%OFF</strong>キャンペーン実施中
             <span class="sub-promo-deadline">
               <span class="sub-promo-deadline-dot"></span>
               <span id="subPromoMonth">5月</span>末まで・残り <strong id="subPromoDaysLeft">20</strong>日
             </span>
+            <span class="sub-promo-microcopy">今月入会のみ適用 / 来月以降は通常価格</span>
           </div>
         </div>
       </div>
@@ -8117,6 +8281,7 @@ function toggleUnboxingSound() {
 <!-- ========= お肉事情診断（回答後に50%OFFプレゼントバナーを表示） ========= -->
 <section class="quiz-section" id="quiz">
   <div class="container">
+    <span class="quiz-stamp">LIVE SESSION · 診断中</span>
     <div class="quiz-card">
       <div class="quiz-card-body">
         <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
@@ -9383,21 +9548,11 @@ function toggleUnboxingSound() {
           ${planDesc}。
         </p>
 
-        <!-- 🎁 今月入会で50%OFF プレゼントバナー -->
+        <!-- 🎁 今月入会で50%OFF プレゼントバナー（赤バージョン・価格 before/after） -->
         <div class="quiz-gift-banner">
           <div class="quiz-gift-ribbon">
             <span class="quiz-gift-ribbon-month">${_m}月</span>
             <span class="quiz-gift-ribbon-label">限定</span>
-          </div>
-          <div class="quiz-gift-box">
-            <div class="quiz-gift-box-lid"></div>
-            <div class="quiz-gift-box-body">
-              <div class="quiz-gift-bow">
-                <span class="quiz-gift-bow-left"></span>
-                <span class="quiz-gift-bow-right"></span>
-                <span class="quiz-gift-bow-center"></span>
-              </div>
-            </div>
           </div>
           <div class="quiz-gift-content">
             <span class="quiz-gift-tag">
@@ -9409,24 +9564,26 @@ function toggleUnboxingSound() {
               <span class="quiz-gift-percent">50<small>%</small></span>
               <span class="quiz-gift-off">OFF</span>
             </h3>
-            <p class="quiz-gift-desc">
-              <strong>${plan}定期便</strong>の初月50%OFFクーポンを自動発行。<br class="hide-sp"/>
-              いつでもスキップ・解約OK / 解約縛りなし。
-            </p>
-            <div class="quiz-gift-stats">
-              <div class="quiz-gift-stat">
-                <span class="quiz-gift-stat-num">−¥${_saveFromHalf.toLocaleString()}</span>
-                <span class="quiz-gift-stat-label">初月のお得額</span>
+
+            <!-- 価格 before / after を大きく表示 -->
+            <div class="quiz-gift-price-reveal">
+              <div class="quiz-gift-price-from">
+                <span class="quiz-gift-price-label">通常価格</span>
+                <span class="quiz-gift-price-strike">¥${planPrice.toLocaleString()}</span>
               </div>
-              <div class="quiz-gift-stat">
-                <span class="quiz-gift-stat-num">¥0</span>
-                <span class="quiz-gift-stat-label">毎回送料</span>
-              </div>
-              <div class="quiz-gift-stat">
-                <span class="quiz-gift-stat-num">無料</span>
-                <span class="quiz-gift-stat-label">スキップ・解約</span>
+              <div class="quiz-gift-price-arrow">→</div>
+              <div class="quiz-gift-price-to">
+                <span class="quiz-gift-price-label">初月特別</span>
+                <span class="quiz-gift-price-now">¥${_halfPrice.toLocaleString()}</span>
               </div>
             </div>
+
+            <ul class="quiz-gift-bullets">
+              <li><span class="qgb-check">✓</span>毎回送料無料</li>
+              <li><span class="qgb-check">✓</span>いつでもスキップ・解約OK</li>
+              <li><span class="qgb-check">✓</span>解約縛りなし</li>
+            </ul>
+
             <p class="quiz-gift-fine">
               ※ 適用条件: <strong>${_m}月${_lastDay}日</strong> までに定期便ご注文の方 / 初月のみ50%OFF
             </p>
