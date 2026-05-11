@@ -27,6 +27,7 @@
   --color-red: #C8102E;
   --color-line: rgba(212, 169, 59, 0.18);
   --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+  --font-numeric: 'Inter', -apple-system, sans-serif;
   --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
   --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
   --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
@@ -54,6 +55,27 @@ a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
 ul { list-style: none; padding: 0; margin: 0; }
 h1, h2, h3, h4 { font-weight: 400; margin: 0; }
+
+/* ===== 数字専用フォント（Cormorant Garamond の判読性問題を回避） ===== */
+.sub-plan-price,
+.sub-plan-price small,
+.sub-plan-old-price,
+.sub-plan-savings,
+.sub-detail-card .delivery-date-large,
+.checkout-summary-row strong,
+.checkout-summary-row.total strong,
+.checkout-summary-row.discount strong,
+.sub-addon-price,
+.sub-addons-suggest-price del,
+.sub-addons-suggest-price strong,
+.sub-hero-promo-text strong,
+.sub-cycle-num,
+.sub-cycle-time,
+.delivery-time {
+  font-family: var(--font-numeric) !important;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: -0.01em !important;
+}
 
 .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
 .container-narrow { width: 100%; max-width: 920px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
@@ -224,6 +246,49 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ================ プラン3枚 ================ */
 .sub-plans-section { padding: 96px 0; background: var(--color-cream); }
+
+/* ?plan= 指定で来た時：プラン選択セクションを圧縮（プラン変更可能ラベルのみに） */
+.sub-plans-section.plans-compact {
+  padding: 32px 0 0;
+  background: linear-gradient(180deg, var(--color-cream) 0%, white 100%);
+}
+.sub-plans-section.plans-compact .sub-plans-grid { display: none; }
+.sub-plans-section.plans-compact .sub-plans-head { margin-bottom: 0; }
+.sub-plans-section.plans-compact .sub-plans-eyebrow {
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+.sub-plans-section.plans-compact .sub-plans-eyebrow::before {
+  content: '✓ ';
+  font-weight: 800;
+}
+.sub-plans-section.plans-compact .sub-plans-title {
+  font-size: clamp(20px, 3vw, 28px);
+  margin-bottom: 8px;
+}
+.sub-plans-section.plans-compact .sub-plans-lead {
+  font-size: 12.5px;
+  margin-bottom: 16px;
+}
+.sub-plans-section.plans-compact::after {
+  content: '↓ 単品追加を選ぶ';
+  display: block;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold-soft);
+  margin-top: 18px;
+  padding-bottom: 8px;
+  animation: scrollHint 1.6s ease-in-out infinite;
+  font-weight: 700;
+}
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50%      { transform: translateY(4px); opacity: 1; }
+}
 .sub-plans-head { text-align: center; margin: 0 auto 56px; max-width: 720px; }
 .sub-plans-eyebrow {
   display: inline-block;
@@ -596,11 +661,27 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 
 .sub-addons-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
   gap: 12px;
   max-width: 1180px;
   margin: 0 auto 28px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold) transparent;
+  padding-bottom: 12px;
+  margin-left: calc(clamp(20px, 4vw, 56px) * -1);
+  margin-right: calc(clamp(20px, 4vw, 56px) * -1);
+  padding-left: clamp(20px, 4vw, 56px);
+  padding-right: clamp(20px, 4vw, 56px);
+}
+.sub-addons-grid::-webkit-scrollbar { height: 6px; }
+.sub-addons-grid::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
+.sub-addons-grid::-webkit-scrollbar-track { background: transparent; }
+.sub-addons-grid .sub-addon-card {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
 }
 .sub-addon-card {
   background: white;
@@ -1416,7 +1497,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
     <div class="sub-plans-grid">
       <article class="sub-plan-card" data-plan="starter">
         <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
-        <div class="sub-plan-name">ふたり食卓便</div>
+        <div class="sub-plan-name">ミニプラン</div>
         <div class="sub-plan-target">1-2人家族 / 約1.6kg / 5品</div>
         <div class="sub-plan-items">
           🥩 和牛切り落とし 200g<br/>
@@ -1436,7 +1517,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
       <article class="sub-plan-card featured" data-plan="regular">
         <span class="sub-plan-tag">人気 No.1</span>
         <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
-        <div class="sub-plan-name">家族の食卓便</div>
+        <div class="sub-plan-name">プロプラン</div>
         <div class="sub-plan-target">3-4人家族 / 約3.2kg / 8品</div>
         <div class="sub-plan-items">
           🥩 和牛切り落とし 200g×2<br/>
@@ -1458,7 +1539,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
       <article class="sub-plan-card" data-plan="volume">
         <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
-        <div class="sub-plan-name">大家族のごちそう便</div>
+        <div class="sub-plan-name">VIPプラン</div>
         <div class="sub-plan-target">5人以上 / 約4.0kg / 5品</div>
         <div class="sub-plan-items">
           🐓 平飼い鶏もも 500g×2<br/>
@@ -1950,7 +2031,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 /* ============ プラン定義 ============ */
 const PLANS = {
   starter: {
-    name: 'ふたり食卓便',
+    name: 'ミニプラン',
     target: '1-2人家族 · 約1.6kg · 全 5品',
     regular: 6980,
     half: 3490,
@@ -1964,7 +2045,7 @@ const PLANS = {
     ]
   },
   regular: {
-    name: '家族の食卓便',
+    name: 'プロプラン',
     target: '3-4人家族 · 約3.2kg · 全 8品',
     regular: 12800,
     half: 6400,
@@ -1981,7 +2062,7 @@ const PLANS = {
     ]
   },
   volume: {
-    name: '大家族のごちそう便',
+    name: 'VIPプラン',
     target: '5人以上 · 約4.0kg · 全 5品',
     regular: 19800,
     half: 9900,
@@ -2270,6 +2351,24 @@ renderSuggestions();
 
 /* ============ 初期化 ============ */
 selectPlan(currentPlan);
+
+/* ============ URLに ?plan= がある場合: プラン選択セクション圧縮 + アドオンへスクロール ============ */
+(function streamlineFromShop() {
+  const params = new URLSearchParams(location.search);
+  if (!params.get('plan')) return;
+
+  // プラン選択セクションを「コンパクト確認バー」に置き換え
+  const plansSection = document.getElementById('plans');
+  if (plansSection) {
+    plansSection.classList.add('plans-compact');
+  }
+
+  // ページ読込後、addons セクションに自動スクロール
+  setTimeout(() => {
+    const addons = document.getElementById('addons');
+    if (addons) addons.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 400);
+})();
 </script>
 
 </body>
