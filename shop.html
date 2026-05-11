@@ -2071,6 +2071,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-variant-numeric: tabular-nums;
   margin-left: 2px;
 }
+.ship-cd-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255,255,255,0.55);
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 8px;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  white-space: nowrap;
+}
 .ship-cd-cta {
   display: inline-flex;
   align-items: center;
@@ -4056,9 +4070,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .shop-proof-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   position: relative;
+  align-items: stretch;
 }
 .shop-proof-card {
   background: rgba(255,255,255,0.06);
@@ -4069,6 +4084,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   transition: all 0.4s var(--ease-out-expo);
   display: flex;
   flex-direction: column;
+  height: 100%;
+  min-height: 100%;
 }
 .shop-proof-card .shop-proof-text { flex: 1; }
 .shop-proof-card .shop-proof-author { margin-top: auto; }
@@ -4080,7 +4097,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-proof-card.featured {
   background: linear-gradient(135deg, rgba(212,169,59,0.18) 0%, rgba(212,169,59,0.06) 100%);
   border-color: rgba(212,169,59,0.35);
-  grid-row: 1 / 2;
 }
 .shop-proof-card::before {
   content: '"';
@@ -4108,8 +4124,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   font-weight: 500;
 }
 .shop-proof-card.featured .shop-proof-text {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
 }
 .shop-proof-author {
   display: flex;
@@ -6305,8 +6321,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       </div>
       <div class="ship-cd-content">
-        <div class="ship-cd-headline" id="shipCdHeadline">本日のご注文で <strong>3日後</strong>にお届け</div>
-        <div class="ship-cd-meta" id="shipCdMeta">本日 <strong>22:00</strong> まで受付中 — ご注文から3日後 冷凍便でお届け</div>
+        <div class="ship-cd-headline" id="shipCdHeadline">本日のご注文で <strong>最短 3日後</strong>にお届け</div>
+        <div class="ship-cd-meta" id="shipCdMeta">本日 <strong>22:00</strong> まで受付中 <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span></div>
       </div>
       <a href="#products" class="ship-cd-cta">商品を見る →</a>
     </div>
@@ -6412,7 +6428,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="shop-proof-grid reveal">
       <div class="shop-proof-card featured">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">冷凍庫に常備するようになってから、平日の夕食が圧倒的に楽になりました。小分けパックだから必要な分だけ解凍できるし、スーパーで「今日何を買おう」と迷う時間もゼロに。子どもの食べ盛りが続くので、レギュラー定期便で月¥12,800、本当に頼りになります。</p>
+        <p class="shop-proof-text">冷凍庫に常備するようになってから、平日の夕食が圧倒的に楽になりました。小分けパックだから必要な分だけ解凍できるし、スーパーで迷う時間もゼロに。子どもの食べ盛りが続くので、本当に頼りになります。</p>
         <div class="shop-proof-author">
           <div class="shop-proof-avatar">田</div>
           <div class="shop-proof-author-info">
@@ -6423,7 +6439,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">脂が重すぎなくて、子どもが本当によく食べてくれます。スーパーのお肉と比べて、なぜ安心できるかが明確だから、家族用に毎月続けてます。</p>
+        <p class="shop-proof-text">脂が重すぎなくて、子どもが本当によく食べてくれます。スーパーのお肉と比べて、なぜ安心できるかが明確。家族用に毎月続けてます。30ヶ月以上のびのび育てた違いがちゃんと伝わります。</p>
         <div class="shop-proof-author">
           <div class="shop-proof-avatar">佐</div>
           <div class="shop-proof-author-info">
@@ -6434,7 +6450,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </div>
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなくて、「毎日の安心」が冷凍庫にある感覚です。</p>
+        <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなくて、「毎日の安心」が冷凍庫にある感覚です。子どもにも気兼ねなく出せます。</p>
         <div class="shop-proof-author">
           <div class="shop-proof-avatar">山</div>
           <div class="shop-proof-author-info">
@@ -8103,18 +8119,18 @@ function toggleUnboxingSound() {
     { day: '週末', day_en: 'SAT', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
     { day: '月曜', day_en: 'MON', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1581450840806-89720d70b5e0?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', '玉ねぎ'] },
     { day: '火曜', day_en: 'TUE', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
-    { day: '水曜', day_en: 'WED', time: 15, name: '和牛ハンバーグ', desc: '凍ったまま15分蒸し焼き。手作りシンプル配合。', img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛ハンバーグ', '玉ねぎ'] },
+    { day: '水曜', day_en: 'WED', time: 15, name: '和牛ハンバーグ', desc: '凍ったまま15分蒸し焼き。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['和牛ハンバーグ', '玉ねぎ'] },
     { day: '木曜', day_en: 'THU', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1583224994076-ae0acae7c45e?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
     { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1604908554007-c98caf57e29c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
     { day: '週末', day_en: 'SAT', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
     { day: '日曜', day_en: 'SUN', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
-    { day: '月曜', day_en: 'MON', time: 25, name: '和牛入りカレー', desc: '切り落としで贅沢に。子ども喜ぶ平日メイン。', img: 'https://images.unsplash.com/photo-1604908815776-b1e1d6c1b32a?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', '玉ねぎ', '人参'] },
+    { day: '月曜', day_en: 'MON', time: 25, name: '和牛入りカレー', desc: '切り落としで贅沢に。子ども喜ぶ平日メイン。', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', '玉ねぎ', '人参'] },
     { day: '火曜', day_en: 'TUE', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1604908554007-c98caf57e29c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
     { day: '水曜', day_en: 'WED', time: 20, name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1572448862527-d3c904757de6?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛切り落とし', 'じゃがいも', '人参'] },
-    { day: '木曜', day_en: 'THU', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'https://images.unsplash.com/photo-1574484184081-afea8a62f9c5?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
+    { day: '木曜', day_en: 'THU', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'public/images/products/drive/yakiniku-ponzu.jpg', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
     { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
     { day: '週末', day_en: 'SAT', time: 35, name: 'ローストチキン', desc: '丸鶏感覚で。週末ホムパに。', img: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', 'ローズマリー', '塩'], featured: true },
-    { day: '月曜', day_en: 'MON', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'https://images.unsplash.com/photo-1607623488728-32ff7a8c8de0?auto=format&fit=crop&w=900&q=85', ingredients: ['サイコロステーキ', '塩'] }
+    { day: '月曜', day_en: 'MON', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] }
   ];
 
   // ISO週番号でシード（同じ週は同じメニュー）
@@ -8769,11 +8785,11 @@ function toggleUnboxingSound() {
     if (beforeCutoff) {
       const tod = timeOfDay(now.getHours());
       const remain = remainText(now);
-      headlineEl.innerHTML = `${tod.tag} ${tod.lead} <strong>${m}月${d}日（${w}）</strong>にお届け`;
-      metaEl.innerHTML = `本日 <strong>22:00</strong> まで受付中${remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : ''} — ご注文から3日後 冷凍便でお届け`;
+      headlineEl.innerHTML = `${tod.tag} ${tod.lead} <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
+      metaEl.innerHTML = `本日 <strong>22:00</strong> まで受付中${remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : ''} <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span>`;
     } else {
-      headlineEl.innerHTML = `🌙 明日 <strong>22:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>にお届け`;
-      metaEl.innerHTML = `本日の受付は終了しました — 明日 22:00 まで受付 / ご注文から3日後 冷凍便でお届け`;
+      headlineEl.innerHTML = `🌙 明日 <strong>22:00</strong> までのご注文で <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
+      metaEl.innerHTML = `本日の受付は終了 — 明日 22:00 まで受付 <span class="ship-cd-note">※ 配送日と時間は指定いただけます</span>`;
     }
   }
 
