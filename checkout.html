@@ -269,17 +269,96 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .order-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
 }
+
+/* ====== セクション分け (自分用 / 贈答用) ====== */
+.order-section {
+  border-radius: 14px;
+  padding: 16px 18px 6px;
+  border: 1.5px solid;
+  background: white;
+  position: relative;
+}
+.order-section--self {
+  border-color: rgba(15,61,46,0.16);
+  background: linear-gradient(180deg, #FAFAF6 0%, #FFFFFF 100%);
+}
+.order-section--gift {
+  border-color: rgba(212,169,59,0.55);
+  background: linear-gradient(180deg, #FFFCEF 0%, #FFFEF8 100%);
+  box-shadow: 0 6px 20px rgba(212,169,59,0.12);
+}
+.order-section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed rgba(15,61,46,0.12);
+}
+.order-section--gift .order-section-head {
+  border-bottom-color: rgba(212,169,59,0.32);
+}
+.order-section-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-forest);
+}
+.order-section--gift .order-section-icon {
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+}
+.order-section-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.order-section-text strong {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.order-section-text small {
+  font-size: 11.5px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.order-section-badge {
+  background: linear-gradient(135deg, #FFE594, var(--color-gold));
+  color: var(--color-forest-deep);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .order-item {
   display: grid;
   grid-template-columns: 64px 1fr auto;
   gap: 14px;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid var(--color-bone);
+  border-bottom: 1px solid rgba(15,61,46,0.06);
 }
-.order-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.order-section .order-item:last-child { border-bottom: 0; padding-bottom: 12px; }
+.order-item--sub {
+  background: rgba(212,169,59,0.06);
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
 .order-item-img {
   width: 64px; height: 64px;
   border-radius: 8px;
@@ -993,22 +1072,20 @@ function renderModeBanner() {
   `;
 }
 
-/* ---- 注文リスト ---- */
+/* ---- 注文リスト（自分用 / 贈答用 を2セクションに分離） ---- */
 function renderOrderList() {
   renderModeBanner();
   const list = document.getElementById('orderList');
-  let html = '';
 
-  // 定期便を先頭に
-  if (subscription && PLANS[subscription.plan]) {
+  // 1. 定期便（あれば常に自分用セクションへ）
+  const subHtml = (subscription && PLANS[subscription.plan]) ? (() => {
     const p = PLANS[subscription.plan];
-    html += `
-      <div class="order-item" data-id="sub">
+    return `
+      <div class="order-item order-item--sub" data-id="sub">
         <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
         <div class="order-item-info">
           <strong>⭐ ${p.name}</strong>
           <span>毎月お届け · 初月50%OFF適用</span>
-          <span class="destination-pill">📦 ご自宅</span>
         </div>
         <div class="order-item-price">
           ¥${p.half.toLocaleString()}
@@ -1016,28 +1093,77 @@ function renderOrderList() {
         </div>
       </div>
     `;
-  }
+  })() : '';
 
-  // 単品カートアイテム
+  // 2. 単品アイテムを「自分用」「贈答用」に分類
+  const selfItems = [];
+  const giftBuckets = new Map(); // dest index → { dest, items[] }
+
   cartItems.forEach((item, i) => {
     const dest = findItemDestination(i);
-    const destLabel = dest && dest.type === 'gift'
-      ? `🎁 ${dest.name || 'ギフト受取人'} 様へ`
-      : '📦 ご自宅';
-    const destClass = dest && dest.type === 'gift' ? 'destination-pill gift' : 'destination-pill';
-    html += `
+    if (dest && dest.type === 'gift') {
+      const key = destinations.indexOf(dest);
+      if (!giftBuckets.has(key)) giftBuckets.set(key, { dest, items: [] });
+      giftBuckets.get(key).items.push({ item, i });
+    } else {
+      selfItems.push({ item, i });
+    }
+  });
+
+  function renderItemRow({ item, i }) {
+    return `
       <div class="order-item" data-id="${i}">
         <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
         <div class="order-item-info">
           <strong>${item.title}</strong>
           <span>${item.variant} × ${item.qty}</span>
-          <span class="${destClass}">${destLabel}</span>
         </div>
         <div class="order-item-price">
           ¥${(item.price * item.qty).toLocaleString()}
           <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
         </div>
       </div>
+    `;
+  }
+
+  let html = '';
+
+  // --- 自分用セクション（定期便 + 自分用 単品） ---
+  if (subHtml || selfItems.length > 0) {
+    const selfCount = (subHtml ? 1 : 0) + selfItems.length;
+    html += `
+      <section class="order-section order-section--self">
+        <header class="order-section-head">
+          <span class="order-section-icon">📦</span>
+          <div class="order-section-text">
+            <strong>ご自分用</strong>
+            <small>ご自宅へお届け · ${selfCount} 点</small>
+          </div>
+        </header>
+        ${subHtml}
+        ${selfItems.map(renderItemRow).join('')}
+      </section>
+    `;
+  }
+
+  // --- 贈答用セクション（複数の送り先ごとに分けて表示） ---
+  giftBuckets.forEach(({ dest, items }, key) => {
+    const giftCount = items.length;
+    const recipientLabel = dest.name
+      ? `${dest.name} 様 へ`
+      : `ギフト受取人 #${[...giftBuckets.keys()].indexOf(key) + 1}`;
+    html += `
+      <section class="order-section order-section--gift">
+        <header class="order-section-head">
+          <span class="order-section-icon">🎁</span>
+          <div class="order-section-text">
+            <strong>贈り物</strong>
+            <small>${recipientLabel} · ${giftCount} 点</small>
+          </div>
+          <span class="order-section-badge">のし・化粧箱 無料</span>
+        </header>
+        ${items.map(renderItemRow).join('')}
+      </section>
     `;
   });
 
@@ -1322,14 +1448,21 @@ function placeOrder() {
   alert(
     `✅ ${modeText}を承りました\n\n` +
     `※ これはデモです。本番では決済処理（Stripe）に遷移します。\n\n` +
-    `カート内容をクリアしてマイページへ遷移します。`
+    `LINE で配送追跡できる完了画面に遷移します。`
   );
 
-  // 確定後の処理
+  // 確定後の処理 — 注文番号を発行して order-complete.html へ
+  const orderNum = '#' + Math.floor(1000 + Math.random() * 9000);
+  localStorage.setItem('eda-last-order', JSON.stringify({
+    num: orderNum,
+    mode: mode,
+    total: (typeof totalAmount === 'number' ? totalAmount : null),
+    date: new Date().toISOString()
+  }));
   localStorage.removeItem(CART_KEY);
   localStorage.removeItem(SUB_KEY);
   setTimeout(() => {
-    location.href = 'mypage.html?ordered=1';
+    location.href = 'order-complete.html?order=' + encodeURIComponent(orderNum);
   }, 500);
 }
 

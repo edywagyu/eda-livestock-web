@@ -1941,6 +1941,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
             <span>5月入会 50%OFF</span>
             <strong id="summaryDiscount">−¥6,400</strong>
           </div>
+          <div class="checkout-summary-row addon-row" id="summaryAddonRow" style="display:none">
+            <span>🛒 今月だけ追加 <small id="summaryAddonCount">(0品)</small></span>
+            <strong id="summaryAddon">+¥0</strong>
+          </div>
           <div class="checkout-summary-row total">
             <span>初月お支払い額</span>
             <strong id="summaryTotal">¥6,400</strong>
@@ -2288,8 +2292,8 @@ function selectPlan(planKey) {
   document.getElementById('summaryPlanName').textContent = plan.name + '定期便';
   document.getElementById('summaryRegular').textContent = '¥' + plan.regular.toLocaleString() + '/月';
   document.getElementById('summaryDiscount').textContent = '−¥' + plan.half.toLocaleString();
-  document.getElementById('summaryTotal').textContent = '¥' + plan.half.toLocaleString();
-  document.getElementById('submitAmount').textContent = plan.half.toLocaleString();
+  // アドオンを含めた最終金額に更新
+  if (typeof updateCheckoutSummary === 'function') updateCheckoutSummary();
 }
 
 /* ============ プランカード クリック ============ */
@@ -2406,6 +2410,42 @@ function toggleAddon(id) {
   renderAddons();
   renderAddonsCart();
   renderSuggestions();
+  updateCheckoutSummary(); // ★ 申込フォーム下部の合計を即時更新
+}
+
+/* アドオン合計を計算（10%OFF 適用後の額） */
+function getAddonsTotal() {
+  return addedAddons.reduce((sum, x) => {
+    const a = ADDONS.find(p => p.id === x.id);
+    if (!a) return sum;
+    return sum + discountedPrice(a.price) * x.qty;
+  }, 0);
+}
+
+/* チェックアウトサマリーを再計算（プラン半額 + アドオン合計） */
+function updateCheckoutSummary() {
+  const plan = PLANS[currentPlan];
+  if (!plan) return;
+  const addonsTotal = getAddonsTotal();
+  const addonCount = addedAddons.length;
+  const total = plan.half + addonsTotal;
+
+  const row = document.getElementById('summaryAddonRow');
+  const cnt = document.getElementById('summaryAddonCount');
+  const sub = document.getElementById('summaryAddon');
+  if (row) {
+    if (addonCount > 0) {
+      row.style.display = '';
+      if (cnt) cnt.textContent = '(' + addonCount + '品)';
+      if (sub) sub.textContent = '+¥' + addonsTotal.toLocaleString();
+    } else {
+      row.style.display = 'none';
+    }
+  }
+  const totalEl = document.getElementById('summaryTotal');
+  if (totalEl) totalEl.textContent = '¥' + total.toLocaleString();
+  const submitEl = document.getElementById('submitAmount');
+  if (submitEl) submitEl.textContent = total.toLocaleString();
 }
 
 function renderAddonsCart() {
@@ -2535,6 +2575,63 @@ selectPlan(currentPlan);
     const addons = document.getElementById('addons');
     if (addons) addons.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 400);
+})();
+
+/* ============ 郵便番号→住所 自動補完（zipcloud API） ============ */
+(function zipAutoFill() {
+  const zipInput  = document.querySelector('input[name="zip"]');
+  const prefInput = document.querySelector('select[name="pref"]');
+  const addrInput = document.querySelector('input[name="address"]');
+  if (!zipInput || !prefInput || !addrInput) return;
+
+  // 補完中のフィードバック表示
+  let hint = document.createElement('small');
+  hint.style.cssText = 'display:block;margin-top:4px;font-size:11px;color:var(--color-gold);min-height:14px;';
+  zipInput.parentElement.appendChild(hint);
+
+  let lastQuery = '';
+  zipInput.addEventListener('input', () => {
+    // 半角数字以外を除去
+    const raw = zipInput.value.replace(/[^\d]/g, '');
+    // 自動でハイフン挿入（123-4567）
+    if (raw.length > 3 && !zipInput.value.includes('-')) {
+      zipInput.value = raw.slice(0, 3) + '-' + raw.slice(3, 7);
+    }
+    // 7桁揃ったら API 問い合わせ
+    if (raw.length === 7 && raw !== lastQuery) {
+      lastQuery = raw;
+      hint.textContent = '🔍 住所を検索中…';
+      hint.style.color = 'var(--color-ink-muted)';
+      fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw)
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 200 && data.results && data.results[0]) {
+            const r = data.results[0];
+            // 都道府県を select に反映
+            const prefOption = Array.from(prefInput.options).find(o => o.text === r.address1);
+            if (prefOption) prefInput.value = prefOption.value || prefOption.text;
+            // 市区町村+町域を address に
+            const cityTown = (r.address2 || '') + (r.address3 || '');
+            if (cityTown && !addrInput.value.includes(cityTown)) {
+              addrInput.value = cityTown + (addrInput.value ? ' ' + addrInput.value : '');
+            }
+            hint.textContent = '✓ 住所を自動入力しました';
+            hint.style.color = 'var(--color-forest)';
+            // 住所欄にフォーカスして残り（番地・建物名）の入力を促す
+            setTimeout(() => addrInput.focus(), 100);
+          } else {
+            hint.textContent = '⚠ 該当する住所が見つかりません';
+            hint.style.color = '#C8102E';
+          }
+        })
+        .catch(() => {
+          hint.textContent = '※ ネットワークエラー — 手入力でも問題ありません';
+          hint.style.color = 'var(--color-ink-muted)';
+        });
+    } else if (raw.length < 7) {
+      hint.textContent = '';
+    }
+  });
 })();
 </script>
 
