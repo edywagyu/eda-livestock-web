@@ -4635,6 +4635,32 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   padding-right: clamp(20px, 4vw, 56px);
   align-items: stretch;          /* ★ カード高さを行内で揃える */
 }
+
+/* ============ フィルタ起動時の統合グリッド（牛肉/鶏肉 跨ぎ） ============ */
+.product-grid--merged {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 0;
+  overflow: visible;
+}
+.product-grid--merged .product-card {
+  flex: 0 1 280px;
+  scroll-snap-align: none;
+}
+@media (max-width: 720px) {
+  .product-grid--merged {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 12px;
+  }
+  .product-grid--merged .product-card {
+    flex: 0 0 220px;
+    scroll-snap-align: start;
+  }
+}
 .product-grid[data-cat="beef"]::-webkit-scrollbar,
 .product-grid[data-cat="chicken"]::-webkit-scrollbar { height: 6px; }
 .product-grid[data-cat="beef"]::-webkit-scrollbar-thumb,
@@ -4853,49 +4879,104 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: white;
 }
 
-/* ============ シーズンギフトバナー（自動切替） ============ */
+/* ============ シーズンギフトバナー（強調版） ============ */
 .gift-season-banner {
   position: relative;
   background:
-    radial-gradient(circle at 0% 50%, rgba(255,229,148,0.15), transparent 60%),
-    linear-gradient(135deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04));
-  border: 1.5px solid rgba(212,169,59,0.5);
-  border-radius: 16px;
-  padding: 18px 22px;
-  margin: 0 0 28px;
+    radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.28), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,229,148,0.18), transparent 50%),
+    linear-gradient(135deg, #B89030 0%, #D4A93B 40%, #FFE594 70%, #D4A93B 100%);
+  border: 2.5px solid #FFE594;
+  border-radius: 22px;
+  padding: 28px 32px;
+  margin: 0 0 36px;
   overflow: hidden;
+  box-shadow:
+    0 24px 60px rgba(212,169,59,0.35),
+    0 8px 24px rgba(0,0,0,0.15),
+    inset 0 2px 4px rgba(255,255,255,0.5),
+    inset 0 -2px 8px rgba(0,0,0,0.15);
 }
-/* シーズン別カラー上書き */
+/* シャイン光沢: 斜めにキラッと走る */
+.gift-season-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -120%;
+  width: 60%; height: 200%;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+  transform: skewX(-18deg);
+  animation: giftSeasonShine 6s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes giftSeasonShine {
+  0%      { left: -120%; }
+  60%     { left: 130%; }
+  100%    { left: 130%; }
+}
+/* 装飾用パターン: 右側にうっすら模様 */
+.gift-season-banner::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; width: 220px; height: 100%;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 2px, transparent 3px);
+  background-size: 28px 28px;
+  opacity: 0.6;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, transparent, black 60%);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 60%);
+}
+
+/* シーズン別カラー上書き（強調版） */
 .gift-season-banner[data-season="mother"] {
-  background: radial-gradient(circle at 0% 50%, rgba(255,191,206,0.25), transparent 60%), linear-gradient(135deg, rgba(255,180,200,0.18), rgba(212,90,130,0.06));
-  border-color: rgba(196,69,105,0.45);
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(255,200,220,0.45), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,180,200,0.3), transparent 50%),
+    linear-gradient(135deg, #8E2746 0%, #C44569 40%, #E879A3 70%, #C44569 100%);
+  border-color: #FFC8DC;
+  box-shadow: 0 24px 60px rgba(196,69,105,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
 }
 .gift-season-banner[data-season="father"] {
-  background: radial-gradient(circle at 0% 50%, rgba(160,200,230,0.25), transparent 60%), linear-gradient(135deg, rgba(70,130,180,0.18), rgba(40,90,140,0.06));
-  border-color: rgba(70,130,180,0.45);
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(180,220,255,0.45), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(160,200,230,0.3), transparent 50%),
+    linear-gradient(135deg, #1E4F7C 0%, #2C6BAB 40%, #4F9DD8 70%, #2C6BAB 100%);
+  border-color: #B0DCFF;
+  box-shadow: 0 24px 60px rgba(46,107,171,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
 }
 .gift-season-banner[data-season="ochugen"] {
-  background: radial-gradient(circle at 0% 50%, rgba(180,220,180,0.25), transparent 60%), linear-gradient(135deg, rgba(120,180,140,0.18), rgba(80,140,100,0.06));
-  border-color: rgba(120,180,140,0.5);
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(200,240,200,0.45), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(180,220,180,0.3), transparent 50%),
+    linear-gradient(135deg, #1F6B3D 0%, #2D8B52 40%, #5BB87C 70%, #2D8B52 100%);
+  border-color: #B0F0C0;
+  box-shadow: 0 24px 60px rgba(45,139,82,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
 }
 .gift-season-banner[data-season="oseibo"] {
-  background: radial-gradient(circle at 0% 50%, rgba(255,229,148,0.30), transparent 60%), linear-gradient(135deg, rgba(196,69,69,0.20), rgba(155,30,30,0.08));
-  border-color: rgba(196,69,69,0.5);
+  background:
+    radial-gradient(ellipse at 0% 50%, rgba(255,200,160,0.45), transparent 60%),
+    radial-gradient(ellipse at 100% 0%, rgba(255,229,148,0.4), transparent 50%),
+    linear-gradient(135deg, #7C1F1F 0%, #AB2C2C 40%, #D87070 70%, #AB2C2C 100%);
+  border-color: #FFC8B0;
+  box-shadow: 0 24px 60px rgba(155,30,30,0.4), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 8px rgba(0,0,0,0.15);
 }
+
 .gift-season-banner-inner {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
 }
 .gift-season-icon {
-  font-size: 38px;
+  font-size: 64px;
   flex-shrink: 0;
-  filter: drop-shadow(0 4px 12px rgba(212,169,59,0.4));
-  animation: giftSeasonBounce 2.8s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
+  animation: giftSeasonBounce 2.4s ease-in-out infinite;
 }
 @keyframes giftSeasonBounce {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50%      { transform: translateY(-3px) rotate(3deg); }
+  0%, 100% { transform: translateY(0) rotate(-6deg) scale(1); }
+  50%      { transform: translateY(-6px) rotate(6deg) scale(1.05); }
 }
 .gift-season-text {
   flex: 1;
@@ -4905,80 +4986,100 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .gift-season-eyebrow {
   font-family: var(--font-numeric);
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  font-weight: 700;
-  color: var(--color-gold);
+  font-size: 11.5px;
+  letter-spacing: 0.32em;
+  font-weight: 800;
+  color: rgba(255,255,255,0.95);
   text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  margin-bottom: 6px;
 }
 .gift-season-headline {
   font-family: var(--font-jp-serif);
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   color: white;
-  line-height: 1.35;
-  margin-bottom: 2px;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.35);
 }
 .gift-season-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 18px;
   align-items: center;
-  margin-top: 4px;
+  margin-top: 10px;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.22);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.18);
+  width: fit-content;
 }
 .gift-season-meta-item {
   display: flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-jp);
-  font-size: 12px;
-  color: rgba(255,255,255,0.85);
+  font-size: 12.5px;
+  color: white;
 }
 .gift-season-meta-item strong {
   font-size: 11px;
-  color: var(--color-gold) !important;
+  color: rgba(255,255,255,0.85) !important;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 .gift-season-meta-item span {
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: 700;
 }
-.gift-season-deadline strong { color: #FFB4B4 !important; }
-.gift-season-deadline span { color: #FFE0E0; font-weight: 700; }
+.gift-season-deadline {
+  background: rgba(255,255,255,0.18);
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.gift-season-deadline strong { color: rgba(255,255,255,0.85) !important; }
+.gift-season-deadline span { color: #FFE8A0; font-weight: 800; font-size: 13px; }
 
 .gift-season-cta {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 12px 22px;
-  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
-  color: var(--color-forest-deep);
-  border-radius: 24px;
+  gap: 8px;
+  padding: 18px 32px;
+  background: white;
+  color: #1a1a1a;
+  border-radius: 32px;
   font-family: var(--font-jp);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14.5px;
+  font-weight: 800;
   letter-spacing: 0.02em;
   text-decoration: none;
-  border: 1.5px solid rgba(255,229,148,0.6);
-  box-shadow: 0 8px 20px rgba(212,169,59,0.32), inset 0 1px 2px rgba(255,255,255,0.35);
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow:
+    0 14px 32px rgba(0,0,0,0.35),
+    inset 0 2px 4px rgba(255,255,255,0.6);
   transition: all 0.25s var(--ease-out-expo);
   white-space: nowrap;
+  position: relative;
+  z-index: 3;
 }
 .gift-season-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(212,169,59,0.5), inset 0 1px 2px rgba(255,255,255,0.35);
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
 }
 
 @media (max-width: 720px) {
-  .gift-season-banner { padding: 14px 16px; margin-bottom: 20px; }
-  .gift-season-banner-inner { flex-direction: column; align-items: stretch; gap: 12px; }
-  .gift-season-icon { font-size: 32px; align-self: flex-start; }
-  .gift-season-headline { font-size: 15px; }
-  .gift-season-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .gift-season-meta-item { font-size: 11.5px; }
-  .gift-season-cta { width: 100%; justify-content: center; padding: 11px; font-size: 12.5px; }
+  .gift-season-banner { padding: 22px 18px; margin-bottom: 24px; border-radius: 18px; }
+  .gift-season-banner-inner { flex-direction: column; align-items: stretch; gap: 16px; }
+  .gift-season-icon { font-size: 52px; align-self: center; }
+  .gift-season-eyebrow { font-size: 10.5px; letter-spacing: 0.24em; }
+  .gift-season-headline { font-size: 20px; text-align: center; }
+  .gift-season-text { align-items: center; text-align: center; }
+  .gift-season-meta { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 14px; width: 100%; }
+  .gift-season-meta-item { font-size: 12px; }
+  .gift-season-cta { width: 100%; justify-content: center; padding: 14px; font-size: 14px; }
 }
 
 /* ギフト商品 3点グリッド（松・竹・梅） */
@@ -6379,15 +6480,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   backdrop-filter: blur(2px);
   z-index: 1;
 }
-/* 商品名・説明の下、カード下半分の黒エリア中央に CTA を配置 */
+/* CTA をカード最下部に押し下げる */
 .organic-wagyu-cta-wrap {
-  flex: 1; /* 残り垂直スペースを占有 */
+  margin-top: auto; /* flex column 内で最下部にプッシュ */
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 14px 0 4px;
+  padding: 22px 14px 24px; /* 下に余白を確保して綺麗に配置 */
 }
-/* CTA 自体（変更なし。中央寄せ＋金色グラデ） */
 .badge-organic-wagyu {
   background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
   color: var(--color-forest-deep) !important;
@@ -10839,31 +10938,76 @@ body.has-sticky-cart .floating-phone-btn {
     }
   });
 
-  /* カテゴリ見出し（牛肉 / 鶏肉）— フィルタ時は非表示にして単一ストリームに */
+  /* カテゴリ見出し（牛肉 / 鶏肉）+ 各カテゴリのグリッド */
   const catHeads = document.querySelectorAll('.shop-cat-head');
+  const productGrids = document.querySelectorAll('.product-grid[data-cat]');
+
+  /* フィルタ起動時に使う統合グリッド（DOM 構造を保ったまま視覚的に合流）
+     カードの original-parent を data 属性で記憶し、戻すときに復元 */
+  let mergedGrid = document.getElementById('mergedFilterGrid');
+  if (!mergedGrid) {
+    mergedGrid = document.createElement('div');
+    mergedGrid.id = 'mergedFilterGrid';
+    mergedGrid.className = 'product-grid cols-4 product-grid--merged';
+    mergedGrid.style.display = 'none';
+    // 最初のカテゴリ見出しの直前に挿入
+    const firstHead = catHeads[0];
+    if (firstHead && firstHead.parentElement) {
+      firstHead.parentElement.insertBefore(mergedGrid, firstHead);
+    }
+  }
+
+  // 元の親グリッドを記憶（最初の1回だけ）
+  cards.forEach(card => {
+    if (!card.dataset.originalParentCat && card.parentElement && card.parentElement.dataset.cat) {
+      card.dataset.originalParentCat = card.parentElement.dataset.cat;
+    }
+  });
+
+  function restoreCards() {
+    // 全カードを元のカテゴリグリッドへ戻す
+    cards.forEach(card => {
+      const cat = card.dataset.originalParentCat;
+      if (!cat) return;
+      const target = document.querySelector('.product-grid[data-cat="' + cat + '"]');
+      if (target && card.parentElement !== target) {
+        target.appendChild(card);
+      }
+      card.style.display = '';
+    });
+    mergedGrid.style.display = 'none';
+    productGrids.forEach(g => { g.style.display = ''; });
+    catHeads.forEach(h => { h.style.display = ''; });
+  }
+
+  function applyFilter(matchFn) {
+    // マッチするカードを mergedGrid に集約、残りは非表示
+    cards.forEach(card => {
+      if (matchFn(card)) {
+        if (card.parentElement !== mergedGrid) mergedGrid.appendChild(card);
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    mergedGrid.style.display = '';
+    productGrids.forEach(g => { g.style.display = 'none'; });
+    catHeads.forEach(h => { h.style.display = 'none'; });
+  }
 
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
       pills.forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       const status = pill.dataset.status;
-      const isFiltering = status !== 'all';
 
-      // カテゴリ見出しの表示切替（フィルタ時は隠して、牛肉/鶏肉跨ぎでランキング表示）
-      catHeads.forEach(h => {
-        h.style.display = isFiltering ? 'none' : '';
-      });
-
-      cards.forEach(card => {
-        if (status === 'all') {
-          card.style.display = '';
-        } else if (status === 'ranking') {
-          // 直近ランキング = 先週1位 + 先週2位 を全カテゴリ横断で
-          card.style.display = (card.dataset.status === 'rank1' || card.dataset.status === 'rank2') ? '' : 'none';
-        } else {
-          card.style.display = card.dataset.status === status ? '' : 'none';
-        }
-      });
+      if (status === 'all') {
+        restoreCards();
+      } else if (status === 'ranking') {
+        applyFilter(c => c.dataset.status === 'rank1' || c.dataset.status === 'rank2');
+      } else {
+        applyFilter(c => c.dataset.status === status);
+      }
     });
   });
 })();

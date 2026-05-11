@@ -2362,60 +2362,33 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ MEMBERS ================ */
 .members { background: var(--color-forest-deep); color: white; position: relative; overflow: hidden; }
 .members-head { text-align: center; margin-bottom: clamp(48px, 6vw, 88px); }
-.member-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 980px; margin: 0 auto; }
+.member-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 1180px; margin: 0 auto; }
 .member-grid.cols-3 { grid-template-columns: repeat(3, 1fr); max-width: 980px; margin: 0 auto; }
 
-/* ===== Members ソーシャルリンク（LinkedIn / Facebook） ===== */
-.member-social-row {
+/* ===== メンバーカード内の SNS ロゴ（江田 / 田中 のみ） ===== */
+.member-social-mini {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 16px;
-  margin-top: 72px;
-  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
 }
-.member-social-btn {
+.member-social-mini-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-family: var(--font-jp);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  justify-content: center;
   text-decoration: none;
-  transition: all 0.25s var(--ease-out-expo);
-  border: 1.5px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.05);
   color: white;
-}
-.member-social-btn svg {
+  transition: all 0.22s var(--ease-out-expo);
   flex-shrink: 0;
-  transition: transform 0.25s;
 }
-.member-social-btn:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.4);
-}
-.member-social-btn:hover svg {
-  transform: scale(1.1);
-}
-.member-social-btn--linkedin {
-  background: linear-gradient(135deg, #0A66C2, #084d99);
-  border-color: #0A66C2;
-}
-.member-social-btn--linkedin:hover {
-  background: linear-gradient(135deg, #0d7ce0, #0A66C2);
-  box-shadow: 0 10px 28px rgba(10,102,194,0.45);
-}
-.member-social-btn--facebook {
-  background: linear-gradient(135deg, #1877F2, #145dbf);
-  border-color: #1877F2;
-}
-.member-social-btn--facebook:hover {
-  background: linear-gradient(135deg, #2089ff, #1877F2);
-  box-shadow: 0 10px 28px rgba(24,119,242,0.45);
+.member-social-mini-btn--linkedin { background: #0A66C2; }
+.member-social-mini-btn--facebook { background: #1877F2; }
+.member-social-mini-btn:hover {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.32);
 }
 .member-card { position: relative; transition: transform 0.5s var(--ease-out-expo); }
 .member-card:hover { transform: translateY(-6px); }
@@ -2982,7 +2955,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .pillar:nth-child(2n) { border-right: 0 !important; }
   .restaurant-list { grid-template-columns: repeat(2, 1fr); }
   .product-grid, .product-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
-  .member-grid, .member-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .member-grid { grid-template-columns: repeat(2, 1fr); }
+  .member-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
   .about-grid { grid-template-columns: 1fr; }
   .global-grid { grid-template-columns: 1fr; }
   .cta-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -4210,6 +4184,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span>Miyazaki</span>
           <span>2023—</span>
         </div>
+        <div class="member-social-mini">
+          <a href="https://www.linkedin.com/in/tomoki-eda" target="_blank" rel="noopener" aria-label="Tomoki Eda LinkedIn" class="member-social-mini-btn member-social-mini-btn--linkedin">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/tomoki.eda" target="_blank" rel="noopener" aria-label="Tomoki Eda Facebook" class="member-social-mini-btn member-social-mini-btn--facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
       </article>
 
       <article class="member-card">
@@ -4221,10 +4203,29 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span>Tokyo</span>
           <span>2023—</span>
         </div>
+        <div class="member-social-mini">
+          <a href="https://www.linkedin.com/in/rei-tanaka" target="_blank" rel="noopener" aria-label="Rei Tanaka LinkedIn" class="member-social-mini-btn member-social-mini-btn--linkedin">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/rei.tanaka" target="_blank" rel="noopener" aria-label="Rei Tanaka Facebook" class="member-social-mini-btn member-social-mini-btn--facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
       </article>
 
       <article class="member-card">
-        <div class="member-photo" data-initials="KN"><span class="corner">03 / Domestic</span></div>
+        <div class="member-photo" data-initials="RT"><span class="corner">03 / International</span></div>
+        <div class="member-role">International Sales</div>
+        <h3 class="member-name">Ryotaro Tazaki</h3>
+        <div class="member-name-jp">田崎 遼太郎 (LANE)</div>
+        <div class="member-meta-row">
+          <span>Tokyo · Global</span>
+          <span>2024—</span>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo" data-initials="KN"><span class="corner">04 / Domestic</span></div>
         <div class="member-role">Domestic · JAS Lead</div>
         <h3 class="member-name">Keigo Nono</h3>
         <div class="member-name-jp">野々 圭吾</div>
@@ -4233,18 +4234,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span>JAS Project</span>
         </div>
       </article>
-    </div>
-
-    <!-- LinkedIn / Facebook 公式リンク -->
-    <div class="member-social-row reveal">
-      <a href="https://www.linkedin.com/company/eda-livestock" target="_blank" rel="noopener" class="member-social-btn member-social-btn--linkedin" aria-label="LinkedIn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        <span>LinkedIn</span>
-      </a>
-      <a href="https://www.facebook.com/edalivestock" target="_blank" rel="noopener" class="member-social-btn member-social-btn--facebook" aria-label="Facebook">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        <span>Facebook</span>
-      </a>
     </div>
   </div>
 </section>
