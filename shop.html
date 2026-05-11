@@ -1738,6 +1738,86 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .ship-cd-cta { width: 100%; justify-content: center; padding: 10px; }
 }
 
+/* ============ 定期便プランミニカード ============ */
+.sub-plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.sub-plan-mini {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  position: relative;
+  transition: all .2s;
+}
+.sub-plan-mini.featured {
+  background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.08));
+  border-color: var(--color-gold);
+}
+.sub-plan-mini:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+.sub-plan-tag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+.sub-plan-name {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-gold);
+  margin-bottom: 4px;
+}
+.sub-plan-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.sub-plan-price {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: white;
+  letter-spacing: 0.04em;
+}
+.sub-plan-price small {
+  font-family: var(--font-jp);
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  margin-left: 2px;
+  letter-spacing: 0;
+}
+@media (max-width: 720px) {
+  .sub-plans-grid { grid-template-columns: 1fr 1fr; }
+  .sub-plan-mini { padding: 12px 12px; }
+}
+
+/* ============ 用途タグ ============ */
+.use-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-forest);
+  background: white;
+  border: 1px solid var(--color-bone);
+  padding: 6px 12px;
+  border-radius: 16px;
+  white-space: nowrap;
+}
+.use-tag:hover { border-color: var(--color-gold); }
+
 /* ============ 贈答用ハイライト ============ */
 .gift-highlight {
   background: linear-gradient(135deg, #FAF7F0 0%, #F5EFE3 100%);
@@ -3888,25 +3968,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="shop-hero-overlay"></div>
   </div>
   <div class="container shop-hero-content">
-    <span class="eyebrow text-gold has-dash" style="font-size:11px; margin-bottom: 16px; display:block;">Online Shop — Miyazaki, Japan</span>
+    <span class="eyebrow text-gold has-dash" style="font-size:11px; margin-bottom: 16px; display:block;">Eda Livestock — Trusted Daily Stock</span>
     <h1 class="shop-hero-title">
-      Farm to<br/>
-      <span class="text-gold">Your Table.</span>
+      冷凍庫に、<br/>
+      <span class="text-gold">安心できるお肉を。</span>
     </h1>
     <p class="shop-hero-sub">
-      毎日の食卓に、安心できるお肉を。<br class="hide-sp"/>
-      抗生物質・ホルモン剤・成長促進剤は一切不使用。<br class="hide-sp"/>
-      お子さまにも、ご家族にも、自信を持ってお届けします。
+      毎日の食卓に使える、健康志向の江田畜産。<br class="hide-sp"/>
+      抗生物質・ホルモン剤 不使用。<br class="hide-sp"/>
+      小分けパックで、必要な分だけ解凍して使えます。
     </p>
     <div class="shop-hero-badges">
       <div class="shop-hero-badge">
-        <span class="shop-hero-badge-num">0</span>
-        <span class="shop-hero-badge-label">抗生物質<br/>ホルモン剤 不使用</span>
+        <span class="shop-hero-badge-num">小分け</span>
+        <span class="shop-hero-badge-label">冷凍配送<br/>使う分だけ解凍</span>
       </div>
       <div class="shop-hero-badge">
-        <span class="shop-hero-badge-num">30<small style="font-size:14px">ヶ月+</small></span>
-        <span class="shop-hero-badge-label">のびのび<br/>長期肥育</span>
+        <span class="shop-hero-badge-num">0</span>
+        <span class="shop-hero-badge-label">抗生物質・ホルモン剤<br/>不使用</span>
       </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+      <a href="#first-set" class="btn btn-gold" style="font-size:13px">はじめての方へ →</a>
+      <a href="#stock-sets" class="btn" style="border-color:rgba(212,169,59,.6);color:var(--color-gold);font-size:13px">冷凍ストックを選ぶ</a>
+      <a href="#subscription" class="btn" style="border-color:rgba(255,255,255,.4);color:white;font-size:13px">定期便を見る</a>
     </div>
   </div>
 </section>
@@ -3915,13 +4000,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <div class="shop-trust-strip">
   <div class="container">
     <div class="shop-trust-inner">
-      <div class="shop-trust-item"><strong>抗生物質・ホルモン剤</strong> 不使用</div>
-      <div class="shop-trust-item"><strong>成長促進剤</strong> 投与ゼロ</div>
-      <div class="shop-trust-item"><strong>自家配合</strong> 飼料</div>
-      <div class="shop-trust-item"><strong>漢方系の生薬</strong>で健康管理</div>
-      <div class="shop-trust-item"><strong>30ヶ月以上</strong>のびのび育成</div>
-      <div class="shop-trust-item">大分県産<strong>平飼い鶏</strong></div>
-      <div class="shop-trust-item">冷凍便<strong>最短2日</strong>お届け</div>
+      <div class="shop-trust-item">📦 <strong>小分けパック</strong> 必要な分だけ解凍</div>
+      <div class="shop-trust-item">❄️ <strong>冷凍便</strong> 賞味期限6ヶ月</div>
+      <div class="shop-trust-item">🚫 <strong>抗生物質・ホルモン剤</strong> 不使用</div>
+      <div class="shop-trust-item">👨‍👩‍👧 <strong>家族用まとめ買い</strong> 対応</div>
+      <div class="shop-trust-item">🔁 <strong>定期便</strong>でラクに常備</div>
+      <div class="shop-trust-item">🐓 大分県産<strong>平飼い鶏</strong>も</div>
       <div class="shop-trust-item">¥11,000以上 <strong>送料無料</strong></div>
     </div>
   </div>
@@ -3937,8 +4021,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
       </div>
       <div class="ship-cd-content">
-        <div class="ship-cd-headline" id="shipCdHeadline">本日 13:00 までのご注文で <strong>5月13日（火）</strong>着</div>
-        <div class="ship-cd-meta" id="shipCdMeta">残り <strong>0時間 00分</strong> — 冷凍便（クール宅急便）でお届け</div>
+        <div class="ship-cd-headline" id="shipCdHeadline">本日 13:00 までのご注文で <strong>5月13日（火）</strong>に冷凍庫へ</div>
+        <div class="ship-cd-meta" id="shipCdMeta">残り <strong>0時間 00分</strong> — 小分け冷凍でお届け</div>
       </div>
       <a href="#products" class="ship-cd-cta">商品を見る →</a>
     </div>
@@ -4103,26 +4187,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="shop-proof-grid reveal">
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">小さい子がいるので、添加物や薬を使っていないお肉を探していました。江田畜産さんは「何を使って育てているか」を全部教えてくれて、安心して家族に出せます。</p>
+        <p class="shop-proof-text">冷凍庫に常備するようになってから、平日の夕食が楽になりました。小分けパックだから必要な分だけ解凍できるし、スーパーで迷う時間もゼロに。</p>
         <div class="shop-proof-author">
-          <span class="shop-proof-name">東京都 T.K 様（4歳のお子さま）</span>
-          <span class="shop-proof-product">和牛切り落とし を購入</span>
+          <span class="shop-proof-name">東京都 T.K 様（共働き・4歳児あり）</span>
+          <span class="shop-proof-product">冷凍ストックセット ご利用</span>
         </div>
       </div>
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">家族みんなでオーガニック志向ですが、お肉だけは妥協していました。出会えて良かった。鶏肉も平飼いで、餌も明確で、毎週リピートしています。</p>
+        <p class="shop-proof-text">脂が重すぎなくて、子どもがよく食べてくれます。スーパーのお肉と比べて、なぜ安心できるかが明確で、家族用に毎月定期便で届けてもらってます。</p>
         <div class="shop-proof-author">
-          <span class="shop-proof-name">福岡県 M.S 様（ご家族3人）</span>
-          <span class="shop-proof-product">平飼い鶏セット を購入</span>
+          <span class="shop-proof-name">福岡県 M.S 様（4人家族）</span>
+          <span class="shop-proof-product">月1回 ファミリー定期便</span>
         </div>
       </div>
       <div class="shop-proof-card">
         <div class="shop-proof-stars">★★★★★</div>
-        <p class="shop-proof-text">食材は信頼できる生産者から、をモットーにしています。江田畜産さんは育て方のお話まで丁寧で、お肉そのものの美味しさはもちろん、その背景まで信頼できる。</p>
+        <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなくて「毎日の安心」が冷凍庫にある感覚です。</p>
         <div class="shop-proof-author">
           <span class="shop-proof-name">大阪府 Y.N 様</span>
-          <span class="shop-proof-product">定期便（Regular） ご利用中</span>
+          <span class="shop-proof-product">2週間ごと定期便</span>
         </div>
       </div>
     </div>
@@ -4156,21 +4240,32 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <div class="container">
 
     <div class="shop-section-head reveal">
-      <h2 style="font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); color: var(--color-forest); margin: 0;">
-        All Products.
+      <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4.5vw, 48px); color: var(--color-forest); margin: 0;">
+        冷凍庫に常備したいお肉。
       </h2>
-      <p style="color: var(--color-ink-muted); font-size: 14px; margin: 8px 0 0;">全商品ラインナップ — 抗生物質・ホルモン剤 不使用</p>
+      <p style="color: var(--color-ink-muted); font-size: 14px; margin: 8px 0 0;">小分けパック・抗生物質ホルモン剤不使用・賞味期限6ヶ月</p>
     </div>
 
-    <div class="tab-row reveal" style="margin-bottom: 40px;">
-      <button class="tab active" data-filter="all">All</button>
-      <button class="tab" data-filter="steak">Steak</button>
-      <button class="tab" data-filter="slice">Slice</button>
-      <button class="tab" data-filter="processed">加工品</button>
-      <button class="tab" data-filter="chicken">Chicken</button>
-      <button class="tab" data-filter="set">Sets</button>
-      <button class="tab" data-filter="outlet">訳あり</button>
-      <button class="tab" data-filter="gift">Gift</button>
+    <!-- 用途別フィルタ -->
+    <div class="tab-row reveal" style="margin-bottom: 24px;">
+      <button class="tab active" data-filter="all">すべて</button>
+      <button class="tab" data-filter="set">🥩 冷凍ストックセット</button>
+      <button class="tab" data-filter="slice">🍳 平日ごはん用</button>
+      <button class="tab" data-filter="chicken">🐓 平飼い鶏</button>
+      <button class="tab" data-filter="processed">⏱ 時短・加工品</button>
+      <button class="tab" data-filter="steak">🥩 焼くだけ</button>
+      <button class="tab" data-filter="outlet">💸 訳あり・お得</button>
+      <button class="tab" data-filter="gift">🎁 ギフト</button>
+    </div>
+
+    <!-- 使い方インライン-->
+    <div class="use-tags reveal" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:32px">
+      <span class="use-tag">🍛 カレー・牛丼に</span>
+      <span class="use-tag">👶 子ども人気</span>
+      <span class="use-tag">💪 たんぱく質多め</span>
+      <span class="use-tag">🥬 脂ひかえめ</span>
+      <span class="use-tag">📦 小分けパック</span>
+      <span class="use-tag">⚡ 時短料理</span>
     </div>
 
     <!-- ===== ステーキ ===== -->
@@ -4568,45 +4663,66 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= SUBSCRIPTION CTA ========= -->
+<!-- ========= SUBSCRIPTION ========= -->
 <section class="shop-sub-cta" id="subscription">
   <div class="container">
     <div class="shop-sub-inner reveal">
       <div class="shop-sub-left">
-        <span class="eyebrow text-gold has-dash" style="margin-bottom: 16px; display: block;">Monthly Subscription</span>
-        <h2 style="font-family: var(--font-display); font-size: clamp(32px, 5vw, 52px); line-height: 1.05; color: white; margin: 0 0 24px;">
-          Eat Better,<br/><span class="text-gold">Every Month.</span>
+        <span class="eyebrow text-gold has-dash" style="margin-bottom: 16px; display: block;">Subscription — Always Stocked</span>
+        <h2 style="font-family: var(--font-jp-serif); font-size: clamp(26px, 4.2vw, 42px); line-height: 1.3; color: white; margin: 0 0 20px; font-weight: 700;">
+          冷凍庫に、安心を切らさない。
         </h2>
-        <p style="color: rgba(255,255,255,0.8); line-height: 1.85; font-size: 15px; margin-bottom: 32px;">
-          毎月届くから、買い忘れなし。<br/>
-          忙しい日でも、子どもたちに安心なお肉を。<br/><br/>
-          <strong style="color: var(--color-gold);">STARTER</strong> — 約1,600g / ¥11,980 / 8品 / <strong style="color: var(--color-gold);">初月50%OFF</strong><br/>
-          <strong style="color: var(--color-gold);">REGULAR</strong> — 約3,200g / ¥19,980 / 16品 / <strong style="color: var(--color-gold);">初月20%OFF</strong><br/><br/>
-          いつでもスキップ・解約OK。LINEで管理。<br/>
-          解約縛りなし。2回目以降も自動でお届け。
+        <p style="color: rgba(255,255,255,0.85); line-height: 1.85; font-size: 15px; margin-bottom: 28px;">
+          毎月（または2週間ごとに）届くから、買い物の手間ゼロ。<br/>
+          忙しい平日も、安心できるお肉が冷凍庫にある安心感。<br/>
+          いつでもスキップ・変更・解約OK、解約縛りなし。
         </p>
-        <div style="display:flex; gap: 12px; flex-wrap: wrap;">
-          <a href="subscription.html" class="btn btn-gold">View Plans <span class="btn-arrow"></span></a>
-          <a href="subscription.html#starter" class="btn" style="border-color: var(--color-gold); color: var(--color-gold);">STARTER ¥5,990 で始める</a>
+        <!-- プラン一覧 -->
+        <div class="sub-plans-grid">
+          <div class="sub-plan-mini">
+            <div class="sub-plan-name">月1回 ライト</div>
+            <div class="sub-plan-desc">2-3人家族 / 約1,600g / 8品</div>
+            <div class="sub-plan-price">¥6,980<small>/月</small></div>
+          </div>
+          <div class="sub-plan-mini featured">
+            <span class="sub-plan-tag">人気</span>
+            <div class="sub-plan-name">月1回 ファミリー</div>
+            <div class="sub-plan-desc">4-5人家族 / 約3,200g / 16品</div>
+            <div class="sub-plan-price">¥12,800<small>/月</small></div>
+          </div>
+          <div class="sub-plan-mini">
+            <div class="sub-plan-name">2週間ごと</div>
+            <div class="sub-plan-desc">毎週ヘビーユーザー / 約1,800g</div>
+            <div class="sub-plan-price">¥7,800<small>/回</small></div>
+          </div>
+          <div class="sub-plan-mini">
+            <div class="sub-plan-name">赤身中心 ヘルシー</div>
+            <div class="sub-plan-desc">脂ひかえめ / 筋トレ・健康志向</div>
+            <div class="sub-plan-price">¥9,800<small>/月</small></div>
+          </div>
+        </div>
+        <div style="display:flex; gap: 10px; flex-wrap: wrap;">
+          <a href="subscription.html" class="btn btn-gold" style="font-size:13px">冷凍庫に常備する →</a>
+          <a href="subscription.html#starter" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">月1回ライトから始める</a>
         </div>
       </div>
       <div class="shop-sub-right">
         <div class="shop-sub-features">
           <div class="shop-sub-feature">
-            <strong>毎月届く</strong>
-            <p>注文忘れなし。毎月決まった日にお届け。</p>
+            <strong>📦 必要な量を自動で</strong>
+            <p>1ヶ月で使い切れる量を自動配送。多すぎず、少なすぎず。</p>
           </div>
           <div class="shop-sub-feature">
-            <strong>いつでも変更・スキップ</strong>
-            <p>LINEで次回のスキップや内容変更が可能。</p>
+            <strong>⏸ スキップ・変更自由</strong>
+            <p>LINEで「来月だけスキップ」「赤身多めに変更」が即できます。</p>
           </div>
           <div class="shop-sub-feature">
-            <strong>解約縛りなし</strong>
-            <p>最低契約期間なし。いつでも解約OK。</p>
+            <strong>🚫 解約縛りなし</strong>
+            <p>1回だけ試してOK。気に入らなければ次回からは届きません。</p>
           </div>
           <div class="shop-sub-feature">
-            <strong>送料無料</strong>
-            <p>定期便は毎回送料無料でお届け。</p>
+            <strong>🚚 毎回送料無料</strong>
+            <p>金額にかかわらず、定期便は送料無料でお届けします。</p>
           </div>
         </div>
       </div>
@@ -4674,42 +4790,42 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= 贈答用ハイライト ========= -->
+<!-- ========= 贈答用 ========= -->
 <section class="gift-highlight" id="gift-highlight">
   <div class="container">
     <div class="gift-hi-inner">
       <div class="gift-hi-content">
-        <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block;">For Special Occasions</span>
-        <h2>大切な方への贈り物に。</h2>
-        <p>のし対応・木箱入れ・直接配送承ります。<br/>父の日・母の日・お中元・お歳暮・内祝い・出産祝い…<br/>「健康に気を遣う方へ届けたい」想いを、お肉に込めて。</p>
+        <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block;">For Someone You Care</span>
+        <h2>気遣いの贈り物に。</h2>
+        <p>健康を大切にされる方へ。<br/>添加物・抗生物質を気にされるご家族や、お子さまがいるご家庭への贈り物に。<br/>冷凍で日持ちするから、相手の都合に合わせて使ってもらえます。</p>
         <ul class="gift-hi-features">
-          <li>✓ のし・名入れ無料</li>
-          <li>✓ 化粧箱・木箱包装対応</li>
-          <li>✓ 直接配送 / メッセージカード添付可</li>
-          <li>✓ 法人・大口注文にも対応</li>
+          <li>✓ のし・名入れ 無料</li>
+          <li>✓ 化粧箱包装</li>
+          <li>✓ 直接配送 / カード同梱</li>
+          <li>✓ 賞味期限6ヶ月で日持ち</li>
         </ul>
         <a href="#products" onclick="document.querySelector('[data-filter=\'gift\']')?.click();return false;" class="btn btn-gold">ギフト商品を見る <span class="btn-arrow"></span></a>
       </div>
       <div class="gift-hi-visual">
         <div class="gift-hi-card">
-          <div class="gift-hi-emoji">🎁</div>
-          <strong>贈答用 化粧箱</strong>
-          <small>江田和牛サーロイン 500g+</small>
+          <div class="gift-hi-emoji">👶</div>
+          <strong>出産・内祝い</strong>
+          <small>健康志向のご家族へ</small>
         </div>
         <div class="gift-hi-card">
           <div class="gift-hi-emoji">🌸</div>
-          <strong>母の日特集</strong>
-          <small>5月限定セット</small>
+          <strong>母の日・父の日</strong>
+          <small>体を気遣う贈り物</small>
         </div>
         <div class="gift-hi-card">
-          <div class="gift-hi-emoji">🎄</div>
-          <strong>お歳暮・お中元</strong>
-          <small>年2回の定番</small>
+          <div class="gift-hi-emoji">🎁</div>
+          <strong>お中元・お歳暮</strong>
+          <small>定番の季節ギフト</small>
         </div>
         <div class="gift-hi-card">
-          <div class="gift-hi-emoji">👶</div>
-          <strong>出産・内祝い</strong>
-          <small>のし・命名対応</small>
+          <div class="gift-hi-emoji">🏢</div>
+          <strong>法人ギフト</strong>
+          <small>大口・複数配送対応</small>
         </div>
       </div>
     </div>
@@ -5585,17 +5701,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     const w = days[arrival.getDay()];
 
     if (isInTime) {
-      // 残り時間
       const cutoff = new Date(now);
       cutoff.setHours(CUTOFF_HOUR, 0, 0, 0);
       const diffMs = cutoff - now;
       const hours = Math.floor(diffMs / 3600000);
       const minutes = Math.floor((diffMs % 3600000) / 60000);
-      headlineEl.innerHTML = `本日 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>着`;
-      metaEl.innerHTML = `残り <strong>${hours}時間 ${String(minutes).padStart(2,'0')}分</strong> — 冷凍便（クール宅急便）でお届け`;
+      headlineEl.innerHTML = `本日 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>に冷凍庫へ`;
+      metaEl.innerHTML = `残り <strong>${hours}時間 ${String(minutes).padStart(2,'0')}分</strong> — 小分け冷凍でお届け`;
     } else {
-      headlineEl.innerHTML = `次回 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>着予定`;
-      metaEl.innerHTML = `現在は受付時間外です — 平日 ${CUTOFF_HOUR}:00 までのご注文で翌日発送`;
+      headlineEl.innerHTML = `次回 <strong>${CUTOFF_HOUR}:00</strong> までのご注文で <strong>${m}月${d}日（${w}）</strong>にお届け`;
+      metaEl.innerHTML = `受付時間外 — 平日 ${CUTOFF_HOUR}:00 までのご注文で翌日発送`;
     }
   }
 
