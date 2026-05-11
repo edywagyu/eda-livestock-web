@@ -1278,13 +1278,41 @@ if (header) {
 /* ---- Initialize ---- */
 (async function init() {
   const params = new URLSearchParams(window.location.search);
+  // Stripe からのリダイレクトは session_id、モック / 通常チェックアウトからは order
   const sessionId = params.get('session_id');
+  const orderParam = params.get('order');
 
   const loading = document.getElementById('pageLoading');
   const success = document.getElementById('successState');
   const error = document.getElementById('errorState');
 
-  if (!sessionId) {
+  /* ★ 統一カートクリーンアップ (両キーをクリア) */
+  function clearLocalCart() {
+    try {
+      localStorage.removeItem('eda-cart');
+      localStorage.removeItem('cart'); // 旧キー互換
+      localStorage.removeItem('eda-subscription-pending');
+    } catch(e) {}
+  }
+
+  // パラメータどちらも無い場合: localStorage の eda-last-order を使う（モックフロー）
+  if (!sessionId && !orderParam) {
+    try {
+      const last = JSON.parse(localStorage.getItem('eda-last-order') || 'null');
+      if (last && last.num) {
+        loading.style.display = 'none';
+        success.style.display = '';
+        renderOrder({
+          order_number: last.num.replace('#', ''),
+          mode: last.mode,
+          total: last.total,
+          date: last.date,
+          items: []
+        });
+        clearLocalCart();
+        return;
+      }
+    } catch(e) {}
     loading.style.display = 'none';
     error.style.display = '';
     document.getElementById('errorMessage').textContent =
@@ -1292,27 +1320,46 @@ if (header) {
     return;
   }
 
-  try {
-    const res = await fetch(GAS_API_URL + '?action=order_status&session_id=' + encodeURIComponent(sessionId));
-    const data = await res.json();
+  // Stripe フロー: session_id があれば GAS に注文ステータスを問い合わせ
+  if (sessionId) {
+    try {
+      const res = await fetch(GAS_API_URL + '?action=order_status&session_id=' + encodeURIComponent(sessionId));
+      const data = await res.json();
 
-    if (data.success && data.order) {
-      loading.style.display = 'none';
-      success.style.display = '';
-      renderOrder(data.order);
-      /* Clear cart after successful purchase */
-      try { localStorage.removeItem('cart'); } catch(e) {}
-    } else {
+      if (data.success && data.order) {
+        loading.style.display = 'none';
+        success.style.display = '';
+        renderOrder(data.order);
+        clearLocalCart();
+      } else {
+        loading.style.display = 'none';
+        error.style.display = '';
+        document.getElementById('errorMessage').textContent =
+          data.message || 'ご注文情報が見つかりませんでした。';
+      }
+    } catch (err) {
       loading.style.display = 'none';
       error.style.display = '';
       document.getElementById('errorMessage').textContent =
-        data.message || 'ご注文情報が見つかりませんでした。';
+        '通信エラーが発生しました。しばらく待ってからもう一度お試しください。';
     }
-  } catch (err) {
+    return;
+  }
+
+  // モックフロー: ?order= だけ来ている場合
+  if (orderParam) {
+    let last = null;
+    try { last = JSON.parse(localStorage.getItem('eda-last-order') || 'null'); } catch(e) {}
     loading.style.display = 'none';
-    error.style.display = '';
-    document.getElementById('errorMessage').textContent =
-      '通信エラーが発生しました。しばらく待ってからもう一度お試しください。';
+    success.style.display = '';
+    renderOrder({
+      order_number: orderParam.replace('#', ''),
+      mode: last && last.mode,
+      total: last && last.total,
+      date: last && last.date,
+      items: []
+    });
+    clearLocalCart();
   }
 })();
 
