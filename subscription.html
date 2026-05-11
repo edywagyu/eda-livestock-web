@@ -526,6 +526,185 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   font-weight: 600;
 }
 
+/* ================ 今月だけ追加（アドオン） ================ */
+.sub-addons {
+  padding: 80px 0;
+  background: white;
+  border-top: 1px solid var(--color-bone);
+}
+.sub-addons-head { text-align: center; max-width: 720px; margin: 0 auto 36px; }
+.sub-addons-eyebrow {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--color-gold);
+  background: rgba(212,169,59,0.10);
+  border: 1px solid rgba(212,169,59,0.35);
+  padding: 6px 16px;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.sub-addons-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(24px, 3.6vw, 34px);
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.sub-addons-lead {
+  font-size: 13.5px;
+  color: var(--color-ink-muted);
+  line-height: 1.85;
+  margin: 0;
+}
+.sub-addons-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  max-width: 1180px;
+  margin: 0 auto 28px;
+}
+.sub-addon-card {
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s var(--ease-out-expo);
+  box-shadow: var(--shadow-sm);
+}
+.sub-addon-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(212,169,59,0.4);
+  box-shadow: var(--shadow-md);
+}
+.sub-addon-card.added {
+  border-color: var(--color-forest);
+  background: rgba(15,61,46,0.04);
+}
+.sub-addon-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-bone);
+}
+.sub-addon-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
+.sub-addon-name {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.sub-addon-meta {
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+  margin-bottom: 10px;
+  flex: 1;
+}
+.sub-addon-price {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.sub-addon-btn {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--color-forest);
+  color: white;
+  border-radius: 6px;
+  font-family: var(--font-jp);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sub-addon-btn:hover { background: var(--color-forest-deep); }
+.sub-addon-card.added .sub-addon-btn { background: var(--color-gold); color: var(--color-forest-deep); }
+
+.sub-addons-cart {
+  max-width: 720px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #143D2B, #0F3D2E);
+  color: white;
+  border-radius: 14px;
+  padding: 22px 26px;
+  border: 1px solid rgba(212,169,59,0.3);
+  box-shadow: var(--shadow-md);
+}
+.sub-addons-cart-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid rgba(212,169,59,0.2);
+}
+.sub-addons-cart-label {
+  font-family: var(--font-display);
+  font-size: 11px; letter-spacing: 0.22em;
+  color: var(--color-gold); font-weight: 700;
+}
+.sub-addons-cart-count {
+  font-family: var(--font-jp);
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  background: rgba(212,169,59,0.18);
+  padding: 3px 10px; border-radius: 10px;
+  font-weight: 700;
+}
+.sub-addons-cart-list {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.sub-addons-cart-list .row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 4px 0;
+}
+.sub-addons-cart-list .row .rm {
+  font-size: 10px; color: rgba(255,107,107,0.85);
+  cursor: pointer; font-weight: 700;
+}
+.sub-addons-cart-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(212,169,59,0.2);
+  font-family: var(--font-jp);
+  font-size: 13px; color: white;
+}
+.sub-addons-cart-total strong {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-gold);
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 720px) {
+  .sub-addons { padding: 40px 0; }
+  .sub-addons-head { margin-bottom: 24px; }
+  .sub-addons-title { font-size: 22px; }
+  .sub-addons-grid {
+    display: flex !important;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -16px 18px;
+    padding: 4px 16px 12px;
+    gap: 10px;
+  }
+  .sub-addons-grid::-webkit-scrollbar { display: none; }
+  .sub-addon-card { flex: 0 0 60vw; scroll-snap-align: start; }
+  .sub-addons-cart { padding: 18px 16px; }
+}
+
 /* ================ チェックアウトフォーム ================ */
 .sub-checkout {
   background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
@@ -1215,6 +1394,33 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   </div>
 </section>
 
+<!-- ========= 今月だけ追加（アドオン） ========= -->
+<section class="sub-addons" id="addons">
+  <div class="container">
+    <div class="sub-addons-head">
+      <div class="sub-addons-eyebrow">＋ THIS MONTH ONLY</div>
+      <h2 class="sub-addons-title">今月だけ追加する？</h2>
+      <p class="sub-addons-lead">定期便と同じ箱に同梱、送料無料で追加できます。来月以降は通常の定期便のみのお届けになります。</p>
+    </div>
+
+    <div class="sub-addons-grid" id="subAddonsGrid">
+      <!-- JS で生成 -->
+    </div>
+
+    <div class="sub-addons-cart" id="subAddonsCart" style="display:none">
+      <div class="sub-addons-cart-head">
+        <span class="sub-addons-cart-label">追加中のアイテム</span>
+        <span class="sub-addons-cart-count" id="subAddonsCount">0品</span>
+      </div>
+      <div class="sub-addons-cart-list" id="subAddonsList"></div>
+      <div class="sub-addons-cart-total">
+        <span>追加分小計</span>
+        <strong id="subAddonsTotal">¥0</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========= チェックアウトフォーム ========= -->
 <section class="sub-checkout" id="checkout">
   <div class="container">
@@ -1680,16 +1886,13 @@ document.querySelectorAll('.checkout-radio input').forEach(input => {
   });
 });
 
-/* ============ チェックアウト送信（モック） ============ */
+/* ============ チェックアウト送信 → 統合 checkout.html へ ============ */
 function handleSubmit(e) {
   e.preventDefault();
-  const plan = PLANS[currentPlan];
-  alert(
-    `🎁 ${plan.name}定期便のお申込みを承りました\n\n` +
-    `初月: ¥${plan.half.toLocaleString()} (50%OFF)\n` +
-    `2回目以降: ¥${plan.regular.toLocaleString()}/月\n\n` +
-    `※ これはデモです。本番では決済画面（Stripe Checkout）に遷移します。`
-  );
+  // 選択中プランを localStorage に保存
+  localStorage.setItem('eda-subscription-pending', JSON.stringify({ plan: currentPlan }));
+  // 統合チェックアウトへ
+  location.href = 'checkout.html?plan=' + currentPlan;
   return false;
 }
 
@@ -1721,6 +1924,99 @@ function handleSubmit(e) {
 window.addEventListener('scroll', () => {
   document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 50);
 }, { passive: true });
+
+/* ============ 「今月だけ追加」アドオン商品 ============ */
+const ADDONS = [
+  { id: 'sirloin', name: 'サーロインステーキ', price: 3400, img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役・200g' },
+  { id: 'cube',    name: 'サイコロステーキ',   price: 1000, img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ・200g' },
+  { id: 'yakiniku',name: 'バラ焼肉',           price: 1900, img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット・150g' },
+  { id: 'hamburg', name: '和牛ハンバーグ',     price: 760,  img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分・1個' }
+];
+let addedAddons = []; // {id, qty}
+
+function renderAddons() {
+  const grid = document.getElementById('subAddonsGrid');
+  grid.innerHTML = ADDONS.map(a => {
+    const added = addedAddons.find(x => x.id === a.id);
+    return `
+      <div class="sub-addon-card ${added ? 'added' : ''}" data-id="${a.id}">
+        <div class="sub-addon-img" style="background-image:url('${a.img}')"></div>
+        <div class="sub-addon-body">
+          <div class="sub-addon-name">${a.name}</div>
+          <div class="sub-addon-meta">${a.desc}</div>
+          <div class="sub-addon-price">¥${a.price.toLocaleString()}</div>
+          <button class="sub-addon-btn" onclick="toggleAddon('${a.id}')">
+            ${added ? '✓ 追加済み — 取り消す' : '+ 追加する'}
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleAddon(id) {
+  const idx = addedAddons.findIndex(x => x.id === id);
+  if (idx >= 0) addedAddons.splice(idx, 1);
+  else addedAddons.push({ id, qty: 1 });
+  renderAddons();
+  renderAddonsCart();
+}
+
+function renderAddonsCart() {
+  const cart = document.getElementById('subAddonsCart');
+  const list = document.getElementById('subAddonsList');
+  const countEl = document.getElementById('subAddonsCount');
+  const totalEl = document.getElementById('subAddonsTotal');
+
+  if (addedAddons.length === 0) {
+    cart.style.display = 'none';
+    return;
+  }
+  cart.style.display = 'block';
+  let total = 0;
+  list.innerHTML = addedAddons.map(x => {
+    const a = ADDONS.find(p => p.id === x.id);
+    total += a.price * x.qty;
+    return `
+      <div class="row">
+        <span>${a.name} × ${x.qty}</span>
+        <span>¥${(a.price * x.qty).toLocaleString()} <span class="rm" onclick="toggleAddon('${a.id}')">削除</span></span>
+      </div>
+    `;
+  }).join('');
+  countEl.textContent = addedAddons.length + '品';
+  totalEl.textContent = '¥' + total.toLocaleString();
+}
+
+// 元の handleSubmit を上書き：addons を cart に push して checkout へ
+function handleSubmit(e) {
+  e.preventDefault();
+  localStorage.setItem('eda-subscription-pending', JSON.stringify({ plan: currentPlan }));
+
+  // addons を eda-cart に書き込む
+  if (addedAddons.length > 0) {
+    const cartItems = addedAddons.map(x => {
+      const a = ADDONS.find(p => p.id === x.id);
+      return {
+        variantId: 'addon-' + a.id,
+        price: a.price,
+        title: a.name + '（追加）',
+        variant: '今月のみ追加',
+        img: a.img,
+        qty: x.qty
+      };
+    });
+    localStorage.setItem('eda-cart', JSON.stringify(cartItems));
+  } else {
+    // 念のためカートクリア（前回のクッキー残留対策）
+    localStorage.removeItem('eda-cart');
+  }
+
+  location.href = 'checkout.html?plan=' + currentPlan;
+  return false;
+}
+
+renderAddons();
 
 /* ============ 初期化 ============ */
 selectPlan(currentPlan);

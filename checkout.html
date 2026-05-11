@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>レジ | Checkout | EDA-LIVESTOCK</title>
+<meta name="description" content="江田畜産 ご注文 — 単品・定期便・ギフト・複数配送先すべてに対応した安心のチェックアウト。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+ * EDA-LIVESTOCK Unified Checkout
+ * 4購入導線統合: 単品 / 定期便+単品 / ギフト / 複数配送先
+ * ================================================================ */
+:root {
+  --color-forest: #0F3D2E;
+  --color-forest-deep: #0A2D21;
+  --color-forest-light: #143D2B;
+  --color-gold: #D4A93B;
+  --color-gold-soft: #B8932F;
+  --color-cream: #FAF7F0;
+  --color-paper: #F5EFE3;
+  --color-bone: #EFE8D7;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #5C5C5C;
+  --color-red: #C8102E;
+  --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
+  --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 16px 48px rgba(15, 61, 46, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
+  min-height: 100vh;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
+ul { list-style: none; padding: 0; margin: 0; }
+h1, h2, h3, h4 { font-weight: 400; margin: 0; }
+
+.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+
+/* ============ HEADER (シンプル版) ============ */
+.checkout-header {
+  background: white;
+  border-bottom: 1px solid var(--color-bone);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.checkout-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.checkout-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.checkout-brand img { height: 36px; }
+.checkout-brand-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  color: var(--color-forest);
+}
+.checkout-secure {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+.checkout-secure svg { width: 14px; height: 14px; }
+
+/* ============ HERO ============ */
+.checkout-hero {
+  padding: 32px 0 24px;
+  text-align: center;
+}
+.checkout-hero h1 {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(22px, 3.4vw, 32px);
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.checkout-hero p {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
+/* ============ STEPPER ============ */
+.checkout-stepper {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto 28px;
+  max-width: 720px;
+  padding: 16px 16px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-bone);
+}
+.stepper-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-jp);
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+  position: relative;
+  padding: 0 8px;
+}
+.stepper-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -2px; top: 50%; transform: translateY(-50%);
+  width: 12px; height: 1px;
+  background: var(--color-bone);
+}
+.stepper-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--color-bone);
+  color: var(--color-ink-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.stepper-step.active { color: var(--color-forest); }
+.stepper-step.active .stepper-num {
+  background: var(--color-forest);
+  color: var(--color-gold);
+}
+.stepper-step.done { color: var(--color-forest); }
+.stepper-step.done .stepper-num {
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+}
+.stepper-step.done .stepper-num::after {
+  content: '✓';
+}
+.stepper-step.done .stepper-num span { display: none; }
+
+/* ============ LAYOUT ============ */
+.checkout-body {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 28px;
+  padding-bottom: 80px;
+  align-items: start;
+}
+
+.checkout-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.checkout-block {
+  background: white;
+  border-radius: 14px;
+  padding: 28px 32px;
+  border: 1px solid var(--color-bone);
+  box-shadow: var(--shadow-sm);
+}
+.checkout-block-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-bone);
+}
+.checkout-block-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: var(--color-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 700;
+  flex-shrink: 0;
+}
+.checkout-block-title {
+  font-family: var(--font-jp);
+  font-size: 15px;
+  color: var(--color-forest);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.checkout-block-sub {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--color-ink-muted);
+}
+
+/* ============ ORDER LINE ITEMS ============ */
+.order-mode-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(212,169,59,0.10);
+  border: 1px solid rgba(212,169,59,0.3);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.order-mode-banner.subscription {
+  background: rgba(15,61,46,0.06);
+  border-color: rgba(15,61,46,0.18);
+}
+.order-mode-banner.gift {
+  background: linear-gradient(90deg, rgba(159,29,36,0.08), rgba(159,29,36,0.04));
+  border-color: rgba(159,29,36,0.25);
+}
+.order-mode-banner-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.order-item {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-bone);
+}
+.order-item:last-child { border-bottom: 0; padding-bottom: 0; }
+.order-item-img {
+  width: 64px; height: 64px;
+  border-radius: 8px;
+  background-color: var(--color-bone);
+  background-size: cover;
+  background-position: center;
+}
+.order-item-info strong {
+  display: block;
+  font-family: var(--font-jp);
+  font-size: 13.5px;
+  color: var(--color-forest);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.order-item-info span {
+  font-size: 11.5px;
+  color: var(--color-ink-muted);
+}
+.order-item-info .destination-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-bone);
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+.order-item-info .destination-pill.gift {
+  background: rgba(159,29,36,0.08);
+  border-color: rgba(159,29,36,0.2);
+  color: #9F1D24;
+}
+.order-item-price {
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--color-forest);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.order-item-price small {
+  display: block;
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+  font-family: var(--font-jp);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ============ DESTINATION GROUPS ============ */
+.dest-group {
+  background: var(--color-paper);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--color-bone);
+}
+.dest-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.dest-group-title {
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--color-forest);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dest-group-title-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--color-forest);
+  color: var(--color-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.dest-group-actions {
+  font-size: 11px;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  cursor: pointer;
+}
+.dest-group-form { display: grid; gap: 10px; }
+.dest-form-row { display: grid; gap: 10px; }
+.dest-form-row.cols2 { grid-template-columns: 1fr 1fr; }
+.dest-field { display: flex; flex-direction: column; gap: 4px; }
+.dest-field label {
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  font-weight: 600;
+}
+.dest-field label .required { color: var(--color-red); margin-left: 4px; }
+.dest-field input,
+.dest-field select,
+.dest-field textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--color-bone);
+  border-radius: 8px;
+  background: white;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  color: var(--color-ink);
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+.dest-field input:focus,
+.dest-field select:focus,
+.dest-field textarea:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+.dest-field textarea {
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.5;
+}
+
+/* ギフトオプション展開 */
+.gift-options {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(159,29,36,0.06), rgba(159,29,36,0.02));
+  border: 1px dashed rgba(159,29,36,0.3);
+  border-radius: 10px;
+}
+.gift-options-head {
+  font-family: var(--font-jp);
+  font-size: 12px;
+  color: #9F1D24;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gift-noshi-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.gift-noshi-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-forest);
+  transition: all 0.2s;
+}
+.gift-noshi-option input { margin: 0; accent-color: var(--color-forest); }
+.gift-noshi-option.selected {
+  border-color: var(--color-forest);
+  background: rgba(15,61,46,0.04);
+}
+
+/* ============ PAYMENT METHOD ============ */
+.payment-grid {
+  display: grid;
+  gap: 8px;
+}
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 10px;
+  cursor: pointer;
+  background: white;
+  transition: all 0.25s var(--ease-out-expo);
+}
+.payment-option:hover {
+  border-color: var(--color-gold);
+  background: rgba(212,169,59,0.04);
+}
+.payment-option input { margin: 0; accent-color: var(--color-forest); }
+.payment-option-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.payment-option-body { flex: 1; }
+.payment-option-name {
+  font-family: var(--font-jp);
+  font-size: 13.5px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.payment-option-desc {
+  font-size: 11px;
+  color: var(--color-ink-muted);
+  margin-top: 2px;
+}
+.payment-option.selected {
+  border-color: var(--color-forest);
+  background: rgba(15,61,46,0.04);
+}
+
+/* ============ SIDEBAR SUMMARY ============ */
+.checkout-sidebar {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.summary-card {
+  background: white;
+  border-radius: 14px;
+  padding: 24px 26px;
+  border: 1px solid var(--color-bone);
+  box-shadow: var(--shadow-md);
+}
+.summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-bone);
+}
+.summary-title {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.summary-edit {
+  font-size: 11px;
+  color: var(--color-gold-soft);
+  font-weight: 700;
+  cursor: pointer;
+}
+.summary-line-items {
+  margin-bottom: 14px;
+}
+.summary-line-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 12.5px;
+  color: var(--color-ink);
+}
+.summary-line-item .qty {
+  color: var(--color-ink-muted);
+  font-size: 11px;
+  margin-left: 4px;
+}
+.summary-rows {
+  border-top: 1px solid var(--color-bone);
+  padding-top: 14px;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  padding: 4px 0;
+  color: var(--color-ink-muted);
+}
+.summary-row.subscription strong { color: var(--color-forest); }
+.summary-row.discount { color: #9F1D24; font-weight: 700; }
+.summary-row.shipping strong { color: var(--color-forest); }
+.summary-row.total {
+  border-top: 1px solid var(--color-bone);
+  padding-top: 12px;
+  margin-top: 8px;
+  font-size: 16px;
+  color: var(--color-forest);
+  font-weight: 700;
+}
+.summary-row.total strong {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--color-gold-soft);
+  letter-spacing: -0.01em;
+}
+
+.btn-place-order {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--color-gold), #E5B547);
+  color: var(--color-forest-deep);
+  border-radius: 12px;
+  font-family: var(--font-jp);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-top: 18px;
+  box-shadow: 0 12px 32px rgba(212,169,59,0.3);
+  transition: all 0.3s var(--ease-out-expo);
+  cursor: pointer;
+}
+.btn-place-order:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(212,169,59,0.45);
+}
+.btn-place-order:disabled {
+  background: var(--color-bone);
+  color: var(--color-ink-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+.summary-trust {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 10.5px;
+  color: var(--color-ink-muted);
+}
+.summary-trust-item { display: inline-flex; align-items: center; gap: 4px; }
+
+/* Mini cart drawer for mobile */
+.mobile-summary-bar {
+  display: none;
+  position: sticky;
+  bottom: 0;
+  left: 0; right: 0;
+  background: white;
+  border-top: 2px solid var(--color-gold);
+  padding: 12px 16px;
+  z-index: 99;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+}
+
+/* ============ FOOTER ============ */
+.checkout-footer {
+  text-align: center;
+  padding: 24px 0 40px;
+  font-size: 11px;
+  color: var(--color-ink-muted);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 960px) {
+  .checkout-body { grid-template-columns: 1fr; gap: 16px; }
+  .checkout-sidebar { position: static; order: 2; }
+  .checkout-main { order: 1; }
+}
+
+@media (max-width: 640px) {
+  .checkout-hero { padding: 20px 0 16px; }
+  .checkout-hero h1 { font-size: 20px; }
+  .checkout-stepper {
+    padding: 10px 8px;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .checkout-stepper::-webkit-scrollbar { display: none; }
+  .stepper-step { font-size: 10px; gap: 6px; padding: 0 4px; flex: 0 0 auto; }
+  .stepper-num { width: 20px; height: 20px; font-size: 10.5px; }
+  .stepper-step:not(:last-child)::after { width: 6px; right: -2px; }
+  .stepper-step-label { display: none; }
+  .stepper-step.active .stepper-step-label { display: inline; }
+
+  .checkout-block { padding: 20px 18px; }
+  .checkout-block-head { margin-bottom: 14px; padding-bottom: 12px; }
+  .checkout-block-title { font-size: 14px; }
+  .dest-form-row.cols2 { grid-template-columns: 1fr; }
+  .order-item { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 10px 0; }
+  .order-item-img { width: 48px; height: 48px; }
+  .order-item-info strong { font-size: 12.5px; }
+  .order-item-info span { font-size: 10.5px; }
+  .order-item-price { font-size: 14px; }
+  .gift-noshi-row { grid-template-columns: 1fr; }
+  .payment-option { padding: 12px 14px; }
+  .summary-card { padding: 18px 18px; }
+  .summary-row.total { font-size: 14px; }
+  .summary-row.total strong { font-size: 24px; }
+  .checkout-secure { display: none; }
+  .btn-place-order { font-size: 14px; padding: 16px; min-height: 52px; }
+
+  /* インプットは min 44px */
+  .dest-field input,
+  .dest-field select,
+  .dest-field textarea { min-height: 44px; font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========= HEADER ========= -->
+<header class="checkout-header">
+  <div class="container checkout-header-inner">
+    <a href="index.html" class="checkout-brand">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK">
+      <span class="checkout-brand-name">CHECKOUT</span>
+    </a>
+    <div class="checkout-secure">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7 a5 5 0 0 1 10 0v4"/>
+      </svg>
+      SSL 暗号化通信 · 安全な決済
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- ========= TITLE + STEPPER ========= -->
+    <div class="checkout-hero">
+      <h1 id="checkoutTitle">ご注文の確認</h1>
+      <p id="checkoutSub">下記内容でお間違いないかご確認ください。</p>
+    </div>
+
+    <div class="checkout-stepper">
+      <div class="stepper-step active" data-step="1">
+        <span class="stepper-num"><span>1</span></span>
+        <span class="stepper-step-label">注文内容</span>
+      </div>
+      <div class="stepper-step" data-step="2">
+        <span class="stepper-num"><span>2</span></span>
+        <span class="stepper-step-label">配送先</span>
+      </div>
+      <div class="stepper-step" data-step="3">
+        <span class="stepper-num"><span>3</span></span>
+        <span class="stepper-step-label">お支払い</span>
+      </div>
+      <div class="stepper-step" data-step="4">
+        <span class="stepper-num"><span>4</span></span>
+        <span class="stepper-step-label">確認</span>
+      </div>
+    </div>
+
+    <!-- ========= BODY ========= -->
+    <div class="checkout-body">
+
+      <!-- ========= LEFT: MAIN COLUMNS ========= -->
+      <div class="checkout-main">
+
+        <!-- ① 注文内容 -->
+        <div class="checkout-block">
+          <div class="checkout-block-head">
+            <span class="checkout-block-num">1</span>
+            <span class="checkout-block-title">ご注文内容</span>
+            <a href="shop.html" class="checkout-block-sub">← 商品を追加</a>
+          </div>
+
+          <div id="orderModeBannerArea"></div>
+          <div class="order-list" id="orderList"></div>
+        </div>
+
+        <!-- ② 配送先（destination ごとにグループ表示） -->
+        <div class="checkout-block">
+          <div class="checkout-block-head">
+            <span class="checkout-block-num">2</span>
+            <span class="checkout-block-title">お届け先</span>
+            <button class="checkout-block-sub" onclick="addDestination()">＋ 別の配送先を追加</button>
+          </div>
+          <div id="destinationGroups"></div>
+        </div>
+
+        <!-- ③ 配送日時 -->
+        <div class="checkout-block">
+          <div class="checkout-block-head">
+            <span class="checkout-block-num">3</span>
+            <span class="checkout-block-title">お届け日時</span>
+            <span class="checkout-block-sub" id="deliveryDateDefault">最短: 自動</span>
+          </div>
+          <div class="dest-form-row cols2">
+            <div class="dest-field">
+              <label>お届け希望日</label>
+              <select id="checkoutDeliveryDate">
+                <option value="">最短日でお届け</option>
+              </select>
+            </div>
+            <div class="dest-field">
+              <label>お届け時間帯</label>
+              <select id="checkoutDeliveryTime">
+                <option value="">指定なし</option>
+                <option>午前中（〜12:00）</option>
+                <option>14:00 - 16:00</option>
+                <option>16:00 - 18:00</option>
+                <option selected>18:00 - 20:00（推奨）</option>
+                <option>19:00 - 21:00</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ お支払い方法 -->
+        <div class="checkout-block">
+          <div class="checkout-block-head">
+            <span class="checkout-block-num">4</span>
+            <span class="checkout-block-title">お支払い方法</span>
+          </div>
+          <div class="payment-grid">
+            <label class="payment-option selected">
+              <input type="radio" name="payment" value="card" checked>
+              <span class="payment-option-icon">💳</span>
+              <div class="payment-option-body">
+                <div class="payment-option-name">クレジットカード</div>
+                <div class="payment-option-desc">VISA · Mastercard · JCB · AMEX</div>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="apple">
+              <span class="payment-option-icon">🍎</span>
+              <div class="payment-option-body">
+                <div class="payment-option-name">Apple Pay</div>
+                <div class="payment-option-desc">かんたん決済 · タッチID/Face ID</div>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="line">
+              <span class="payment-option-icon">💬</span>
+              <div class="payment-option-body">
+                <div class="payment-option-name">LINE Pay</div>
+                <div class="payment-option-desc">LINE 友だち追加で簡単決済</div>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="cvs">
+              <span class="payment-option-icon">🏪</span>
+              <div class="payment-option-body">
+                <div class="payment-option-name">コンビニ後払い</div>
+                <div class="payment-option-desc">商品到着後、7日以内にお支払い</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========= RIGHT: SUMMARY SIDEBAR ========= -->
+      <div class="checkout-sidebar">
+        <div class="summary-card">
+          <div class="summary-head">
+            <span class="summary-title">ご注文サマリー</span>
+            <a href="shop.html" class="summary-edit">編集</a>
+          </div>
+
+          <div class="summary-line-items" id="summaryLineItems"></div>
+
+          <div class="summary-rows" id="summaryRows"></div>
+
+          <button class="btn-place-order" id="btnPlaceOrder" onclick="placeOrder()">
+            ご注文を確定する →
+          </button>
+
+          <div class="summary-trust">
+            <span class="summary-trust-item">🔒 SSL</span>
+            <span class="summary-trust-item">✓ 利用規約に同意</span>
+            <span class="summary-trust-item">📞 24h サポート</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="checkout-footer">
+  © 2026 Eda Livestock Co., Ltd. · <a href="contact.html" style="color: var(--color-gold-soft);">困った時はこちら →</a>
+</footer>
+
+<script>
+/* ============================================================
+ * 4購入導線統合 Checkout — Mode 自動判定
+ * Mode A: 単品 (cart のみ)
+ * Mode B: 定期便 + 単品 (subscription localStorage + cart)
+ * Mode C: ギフト (cart 内アイテムに gift フラグ)
+ * Mode D: 複数配送先 (destination 複数)
+ * ============================================================ */
+const CART_KEY = 'eda-cart';
+const SUB_KEY = 'eda-subscription-pending';
+
+/* ---- プラン定義 (subscription と整合) ---- */
+const PLANS = {
+  starter: { name: 'スターター定期便', regular: 6980, half: 3490 },
+  regular: { name: 'レギュラー定期便', regular: 12800, half: 6400 },
+  volume:  { name: 'ボリューム定期便', regular: 19800, half: 9900 }
+};
+
+/* ---- 状態 ---- */
+let cartItems = [];
+let subscription = null;        // { plan: 'regular' } or null
+let destinations = [
+  { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
+];
+
+/* ---- 初期化 ---- */
+function init() {
+  try { cartItems = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) {}
+  try { subscription = JSON.parse(localStorage.getItem(SUB_KEY) || 'null'); } catch (e) {}
+
+  // URL params から自動セット可能（subscription.html からの遷移）
+  const params = new URLSearchParams(location.search);
+  if (params.get('plan') && PLANS[params.get('plan')]) {
+    subscription = { plan: params.get('plan') };
+    localStorage.setItem(SUB_KEY, JSON.stringify(subscription));
+  }
+  if (params.get('mode') === 'gift') {
+    cartItems.forEach(i => { i.gift = true; });
+  }
+
+  // すべての単品を最初は self に紐付け
+  destinations[0].itemIds = cartItems.map((_, i) => i);
+
+  renderOrderList();
+  renderDestinations();
+  renderSummary();
+  buildDeliveryDateOptions();
+}
+
+/* ---- モード判定バナー ---- */
+function getMode() {
+  const hasSub = !!subscription;
+  const hasItems = cartItems.length > 0;
+  const hasGift = cartItems.some(i => i.gift);
+  const hasMultiDest = destinations.length > 1;
+  if (hasMultiDest) return 'multi';
+  if (hasSub && hasItems) return 'subandadd';
+  if (hasSub) return 'subscription';
+  if (hasGift) return 'gift';
+  return 'single';
+}
+function renderModeBanner() {
+  const area = document.getElementById('orderModeBannerArea');
+  const mode = getMode();
+  const labels = {
+    single:     { cls: '', icon: '🛒', text: '単品のお買い物' },
+    subscription:{ cls: 'subscription', icon: '⭐', text: '定期便のお申込み' },
+    subandadd:  { cls: 'subscription', icon: '⭐', text: '定期便 + 今月限りの追加購入' },
+    gift:       { cls: 'gift', icon: '🎁', text: '贈り物として配送' },
+    multi:      { cls: '', icon: '📦', text: '複数の配送先に分けてお届け' }
+  };
+  const m = labels[mode];
+  area.innerHTML = `
+    <div class="order-mode-banner ${m.cls}">
+      <span class="order-mode-banner-icon">${m.icon}</span>
+      <span>${m.text}</span>
+    </div>
+  `;
+}
+
+/* ---- 注文リスト ---- */
+function renderOrderList() {
+  renderModeBanner();
+  const list = document.getElementById('orderList');
+  let html = '';
+
+  // 定期便を先頭に
+  if (subscription && PLANS[subscription.plan]) {
+    const p = PLANS[subscription.plan];
+    html += `
+      <div class="order-item" data-id="sub">
+        <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
+        <div class="order-item-info">
+          <strong>⭐ ${p.name}</strong>
+          <span>毎月お届け · 初月50%OFF適用</span>
+          <span class="destination-pill">📦 ご自宅</span>
+        </div>
+        <div class="order-item-price">
+          ¥${p.half.toLocaleString()}
+          <small>通常 ¥${p.regular.toLocaleString()}/月</small>
+        </div>
+      </div>
+    `;
+  }
+
+  // 単品カートアイテム
+  cartItems.forEach((item, i) => {
+    const dest = findItemDestination(i);
+    const destLabel = dest && dest.type === 'gift'
+      ? `🎁 ${dest.name || 'ギフト受取人'} 様へ`
+      : '📦 ご自宅';
+    const destClass = dest && dest.type === 'gift' ? 'destination-pill gift' : 'destination-pill';
+    html += `
+      <div class="order-item" data-id="${i}">
+        <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
+        <div class="order-item-info">
+          <strong>${item.title}</strong>
+          <span>${item.variant} × ${item.qty}</span>
+          <span class="${destClass}">${destLabel}</span>
+        </div>
+        <div class="order-item-price">
+          ¥${(item.price * item.qty).toLocaleString()}
+          <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
+        </div>
+      </div>
+    `;
+  });
+
+  if (!html) {
+    html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
+  }
+  list.innerHTML = html;
+}
+
+/* ---- 配送先グループ ---- */
+function findItemDestination(itemIdx) {
+  return destinations.find(d => d.itemIds.includes(itemIdx));
+}
+
+function renderDestinations() {
+  const wrap = document.getElementById('destinationGroups');
+  let html = '';
+  destinations.forEach((dest, dIdx) => {
+    const isGift = dest.type === 'gift';
+    const title = isGift
+      ? `🎁 ギフト送付先 ${dIdx > 0 ? `${dIdx}` : ''}`
+      : '📦 ご自宅にお届け';
+    const removable = dIdx > 0;
+    html += `
+      <div class="dest-group">
+        <div class="dest-group-head">
+          <span class="dest-group-title">
+            <span class="dest-group-title-icon">${isGift ? '🎁' : '📦'}</span>
+            ${title}
+          </span>
+          ${removable ? `<button class="dest-group-actions" onclick="removeDestination(${dIdx})">削除</button>` : ''}
+        </div>
+        <div class="dest-group-form">
+          ${ subscription && dIdx === 0 && !isGift ? '' : '' /* 定期便登録者の自宅は別途トップで取得 */ }
+          <div class="dest-form-row cols2">
+            <div class="dest-field">
+              <label>${isGift ? '受取人' : 'お名前'}<span class="required">*</span></label>
+              <input type="text" value="${dest.name || ''}" placeholder="江田 友輝"
+                     oninput="updateDestField(${dIdx}, 'name', this.value)" required>
+            </div>
+            <div class="dest-field">
+              <label>電話番号<span class="required">*</span></label>
+              <input type="tel" value="${dest.tel || ''}" placeholder="090-1234-5678"
+                     oninput="updateDestField(${dIdx}, 'tel', this.value)" required>
+            </div>
+          </div>
+          <div class="dest-form-row cols2">
+            <div class="dest-field">
+              <label>郵便番号<span class="required">*</span></label>
+              <input type="text" value="${dest.zip || ''}" placeholder="123-4567"
+                     oninput="updateDestField(${dIdx}, 'zip', this.value)" required>
+            </div>
+            <div class="dest-field">
+              <label>都道府県<span class="required">*</span></label>
+              <select onchange="updateDestField(${dIdx}, 'pref', this.value)" required>
+                ${prefOptions(dest.pref)}
+              </select>
+            </div>
+          </div>
+          <div class="dest-form-row">
+            <div class="dest-field">
+              <label>市区町村・番地・建物名<span class="required">*</span></label>
+              <input type="text" value="${dest.address || ''}" placeholder="渋谷区神宮前 1-1-1 マンション101号"
+                     oninput="updateDestField(${dIdx}, 'address', this.value)" required>
+            </div>
+          </div>
+          ${ dIdx === 0 ? `
+            <div class="dest-form-row">
+              <div class="dest-field">
+                <label>メールアドレス<span class="required">*</span>（ご注文確認用）</label>
+                <input type="email" value="${dest.email || ''}" placeholder="example@example.com"
+                       oninput="updateDestField(${dIdx}, 'email', this.value)" required>
+              </div>
+            </div>
+          ` : '' }
+
+          ${ isGift ? `
+            <div class="gift-options">
+              <div class="gift-options-head">🎁 ギフト用オプション</div>
+              <div class="gift-noshi-row">
+                <label class="gift-noshi-option ${dest.noshi === 'oseibo' ? 'selected' : ''}">
+                  <input type="radio" name="noshi-${dIdx}" value="oseibo" ${dest.noshi === 'oseibo' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'oseibo')">
+                  御歳暮
+                </label>
+                <label class="gift-noshi-option ${dest.noshi === 'ochugen' ? 'selected' : ''}">
+                  <input type="radio" name="noshi-${dIdx}" value="ochugen" ${dest.noshi === 'ochugen' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'ochugen')">
+                  御中元
+                </label>
+                <label class="gift-noshi-option ${dest.noshi === 'uchiwai' ? 'selected' : ''}">
+                  <input type="radio" name="noshi-${dIdx}" value="uchiwai" ${dest.noshi === 'uchiwai' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'uchiwai')">
+                  内祝
+                </label>
+                <label class="gift-noshi-option ${dest.noshi === 'none' ? 'selected' : ''}">
+                  <input type="radio" name="noshi-${dIdx}" value="none" ${dest.noshi === 'none' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'none')">
+                  のし不要
+                </label>
+              </div>
+              <div class="dest-field">
+                <label>メッセージカード（任意・40文字以内）</label>
+                <textarea maxlength="40" placeholder="例: いつもありがとうございます。"
+                          oninput="updateDestField(${dIdx}, 'message', this.value)">${dest.message || ''}</textarea>
+              </div>
+              <p style="font-size: 11px; color: var(--color-ink-muted); margin: 8px 0 0;">
+                ※ 価格・伝票は同梱しません。受取人には金額が分かりません。
+              </p>
+            </div>
+          ` : '' }
+        </div>
+      </div>
+    `;
+  });
+  wrap.innerHTML = html;
+}
+
+function prefOptions(selected) {
+  const prefs = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+  let html = '<option value="">選択</option>';
+  prefs.forEach(p => {
+    html += `<option ${selected === p ? 'selected' : ''}>${p}</option>`;
+  });
+  return html;
+}
+
+function updateDestField(idx, key, value) {
+  destinations[idx][key] = value;
+  if (key === 'noshi') {
+    renderDestinations(); // ラジオの selected 表示再描画
+  }
+}
+
+function addDestination() {
+  destinations.push({
+    id: 'gift-' + Date.now(),
+    type: 'gift',
+    name: '', tel: '', zip: '', pref: '', address: '',
+    noshi: 'none', message: '',
+    itemIds: []
+  });
+  renderDestinations();
+  renderOrderList(); // バナー更新
+}
+
+function removeDestination(idx) {
+  if (idx === 0) return;
+  const itemsBack = destinations[idx].itemIds || [];
+  // 削除されるグループのアイテムは self に戻す
+  destinations[0].itemIds = [...new Set([...destinations[0].itemIds, ...itemsBack])];
+  destinations.splice(idx, 1);
+  renderDestinations();
+  renderOrderList();
+}
+
+/* ---- サマリー ---- */
+function renderSummary() {
+  const lineItems = document.getElementById('summaryLineItems');
+  const rows = document.getElementById('summaryRows');
+
+  let itemsHtml = '';
+  let subTotal = 0;
+
+  if (subscription && PLANS[subscription.plan]) {
+    const p = PLANS[subscription.plan];
+    itemsHtml += `<div class="summary-line-item"><span>${p.name}<span class="qty">×1</span></span><span>¥${p.half.toLocaleString()}</span></div>`;
+    subTotal += p.half;
+  }
+
+  cartItems.forEach(item => {
+    const line = item.price * item.qty;
+    itemsHtml += `<div class="summary-line-item"><span>${item.title}<span class="qty">×${item.qty}</span></span><span>¥${line.toLocaleString()}</span></div>`;
+    subTotal += line;
+  });
+
+  if (!itemsHtml) {
+    itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
+  }
+  lineItems.innerHTML = itemsHtml;
+
+  // 送料
+  const shipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
+  // ギフト追加配送
+  const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0).length * 1100;
+  // 50% off if subscription only
+  const subSavings = subscription && PLANS[subscription.plan]
+    ? (PLANS[subscription.plan].regular - PLANS[subscription.plan].half) : 0;
+
+  const total = subTotal + shipping + giftShipping;
+
+  let rowsHtml = '';
+  if (subSavings > 0) {
+    rowsHtml += `<div class="summary-row discount"><span>初月50%OFF適用</span><strong>−¥${subSavings.toLocaleString()}</strong></div>`;
+  }
+  rowsHtml += `
+    <div class="summary-row">
+      <span>商品小計</span>
+      <strong>¥${subTotal.toLocaleString()}</strong>
+    </div>
+    <div class="summary-row shipping">
+      <span>配送料 (自宅)</span>
+      <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
+    </div>
+  `;
+  if (giftShipping > 0) {
+    rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料 (${giftShipping/1100}件)</span><strong>¥${giftShipping.toLocaleString()}</strong></div>`;
+  }
+  rowsHtml += `
+    <div class="summary-row total">
+      <span>合計（税込）</span>
+      <strong>¥${total.toLocaleString()}</strong>
+    </div>
+  `;
+  rows.innerHTML = rowsHtml;
+
+  // タイトル更新
+  const titleEl = document.getElementById('checkoutTitle');
+  const mode = getMode();
+  const titles = {
+    single: 'ご注文の確認',
+    subscription: '定期便のお申込み',
+    subandadd: '定期便 + 追加購入',
+    gift: 'ギフトのご注文',
+    multi: '複数配送先のご注文'
+  };
+  titleEl.textContent = titles[mode] || 'ご注文の確認';
+
+  // ボタン状態
+  const btn = document.getElementById('btnPlaceOrder');
+  btn.disabled = (cartItems.length === 0 && !subscription);
+}
+
+/* ---- 配送日オプション ---- */
+function buildDeliveryDateOptions() {
+  const select = document.getElementById('checkoutDeliveryDate');
+  const days = ['日','月','火','水','木','金','土'];
+  const now = new Date();
+  const start = new Date(now);
+  start.setDate(start.getDate() + 3);
+  let html = '<option value="">最短日でお届け（3日後〜）</option>';
+  for (let i = 0; i < 14; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    const m = d.getMonth() + 1;
+    const dd = d.getDate();
+    const w = days[d.getDay()];
+    html += `<option>${m}月${dd}日（${w}）</option>`;
+  }
+  select.innerHTML = html;
+}
+
+/* ---- 支払いラジオ ---- */
+document.querySelectorAll('.payment-option input').forEach(input => {
+  input.addEventListener('change', () => {
+    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+    input.closest('.payment-option').classList.add('selected');
+  });
+});
+
+/* ---- 注文確定 (モック) ---- */
+function placeOrder() {
+  // 簡易バリデーション
+  for (const d of destinations) {
+    if (d.itemIds.length === 0 && d.type === 'gift') continue;
+    if (!d.name || !d.tel || !d.zip || !d.pref || !d.address) {
+      alert('配送先の必須項目を入力してください。');
+      return;
+    }
+    if (d === destinations[0] && !d.email) {
+      alert('ご注文確認用メールアドレスを入力してください。');
+      return;
+    }
+  }
+
+  // モード別メッセージ
+  const mode = getMode();
+  const modeText = {
+    single: '単品のご注文',
+    subscription: '定期便のお申込み',
+    subandadd: '定期便と追加購入',
+    gift: 'ギフトのご注文',
+    multi: `${destinations.length}箇所への配送`
+  }[mode];
+
+  alert(
+    `✅ ${modeText}を承りました\n\n` +
+    `※ これはデモです。本番では決済処理（Stripe）に遷移します。\n\n` +
+    `カート内容をクリアしてマイページへ遷移します。`
+  );
+
+  // 確定後の処理
+  localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(SUB_KEY);
+  setTimeout(() => {
+    location.href = 'mypage.html?ordered=1';
+  }, 500);
+}
+
+/* ---- 初期化実行 ---- */
+init();
+</script>
+
+</body>
+</html>
