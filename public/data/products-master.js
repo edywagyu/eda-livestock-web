@@ -107,6 +107,14 @@
       description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとはまったく異なる深みのある旨み。ワインに。',
       images: ['public/images/products/drive/wagyu-slice.jpg']
     },
+    {
+      productId: 'P010B', variantId: 'WAGYU-MINCED', sku: 'EDA-WGYMINCED-200',
+      name: '和牛ミンチ', variant: '1袋 200g',
+      price: 1500, weight: 200, stock: 14, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Minced',
+      description: '江田和牛 100% の粗挽きミンチ。ハンバーグ・ボロネーゼ・タコライス・キーマカレーに。和牛100%の旨み。',
+      images: ['public/images/products/drive/minced.jpg']
+    },
 
     /* ===== 鶏肉 平飼い（標準） ===== */
     {
@@ -220,7 +228,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.05.12-003';
+  const PRODUCTS_VERSION = '2026.05.12-004';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
