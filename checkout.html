@@ -810,10 +810,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   .checkout-secure { display: none; }
   .btn-place-order { font-size: 14px; padding: 16px; min-height: 52px; }
 
-  /* インプットは min 44px */
+  /* インプットは min 48px + 16px font (iOS Safari の自動ズーム回避) */
   .dest-field input,
   .dest-field select,
-  .dest-field textarea { min-height: 44px; font-size: 14px; }
+  .dest-field textarea { min-height: 48px; font-size: 16px; padding: 12px 14px; }
 }
 </style>
 </head>
