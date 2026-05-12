@@ -3589,9 +3589,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </ul>
     </nav>
     <div class="nav-utils">
-      <div class="lang-toggle">
-        <span class="active">JA</span> / <span>EN</span>
-      </div>
       <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <rect x="3" y="3" width="18" height="18" rx="5"/>
@@ -3614,6 +3611,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <!-- ========= PAGE HEADER ========= -->
 <section class="page-header">
   <div class="container page-header-content">
+    <!-- 海外アクセス時のメッセージ (?reason=geo) -->
+    <div id="geoNotice" style="display:none;max-width:680px;margin:0 auto 24px;padding:18px 24px;background:rgba(212,169,59,0.10);border:1px solid rgba(212,169,59,0.3);border-radius:12px;color:white;font-size:14px;line-height:1.7;text-align:left;">
+      <strong style="display:block;font-size:15px;color:var(--color-gold);margin-bottom:6px;">🌏 For International Customers</strong>
+      Our online shop and subscription service are currently <strong>available in Japan only</strong>. For overseas purchase inquiries, please contact us via the form below.<br>
+      <small style="display:block;margin-top:8px;opacity:0.8;">国内オンラインショップは日本国内からのみご利用いただけます。海外からのお問い合わせはこのページのフォームよりお願いします。</small>
+    </div>
     <span class="eyebrow page-eyebrow">— Global Presence —</span>
     <h1 class="page-title">
       Farm to<br class="hide-sp"/>
@@ -3625,6 +3628,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </p>
   </div>
 </section>
+<script>
+  if (location.search.includes('reason=geo')) {
+    var n = document.getElementById('geoNotice');
+    if (n) n.style.display = '';
+  }
+</script>
 
 <!-- ========= STATS ========= -->
 <section class="global-section section">
