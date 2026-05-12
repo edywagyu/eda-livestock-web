@@ -24,6 +24,9 @@
     STRIPE_PUBLISHABLE_KEY: 'pk_live_51PNNcrGSkhU1UEciCMf2g2dI6aO2x4uQYqIOqm772au6vGfsS4E2t6sQNsTqK2nqwA6JFznKqMkp2xM06UFvr9rB00l0i8uN3T',
     // LINE 公式 ID
     LINE_AT_ID: '@706sgiuq',
+    // LIFF ID (LINE Front-end Framework) ← Tom が LINE Developers Console で発行後ここに記入
+    // 形式: 1234567890-AbcdEfgh (アプリ作成後の "LIFF ID")
+    LIFF_ID: '',
     // 連絡先
     PHONE: '08057930708',
     EMAIL: 'backoffice@eda-livestock.com'

@@ -970,6 +970,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </style>
 <script src="public/js/eda-config.js"></script>
 <script src="public/js/error-tracker.js" defer></script>
+<!-- LIFF SDK (LINE Front-end Framework) -->
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }</style>
 <link rel="stylesheet" href="public/css/jp-typography.css">
 <link rel="stylesheet" href="public/css/mobile-modern.css">
 </head>
@@ -1003,80 +1006,92 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= LOGIN SECTION ========= -->
+<!-- ========= LIFF AUTH SECTION ========= -->
 <section class="mypage-login-section" id="loginSection">
   <div class="container-narrow">
-    <div class="login-card">
+    <!-- 初期状態: LIFF 読込中 -->
+    <div class="login-card" id="liffLoading" style="text-align:center;padding:48px 32px;">
+      <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(15,61,46,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
+      <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE 認証を確認中...</p>
+    </div>
+
+    <!-- ① LIFF 外アクセス: LINE 公式アカウントから入ってもらう -->
+    <div class="login-card" id="liffExternal" style="display:none;">
       <div class="login-icon">
-        <div class="login-icon-circle">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M20 21a8 8 0 0 0-16 0"/>
+        <div class="login-icon-circle" style="background:#06C755;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="color:white;">
+            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM12 22C5.385 22 0 17.5 0 12S5.385 2 12 2s12 4.5 12 10c0 5.5-5.385 10-12 10z"/>
           </svg>
         </div>
       </div>
-      <h2 class="login-card-title">ご注文の確認</h2>
-      <p class="login-card-sub">ご注文時に登録されたメールアドレスをご入力ください</p>
+      <h2 class="login-card-title">LINE 公式アカウントから<br>マイページへお入りください</h2>
+      <p class="login-card-sub" style="margin-bottom:24px;">
+        マイページは <strong>LINE 認証必須</strong> でセキュアに保護されています。<br>
+        以下より公式アカウントを追加し、メニューからマイページへお進みください。
+      </p>
+      <a href="https://line.me/R/ti/p/@706sgiuq" class="login-btn" style="background:#06C755;color:white;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+        LINE で友だち追加 / 開く
+      </a>
+      <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:16px;line-height:1.5">
+        @706sgiuq · 江田畜産公式アカウント
+      </p>
+      <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
+        <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
+          <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
+        </div>
+      </div>
+    </div>
 
-      <div class="login-error" id="loginError"></div>
+    <!-- ② LIFF 内: LINE 認証ログイン中 -->
+    <div class="login-card" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;">
+      <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(6,199,85,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
+      <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE で認証中...</p>
+    </div>
 
-      <!-- STEP 1: メールアドレス入力 -->
-      <form id="loginForm" onsubmit="return false;">
-        <div class="login-input-wrap" id="emailWrap">
+    <!-- ③ LIFF 内 認証成功 + 新規 (line_uid 未連携) → アカウント連携フォーム -->
+    <div class="login-card" id="liffLinkAccount" style="display:none;">
+      <div class="login-icon">
+        <div class="login-icon-circle">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </div>
+      </div>
+      <h2 class="login-card-title" id="liffWelcomeName">LINE 認証完了</h2>
+      <p class="login-card-sub" style="margin-bottom:20px;">
+        過去にメールアドレスでご注文いただいた方は、<br>
+        <strong>下記からアカウント連携</strong>すると注文履歴がご確認できます。
+      </p>
+
+      <form id="linkForm" onsubmit="return false;">
+        <div class="login-input-wrap">
           <span class="login-input-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <path d="M22 4L12 13 2 4"/>
             </svg>
           </span>
-          <input type="email" class="login-input" id="emailInput" placeholder="example@email.com" autocomplete="email" required>
+          <input type="email" class="login-input" id="linkEmailInput" placeholder="ご注文時のメールアドレス" autocomplete="email" required>
         </div>
-        <button type="submit" class="login-btn" id="loginBtn">
-          認証コードを送信
+        <button type="submit" class="login-btn" id="linkBtn">
+          アカウントを連携する
         </button>
-        <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:12px;line-height:1.5">
-          ご注文時に登録されたメールアドレスに<br>
-          6桁の認証コード（10分間有効）をお送りします
-        </p>
-        <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
-          <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方は</p>
-          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-            <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop を見る</a>
-            <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便を見る</a>
-          </div>
-        </div>
+        <div class="login-error" id="linkError"></div>
       </form>
 
-      <!-- STEP 2: OTP コード入力 (初期は非表示) -->
-      <form id="otpForm" onsubmit="return false;" style="display:none;">
-        <p style="font-size:13px;color:var(--color-forest);text-align:center;margin:0 0 16px;">
-          <strong id="otpEmailDisplay"></strong> に<br>
-          認証コードを送信しました
-        </p>
-        <div class="login-input-wrap">
-          <span class="login-input-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="11" width="18" height="11" rx="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </span>
-          <input type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code"
-            class="login-input" id="otpInput" placeholder="123456"
-            style="font-size:20px;letter-spacing:6px;text-align:center;font-weight:700">
+      <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
+        <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
+          <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
         </div>
-        <button type="submit" class="login-btn" id="otpBtn">
-          ログイン
-        </button>
-        <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12px">
-          <button type="button" id="otpResend" style="color:var(--color-forest);text-decoration:underline;background:none;border:0;cursor:pointer;padding:0">
-            コードを再送
-          </button>
-          <button type="button" id="otpBack" style="color:var(--color-ink-muted);background:none;border:0;cursor:pointer;padding:0">
-            ← 別のメールに変更
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -1251,151 +1266,157 @@ if (header) {
   }, { passive: true });
 }
 
-/* ---- OTP Login Flow ---- */
-const emailInput = document.getElementById('emailInput');
-const loginForm = document.getElementById('loginForm');
-const loginBtn = document.getElementById('loginBtn');
-const otpForm = document.getElementById('otpForm');
-const otpInput = document.getElementById('otpInput');
-const otpBtn = document.getElementById('otpBtn');
-const otpEmailDisplay = document.getElementById('otpEmailDisplay');
-const loginError = document.getElementById('loginError');
-const spinner = document.getElementById('spinner');
+/* ============================================================
+   LIFF (LINE Front-end Framework) 認証フロー
+   ============================================================
+   流れ:
+   1. liff.init() で LIFF SDK 初期化
+   2. liff.isLoggedIn() ? → liff.getProfile() で line_uid 取得
+                       NO → liff.login() で LINE ログイン誘導
+   3. line_uid を GAS line_login に送信
+   4. 結果が { matched: true, customer, orders } → ダッシュボード
+                  { matched: false } → アカウント連携フォーム表示
+   ============================================================ */
+const LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '';
 const loginSection = document.getElementById('loginSection');
 const dashboard = document.getElementById('dashboard');
+const spinner = document.getElementById('spinner');
+const liffLoading = document.getElementById('liffLoading');
+const liffExternal = document.getElementById('liffExternal');
+const liffAuthenticating = document.getElementById('liffAuthenticating');
+const liffLinkAccount = document.getElementById('liffLinkAccount');
 
-// 現在ログイン中の顧客情報 (LocalStorage に session_token 持続)
+// 現在ログイン中の顧客 (LINE userId 永続)
 let currentSession = null;
+let currentLineProfile = null;
 try {
   const saved = localStorage.getItem('eda-mypage-session');
   if (saved) currentSession = JSON.parse(saved);
 } catch (_) {}
 
-/* STEP 1: メールアドレス → OTP 送信 */
-loginForm.addEventListener('submit', async () => {
-  const email = emailInput.value.trim();
-  if (!email) { showError('メールアドレスを入力してください。'); return; }
-  if (!email.includes('@')) { showError('正しいメールアドレスをご入力ください。'); return; }
-
-  loginError.classList.remove('show');
-  loginBtn.disabled = true;
-  loginBtn.textContent = '送信中...';
-
+/* ---- LIFF 初期化 ---- */
+async function initLiff() {
+  if (!LIFF_ID) {
+    // LIFF_ID 未設定 → 外部アクセス画面
+    showState('external');
+    return;
+  }
   try {
-    const result = await window.EDA_API.post('request_otp', { email });
-    if (result.ok) {
-      // OTP フォームを表示
-      otpEmailDisplay.textContent = email;
-      loginForm.style.display = 'none';
-      otpForm.style.display = '';
-      otpInput.focus();
-      loginBtn.disabled = false;
-      loginBtn.textContent = '認証コードを送信';
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isInClient() && !liff.isLoggedIn()) {
+      // 外部ブラウザ + 未ログイン → LIFF Login へ誘導
+      // (Tom指示: LINE経由必須なので、外部ブラウザでも一応 login flow を提供)
+      showState('external');
+      return;
+    }
+    if (!liff.isLoggedIn()) {
+      liff.login({ redirectUri: location.href });
+      return;
+    }
+    // ログイン済み → プロフィール取得
+    showState('authenticating');
+    const profile = await liff.getProfile();
+    currentLineProfile = profile;
+    await tryLineLogin(profile);
+  } catch (err) {
+    console.error('[LIFF init error]', err);
+    showState('external');
+  }
+}
+
+/* line_uid で GAS にログイン照会 */
+async function tryLineLogin(profile) {
+  try {
+    const result = await window.EDA_API.post('line_login', {
+      line_uid: profile.userId,
+      display_name: profile.displayName,
+      picture_url: profile.pictureUrl || ''
+    });
+    if (result.ok && result.matched && result.customer) {
+      // 既存顧客 → ダッシュボード
+      currentSession = {
+        line_uid: profile.userId,
+        display_name: profile.displayName,
+        email: result.customer.email || '',
+        issued: Date.now()
+      };
+      localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+      renderDashboard(result.customer, result.orders || []);
     } else {
-      throw new Error(result.error || 'コード送信に失敗しました');
+      // line_uid 未連携 → アカウント連携フォーム
+      showState('linkAccount');
+      document.getElementById('liffWelcomeName').textContent =
+        (profile.displayName || 'ご利用ありがとうございます') + ' 様';
     }
   } catch (err) {
-    showError('コードの送信に失敗しました: ' + (err.message || ''));
-    loginBtn.disabled = false;
-    loginBtn.textContent = '認証コードを送信';
+    console.error('[line_login error]', err);
+    showError(document.getElementById('linkError'), 'LINE ログインに失敗しました');
+    showState('linkAccount');
   }
-});
+}
 
-/* STEP 2: OTP コード → ログイン */
-otpForm.addEventListener('submit', async () => {
-  const email = emailInput.value.trim();
-  const code = otpInput.value.trim();
-  if (!/^\d{6}$/.test(code)) { showError('6桁の数字を入力してください。'); return; }
+/* 状態切替 */
+function showState(state) {
+  [liffLoading, liffExternal, liffAuthenticating, liffLinkAccount].forEach(el => {
+    if (el) el.style.display = 'none';
+  });
+  if (state === 'external') liffExternal.style.display = '';
+  else if (state === 'authenticating') liffAuthenticating.style.display = '';
+  else if (state === 'linkAccount') liffLinkAccount.style.display = '';
+}
 
-  loginError.classList.remove('show');
-  otpBtn.disabled = true;
-  otpBtn.textContent = '認証中...';
-  spinner.classList.add('show');
+/* アカウント連携: メール → line_uid と紐付け */
+document.getElementById('linkForm')?.addEventListener('submit', async () => {
+  const email = document.getElementById('linkEmailInput').value.trim();
+  const errEl = document.getElementById('linkError');
+  if (!email.includes('@')) { showError(errEl, '正しいメールアドレスを入力してください'); return; }
+  if (!currentLineProfile) { showError(errEl, 'LINE プロフィールが取得できません'); return; }
 
+  const btn = document.getElementById('linkBtn');
+  btn.disabled = true; btn.textContent = '連携中...';
   try {
-    const verifyResult = await window.EDA_API.post('verify_otp', { email, code });
-    if (!verifyResult.ok) throw new Error(verifyResult.error || '認証コードが正しくありません');
+    const result = await window.EDA_API.post('line_link_account', {
+      line_uid: currentLineProfile.userId,
+      display_name: currentLineProfile.displayName,
+      email: email
+    });
+    if (!result.ok) throw new Error(result.error || '連携に失敗しました');
+    if (!result.customer) throw new Error('該当するご注文が見つかりませんでした。メールアドレスをご確認ください。');
 
-    // セッション保存
     currentSession = {
+      line_uid: currentLineProfile.userId,
+      display_name: currentLineProfile.displayName,
       email,
-      token: verifyResult.token || '',
       issued: Date.now()
     };
     localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
-
-    // verify_otp はすでに customer と orders を返す
-    const customer = verifyResult.customer || { email, name: email.split('@')[0], total_orders: 0, total_spent: 0 };
-    const orders = verifyResult.orders || [];
-    renderDashboard(customer, orders);
+    renderDashboard(result.customer, result.orders || []);
   } catch (err) {
-    spinner.classList.remove('show');
-    showError(err.message || '認証に失敗しました');
-    otpBtn.disabled = false;
-    otpBtn.textContent = 'ログイン';
+    showError(errEl, err.message || '連携に失敗しました');
+    btn.disabled = false; btn.textContent = 'アカウントを連携する';
   }
 });
 
-/* OTP 再送 */
-document.getElementById('otpResend').addEventListener('click', async () => {
-  const email = emailInput.value.trim();
-  if (!email) return;
-  const resend = document.getElementById('otpResend');
-  resend.textContent = '送信中...';
-  resend.disabled = true;
-  try {
-    await window.EDA_API.post('request_otp', { email });
-    resend.textContent = 'コードを再送しました ✓';
-    setTimeout(() => { resend.textContent = 'コードを再送'; resend.disabled = false; }, 3000);
-  } catch (err) {
-    resend.textContent = 'コードを再送';
-    resend.disabled = false;
-  }
-});
-
-/* OTP 戻る */
-document.getElementById('otpBack').addEventListener('click', () => {
-  otpForm.style.display = 'none';
-  loginForm.style.display = '';
-  otpInput.value = '';
-  loginError.classList.remove('show');
-  emailInput.focus();
-});
-
-function showError(msg) {
-  loginError.textContent = msg;
-  loginError.classList.add('show');
+function showError(el, msg) {
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  el.style.cssText = 'display:block;color:var(--color-red);font-size:12px;margin-top:12px;text-align:center;';
 }
 
-/* ---- セッション自動復元 (前回ログイン中なら直接ダッシュボードへ) ---- */
-async function tryRestoreSession() {
-  if (!currentSession || !currentSession.email) return;
-  // 24h 経過したらセッション切れ
-  if (Date.now() - (currentSession.issued || 0) > 24 * 60 * 60 * 1000) {
-    localStorage.removeItem('eda-mypage-session');
-    currentSession = null;
-    return;
-  }
-  spinner.classList.add('show');
-  try {
-    // GAS_API_URL のテンプレに直接アクセス (verify_otp の代替軽量ルックアップ)
-    const lookup = await fetch(GAS_API_URL + '?action=customer_lookup&email=' + encodeURIComponent(currentSession.email));
-    const data = await lookup.json();
-    if (data.success && data.customer) {
-      renderDashboard(data.customer, data.orders || []);
-    } else {
-      // 顧客マスタが見つからない場合はログイン画面に戻る
-      spinner.classList.remove('show');
-      localStorage.removeItem('eda-mypage-session');
-      currentSession = null;
+/* ---- 起動 ---- */
+// LIFF SDK 読込待ち
+if (typeof liff !== 'undefined') {
+  initLiff();
+} else {
+  // SDK 読込み待機
+  const checkInterval = setInterval(() => {
+    if (typeof liff !== 'undefined') {
+      clearInterval(checkInterval);
+      initLiff();
     }
-  } catch (_) {
-    spinner.classList.remove('show');
-  }
-}
-// GAS_API_URL が設定されていれば自動復元を試行
-if (GAS_API_URL && currentSession) {
-  tryRestoreSession();
+  }, 100);
+  setTimeout(() => clearInterval(checkInterval), 5000);
 }
 
 /* ---- Render Dashboard ---- */
@@ -1695,23 +1716,24 @@ function renderSubscription(sub) {
     '<span class="sub-detail-value">' + (sub.start_date ? formatDate(sub.start_date) : '-') + '</span></div>';
 }
 
-/* ---- Logout ---- */
+/* ---- Logout (LIFF) ---- */
 document.getElementById('logoutBtn').addEventListener('click', () => {
-  // セッションクリア
   localStorage.removeItem('eda-mypage-session');
   currentSession = null;
-
+  currentLineProfile = null;
   dashboard.classList.remove('show');
   loginSection.style.display = '';
-  loginError.classList.remove('show');
-  emailInput.value = '';
-  if (otpInput) otpInput.value = '';
-  loginBtn.disabled = false;
-  loginBtn.textContent = '認証コードを送信';
-  if (otpBtn) { otpBtn.disabled = false; otpBtn.textContent = 'ログイン'; }
-  loginForm.style.display = '';
-  if (otpForm) otpForm.style.display = 'none';
   document.getElementById('subSection').style.display = 'none';
+
+  // LIFF logout (LINE 内では効かないが外部ブラウザ対応)
+  try {
+    if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+      liff.logout();
+    }
+  } catch (e) {}
+
+  // 状態を external 表示に戻す
+  showState('external');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 

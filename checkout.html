@@ -1704,6 +1704,13 @@ async function placeOrder() {
   const isSubscription = !!subscription && mode !== 'single' && mode !== 'gift' && mode !== 'multi';
   const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
 
+  // LINE セッションがあれば line_uid を添付 (マイページからの再注文時)
+  let lineSession = null;
+  try {
+    const raw = localStorage.getItem('eda-mypage-session');
+    if (raw) lineSession = JSON.parse(raw);
+  } catch (_) {}
+
   // 注文ペイロード組み立て
   const orderPayload = {
     mode: mode,
@@ -1713,7 +1720,9 @@ async function placeOrder() {
       phone:   destinations[0].tel,
       zip:     destinations[0].zip,
       pref:    destinations[0].pref,
-      address: destinations[0].address
+      address: destinations[0].address,
+      line_uid:     lineSession?.line_uid || '',
+      line_name:    lineSession?.display_name || ''
     },
     destinations: destinations.map(d => ({
       type: d.type,
