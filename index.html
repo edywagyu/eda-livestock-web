@@ -2450,19 +2450,65 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ FEATURED ================ */
-.featured { background: var(--color-cream); padding: clamp(64px, 10vw, 120px) 0; }
-.featured-strip { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 40px; }
-.featured-label { font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-ink-muted); }
+.featured {
+  background: var(--color-cream);
+  padding: clamp(48px, 8vw, 96px) 0;
+  position: relative;
+  overflow: hidden;
+}
+/* 横スクロール marquee — 高級ホテルブランドが流れる動き */
+.featured-strip {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  flex-wrap: nowrap;
+}
+.featured-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-ink-muted);
+  flex-shrink: 0;
+}
+.featured-marquee {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  position: relative;
+}
+.featured-marquee-track {
+  display: flex;
+  gap: 56px;
+  animation: featuredScroll 32s linear infinite;
+  width: max-content;
+  will-change: transform;
+}
+.featured-marquee:hover .featured-marquee-track {
+  animation-play-state: paused;
+}
 .featured-logo {
   font-family: var(--font-display);
   font-size: 14px;
   letter-spacing: var(--tracking-wider);
   color: var(--color-forest);
-  opacity: 0.45;
+  opacity: 0.55;
   transition: opacity 0.3s;
-  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .featured-logo:hover { opacity: 1; }
+@keyframes featuredScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (max-width: 720px) {
+  .featured-strip { flex-direction: column; gap: 16px; }
+  .featured-label { align-self: flex-start; padding-left: 20px; }
+  .featured-marquee { width: 100%; }
+  .featured-marquee-track { gap: 40px; animation-duration: 28s; }
+  .featured-logo { font-size: 12px; }
+}
 
 /* ================ CTA ================ */
 .cta-block { background: var(--color-forest); color: white; padding: clamp(80px, 12vw, 160px) 0; position: relative; overflow: hidden; }
@@ -3619,6 +3665,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </style>
 <script src="public/js/eda-config.js"></script>
 <script src="public/js/error-tracker.js" defer></script>
+<link rel="stylesheet" href="public/css/jp-typography.css">
+<link rel="stylesheet" href="public/css/mobile-modern.css">
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -3695,13 +3743,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
     <div class="hero-actions">
       <a href="shop.html" class="btn btn-gold">
-        Shop Online <span class="btn-arrow"></span>
+        オンラインで購入 <span class="btn-arrow"></span>
       </a>
       <a href="subscription.html" class="btn btn-light">
         定期便を見る <span class="btn-arrow"></span>
       </a>
       <a href="restaurants.html" class="btn btn-dark hide-sp">
-        Find a Restaurant <span class="btn-arrow"></span>
+        取扱店舗を探す <span class="btn-arrow"></span>
       </a>
     </div>
   </div>
@@ -4054,7 +4102,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </div>
 
     <div style="text-align: center; margin-top: 64px;" class="reveal">
-      <a href="restaurants.html" class="btn btn-dark">View All 21 Locations <span class="btn-arrow"></span></a>
+      <a href="restaurants.html" class="btn btn-dark">取り扱い 21店舗を見る <span class="btn-arrow"></span></a>
     </div>
   </div>
 </section>
@@ -4120,7 +4168,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </div>
 
     <div style="text-align: center; margin-top: 64px;" class="reveal">
-      <a href="shop.html" class="btn btn-dark">Browse All Products <span class="btn-arrow"></span></a>
+      <a href="shop.html" class="btn btn-dark">すべての商品を見る <span class="btn-arrow"></span></a>
     </div>
   </div>
 </section>
@@ -4176,7 +4224,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </div>
 
     <div style="text-align: center; margin-top: 64px;" class="reveal">
-      <a href="journal.html" class="btn btn-dark">Read All Stories <span class="btn-arrow"></span></a>
+      <a href="journal.html" class="btn btn-dark">すべての記事を読む <span class="btn-arrow"></span></a>
     </div>
   </div>
 </section>
@@ -4236,19 +4284,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="member-card">
-        <div class="member-photo" data-initials="RT"><span class="corner">03 / International</span></div>
-        <div class="member-role">International Sales</div>
+        <div class="member-photo" data-initials="RT"><span class="corner">03 / 農場長</span></div>
+        <div class="member-role">農場長 · 現場統括</div>
         <h3 class="member-name">Ryotaro Tazaki</h3>
-        <div class="member-name-jp">田崎 遼太郎 (LANE)</div>
+        <div class="member-name-jp">田崎 遼太郎</div>
         <div class="member-meta-row">
-          <span>Tokyo · Global</span>
+          <span>Miyazaki · 現場</span>
           <span>2024—</span>
         </div>
       </article>
 
       <article class="member-card">
-        <div class="member-photo" data-initials="KN"><span class="corner">04 / Domestic</span></div>
-        <div class="member-role">Domestic · JAS Lead</div>
+        <div class="member-photo" data-initials="LN"><span class="corner">04 / 農場担当</span></div>
+        <div class="member-role">農場担当 · 飼養管理</div>
+        <h3 class="member-name">Lane</h3>
+        <div class="member-name-jp">LINE</div>
+        <div class="member-meta-row">
+          <span>Miyazaki · 現場</span>
+          <span>2024—</span>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo" data-initials="KN"><span class="corner">05 / Domestic</span></div>
+        <div class="member-role">国内営業 · JAS推進</div>
         <h3 class="member-name">Keigo Nono</h3>
         <div class="member-name-jp">野々 圭吾</div>
         <div class="member-meta-row">
@@ -4391,24 +4450,38 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     </div>
 
     <div style="text-align: center; margin-top: clamp(64px, 8vw, 96px);" class="reveal">
-      <a href="press.html" class="btn btn-gold">View Press & Awards <span class="btn-arrow"></span></a>
+      <a href="press.html" class="btn btn-gold">プレス・受賞歴を見る <span class="btn-arrow"></span></a>
     </div>
   </div>
 </section>
 
-<!-- ========= FEATURED ========= -->
+<!-- ========= FEATURED (Trusted by) ========= -->
 <section class="featured">
   <div class="container">
     <div class="featured-strip reveal">
-      <span class="featured-label">— Trusted by —</span>
-      <span class="featured-logo">THE RITZ-CARLTON</span>
-      <span class="featured-logo">FOUR SEASONS</span>
-      <span class="featured-logo">THE PENINSULA</span>
-      <span class="featured-logo">MANDARIN ORIENTAL</span>
-      <span class="featured-logo">CITY'SUPER</span>
-      <span class="featured-logo">WOLFGANG'S</span>
-      <span class="featured-logo">SOFTBANK</span>
-      <span class="featured-logo">TOYOTA TTDC</span>
+      <span class="featured-label">— ご愛顧いただいているパートナー —</span>
+      <div class="featured-marquee" aria-label="Trusted by partners">
+        <div class="featured-marquee-track">
+          <!-- 1st loop -->
+          <span class="featured-logo">THE RITZ-CARLTON</span>
+          <span class="featured-logo">FOUR SEASONS</span>
+          <span class="featured-logo">THE PENINSULA</span>
+          <span class="featured-logo">MANDARIN ORIENTAL</span>
+          <span class="featured-logo">CITY'SUPER</span>
+          <span class="featured-logo">WOLFGANG'S</span>
+          <span class="featured-logo">SOFTBANK</span>
+          <span class="featured-logo">TOYOTA TTDC</span>
+          <!-- 2nd loop (seamless) -->
+          <span class="featured-logo" aria-hidden="true">THE RITZ-CARLTON</span>
+          <span class="featured-logo" aria-hidden="true">FOUR SEASONS</span>
+          <span class="featured-logo" aria-hidden="true">THE PENINSULA</span>
+          <span class="featured-logo" aria-hidden="true">MANDARIN ORIENTAL</span>
+          <span class="featured-logo" aria-hidden="true">CITY'SUPER</span>
+          <span class="featured-logo" aria-hidden="true">WOLFGANG'S</span>
+          <span class="featured-logo" aria-hidden="true">SOFTBANK</span>
+          <span class="featured-logo" aria-hidden="true">TOYOTA TTDC</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -4991,5 +5064,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </style>
 
 <script src="public/js/mobile-menu.js" defer></script>
+<script src="public/js/mobile-tabbar.js" defer></script>
+<script src="public/js/mobile-nav-hide.js" defer></script>
 </body>
 </html>

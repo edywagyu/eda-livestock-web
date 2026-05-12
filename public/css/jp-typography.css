@@ -1,0 +1,36 @@
+/* ============================================================
+   江田畜産 — 日本語タイポグラフィ 共通ルール
+   ------------------------------------------------------------
+   全ページ共通: 見出しと本文の禁則処理 (孤立文字・不自然改行 防止)
+   ============================================================ */
+
+/* 見出し: 助詞・読点で切らない (CJK文字グループは強制纏まり) */
+h1, h2, h3, h4, .hero-title, .page-title, .section-title,
+.shop-hero-title, .sub-hero-title, .org-hero-title,
+.wagyu-guide-title, .article-body h2, .article-body h3 {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
+
+/* 本文 jp: 助詞ぶら下がり許容 / 句読点孤立防止 */
+.jp-text, p.jp, .news-body p, .article-body p,
+.faq-a, .product-desc {
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-break: strict;
+}
+
+/* 価格・数値: 分断禁止 */
+.price, .amount, [data-nowrap],
+.product-price, .gift-product-price,
+.sub-plan-price, .sub-plan-old-price {
+  white-space: nowrap;
+}
+
+/* 日付・電話・メール: 分断禁止 */
+.date, .phone, .email, time, a[href^="tel:"], a[href^="mailto:"] {
+  white-space: nowrap;
+}
