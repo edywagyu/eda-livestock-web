@@ -186,15 +186,26 @@ function createCheckout(body) {
   if (!STRIPE) throw new Error('Stripe not configured');
 
   // 商品行を集約
+  // - stripePriceId があれば Price ID を使用 (Stripe商品マスタと連携)
+  // - なければ ad-hoc price_data (互換性維持)
   const lineItems = [];
   const items = collectItems(body);
   items.forEach(it => {
-    lineItems.push({
-      'price_data[currency]': 'jpy',
-      'price_data[product_data][name]': it.title + (it.variant ? ' ('+it.variant+')' : ''),
-      'price_data[unit_amount]': Math.round(it.price),
-      'quantity': it.qty
-    });
+    if (it.stripePriceId) {
+      lineItems.push({
+        price: it.stripePriceId,
+        quantity: it.qty
+      });
+    } else {
+      lineItems.push({
+        price_data: {
+          currency: 'jpy',
+          product_data: { name: it.title + (it.variant ? ' ('+it.variant+')' : '') },
+          unit_amount: Math.round(it.price)
+        },
+        quantity: it.qty
+      });
+    }
   });
 
   // 送料・税はチェックアウト側で計算 (Stripe automatic_tax か手動)
@@ -202,10 +213,12 @@ function createCheckout(body) {
   const shipping = calcShipping(subtotal, body.customer && body.customer.pref);
   if (shipping > 0) {
     lineItems.push({
-      'price_data[currency]': 'jpy',
-      'price_data[product_data][name]': '送料',
-      'price_data[unit_amount]': shipping,
-      'quantity': 1
+      price_data: {
+        currency: 'jpy',
+        product_data: { name: '送料' },
+        unit_amount: shipping
+      },
+      quantity: 1
     });
   }
 

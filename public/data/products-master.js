@@ -23,6 +23,7 @@
     /* ===== 牛肉 ステーキ系 ===== */
     {
       productId: 'P001', variantId: 'SIRLOIN', sku: 'EDA-SIRLOIN-200',
+      stripePriceId: 'price_1TW74kGSkhU1UEcizECKFnxX',
       name: 'サーロインステーキ', variant: '1枚 200g',
       price: 3400, weight: 200, stock: 18, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Sirloin Steak',
@@ -31,6 +32,7 @@
     },
     {
       productId: 'P002', variantId: 'RED-MEAT', sku: 'EDA-REDMEAT-200',
+      stripePriceId: 'price_1TW74lGSkhU1UEciEKMUIbJy',
       name: '赤身ステーキ', variant: '1枚 200g',
       price: 3400, weight: 200, stock: 15, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Red Meat Steak',
@@ -39,6 +41,7 @@
     },
     {
       productId: 'P003', variantId: 'CUBE-STEAK', sku: 'EDA-CUBE-200',
+      stripePriceId: 'price_1TW74mGSkhU1UEcibOx5C7Py',
       name: 'サイコロステーキ', variant: '1袋 200g',
       price: 1000, weight: 200, stock: 22, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Cube Steak',
@@ -49,6 +52,7 @@
     /* ===== 牛肉 スライス・切り落とし ===== */
     {
       productId: 'P004', variantId: 'WAGYU-SLICE', sku: 'EDA-WSLICE-200',
+      stripePriceId: 'price_1TW74nGSkhU1UEcibaOeMrwf',
       name: '赤身スライス', variant: '1袋 200g',
       price: 2600, weight: 200, stock: 12, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Slice',
@@ -57,6 +61,7 @@
     },
     {
       productId: 'P005', variantId: 'KIRIOTOSHI', sku: 'EDA-KIRI-200',
+      stripePriceId: 'price_1TW74nGSkhU1UEcigrD4ATBJ',
       name: '和牛切り落とし', variant: '1袋 200g',
       price: 1600, weight: 200, stock: 30, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kiriotoshi',
@@ -67,6 +72,7 @@
     /* ===== 牛肉 焼肉系 ===== */
     {
       productId: 'P006', variantId: 'YAKINIKU-BRISKET', sku: 'EDA-YAKI-200',
+      stripePriceId: 'price_1TW74oGSkhU1UEciOHnR8RAf',
       name: 'バラ焼肉', variant: '1袋 200g',
       price: 1500, weight: 200, stock: 11, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
@@ -75,6 +81,7 @@
     },
     {
       productId: 'P007', variantId: 'OFFAL', sku: 'EDA-OFFAL-150',
+      stripePriceId: 'price_1TW74pGSkhU1UEcizY8WlJPz',
       name: '和牛ホルモン', variant: '1袋 150g',
       price: 840, weight: 150, stock: 8, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Offal',
@@ -85,6 +92,7 @@
     /* ===== 牛肉 加工品 ===== */
     {
       productId: 'P008', variantId: 'HAMBURG', sku: 'EDA-HAMBURG-100',
+      stripePriceId: 'price_1TW74qGSkhU1UEciphBYGBDO',
       name: '江田和牛ハンバーグ', variant: '1個 100g',
       price: 760, weight: 100, stock: 40, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg',
@@ -93,6 +101,7 @@
     },
     {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-100',
+      stripePriceId: 'price_1TW74qGSkhU1UEciK9LE14vR',
       name: '和牛ローストビーフ', variant: '1袋 100g',
       price: 3000, weight: 100, stock: 6, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Roast Beef',
@@ -101,6 +110,7 @@
     },
     {
       productId: 'P010', variantId: 'RAW-HAM', sku: 'EDA-RAWHAM-40',
+      stripePriceId: 'price_1TW74rGSkhU1UEcidTIwRPd5',
       name: '和牛生ハム', variant: '個包装 40g',
       price: 1250, weight: 40, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Raw Ham',
@@ -109,6 +119,7 @@
     },
     {
       productId: 'P010B', variantId: 'WAGYU-MINCED', sku: 'EDA-WGYMINCED-200',
+      stripePriceId: 'price_1TW74sGSkhU1UEci63HCdIsL',
       name: '和牛ミンチ', variant: '1袋 200g',
       price: 1350, weight: 200, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Minced',
@@ -119,6 +130,7 @@
     /* ===== 鶏肉 平飼い（標準） ===== */
     {
       productId: 'P011', variantId: 'CHK-BREAST', sku: 'EDA-CHK-BREAST-500',
+      stripePriceId: 'price_1TW74sGSkhU1UEcij8xFudVT',
       name: '平飼い鶏 ムネ', variant: '1袋 500g',
       price: 1280, weight: 500, stock: 20, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Breast',
@@ -127,6 +139,7 @@
     },
     {
       productId: 'P012', variantId: 'CHK-THIGH', sku: 'EDA-CHK-THIGH-500',
+      stripePriceId: 'price_1TW74tGSkhU1UEcilbKbPhGv',
       name: '平飼い鶏 モモ', variant: '1袋 500g',
       price: 1280, weight: 500, stock: 24, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Thigh',
@@ -135,6 +148,7 @@
     },
     {
       productId: 'P013', variantId: 'CHK-MINCED', sku: 'EDA-CHK-MINCED-300',
+      stripePriceId: 'price_1TW74uGSkhU1UEciOv09JHuD',
       name: '平飼い鶏 ミンチ', variant: '1袋 300g',
       price: 1000, weight: 300, stock: 16, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Minced',
@@ -145,6 +159,7 @@
     /* ===== 鶏肉 オーガニック（3倍価格） ===== */
     {
       productId: 'P014', variantId: 'ORG-CHK-BREAST', sku: 'EDA-ORG-CHK-BREAST-500',
+      stripePriceId: 'price_1TW74uGSkhU1UEciG30csXKD',
       name: 'オーガニックチキン ムネ', variant: '1袋 500g',
       price: 3840, weight: 500, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Breast',
@@ -154,6 +169,7 @@
     },
     {
       productId: 'P015', variantId: 'ORG-CHK-THIGH', sku: 'EDA-ORG-CHK-THIGH-500',
+      stripePriceId: 'price_1TW74vGSkhU1UEci6e5u6hec',
       name: 'オーガニックチキン モモ', variant: '1袋 500g',
       price: 3840, weight: 500, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Thigh',
@@ -163,6 +179,7 @@
     },
     {
       productId: 'P016', variantId: 'ORG-CHK-MINCED', sku: 'EDA-ORG-CHK-MINCED-300',
+      stripePriceId: 'price_1TW74wGSkhU1UEciMfeKnO9W',
       name: 'オーガニックチキン ミンチ', variant: '1袋 300g',
       price: 3000, weight: 300, stock: 5, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Minced',
@@ -174,6 +191,7 @@
     /* ===== ギフトボックス（送料込み・税込） ===== */
     {
       productId: 'P017', variantId: 'GIFT-MATSU', sku: 'EDA-GIFT-MATSU-450',
+      stripePriceId: 'price_1TW74xGSkhU1UEcibF0y54Yd',
       name: 'ヒレステーキ ギフト【松】', variant: '450g',
       price: 16800, weight: 450, stock: 10, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · MATSU',
@@ -182,6 +200,7 @@
     },
     {
       productId: 'P018', variantId: 'GIFT-TAKE', sku: 'EDA-GIFT-TAKE-750',
+      stripePriceId: 'price_1TW74xGSkhU1UEciDCqXHlsi',
       name: '赤身ステーキ ギフト【竹】', variant: '750g',
       price: 12800, weight: 750, stock: 12, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · TAKE',
@@ -190,6 +209,7 @@
     },
     {
       productId: 'P019', variantId: 'GIFT-UME', sku: 'EDA-GIFT-UME-500',
+      stripePriceId: 'price_1TW74yGSkhU1UEci45Gc54Xx',
       name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 100g×5',
       price: 5980, weight: 500, stock: 18, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · UME',
@@ -228,7 +248,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.05.12-005';
+  const PRODUCTS_VERSION = '2026.05.12-006-stripe';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
