@@ -217,7 +217,7 @@ function createCheckout(body) {
   const methodTypes = ['card'];
   if (body.payment_method === 'bank') methodTypes.push('konbini', 'customer_balance');
 
-  const params = flattenForm({
+  const checkoutParams = {
     mode: 'payment',
     success_url: successUrl,
     cancel_url: cancelUrl,
@@ -232,7 +232,19 @@ function createCheckout(body) {
       customer_phone: body.customer && body.customer.phone,
       destinations_json: JSON.stringify(body.destinations || [])
     }
-  });
+  };
+
+  // 🎁 デモ期間 100%OFF クーポン自動適用
+  // STRIPE_DEMO_COUPON が設定されていれば全注文に適用 (デモ後は空に戻す)
+  const demoCoupon = cfg('STRIPE_DEMO_COUPON');
+  if (demoCoupon) {
+    checkoutParams.discounts = [{ coupon: demoCoupon }];
+  } else if (body.coupon_code) {
+    // 手動クーポンも対応
+    checkoutParams.discounts = [{ coupon: body.coupon_code }];
+  }
+
+  const params = flattenForm(checkoutParams);
 
   const res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'post',
@@ -269,8 +281,14 @@ function createSubscriptionCheckout(body) {
   const successUrl = cfg('SUCCESS_URL') + '?session_id={CHECKOUT_SESSION_ID}&order=' + encodeURIComponent(orderNum);
   const cancelUrl = cfg('CANCEL_URL') + '?plan=' + body.plan;
 
-  // 初月50%OFF クーポン適用
-  const params = flattenForm({
+  // 適用クーポン優先順位:
+  //   1. STRIPE_DEMO_COUPON (デモ期間 100%OFF 自動適用) ← デモ時はこれ
+  //   2. STRIPE_COUPON_50OFF (本番 初月50%OFF) ← 本番ローンチ時にこれだけ残す
+  const demoCoupon = cfg('STRIPE_DEMO_COUPON');
+  const halfCoupon = cfg('STRIPE_COUPON_50OFF');
+  const applyCoupon = demoCoupon || halfCoupon || '';
+
+  const subParams = {
     mode: 'subscription',
     success_url: successUrl,
     cancel_url: cancelUrl,
@@ -281,25 +299,24 @@ function createSubscriptionCheckout(body) {
       price: priceId,
       quantity: 1
     }],
-    // 初月クーポン（Stripe Dashboard で予め coupon 作成しておく前提）
-    discounts: [{ coupon: cfg('STRIPE_COUPON_50OFF') || '' }],
     subscription_data: {
       metadata: {
         plan: body.plan,
-        order_number: orderNum
+        order_number: orderNum,
+        is_demo: demoCoupon ? 'true' : 'false'
       }
     },
     metadata: {
       order_number: orderNum,
       plan: body.plan,
-      mode: 'subscription'
+      mode: 'subscription',
+      is_demo: demoCoupon ? 'true' : 'false'
     }
-  });
-
-  // 空 coupon を除去
-  if (!cfg('STRIPE_COUPON_50OFF')) {
-    delete params['discounts[0][coupon]'];
+  };
+  if (applyCoupon) {
+    subParams.discounts = [{ coupon: applyCoupon }];
   }
+  const params = flattenForm(subParams);
 
   const res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'post',
