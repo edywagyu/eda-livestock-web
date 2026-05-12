@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shop | オンラインショップ | EDA-LIVESTOCK</title>
-<meta name="description" content="江田和牛と平飼い鶏のオンラインショップ。最短2日でお届け、¥11,000以上で送料無料。">
+<meta name="description" content="江田和牛と平飼い鶏のオンラインショップ。最短3日でお届け、¥11,000以上で送料無料。">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
@@ -2641,13 +2641,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   letter-spacing: 0.02em;
 }
 .sub-plan-items {
-  font-size: 11px;
-  color: rgba(255,255,255,0.65);
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.78); /* 0.65→0.78 視認性UP */
   line-height: 1.65;
-  margin-bottom: 14px;
-  padding-bottom: 14px;
+  margin: 0 0 14px;
+  padding: 0 0 14px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   flex: 1;
+  list-style: none;
+}
+.sub-plan-items li {
+  white-space: nowrap;      /* "🥩 サイコロステーキ 200g×2" を絶対に折り返さない */
+  overflow: hidden;
+  text-overflow: ellipsis;  /* はみ出した場合は ... */
+  padding: 2px 0;
 }
 .sub-plan-pricing { margin-top: auto; }
 .sub-plan-old-price {
@@ -9164,7 +9171,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
       <div class="faq-item">
         <h4 class="faq-q">注文からどのくらいで届きますか？</h4>
-        <p class="faq-a">14:00までのご注文で<strong>最短2日後</strong>にお届け（本州の場合）。北海道・九州・沖縄は3〜4日程度。日時指定も可能です。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</p>
+        <p class="faq-a">朝10:00 までのご注文で<strong>最短2日後</strong>、17:00 までで <strong>3日後</strong>、22:00 までで <strong>3日後</strong>（夜間は翌日扱い）。本州での目安です。北海道・九州・沖縄は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</p>
       </div>
 
       <div class="faq-item">
@@ -9184,7 +9191,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
       <div class="faq-item">
         <h4 class="faq-q">支払い方法は？</h4>
-        <p class="faq-a">Visa / Mastercard / JCB / AMEX / Diners Club / Apple Pay / Google Pay / Shop Pay / コンビニ払い に対応しています。Shopifyの安全な決済システムを使用しており、カード情報は当社に保存されません。</p>
+        <p class="faq-a">クレジットカード（Visa / Mastercard / JCB / AMEX）・Apple Pay・銀行振込 に対応しています。Stripe の安全な決済システムを使用しており、カード情報は当社に保存されません。<br/>※ 定期便はクレジットカード または Apple Pay のみ。</p>
       </div>
 
       <div class="faq-item">
@@ -9261,15 +9268,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
             <div class="sub-plan-name">ミニプラン</div>
             <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
-            <div class="sub-plan-items">
-              🥩 赤身スライス 200g<br/>
-              🔥 赤身焼肉 200g<br/>
-              🥩 サイコロステーキ 200g<br/>
-              🍔 和牛ミンチ 200g<br/>
-              🐓 鶏モモ 200g<br/>
-              🐓 鶏ムネ 200g×2<br/>
-              🐓 鶏ミンチ 200g
-            </div>
+            <ul class="sub-plan-items">
+              <li>🥩 赤身スライス 200g</li>
+              <li>🔥 赤身焼肉 200g</li>
+              <li>🥩 サイコロステーキ 200g</li>
+              <li>🍔 和牛ミンチ 200g</li>
+              <li>🐓 鶏モモ 200g</li>
+              <li>🐓 鶏ムネ 200g×2</li>
+              <li>🐓 鶏ミンチ 200g</li>
+            </ul>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥6,980</div>
               <div class="sub-plan-price">¥3,490<small>/初月</small></div>
@@ -9284,15 +9291,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
             <div class="sub-plan-name">プロプラン</div>
             <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
-            <div class="sub-plan-items">
-              🥩 赤身スライス 200g×2<br/>
-              🔥 赤身焼肉 200g×2<br/>
-              🥩 サイコロステーキ 200g×2<br/>
-              🍔 和牛ミンチ 200g<br/>
-              🐓 鶏モモ 200g×3<br/>
-              🐓 鶏ムネ 200g×3<br/>
-              🐓 鶏ミンチ 200g×3
-            </div>
+            <ul class="sub-plan-items">
+              <li>🥩 赤身スライス 200g×2</li>
+              <li>🔥 赤身焼肉 200g×2</li>
+              <li>🥩 サイコロステーキ 200g×2</li>
+              <li>🍔 和牛ミンチ 200g</li>
+              <li>🐓 鶏モモ 200g×3</li>
+              <li>🐓 鶏ムネ 200g×3</li>
+              <li>🐓 鶏ミンチ 200g×3</li>
+            </ul>
             <div class="sub-plan-pricing">
               <div class="sub-plan-old-price">¥12,800</div>
               <div class="sub-plan-price">¥6,400<small>/初月</small></div>
@@ -9307,15 +9314,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
             <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
             <div class="sub-plan-name">VIPプラン</div>
             <div class="sub-plan-target">5人以上 / 約4.4kg / 22品</div>
-            <div class="sub-plan-items">
-              💎 ヒレステーキ 200g<br/>
-              🥩 赤身ステーキ 200g×2<br/>
-              🥩 サーロインステーキ 200g×2<br/>
-              🍔 和牛ミンチ 200g×2<br/>
-              🐓 鶏モモ 200g×5<br/>
-              🐓 鶏ムネ 200g×5<br/>
-              🐓 鶏ミンチ 200g×5
-            </div>
+            <ul class="sub-plan-items">
+              <li>💎 ヒレステーキ 200g</li>
+              <li>🥩 赤身ステーキ 200g×2</li>
+              <li>🥩 サーロインステーキ 200g×2</li>
+              <li>🍔 和牛ミンチ 200g×2</li>
+              <li>🐓 鶏モモ 200g×5</li>
+              <li>🐓 鶏ムネ 200g×5</li>
+              <li>🐓 鶏ミンチ 200g×5</li>
+            </ul>
             <div class="sub-plan-vip-perk">
               <span class="sub-plan-vip-perk-icon">🌿</span>
               <div class="sub-plan-vip-perk-text">
@@ -9391,7 +9398,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-how-step">
         <div class="shop-how-num">03</div>
         <h4>決済・お届け</h4>
-        <p>Visa / Mastercard / JCB / AMEX<br/>Apple Pay / Google Pay 対応。<br/>最短2日でお届け。冷凍便。</p>
+        <p>Visa / Mastercard / JCB / AMEX<br/>Apple Pay / 銀行振込 対応。<br/>最短3日でお届け。冷凍便。</p>
       </div>
     </div>
   </div>
@@ -9676,7 +9683,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <tr><th>賞味期限</th><td>製造日から約6ヶ月</td></tr>
       <tr><th>配送</th><td>ヤマト運輸 / 佐川急便 / 日本郵便（クール冷凍便）</td></tr>
       <tr><th>送料</th><td>¥11,000以上で全国送料無料</td></tr>
-      <tr><th>支払い</th><td>Visa / Mastercard / JCB / AMEX / Apple Pay / Google Pay / Shop Pay / コンビニ払い</td></tr>
+      <tr><th>支払い</th><td>Visa / Mastercard / JCB / AMEX / Apple Pay / 銀行振込 (定期便はカード or Apple Pay のみ)</td></tr>
       <tr><th>輸出認証</th><td>EU・アメリカ向け 国際衛生基準クリア</td></tr>
     </table>
 
@@ -9745,7 +9752,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </div>
         <div class="unboxing-cta-row">
           <a href="#products" class="btn btn-gold" style="font-size:13px">商品を見る →</a>
-          <a href="#subscription" class="btn" style="font-size:13px; border-color: var(--color-forest); color: var(--color-forest);">定期便で常備する</a>
+          <a href="#subscription" class="btn" style="font-size:13px; border-color: var(--color-forest); color: var(--color-forest);">定期便を申し込む</a>
         </div>
       </div>
     </div>
@@ -9976,6 +9983,61 @@ function toggleUnboxingSound() {
           <button onclick="orderGift('ume', 5980, '和牛ハンバーグ ギフト【梅】 5個')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
       </div>
+
+      <!-- 複数人へ送る導線 -->
+      <div class="gift-multi-cta">
+        <div class="gift-multi-cta-inner">
+          <span class="gift-multi-cta-icon">🎁🎁🎁</span>
+          <div class="gift-multi-cta-text">
+            <strong>複数の方へまとめて贈りたい</strong>
+            <small>1注文で <b>最大5箇所</b> までお届け先を分けられます。それぞれにのし・メッセージカードも対応。</small>
+          </div>
+          <a href="checkout.html?mode=multi" class="gift-multi-cta-btn">複数人へ送る →</a>
+        </div>
+      </div>
+      <style>
+        .gift-multi-cta {
+          margin: 36px 0 0;
+          padding: 22px 26px;
+          background: linear-gradient(135deg, rgba(212,169,59,0.10), rgba(212,169,59,0.04));
+          border: 1.5px solid rgba(212,169,59,0.4);
+          border-radius: 14px;
+        }
+        .gift-multi-cta-inner {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+        .gift-multi-cta-icon { font-size: 30px; flex-shrink: 0; }
+        .gift-multi-cta-text { flex: 1; display: flex; flex-direction: column; gap: 4px; line-height: 1.5; color: white; }
+        .gift-multi-cta-text strong { font-family: var(--font-jp); font-size: 15px; font-weight: 700; color: white; }
+        .gift-multi-cta-text small { font-size: 12.5px; color: rgba(255,255,255,0.7); }
+        .gift-multi-cta-text b { color: var(--color-gold); font-weight: 700; }
+        .gift-multi-cta-btn {
+          flex-shrink: 0;
+          padding: 12px 22px;
+          background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+          color: var(--color-forest-deep);
+          border-radius: 24px;
+          font-family: var(--font-jp);
+          font-size: 13px;
+          font-weight: 700;
+          text-decoration: none;
+          white-space: nowrap;
+          border: 1.5px solid rgba(255,229,148,0.6);
+          box-shadow: 0 6px 18px rgba(212,169,59,0.32);
+          transition: transform .2s;
+        }
+        .gift-multi-cta-btn:hover { transform: translateY(-2px); }
+        @media (max-width: 720px) {
+          .gift-multi-cta { padding: 16px 18px; }
+          .gift-multi-cta-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+          .gift-multi-cta-icon { font-size: 26px; }
+          .gift-multi-cta-text strong { font-size: 14px; }
+          .gift-multi-cta-text small { font-size: 11.5px; }
+          .gift-multi-cta-btn { width: 100%; text-align: center; }
+        }
+      </style>
     </div>
   </div>
 </section>
@@ -10084,11 +10146,11 @@ function toggleUnboxingSound() {
         <label>時間帯</label>
         <select id="deliveryTime">
           <option value="">指定なし</option>
-          <option value="0812">午前中（8〜12時）</option>
-          <option value="1416">14時 〜 16時</option>
-          <option value="1618">16時 〜 18時</option>
-          <option value="1820">18時 〜 20時</option>
-          <option value="1921">19時 〜 21時</option>
+          <option value="0812">午前中（〜12:00）</option>
+          <option value="1416">14:00 - 16:00</option>
+          <option value="1618">16:00 - 18:00</option>
+          <option value="1820" selected>18:00 - 20:00（推奨）</option>
+          <option value="1921">19:00 - 21:00</option>
         </select>
       </div>
       <p class="delivery-picker-note" id="deliveryPickerNote">指定なしの場合、最短日でお届けします</p>
