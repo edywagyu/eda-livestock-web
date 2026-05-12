@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDA-LIVESTOCK 営業資料 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #0F3D2E;
+  --forest-deep: #0A2D21;
+  --forest-light: #143D2B;
+  --gold: #D4A93B;
+  --gold-bright: #E5B547;
+  --gold-soft: #B8932F;
+  --cream: #FAF7F0;
+  --paper: #F5EFE3;
+  --bone: #EFE8D7;
+  --ink: #1A1A1A;
+  --ink-muted: #6B6B6B;
+  --line: rgba(212, 169, 59, 0.18);
+}
+
+@page { size: 1280px 720px; margin: 0; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: #2a2a2a;
+}
+
+.slide {
+  width: 1280px;
+  height: 720px;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  margin: 24px auto;
+  box-shadow: 0 12px 60px rgba(0,0,0,0.5);
+}
+.slide:last-child { page-break-after: avoid; }
+
+.slide-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 56px 24px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  opacity: 0.45;
+  z-index: 10;
+}
+.slide-footer-dark { color: rgba(255,255,255,0.5); }
+.slide-footer-light { color: rgba(15,61,46,0.4); }
+
+.bg-forest { background: var(--forest); color: white; }
+.bg-deep { background: var(--forest-deep); color: white; }
+.bg-cream { background: var(--cream); color: var(--ink); }
+.bg-paper { background: var(--paper); color: var(--ink); }
+.bg-white { background: #fff; color: var(--ink); }
+
+.eyebrow {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.text-gold { color: var(--gold); }
+
+.display-lg {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  letter-spacing: 0.02em;
+  line-height: 1.0;
+}
+.display-md {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.display-sm {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.body-jp {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  line-height: 1.85;
+  font-weight: 400;
+}
+.body-jp-sm {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  line-height: 1.75;
+  font-weight: 400;
+}
+
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--gold);
+}
+.stat-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  margin-top: 6px;
+}
+
+/* ============================================
+   SLIDE 01 — COVER
+   ============================================ */
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 80px;
+  background: linear-gradient(145deg, var(--forest) 0%, var(--forest-deep) 70%, #061a12 100%);
+}
+.cover-logo {
+  width: 56px;
+  height: auto;
+  margin-bottom: 36px;
+  opacity: 0.9;
+}
+.cover-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 82px;
+  line-height: 0.95;
+  letter-spacing: 0.015em;
+  color: white;
+  margin-bottom: 16px;
+}
+.cover-title .accent { color: var(--gold); }
+.cover-sub {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 15px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.8;
+  max-width: 600px;
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+.cover-stats {
+  display: flex;
+  gap: 56px;
+  border-top: 1px solid rgba(212,169,59,0.25);
+  padding-top: 32px;
+}
+.cover-stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: var(--gold);
+  line-height: 1;
+}
+.cover-stat-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.5);
+  margin-top: 6px;
+}
+.cover-watermark {
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 480px;
+  height: 480px;
+  opacity: 0.03;
+}
+.cover-conf {
+  position: absolute;
+  bottom: 24px;
+  right: 56px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ============================================
+   SLIDE 02 — VISION / WHY WE EXIST
+   ============================================ */
+.vision {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.vision-left {
+  padding: 56px 48px 56px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.vision-right {
+  background: var(--forest);
+  padding: 48px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+}
+.vision-problem-stat {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px;
+  color: var(--gold);
+  line-height: 1;
+}
+.vision-card {
+  border-left: 2px solid var(--gold);
+  padding: 16px 20px;
+}
+.vision-card-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 4px;
+}
+.vision-card h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  color: white;
+  margin-bottom: 6px;
+}
+.vision-card p {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+}
+
+/* ============================================
+   SLIDE 03 — HOW WE RAISED / PHILOSOPHY
+   ============================================ */
+.philosophy {
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+}
+.philosophy-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  flex: 1;
+}
+.pillar {
+  background: rgba(255,255,255,0.04);
+  border-top: 2px solid var(--gold);
+  padding: 28px 22px 20px;
+  display: flex;
+  flex-direction: column;
+}
+.pillar-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.pillar-icon {
+  width: 44px;
+  height: 44px;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.pillar h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  color: white;
+  margin-bottom: 4px;
+}
+.pillar .jp-sub {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  color: var(--gold-soft);
+  margin-bottom: 14px;
+}
+.pillar p:last-child {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.75);
+}
+
+/* ============================================
+   SLIDE 04 — BRAND ARCHITECTURE
+   ============================================ */
+.brand {
+  padding: 48px 64px;
+}
+.brand-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 32px;
+}
+.brand-card {
+  border: 1px solid var(--bone);
+  padding: 32px 28px 24px;
+  position: relative;
+}
+.brand-card.organic {
+  border-color: var(--gold);
+  background: rgba(212,169,59,0.04);
+}
+.brand-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: var(--gold);
+  color: var(--forest);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  padding: 4px 14px;
+}
+.brand-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--forest);
+  margin-bottom: 4px;
+}
+.brand-card .subtitle {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  color: var(--gold-soft);
+  margin-bottom: 16px;
+}
+.brand-spec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.brand-spec-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.brand-spec-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold-soft);
+  width: 90px;
+  flex-shrink: 0;
+}
+.brand-spec-value {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+}
+.brand-bottom-note {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: var(--forest);
+  color: white;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+/* ============================================
+   SLIDE 05 — COMPANY PROFILE
+   ============================================ */
+.profile {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  height: 100%;
+}
+.profile-left {
+  padding: 48px 40px 48px 56px;
+}
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+.profile-table td {
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  vertical-align: top;
+  font-size: 12px;
+}
+.profile-table td:first-child {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold-soft);
+  width: 110px;
+  padding-top: 11px;
+}
+.profile-table td:last-child {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  color: var(--ink);
+}
+.profile-right {
+  background: var(--forest);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.flow-num {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.flow-text {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  color: white;
+}
+.flow-text small {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  display: block;
+  margin-top: 2px;
+}
+.flow-arrow {
+  text-align: center;
+  color: var(--gold);
+  font-size: 18px;
+  margin: 4px 0 4px 17px;
+  opacity: 0.5;
+}
+
+/* ============================================
+   SLIDE 06 — ADOPTED BY (Hotels)
+   ============================================ */
+.adopted {
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+}
+.adopted-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 16px;
+  flex: 1;
+  margin-top: 32px;
+}
+.hotel-card {
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  text-align: center;
+  transition: border-color 0.3s;
+  background: rgba(255,255,255,0.03);
+}
+.hotel-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  color: white;
+  margin-bottom: 4px;
+  line-height: 1.15;
+}
+.hotel-loc {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 9px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.05em;
+}
+.hotel-card.featured {
+  border-color: var(--gold);
+  background: rgba(212,169,59,0.06);
+}
+.hotel-card.wide {
+  grid-column: span 2;
+}
+
+/* ============================================
+   SLIDE 07 — GLOBAL PRESENCE
+   ============================================ */
+.global {
+  padding: 48px 64px;
+  display: flex;
+  flex-direction: column;
+}
+.global-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  flex: 1;
+  margin-top: 28px;
+}
+.global-stats-row {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+.region-group {
+  margin-bottom: 16px;
+}
+.region-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(212,169,59,0.2);
+}
+.region-countries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.country-chip {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.06);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.growth-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-top: auto;
+}
+.growth-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.growth-bar-fill {
+  width: 48px;
+  background: var(--gold);
+  opacity: 0.7;
+}
+.growth-year {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+}
+.growth-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--gold);
+}
+
+/* ============================================
+   SLIDE 08 — CERTIFICATIONS
+   ============================================ */
+.certs {
+  padding: 48px 64px;
+}
+.cert-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: 24px 0;
+}
+.cert-card {
+  border: 1px solid var(--bone);
+  padding: 20px 16px;
+  text-align: center;
+}
+.cert-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+.cert-card h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--forest);
+  margin-bottom: 4px;
+}
+.cert-card p {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 11px;
+}
+.compare-table th {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--bone);
+}
+.compare-table th.eda-col {
+  background: var(--forest);
+  color: white;
+  text-align: center;
+}
+.compare-table th.other-col {
+  background: var(--bone);
+  color: var(--ink-muted);
+  text-align: center;
+}
+.compare-table td {
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 7px 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  font-size: 11px;
+}
+.compare-table td.check { text-align: center; color: var(--forest); font-size: 14px; }
+.compare-table td.cross { text-align: center; color: #ccc; font-size: 14px; }
+
+/* ============================================
+   SLIDE 09 — BUSINESS MODEL
+   ============================================ */
+.model {
+  padding: 48px 64px;
+  display: flex;
+  flex-direction: column;
+}
+.model-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 24px 0;
+}
+.model-box {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 20px 28px;
+  text-align: center;
+}
+.model-box.highlight {
+  border-color: var(--gold);
+  background: rgba(212,169,59,0.08);
+}
+.model-box h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: white;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.model-box p {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+}
+.model-arrow {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: var(--gold);
+  opacity: 0.6;
+}
+.model-bottom {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: auto;
+}
+.model-point {
+  border-top: 2px solid var(--gold);
+  padding-top: 16px;
+}
+.model-point h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: white;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.model-point p {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.7;
+}
+
+/* ============================================
+   SLIDE 10 — OUR TEAM
+   ============================================ */
+.team {
+  padding: 48px 64px;
+}
+.team-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.team-card {
+  border: 1px solid var(--bone);
+  padding: 20px 16px;
+  text-align: center;
+}
+.team-card.founder {
+  border-color: var(--gold);
+  background: rgba(212,169,59,0.03);
+}
+.team-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--forest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--gold);
+  overflow: hidden;
+}
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.team-card .role {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold-soft);
+  margin-bottom: 4px;
+}
+.team-card .name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--forest);
+  margin-bottom: 2px;
+}
+.team-card .name-jp {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+.team-card .bio {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  text-align: left;
+}
+.team-advisor {
+  margin-top: 16px;
+  border: 1px solid var(--bone);
+  padding: 16px 24px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.team-advisor-info {
+  flex: 1;
+}
+
+/* ============================================
+   SLIDE 11 — JOURNEY
+   ============================================ */
+.journey {
+  padding: 48px 64px;
+}
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 28px;
+}
+.timeline-card {
+  border-top: 2px solid var(--gold);
+  padding-top: 20px;
+}
+.timeline-card.current {
+  background: rgba(212,169,59,0.06);
+  padding: 20px 16px 16px;
+  margin-top: -20px;
+  border-top: 3px solid var(--gold);
+}
+.timeline-year {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.timeline-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: white;
+  margin-bottom: 12px;
+}
+.timeline-items {
+  list-style: none;
+  padding: 0;
+}
+.timeline-items li {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.timeline-items li:last-child { border: none; }
+
+/* ============================================
+   SLIDE 12 — CONTACT
+   ============================================ */
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px;
+}
+.contact-logo {
+  width: 72px;
+  height: auto;
+  margin-bottom: 32px;
+  opacity: 0.85;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 40px;
+  text-align: left;
+  width: 100%;
+  max-width: 700px;
+}
+.contact-col {
+  border-top: 1px solid rgba(212,169,59,0.25);
+  padding-top: 20px;
+}
+.contact-col h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.contact-col p {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.8;
+}
+.contact-col a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+@media print {
+  body { background: none; }
+  .slide { box-shadow: none; margin: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     SLIDE 01 — COVER
+     ============================================ -->
+<div class="slide cover">
+  <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="cover-logo"/>
+  <h1 class="cover-title">
+    Livestock for<br/>
+    <span class="accent">The Next Century.</span>
+  </h1>
+  <p class="cover-sub">
+    無投薬 × 循環型飼料 × 世界初オーガニック認証和牛<br/>
+    宮崎から世界13カ国・4大陸へ ―― 20代のチームが100年続く畜産を創る。
+  </p>
+  <div class="cover-stats">
+    <div>
+      <div class="cover-stat-num">13</div>
+      <div class="cover-stat-label">Countries · 4 Continents</div>
+    </div>
+    <div>
+      <div class="cover-stat-num">2023</div>
+      <div class="cover-stat-label">Founded in Miyazaki</div>
+    </div>
+    <div>
+      <div class="cover-stat-num">2026</div>
+      <div class="cover-stat-label">World's First Organic Wagyu</div>
+    </div>
+    <div>
+      <div class="cover-stat-num">1<span style="font-size:0.5em">%</span></div>
+      <div class="cover-stat-label">Additive-Free Farms in Japan</div>
+    </div>
+  </div>
+  <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="" class="cover-watermark"/>
+  <div class="cover-conf">CONFIDENTIAL — EDA LIVESTOCK CO., LTD.</div>
+</div>
+
+<!-- ============================================
+     SLIDE 02 — VISION
+     ============================================ -->
+<div class="slide bg-cream">
+  <div class="vision">
+    <div class="vision-left">
+      <div class="eyebrow text-gold" style="margin-bottom:16px;">— Our Vision —</div>
+      <div class="display-md" style="color:var(--forest); margin-bottom:12px;">
+        牛・生産者・消費者、<br/>
+        <span style="color:var(--gold);">三方よし</span>を、和牛で。
+      </div>
+      <p class="body-jp" style="margin-top:16px; color:var(--ink-muted); max-width:460px;">
+        私たちは、和牛の生産を「三方よし」で再設計します。牛が穏やかに育ち、生産者が正当な対価を得て、消費者が安心して味わえる。この三者すべてが満足する仕組みこそ、100年続く畜産の条件です。
+      </p>
+      <p class="body-jp" style="margin-top:12px; color:var(--ink-muted); max-width:460px;">
+        既存のスタンダードを否定するのではなく、新しい選択肢を増やす。それが私たちの立ち位置です。
+      </p>
+    </div>
+    <div class="vision-right">
+      <div style="margin-bottom:12px;">
+        <div class="eyebrow" style="color:var(--gold); margin-bottom:8px;">— Industry Challenge —</div>
+        <div class="vision-problem-stat">70<span style="font-size:0.4em; opacity:0.6;">歳超</span></div>
+        <p style="font-size:12px; color:rgba(255,255,255,0.55); margin-top:4px;">日本の畜産業界 平均年齢</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-card-num">01 — CATTLE</div>
+        <h4>For the Cattle</h4>
+        <p>化学物質に頼らず、十分な空間と時間で穏やかに育つ環境。</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-card-num">02 — PRODUCER</div>
+        <h4>For the Producer</h4>
+        <p>直接輸出と適正価格で、生産者がきちんと利益を得られる仕組み。</p>
+      </div>
+      <div class="vision-card">
+        <div class="vision-card-num">03 — CONSUMER</div>
+        <h4>For the Consumer</h4>
+        <p>安全で味わい深く、透明性のある肉を世界の食卓に。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-light"><span>EDA-LIVESTOCK</span><span>02</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 03 — HOW WE RAISED / PHILOSOPHY
+     ============================================ -->
+<div class="slide bg-deep philosophy">
+  <div class="philosophy-head">
+    <div class="eyebrow text-gold" style="margin-bottom:12px;">— Our Philosophy —</div>
+    <div class="display-md" style="color:white;">
+      Not the Rank, <span style="color:var(--gold);">But How They're Raised.</span>
+    </div>
+    <p class="body-jp" style="color:rgba(255,255,255,0.55); margin-top:10px; max-width:640px; display:inline-block;">
+      A5・BMS・産地名 ーー これまで和牛は数字とラベルで語られてきました。私たちが大切にするのは、その手前にある「どう育てたか」です。
+    </p>
+  </div>
+  <div class="philosophy-grid">
+    <div class="pillar">
+      <div class="pillar-num">01 / CIRCULAR</div>
+      <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M32 8 A24 24 0 1 1 8 32"/>
+        <path d="M32 8 L26 14 M32 8 L26 2"/>
+        <circle cx="32" cy="32" r="6"/>
+      </svg>
+      <h3>Circular Feed</h3>
+      <div class="jp-sub">循環型飼料</div>
+      <p>自社の堆肥から飼料を育て、再び牛に与える。輸入飼料に頼らない、国産循環型の畜産を実践。</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02 / PURE</div>
+      <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="32" cy="32" r="22"/>
+        <path d="M14 18 L50 50" stroke-width="2"/>
+      </svg>
+      <h3>No Chemical</h3>
+      <div class="jp-sub">抗生物質 · ホルモン剤 ゼロ</div>
+      <p>抗生物質・成長促進剤・ホルモン剤いずれも一切不使用。日本でこれを徹底する農家は1%未満。</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03 / WELFARE</div>
+      <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M32 14 C24 14 18 20 18 28 C18 36 26 42 32 50 C38 42 46 36 46 28 C46 20 40 14 32 14 Z"/>
+      </svg>
+      <h3>Animal Welfare</h3>
+      <div class="jp-sub">アニマルウェルフェア</div>
+      <p>有機規格に準じた広い牛舎と屋根付き運動場。ストレスのない環境で健やかに育成。</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">04 / NATURAL</div>
+      <svg class="pillar-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M32 12 C24 24 20 32 20 40 C20 48 26 52 32 52 C38 52 44 48 44 40 C44 32 40 24 32 12 Z"/>
+      </svg>
+      <h3>Mineral Water</h3>
+      <div class="jp-sub">霧島連山の天然水</div>
+      <p>霧島連山の伏流水を全頭の飲み水に使用。ミネラルが肉の旨みを底上げ。</p>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-dark"><span>EDA-LIVESTOCK</span><span>03</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 04 — BRAND ARCHITECTURE
+     ============================================ -->
+<div class="slide bg-paper brand">
+  <div class="eyebrow text-gold" style="margin-bottom:10px;">— Brand Architecture —</div>
+  <div class="display-sm" style="color:var(--forest);">
+    飼料の規定でブランド化する、<span style="color:var(--gold);">日本唯一の和牛。</span>
+  </div>
+  <p class="body-jp-sm" style="color:var(--ink-muted); margin-top:6px;">
+    産地ではなく「飼料」と「飼育方法」でブランドを規定。等級指定可能、産地指定は金額UP。
+  </p>
+
+  <div class="brand-grid">
+    <div class="brand-card">
+      <h3>Eda Wagyu</h3>
+      <div class="subtitle">江田和牛</div>
+      <div class="brand-spec">
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">FEED</span>
+          <span class="brand-spec-value">循環型飼料使用（自社堆肥起点）</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">CHEMICAL</span>
+          <span class="brand-spec-value">抗生物質 · ホルモン剤 不使用</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">GRADE</span>
+          <span class="brand-spec-value">A3以上 · 28ヶ月以上肥育</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">REGION</span>
+          <span class="brand-spec-value">宮崎 · 鹿児島 · 東北（北海道 · 青森 · 秋田）</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">WATER</span>
+          <span class="brand-spec-value">天然水（霧島連山伏流水）</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">OPTION</span>
+          <span class="brand-spec-value">等級指定可 / 産地指定は金額UP</span>
+        </div>
+      </div>
+    </div>
+    <div class="brand-card organic">
+      <div class="brand-badge">WORLD'S FIRST</div>
+      <h3>Premium EdaWagyu</h3>
+      <div class="subtitle">特選江田和牛 · 有機JAS認証</div>
+      <div class="brand-spec">
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">ORGANIC</span>
+          <span class="brand-spec-value" style="color:var(--forest); font-weight:600;">有機JAS認証 · EU Leaf 同等性承認</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">FEED</span>
+          <span class="brand-spec-value">100% 有機認証飼料</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">STATUS</span>
+          <span class="brand-spec-value">世界初のオーガニック認証黒毛和牛</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">LAUNCH</span>
+          <span class="brand-spec-value">2026年2月 ローンチ</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">SALES</span>
+          <span class="brand-spec-value" style="color:var(--gold-soft); font-weight:600;">江田和牛お客様限定販売</span>
+        </div>
+        <div class="brand-spec-row">
+          <span class="brand-spec-label">ONLY</span>
+          <span class="brand-spec-value" style="font-weight:600;">江田畜産のみが生産・販売</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="brand-bottom-note">
+    日本の和牛ブランドで「飼料の規定」によるブランド化を実現しているのは<strong style="color:var(--gold);">江田畜産のみ</strong>です。オーガニック和牛は<strong style="color:var(--gold);">世界で唯一、江田畜産だけ</strong>が生産しています。
+  </div>
+  <div class="slide-footer slide-footer-light"><span>EDA-LIVESTOCK</span><span>04</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 05 — COMPANY PROFILE
+     ============================================ -->
+<div class="slide bg-white">
+  <div class="profile">
+    <div class="profile-left">
+      <div class="eyebrow text-gold" style="margin-bottom:10px;">— Company Profile —</div>
+      <div class="display-sm" style="color:var(--forest);">会社概要</div>
+      <table class="profile-table">
+        <tr><td>COMPANY</td><td>江田畜産株式会社 / Eda Livestock Co., Ltd.</td></tr>
+        <tr><td>REPRESENTATIVE</td><td>代表取締役 江田 友輝（Tomoki Eda）</td></tr>
+        <tr><td>FOUNDED</td><td>2023年4月</td></tr>
+        <tr><td>BUSINESS</td><td>黒毛和牛 繁殖 · 肥育 · 小売 · 輸出 · スマート畜産</td></tr>
+        <tr><td>FARMS</td><td>宮崎 · 鹿児島 · 東北（北海道 · 青森 · 秋田）</td></tr>
+        <tr><td>HQ</td><td>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</td></tr>
+        <tr><td>BRANDS</td><td>Eda Wagyu / Premium EdaWagyu（有機JAS · EU Leaf同等性）</td></tr>
+        <tr><td>EXPORT</td><td>世界13カ国 · 4大陸 · 直接輸出100%</td></tr>
+        <tr><td>SETTLEMENT</td><td>円建て（JPY）</td></tr>
+        <tr><td>PARTNERS</td><td>SoftBank · TOYOTA (TTDC) · 内閣府クールジャパン</td></tr>
+      </table>
+    </div>
+    <div class="profile-right">
+      <div class="eyebrow" style="color:var(--gold); margin-bottom:16px;">— Integrated Farming —</div>
+      <div class="display-sm" style="margin-bottom:24px;">一貫農業フロー</div>
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-text">分娩<small>Birth</small></div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-text">繁殖（10ヶ月前後）<small>Breeding</small></div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-text">肥育（20ヶ月以上）<small>Fattening · 28ヶ月+</small></div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <div class="flow-text">出荷 → 世界13カ国へ直接輸出<small>Direct Export · 円建て決済</small></div>
+      </div>
+      <p style="font-family:'Noto Sans JP',sans-serif; font-size:11px; color:rgba(255,255,255,0.55); margin-top:20px; line-height:1.7; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
+        繁殖と肥育の両方を経営する一貫農業。仔牛の段階から飼料と環境を管理し、トレーサビリティを完全担保。
+      </p>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-light"><span>EDA-LIVESTOCK</span><span>05</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 06 — ADOPTED BY THE WORLD'S FINEST
+     ============================================ -->
+<div class="slide bg-forest adopted">
+  <div style="text-align:center;">
+    <div class="eyebrow text-gold" style="margin-bottom:10px;">— Where Eda Wagyu Is Served —</div>
+    <div class="display-md" style="color:white;">
+      Trusted by <span style="color:var(--gold);">The World's Finest.</span>
+    </div>
+    <p class="body-jp-sm" style="color:rgba(255,255,255,0.5); margin-top:6px;">
+      日本国内外の三ツ星ホテル・高級百貨店で採用。創業3年で21拠点に拡大。
+    </p>
+  </div>
+  <div class="adopted-grid">
+    <div class="hotel-card featured">
+      <div class="hotel-name">The Ritz-Carlton</div>
+      <div class="hotel-loc">Tokyo · Fukuoka · Hong Kong · New York</div>
+    </div>
+    <div class="hotel-card featured">
+      <div class="hotel-name">Four Seasons Hotel</div>
+      <div class="hotel-loc">Tokyo at Otemachi</div>
+    </div>
+    <div class="hotel-card">
+      <div class="hotel-name">Tokyo Station Hotel</div>
+      <div class="hotel-loc">日本重要文化財 · 東京駅丸の内駅舎内</div>
+    </div>
+    <div class="hotel-card">
+      <div class="hotel-name">Tokyo Edition Ginza</div>
+      <div class="hotel-loc">Marriott Luxury · 銀座</div>
+    </div>
+    <div class="hotel-card">
+      <div class="hotel-name">city'super</div>
+      <div class="hotel-loc">Hong Kong 全店展開 · IFC, Times Square</div>
+    </div>
+    <div class="hotel-card">
+      <div class="hotel-name" style="font-size:14px;">Mitsukoshi · Keio<br/>Department Store</div>
+      <div class="hotel-loc">三越銀座 · 日本橋 / 京王新宿</div>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-dark"><span>EDA-LIVESTOCK</span><span>06</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 07 — GLOBAL PRESENCE
+     ============================================ -->
+<div class="slide bg-deep global">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+    <div>
+      <div class="eyebrow text-gold" style="margin-bottom:10px;">— Global Presence —</div>
+      <div class="display-md" style="color:white;">
+        Farm to <span style="color:var(--gold);">The World.</span>
+      </div>
+    </div>
+    <p class="body-jp-sm" style="color:rgba(255,255,255,0.45); max-width:360px; text-align:right;">
+      商社を介さない直接輸出100%。<br/>
+      創業1年で1カ国、2年で7カ国、3年で13カ国。
+    </p>
+  </div>
+
+  <div class="global-body">
+    <div>
+      <div class="global-stats-row">
+        <div>
+          <div class="stat-num">13</div>
+          <div class="stat-label" style="color:rgba(255,255,255,0.5);">COUNTRIES</div>
+        </div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label" style="color:rgba(255,255,255,0.5);">CONTINENTS</div>
+        </div>
+        <div>
+          <div class="stat-num">100<span style="font-size:0.5em">%</span></div>
+          <div class="stat-label" style="color:rgba(255,255,255,0.5);">DIRECT EXPORT</div>
+        </div>
+      </div>
+
+      <div class="region-group">
+        <div class="region-label">ASIA · 7 COUNTRIES</div>
+        <div class="region-countries">
+          <span class="country-chip">🇭🇰 Hong Kong</span>
+          <span class="country-chip">🇸🇬 Singapore</span>
+          <span class="country-chip">🇹🇭 Thailand</span>
+          <span class="country-chip">🇻🇳 Vietnam</span>
+          <span class="country-chip">🇹🇼 Taiwan</span>
+          <span class="country-chip">🇲🇾 Malaysia</span>
+          <span class="country-chip">🇮🇩 Indonesia</span>
+        </div>
+      </div>
+      <div class="region-group">
+        <div class="region-label">EUROPE · 4 COUNTRIES</div>
+        <div class="region-countries">
+          <span class="country-chip">🇩🇪 Germany</span>
+          <span class="country-chip">🇫🇮 Finland</span>
+          <span class="country-chip">🇪🇸 Spain</span>
+          <span class="country-chip">🇮🇹 Italy</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column;">
+      <div class="region-group">
+        <div class="region-label">AMERICAS · 1 COUNTRY</div>
+        <div class="region-countries">
+          <span class="country-chip">🇺🇸 USA (New York)</span>
+        </div>
+      </div>
+      <div class="region-group">
+        <div class="region-label">OCEANIA · 1 COUNTRY</div>
+        <div class="region-countries">
+          <span class="country-chip">🇦🇺 Australia</span>
+        </div>
+      </div>
+
+      <div class="growth-bar" style="margin-top:auto; padding-top:20px; border-top:1px solid rgba(255,255,255,0.08);">
+        <div class="growth-col">
+          <div class="growth-num">1</div>
+          <div class="growth-bar-fill" style="height:24px;"></div>
+          <div class="growth-year">YEAR 1</div>
+        </div>
+        <div class="growth-col">
+          <div class="growth-num">7</div>
+          <div class="growth-bar-fill" style="height:80px;"></div>
+          <div class="growth-year">YEAR 2</div>
+        </div>
+        <div class="growth-col">
+          <div class="growth-num">13</div>
+          <div class="growth-bar-fill" style="height:140px;"></div>
+          <div class="growth-year">YEAR 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-dark"><span>EDA-LIVESTOCK</span><span>07</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 08 — CERTIFICATIONS
+     ============================================ -->
+<div class="slide bg-cream certs">
+  <div class="eyebrow text-gold" style="margin-bottom:10px;">— Certifications & Standards —</div>
+  <div class="display-sm" style="color:var(--forest);">
+    世界基準の認証群で、<span style="color:var(--gold);">信頼をデータで証明する。</span>
+  </div>
+
+  <div class="cert-row">
+    <div class="cert-card">
+      <div class="cert-icon">☪</div>
+      <h4>HALAL</h4>
+      <p>マレーシア・インドネシア等<br/>イスラム圏への輸出対応</p>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">🇺🇸</div>
+      <h4>USDA Organic</h4>
+      <p>アメリカ農務省<br/>有機認証（申請中）</p>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">🇪🇺</div>
+      <h4>EU Leaf 同等性</h4>
+      <p>欧州連合オーガニック認証<br/>同等性承認済み</p>
+    </div>
+    <div class="cert-card" style="border-color:var(--gold); background:rgba(212,169,59,0.04);">
+      <div class="cert-icon">🍀</div>
+      <h4>有機JAS</h4>
+      <p>世界初 オーガニック認証<br/>黒毛和牛（2026年1月取得）</p>
+    </div>
+  </div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th style="width:220px;">項目</th>
+        <th class="eda-col" style="width:180px;">EDA WAGYU</th>
+        <th class="eda-col" style="width:180px;">PREMIUM EDA</th>
+        <th class="other-col">一般的な和牛</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>抗生物質 · ホルモン剤</td>
+        <td class="check">✓ 不使用</td>
+        <td class="check">✓ 不使用</td>
+        <td class="cross">使用あり</td>
+      </tr>
+      <tr>
+        <td>飼料</td>
+        <td class="check">循環型飼料</td>
+        <td class="check">有機認証飼料100%</td>
+        <td class="cross">輸入配合飼料</td>
+      </tr>
+      <tr>
+        <td>オーガニック認証</td>
+        <td class="cross">—</td>
+        <td class="check" style="font-weight:600;">✓ 世界唯一</td>
+        <td class="cross">—</td>
+      </tr>
+      <tr>
+        <td>アニマルウェルフェア</td>
+        <td class="check">✓ 対応</td>
+        <td class="check">✓ 有機規格準拠</td>
+        <td class="cross">基準なし</td>
+      </tr>
+      <tr>
+        <td>HALAL対応</td>
+        <td class="check">✓ 対応</td>
+        <td class="check">✓ 対応</td>
+        <td class="cross">一部のみ</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="slide-footer slide-footer-light"><span>EDA-LIVESTOCK</span><span>08</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 09 — BUSINESS MODEL
+     ============================================ -->
+<div class="slide bg-forest model">
+  <div style="text-align:center;">
+    <div class="eyebrow text-gold" style="margin-bottom:10px;">— Business Model —</div>
+    <div class="display-md" style="color:white;">
+      Domestic Feed → <span style="color:var(--gold);">Global Export</span>
+    </div>
+    <p class="body-jp-sm" style="color:rgba(255,255,255,0.5); margin-top:6px;">
+      国内で飼料をつくり、世界へ出荷する。円安が進むほど、このモデルは強くなる。
+    </p>
+  </div>
+
+  <div class="model-flow">
+    <div class="model-box">
+      <h4>自社堆肥</h4>
+      <p>Compost</p>
+    </div>
+    <div class="model-arrow">→</div>
+    <div class="model-box">
+      <h4>循環型飼料</h4>
+      <p>Circular Feed</p>
+    </div>
+    <div class="model-arrow">→</div>
+    <div class="model-box">
+      <h4>一貫農業</h4>
+      <p>Integrated Farming</p>
+    </div>
+    <div class="model-arrow">→</div>
+    <div class="model-box highlight">
+      <h4>直接輸出</h4>
+      <p>13 Countries · 円建て</p>
+    </div>
+    <div class="model-arrow">→</div>
+    <div class="model-box highlight">
+      <h4>再投資</h4>
+      <p>Reinvest</p>
+    </div>
+  </div>
+
+  <div class="model-bottom">
+    <div class="model-point">
+      <h4>国内飼料生産</h4>
+      <p>循環農業のスケールアップ。北海道・九州の有機認証農家との連携。輸入依存からの脱却。</p>
+    </div>
+    <div class="model-point">
+      <h4>円建て決済（JPY）</h4>
+      <p>全取引を円建てで決済。為替リスクを排除し、安定した収益構造を実現。外貨獲得型モデル。</p>
+    </div>
+    <div class="model-point">
+      <h4>Smart Agriculture</h4>
+      <p>SoftBank・TOYOTA(TTDC)と共同でAI画像解析・IoTセンシングによるスマート畜産を実証実験中。</p>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-dark"><span>EDA-LIVESTOCK</span><span>09</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 10 — TEAM
+     ============================================ -->
+<div class="slide bg-paper team">
+  <div class="team-head">
+    <div>
+      <div class="eyebrow text-gold" style="margin-bottom:8px;">— Our Team —</div>
+      <div class="display-sm" style="color:var(--forest);">
+        平均年齢70歳超の業界に、<span style="color:var(--gold);">20代のチーム</span>が挑む。
+      </div>
+    </div>
+    <p class="body-jp-sm" style="color:var(--ink-muted); max-width:300px; text-align:right;">
+      戦略コンサル出身、海外大学卒、国際営業、有機JAS推進 ―― 多様なバックグラウンドが強み。
+    </p>
+  </div>
+
+  <div class="team-grid">
+    <div class="team-card founder">
+      <div class="team-avatar"><img src="public/images/members/eda-tomoki.jpg" alt="Tomoki Eda"/></div>
+      <div class="role">FOUNDER · CEO</div>
+      <div class="name">Tomoki Eda</div>
+      <div class="name-jp">江田 友輝</div>
+      <div class="bio">宮崎出身。日大商学部在学中にNZ・米留学。21歳で独立。27歳で江田畜産を創業、100年先の畜産を設計。</div>
+    </div>
+    <div class="team-card founder">
+      <div class="team-avatar"><img src="public/images/members/tanaka.png" alt="Rei Tanaka"/></div>
+      <div class="role">CO-FOUNDER · COO</div>
+      <div class="name">Rei Tanaka</div>
+      <div class="name-jp">田中 伶</div>
+      <div class="bio">早稲田大学卒。ベイカレント・コンサルティングで戦略・DXコンサルに従事。2023年共同創業。財務・オペレーション統括。</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar"><img src="public/images/members/val.jpg" alt="Valjon Qejvani"/></div>
+      <div class="role">INTERNATIONAL SALES</div>
+      <div class="name">Valjon Qejvani</div>
+      <div class="name-jp">バルヨン · ケジヴァニ</div>
+      <div class="bio">ウェスタンミシガン大学卒。米大手マーケティング会社を経て2023年ジョイン。HK・NY・EU開拓。</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar"><img src="public/images/members/nono.jpg" alt="Keigo Nono"/></div>
+      <div class="role">DOMESTIC · JAS LEAD</div>
+      <div class="name">Keigo Nono</div>
+      <div class="name-jp">野々 圭吾</div>
+      <div class="bio">専修大学卒。国内営業と有機JAS認証プロジェクトリーダー。世界初オーガニック和牛の実装を牽引。</div>
+    </div>
+  </div>
+
+  <div class="team-advisor">
+    <div class="team-avatar" style="width:48px;height:48px;flex-shrink:0;font-size:14px;">HS</div>
+    <div class="team-advisor-info">
+      <div class="role" style="font-size:9px;">PROJECT DIRECTOR · CHEF ADVISOR</div>
+      <div class="name" style="font-size:15px;">Hitoshi Sugiura　<span class="name-jp" style="font-size:10px;">杉浦 仁志</span></div>
+    </div>
+    <div class="bio" style="font-size:10px; color:var(--ink-muted); max-width:360px; line-height:1.55;">
+      内閣府クールジャパンプロデューサー。"Social Food Gastronomy" を提唱。国賓レセプション代表料理人。
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-light"><span>EDA-LIVESTOCK</span><span>10</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 11 — JOURNEY
+     ============================================ -->
+<div class="slide bg-deep journey">
+  <div style="text-align:center; margin-bottom:8px;">
+    <div class="eyebrow text-gold" style="margin-bottom:10px;">— Our Journey —</div>
+    <div class="display-md" style="color:white;">
+      2023 — <span style="color:var(--gold);">2026</span>
+    </div>
+    <p class="body-jp-sm" style="color:rgba(255,255,255,0.45);">
+      創業からわずか3年。世界が注目する和牛ブランドへ。
+    </p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-card">
+      <div class="timeline-year">2023</div>
+      <div class="timeline-label">YEAR 1 — FOUNDATION</div>
+      <ul class="timeline-items">
+        <li>江田畜産株式会社 創業（宮崎県高原町）</li>
+        <li>Eda Wagyu ブランド確立</li>
+        <li>香港 city'super 直接輸出 開始</li>
+        <li>無投薬 · 循環型飼料の体制構築</li>
+      </ul>
+    </div>
+    <div class="timeline-card">
+      <div class="timeline-year">2024</div>
+      <div class="timeline-label">YEAR 2 — EXPANSION</div>
+      <ul class="timeline-items">
+        <li>輸出先 1→7カ国に拡大</li>
+        <li>Ritz-Carlton · Four Seasons 採用</li>
+        <li>東京ステーションホテル 採用</li>
+        <li>SoftBank · TOYOTA(TTDC) スマート畜産実証</li>
+      </ul>
+    </div>
+    <div class="timeline-card">
+      <div class="timeline-year">2025</div>
+      <div class="timeline-label">YEAR 3 — ACCELERATION</div>
+      <ul class="timeline-items">
+        <li>輸出先 7→13カ国に拡大</li>
+        <li>EU圏（独·芬·西·伊）本格展開</li>
+        <li>Malaysia · Indonesia HALAL対応</li>
+        <li>Ritz-Carlton Hong Kong · New York 採用</li>
+      </ul>
+    </div>
+    <div class="timeline-card current">
+      <div class="timeline-year">2026</div>
+      <div class="timeline-label">NOW — WORLD'S FIRST</div>
+      <ul class="timeline-items">
+        <li style="color:var(--gold);">世界初 有機JAS認証 黒毛和牛 取得</li>
+        <li style="color:var(--gold);">Premium EdaWagyu ローンチ</li>
+        <li>EU Leaf 同等性 承認</li>
+        <li>オーストラリア市場 進出</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-footer slide-footer-dark"><span>EDA-LIVESTOCK</span><span>11</span></div>
+</div>
+
+<!-- ============================================
+     SLIDE 12 — CONTACT
+     ============================================ -->
+<div class="slide bg-forest contact">
+  <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="contact-logo"/>
+  <div class="display-md" style="color:white; margin-bottom:4px;">
+    Let's Build <span style="color:var(--gold);">The Future Together.</span>
+  </div>
+  <p class="body-jp" style="color:rgba(255,255,255,0.55); max-width:520px;">
+    お問い合わせ・ご商談・サンプルリクエストは、以下までお気軽にご連絡ください。
+  </p>
+
+  <div class="contact-grid">
+    <div class="contact-col">
+      <h4>HEADQUARTERS</h4>
+      <p>
+        江田畜産株式会社 / Eda Livestock Co., Ltd.<br/>
+        〒889-4411<br/>
+        宮崎県西諸県郡高原町大字広原 2025-2<br/><br/>
+        <a href="mailto:backoffice@eda-livestock.com">backoffice@eda-livestock.com</a>
+      </p>
+    </div>
+    <div class="contact-col">
+      <h4>INTERNATIONAL SALES</h4>
+      <p>
+        Export Inquiry · Sample Request · Partnership<br/><br/>
+        <a href="mailto:international.sales@eda-livestock.com">international.sales@eda-livestock.com</a><br/><br/>
+        Instagram: <a href="#">@eda_livestock</a><br/>
+        Web: <a href="#">eda-livestock.com</a>
+      </p>
+    </div>
+  </div>
+
+  <div style="position:absolute; bottom:24px; left:0; right:0; text-align:center;">
+    <span style="font-family:'Bebas Neue',sans-serif; font-size:10px; letter-spacing:0.2em; color:rgba(255,255,255,0.2);">
+      © 2026 EDA-LIVESTOCK CO., LTD. — CONFIDENTIAL
+    </span>
+  </div>
+</div>
+
+</body>
+</html>
