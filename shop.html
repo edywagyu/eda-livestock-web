@@ -2012,53 +2012,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .hero-scroll-hint { display: none; }
 }
 
-/* ============ 📱 モバイル セクションクイックナビ ============ */
+/* ============ 📱 モバイル セクションクイックナビ ============
+   モバイルではボトムタブバーと機能重複のため非表示 (Tom指示) */
 .shop-quicknav { display: none; }
-@media (max-width: 720px) {
-  .shop-quicknav {
-    display: block;
-    position: sticky;
-    top: 56px;
-    z-index: 95;
-    background: rgba(15, 61, 46, 0.96);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(212, 169, 59, 0.25);
-    padding: 8px 0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  }
-  .shop-quicknav-inner {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 0 16px;
-  }
-  .shop-quicknav-inner::-webkit-scrollbar { display: none; }
-  .shop-quicknav-pill {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(212,169,59,0.3);
-    color: var(--color-gold);
-    font-family: var(--font-jp);
-    font-size: 11.5px;
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 14px;
-    white-space: nowrap;
-    letter-spacing: 0.02em;
-    transition: all 0.2s;
-  }
-  .shop-quicknav-pill:hover,
-  .shop-quicknav-pill:active {
-    background: var(--color-gold);
-    color: var(--color-forest-deep);
-    border-color: var(--color-gold);
-  }
-}
 
 /* ================ TRUST STRIP ================ */
 .shop-trust-strip {
@@ -5153,30 +5109,37 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 @media (max-width: 720px) {
-  /* gift-season banner: コンパクト + 改行禁則 (Tom指示) */
+  /* gift-season banner: コンパクト + 改行禁則 (Tom指示で更に小さく) */
   .gift-season-banner {
-    padding: 14px 14px;
-    margin-bottom: 16px;
-    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 12px;
   }
   .gift-season-banner-inner {
     flex-direction: row;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: nowrap;
   }
-  .gift-season-icon { font-size: 32px; flex-shrink: 0; align-self: center; }
+  .gift-season-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    align-self: center;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+  }
   .gift-season-eyebrow {
-    font-size: 9px;
-    letter-spacing: 0.18em;
+    font-size: 8.5px;
+    letter-spacing: 0.14em;
     margin-bottom: 2px;
+    white-space: nowrap;
   }
   .gift-season-headline {
-    font-size: 14px;
+    font-size: 12.5px;
     text-align: left;
     word-break: keep-all;
     overflow-wrap: anywhere;
-    line-height: 1.4;
-    margin-bottom: 4px;
+    line-height: 1.35;
+    margin-bottom: 3px;
   }
   .gift-season-text {
     align-items: flex-start;
@@ -5187,27 +5150,42 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .gift-season-meta {
     flex-direction: row;
     align-items: center;
-    gap: 8px;
-    row-gap: 4px;
-    padding: 4px 0;
-    width: 100%;
+    gap: 4px;
+    padding: 0;
+    width: auto;
     background: transparent;
     border: 0;
-    flex-wrap: wrap;
-    margin-top: 4px;
+    flex-wrap: nowrap;
+    margin-top: 2px;
   }
-  .gift-season-meta-item { font-size: 10.5px; gap: 4px; }
-  .gift-season-meta-item strong { font-size: 9.5px !important; }
-  .gift-season-deadline { padding: 2px 8px; }
-  .gift-season-deadline span { font-size: 11px; }
+  /* 受付期間・出荷日は非表示 (情報過多防止) — 締切のみ表示 */
+  .gift-season-meta > .gift-season-meta-item:not(.gift-season-deadline) {
+    display: none !important;
+  }
+  .gift-season-deadline {
+    display: inline-flex !important;
+    padding: 2px 8px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 8px;
+    margin-top: 0;
+  }
+  .gift-season-deadline strong {
+    font-size: 8.5px !important;
+    white-space: nowrap;
+  }
+  .gift-season-deadline span {
+    font-size: 10px !important;
+    white-space: nowrap;
+  }
   .gift-season-cta {
     width: auto;
     justify-content: center;
-    padding: 10px 18px;
-    font-size: 12.5px;
+    padding: 8px 14px;
+    font-size: 11.5px;
     flex-shrink: 0;
-    align-self: stretch;
-    border-radius: 22px;
+    align-self: center;
+    border-radius: 18px;
+    min-height: 36px;
   }
 }
 
@@ -8144,13 +8122,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .shop-cat-head { margin-top: 24px !important; margin-bottom: 12px; }
   .shop-cat-title { font-size: 18px; }
   .shop-cat-desc { font-size: 12px; line-height: 1.6; }
-  .product-card { gap: 6px; }
-  .product-card-img { margin-bottom: 10px; }
-  .product-name { font-size: 14px; margin: 4px 0; }
-  .product-desc { font-size: 11.5px; line-height: 1.55; }
-  .product-stats { padding: 4px 0; font-size: 11px; }
-  .product-stat-item { padding: 6px 10px; }
-  .product-stat-item.wide { padding: 8px 12px; font-size: 11px; }
+  /* 商品カード モバイル コンパクト化 (Tom指示) */
+  .product-card { gap: 4px; }
+  .product-card-img { margin-bottom: 8px; }
+  .product-name { font-size: 14px; margin: 2px 0; padding-top: 6px !important; }
+  .product-card .product-desc {
+    font-size: 11.5px;
+    line-height: 1.55;
+    -webkit-line-clamp: 2 !important;
+    min-height: 0 !important;
+    margin: 4px 0 8px !important;
+  }
+  /* 栄養スペック表は非表示 (重要な情報のみ重視) */
+  .product-stats { display: none !important; }
+  .product-card .product-buy { padding: 0 14px 14px !important; }
+  .product-card .product-tag-row { padding-top: 10px !important; padding-bottom: 0 !important; }
+  .product-card .product-tag-row,
+  .product-card .product-name,
+  .product-card .product-desc { padding-left: 14px; padding-right: 14px; }
 
   /* 診断クイズ — モバイル画面1枚に収まるサイズ */
   .quiz-section { padding: 24px 0; }
@@ -8220,7 +8209,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .sub-head-tag { font-size: 10px; padding: 5px 12px; margin-bottom: 14px; }
   .sub-head-emph { font-size: 0.65em; }
   .sub-head-emph::before, .sub-head-emph::after { width: 18px; }
-  .sub-head-bullets { font-size: 11.5px; gap: 5px 8px; }
+  /* 4チップを 2x2 grid に揃える (3+1のバランス悪さ解消, Tom指示) */
+  .sub-head-bullets {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 8px;
+    font-size: 11px;
+    max-width: 280px;
+    margin: 0 auto 14px;
+  }
+  .sub-head-bullets span {
+    justify-content: center;
+    padding: 5px 8px;
+  }
   .sub-head-bullets span { padding: 3px 10px; }
   .sub-head-fine { font-size: 10.5px; }
   .shop-sub-plans-wrap { margin-bottom: 20px; }
