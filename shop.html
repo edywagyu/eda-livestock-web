@@ -10236,21 +10236,22 @@ function toggleUnboxingSound() {
           <button onclick="orderGift('ume', 5980, '和牛ハンバーグ ギフト【梅】 5個')" class="gift-product-cta">🎁 贈り物として注文 →</button>
         </div>
       </div>
+    </div><!-- /.gift-products-grid -->
 
-      <!-- 複数人へ送る導線（センター配置・横長バナー） -->
-      <div class="gift-multi-cta">
-        <div class="gift-multi-cta-inner">
-          <span class="gift-multi-cta-icon">🎁</span>
-          <div class="gift-multi-cta-text">
-            <strong>複数の方へ、まとめて贈りたい</strong>
-            <small>1注文で <b>最大5箇所</b> までお届け先を分けて発送。各送り先で個別の<b>のし対応</b>。</small>
-          </div>
-          <a href="checkout.html?mode=multi" class="gift-multi-cta-btn">複数人へ送る →</a>
+    <!-- 複数人へ送る導線（grid 外に移動: フル幅センター配置） -->
+    <div class="gift-multi-cta">
+      <div class="gift-multi-cta-inner">
+        <span class="gift-multi-cta-icon">🎁</span>
+        <div class="gift-multi-cta-text">
+          <strong>複数の方へ、まとめて贈りたい</strong>
+          <small>1注文で <b>最大5箇所</b> までお届け先を分けて発送。各送り先で個別の<b>のし対応</b>。</small>
         </div>
+        <a href="checkout.html?mode=multi" class="gift-multi-cta-btn">複数人へ送る →</a>
       </div>
+    </div>
       <style>
         .gift-multi-cta {
-          margin: 56px auto 8px;
+          margin: 32px auto 8px;
           max-width: 880px;
           padding: 22px 32px;
           background:
@@ -10304,7 +10305,6 @@ function toggleUnboxingSound() {
           .gift-multi-cta-btn { width: 100%; text-align: center; padding: 13px; }
         }
       </style>
-    </div>
   </div>
 </section>
 
