@@ -39,6 +39,8 @@
   .eda-floating-line-icon { width: 32px; height: 32px; }
   .eda-floating-line-text strong { font-size: 11.5px; }
   .eda-floating-line-text small { font-size: 9px; }
+  /* sticky-cart-bar が出ているときは LINE ボタンを上に持ち上げる (衝突回避) */
+  body.has-sticky-cart .eda-floating-line { bottom: 84px; }
 }`;
     const style = document.createElement('style');
     style.textContent = css;
