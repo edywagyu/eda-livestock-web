@@ -1790,7 +1790,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-hero-content {
   position: relative;
   z-index: 2;
-  padding: 100px 0 80px;
+  padding: 100px clamp(20px, 4vw, 56px) 80px;
 }
 /* アイブロウ（点滅ドット付き） */
 .hero-eyebrow-anim {
@@ -7492,8 +7492,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* ---- Shop Hero ---- */
   .shop-hero { min-height: auto; }
-  .shop-hero-content { padding-top: 80px; padding-bottom: 32px; }
-  .shop-hero-title { font-size: 40px; }
+  .shop-hero-content { padding: 80px 18px 32px; }
+  .shop-hero-title { font-size: 32px; line-height: 1.15; }
   .shop-hero-tagline { font-size: 11px; padding: 5px 10px; margin-bottom: 10px; letter-spacing: 0.12em; }
   .shop-hero-sub { font-size: 13px; }
   .shop-hero-sub br { display: none; }
@@ -7505,12 +7505,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   /* ---- Trust strip (3項目だけなので中央寄せのまま、サイズダウン) ---- */
   .shop-trust-inner {
     display: flex;
-    gap: 14px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 4px 0;
+    padding: 4px 8px;
+    animation: none !important;  /* オーバーフロー防止 */
+    width: 100% !important;
+    max-width: 100%;
   }
-  .shop-trust-item { font-size: 11px; }
+  .shop-trust-item { font-size: 10.5px; }
+  .shop-trust-item strong { font-size: 10.5px; }
 
   /* ---- LINE Banner ---- */
   .shop-line-inner {
@@ -7971,8 +7975,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* Shop Hero: 92vh は縦長すぎ → 70vh に */
   .shop-hero { min-height: 70vh; }
-  .shop-hero-content { padding: 80px 0 32px; }
-  .shop-hero-title { font-size: clamp(28px, 7.8vw, 38px); line-height: 1.18; }
+  .shop-hero-content { padding: 80px 18px 32px; }
+  .shop-hero-title { font-size: clamp(26px, 7.2vw, 34px); line-height: 1.18; word-break: keep-all; }
   .shop-hero-sub { font-size: 12.5px; line-height: 1.7; }
   .shop-hero-cta { gap: 8px; }
   .hero-eyebrow-anim { font-size: 10px; padding: 4px 10px; margin-bottom: 16px; }
@@ -10380,15 +10384,25 @@ body.has-sticky-cart .floating-phone-btn {
   letter-spacing: 0.02em;
 }
 @media (max-width: 720px) {
+  /* モバイルではアイコンのみ表示 (FAB) — コンテンツ視認性最大化 */
   .floating-phone-btn {
-    right: 12px; bottom: 12px;
-    padding: 8px 14px 8px 10px;
-    gap: 8px;
+    right: 14px; bottom: 14px;
+    padding: 0;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    justify-content: center;
+    gap: 0;
   }
-  .floating-phone-icon { width: 32px; height: 32px; }
-  .floating-phone-text strong { font-size: 11.5px; }
-  .floating-phone-text small { font-size: 9px; }
-  body.has-sticky-cart .floating-phone-btn { bottom: 74px; }
+  .floating-phone-icon {
+    width: 52px; height: 52px;
+    background: transparent;
+    box-shadow: none;
+    color: #fff;
+  }
+  .floating-phone-btn--line .floating-phone-icon { background: transparent; color: #fff; }
+  .floating-phone-icon svg { width: 26px; height: 26px; }
+  .floating-phone-text { display: none; }
+  body.has-sticky-cart .floating-phone-btn { bottom: 78px; }
   body.has-sticky-cart .shop-main-wrap { padding-bottom: 90px; }
   body.has-sticky-cart footer.site-footer { padding-bottom: 90px; }
 }

@@ -35,10 +35,18 @@
 .eda-floating-line-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 .eda-floating-line-text small { font-size: 10px; color: rgba(255,255,255,0.85); margin-top: 2px; }
 @media (max-width: 720px) {
-  .eda-floating-line { right: 12px; bottom: 12px; padding: 8px 14px 8px 10px; gap: 8px; }
-  .eda-floating-line-icon { width: 32px; height: 32px; }
-  .eda-floating-line-text strong { font-size: 11.5px; }
-  .eda-floating-line-text small { font-size: 9px; }
+  /* モバイルではアイコンのみ表示 (FAB スタイル) → コンテンツ視認性最大化 */
+  .eda-floating-line {
+    right: 14px; bottom: 14px;
+    padding: 0;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    justify-content: center;
+    gap: 0;
+  }
+  .eda-floating-line-icon { width: 52px; height: 52px; background: transparent; color: #fff; }
+  .eda-floating-line-icon svg { width: 26px; height: 26px; }
+  .eda-floating-line-text { display: none; }
   /* sticky-cart-bar が出ているときは LINE ボタンを上に持ち上げる (衝突回避) */
   body.has-sticky-cart .eda-floating-line { bottom: 84px; }
 }`;
