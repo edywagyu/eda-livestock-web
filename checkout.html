@@ -1058,6 +1058,15 @@ function init() {
   // すべての単品を最初は self に紐付け
   destinations[0].itemIds = cartItems.map((_, i) => i);
 
+  // mode=multi で来た場合: ギフト送付先を自動追加 (空のまま2件目を表示)
+  if (params.get('mode') === 'multi') {
+    destinations.push({
+      id: 'gift-' + Date.now(),
+      type: 'gift', name: '', tel: '', zip: '', pref: '', address: '',
+      noshi: 'none', fromName: '', message: '', itemIds: []
+    });
+  }
+
   renderOrderList();
   renderDestinations();
   renderSummary();
@@ -1071,6 +1080,18 @@ function init() {
         const note = document.createElement('div');
         note.className = 'prefill-note';
         note.innerHTML = '✓ 定期便申込フォームから入力情報を引き継ぎました（編集可能）';
+        banner.appendChild(note);
+      }
+    }, 100);
+  }
+  // multi 経由の場合のガイダンス
+  if (params.get('mode') === 'multi') {
+    setTimeout(() => {
+      const banner = document.getElementById('orderModeBannerArea');
+      if (banner) {
+        const note = document.createElement('div');
+        note.className = 'prefill-note';
+        note.innerHTML = '🎁 複数の方へ贈るモード — 「+ 別の配送先を追加」で最大 5 件まで送り先を分けられます。各アイテムを送り先にドラッグまたはチェックで割当て。';
         banner.appendChild(note);
       }
     }, 100);
