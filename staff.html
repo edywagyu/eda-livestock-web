@@ -1687,39 +1687,40 @@ function enterApp() {
    - 読み込み失敗時は以下のフォールバック配列を使用
    ================================================================ */
 const DEMO_PRODUCTS_FALLBACK = [
-  /* ===== 牛肉 ステーキ系 ===== */
-  { productId: 'P001', variantId: 'SIRLOIN',          name: 'サーロインステーキ',           variant: '1枚 200g',  price: 3400, stock: 18, temp: '冷凍', category: '牛肉', sku: 'EDA-SIRLOIN-200', weight: 200, description: '背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。', images: ['public/images/products/drive/sirloin.jpg'] },
-  { productId: 'P002', variantId: 'RED-MEAT',         name: '赤身ステーキ',                 variant: '1枚 250g',  price: 3400, stock: 15, temp: '冷凍', category: '牛肉', sku: 'EDA-REDMEAT-250', weight: 250, description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。', images: ['public/images/products/drive/red-meat.jpg'] },
+  /* ===== 牛肉 ステーキ系 (master と完全同期) ===== */
+  { productId: 'P001', variantId: 'SIRLOIN',          name: 'サーロインステーキ',           variant: '1枚 200g',  price: 3400, stock: 18, temp: '冷凍', category: '牛肉', sku: 'EDA-SIRLOIN-200', weight: 200, description: '背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。', images: ['public/images/products/drive/sirloin.jpg'] },
+  { productId: 'P002', variantId: 'RED-MEAT',         name: '赤身ステーキ',                 variant: '1枚 200g',  price: 3400, stock: 15, temp: '冷凍', category: '牛肉', sku: 'EDA-REDMEAT-200', weight: 200, description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。', images: ['public/images/products/drive/red-meat.jpg'] },
   { productId: 'P003', variantId: 'CUBE-STEAK',       name: 'サイコロステーキ',             variant: '1袋 200g',  price: 1000, stock: 22, temp: '冷凍', category: '牛肉', sku: 'EDA-CUBE-200',    weight: 200, description: 'ステーキ用の正肉を一口大にカット。フライパンで転がすだけ。お子さまにも大人気。', images: ['public/images/products/drive/cube-steak.jpg'] },
   /* ===== 牛肉 スライス・切り落とし ===== */
-  { productId: 'P004', variantId: 'WAGYU-SLICE',      name: '赤身スライス',                 variant: '1袋 200g',  price: 2600, stock: 12, temp: '冷凍', category: '牛肉', sku: 'EDA-WSLICE-200',  weight: 200, description: '約2mm厚の薄切り。しゃぶしゃぶなら出汁に数秒くぐらせるだけ。すき焼き、冷しゃぶサラダにも。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
-  { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: '部位の端材を集めたお得な切り落とし。牛丼・カレー・肉じゃが・炒め物に。冷凍ストックの主役。', images: ['public/images/products/drive/kiriotoshi.jpg'] },
+  { productId: 'P004', variantId: 'WAGYU-SLICE',      name: '赤身スライス',                 variant: '1袋 200g',  price: 2600, stock: 12, temp: '冷凍', category: '牛肉', sku: 'EDA-WSLICE-200',  weight: 200, description: '約2mm厚の薄切り。しゃぶしゃぶ・すき焼き・冷しゃぶサラダに。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+  { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: '部位の端材を集めたお得な切り落とし。牛丼・カレー・肉じゃが・炒め物に。', images: ['public/images/products/drive/kiriotoshi.jpg'] },
   /* ===== 牛肉 焼肉系 ===== */
-  { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 150g',  price: 1900, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-150',    weight: 150, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
+  { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 200g',  price: 1500, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-200',    weight: 200, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
   { productId: 'P007', variantId: 'OFFAL',            name: '和牛ホルモン',                 variant: '1袋 150g',  price:  840, stock:  8, temp: '冷凍', category: '牛肉', sku: 'EDA-OFFAL-150',   weight: 150, description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
   /* ===== 牛肉 加工品 ===== */
-  { productId: 'P008', variantId: 'HAMBURG',          name: '江田和牛ハンバーグ',           variant: '1個 100g',  price:  760, stock: 40, temp: '冷凍', category: '牛肉', sku: 'EDA-HAMBURG-100', weight: 100, description: '和牛100%のシンプル配合。冷蔵庫で半日解凍してからフライパンで蒸し焼き。お子さまの夕食に。', images: ['public/images/products/drive/hamburg.jpg'] },
-  { productId: 'P009', variantId: 'ROAST-BEEF',       name: '和牛ローストビーフ',           variant: '1袋 100g',  price: 3000, stock:  6, temp: '冷凍', category: '牛肉', sku: 'EDA-ROAST-100',   weight: 100, description: '赤身を低温でじっくりロースト。解凍して薄くスライスするだけ。パーティーの前菜に。', images: ['public/images/products/drive/hamburg.jpg'] },
-  { productId: 'P010', variantId: 'RAW-HAM',          name: '和牛生ハム',                   variant: '個包装 40g', price: 1250, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-RAWHAM-40',   weight:  40, description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとはまったく異なる深みのある旨み。ワインに。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+  { productId: 'P008', variantId: 'HAMBURG',          name: '江田和牛ハンバーグ',           variant: '1個 100g',  price:  760, stock: 40, temp: '冷凍', category: '牛肉', sku: 'EDA-HAMBURG-100', weight: 100, description: '和牛100%のシンプル配合。冷蔵庫で半日解凍してからフライパンで蒸し焼き。', images: ['public/images/products/drive/hamburg.jpg'] },
+  { productId: 'P009', variantId: 'ROAST-BEEF',       name: '和牛ローストビーフ',           variant: '1袋 100g',  price: 3000, stock:  6, temp: '冷凍', category: '牛肉', sku: 'EDA-ROAST-100',   weight: 100, description: '赤身を低温でじっくりロースト。解凍して薄くスライスするだけ。', images: ['public/images/products/drive/hamburg.jpg'] },
+  { productId: 'P010', variantId: 'RAW-HAM',          name: '和牛生ハム',                   variant: '個包装 40g', price: 1250, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-RAWHAM-40',   weight:  40, description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとは別次元の旨み。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+  { productId: 'P010B', variantId: 'WAGYU-MINCED',    name: '和牛ミンチ',                   variant: '1袋 200g',  price: 1350, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-WGYMINCED-200', weight: 200, description: '江田和牛 100% の粗挽きミンチ。ハンバーグ・ボロネーゼ・タコライス・キーマカレーに。', images: ['public/images/products/drive/minced.jpg'] },
 
   /* ===== 鶏肉 平飼い（標準） ===== */
   { productId: 'P011', variantId: 'CHK-BREAST',       name: '平飼い鶏 ムネ',                variant: '1袋 500g',  price: 1280, stock: 20, temp: '冷凍', category: '鶏肉', sku: 'EDA-CHK-BREAST-500', weight: 500, description: '高タンパク・低脂肪のムネ肉。無投薬の平飼い鶏は身が締まって旨みが濃い。', images: ['public/images/products/drive/chicken-breast.jpg'] },
   { productId: 'P012', variantId: 'CHK-THIGH',        name: '平飼い鶏 モモ',                variant: '1袋 500g',  price: 1280, stock: 24, temp: '冷凍', category: '鶏肉', sku: 'EDA-CHK-THIGH-500',  weight: 500, description: '大分県産 平飼い・無投薬。照り焼き・唐揚げ・煮込みまで万能。', images: ['public/images/products/drive/chicken-thigh.jpg'] },
   { productId: 'P013', variantId: 'CHK-MINCED',       name: '平飼い鶏 ミンチ',              variant: '1袋 300g',  price: 1000, stock: 16, temp: '冷凍', category: '鶏肉', sku: 'EDA-CHK-MINCED-300', weight: 300, description: 'つくね、そぼろ、鶏団子鍋に。無投薬で離乳食にも安心。', images: ['public/images/products/drive/chicken-minced.jpg'] },
   /* ===== 鶏肉 オーガニック（3倍価格） ===== */
-  { productId: 'P014', variantId: 'ORG-CHK-BREAST',   name: 'オーガニックチキン ムネ',      variant: '1袋 500g',  price: 3840, stock:  6, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-BREAST-500', weight: 500, description: '有機JAS認証相当の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ最高峰の一品。', images: ['public/images/products/drive/chicken-breast.jpg'] },
+  { productId: 'P014', variantId: 'ORG-CHK-BREAST',   name: 'オーガニックチキン ムネ',      variant: '1袋 500g',  price: 3840, stock:  6, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-BREAST-500', weight: 500, description: '有機JAS認証相当の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。', images: ['public/images/products/drive/chicken-breast.jpg'] },
   { productId: 'P015', variantId: 'ORG-CHK-THIGH',    name: 'オーガニックチキン モモ',      variant: '1袋 500g',  price: 3840, stock:  6, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-THIGH-500',  weight: 500, description: '有機JAS認証相当の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。', images: ['public/images/products/drive/chicken-thigh.jpg'] },
-  { productId: 'P016', variantId: 'ORG-CHK-MINCED',   name: 'オーガニックチキン ミンチ',    variant: '1袋 300g',  price: 3000, stock:  5, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-MINCED-300', weight: 300, description: '有機JAS認証相当の無農薬飼料・無投薬。最高級のオーガニック鶏ミンチ。離乳食・つくねに。', images: ['public/images/products/drive/chicken-minced.jpg'] },
+  { productId: 'P016', variantId: 'ORG-CHK-MINCED',   name: 'オーガニックチキン ミンチ',    variant: '1袋 300g',  price: 3000, stock:  5, temp: '冷凍', category: '鶏肉', sku: 'EDA-ORG-CHK-MINCED-300', weight: 300, description: '有機JAS認証相当の無農薬飼料・無投薬。最高級のオーガニック鶏ミンチ。', images: ['public/images/products/drive/chicken-minced.jpg'] },
 
-  /* ===== ギフト（送料込み） ===== */
-  { productId: 'P017', variantId: 'GIFT-MATSU',       name: 'サーロインステーキ ギフト【松】', variant: '2枚 500g', price: 16800, stock: 10, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-MATSU-500', weight: 500, description: '江田畜産の自慢のサーロインステーキを2枚（合計500g）。健康志向の方への贈り物として。送料込み・税込。', images: ['public/images/products/drive/sirloin.jpg'] },
-  { productId: 'P018', variantId: 'GIFT-TAKE',        name: '赤身ステーキ ギフト【竹】',       variant: '2枚 500g', price: 12800, stock: 12, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-TAKE-500',  weight: 500, description: '脂身少なく鉄分・たんぱく質がしっかり摂れる赤身ステーキを2枚（合計500g）。健康を気遣う方へ。送料込み・税込。', images: ['public/images/products/drive/red-meat.jpg'] },
+  /* ===== ギフト 3点（送料込み・税込） ===== */
+  { productId: 'P017', variantId: 'GIFT-MATSU',       name: 'ヒレステーキ ギフト【松】',     variant: '450g',     price: 16800, stock: 10, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-MATSU-450', weight: 450, description: '江田畜産が誇る希少部位 ヒレを450g。きめ細かな赤身で食べやすい最上ランク。', images: ['public/images/products/drive/fillet.jpg'] },
+  { productId: 'P018', variantId: 'GIFT-TAKE',        name: '赤身ステーキ ギフト【竹】',     variant: '750g',     price: 12800, stock: 12, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-TAKE-750',  weight: 750, description: '脂身少なく鉄分・たんぱく質がしっかり摂れる赤身ステーキを750g。', images: ['public/images/products/drive/red-meat.jpg'] },
+  { productId: 'P019', variantId: 'GIFT-UME',         name: '和牛ハンバーグ ギフト【梅】',   variant: '5個 / 100g×5', price: 5980, stock: 18, temp: '冷凍', category: 'ギフト', sku: 'EDA-GIFT-UME-500',   weight: 500, description: '江田和牛100%・無投薬の手作りハンバーグを5個。カジュアルな手土産に。', images: ['public/images/products/drive/hamburg.jpg'] },
 
-  /* ===== 有機JAS 黒毛和牛（2026年夏 解禁・予約受付前） ===== */
-  { productId: 'P019', variantId: 'ORG-WAGYU-SIRLOIN', name: '有機JAS サーロイン',           variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-SIRLOIN', weight: 0, description: '2026年夏 解禁。世界初の有機JAS認証 黒毛和牛サーロイン。月間20頭限定出荷。', images: [] },
-  { productId: 'P020', variantId: 'ORG-WAGYU-RIBEYE',  name: '有機JAS リブアイ',             variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-RIBEYE',  weight: 0, description: '2026年夏 解禁。霜降りと赤身の完璧なバランス。希少な有機リブアイ。', images: [] },
-  { productId: 'P021', variantId: 'ORG-WAGYU-FILLET',  name: '有機JAS ヒレ',                 variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-FILLET',  weight: 0, description: '2026年夏 解禁。希少部位のヒレ、有機JAS認証。最高峰の一品。', images: [] },
-  { productId: 'P022', variantId: 'ORG-WAGYU-SLICE',   name: '有機JAS しゃぶしゃぶ用',       variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-SLICE',   weight: 0, description: '2026年夏 解禁。有機JAS認証のしゃぶしゃぶ用赤身スライス。', images: [] }
+  /* ===== 有機JAS 黒毛和牛（2026年夏 解禁・予約受付前）— master と同じ P020-P022 ===== */
+  { productId: 'P020', variantId: 'ORG-WAGYU-SIRLOIN', name: '有機JAS サーロイン',           variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-SIRLOIN', weight: 0, description: '世界初の有機JAS認証 黒毛和牛サーロイン。月間20頭限定出荷。', images: [] },
+  { productId: 'P021', variantId: 'ORG-WAGYU-RIBEYE',  name: '有機JAS リブアイ',             variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-RIBEYE',  weight: 0, description: '霜降りと赤身の完璧なバランス。希少な有機リブアイ。', images: [] },
+  { productId: 'P022', variantId: 'ORG-WAGYU-FILLET',  name: '有機JAS ヒレ',                 variant: '— —',     price: 0, stock: 0, temp: '冷凍', category: '有機和牛', sku: 'EDA-ORG-WGY-FILLET',  weight: 0, description: '希少部位のヒレ、有機JAS認証。最高峰の一品。', images: [] }
 ];
 
 /* ============================================================
@@ -1743,11 +1744,11 @@ function resolveProductsMaster() {
 const DEMO_PRODUCTS = resolveProductsMaster();
 
 const DEMO_ORDERS = [
-  { id: '#1023', customerName: '田中 太郎', total: 15400, items: '宮崎和牛サーロイン 500g / 平飼い鶏もも 1kg', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd', paymentMethod: 'Visa **** 4242', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 18 },
-  { id: '#1022', customerName: '佐藤 花子', total: 12800, items: '宮崎和牛サーロイン 500g', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh', paymentMethod: 'Apple Pay (Mastercard)', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 12 },
-  { id: '#1021', customerName: '鈴木 一郎', total: 9800,  items: '宮崎和牛リブロース 300g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '', lineUid: '', paymentMethod: 'JCB **** 8888', orderDate: '2026-05-11', estimatedArrival: '2026-05-14', purchaseCount: 6 },
-  { id: '#1020', customerName: '山田 美香', total: 4800,  items: '平飼い鶏もも 2kg', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012', lineUid: '', paymentMethod: 'Google Pay (Visa)', orderDate: '2026-05-09', estimatedArrival: '2026-05-12', purchaseCount: 4 },
-  { id: '#1019', customerName: '中村 健', total: 11500, items: '宮崎和牛 ヒレ 200g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109', lineUid: 'U9999xyzz', paymentMethod: 'Visa **** 1111', orderDate: '2026-05-07', estimatedArrival: '2026-05-10', purchaseCount: 1 }
+  { id: '#1023', customerName: '田中 太郎', total: 6790, items: 'サーロインステーキ 200g / 平飼い鶏モモ 500g×2', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd', paymentMethod: 'Visa **** 4242', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 18 },
+  { id: '#1022', customerName: '佐藤 花子', total: 6400, items: 'プロプラン定期便 (初月50%OFF)', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh', paymentMethod: 'Apple Pay (Mastercard)', orderDate: '2026-05-10', estimatedArrival: '2026-06-01', purchaseCount: 12 },
+  { id: '#1021', customerName: '鈴木 一郎', total: 3990, items: '和牛切り落とし 200g×2 / バラ焼肉 200g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '', lineUid: '', paymentMethod: 'JCB **** 8888', orderDate: '2026-05-11', estimatedArrival: '2026-05-14', purchaseCount: 6 },
+  { id: '#1020', customerName: '山田 美香', total: 5980, items: '和牛ハンバーグ ギフト【梅】 (5個)', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012', lineUid: '', paymentMethod: 'Visa **** 5678', orderDate: '2026-05-09', estimatedArrival: '2026-05-12', purchaseCount: 4 },
+  { id: '#1019', customerName: '中村 健', total: 16800, items: 'ヒレステーキ ギフト【松】 450g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109', lineUid: 'U9999xyzz', paymentMethod: 'Visa **** 1111', orderDate: '2026-05-07', estimatedArrival: '2026-05-10', purchaseCount: 1 }
 ];
 
 /* ★ 4回購入特典マスタ（編集可能） */
@@ -1983,9 +1984,9 @@ const DEMO_SETS = [
 ];
 
 const DEMO_SUBS = [
-  { id: 'SUB-STR', name: 'Starter', tagline: '少人数向け・お試し', price: 6800, period: '/月', items: ['平飼い鶏もも 1kg', '平飼い鶏むね 1kg', '小冊子・レシピ'], subscribers: 23, mrr: 156400, featured: false },
-  { id: 'SUB-REG', name: 'Regular', tagline: '4人家族向け 一番人気', price: 12800, period: '/月', items: ['宮崎和牛 サーロイン 500g', '平飼い鶏もも 1.5kg', '平飼い鶏手羽先 500g', '希少部位サンプル'], subscribers: 47, mrr: 601600, featured: true },
-  { id: 'SUB-NAT', name: 'Natural Box', tagline: 'オーガニック志向 月一お楽しみ', price: 18800, period: '/月', items: ['宮崎和牛 厳選部位 800g', '平飼い鶏 旬の部位 1kg', 'オーガニック野菜', '産地レシピブック'], subscribers: 18, mrr: 338400, featured: false }
+  { id: 'SUB-MINI', name: 'ミニプラン', tagline: '1-2人家族 / 約1.6kg / 8品', price: 6980, period: '/月', items: ['赤身スライス 200g', '赤身焼肉 200g', 'サイコロステーキ 200g', '和牛ミンチ 200g', '鶏モモ 200g', '鶏ムネ 200g×2', '鶏ミンチ 200g'], subscribers: 23, mrr: 160540, featured: false },
+  { id: 'SUB-PRO', name: 'プロプラン', tagline: '3-4人家族 / 約3.2kg / 16品 — 人気No.1', price: 12800, period: '/月', items: ['赤身スライス 200g×2', '赤身焼肉 200g×2', 'サイコロステーキ 200g×2', '和牛ミンチ 200g', '鶏モモ 200g×3', '鶏ムネ 200g×3', '鶏ミンチ 200g×3'], subscribers: 47, mrr: 601600, featured: true },
+  { id: 'SUB-VIP', name: 'VIPプラン', tagline: '5人以上 / 約4.4kg / 22品 — ヒレ含む豪華版', price: 27400, period: '/月', items: ['ヒレステーキ 200g', '赤身ステーキ 200g×2', 'サーロインステーキ 200g×2', '和牛ミンチ 200g×2', '鶏モモ 200g×5', '鶏ムネ 200g×5', '鶏ミンチ 200g×5'], subscribers: 18, mrr: 493200, featured: false }
 ];
 
 const DEMO_CAMPAIGNS = [
@@ -3310,11 +3311,12 @@ function openForm(type) {
       <div class="form-field"><label>セット名</label><input type="text" placeholder="例: 焼肉プレミアムセット 4人前"></div>
       <div class="form-field"><label>含む商品（チェックを付けて数量）</label>
         <div style="background:var(--paper);padding:10px;border-radius:8px;font-size:12px;line-height:2">
-          ☐ 宮崎和牛 サーロイン 500g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
-          ☐ 宮崎和牛 リブロース 300g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
-          ☐ 宮崎和牛 ヒレ 200g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
-          ☐ 平飼い鶏 もも肉 1kg × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
-          ☐ 平飼い鶏 むね肉 1kg × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0">
+          ☐ サーロインステーキ 200g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 赤身ステーキ 200g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 和牛切り落とし 200g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 和牛ミンチ 200g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 平飼い鶏 モモ 500g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0"><br>
+          ☐ 平飼い鶏 ムネ 500g × <input type="number" style="width:50px;padding:4px;display:inline-block" value="0">
         </div>
       </div>
       <div class="form-row">
