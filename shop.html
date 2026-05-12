@@ -2263,10 +2263,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .sub-cycle-step-label {
   font-family: var(--font-jp);
-  font-size: 10.5px;
-  color: rgba(255,255,255,0.6);
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.78); /* 0.6 → 0.78 コントラストUP */
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
 }
 .sub-cycle-step-date {
   font-family: var(--font-numeric);
@@ -2453,7 +2453,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   /* シンプル版モバイル */
   .sub-cycle-simple { gap: 8px; padding: 14px 10px; }
   .sub-cycle-step { min-width: 52px; }
-  .sub-cycle-step-label { font-size: 9.5px; letter-spacing: 0.04em; }
+  .sub-cycle-step-label { font-size: 11px; letter-spacing: 0.02em; }
   .sub-cycle-step-date { font-size: 18px; }
   .sub-cycle-step--main .sub-cycle-step-date { font-size: 22px; }
   .sub-cycle-step-date--small { font-size: 12.5px; }
@@ -5194,9 +5194,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-bottom: 1px solid var(--color-bone);
 }
 .gift-product-vol {
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  font-weight: 500;
+  font-size: 12px;
+  color: var(--color-ink); /* muted→ink で視認性UP */
+  font-weight: 600;
 }
 .gift-product-price {
   font-family: var(--font-numeric);
@@ -7441,18 +7441,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .shop-hero-badge-label { font-size: 10px; }
   .hide-sp { display: none; }
 
-  /* ---- Trust strip ---- */
+  /* ---- Trust strip (3項目だけなので中央寄せのまま、サイズダウン) ---- */
   .shop-trust-inner {
     display: flex;
-    gap: 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    justify-content: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 4px 0;
   }
-  .shop-trust-inner::-webkit-scrollbar { display: none; }
-  .shop-trust-item { font-size: 10px; flex-shrink: 0; }
+  .shop-trust-item { font-size: 11px; }
 
   /* ---- LINE Banner ---- */
   .shop-line-inner {
@@ -8078,7 +8075,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .sub-promo-banner-text strong { font-size: 13.5px; }
   .sub-promo-deadline { font-size: 11px; padding: 4px 10px; }
   .sub-promo-deadline strong { font-size: 14px !important; }
-  .sub-promo-microcopy { font-size: 9.5px; }
+  .sub-promo-microcopy { font-size: 11px; line-height: 1.4; }
   .shop-sub-plans-wrap { margin-bottom: 28px; }
   .sub-plan-mini { padding: 18px 16px 16px; }
   .sub-plan-name { font-size: 15px; }
