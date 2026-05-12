@@ -7,8 +7,8 @@
 (function (global) {
   'use strict';
 
-  // ↓↓↓ 本番デプロイ時に書き換える ↓↓↓
-  const GAS_URL = 'https://script.google.com/macros/s/REPLACE_WITH_DEPLOYMENT_ID/exec';
+  // ↓↓↓ 本番 GAS Web App URL (2026-05-12 デプロイ) ↓↓↓
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
   // ↑↑↑ ここまで ↑↑↑
 
   // localStorage で上書き可能 (ステージング/ローカルで別URL試す用)
@@ -21,7 +21,7 @@
     isProduction: !FINAL_URL.includes('REPLACE_WITH'),
     // フロント側で Stripe Checkout を直接呼ぶことはない (GAS 経由)
     // ただし Stripe.js を読み込んで Apple Pay などのトークン化に使う場合は publishable key を入れる
-    STRIPE_PUBLISHABLE_KEY: 'pk_test_REPLACE_ME',
+    STRIPE_PUBLISHABLE_KEY: 'pk_live_51PNNcrGSkhU1UEciCMf2g2dI6aO2x4uQYqIOqm772au6vGfsS4E2t6sQNsTqK2nqwA6JFznKqMkp2xM06UFvr9rB00l0i8uN3T',
     // LINE 公式 ID
     LINE_AT_ID: '@706sgiuq',
     // 連絡先
