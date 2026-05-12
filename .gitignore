@@ -3,3 +3,15 @@
 __pycache__/
 node_modules/
 .env
+
+# 大容量バイナリ資料 (ローカル保持のみ)
+会社資料/
+江田和牛資料/
+*.pptx
+EDA-WAGYU_Buyers_Guide_*.pdf
+EDA-LIVESTOCK_営業資料_*.pdf
+江田和牛_バイヤーズガイド_*.pdf
+
+# GAS デプロイ用シークレット
+gas/.clasp.json
+gas/credentials.json

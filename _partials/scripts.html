@@ -151,7 +151,8 @@
 
   /* ======== CART SYSTEM ======== */
   (function() {
-    const GAS_API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+    // GAS URL は public/js/eda-config.js で集中管理 (デプロイ時1ヶ所のみ変更)
+    const GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
     const CART_KEY = 'eda-cart';
     const FREE_SHIP = 11000;
 

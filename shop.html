@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shop | オンラインショップ | EDA-LIVESTOCK</title>
 <meta name="description" content="江田和牛と平飼い鶏のオンラインショップ。最短3日でお届け、¥11,000以上で送料無料。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Online Shop | 江田畜産">
+<meta property="og:description" content="黒毛和牛 A5・無投薬オーガニック和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
+<meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/shop.html">
+<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Online Shop | 江田畜産">
+<meta name="twitter:description" content="黒毛和牛 A5・無投薬オーガニック和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
+<meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/shop.html">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
@@ -8420,6 +8433,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .dyn-gallery-thumbs img { width: 44px; height: 44px; }
 }
 </style>
+<script src="public/js/eda-config.js"></script>
+<script src="public/js/error-tracker.js" defer></script>
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -10162,6 +10177,9 @@ function toggleUnboxingSound() {
           <li><a href="press.html">Press &amp; Media</a></li>
           <li><a href="press-kit.html">Press Kit</a></li>
           <li><a href="awards.html">Awards</a></li>
+          <li><a href="terms.html">利用規約</a></li>
+          <li><a href="privacy.html">プライバシーポリシー</a></li>
+          <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">💬 LINE 公式アカウント</a></li>
           <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">📷 Instagram @eda_livestock</a></li>
@@ -10496,14 +10514,11 @@ body.has-sticky-cart .floating-phone-btn {
     });
   })();
 
-  /* ======== URGENCY: VIEWER COUNT ======== */
+  /* ======== VIEWER COUNT (景表法リスク回避のため固定文言に) ======== */
   (function() {
     var el = document.querySelector('.shop-proof-viewers');
     if (!el) return;
-    /* Deterministic pseudo-random from date seed */
-    var seed = new Date().toISOString().slice(0,10).split('').reduce(function(a,c){ return a + c.charCodeAt(0); }, 0);
-    var count = 18 + (seed % 30);
-    el.textContent = count + '人が今日このページを閲覧中';
+    el.textContent = '冷凍便で全国へ毎日発送中';
   })();
 
   /* ======== CART SYSTEM ======== */
@@ -11034,8 +11049,9 @@ body.has-sticky-cart .floating-phone-btn {
     for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i);
     return Math.abs(h);
   }
-  /* 再入荷バッジ廃止。残り3つは「残少」へ統合（残り1つだけ目立たせる） */
-  const statusPool = ['none', 'none', 'none', 'rank1', 'rank2', 'stock-low3', 'stock-low2', 'stock-low1', 'sale', 'sale'];
+  /* 景表法リスク回避: 残数表示 (stock-low*) は実在庫連動まで休止
+     ランキング (rank1/rank2) と セール (sale) のみ表示 */
+  const statusPool = ['none','none','none','none','none','rank1','rank2','sale','sale','sale'];
   const statusBadges = {
     rank1:      { label: '🥇 先週1位',   color: '#D4A93B', bg: '#FEF3C7' },
     rank2:      { label: '🥈 先週2位',   color: '#92400E', bg: '#FEF3C7' },

@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>レジ | Checkout | EDA-LIVESTOCK</title>
 <meta name="description" content="江田畜産 ご注文 — 単品・定期便・ギフト・複数配送先すべてに対応した安心のチェックアウト。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Checkout | ご注文の確認">
+<meta property="og:description" content="安全な Stripe Checkout でお支払いください。">
+<meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/checkout.html">
+<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Checkout | ご注文の確認">
+<meta name="twitter:description" content="安全な Stripe Checkout でお支払いください。">
+<meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/checkout.html">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -662,6 +675,38 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   letter-spacing: -0.01em;
 }
 
+/* 同意チェックボックス */
+.checkout-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 14px 0 0;
+  background: rgba(212,169,59,0.06);
+  border: 1px solid rgba(212,169,59,0.3);
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.checkout-consent input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  accent-color: var(--color-gold);
+  cursor: pointer;
+}
+.checkout-consent a {
+  color: var(--color-gold-soft);
+  text-decoration: underline;
+}
+.checkout-consent a:hover { color: var(--color-forest); }
+.btn-place-order:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 .btn-place-order {
   width: 100%;
   padding: 18px;
@@ -816,6 +861,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   .dest-field textarea { min-height: 48px; font-size: 16px; padding: 12px 14px; }
 }
 </style>
+<script src="public/js/eda-config.js"></script>
+<script src="public/js/error-tracker.js" defer></script>
 </head>
 <body>
 
@@ -968,13 +1015,20 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
           <div class="summary-rows" id="summaryRows"></div>
 
+          <label class="checkout-consent">
+            <input type="checkbox" id="checkoutConsent" required>
+            <span>
+              <a href="terms.html" target="_blank">利用規約</a>・<a href="privacy.html" target="_blank">プライバシーポリシー</a>・<a href="tokushoho.html" target="_blank">特定商取引法に基づく表記</a>に同意の上、注文を確定します。
+            </span>
+          </label>
+
           <button class="btn-place-order" id="btnPlaceOrder" onclick="placeOrder()">
             ご注文を確定する →
           </button>
 
           <div class="summary-trust">
-            <span class="summary-trust-item">🔒 SSL</span>
-            <span class="summary-trust-item">✓ 利用規約に同意</span>
+            <span class="summary-trust-item">🔒 SSL暗号化</span>
+            <span class="summary-trust-item">💳 Stripe決済</span>
           </div>
         </div>
 
@@ -1435,9 +1489,9 @@ function renderSummary() {
   }
   lineItems.innerHTML = itemsHtml;
 
-  // 送料
+  // 送料 (10%税込) — 11,000円(税込)以上で本州送料無料 / 定期便はプランに送料込
   const shipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
-  // ギフト追加配送
+  // ギフト追加配送 (1,100円 税込/件)
   const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0).length * 1100;
   // 50% off if subscription only
   const subSavings = subscription && PLANS[subscription.plan]
@@ -1445,22 +1499,45 @@ function renderSummary() {
 
   const total = subTotal + shipping + giftShipping;
 
+  // 軽減税率 内消費税の計算 (税込価格→内税)
+  //   食品 (subTotal): 軽減税率 8% → tax = subTotal × 8/108
+  //   送料 (shipping + giftShipping): 標準税率 10% → tax = ship × 10/110
+  const tax8 = Math.round(subTotal * 8 / 108);
+  const tax10 = Math.round((shipping + giftShipping) * 10 / 110);
+  const taxTotal = tax8 + tax10;
+
   let rowsHtml = '';
   if (subSavings > 0) {
     rowsHtml += `<div class="summary-row discount"><span>初月50%OFF適用</span><strong>−¥${subSavings.toLocaleString()}</strong></div>`;
   }
   rowsHtml += `
     <div class="summary-row">
-      <span>商品小計</span>
+      <span>商品小計<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
       <strong>¥${subTotal.toLocaleString()}</strong>
     </div>
     <div class="summary-row shipping">
-      <span>配送料 (自宅)</span>
+      <span>配送料 (自宅)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
       <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
     </div>
   `;
   if (giftShipping > 0) {
-    rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料 (${giftShipping/1100}件)</span><strong>¥${giftShipping.toLocaleString()}</strong></div>`;
+    rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料 (${giftShipping/1100}件)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span><strong>¥${giftShipping.toLocaleString()}</strong></div>`;
+  }
+  // 内消費税の内訳表示
+  rowsHtml += `
+    <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-top:8px;border-top:1px dashed rgba(15,61,46,0.15);">
+      <span>内消費税</span>
+      <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${taxTotal.toLocaleString()}</strong>
+    </div>
+    <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
+      <span style="font-size:10px;">　└ 8%対象（食品）</span>
+      <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax8.toLocaleString()}</strong>
+    </div>`;
+  if (tax10 > 0) {
+    rowsHtml += `<div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
+      <span style="font-size:10px;">　└ 10%対象（送料）</span>
+      <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax10.toLocaleString()}</strong>
+    </div>`;
   }
   rowsHtml += `
     <div class="summary-row total">
@@ -1468,6 +1545,13 @@ function renderSummary() {
       <strong>¥${total.toLocaleString()}</strong>
     </div>
   `;
+  // 本州送料無料まであと
+  if (!subscription && shipping > 0 && subTotal > 0) {
+    const remain = 11000 - subTotal;
+    if (remain > 0 && remain <= 5000) {
+      rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.10);padding:8px 10px;border-radius:8px;font-size:11px;color:var(--color-forest);"><span>あと¥${remain.toLocaleString()}で送料無料</span><strong style="font-size:11px;">▸</strong></div>`;
+    }
+  }
   rows.innerHTML = rowsHtml;
 
   // タイトル更新
@@ -1568,9 +1652,9 @@ document.querySelectorAll('.payment-option input').forEach(input => {
   });
 });
 
-/* ---- 注文確定 (モック) ---- */
-function placeOrder() {
-  // 簡易バリデーション
+/* ---- 注文確定 (Stripe Checkout 連携) ---- */
+async function placeOrder() {
+  // バリデーション
   for (const d of destinations) {
     if (d.itemIds.length === 0 && d.type === 'gift') continue;
     if (!d.name || !d.tel || !d.zip || !d.pref || !d.address) {
@@ -1582,25 +1666,21 @@ function placeOrder() {
       return;
     }
   }
+  // 規約同意チェック
+  const consent = document.getElementById('checkoutConsent');
+  if (consent && !consent.checked) {
+    alert('利用規約・プライバシーポリシーに同意のうえご注文ください。');
+    consent.focus();
+    return;
+  }
 
-  // モード別メッセージ
   const mode = getMode();
-  const modeText = {
-    single: '単品のご注文',
-    subscription: '定期便のお申込み',
-    subandadd: '定期便と追加購入',
-    gift: 'ギフトのご注文',
-    multi: `${destinations.length}箇所への配送`
-  }[mode];
-
-  // 注文ペイロード組み立て（GAS送信用）
-  const orderNum = 'EDA-' + Date.now().toString(36).toUpperCase();
-  const total = (typeof totalAmount === 'number' && totalAmount) || calcTotalAmount();
+  const isSubscription = !!subscription && mode !== 'single' && mode !== 'gift' && mode !== 'multi';
   const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
+
+  // 注文ペイロード組み立て
   const orderPayload = {
-    order_number: orderNum,
     mode: mode,
-    placed_at: new Date().toISOString(),
     customer: {
       name:    destinations[0].name,
       email:   destinations[0].email,
@@ -1612,46 +1692,49 @@ function placeOrder() {
     destinations: destinations.map(d => ({
       type: d.type,
       name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
-      noshi: d.noshi || null, fromName: d.fromName || null, message: d.message || null,
+      noshi: d.noshi || null, fromName: d.fromName || null,
       items: d.itemIds.map(i => cartItems[i]).filter(Boolean)
     })),
+    items: cartItems,
     subscription: subscription,
     payment_method: payment,
-    total: total,
-    // クイズ回答が紐付けられるなら同梱（後でクロス分析用）
     quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
   };
 
-  // GAS に送信（fire-and-forget）
+  // UI: ローディング
+  const btn = document.getElementById('btnPlaceOrder');
+  if (btn) { btn.disabled = true; btn.textContent = '決済画面へ移動中…'; }
+
   try {
-    const GAS_URL = localStorage.getItem('eda-gas-url') || '';
-    if (GAS_URL) {
-      fetch(GAS_URL + '?action=submit_order', {
-        method: 'POST',
-        body: JSON.stringify(orderPayload)
-      }).catch(() => {});
+    const action = (subscription && PLANS[subscription.plan]) ? 'create_subscription_checkout' : 'create_checkout';
+    if (action === 'create_subscription_checkout') {
+      orderPayload.plan = subscription.plan;
     }
-  } catch (e) {}
 
-  alert(
-    `✅ ${modeText}を承りました\n\n` +
-    `注文番号: ${orderNum}\n\n` +
-    `※ これはデモです。本番では Stripe 決済 → GAS 経由で Sheets 自動記録 → LINE 通知が走ります。`
-  );
+    if (!window.EDA_API) throw new Error('決済設定が読み込まれていません。ページを再読み込みしてください。');
 
-  // 確定後の処理 — 注文番号を発行して order-complete.html へ
-  localStorage.setItem('eda-last-order', JSON.stringify({
-    num: orderNum,
-    mode: mode,
-    total: total,
-    date: new Date().toISOString(),
-    payload: orderPayload
-  }));
-  localStorage.removeItem(CART_KEY);
-  localStorage.removeItem(SUB_KEY);
-  setTimeout(() => {
-    location.href = 'order-complete.html?order=' + encodeURIComponent(orderNum);
-  }, 500);
+    const result = await window.EDA_API.post(action, orderPayload);
+
+    if (!result.ok || !result.url) {
+      throw new Error(result.error || '決済セッション作成に失敗しました。お手数ですが LINE までお問い合わせください。');
+    }
+
+    // ローカルに pending 状態保存 (Stripe から戻ったとき表示用)
+    localStorage.setItem('eda-last-order', JSON.stringify({
+      num: result.order_number || '',
+      session_id: result.session_id,
+      mode: mode,
+      date: new Date().toISOString()
+    }));
+
+    // Stripe Checkout 画面へリダイレクト
+    window.location.href = result.url;
+
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'ご注文を確定する →'; }
+    alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
+    console.error('[placeOrder]', err);
+  }
 }
 
 // 合計金額計算（subscription + cart 全体）

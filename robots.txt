@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /staff.html
+Disallow: /test-checkout.html
+Disallow: /gas/
+Disallow: /docs/
+Disallow: /research/
+
+Sitemap: https://edywagyu.github.io/eda-livestock-web/sitemap.xml

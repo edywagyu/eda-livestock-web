@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Page | マイページ | EDA-LIVESTOCK</title>
 <meta name="description" content="江田畜産オンラインショップのマイページ。注文履歴・配送状況をご確認いただけます。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="My Page | マイページ">
+<meta property="og:description" content="注文履歴・配送状況・定期便管理。">
+<meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/mypage.html">
+<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="My Page | マイページ">
+<meta name="twitter:description" content="注文履歴・配送状況・定期便管理。">
+<meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/mypage.html">
+
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ================================================================
@@ -955,6 +968,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
 }
 </style>
+<script src="public/js/eda-config.js"></script>
+<script src="public/js/error-tracker.js" defer></script>
 </head>
 <body>
 
@@ -1001,13 +1016,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <h2 class="login-card-title">ご注文の確認</h2>
       <p class="login-card-sub">ご登録のメールアドレスまたは電話番号をご入力ください</p>
 
-      <div class="login-tabs">
-        <button class="login-tab active" data-tab="email" id="tabEmail">メールアドレス</button>
-        <button class="login-tab" data-tab="phone" id="tabPhone">電話番号</button>
-      </div>
-
       <div class="login-error" id="loginError"></div>
 
+      <!-- STEP 1: メールアドレス入力 -->
       <form id="loginForm" onsubmit="return false;">
         <div class="login-input-wrap" id="emailWrap">
           <span class="login-input-icon">
@@ -1016,20 +1027,45 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
               <path d="M22 4L12 13 2 4"/>
             </svg>
           </span>
-          <input type="email" class="login-input" id="emailInput" placeholder="example@email.com" autocomplete="email">
-        </div>
-        <div class="login-input-wrap" id="phoneWrap" style="display:none;">
-          <span class="login-input-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="5" y="2" width="14" height="20" rx="2"/>
-              <line x1="12" y1="18" x2="12" y2="18" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <input type="tel" class="login-input" id="phoneInput" placeholder="090-1234-5678" autocomplete="tel">
+          <input type="email" class="login-input" id="emailInput" placeholder="example@email.com" autocomplete="email" required>
         </div>
         <button type="submit" class="login-btn" id="loginBtn">
-          確認する
+          認証コードを送信
         </button>
+        <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:12px;line-height:1.5">
+          ご注文時に登録されたメールアドレスに<br>
+          6桁の認証コード（10分間有効）をお送りします
+        </p>
+      </form>
+
+      <!-- STEP 2: OTP コード入力 (初期は非表示) -->
+      <form id="otpForm" onsubmit="return false;" style="display:none;">
+        <p style="font-size:13px;color:var(--color-forest);text-align:center;margin:0 0 16px;">
+          <strong id="otpEmailDisplay"></strong> に<br>
+          認証コードを送信しました
+        </p>
+        <div class="login-input-wrap">
+          <span class="login-input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code"
+            class="login-input" id="otpInput" placeholder="123456"
+            style="font-size:20px;letter-spacing:6px;text-align:center;font-weight:700">
+        </div>
+        <button type="submit" class="login-btn" id="otpBtn">
+          ログイン
+        </button>
+        <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12px">
+          <button type="button" id="otpResend" style="color:var(--color-forest);text-decoration:underline;background:none;border:0;cursor:pointer;padding:0">
+            コードを再送
+          </button>
+          <button type="button" id="otpBack" style="color:var(--color-ink-muted);background:none;border:0;cursor:pointer;padding:0">
+            ← 別のメールに変更
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -1174,6 +1210,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <li><a href="press.html">Press &amp; Media</a></li>
           <li><a href="press-kit.html">Press Kit</a></li>
           <li><a href="awards.html">Awards</a></li>
+          <li><a href="terms.html">利用規約</a></li>
+          <li><a href="privacy.html">プライバシーポリシー</a></li>
+          <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">💬 LINE 公式アカウント</a></li>
           <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">📷 Instagram @eda_livestock</a></li>
@@ -1192,7 +1231,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================================================================
  * MY PAGE — Client Logic
  * ================================================================ */
-const GAS_API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+const GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
 
 /* ---- Header scroll ---- */
 const header = document.getElementById('siteHeader');
@@ -1203,83 +1242,151 @@ if (header) {
   }, { passive: true });
 }
 
-/* ---- Tab switching ---- */
-const tabEmail = document.getElementById('tabEmail');
-const tabPhone = document.getElementById('tabPhone');
-const emailWrap = document.getElementById('emailWrap');
-const phoneWrap = document.getElementById('phoneWrap');
+/* ---- OTP Login Flow ---- */
 const emailInput = document.getElementById('emailInput');
-const phoneInput = document.getElementById('phoneInput');
-
-tabEmail.addEventListener('click', () => {
-  tabEmail.classList.add('active');
-  tabPhone.classList.remove('active');
-  emailWrap.style.display = '';
-  phoneWrap.style.display = 'none';
-  emailInput.focus();
-});
-
-tabPhone.addEventListener('click', () => {
-  tabPhone.classList.add('active');
-  tabEmail.classList.remove('active');
-  phoneWrap.style.display = '';
-  emailWrap.style.display = 'none';
-  phoneInput.focus();
-});
-
-/* ---- Form submit ---- */
 const loginForm = document.getElementById('loginForm');
 const loginBtn = document.getElementById('loginBtn');
+const otpForm = document.getElementById('otpForm');
+const otpInput = document.getElementById('otpInput');
+const otpBtn = document.getElementById('otpBtn');
+const otpEmailDisplay = document.getElementById('otpEmailDisplay');
 const loginError = document.getElementById('loginError');
 const spinner = document.getElementById('spinner');
 const loginSection = document.getElementById('loginSection');
 const dashboard = document.getElementById('dashboard');
 
-loginForm.addEventListener('submit', async () => {
-  const isEmail = tabEmail.classList.contains('active');
-  const value = isEmail ? emailInput.value.trim() : phoneInput.value.trim();
+// 現在ログイン中の顧客情報 (LocalStorage に session_token 持続)
+let currentSession = null;
+try {
+  const saved = localStorage.getItem('eda-mypage-session');
+  if (saved) currentSession = JSON.parse(saved);
+} catch (_) {}
 
-  /* Validation */
-  if (!value) {
-    showError(isEmail ? 'メールアドレスを入力してください。' : '電話番号を入力してください。');
-    return;
-  }
-  if (isEmail && !value.includes('@')) {
-    showError('正しいメールアドレスをご入力ください。');
-    return;
-  }
+/* STEP 1: メールアドレス → OTP 送信 */
+loginForm.addEventListener('submit', async () => {
+  const email = emailInput.value.trim();
+  if (!email) { showError('メールアドレスを入力してください。'); return; }
+  if (!email.includes('@')) { showError('正しいメールアドレスをご入力ください。'); return; }
 
   loginError.classList.remove('show');
   loginBtn.disabled = true;
-  loginBtn.textContent = '確認中...';
+  loginBtn.textContent = '送信中...';
+
+  try {
+    const result = await window.EDA_API.post('request_otp', { email });
+    if (result.ok) {
+      // OTP フォームを表示
+      otpEmailDisplay.textContent = email;
+      loginForm.style.display = 'none';
+      otpForm.style.display = '';
+      otpInput.focus();
+      loginBtn.disabled = false;
+      loginBtn.textContent = '認証コードを送信';
+    } else {
+      throw new Error(result.error || 'コード送信に失敗しました');
+    }
+  } catch (err) {
+    showError('コードの送信に失敗しました: ' + (err.message || ''));
+    loginBtn.disabled = false;
+    loginBtn.textContent = '認証コードを送信';
+  }
+});
+
+/* STEP 2: OTP コード → ログイン */
+otpForm.addEventListener('submit', async () => {
+  const email = emailInput.value.trim();
+  const code = otpInput.value.trim();
+  if (!/^\d{6}$/.test(code)) { showError('6桁の数字を入力してください。'); return; }
+
+  loginError.classList.remove('show');
+  otpBtn.disabled = true;
+  otpBtn.textContent = '認証中...';
   spinner.classList.add('show');
 
   try {
-    const param = isEmail
-      ? 'email=' + encodeURIComponent(value)
-      : 'phone=' + encodeURIComponent(value);
-    const res = await fetch(GAS_API_URL + '?action=customer_lookup&' + param);
-    const data = await res.json();
+    const verifyResult = await window.EDA_API.post('verify_otp', { email, code });
+    if (!verifyResult.ok) throw new Error(verifyResult.error || '認証コードが正しくありません');
 
-    if (data.success && data.customer) {
-      renderDashboard(data.customer, data.orders || []);
-    } else {
-      spinner.classList.remove('show');
-      showError(data.message || 'お客様情報が見つかりませんでした。メールアドレスまたは電話番号をご確認ください。');
-      loginBtn.disabled = false;
-      loginBtn.textContent = '確認する';
-    }
+    // セッション保存
+    currentSession = {
+      email,
+      token: verifyResult.token || '',
+      issued: Date.now()
+    };
+    localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+
+    // verify_otp はすでに customer と orders を返す
+    const customer = verifyResult.customer || { email, name: email.split('@')[0], total_orders: 0, total_spent: 0 };
+    const orders = verifyResult.orders || [];
+    renderDashboard(customer, orders);
   } catch (err) {
     spinner.classList.remove('show');
-    showError('通信エラーが発生しました。しばらく待ってからもう一度お試しください。');
-    loginBtn.disabled = false;
-    loginBtn.textContent = '確認する';
+    showError(err.message || '認証に失敗しました');
+    otpBtn.disabled = false;
+    otpBtn.textContent = 'ログイン';
   }
+});
+
+/* OTP 再送 */
+document.getElementById('otpResend').addEventListener('click', async () => {
+  const email = emailInput.value.trim();
+  if (!email) return;
+  const resend = document.getElementById('otpResend');
+  resend.textContent = '送信中...';
+  resend.disabled = true;
+  try {
+    await window.EDA_API.post('request_otp', { email });
+    resend.textContent = 'コードを再送しました ✓';
+    setTimeout(() => { resend.textContent = 'コードを再送'; resend.disabled = false; }, 3000);
+  } catch (err) {
+    resend.textContent = 'コードを再送';
+    resend.disabled = false;
+  }
+});
+
+/* OTP 戻る */
+document.getElementById('otpBack').addEventListener('click', () => {
+  otpForm.style.display = 'none';
+  loginForm.style.display = '';
+  otpInput.value = '';
+  loginError.classList.remove('show');
+  emailInput.focus();
 });
 
 function showError(msg) {
   loginError.textContent = msg;
   loginError.classList.add('show');
+}
+
+/* ---- セッション自動復元 (前回ログイン中なら直接ダッシュボードへ) ---- */
+async function tryRestoreSession() {
+  if (!currentSession || !currentSession.email) return;
+  // 24h 経過したらセッション切れ
+  if (Date.now() - (currentSession.issued || 0) > 24 * 60 * 60 * 1000) {
+    localStorage.removeItem('eda-mypage-session');
+    currentSession = null;
+    return;
+  }
+  spinner.classList.add('show');
+  try {
+    // GAS_API_URL のテンプレに直接アクセス (verify_otp の代替軽量ルックアップ)
+    const lookup = await fetch(GAS_API_URL + '?action=customer_lookup&email=' + encodeURIComponent(currentSession.email));
+    const data = await lookup.json();
+    if (data.success && data.customer) {
+      renderDashboard(data.customer, data.orders || []);
+    } else {
+      // 顧客マスタが見つからない場合はログイン画面に戻る
+      spinner.classList.remove('show');
+      localStorage.removeItem('eda-mypage-session');
+      currentSession = null;
+    }
+  } catch (_) {
+    spinner.classList.remove('show');
+  }
+}
+// GAS_API_URL が設定されていれば自動復元を試行
+if (GAS_API_URL && currentSession) {
+  tryRestoreSession();
 }
 
 /* ---- Render Dashboard ---- */
@@ -1500,21 +1607,56 @@ function generateDemoCoupons(orderCount) {
   return all;
 }
 
-/* ---- Subscription Actions ---- */
-function subSkip() {
-  if (!confirm('次回の定期便配送をスキップしますか？\n（次々回から再開されます）')) return;
-  toast('次回配送をスキップしました（公式LINEでご連絡もお送りしました）');
+/* ---- Subscription Actions (GAS 連携版) ---- */
+async function subSkip() {
+  if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
+  if (!confirm('次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\n※スタッフがLINE/メールで詳細をご連絡いたします')) return;
+  try {
+    const result = await window.EDA_API.post('skip_subscription', {
+      email: currentSession.email,
+      reason: 'mypage_user_action'
+    });
+    if (result.ok) {
+      toast('スキップ申請を受け付けました。担当者からご連絡します');
+    } else {
+      toast('申請に失敗しました: ' + (result.error || ''));
+    }
+  } catch (err) {
+    toast('通信エラーが発生しました');
+  }
 }
 function subChange() {
-  alert('プラン変更はLINEでご連絡ください\nhttps://line.me/R/ti/p/@706sgiuq');
+  if (!confirm('プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）')) return;
+  window.open('https://line.me/R/ti/p/@706sgiuq', '_blank');
 }
-function subPause() {
-  if (!confirm('定期便を一時停止しますか？\nいつでも再開できます')) return;
-  toast('定期便を一時停止しました');
+async function subPause() {
+  if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
+  if (!confirm('定期便を一時停止しますか？\nいつでも再開できます\n\n※スタッフから停止期間の確認連絡をいたします')) return;
+  try {
+    const result = await window.EDA_API.post('skip_subscription', {
+      email: currentSession.email,
+      reason: 'mypage_user_pause_request'
+    });
+    if (result.ok) toast('一時停止リクエストを受け付けました');
+    else toast('申請に失敗しました');
+  } catch (err) {
+    toast('通信エラーが発生しました');
+  }
 }
-function subCancel() {
-  if (!confirm('本当に定期便を解約しますか？\n継続利用で得られる年間特典が失効します')) return;
-  toast('解約申請を受け付けました。担当者からご連絡します');
+async function subCancel() {
+  if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
+  if (!confirm('本当に定期便を解約しますか？\n\n・継続利用で得られる年間特典が失効します\n・3ヶ月未満の場合は事務手数料3,300円が発生します\n・スタッフから最終確認のご連絡をいたします')) return;
+  const reason = prompt('差し支えなければ解約理由をお聞かせください（任意）');
+  try {
+    const result = await window.EDA_API.post('cancel_subscription', {
+      email: currentSession.email,
+      reason: reason || '理由未記入'
+    });
+    if (result.ok) toast('解約申請を受け付けました。担当者からご連絡します');
+    else toast('申請に失敗しました: ' + (result.error || ''));
+  } catch (err) {
+    toast('通信エラーが発生しました');
+  }
 }
 function toast(msg) {
   const t = document.createElement('div');
@@ -1546,13 +1688,20 @@ function renderSubscription(sub) {
 
 /* ---- Logout ---- */
 document.getElementById('logoutBtn').addEventListener('click', () => {
+  // セッションクリア
+  localStorage.removeItem('eda-mypage-session');
+  currentSession = null;
+
   dashboard.classList.remove('show');
   loginSection.style.display = '';
   loginError.classList.remove('show');
   emailInput.value = '';
-  phoneInput.value = '';
+  if (otpInput) otpInput.value = '';
   loginBtn.disabled = false;
-  loginBtn.textContent = '確認する';
+  loginBtn.textContent = '認証コードを送信';
+  if (otpBtn) { otpBtn.disabled = false; otpBtn.textContent = 'ログイン'; }
+  loginForm.style.display = '';
+  if (otpForm) otpForm.style.display = 'none';
   document.getElementById('subSection').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
