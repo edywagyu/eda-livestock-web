@@ -3377,9 +3377,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   [style*="grid-template-columns: repeat(3"] {
     grid-template-columns: 1fr !important;
   }
+  /* Journal 記事: モバイルでは縦並び統一 (Tom指示) */
   .article-body [style*="grid-template-columns: 140px"] {
-    grid-template-columns: 100px 1fr !important;
-    gap: 16px !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 20px 0 !important;
+  }
+  /* 日付 + カテゴリは横並びの eyebrow に */
+  .article-body [style*="grid-template-columns: 140px"] > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+  }
+  .article-body [style*="grid-template-columns: 140px"] > div:first-child > div:first-child {
+    font-size: 14px !important;
+    margin-top: 0 !important;
+  }
+  .article-body [style*="grid-template-columns: 140px"] > div:first-child > div:nth-child(2) {
+    margin-top: 0 !important;
+    font-size: 10px !important;
+    padding: 2px 8px !important;
+    background: rgba(212,169,59,0.10) !important;
+    border-radius: 4px !important;
+    color: var(--color-gold) !important;
+  }
+  .article-body [style*="grid-template-columns: 140px"] h3 {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    word-break: keep-all !important;
+    overflow-wrap: anywhere !important;
+    margin: 8px 0 8px !important;
+  }
+  .article-body [style*="grid-template-columns: 140px"] p {
+    font-size: 12.5px !important;
+    line-height: 1.7 !important;
   }
   [style*="grid-template-columns: 180px"] {
     grid-template-columns: 1fr !important;
