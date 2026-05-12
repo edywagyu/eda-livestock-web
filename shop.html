@@ -1825,6 +1825,29 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .shop-hero-tagline .hero-word { display: inline; }
 
+/* eyebrow + tagline 行 */
+.hero-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.hero-tagline-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px solid rgba(212,169,59,0.45);
+  border-radius: 16px;
+  font-family: var(--font-jp);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-gold-soft);
+  background: rgba(212,169,59,0.05);
+  white-space: nowrap;
+}
+
 /* タイトル：段階フェードイン */
 .shop-hero-title {
   font-family: var(--font-jp-serif);
@@ -1834,6 +1857,37 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin: 0 0 28px;
   font-weight: 700;
   letter-spacing: -0.01em;
+}
+.hero-line--brand { display: block; }
+.hero-line--shop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}
+.hero-shop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+  color: var(--color-forest-deep);
+  box-shadow: 0 8px 24px rgba(212,169,59,0.45);
+  flex-shrink: 0;
+  animation: heroShopBounce 2.6s ease-in-out infinite;
+}
+@keyframes heroShopBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@media (max-width: 720px) {
+  .hero-eyebrow-row { gap: 8px; margin-bottom: 16px; }
+  .hero-tagline-chip { font-size: 10.5px; padding: 5px 11px; }
+  .hero-shop-icon { width: 44px; height: 44px; }
+  .hero-shop-icon svg { width: 22px; height: 22px; }
+  .hero-line--shop { gap: 10px; margin-top: 4px; }
 }
 .hero-line {
   display: block;
@@ -2540,18 +2594,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
+  min-width: 56px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 16px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  gap: 2px;
+  font-size: 16px;
+  letter-spacing: 0;
   border: 1.5px solid rgba(212,169,59,0.45);
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(6px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   z-index: 1;
+  white-space: nowrap;
 }
 .sub-plan-badge--mini {
   background: linear-gradient(135deg, rgba(110,180,130,0.25), rgba(40,90,50,0.4));
@@ -2564,9 +2622,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .sub-plan-badge--vip {
   background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
   border-color: #FFE594;
-  font-size: 20px;
-  width: 40px;
-  height: 40px;
+  font-size: 17px;
+  min-width: 60px;
+  height: 34px;
   box-shadow:
     0 6px 18px rgba(212,169,59,0.5),
     inset 0 1px 2px rgba(255,255,255,0.4);
@@ -5942,6 +6000,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   line-height: 1.3;
   letter-spacing: -0.005em;
 }
+.wagyu-guide-emph {
+  position: relative;
+  display: inline-block;
+  color: var(--color-gold-soft);
+  background-image: linear-gradient(180deg, transparent 65%, rgba(212,169,59,0.20) 65%);
+  background-size: 100% 100%;
+  padding: 0 0.08em;
+}
 .wagyu-guide-lead {
   color: var(--color-ink-muted);
   max-width: 580px;
@@ -8429,16 +8495,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="shop-hero-overlay"></div>
   </div>
   <div class="container shop-hero-content">
-    <span class="hero-eyebrow-anim">
-      <span class="hero-dot"></span>
-      <span>JAPAN'S FIRST · 日本初</span>
-    </span>
-    <p class="shop-hero-tagline">
-      <span class="hero-word">無投薬</span><span class="hero-word">／</span><span class="hero-word">オーガニック</span><span class="hero-word">専門</span>
-    </p>
+    <div class="hero-eyebrow-row">
+      <span class="hero-eyebrow-anim">
+        <span class="hero-dot"></span>
+        <span>JAPAN'S FIRST · 日本初</span>
+      </span>
+      <span class="hero-tagline-chip">無投薬 ／ オーガニック 専門</span>
+    </div>
     <h1 class="shop-hero-title hero-anim-title">
-      <span class="hero-line"><span class="hero-word text-gold">江田畜産</span></span>
-      <span class="hero-line"><span class="hero-word text-gold">オンラインショップ</span></span>
+      <span class="hero-line hero-line--brand">
+        <span class="hero-word text-gold">江田畜産</span>
+      </span>
+      <span class="hero-line hero-line--shop">
+        <span class="hero-shop-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1.6" fill="currentColor"/><circle cx="18" cy="20" r="1.6" fill="currentColor"/></svg>
+        </span>
+        <span class="hero-word text-gold">オンラインショップ</span>
+      </span>
     </h1>
     <p class="shop-hero-sub hero-anim-sub">
       <strong>江田畜産</strong>—— 抗生物質・ホルモン剤 不使用、<br class="hide-sp"/>
@@ -8504,15 +8577,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </section>
 
-<!-- ========= Why Eda — 家庭でこそ、選ばれる理由 ========= -->
+<!-- ========= Why Eda — ご家族向けに、選ばれる理由 ========= -->
 <section class="wagyu-guide section" id="about-wagyu">
   <div class="container">
     <div class="wagyu-guide-head reveal">
       <span class="eyebrow text-gold has-dash">Why Eda</span>
-      <h2 class="wagyu-guide-title">家庭でこそ、選ばれる理由。</h2>
+      <h2 class="wagyu-guide-title"><span class="wagyu-guide-emph">ご家族向け</span>に、選ばれる理由。</h2>
       <p class="wagyu-guide-lead">
-        高級レストランで選ばれている品質を、毎日の食卓に。<br class="hide-sp"/>
-        買い物の手間も、食材選びの不安も、いっぺんに解決します。
+        共働きの忙しさも、無投薬肉が見つからない悩みも、<br class="hide-sp"/>
+        ぜんぶ江田畜産が引き受けます。
       </p>
     </div>
 
@@ -8529,7 +8602,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </div>
         <h3 class="wagyu-guide-card-title">15分で完成、忙しい平日の味方。</h3>
         <p class="wagyu-guide-card-text">
-          すべて<strong>小分け真空パック・冷凍</strong>。必要な分だけ取り出して、冷蔵庫で半日解凍するだけ。凍ったまま調理できるハンバーグや切り落としもあり、平日の夕食が15分で完成します。
+          <strong>選ぶ手間が省けた</strong> ── スーパーで <strong>無投薬・ホルモン剤フリーのお肉</strong>を1つひとつ確認する手間は、想像以上の時間ロス。江田畜産なら全部クリア済み。冷蔵庫で半日解凍するだけで、平日の夕食が15分で整います。
         </p>
       </article>
 
@@ -8546,7 +8619,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </div>
         <h3 class="wagyu-guide-card-title">「今日は何にしよう」がなくなる。</h3>
         <p class="wagyu-guide-card-text">
-          スーパーで悩む時間がゼロに。<strong>診断クイズで最適な定期便</strong>をご提案し、毎月決まった日にお届け。<strong>選ぶストレスからの解放</strong>こそ、共働き家庭への最大のギフトです。
+          <strong>カット不要・調理しやすい部位だけ</strong>を厳選して、必要なグラム数で小分け真空パック。スーパーで悩む時間も、お肉を切り分ける手間もゼロ。袋から出してそのまま調理に取りかかれます。
         </p>
       </article>
 
@@ -8555,15 +8628,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span class="wagyu-guide-num-label">03</span>
           <span class="wagyu-guide-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 11 L12 4 L21 11"/>
-              <path d="M5 10 V20 H19 V10"/>
-              <path d="M9 20 V14 H15 V20"/>
+              <path d="M2 9V15H14V9H2Z"/>
+              <path d="M14 11H18L21 14V15H14"/>
+              <circle cx="6" cy="17" r="1.4" fill="currentColor"/>
+              <circle cx="17" cy="17" r="1.4" fill="currentColor"/>
             </svg>
           </span>
         </div>
-        <h3 class="wagyu-guide-card-title">一流ホテルの品質を、ご家庭で。</h3>
+        <h3 class="wagyu-guide-card-title">最短3日でクール便お届け。</h3>
         <p class="wagyu-guide-card-text">
-          江田和牛は、リッツ・カールトン、フォーシーズンズなど<strong>国内外の一流ホテルで採用</strong>される品質。外食1回分の予算で、家族4人が数回楽しめる贅沢を、レストランに行かずに完結します。
+          ご注文後 <strong>最短3日</strong> で、宮崎の自社加工場から直接ご自宅へ。10:00 までで2日後、17:00 / 22:00 までで3日後と、ご注文時間で配送日が自動判定。<strong>¥11,000以上で送料無料</strong>。
         </p>
       </article>
 
@@ -8572,14 +8646,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <span class="wagyu-guide-num-label">04</span>
           <span class="wagyu-guide-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/>
-              <path d="M12 7 V12 L15 14"/>
+              <path d="M12 2v4"/>
+              <path d="M6 8 L18 8 L17 20 L7 20 L6 8 Z"/>
+              <path d="M9 12 L9 18 M15 12 L15 18"/>
             </svg>
           </span>
         </div>
-        <h3 class="wagyu-guide-card-title">賞味期限6ヶ月で、食品ロスゼロ。</h3>
+        <h3 class="wagyu-guide-card-title">冷凍で半年、ストックの安心。</h3>
         <p class="wagyu-guide-card-text">
-          真空パック冷凍だから、<strong>賞味期限は6ヶ月以上</strong>。冷凍庫にゆっくり貯めておけば、いつでも好きな分を解凍して使えます。<strong>食品ロスゼロ</strong>で、家計にも地球にも優しい買い方です。
+          真空パック冷凍で<strong>賞味期限 約6ヶ月</strong>。冷凍庫の常備品として、必要な分だけ取り出せるから「今夜何作ろう」が解決。<strong>食品ロスゼロ</strong>、まとめ買いで送料も無料に。
         </p>
       </article>
 
@@ -9176,7 +9251,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
       <div class="faq-item">
         <h4 class="faq-q">ギフト対応はできますか？</h4>
-        <p class="faq-a">はい。化粧箱入り・<strong>のし対応可能</strong>です。表書き（お歳暮、お中元、御祝、内祝など）は注文時の備考欄にご記入ください。メッセージカードの同封も対応しています。ギフトカテゴリの商品以外でも、ギフト包装を承ります。</p>
+        <p class="faq-a">はい。化粧箱入り・<strong>のし対応可能</strong>です。表書き（お歳暮、お中元、御祝、内祝など）は注文時の備考欄にご記入ください。ギフトカテゴリの商品以外でも、ギフト包装を承ります。</p>
       </div>
 
       <div class="faq-item">
@@ -9264,7 +9339,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-sub-plans-wrap">
         <div class="sub-plans-grid">
           <a href="subscription.html?plan=starter" class="sub-plan-mini">
-            <div class="sub-plan-badge sub-plan-badge--mini">🌱</div>
+            <div class="sub-plan-badge sub-plan-badge--mini">🐃🐓</div>
             <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
             <div class="sub-plan-name">ミニプラン</div>
             <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
@@ -9287,7 +9362,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
-            <div class="sub-plan-badge sub-plan-badge--pro">🏆</div>
+            <div class="sub-plan-badge sub-plan-badge--pro">🐃🐓</div>
             <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
             <div class="sub-plan-name">プロプラン</div>
             <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
@@ -9310,7 +9385,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=volume" class="sub-plan-mini sub-plan-mini--vip">
             <span class="sub-plan-tag sub-plan-tag--vip">VIP 限定特典</span>
-            <div class="sub-plan-badge sub-plan-badge--vip">👑</div>
+            <div class="sub-plan-badge sub-plan-badge--vip">👑🐃</div>
             <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
             <div class="sub-plan-name">VIPプラン</div>
             <div class="sub-plan-target">5人以上 / 約4.4kg / 22品</div>
@@ -9988,58 +10063,71 @@ function toggleUnboxingSound() {
         </div>
       </div>
 
-      <!-- 複数人へ送る導線 -->
+      <!-- 複数人へ送る導線（センター配置・横長バナー） -->
       <div class="gift-multi-cta">
         <div class="gift-multi-cta-inner">
-          <span class="gift-multi-cta-icon">🎁🎁🎁</span>
+          <span class="gift-multi-cta-icon">🎁</span>
           <div class="gift-multi-cta-text">
-            <strong>複数の方へまとめて贈りたい</strong>
-            <small>1注文で <b>最大5箇所</b> までお届け先を分けられます。それぞれにのし・メッセージカードも対応。</small>
+            <strong>複数の方へ、まとめて贈りたい</strong>
+            <small>1注文で <b>最大5箇所</b> までお届け先を分けて発送。各送り先で個別の<b>のし対応</b>。</small>
           </div>
           <a href="checkout.html?mode=multi" class="gift-multi-cta-btn">複数人へ送る →</a>
         </div>
       </div>
       <style>
         .gift-multi-cta {
-          margin: 36px 0 0;
-          padding: 22px 26px;
-          background: linear-gradient(135deg, rgba(212,169,59,0.10), rgba(212,169,59,0.04));
-          border: 1.5px solid rgba(212,169,59,0.4);
-          border-radius: 14px;
+          margin: 56px auto 8px;
+          max-width: 880px;
+          padding: 22px 32px;
+          background:
+            radial-gradient(circle at 0% 50%, rgba(255,229,148,0.12), transparent 60%),
+            linear-gradient(135deg, rgba(212,169,59,0.14), rgba(212,169,59,0.04));
+          border: 1.5px solid rgba(212,169,59,0.45);
+          border-radius: 16px;
+          box-shadow: 0 8px 24px rgba(212,169,59,0.12);
         }
         .gift-multi-cta-inner {
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 22px;
         }
-        .gift-multi-cta-icon { font-size: 30px; flex-shrink: 0; }
+        .gift-multi-cta-icon {
+          font-size: 32px;
+          flex-shrink: 0;
+          width: 56px; height: 56px;
+          display: inline-flex; align-items: center; justify-content: center;
+          background: rgba(212,169,59,0.18);
+          border-radius: 50%;
+          border: 1.5px solid rgba(212,169,59,0.4);
+        }
         .gift-multi-cta-text { flex: 1; display: flex; flex-direction: column; gap: 4px; line-height: 1.5; color: white; }
-        .gift-multi-cta-text strong { font-family: var(--font-jp); font-size: 15px; font-weight: 700; color: white; }
-        .gift-multi-cta-text small { font-size: 12.5px; color: rgba(255,255,255,0.7); }
+        .gift-multi-cta-text strong { font-family: var(--font-jp); font-size: 16px; font-weight: 700; color: white; letter-spacing: 0.02em; }
+        .gift-multi-cta-text small { font-size: 12.5px; color: rgba(255,255,255,0.78); }
         .gift-multi-cta-text b { color: var(--color-gold); font-weight: 700; }
         .gift-multi-cta-btn {
           flex-shrink: 0;
-          padding: 12px 22px;
+          padding: 14px 26px;
           background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
           color: var(--color-forest-deep);
-          border-radius: 24px;
+          border-radius: 28px;
           font-family: var(--font-jp);
-          font-size: 13px;
+          font-size: 13.5px;
           font-weight: 700;
           text-decoration: none;
           white-space: nowrap;
           border: 1.5px solid rgba(255,229,148,0.6);
-          box-shadow: 0 6px 18px rgba(212,169,59,0.32);
+          box-shadow: 0 8px 22px rgba(212,169,59,0.4);
           transition: transform .2s;
         }
         .gift-multi-cta-btn:hover { transform: translateY(-2px); }
         @media (max-width: 720px) {
-          .gift-multi-cta { padding: 16px 18px; }
-          .gift-multi-cta-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
-          .gift-multi-cta-icon { font-size: 26px; }
+          .gift-multi-cta { padding: 16px 18px; margin: 32px 0 8px; }
+          .gift-multi-cta-inner { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+          .gift-multi-cta-icon { font-size: 26px; width: 48px; height: 48px; }
+          .gift-multi-cta-text { align-items: center; }
           .gift-multi-cta-text strong { font-size: 14px; }
           .gift-multi-cta-text small { font-size: 11.5px; }
-          .gift-multi-cta-btn { width: 100%; text-align: center; }
+          .gift-multi-cta-btn { width: 100%; text-align: center; padding: 13px; }
         }
       </style>
     </div>
@@ -10060,13 +10148,14 @@ function toggleUnboxingSound() {
           </span>
         </a>
         <p class="footer-tagline">
-          日本の「美味しく」「健康」な食文化を未来へ。<br/>
-          Sustainable Japanese Wagyu — Livestock for the Next Century.
+          <strong>100年続く畜産を、創造する。</strong><br/>
+          Sustainable Japanese Wagyu —<br/>
+          Livestock for the Next Century.
         </p>
         <div class="footer-meta">
           <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
-          <p>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</p>
-          <p>事業内容：黒毛和牛繁殖・肥育・小売・輸出・スマート畜産</p>
+          <p>事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
+          <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
         </div>
       </div>
       <div class="footer-col">
