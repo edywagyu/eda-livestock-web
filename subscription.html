@@ -1849,27 +1849,27 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
           <div class="checkout-row cols2">
             <div class="checkout-field">
               <label>お名前<span class="required">*</span></label>
-              <input type="text" name="name" placeholder="江田 友輝" required>
+              <input type="text" name="name" placeholder="江田 友輝" autocomplete="name" required>
             </div>
             <div class="checkout-field">
               <label>電話番号<span class="required">*</span></label>
-              <input type="tel" name="tel" placeholder="090-1234-5678" required>
+              <input type="tel" name="tel" placeholder="090-1234-5678" inputmode="tel" autocomplete="tel" required>
             </div>
           </div>
           <div class="checkout-row">
             <div class="checkout-field">
               <label>メールアドレス<span class="required">*</span></label>
-              <input type="email" name="email" placeholder="example@example.com" required>
+              <input type="email" name="email" placeholder="example@example.com" inputmode="email" autocomplete="email" required>
             </div>
           </div>
           <div class="checkout-row cols2">
             <div class="checkout-field">
               <label>郵便番号<span class="required">*</span></label>
-              <input type="text" name="zip" placeholder="123-4567" required>
+              <input type="text" name="zip" placeholder="123-4567" inputmode="numeric" autocomplete="postal-code" maxlength="8" required>
             </div>
             <div class="checkout-field">
               <label>都道府県<span class="required">*</span></label>
-              <select name="pref" required>
+              <select name="pref" autocomplete="address-level1" required>
                 <option value="">選択してください</option>
                 <option>北海道</option><option>青森県</option><option>岩手県</option>
                 <option>宮城県</option><option>秋田県</option><option>山形県</option>
@@ -1893,7 +1893,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
           <div class="checkout-row">
             <div class="checkout-field">
               <label>市区町村・番地・建物名<span class="required">*</span></label>
-              <input type="text" name="address" placeholder="渋谷区神宮前 1-1-1 マンション101号" required>
+              <input type="text" name="address" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="street-address" required>
             </div>
           </div>
         </div>
@@ -2663,5 +2663,6 @@ selectPlan(currentPlan);
 })();
 </script>
 
+<script src="public/js/mobile-menu.js" defer></script>
 </body>
 </html>
