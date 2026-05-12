@@ -124,6 +124,7 @@ function doGet(e) {
       case 'customer_lookup':   return customerLookup(e.parameter);
       case 'check_config':      return jsonResponse(checkConfig());
       case 'setup':             return runSetup(e.parameter);
+      case 'update_properties': return jsonResponse(setupAllProperties());
       default:                  return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
   } catch (err) {
@@ -975,10 +976,12 @@ function initSheets() {
 */
 function setupAllProperties() {
   const props = {
-    STRIPE_PRICE_MINI: 'price_1TW74zGSkhU1UEciUiGw5tlq',
-    STRIPE_PRICE_PRO:  'price_1TW74zGSkhU1UEci5RQzoKIP',
-    STRIPE_PRICE_VIP:  'price_1TW750GSkhU1UEciLLw2gqss',
+    // 新価格 (¥6,980 / ¥12,800 / ¥27,400) — 2026-05-12 サイト表示と整合
+    STRIPE_PRICE_MINI: 'price_1TWAN0GSkhU1UEciNGZHORc3',
+    STRIPE_PRICE_PRO:  'price_1TWAN0GSkhU1UEciKod4PGpk',
+    STRIPE_PRICE_VIP:  'price_1TWAN1GSkhU1UEciXQJyqNet',
     STRIPE_DEMO_COUPON: 'DEMO100',
+    STRIPE_COUPON_50OFF: 'FIRST50',
     STAFF_NOTIFICATION_EMAIL: 'backoffice@eda-livestock.com',
     SUCCESS_URL: 'https://edywagyu.github.io/eda-livestock-web/order-complete.html',
     CANCEL_URL: 'https://edywagyu.github.io/eda-livestock-web/checkout.html'

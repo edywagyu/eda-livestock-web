@@ -6263,6 +6263,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ SHOP ================ */
 .shop-snippet { background: var(--color-cream); }
+.product-card[data-search-hidden] { display: none !important; }
+#productSearch:focus { border-color: var(--color-gold) !important; box-shadow: 0 0 0 4px rgba(212,169,59,0.15); }
 .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .product-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
 .product-card { position: relative; transition: transform 0.6s var(--ease-out-expo); display: block; }
@@ -8551,6 +8553,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <div class="shop-main-wrap">
 
+<!-- ========= 初回ご利用の方への誘導バナー ========= -->
+<section class="first-time-banner reveal" style="background: linear-gradient(135deg, #FAF7F0 0%, rgba(212,169,59,0.10) 100%); border-bottom: 1px solid rgba(212,169,59,0.25); padding: 24px 0;">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:240px;">
+      <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">🎁 初めてのお客様へ</p>
+      <p style="margin:6px 0 0;font-size:14px;color:#1A1A1A;line-height:1.6;">
+        まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「江田和牛ハンバーグ 100g×3 (¥2,050)」</strong> をお試しください。 ¥11,000以上で送料無料。
+      </p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="#products" onclick="document.getElementById('productSearch').value='赤身スライス';filterProductSearch('赤身スライス');setTimeout(()=>document.getElementById('products').scrollIntoView({behavior:'smooth'}),100);return false;" style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:#0F3D2E;color:#fff;border-radius:24px;font-size:13px;font-weight:700;text-decoration:none;">
+        🥩 お試しを見る
+      </a>
+      <a href="subscription.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:#fff;color:#0F3D2E;border:1.5px solid #0F3D2E;border-radius:24px;font-size:13px;font-weight:700;text-decoration:none;">
+        定期便も検討
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- ========= 配送カウントダウンバー ========= -->
 <section class="ship-countdown-bar reveal">
   <div class="container">
@@ -8804,6 +8826,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         冷凍庫に常備したいお肉。
       </h2>
       <p style="color: var(--color-ink-muted); font-size: 14px; margin: 8px 0 0;">小分けパック・抗生物質ホルモン剤不使用・賞味期限6ヶ月</p>
+    </div>
+
+    <!-- 商品検索バー -->
+    <div class="shop-search reveal" style="max-width: 480px; margin: 24px auto 16px; position: relative;">
+      <input type="search" id="productSearch" placeholder="🔍 部位・商品名で検索 (例: サーロイン)"
+        aria-label="商品検索"
+        style="width:100%;padding:14px 44px 14px 18px;border:1.5px solid rgba(15,61,46,0.18);border-radius:32px;font-size:14px;background:#fff;font-family:inherit;outline:none;transition:border-color 0.2s;"
+        oninput="filterProductSearch(this.value)">
+      <button type="button" id="productSearchClear" onclick="document.getElementById('productSearch').value='';filterProductSearch('');"
+        style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;color:var(--color-ink-muted);padding:4px 8px;display:none;">×</button>
     </div>
 
     <!-- カテゴリフィルタ（牛肉・鶏肉。ギフトは「贈答用」セクションで） -->
@@ -9100,6 +9132,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="product-buy"></div>
       </div>
 
+      <!-- オーガニック説明バナー -->
+      <div style="grid-column:1/-1;padding:18px 24px;background:linear-gradient(135deg,rgba(15,61,46,0.04),rgba(212,169,59,0.06));border:1px solid rgba(212,169,59,0.30);border-radius:12px;margin:32px 0 24px;">
+        <p style="margin:0 0 6px;font-size:12px;color:var(--color-gold-soft);font-weight:700;letter-spacing:0.08em;">🌿 ORGANIC PREMIUM LINE</p>
+        <p style="margin:0;font-size:13px;line-height:1.7;color:var(--color-ink);"><strong>通常の平飼い鶏(¥1,280)とは何が違う?</strong> オーガニックチキンは <strong>有機JAS認証相当の100%無農薬飼料</strong>で育てられ、生育期間も標準より長い（約2倍）。希少な少数生産のため <strong>1袋¥3,840 (約3倍)</strong>。脂のコク・赤身の甘み・身の締まりが圧倒的。お子様・健康志向の方への最高峰の一品です。</p>
+      </div>
+
       <!-- オーガニックライン（プレミアム / 価格3倍） -->
       <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ","p":3840},{"id":"organic-chicken-breast-2","t":"2つセット【5%オフ】","p":7296}]'>
         <div class="product-card-img" data-label="CHICKEN BREAST"><span class="badge badge-organic">ORGANIC</span></div>
@@ -9241,7 +9279,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
       <div class="faq-item">
         <h4 class="faq-q">ギフト対応はできますか？</h4>
-        <p class="faq-a">はい。化粧箱入り・<strong>のし対応可能</strong>です。表書き（お歳暮、お中元、御祝、内祝など）は注文時の備考欄にご記入ください。ギフトカテゴリの商品以外でも、ギフト包装を承ります。</p>
+        <p class="faq-a">はい。化粧箱入り・<strong>のし対応可能</strong>です。表書き（お歳暮、お中元、御祝、内祝など）は注文時の備考欄にご記入ください。ギフトカテゴリの商品以外でも、ギフト包装を承ります。<br><strong>※ メッセージカードは現在お取り扱いしておりません</strong> (お祝い・お礼状は別途<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINE公式アカウント</a>より承ります)</p>
       </div>
 
       <div class="faq-item">
@@ -10008,6 +10046,15 @@ function toggleUnboxingSound() {
       </div>
     </div>
 
+    <!-- ギフト仕様の説明 -->
+    <div style="max-width:880px;margin:0 auto 32px;padding:18px 24px;background:rgba(212,169,59,0.06);border:1px solid rgba(212,169,59,0.25);border-radius:12px;font-size:13px;line-height:1.7;color:var(--color-forest);">
+      <strong>📋 ギフト仕様について</strong><br>
+      ✅ 化粧箱入り・<strong>のし対応</strong> (表書き: 御歳暮 / 御中元 / 御祝 / 内祝 等)<br>
+      ✅ 送料込み・税込価格<br>
+      ✅ <strong>個別配送</strong>: 1注文で最大5箇所までお届け先を分割可能<br>
+      ⚠️ <strong>メッセージカードは現在お取り扱いしておりません</strong> (お祝い・お礼状は別途<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="color:#06C755;text-decoration:underline">LINE</a>より承ります)
+    </div>
+
     <!-- ギフト商品 3点（松・竹・梅） -->
     <div class="gift-products-grid" id="gift-products">
       <div class="gift-product-card">
@@ -10352,6 +10399,7 @@ body.has-sticky-cart .floating-phone-btn {
   <div class="sticky-cart-info">
     <span class="sticky-cart-count" id="stickyCartCount">0 items</span>
     <span class="sticky-cart-total" id="stickyCartTotal">¥0</span>
+    <span id="stickyShipNote" style="font-size:10px;color:#fff;opacity:0.85;display:block;margin-top:2px;"></span>
   </div>
   <button class="sticky-cart-btn" id="stickyCartBtn">カートを見る</button>
 </div>
@@ -10671,11 +10719,21 @@ body.has-sticky-cart .floating-phone-btn {
       const stickyBar = document.getElementById('stickyCartBar');
       const stickyCount = document.getElementById('stickyCartCount');
       const stickyTotal = document.getElementById('stickyCartTotal');
+      const stickyShipNote = document.getElementById('stickyShipNote');
       if (stickyBar) {
         const totalQty = items.reduce((s, i) => s + i.qty, 0);
         if (totalQty > 0) {
           stickyCount.textContent = totalQty + '点';
           stickyTotal.textContent = '¥' + subtotal.toLocaleString();
+          // 送料表示
+          if (stickyShipNote) {
+            if (subtotal >= FREE_SHIP) {
+              stickyShipNote.textContent = '✓ 送料無料';
+            } else {
+              const remaining = FREE_SHIP - subtotal;
+              stickyShipNote.textContent = 'あと¥' + remaining.toLocaleString() + 'で送料無料';
+            }
+          }
           stickyBar.classList.add('visible');
           document.body.classList.add('has-sticky-cart');
         } else {
@@ -10714,12 +10772,44 @@ body.has-sticky-cart .floating-phone-btn {
     }
 
     /* --- Add to cart from product card --- */
+    /* --- Stripe Price ID ルックアップ (商品名 + variant → stripePriceId) ---
+       「1つ」 variant のみ Stripe Product と紐付け。
+       「2つセット」「3つセット」「ギフト」 は ad-hoc price_data で GAS fallback。 */
+    const STRIPE_PRICE_BY_TITLE = {
+      'サーロインステーキ:1つ': 'price_1TW74kGSkhU1UEcizECKFnxX',
+      '赤身ステーキ:1つ': 'price_1TW74lGSkhU1UEciEKMUIbJy',
+      'サイコロステーキ:1つ': 'price_1TW74mGSkhU1UEcibOx5C7Py',
+      '赤身スライス:1つ': 'price_1TW74nGSkhU1UEcibaOeMrwf',
+      '和牛切り落とし:1つ': 'price_1TW74nGSkhU1UEcigrD4ATBJ',
+      '和牛ミンチ:1つ': 'price_1TW74sGSkhU1UEci63HCdIsL',
+      'バラ焼肉:1つ': 'price_1TW74oGSkhU1UEciOHnR8RAf',
+      '和牛ホルモン:1つ': 'price_1TW74pGSkhU1UEcizY8WlJPz',
+      '江田和牛ハンバーグ:1つ': 'price_1TW74qGSkhU1UEciphBYGBDO',
+      '和牛ローストビーフ:1つ (100g)': 'price_1TW74qGSkhU1UEciK9LE14vR',
+      '和牛生ハム:1つ': 'price_1TW74rGSkhU1UEcidTIwRPd5',
+      '平飼い鶏 ムネ:1つ': 'price_1TW74sGSkhU1UEcij8xFudVT',
+      '平飼い鶏 モモ:1つ': 'price_1TW74tGSkhU1UEcilbKbPhGv',
+      '平飼い鶏 ミンチ:1つ': 'price_1TW74uGSkhU1UEciOv09JHuD',
+      'オーガニックチキン ムネ:1つ': 'price_1TW74uGSkhU1UEciG30csXKD',
+      'オーガニックチキン モモ:1つ': 'price_1TW74vGSkhU1UEci6e5u6hec',
+      'オーガニックチキン ミンチ:1つ': 'price_1TW74wGSkhU1UEciMfeKnO9W',
+      // ギフト商品 (orderGift から)
+      'ヒレステーキ ギフト【松】 450g': 'price_1TW74xGSkhU1UEcibF0y54Yd',
+      '赤身ステーキ ギフト【竹】 750g': 'price_1TW74xGSkhU1UEciDCqXHlsi',
+      '和牛ハンバーグ ギフト【梅】 5個': 'price_1TW74yGSkhU1UEci45Gc54Xx'
+    };
+    function lookupStripePriceId(title, variant) {
+      const key = title + ':' + (variant || '1つ');
+      return STRIPE_PRICE_BY_TITLE[key] || null;
+    }
+
     function addToCart(variantId, price, title, variant, img) {
       const existing = items.find(i => i.variantId === variantId);
       if (existing) {
         existing.qty++;
       } else {
-        items.push({ variantId, price, title, variant, img, qty: 1 });
+        const stripePriceId = lookupStripePriceId(title, variant);
+        items.push({ variantId, price, title, variant, img, qty: 1, stripePriceId });
       }
       save();
       renderCart();
@@ -10728,7 +10818,7 @@ body.has-sticky-cart .floating-phone-btn {
 
     /* --- Gift order: 単品/セットをギフトモードでcheckoutへ --- */
     window.orderGift = function(giftId, price, title) {
-      // 一旦既存カートに gift item を追加して checkout?mode=gift で開く
+      const stripePriceId = lookupStripePriceId(title, '') || null;
       const giftItem = {
         variantId: 'gift-' + giftId,
         price: price,
@@ -10736,11 +10826,49 @@ body.has-sticky-cart .floating-phone-btn {
         variant: 'ギフトセット',
         img: 'public/images/products/drive/gift-box.jpg',
         qty: 1,
-        gift: true
+        gift: true,
+        stripePriceId
       };
       items.push(giftItem);
       save();
       location.href = 'checkout.html?mode=gift';
+    };
+
+    /* --- 商品検索フィルタ --- */
+    window.filterProductSearch = function(query) {
+      const q = (query || '').trim().toLowerCase();
+      const clearBtn = document.getElementById('productSearchClear');
+      if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+      const cards = document.querySelectorAll('.product-card[data-variants]');
+      let visibleCount = 0;
+      cards.forEach(card => {
+        if (!q) { card.removeAttribute('data-search-hidden'); visibleCount++; return; }
+        const name = (card.querySelector('.product-name')?.textContent || '').toLowerCase();
+        const desc = (card.querySelector('.product-desc')?.textContent || '').toLowerCase();
+        const tag = (card.querySelector('.product-tag')?.textContent || '').toLowerCase();
+        const match = name.includes(q) || desc.includes(q) || tag.includes(q);
+        if (match) { card.removeAttribute('data-search-hidden'); visibleCount++; }
+        else { card.setAttribute('data-search-hidden', '1'); }
+      });
+      // 検索中はカテゴリ見出しを隠す (合致した商品だけ見せる)
+      document.querySelectorAll('.shop-cat-head').forEach(h => {
+        h.style.display = q ? 'none' : '';
+      });
+      // 「該当なし」表示
+      let noMatch = document.getElementById('shopNoMatch');
+      if (q && visibleCount === 0) {
+        if (!noMatch) {
+          noMatch = document.createElement('div');
+          noMatch.id = 'shopNoMatch';
+          noMatch.style.cssText = 'grid-column:1/-1;text-align:center;padding:48px 16px;color:var(--color-ink-muted);font-size:14px;';
+          noMatch.innerHTML = '🔍 「' + q + '」に該当する商品が見つかりません。<br><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="color:#06C755;font-weight:600;">LINE で問い合わせる →</a>';
+          const grid = document.querySelector('.product-grid');
+          if (grid) grid.appendChild(noMatch);
+        }
+        noMatch.style.display = '';
+      } else if (noMatch) {
+        noMatch.style.display = 'none';
+      }
     };
 
     /* --- Initialize product cards --- */
@@ -12264,5 +12392,6 @@ function copyPopCoupon() {
 
 <script src="public/js/mobile-menu.js" defer></script>
 <script src="public/js/line-float.js" defer></script>
+<script src="public/js/image-lightbox.js" defer></script>
 </body>
 </html>
