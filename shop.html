@@ -4276,16 +4276,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   margin: 1px 0 0;
 }
 @media (max-width: 720px) {
-  /* モバイルでは LINE 浮遊ボタン (右下 14+52+14=80px幅) と被らないよう
-     bottom 位置を上げ + 横幅を全画面に */
+  /* live-feed コンパクト化 (Tom指示で更に小さく) */
   .live-feed {
-    bottom: 84px;        /* LINE FAB (52px) + 余白 14px + 上に 18px */
+    bottom: 84px;
     left: 12px;
-    right: 12px;
-    max-width: none;
-    padding: 10px 12px;
+    right: auto;
+    max-width: 240px;       /* 全画面 → コンパクト */
+    padding: 6px 12px;
+    gap: 8px;
+    border-radius: 24px;    /* pill 形状 */
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   }
-  body.has-sticky-cart .live-feed { bottom: 148px; }  /* sticky-cart-bar 上に */
+  .live-feed-pulse { width: 7px; height: 7px; }
+  .live-feed-name { font-size: 10.5px; line-height: 1.3; font-weight: 700; }
+  .live-feed-meta { font-size: 9px; line-height: 1.3; }
+  body.has-sticky-cart .live-feed { bottom: 148px; }
 }
 
 /* ================ スタッツバンド (refined) ================ */
@@ -4447,7 +4452,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 @media (max-width: 720px) {
   .stats-band-grid { grid-template-columns: repeat(2, 1fr); padding: 32px 0; }
-  .stats-band-grid--3 { grid-template-columns: 1fr; gap: 24px; padding: 28px 0; }
+  .stats-band-grid--3 { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 24px 0; }
   .stat-band-item + .stat-band-item::before { display: none; }
   .stats-line-btn { font-size: 13px; padding: 12px 20px; }
   .stats-line-btn small { display: none; }
@@ -5148,15 +5153,62 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 @media (max-width: 720px) {
-  .gift-season-banner { padding: 22px 18px; margin-bottom: 24px; border-radius: 18px; }
-  .gift-season-banner-inner { flex-direction: column; align-items: stretch; gap: 16px; }
-  .gift-season-icon { font-size: 52px; align-self: center; }
-  .gift-season-eyebrow { font-size: 10.5px; letter-spacing: 0.24em; }
-  .gift-season-headline { font-size: 20px; text-align: center; }
-  .gift-season-text { align-items: center; text-align: center; }
-  .gift-season-meta { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 14px; width: 100%; }
-  .gift-season-meta-item { font-size: 12px; }
-  .gift-season-cta { width: 100%; justify-content: center; padding: 14px; font-size: 14px; }
+  /* gift-season banner: コンパクト + 改行禁則 (Tom指示) */
+  .gift-season-banner {
+    padding: 14px 14px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+  .gift-season-banner-inner {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  .gift-season-icon { font-size: 32px; flex-shrink: 0; align-self: center; }
+  .gift-season-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    margin-bottom: 2px;
+  }
+  .gift-season-headline {
+    font-size: 14px;
+    text-align: left;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .gift-season-text {
+    align-items: flex-start;
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+  }
+  .gift-season-meta {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    row-gap: 4px;
+    padding: 4px 0;
+    width: 100%;
+    background: transparent;
+    border: 0;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .gift-season-meta-item { font-size: 10.5px; gap: 4px; }
+  .gift-season-meta-item strong { font-size: 9.5px !important; }
+  .gift-season-deadline { padding: 2px 8px; }
+  .gift-season-deadline span { font-size: 11px; }
+  .gift-season-cta {
+    width: auto;
+    justify-content: center;
+    padding: 10px 18px;
+    font-size: 12.5px;
+    flex-shrink: 0;
+    align-self: stretch;
+    border-radius: 22px;
+  }
 }
 
 /* ギフト商品 3点グリッド（松・竹・梅） */
@@ -5291,8 +5343,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
   .gift-hi-features { grid-template-columns: 1fr; }
   /* モバイル: 縦スクロール 1列 で大きめに表示（読みやすさ優先） */
-  .gift-products-grid { grid-template-columns: 1fr; gap: 14px; }
-  .gift-product-card { border-radius: 12px; }
+  /* モバイル: 横スクロール (松・竹・梅) — Tom指示 */
+  .gift-products-grid {
+    display: flex;
+    flex-direction: row;
+    grid-template-columns: unset;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 16px 12px;
+    margin: 0 -16px;
+    scrollbar-width: none;
+  }
+  .gift-products-grid::-webkit-scrollbar { display: none; }
+  .gift-product-card {
+    border-radius: 14px;
+    flex: 0 0 78%;
+    max-width: 280px;
+    scroll-snap-align: start;
+  }
   .gift-product-img { flex: 0 0 180px; height: 180px; }
   .gift-product-body { padding: 16px 16px 18px; }
   .gift-product-body h3 { font-size: 14px; line-height: 1.4; }
@@ -7996,16 +8067,38 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .shop-trust-strip { padding: 10px 0; }
   .shop-trust-item { font-size: 10.5px; }
 
-  /* 配送カウントダウンバー */
-  .ship-countdown-bar { padding: 24px 0 12px; }
-  .ship-cd-inner { padding: 16px 14px; gap: 12px; align-items: flex-start; }
-  .ship-cd-icon { width: 44px; height: 44px; }
-  .ship-cd-icon svg { width: 20px; height: 20px; }
-  .ship-cd-headline { font-size: 13.5px; line-height: 1.5; word-break: keep-all; }
-  .ship-cd-headline strong { font-size: 1.2em; margin: 0 2px; }
-  .ship-cd-meta { font-size: 11.5px; gap: 8px; row-gap: 4px; }
-  .ship-cd-note { display: none; }   /* モバイルでは長すぎるので省略 */
-  .ship-cd-cta { width: 100%; min-height: 44px; margin-top: 6px; }
+  /* 配送カウントダウンバー — コンパクト & 車アイコン削除 (Tom指示) */
+  .ship-countdown-bar { padding: 14px 0 8px; }
+  .ship-cd-inner {
+    padding: 10px 14px;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-radius: 12px;
+    border-width: 1px;
+  }
+  .ship-cd-inner::after { display: none; }
+  .ship-cd-icon { display: none; }   /* 🚚 アイコン非表示 */
+  .ship-cd-content { width: 100%; flex: unset; }
+  .ship-cd-headline {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    word-break: keep-all;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .ship-cd-headline strong { font-size: 1.05em; margin: 0; }
+  .ship-cd-meta { font-size: 11px; gap: 8px; row-gap: 2px; }
+  .ship-cd-remain { padding: 2px 8px !important; font-size: 11px !important; }
+  .ship-cd-note { display: none; }
+  .ship-cd-cta {
+    width: 100%; min-height: 38px;
+    padding: 9px 16px; margin-top: 6px;
+    font-size: 12.5px; font-weight: 700;
+  }
 
   /* 冷凍庫バンド */
   .freezer-band { padding: 40px 0 32px; }
@@ -8162,10 +8255,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .sub-plan-target { font-size: 10.5px; }
   .sub-plan-items { font-size: 10.5px; line-height: 1.55; }
   .sub-plan-price { font-size: 22px; }
-  .shop-sub-features { margin-bottom: 20px; gap: 8px; }
-  .shop-sub-feature { padding: 12px 10px; }
-  .shop-sub-feature strong { font-size: 12px; margin-bottom: 4px; }
-  .shop-sub-feature p { font-size: 11px; line-height: 1.5; }
+  /* モバイルではBOX化せず、シンプルな2列リストに (Tom指示) */
+  .shop-sub-features {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 16px;
+    gap: 6px;
+  }
+  .shop-sub-feature {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 8px 4px;
+    text-align: left;
+  }
+  .shop-sub-feature:hover { background: transparent; transform: none; }
+  .shop-sub-feature strong {
+    font-size: 11.5px;
+    margin-bottom: 2px;
+    color: var(--color-gold);
+  }
+  .shop-sub-feature p { font-size: 10.5px; line-height: 1.45; opacity: 0.7; }
+  /* CTA 行: BOX 除去 + よりミニマル */
+  .shop-sub-cta-row { gap: 8px; margin-top: 12px; }
+  .shop-sub-cta-row .btn {
+    border-width: 1px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    min-height: 40px;
+  }
 
   /* 今週のメニュー */
   .weekly-menu { padding: 36px 0; }
@@ -8228,8 +8345,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .stats-band-head { margin-bottom: 24px; }
   .stats-band-title { font-size: 22px !important; }
   .stats-band-sub-lead { font-size: 12px; }
-  .stats-band-grid--3 { padding: 20px 0; gap: 20px; }
-  .stat-band-num { font-size: 38px !important; }
+  /* 江田畜産の利用者 — 3列横並び固定 (Tom指示) */
+  .stats-band-grid--3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+    padding: 16px 0;
+    gap: 8px;
+    overflow: visible;
+  }
+  .stat-band-item { padding: 0 4px; }
+  .stat-band-num { font-size: 28px !important; line-height: 1; }
+  .stat-band-num small { font-size: 12px !important; margin-left: 2px; }
+  .stat-band-label { font-size: 11px !important; line-height: 1.3; margin-top: 6px; }
+  .stat-band-sub { font-size: 9.5px !important; line-height: 1.4; margin-top: 4px; }
+  .stat-band-live { font-size: 9px !important; }
   .stat-band-label { font-size: 11.5px; }
   .stat-band-sub { font-size: 9.5px; }
   .stats-band-cta { margin-top: 28px; }
@@ -10020,7 +10148,7 @@ function toggleUnboxingSound() {
         <div class="gift-season-icon" id="giftSeasonIcon">🎁</div>
         <div class="gift-season-text">
           <div class="gift-season-eyebrow" id="giftSeasonEyebrow">NOW ACCEPTING</div>
-          <div class="gift-season-headline" id="giftSeasonHeadline">ただいま 大切な方への贈り物 受付中</div>
+          <div class="gift-season-headline" id="giftSeasonHeadline">大切な方へのGIFT 受付中</div>
           <div class="gift-season-meta">
             <span class="gift-season-meta-item">
               <strong>📅 受付期間</strong>
@@ -10067,16 +10195,9 @@ function toggleUnboxingSound() {
       </div>
     </div>
 
-    <!-- ギフト仕様の説明 -->
-    <div style="max-width:880px;margin:0 auto 32px;padding:18px 24px;background:rgba(212,169,59,0.06);border:1px solid rgba(212,169,59,0.25);border-radius:12px;font-size:13px;line-height:1.7;color:var(--color-forest);">
-      <strong>📋 ギフト仕様について</strong><br>
-      ✅ 化粧箱入り・<strong>のし対応</strong> (表書き: 御歳暮 / 御中元 / 御祝 / 内祝 等)<br>
-      ✅ 送料込み・税込価格<br>
-      ✅ <strong>個別配送</strong>: 1注文で最大5箇所までお届け先を分割可能<br>
-      ⚠️ <strong>メッセージカードは現在お取り扱いしておりません</strong> (お祝い・お礼状は別途<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="color:#06C755;text-decoration:underline">LINE</a>より承ります)
-    </div>
+    <!-- ギフト仕様の詳細は購入確定後のチェックアウト/確認ページに記載 -->
 
-    <!-- ギフト商品 3点（松・竹・梅） -->
+    <!-- ギフト商品 3点（松・竹・梅） — モバイル横スクロール対応 -->
     <div class="gift-products-grid" id="gift-products">
       <div class="gift-product-card">
         <div class="gift-product-img gift-product-img--fillet" style="background-image:url('public/images/products/drive/fillet.jpg')">
@@ -11559,19 +11680,19 @@ body.has-sticky-cart .floating-phone-btn {
     return [
       { key: 'mother',  label: '母の日',   emoji: '🌷',
         eyebrow: 'MOTHER\'S DAY · 母の日',
-        headline: 'ただいま 母の日 の贈答予約受付中',
+        headline: '母の日ギフト 予約受付中',
         start: startOf(motherShip), end: motherShip, ship: motherShip },
       { key: 'father',  label: '父の日',   emoji: '👔',
         eyebrow: 'FATHER\'S DAY · 父の日',
-        headline: 'ただいま 父の日 の贈答予約受付中',
+        headline: '父の日ギフト 予約受付中',
         start: startOf(fatherShip), end: fatherShip, ship: fatherShip },
       { key: 'ochugen', label: 'お中元',   emoji: '🌻',
         eyebrow: 'CHUGEN · お中元',
-        headline: 'ただいま お中元 の贈答予約受付中',
+        headline: 'お中元ギフト 予約受付中',
         start: startOf(ochugenShip), end: ochugenShip, ship: ochugenShip },
       { key: 'oseibo',  label: 'お歳暮',   emoji: '🎍',
         eyebrow: 'OSEIBO · お歳暮',
-        headline: 'ただいま お歳暮 の贈答予約受付中',
+        headline: 'お歳暮ギフト 予約受付中',
         start: startOf(oseiboShip), end: oseiboShip, ship: oseiboShip }
     ];
   }
@@ -11618,7 +11739,7 @@ body.has-sticky-cart .floating-phone-btn {
       banner.dataset.season = 'normal';
       iconEl.textContent     = '🎁';
       eyebrowEl.textContent  = 'NOW ACCEPTING · 通年';
-      headlineEl.textContent = 'ただいま 大切な方へのGIFT 受付中';
+      headlineEl.textContent = '大切な方へのGIFT 受付中';
       rangeEl.textContent    = '通年（定例の贈り物に）';
       shipEl.textContent     = 'ご注文後 3〜5 日以内に出荷';
       ddlBox.style.display   = 'none';

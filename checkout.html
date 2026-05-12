@@ -1024,6 +1024,17 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
           <div class="summary-rows" id="summaryRows"></div>
 
+          <!-- ギフト仕様について (ギフトモード時のみ表示) -->
+          <div class="gift-spec-info" id="giftSpecInfo" style="display:none;margin:14px 0;padding:14px 16px;background:rgba(212,169,59,0.06);border:1px solid rgba(212,169,59,0.25);border-radius:10px;font-size:12px;line-height:1.6;color:var(--color-forest)">
+            <strong style="display:block;margin-bottom:6px;">🎁 ギフト仕様について</strong>
+            ✅ 化粧箱入り・<strong>のし対応</strong><br>
+            <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(表書き: 御歳暮 / 御中元 / 御祝 / 内祝 等)</small>
+            ✅ 送料込み・税込価格<br>
+            ✅ <strong>個別配送</strong>: 1注文で最大5箇所まで分割可能<br>
+            ⚠️ <strong>メッセージカードは現在お取り扱いしておりません</strong><br>
+            <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(お祝い・お礼状は別途<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="color:#06C755;text-decoration:underline">LINE</a>より承ります)</small>
+          </div>
+
           <label class="checkout-consent">
             <input type="checkbox" id="checkoutConsent" required>
             <span>
@@ -1574,6 +1585,12 @@ function renderSummary() {
     multi: '複数配送先のご注文'
   };
   titleEl.textContent = titles[mode] || 'ご注文の確認';
+
+  // ギフト仕様の表示制御 (gift / multi モードのみ)
+  const giftSpec = document.getElementById('giftSpecInfo');
+  if (giftSpec) {
+    giftSpec.style.display = (mode === 'gift' || mode === 'multi') ? '' : 'none';
+  }
 
   // ボタン状態
   const btn = document.getElementById('btnPlaceOrder');
