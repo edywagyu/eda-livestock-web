@@ -2346,14 +2346,15 @@ window.addEventListener('scroll', () => {
   document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 50);
 }, { passive: true });
 
-/* ============ 「今月だけ追加」全商品 + 10%OFF ============ */
+/* ============ 「今月だけ追加」全商品 + 10%OFF (products-master.js と整合) ============ */
 const ADDONS = [
   { id: 'sirloin',     cat: 'steak',     name: 'サーロインステーキ', price: 3400, weight: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
-  { id: 'red-meat',    cat: 'steak',     name: '赤身ステーキ',       price: 3400, weight: '250g', img: 'public/images/products/drive/red-meat.jpg', desc: 'ヘルシー志向に' },
+  { id: 'red-meat',    cat: 'steak',     name: '赤身ステーキ',       price: 3400, weight: '200g', img: 'public/images/products/drive/red-meat.jpg', desc: 'ヘルシー志向に' },
   { id: 'cube',        cat: 'steak',     name: 'サイコロステーキ',   price: 1000, weight: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
   { id: 'wagyu-slice', cat: 'slice',     name: '赤身スライス',       price: 2600, weight: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ' },
   { id: 'kiriotoshi',  cat: 'slice',     name: '和牛切り落とし',     price: 1600, weight: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの主役' },
-  { id: 'yakiniku',    cat: 'yakiniku',  name: 'バラ焼肉',           price: 1900, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット' },
+  { id: 'wagyu-minced',cat: 'slice',     name: '和牛ミンチ',         price: 1350, weight: '200g', img: 'public/images/products/drive/minced.jpg', desc: 'ハンバーグ・ボロネーゼ' },
+  { id: 'yakiniku',    cat: 'yakiniku',  name: 'バラ焼肉',           price: 1500, weight: '200g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット' },
   { id: 'offal',       cat: 'yakiniku',  name: '和牛ホルモン',       price:  840, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: 'もつ鍋・焼肉に' },
   { id: 'hamburg',     cat: 'processed', name: '和牛ハンバーグ',     price:  760, weight: '100g',  img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
   { id: 'roast-beef',  cat: 'processed', name: '和牛ローストビーフ', price: 3000, weight: '100g',  img: 'public/images/products/drive/hamburg.jpg', desc: 'パーティーの前菜' },
