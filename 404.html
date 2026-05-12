@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ページが見つかりません | 404 | EDA-LIVESTOCK</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(212,169,59,0.10), transparent 60%),
+    linear-gradient(180deg, #0F3D2E 0%, #061410 100%);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+.error-code {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(96px, 18vw, 200px);
+  font-weight: 700;
+  background: linear-gradient(135deg, #FFE594, #D4A93B 50%, #B89030);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.error-title {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(20px, 3vw, 28px);
+  margin: 16px 0 14px;
+  font-weight: 700;
+}
+.error-sub {
+  font-size: 14.5px;
+  color: rgba(255,255,255,0.7);
+  max-width: 480px;
+  line-height: 1.85;
+  margin: 0 0 32px;
+}
+.error-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.error-btn {
+  padding: 14px 28px;
+  border-radius: 28px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.error-btn-primary {
+  background: linear-gradient(135deg, #FFE594, #D4A93B);
+  color: #0A2D21;
+  box-shadow: 0 10px 28px rgba(212,169,59,0.35);
+}
+.error-btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.error-btn:hover { transform: translateY(-2px); }
+.error-links {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
+.error-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  margin: 0 8px;
+}
+.error-links a:hover { color: #FFE594; }
+</style>
+</head>
+<body>
+<div class="error-code">404</div>
+<h1 class="error-title">ページが見つかりませんでした</h1>
+<p class="error-sub">
+  お探しのページは移動・削除された可能性があります。<br/>
+  下のリンクから、目的のページへお進みいただけます。
+</p>
+<div class="error-actions">
+  <a href="index.html" class="error-btn error-btn-primary">トップへ戻る →</a>
+  <a href="shop.html" class="error-btn error-btn-secondary">🛒 オンラインショップ</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="error-btn error-btn-secondary">💬 LINE で質問</a>
+</div>
+<nav class="error-links">
+  <a href="shop.html">Shop</a> ·
+  <a href="subscription.html">定期便</a> ·
+  <a href="organic.html">Organic</a> ·
+  <a href="about.html">About</a> ·
+  <a href="contact.html">Contact</a>
+</nav>
+</body>
+</html>
