@@ -1825,69 +1825,53 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .shop-hero-tagline .hero-word { display: inline; }
 
-/* eyebrow + tagline 行 */
-.hero-eyebrow-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-.hero-tagline-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 14px;
-  border: 1px solid rgba(212,169,59,0.45);
-  border-radius: 16px;
-  font-family: var(--font-jp);
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--color-gold-soft);
-  background: rgba(212,169,59,0.05);
-  white-space: nowrap;
-}
-
-/* タイトル：段階フェードイン */
+/* タイトル：2行 + 段階フェードイン */
 .shop-hero-title {
   font-family: var(--font-jp-serif);
   font-size: clamp(40px, 7vw, 84px);
-  line-height: 1.05;
+  line-height: 1.08;
   color: white;
-  margin: 0 0 28px;
+  margin: 14px 0 28px;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
-.hero-line--brand { display: block; }
+/* 1行目：リード（小さめ、サブで導入） */
+.hero-line--lead {
+  display: block;
+  font-size: 0.45em;      /* タイトル比 45% */
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.78);
+  margin-bottom: 14px;
+}
+/* 2行目：メイン (江田畜産オンラインショップ) — SHOP感を出すためにアンダースコア演出 */
 .hero-line--shop {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 6px;
+  display: block;
+  position: relative;
 }
-.hero-shop-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
-  color: var(--color-forest-deep);
-  box-shadow: 0 8px 24px rgba(212,169,59,0.45);
-  flex-shrink: 0;
-  animation: heroShopBounce 2.6s ease-in-out infinite;
+.hero-line--shop .hero-shop-mark {
+  position: relative;
+  display: inline-block;
 }
-@keyframes heroShopBounce {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-4px); }
+/* 「オンラインショップ」の下に金色のアンダーバー（手描き感のあるストローク） */
+.hero-line--shop .hero-shop-mark::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  bottom: -6px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-gold) 8%, #FFE594 50%, var(--color-gold) 92%, transparent 100%);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: heroShopUnderline 1.4s var(--ease-out-expo) 1.2s forwards;
+}
+@keyframes heroShopUnderline {
+  to { transform: scaleX(1); }
 }
 @media (max-width: 720px) {
-  .hero-eyebrow-row { gap: 8px; margin-bottom: 16px; }
-  .hero-tagline-chip { font-size: 10.5px; padding: 5px 11px; }
-  .hero-shop-icon { width: 44px; height: 44px; }
-  .hero-shop-icon svg { width: 22px; height: 22px; }
-  .hero-line--shop { gap: 10px; margin-top: 4px; }
+  .hero-line--lead { font-size: 0.46em; margin-bottom: 10px; }
+  .hero-line--shop .hero-shop-mark::after { bottom: -4px; height: 3px; }
 }
 .hero-line {
   display: block;
@@ -2594,22 +2578,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   position: absolute;
   top: 14px;
   right: 14px;
-  min-width: 56px;
-  height: 32px;
-  padding: 0 10px;
-  border-radius: 16px;
-  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  font-size: 16px;
-  letter-spacing: 0;
+  font-size: 18px;
   border: 1.5px solid rgba(212,169,59,0.45);
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(6px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   z-index: 1;
-  white-space: nowrap;
 }
 .sub-plan-badge--mini {
   background: linear-gradient(135deg, rgba(110,180,130,0.25), rgba(40,90,50,0.4));
@@ -2622,9 +2602,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .sub-plan-badge--vip {
   background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
   border-color: #FFE594;
-  font-size: 17px;
-  min-width: 60px;
-  height: 34px;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
   box-shadow:
     0 6px 18px rgba(212,169,59,0.5),
     inset 0 1px 2px rgba(255,255,255,0.4);
@@ -8495,22 +8475,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="shop-hero-overlay"></div>
   </div>
   <div class="container shop-hero-content">
-    <div class="hero-eyebrow-row">
-      <span class="hero-eyebrow-anim">
-        <span class="hero-dot"></span>
-        <span>JAPAN'S FIRST · 日本初</span>
-      </span>
-      <span class="hero-tagline-chip">無投薬 ／ オーガニック 専門</span>
-    </div>
+    <span class="hero-eyebrow-anim">
+      <span class="hero-dot"></span>
+      <span>JAPAN'S FIRST · 日本初</span>
+    </span>
     <h1 class="shop-hero-title hero-anim-title">
-      <span class="hero-line hero-line--brand">
-        <span class="hero-word text-gold">江田畜産</span>
+      <span class="hero-line hero-line--lead">
+        <span class="hero-word">無投薬／オーガニック専門</span>
       </span>
       <span class="hero-line hero-line--shop">
-        <span class="hero-shop-icon" aria-hidden="true">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h2l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1.6" fill="currentColor"/><circle cx="18" cy="20" r="1.6" fill="currentColor"/></svg>
-        </span>
-        <span class="hero-word text-gold">オンラインショップ</span>
+        <span class="hero-word text-gold">江田畜産</span>
+        <span class="hero-word hero-shop-mark text-gold">オンラインショップ</span>
       </span>
     </h1>
     <p class="shop-hero-sub hero-anim-sub">
@@ -9339,15 +9314,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <div class="shop-sub-plans-wrap">
         <div class="sub-plans-grid">
           <a href="subscription.html?plan=starter" class="sub-plan-mini">
-            <div class="sub-plan-badge sub-plan-badge--mini">🐃🐓</div>
+            <div class="sub-plan-badge sub-plan-badge--mini">🌱</div>
             <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
             <div class="sub-plan-name">ミニプラン</div>
             <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
             <ul class="sub-plan-items">
-              <li>🥩 赤身スライス 200g</li>
-              <li>🔥 赤身焼肉 200g</li>
-              <li>🥩 サイコロステーキ 200g</li>
-              <li>🍔 和牛ミンチ 200g</li>
+              <li>🐃 赤身スライス 200g</li>
+              <li>🐃 赤身焼肉 200g</li>
+              <li>🐃 サイコロステーキ 200g</li>
+              <li>🐃 和牛ミンチ 200g</li>
               <li>🐓 鶏モモ 200g</li>
               <li>🐓 鶏ムネ 200g×2</li>
               <li>🐓 鶏ミンチ 200g</li>
@@ -9362,15 +9337,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
             <span class="sub-plan-tag">人気 No.1</span>
-            <div class="sub-plan-badge sub-plan-badge--pro">🐃🐓</div>
+            <div class="sub-plan-badge sub-plan-badge--pro">🏆</div>
             <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
             <div class="sub-plan-name">プロプラン</div>
             <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
             <ul class="sub-plan-items">
-              <li>🥩 赤身スライス 200g×2</li>
-              <li>🔥 赤身焼肉 200g×2</li>
-              <li>🥩 サイコロステーキ 200g×2</li>
-              <li>🍔 和牛ミンチ 200g</li>
+              <li>🐃 赤身スライス 200g×2</li>
+              <li>🐃 赤身焼肉 200g×2</li>
+              <li>🐃 サイコロステーキ 200g×2</li>
+              <li>🐃 和牛ミンチ 200g</li>
               <li>🐓 鶏モモ 200g×3</li>
               <li>🐓 鶏ムネ 200g×3</li>
               <li>🐓 鶏ミンチ 200g×3</li>
@@ -9385,15 +9360,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <a href="subscription.html?plan=volume" class="sub-plan-mini sub-plan-mini--vip">
             <span class="sub-plan-tag sub-plan-tag--vip">VIP 限定特典</span>
-            <div class="sub-plan-badge sub-plan-badge--vip">👑🐃</div>
+            <div class="sub-plan-badge sub-plan-badge--vip">👑</div>
             <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
             <div class="sub-plan-name">VIPプラン</div>
             <div class="sub-plan-target">5人以上 / 約4.4kg / 22品</div>
             <ul class="sub-plan-items">
               <li>💎 ヒレステーキ 200g</li>
-              <li>🥩 赤身ステーキ 200g×2</li>
-              <li>🥩 サーロインステーキ 200g×2</li>
-              <li>🍔 和牛ミンチ 200g×2</li>
+              <li>🐃 赤身ステーキ 200g×2</li>
+              <li>🐃 サーロインステーキ 200g×2</li>
+              <li>🐃 和牛ミンチ 200g×2</li>
               <li>🐓 鶏モモ 200g×5</li>
               <li>🐓 鶏ムネ 200g×5</li>
               <li>🐓 鶏ミンチ 200g×5</li>
