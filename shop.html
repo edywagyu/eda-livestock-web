@@ -2182,6 +2182,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   letter-spacing: -0.02em;
   margin: 0 4px;
   text-shadow: 0 2px 12px rgba(212,169,59,0.4);
+  white-space: nowrap;       /* 「最短 5月15日（金）」を分割しない */
+  display: inline-block;
 }
 .ship-cd-meta {
   font-size: 13.5px;
@@ -4273,8 +4275,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: var(--color-ink-muted);
   margin: 1px 0 0;
 }
-@media (max-width: 640px) {
-  .live-feed { bottom: 12px; left: 8px; right: 88px; max-width: none; padding: 10px 12px; }
+@media (max-width: 720px) {
+  /* モバイルでは LINE 浮遊ボタン (右下 14+52+14=80px幅) と被らないよう
+     bottom 位置を上げ + 横幅を全画面に */
+  .live-feed {
+    bottom: 84px;        /* LINE FAB (52px) + 余白 14px + 上に 18px */
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    padding: 10px 12px;
+  }
+  body.has-sticky-cart .live-feed { bottom: 148px; }  /* sticky-cart-bar 上に */
 }
 
 /* ================ スタッツバンド (refined) ================ */
@@ -7975,9 +7986,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* Shop Hero: 92vh は縦長すぎ → 70vh に */
   .shop-hero { min-height: 70vh; }
-  .shop-hero-content { padding: 80px 18px 32px; }
-  .shop-hero-title { font-size: clamp(26px, 7.2vw, 34px); line-height: 1.18; word-break: keep-all; }
-  .shop-hero-sub { font-size: 12.5px; line-height: 1.7; }
+  .shop-hero-content { padding: 88px 28px 36px; max-width: 100%; }
+  .shop-hero-title { font-size: clamp(24px, 6.8vw, 32px); line-height: 1.25; word-break: keep-all; letter-spacing: 0.01em; }
+  .shop-hero-sub { font-size: 13px; line-height: 1.75; padding-right: 4px; }
   .shop-hero-cta { gap: 8px; }
   .hero-eyebrow-anim { font-size: 10px; padding: 4px 10px; margin-bottom: 16px; }
 
@@ -7987,10 +7998,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* 配送カウントダウンバー */
   .ship-countdown-bar { padding: 24px 0 12px; }
-  .ship-cd-inner { padding: 14px 14px; gap: 10px; }
-  .ship-cd-headline { font-size: 13px; line-height: 1.4; }
-  .ship-cd-meta { font-size: 11px; gap: 6px; }
+  .ship-cd-inner { padding: 16px 14px; gap: 12px; align-items: flex-start; }
+  .ship-cd-icon { width: 44px; height: 44px; }
+  .ship-cd-icon svg { width: 20px; height: 20px; }
+  .ship-cd-headline { font-size: 13.5px; line-height: 1.5; word-break: keep-all; }
+  .ship-cd-headline strong { font-size: 1.2em; margin: 0 2px; }
+  .ship-cd-meta { font-size: 11.5px; gap: 8px; row-gap: 4px; }
   .ship-cd-note { display: none; }   /* モバイルでは長すぎるので省略 */
+  .ship-cd-cta { width: 100%; min-height: 44px; margin-top: 6px; }
 
   /* 冷凍庫バンド */
   .freezer-band { padding: 40px 0 32px; }
