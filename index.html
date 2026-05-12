@@ -2375,11 +2375,33 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ MEMBERS ================ */
 .members { background: var(--color-forest-deep); color: white; position: relative; overflow: hidden; }
 .members-head { text-align: center; margin-bottom: clamp(48px, 6vw, 88px); }
-.member-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 1180px; margin: 0 auto; }
-.member-grid.cols-3 { grid-template-columns: repeat(3, 1fr); max-width: 980px; margin: 0 auto; }
+.member-grid {
+  display: flex;
+  gap: 24px;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px clamp(20px, 4vw, 56px) 16px;
+  margin-left: calc(clamp(20px, 4vw, 56px) * -1);
+  margin-right: calc(clamp(20px, 4vw, 56px) * -1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold) transparent;
+  scroll-padding-left: clamp(20px, 4vw, 56px);
+}
+.member-grid::-webkit-scrollbar { height: 6px; }
+.member-grid::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
+.member-grid::-webkit-scrollbar-track { background: transparent; }
+.member-grid.cols-3 { gap: 24px; }
+.member-grid .member-card {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+}
 
-/* ===== メンバーカード内の SNS ロゴ（江田 / 田中 のみ） ===== */
-.member-social-mini {
+/* ===== メンバーカード内の SNS ロゴ — フォーマット統一のため非表示 (Tom指示) ===== */
+.member-social-mini { display: none !important; }
+.member-social-mini-hidden-placeholder {
   display: flex;
   align-items: center;
   gap: 8px;
