@@ -3362,11 +3362,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     width: 65vw;
   }
 
-  /* ---- Timeline compact ---- */
-  .timeline-grid article { gap: 20px !important; }
-  .timeline-grid article > div:first-child { font-size: 18px !important; }
-  .timeline-grid h3 { font-size: 15px !important; }
-  .timeline-grid p { font-size: 12px !important; }
+  /* ---- Timeline compact (year column を 100px→64px に縮小) ---- */
+  .timeline-grid article {
+    grid-template-columns: 64px 1fr !important;
+    gap: 12px !important;
+  }
+  .timeline-grid article > div:first-child { font-size: 16px !important; }
+  .timeline-grid h3 { font-size: 14px !important; line-height: 1.4 !important; word-break: keep-all; overflow-wrap: anywhere; }
+  .timeline-grid p { font-size: 12px !important; line-height: 1.6 !important; }
 
   /* ---- Featured strip → swipe ---- */
   .featured { padding: 24px 0; }
