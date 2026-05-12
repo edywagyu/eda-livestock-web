@@ -1485,36 +1485,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   aspect-ratio: 4/3;
   position: relative;
   overflow: hidden;
-  /* OpenStreetMap iframe を隠して、シンプルな地図風背景を表示 */
-  background:
-    radial-gradient(circle at 50% 50%, rgba(212,169,59,0.18), transparent 60%),
-    linear-gradient(135deg, #0F3D2E 0%, #143D2B 50%, #0A2D21 100%);
+  background: var(--color-bone);
 }
-/* iframe は完全に非表示 (Tom指示: シンプル化) */
-.restaurant-card-map iframe { display: none !important; }
-/* 中央に大きな📍 ピンと国名を配置 */
-.restaurant-card-map::before {
-  content: '📍';
+/* Google Maps iframe — リアル感 (Tom指示) */
+.restaurant-card-map iframe {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 48px;
-  opacity: 0.85;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: saturate(1.05) contrast(1.02);
+  pointer-events: none;        /* スクロール誤動作防止 */
 }
+.restaurant-card:hover .restaurant-card-map iframe { pointer-events: auto; }
+/* 国名フラッグ (上から重ね) */
 .restaurant-card-map .restaurant-flag {
   position: absolute;
-  top: 14px; left: 14px;
-  background: rgba(0,0,0,0.6);
+  top: 12px; left: 12px;
+  background: rgba(15,61,46,0.92);
   color: white;
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: var(--tracking-widest);
-  padding: 6px 12px;
-  z-index: 2;
+  padding: 5px 12px;
+  z-index: 3;
   pointer-events: none;
-  border: 1px solid rgba(212,169,59,0.35);
-  backdrop-filter: blur(4px);
+  border: 1px solid rgba(212,169,59,0.5);
+  border-radius: 4px;
+  backdrop-filter: blur(6px);
 }
 .restaurant-card-img::after {
   content: attr(data-label);
@@ -3664,7 +3662,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
     <div class="restaurant-list reveal">
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=130.3968%2C33.5859%2C130.4008%2C33.5899&layer=mapnik&marker=33.5879%2C130.3988" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=33.5879,130.3988&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel · Teppanyaki</span>
           <h3 class="restaurant-name">The Ritz-Carlton, Fukuoka</h3>
@@ -3678,7 +3676,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=130.3950%2C33.5840%2C130.3990%2C33.5880&layer=mapnik&marker=33.5860%2C130.3970" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=33.5860,130.3970&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel · Boutique</span>
           <h3 class="restaurant-name">WITH THE STYLE FUKUOKA</h3>
@@ -3692,7 +3690,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7247%2C35.6635%2C139.7287%2C35.6675&layer=mapnik&marker=35.6655%2C139.7267" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6655,139.7267&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">The Ritz-Carlton, Tokyo</h3>
@@ -3706,7 +3704,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7614%2C35.6847%2C139.7654%2C35.6887&layer=mapnik&marker=35.6867%2C139.7634" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6867,139.7634&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">Four Seasons Hotel, Tokyo</h3>
@@ -3721,7 +3719,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7506%2C35.6500%2C139.7546%2C35.6540&layer=mapnik&marker=35.6520%2C139.7526" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6520,139.7526&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">The Fairmont Tokyo</h3>
@@ -3735,7 +3733,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7651%2C35.6692%2C139.7691%2C35.6732&layer=mapnik&marker=35.6712%2C139.7671" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6712,139.7671&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">Tokyo EDITION Ginza</h3>
@@ -3749,7 +3747,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7651%2C35.6792%2C139.7691%2C35.6832&layer=mapnik&marker=35.6812%2C139.7671" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6812,139.7671&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel · French</span>
           <h3 class="restaurant-name">Tokyo Station Hotel</h3>
@@ -3763,7 +3761,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.8826%2C35.6247%2C139.8866%2C35.6287&layer=mapnik&marker=35.6267%2C139.8846" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 CHIBA</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6267,139.8846&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 CHIBA</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Theme Park · Restaurants</span>
           <h3 class="restaurant-name">Tokyo DisneySea</h3>
@@ -3777,7 +3775,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7670%2C35.6694%2C139.7710%2C35.6734&layer=mapnik&marker=35.6714%2C139.7690" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6714,139.7690&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Department Store</span>
           <h3 class="restaurant-name">Mitsukoshi Ginza</h3>
@@ -3791,7 +3789,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7710%2C35.6848%2C139.7750%2C35.6888&layer=mapnik&marker=35.6868%2C139.7730" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6868,139.7730&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Department Store</span>
           <h3 class="restaurant-name">Mitsukoshi Nihonbashi</h3>
@@ -3805,7 +3803,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.6983%2C35.6883%2C139.7023%2C35.6923&layer=mapnik&marker=35.6903%2C139.7003" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6903,139.7003&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Department Store</span>
           <h3 class="restaurant-name">Keio Department Store</h3>
@@ -3824,7 +3822,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <div class="restaurant-list reveal">
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=114.1584%2C22.3010%2C114.1624%2C22.3050&layer=mapnik&marker=22.3030%2C114.1604" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇭🇰 HONG KONG</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=22.3030,114.1604&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇭🇰 HONG KONG</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">The Ritz-Carlton, Hong Kong</h3>
@@ -3838,7 +3836,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-73.9810%2C40.7628%2C-73.9770%2C40.7668&layer=mapnik&marker=40.7648%2C-73.9790" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇺🇸 NEW YORK</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=40.7648,-73.9790&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇺🇸 NEW YORK</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">The Ritz-Carlton, New York</h3>
@@ -3852,7 +3850,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=121.5634%2C25.0310%2C121.5674%2C25.0350&layer=mapnik&marker=25.0330%2C121.5654" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇹🇼 TAIWAN</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=25.0330,121.5654&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇹🇼 TAIWAN</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Restaurant Group</span>
           <h3 class="restaurant-name">Taipei Premium Wagyu Venues</h3>
@@ -3866,7 +3864,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=103.8178%2C1.2877%2C103.8218%2C1.2917&layer=mapnik&marker=1.2897%2C103.8198" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇸🇬 SINGAPORE</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=1.2897,103.8198&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇸🇬 SINGAPORE</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">Premium Hotel Singapore</h3>
@@ -3880,7 +3878,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=13.4030%2C52.5180%2C13.4070%2C52.5220&layer=mapnik&marker=52.5200%2C13.4050" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇩🇪 GERMANY</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=52.5200,13.4050&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇩🇪 GERMANY</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Restaurant</span>
           <h3 class="restaurant-name">Berlin Fine Dining</h3>
@@ -3894,7 +3892,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       </article>
 
       <article class="restaurant-card">
-        <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=100.4998%2C13.7543%2C100.5038%2C13.7583&layer=mapnik&marker=13.7563%2C100.5018" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇹🇭 THAILAND</span></div>
+        <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=13.7563,100.5018&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇹🇭 THAILAND</span></div>
         <div class="restaurant-card-body">
           <span class="restaurant-tag">Hotel</span>
           <h3 class="restaurant-name">Bangkok Premium Hotel</h3>
