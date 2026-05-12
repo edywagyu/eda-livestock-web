@@ -66,8 +66,14 @@ function corsHeaders() {
 }
 
 function ss() {
-  const id = cfg('SPREADSHEET_ID');
-  if (!id) throw new Error('SPREADSHEET_ID not configured');
+  let id = cfg('SPREADSHEET_ID');
+  if (!id) {
+    // 初回: スプレッドシート自動作成
+    const created = SpreadsheetApp.create('江田畜産_EC_オペレーション_' + new Date().toISOString().slice(0,10));
+    id = created.getId();
+    PROPS.setProperty('SPREADSHEET_ID', id);
+    Logger.log('✅ Spreadsheet 自動作成: ' + created.getUrl());
+  }
   return SpreadsheetApp.openById(id);
 }
 
@@ -116,12 +122,42 @@ function doGet(e) {
       case 'dashboard':         return dashboardSummary(e.parameter);
       case 'line_friends':      return lineFriends();
       case 'customer_lookup':   return customerLookup(e.parameter);
+      case 'check_config':      return jsonResponse(checkConfig());
+      case 'setup':             return runSetup(e.parameter);
       default:                  return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
   } catch (err) {
     log(action + '_error', { error: err.message }, { stack: err.stack });
     return jsonResponse({ ok:false, error: err.message });
   }
+}
+
+/* GET ?action=setup&secret={SETUP_SECRET}&stripe_key={sk_live_...}
+   ────────────────────────────────────────────────────────────────
+   ワンショット セットアップ:
+   1. setupAllProperties (Price ID 等)
+   2. optionally STRIPE_SECRET_KEY もパラメータから設定 (チャットに貼らないため非推奨)
+   3. initSheets (シート初期化 + スプレッドシート自動作成)
+   4. spreadsheet URL を返却
+*/
+function runSetup(params) {
+  // ワンタイム保護: 既に設定済みなら拒否（攻撃者が再上書きできないように）
+  const lock = PROPS.getProperty('SETUP_LOCKED');
+  if (lock === 'true') {
+    return jsonResponse({ ok:false, error: 'Setup already locked. Manual access required.' });
+  }
+  setupAllProperties();
+  if (params.stripe_key) PROPS.setProperty('STRIPE_SECRET_KEY', params.stripe_key);
+  const initResult = initSheets();
+  PROPS.setProperty('SETUP_LOCKED', 'true');
+  const cfgResult = checkConfig();
+  return jsonResponse({
+    ok: true,
+    message: 'セットアップ完了',
+    spreadsheet_url: initResult.spreadsheet_url,
+    spreadsheet_id: initResult.id,
+    config: cfgResult
+  });
 }
 
 function doPost(e) {
@@ -913,6 +949,7 @@ function sendStaffNotificationEmail(session, orderNum) {
    セットアップユーティリティ (1回だけ実行)
    ============================================================ */
 function initSheets() {
+  const s = ss(); // SPREADSHEET_ID 未設定なら自動作成 + Script Property 保存
   sheet('orders', ['order_number','placed_at','session_id','customer_name','customer_email','customer_phone','mode','total','shipping','payment_status','payment_method','destinations_json','items_json','metadata_json']);
   sheet('pending_orders', ['created_at','order_number','session_id','mode','customer_json','destinations_json','subtotal','shipping','total']);
   sheet('subscriptions', ['subscription_id','customer_id','plan','status','started_at','current_period_end','metadata_json']);
@@ -924,5 +961,52 @@ function initSheets() {
   sheet('invoices', ['invoice_id','subscription_id','customer','amount_paid','paid_at']);
   sheet('otps', ['email','otp','expires_at','used']);
   sheet('_logs', ['ts','action','ip','payload','extra']);
-  Logger.log('All sheets initialized');
+  Logger.log('✅ All sheets initialized');
+  Logger.log('📊 Spreadsheet URL: ' + s.getUrl());
+  Logger.log('📋 ID: ' + s.getId());
+  return { ok:true, spreadsheet_url: s.getUrl(), id: s.getId() };
+}
+
+/* ============================================================
+   ⚡ 一括スクリプトプロパティ設定 (自動デプロイ用)
+   ============================================================
+   このファンクションを clasp run で 1 回呼ぶだけで全プロパティ設定完了
+   STRIPE_SECRET_KEY は別途 Tom が手動入力 (セキュリティ上の理由)
+*/
+function setupAllProperties() {
+  const props = {
+    STRIPE_PRICE_MINI: 'price_1TW74zGSkhU1UEciUiGw5tlq',
+    STRIPE_PRICE_PRO:  'price_1TW74zGSkhU1UEci5RQzoKIP',
+    STRIPE_PRICE_VIP:  'price_1TW750GSkhU1UEciLLw2gqss',
+    STRIPE_DEMO_COUPON: 'DEMO100',
+    STAFF_NOTIFICATION_EMAIL: 'backoffice@eda-livestock.com',
+    SUCCESS_URL: 'https://edywagyu.github.io/eda-livestock-web/order-complete.html',
+    CANCEL_URL: 'https://edywagyu.github.io/eda-livestock-web/checkout.html'
+  };
+  Object.keys(props).forEach(k => {
+    PROPS.setProperty(k, props[k]);
+  });
+  Logger.log('✅ 一括設定完了: ' + Object.keys(props).join(', '));
+  Logger.log('⚠️ 残: STRIPE_SECRET_KEY (Tom 手動入力)');
+  return { ok:true, set: Object.keys(props), missing: ['STRIPE_SECRET_KEY'] };
+}
+
+/* ============================================================
+   設定健全性チェック (デプロイ前確認用)
+   ============================================================ */
+function checkConfig() {
+  const required = ['STRIPE_SECRET_KEY','STRIPE_PRICE_MINI','STRIPE_PRICE_PRO','STRIPE_PRICE_VIP'];
+  const optional = ['STRIPE_DEMO_COUPON','STAFF_NOTIFICATION_EMAIL','SUCCESS_URL','CANCEL_URL','SPREADSHEET_ID'];
+  const result = { required:{}, optional:{}, ok:true };
+  required.forEach(k => {
+    const v = cfg(k);
+    result.required[k] = v ? '✅ 設定済み (' + v.substring(0,10) + '...)' : '❌ 未設定';
+    if (!v) result.ok = false;
+  });
+  optional.forEach(k => {
+    const v = cfg(k);
+    result.optional[k] = v ? '✅ ' + v.substring(0, 50) : '⚠️ 未設定';
+  });
+  Logger.log(JSON.stringify(result, null, 2));
+  return result;
 }
