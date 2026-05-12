@@ -1,0 +1,230 @@
+/* ============================================================
+   江田畜産 — モダンモバイル UI 強化
+   ------------------------------------------------------------
+   採用パターン (世界トップEC調査):
+   ✓ Bottom Tab Bar  (Apple, Instagram, NIKE)
+   ✓ Scroll-hide Top Nav (Stripe, Linear)
+   ✓ Tap Micro-interactions (Apple Vision)
+   ✓ Premium Whitespace (Cuyana, Aesop)
+   ✓ Skeleton Loading (Linear, Slack)
+   ✓ Glass Morphism (iOS, Apple Vision)
+   ============================================================ */
+
+/* ---------- Bottom Tab Bar (Mobile First) ---------- */
+.eda-mobile-tabbar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 89;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(15, 61, 46, 0.08);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom)) 4px;
+  /* スクロールダウンで隠す */
+  transform: translateY(0);
+  transition: transform 0.32s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.eda-mobile-tabbar.hide { transform: translateY(110%); }
+.eda-mobile-tabbar-inner {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.eda-mobile-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 4px;
+  text-decoration: none;
+  color: #5C5C5C;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 12px;
+  transition: all 0.2s;
+  position: relative;
+  min-height: 52px;
+}
+.eda-mobile-tab svg { width: 22px; height: 22px; transition: transform 0.2s; }
+.eda-mobile-tab.active { color: #0F3D2E; }
+.eda-mobile-tab.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #D4A93B, #B8932F);
+}
+.eda-mobile-tab:active {
+  transform: scale(0.94);
+  background: rgba(15, 61, 46, 0.04);
+}
+/* バッジ (カート数) */
+.eda-mobile-tab-badge {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 18px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: #C8102E;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transform: scale(0);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.eda-mobile-tab-badge.show { transform: scale(1); }
+
+@media (max-width: 720px) {
+  .eda-mobile-tabbar { display: block; }
+  /* タブバー分のスペース確保 */
+  body { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+  /* sticky-cart-bar は tab bar の カート と機能重複 → 非表示 */
+  body.has-mobile-tabbar .sticky-cart-bar { display: none !important; }
+  body.has-mobile-tabbar .live-feed { bottom: calc(80px + env(safe-area-inset-bottom)) !important; }
+  body.has-mobile-tabbar .floating-phone-btn,
+  body.has-mobile-tabbar .eda-floating-line { bottom: calc(80px + env(safe-area-inset-bottom)) !important; }
+}
+
+/* ---------- Top Nav: Scroll-hide ---------- */
+@media (max-width: 720px) {
+  .site-header {
+    transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+  }
+  .site-header.nav-hidden { transform: translateY(-100%); }
+}
+
+/* ---------- Tap Micro-interactions ---------- */
+@media (hover: none) {
+  /* タップ可能要素にフィードバック (タッチデバイスのみ) */
+  .btn, button:not(:disabled), a.btn,
+  .product-card, .gift-product-card,
+  .sub-plan-card, .audience-card,
+  .restaurant-card,
+  .nav-icon, .nav-link,
+  .add-cart-btn, .qty-btn,
+  .cart-item, .order-card,
+  .shop-quicknav-pill,
+  .tab, .sub-tab, .status-pill,
+  .reward-card, .coupon-card {
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.12s ease-out, opacity 0.12s;
+  }
+  .btn:active, button:active:not(:disabled),
+  .product-card:active, .sub-plan-card:active,
+  .audience-card:active,
+  .shop-quicknav-pill:active, .tab:active,
+  .status-pill:active, .sub-tab:active,
+  .add-cart-btn:active, .qty-btn:active,
+  .reward-card:active, .coupon-card:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+}
+
+/* ---------- Smooth Reveal Animations ---------- */
+@media (max-width: 720px) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+                transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .reveal.in-view,
+  .reveal.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Mobile-First Spacing (Premium Whitespace) ---------- */
+@media (max-width: 720px) {
+  /* セクション間に十分な余白 (高級ブランド準拠) */
+  section { padding-block: clamp(40px, 8vw, 64px); }
+  /* CTA は親指圏 (画面下 1/3) に */
+  .btn { min-height: 48px; padding-block: 14px; font-size: 14px; }
+  /* タイトルは余裕を持って */
+  h1, h2, h3 { word-break: keep-all; overflow-wrap: anywhere; }
+  /* 段落は読みやすい行間 */
+  p { line-height: 1.8; font-size: 14.5px; }
+}
+
+/* ---------- Skeleton Loader (商品読込中) ---------- */
+.eda-skel {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 61, 46, 0.04) 0%,
+    rgba(15, 61, 46, 0.10) 50%,
+    rgba(15, 61, 46, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: edaSkelShimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+@keyframes edaSkelShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ---------- Glass Morphism Refinements ---------- */
+@media (max-width: 720px) {
+  .site-header {
+    background: rgba(15, 61, 46, 0.85) !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+  }
+}
+
+/* ---------- Scrollbar Style (横スクロール領域) ---------- */
+.shop-quicknav, .tab-row, .status-pills, .sub-plans-grid {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.shop-quicknav::-webkit-scrollbar,
+.tab-row::-webkit-scrollbar,
+.status-pills::-webkit-scrollbar,
+.sub-plans-grid::-webkit-scrollbar { display: none; }
+
+/* ---------- Bottom Sheet (Cart Drawer 強化) ---------- */
+@media (max-width: 720px) {
+  .cart-drawer {
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    bottom: 0;
+    top: auto !important;
+    height: auto !important;
+    max-height: 88vh;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+  .cart-drawer.open { transform: translateY(0); }
+  .cart-drawer::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: rgba(15,61,46,0.2);
+    border-radius: 2px;
+    margin: 12px auto 8px;
+  }
+}
+
+/* ---------- iOS Safe Area Support ---------- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .sticky-cart-bar { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+}
