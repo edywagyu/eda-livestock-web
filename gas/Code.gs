@@ -125,6 +125,12 @@ function doGet(e) {
       case 'check_config':      return jsonResponse(checkConfig());
       case 'setup':             return runSetup(e.parameter);
       case 'update_properties': return jsonResponse(setupAllProperties());
+      /* ===== STAFF ===== */
+      case 'staff_login':       return staffLogin(e.parameter);
+      case 'staff_dashboard':   return staffDashboard();
+      case 'staff_inventory':   return staffInventory();
+      case 'staff_orders':      return staffOrders();
+      case 'b2_csv':            return b2CsvExport();
       default:                  return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
   } catch (err) {
@@ -177,6 +183,11 @@ function doPost(e) {
       case 'create_checkout':              return createCheckout(body);
       case 'create_subscription_checkout': return createSubscriptionCheckout(body);
       case 'submit_order':                 return submitOrder(body);
+      /* ===== STAFF (POST) ===== */
+      case 'staff_update_stock':           return staffUpdateStock(body);
+      case 'staff_product_save':           return staffProductSave(body);
+      case 'staff_product_delete':         return staffProductDelete(body);
+      case 'staff_ship':                   return staffShip(body);
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
       case 'log_subscription_application': return logSubscriptionApplication(body);
@@ -992,6 +1003,194 @@ function setupAllProperties() {
   Logger.log('✅ 一括設定完了: ' + Object.keys(props).join(', '));
   Logger.log('⚠️ 残: STRIPE_SECRET_KEY (Tom 手動入力)');
   return { ok:true, set: Object.keys(props), missing: ['STRIPE_SECRET_KEY'] };
+}
+
+/* ============================================================
+   STAFF endpoints (商品管理・注文管理用)
+   ============================================================ */
+function staffLogin(params) {
+  const pin = params.pin || '';
+  const validPin = cfg('STAFF_PIN', '1234');
+  if (String(pin) !== String(validPin)) {
+    return jsonResponse({ ok:false, error: 'Invalid PIN' });
+  }
+  return jsonResponse({ ok:true, name: '江田畜産スタッフ', role: 'admin' });
+}
+
+function staffDashboard() {
+  // 既存の dashboardSummary を再利用
+  return dashboardSummary({ range: '30d' });
+}
+
+/* GET ?action=staff_inventory
+   在庫上書きシート (stock_overrides) があれば、その値を返却。
+   なければ products-master.js のデフォルト stock を返す (フロント側で同期)。
+*/
+function staffInventory() {
+  try {
+    const sh = ss().getSheetByName('stock_overrides');
+    if (!sh) {
+      // 初回: 空シートを作成
+      sheet('stock_overrides', ['variantId','sku','name','stock','price','active','updated_at']);
+      return jsonResponse({ ok:true, products: [], source: 'empty (use frontend master)' });
+    }
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, products: [], source: 'empty' });
+    const headers = data[0];
+    const products = data.slice(1).map(row => {
+      const p = {}; headers.forEach((h, i) => p[h] = row[i]);
+      return p;
+    });
+    return jsonResponse({ ok:true, products, source: 'sheet:stock_overrides' });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+/* POST staff_update_stock { variantId, sku, name, stock } */
+function staffUpdateStock(body) {
+  if (!body.variantId) throw new Error('variantId required');
+  const sh = sheet('stock_overrides', ['variantId','sku','name','stock','price','active','updated_at']);
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const vidIdx = headers.indexOf('variantId');
+  let foundRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][vidIdx] === body.variantId) { foundRow = i + 1; break; }
+  }
+  const row = [
+    body.variantId,
+    body.sku || '',
+    body.name || '',
+    Number(body.stock) || 0,
+    body.price !== undefined ? Number(body.price) : '',
+    body.active !== undefined ? body.active : true,
+    new Date()
+  ];
+  if (foundRow > 0) {
+    sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
+  } else {
+    sh.appendRow(row);
+  }
+  return jsonResponse({ ok:true });
+}
+
+/* POST staff_product_save { variantId, sku, name, price, stock, category, ... } */
+function staffProductSave(body) {
+  if (!body.variantId) throw new Error('variantId required');
+  const sh = sheet('product_overrides', ['variantId','sku','name','category','variant','price','stock','active','description','updated_at']);
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const vidIdx = headers.indexOf('variantId');
+  let foundRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][vidIdx] === body.variantId) { foundRow = i + 1; break; }
+  }
+  const row = [
+    body.variantId,
+    body.sku || '',
+    body.name || '',
+    body.category || '',
+    body.variant || '',
+    Number(body.price) || 0,
+    Number(body.stock) || 0,
+    body.active !== false,
+    body.description || '',
+    new Date()
+  ];
+  if (foundRow > 0) {
+    sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
+  } else {
+    sh.appendRow(row);
+  }
+  return jsonResponse({ ok:true });
+}
+
+/* POST staff_product_delete { variantId } */
+function staffProductDelete(body) {
+  if (!body.variantId) throw new Error('variantId required');
+  ['stock_overrides','product_overrides'].forEach(name => {
+    try {
+      const sh = ss().getSheetByName(name);
+      if (!sh) return;
+      const data = sh.getDataRange().getValues();
+      const vidIdx = data[0].indexOf('variantId');
+      for (let i = data.length - 1; i >= 1; i--) {
+        if (data[i][vidIdx] === body.variantId) sh.deleteRow(i + 1);
+      }
+    } catch (e) {}
+  });
+  return jsonResponse({ ok:true });
+}
+
+/* GET staff_orders */
+function staffOrders() {
+  try {
+    const sh = sheet('orders');
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, orders: [] });
+    const headers = data[0];
+    const orders = data.slice(1).map(row => {
+      const o = {}; headers.forEach((h, i) => o[h] = row[i]);
+      return o;
+    }).reverse().slice(0, 200);
+    return jsonResponse({ ok:true, orders });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+/* POST staff_ship { order_number, tracking_number } */
+function staffShip(body) {
+  if (!body.order_number) throw new Error('order_number required');
+  const sh = sheet('orders');
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const onIdx = headers.indexOf('order_number');
+  const stIdx = headers.indexOf('payment_status');
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][onIdx] === body.order_number) {
+      // tracking_number 列を追加 (なければ)
+      let tnIdx = headers.indexOf('tracking_number');
+      if (tnIdx === -1) {
+        sh.getRange(1, headers.length + 1).setValue('tracking_number');
+        tnIdx = headers.length;
+      }
+      sh.getRange(i + 1, tnIdx + 1).setValue(body.tracking_number || '');
+      if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('shipped');
+      return jsonResponse({ ok:true });
+    }
+  }
+  return jsonResponse({ ok:false, error: 'order not found' });
+}
+
+/* GET b2_csv (ヤマト B2 形式の CSV ダウンロード) */
+function b2CsvExport() {
+  try {
+    const sh = sheet('orders');
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return ContentService.createTextOutput('').setMimeType(ContentService.MimeType.CSV);
+    const headers = data[0];
+    const get = (row, name) => row[headers.indexOf(name)] || '';
+    const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名'];
+    data.slice(1).forEach(row => {
+      const dest = get(row, 'destinations_json');
+      const name = get(row, 'customer_name');
+      try {
+        const d = JSON.parse(dest);
+        d.forEach(addr => {
+          csv.push([addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name].join(','));
+        });
+      } catch (e) {
+        csv.push(['', '', '', name].join(','));
+      }
+    });
+    return ContentService.createTextOutput(csv.join('\n'))
+      .setMimeType(ContentService.MimeType.CSV)
+      .downloadAsFile('b2-' + new Date().toISOString().slice(0,10) + '.csv');
+  } catch (e) {
+    return ContentService.createTextOutput('error: ' + e.message);
+  }
 }
 
 /* ============================================================
