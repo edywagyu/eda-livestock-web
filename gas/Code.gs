@@ -183,6 +183,9 @@ function doPost(e) {
       case 'create_checkout':              return createCheckout(body);
       case 'create_subscription_checkout': return createSubscriptionCheckout(body);
       case 'submit_order':                 return submitOrder(body);
+      /* ===== LINE LIFF Auth ===== */
+      case 'line_login':                   return lineLogin(body);
+      case 'line_link_account':            return lineLinkAccount(body);
       /* ===== STAFF (POST) ===== */
       case 'staff_update_stock':           return staffUpdateStock(body);
       case 'staff_product_save':           return staffProductSave(body);
@@ -291,6 +294,8 @@ function createCheckout(body) {
       mode: body.mode || 'single',
       customer_name: body.customer && body.customer.name,
       customer_phone: body.customer && body.customer.phone,
+      line_uid:     (body.customer && body.customer.line_uid) || '',
+      line_name:    (body.customer && body.customer.line_name) || '',
       destinations_json: JSON.stringify(body.destinations || [])
     }
   };
@@ -462,11 +467,13 @@ function finalizeOrder(session) {
   sendCustomerReceiptEmail(session, orderNum);
   sendStaffNotificationEmail(session, orderNum);
 
-  // 顧客マスタ upsert
+  // 顧客マスタ upsert (LINE 連携情報も保存)
   upsertCustomer({
     email: session.customer_details && session.customer_details.email,
     name: meta.customer_name,
     phone: meta.customer_phone,
+    line_uid: meta.line_uid || '',
+    line_name: meta.line_name || '',
     last_order: orderNum,
     last_order_total: total,
     last_order_at: new Date()
@@ -886,28 +893,43 @@ function recordPendingOrder(orderNum, sessionId, body, subtotal, shipping, mode)
 function upsertCustomer(c) {
   if (!c.email) return;
   const sh = sheet('customers', [
-    'customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid'
+    'customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at'
   ]);
   const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const emailIdx = headers.indexOf('email');
+  const lineIdx  = headers.indexOf('line_uid');
+  const lineNameIdx = headers.indexOf('line_name');
+  const linkedAtIdx = headers.indexOf('linked_at');
+
   for (let i = 1; i < data.length; i++) {
-    if (data[i][1] === c.email) {
-      sh.getRange(i+1, 6).setValue(c.last_order);
-      sh.getRange(i+1, 7).setValue((Number(data[i][6]) || 0) + (c.last_order_total || 0));
-      sh.getRange(i+1, 8).setValue((Number(data[i][7]) || 0) + 1);
+    if (data[i][emailIdx] === c.email) {
+      sh.getRange(i+1, headers.indexOf('last_order')+1).setValue(c.last_order);
+      sh.getRange(i+1, headers.indexOf('total_spent')+1).setValue((Number(data[i][headers.indexOf('total_spent')]) || 0) + (c.last_order_total || 0));
+      sh.getRange(i+1, headers.indexOf('order_count')+1).setValue((Number(data[i][headers.indexOf('order_count')]) || 0) + 1);
+      // line_uid を併せて保存 (チェックアウト時にLINEセッションから取得)
+      if (c.line_uid && lineIdx >= 0) {
+        sh.getRange(i+1, lineIdx+1).setValue(c.line_uid);
+        if (lineNameIdx >= 0) sh.getRange(i+1, lineNameIdx+1).setValue(c.line_name || '');
+        if (linkedAtIdx >= 0) sh.getRange(i+1, linkedAtIdx+1).setValue(new Date());
+      }
       return;
     }
   }
-  sh.appendRow([
-    'C-' + Utilities.getUuid().slice(0, 8),
-    c.email,
-    c.name || '',
-    c.phone || '',
-    c.last_order,
-    c.last_order,
-    c.last_order_total || 0,
-    1,
-    ''
-  ]);
+  // 新規 row
+  const row = new Array(headers.length).fill('');
+  row[headers.indexOf('customer_id')] = 'C-' + Utilities.getUuid().slice(0, 8);
+  row[emailIdx] = c.email;
+  row[headers.indexOf('name')] = c.name || '';
+  row[headers.indexOf('phone')] = c.phone || '';
+  row[headers.indexOf('first_order')] = c.last_order;
+  row[headers.indexOf('last_order')] = c.last_order;
+  row[headers.indexOf('total_spent')] = c.last_order_total || 0;
+  row[headers.indexOf('order_count')] = 1;
+  if (lineIdx >= 0)     row[lineIdx] = c.line_uid || '';
+  if (lineNameIdx >= 0) row[lineNameIdx] = c.line_name || '';
+  if (linkedAtIdx >= 0 && c.line_uid) row[linkedAtIdx] = new Date();
+  sh.appendRow(row);
 }
 
 function sendCustomerReceiptEmail(session, orderNum) {
@@ -1003,6 +1025,129 @@ function setupAllProperties() {
   Logger.log('✅ 一括設定完了: ' + Object.keys(props).join(', '));
   Logger.log('⚠️ 残: STRIPE_SECRET_KEY (Tom 手動入力)');
   return { ok:true, set: Object.keys(props), missing: ['STRIPE_SECRET_KEY'] };
+}
+
+/* ============================================================
+   LINE LIFF 認証 endpoints
+   ============================================================ */
+
+/* POST line_login { line_uid, display_name, picture_url }
+   - customers シートで line_uid が一致するレコードを検索
+   - 見つかれば customer + orders を返却 (matched: true)
+   - なければ { matched: false } を返却 (フロントが連携フォーム表示)
+*/
+function lineLogin(body) {
+  if (!body.line_uid) throw new Error('line_uid required');
+
+  try {
+    const sh = ss().getSheetByName('customers');
+    if (!sh) {
+      sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
+      return jsonResponse({ ok:true, matched:false });
+    }
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, matched:false });
+    const headers = data[0];
+    const lineIdx = headers.indexOf('line_uid');
+    if (lineIdx === -1) {
+      // line_uid 列がなければ追加
+      sh.getRange(1, headers.length + 1).setValue('line_uid');
+      return jsonResponse({ ok:true, matched:false });
+    }
+
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][lineIdx] === body.line_uid) {
+        const customer = {};
+        headers.forEach((h, idx) => { customer[h] = data[i][idx]; });
+        // 表示名・写真を更新 (LINE側で変更されている可能性)
+        if (body.display_name) customer.line_name = body.display_name;
+        if (body.picture_url) customer.line_picture = body.picture_url;
+        // 注文履歴
+        const orders = customer.email ? getOrdersByEmail(customer.email) : [];
+        return jsonResponse({ ok:true, matched:true, customer, orders });
+      }
+    }
+    return jsonResponse({ ok:true, matched:false });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+/* POST line_link_account { line_uid, display_name, email }
+   - email で customers/orders を検索
+   - 見つかれば line_uid を紐付けて、ダッシュボードに使えるデータ返却
+*/
+function lineLinkAccount(body) {
+  if (!body.line_uid) throw new Error('line_uid required');
+  if (!body.email)    throw new Error('email required');
+
+  try {
+    const orders = getOrdersByEmail(body.email);
+    if (!orders.length) {
+      // 該当 email の注文が無い → 連携不可
+      return jsonResponse({ ok:true, customer:null, error:'no orders found for this email' });
+    }
+
+    // customers シートに upsert
+    const sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
+    const data = sh.getDataRange().getValues();
+    const headers = data[0];
+    const emailIdx = headers.indexOf('email');
+    let lineIdx = headers.indexOf('line_uid');
+    if (lineIdx === -1) {
+      sh.getRange(1, headers.length + 1).setValue('line_uid');
+      lineIdx = headers.length;
+    }
+    let nameIdx = headers.indexOf('line_name');
+    if (nameIdx === -1) {
+      sh.getRange(1, headers.length + 2).setValue('line_name');
+      nameIdx = headers.length + 1;
+    }
+    let linkedAtIdx = headers.indexOf('linked_at');
+    if (linkedAtIdx === -1) {
+      sh.getRange(1, headers.length + 3).setValue('linked_at');
+      linkedAtIdx = headers.length + 2;
+    }
+
+    let foundRow = -1;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][emailIdx] === body.email) { foundRow = i + 1; break; }
+    }
+
+    const customer_name = (orders[0] && orders[0].customer_name) || body.email.split('@')[0];
+    const total_spent = orders.reduce((s, o) => s + (Number(o.total) || 0), 0);
+
+    if (foundRow > 0) {
+      // 既存 row の line_uid を更新
+      sh.getRange(foundRow, lineIdx + 1).setValue(body.line_uid);
+      sh.getRange(foundRow, nameIdx + 1).setValue(body.display_name || '');
+      sh.getRange(foundRow, linkedAtIdx + 1).setValue(new Date());
+    } else {
+      // 新規 row 追加
+      const row = new Array(headers.length).fill('');
+      row[headers.indexOf('customer_id')] = Utilities.getUuid();
+      row[emailIdx] = body.email;
+      row[headers.indexOf('name')] = customer_name;
+      row[headers.indexOf('total_spent')] = total_spent;
+      row[headers.indexOf('order_count')] = orders.length;
+      row[lineIdx] = body.line_uid;
+      row[nameIdx] = body.display_name || '';
+      row[linkedAtIdx] = new Date();
+      sh.appendRow(row);
+    }
+
+    const customer = {
+      email: body.email,
+      name: customer_name,
+      total_orders: orders.length,
+      total_spent: total_spent,
+      line_uid: body.line_uid,
+      line_name: body.display_name || ''
+    };
+    return jsonResponse({ ok:true, customer, orders });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
 }
 
 /* ============================================================
