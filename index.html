@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/">
 
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
  * ================================================================ */
@@ -37,7 +37,7 @@
   --color-ink-muted: #5C5C5C;
   --color-red: #C8102E;
   --color-line: rgba(212, 169, 59, 0.18);
-  --font-display: 'Bebas Neue', 'Oswald', 'Noto Sans JP', sans-serif;
+  --font-display: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
   --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
   --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
   --font-jp-serif: 'Noto Serif JP', serif;
@@ -45,7 +45,7 @@
   --tracking-wide: 0.04em;
   --tracking-wider: 0.12em;
   --tracking-widest: 0.24em;
-  --space-section: clamp(80px, 12vw, 160px);
+  --space-section: clamp(120px, 16vw, 200px);   /* +50% Editorial Refresh */
   --space-section-sm: clamp(48px, 8vw, 96px);
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
@@ -1222,6 +1222,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .btn-light:hover::before { background: white; }
 .btn-dark { color: var(--color-forest); border-color: var(--color-forest); }
 .btn-dark:hover { color: var(--color-cream); }
+/* === Primary (Editorial Refresh) === */
+.btn-primary {
+  background: white;
+  color: var(--color-forest);
+  border: 1px solid white;
+  padding: 18px 36px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+}
+.btn-primary::before { background: var(--color-forest); }
+.btn-primary:hover { color: white; }
+.btn-ghost {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 18px 36px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+}
+.btn-ghost:hover { border-color: white; }
 .btn-arrow { width: 16px; height: 1px; background: currentColor; position: relative; flex-shrink: 0; transition: transform 0.35s cubic-bezier(0.785, 0.135, 0.15, 0.86); }
 .btn-arrow::after {
   content: '';
@@ -1260,22 +1284,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .hero-meta-line { width: 80px; height: 1px; background: var(--color-gold); }
 .hero-title {
   font-family: var(--font-display);
-  font-size: clamp(56px, 11vw, 180px);
-  line-height: 0.88;
-  letter-spacing: var(--tracking-tight);
-  text-transform: uppercase;
-  margin: 0 0 32px;
+  font-size: clamp(48px, 7.8vw, 112px);   /* 180px → 112px Editorial Refresh */
+  line-height: 0.98;                        /* serif フォントなので 0.88→0.98 */
+  letter-spacing: -0.015em;                  /* tight Serif tracking */
+  text-transform: none;                      /* serif は大文字小文字混在のが品良し */
+  font-weight: 500;                          /* 400→500 */
+  font-style: italic;                        /* Cormorant の真骨頂 */
+  margin: 0 0 40px;
 }
-.hero-title .accent { color: var(--color-gold); display: block; }
+.hero-title .accent { color: var(--color-gold); display: block; font-style: normal; }
 .hero-subtitle {
   font-family: var(--font-jp);
-  font-size: clamp(15px, 1.4vw, 19px);
+  font-size: clamp(14px, 1.2vw, 16.5px);   /* 19→16.5 控えめに */
   font-weight: 400;
-  letter-spacing: 0.06em;
-  max-width: 620px;
-  line-height: 2;
-  margin-bottom: 56px;
-  opacity: 0.92;
+  letter-spacing: 0.04em;
+  max-width: 560px;
+  line-height: 2.05;                         /* 余裕ある行間 */
+  margin-bottom: 72px;                       /* 56→72 余白 */
+  opacity: 0.88;
 }
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 .hero-stats {
@@ -3860,33 +3886,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <span class="accent">The Next Century.</span>
     </h1>
     <p class="hero-subtitle">
-      100年続く畜産を、次の世代がつくる。<br/>
-      無投薬 × 循環型農業 × 世界初オーガニック認証和牛 — 宮崎から世界13カ国へ。
+      畜産は、次の世代の食卓のために。<br class="hide-sp"/>
+      無投薬で育てた、本物の和牛と平飼い鶏を、宮崎から。
     </p>
-    <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num">13</div>
-        <div class="hero-stat-label">Countries · 4 Continents</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">2026</div>
-        <div class="hero-stat-label">World's First Organic</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">1<span style="font-size: 0.5em;">%</span></div>
-        <div class="hero-stat-label">Additive-Free Farms</div>
-      </div>
-    </div>
 
     <div class="hero-actions">
-      <a href="shop.html" class="btn btn-gold">
-        オンラインで購入 <span class="btn-arrow"></span>
+      <a href="shop.html" class="btn btn-primary">
+        Collection を見る <span class="btn-arrow"></span>
       </a>
-      <a href="subscription.html" class="btn btn-light">
-        定期便を見る <span class="btn-arrow"></span>
-      </a>
-      <a href="restaurants.html" class="btn btn-dark hide-sp">
-        取扱店舗を探す <span class="btn-arrow"></span>
+      <a href="organic.html" class="btn btn-ghost hide-sp">
+        私たちの哲学 <span class="btn-arrow"></span>
       </a>
     </div>
   </div>
@@ -3922,7 +3931,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <a href="tel:08057930708" class="audience-phone" data-person="ec">
           <div class="audience-phone-label">— Direct Line —</div>
           <div class="audience-phone-name">お問い合わせ窓口</div>
-          <div class="audience-phone-num">📞 080-5793-0708</div>
+          <div class="audience-phone-num">080-5793-0708</div>
         </a>
       </article>
 
@@ -3942,7 +3951,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <a href="tel:08057930708" class="audience-phone" data-person="domestic">
           <div class="audience-phone-label">— Direct Line —</div>
           <div class="audience-phone-name">お取引窓口</div>
-          <div class="audience-phone-num">📞 080-5793-0708</div>
+          <div class="audience-phone-num">080-5793-0708</div>
         </a>
       </article>
 
@@ -3962,7 +3971,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <a href="tel:+818057930708" class="audience-phone" data-person="export">
           <div class="audience-phone-label">— Direct Line —</div>
           <div class="audience-phone-name">Export Desk</div>
-          <div class="audience-phone-num">📞 +81 80-5793-0708</div>
+          <div class="audience-phone-num">+81 80-5793-0708</div>
         </a>
       </article>
     </div>
@@ -4735,9 +4744,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <li><a href="privacy.html">プライバシーポリシー</a></li>
           <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">💬 LINE 公式アカウント</a></li>
-          <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">📷 Instagram @eda_livestock</a></li>
-          <li><a href="tel:08057930708">📞 080-5793-0708</a></li>
+          <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINE 公式アカウント</a></li>
+          <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
+          <li><a href="tel:08057930708">080-5793-0708</a></li>
         </ul>
       </div>
     </div>
@@ -4757,7 +4766,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
   <div class="cart-drawer-items" id="cartItems">
     <div class="cart-empty" id="cartEmpty">
-      <div class="cart-empty-icon">🛒</div>
+      <div class="cart-empty-icon"></div>
       カートは空です
     </div>
   </div>
