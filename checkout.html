@@ -864,8 +864,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <script src="public/js/eda-config.js"></script>
 <script src="public/js/error-tracker.js" defer></script>
 <link rel="stylesheet" href="public/css/jp-typography.css">
+<link rel="stylesheet" href="public/css/a11y.css">
 </head>
 <body>
+<a href="#main" class="skip-link">本文へスキップ</a>
 
 <!-- ========= HEADER ========= -->
 <header class="checkout-header">
@@ -1332,13 +1334,13 @@ function renderDestinations() {
           <div class="dest-form-row cols2">
             <div class="dest-field">
               <label>${isGift ? '受取人' : 'お名前'}<span class="required">*</span></label>
-              <input type="text" value="${dest.name || ''}" placeholder="江田 友輝"
+              <input type="text" value="${dest.name || ''}"  placeholder="江田 友輝" aria-label="江田 友輝"
                      autocomplete="${isGift ? 'off' : 'name'}"
                      oninput="updateDestField(${dIdx}, 'name', this.value)" required>
             </div>
             <div class="dest-field">
               <label>電話番号<span class="required">*</span></label>
-              <input type="tel" value="${dest.tel || ''}" placeholder="090-1234-5678"
+              <input type="tel" value="${dest.tel || ''}"  placeholder="090-1234-5678" aria-label="090-1234-5678"
                      inputmode="tel" autocomplete="${isGift ? 'off' : 'tel'}"
                      oninput="updateDestField(${dIdx}, 'tel', this.value)" required>
             </div>
@@ -1346,7 +1348,7 @@ function renderDestinations() {
           <div class="dest-form-row cols2">
             <div class="dest-field">
               <label>郵便番号<span class="required">*</span></label>
-              <input type="text" value="${dest.zip || ''}" placeholder="123-4567"
+              <input type="text" value="${dest.zip || ''}"  placeholder="123-4567" aria-label="123-4567"
                      inputmode="numeric" autocomplete="${isGift ? 'off' : 'postal-code'}" maxlength="8"
                      oninput="updateDestField(${dIdx}, 'zip', this.value); autoFillFromZip(this, ${dIdx})" required>
             </div>
@@ -1360,7 +1362,7 @@ function renderDestinations() {
           <div class="dest-form-row">
             <div class="dest-field">
               <label>市区町村・番地・建物名<span class="required">*</span></label>
-              <input type="text" value="${dest.address || ''}" placeholder="渋谷区神宮前 1-1-1 マンション101号"
+              <input type="text" value="${dest.address || ''}"  placeholder="渋谷区神宮前 1-1-1 マンション101号" aria-label="渋谷区神宮前 1-1-1 マンション101号"
                      autocomplete="${isGift ? 'off' : 'street-address'}"
                      oninput="updateDestField(${dIdx}, 'address', this.value)" required>
             </div>
@@ -1369,7 +1371,7 @@ function renderDestinations() {
             <div class="dest-form-row">
               <div class="dest-field">
                 <label>メールアドレス<span class="required">*</span>（ご注文確認用）</label>
-                <input type="email" value="${dest.email || ''}" placeholder="example@example.com"
+                <input type="email" value="${dest.email || ''}"  placeholder="example@example.com" aria-label="example@example.com"
                        inputmode="email" autocomplete="email"
                        oninput="updateDestField(${dIdx}, 'email', this.value)" required>
               </div>
@@ -1381,7 +1383,7 @@ function renderDestinations() {
               <div class="gift-options-head">🎁 ギフト用オプション</div>
               <div class="dest-field" style="margin-bottom: 12px;">
                 <label>依頼人名（差出人として記載されます）<span class="required">*</span></label>
-                <input type="text" value="${dest.fromName || ''}" placeholder="例: 江田 友輝"
+                <input type="text" value="${dest.fromName || ''}"  placeholder="例: 江田 友輝" aria-label="例: 江田 友輝"
                        oninput="updateDestField(${dIdx}, 'fromName', this.value)" required>
               </div>
               <div class="gift-noshi-row">

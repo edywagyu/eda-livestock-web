@@ -1,0 +1,184 @@
+/* ============================================================
+   江田畜産 — WCAG 2.1 AA アクセシビリティ 共通レイヤー
+   ------------------------------------------------------------
+   1. タッチターゲット 44x44 強制 (WCAG 2.5.5)
+   2. :focus-visible グローバル (WCAG 2.4.7)
+   3. モバイル本文 16px / line-height 1.85 (老眼層配慮)
+   4. iOS Safari autozoom 防止 (input font-size 16px+)
+   5. Skip-link (キーボードユーザー)
+   ============================================================ */
+
+/* ---------- #1: タッチターゲット 44x44px (WCAG 2.5.5) ---------- */
+button,
+[role="button"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="submit"],
+input[type="button"],
+select,
+.btn,
+.nav-icon,
+.nav-link {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* スタンドアロンの SNS / アイコンリンクは min-width で正方形保証 */
+.nav-icon,
+.member-social-mini-btn,
+.eda-mobile-tab,
+.footer-icon,
+[aria-label] svg:only-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 例外: 本文中のインラインリンク (a タグ内の文字リンクは min-height 不要) */
+p a,
+li a:not(.btn):not(.nav-link),
+.article-body a,
+.faq-q a,
+.faq-a a,
+small a {
+  min-height: 0;
+  min-width: 0;
+  display: inline;
+}
+
+/* ---------- #2: :focus-visible グローバル (WCAG 2.4.7) ---------- */
+*:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+*:focus-visible {
+  outline: 2px solid var(--color-forest, #0F3D2E);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(15,61,46,0.15);
+  border-radius: 4px;
+  transition: outline-color 0.1s ease;
+}
+/* 暗背景ページ (header/footer) */
+.site-header *:focus-visible,
+.site-footer *:focus-visible,
+.hero *:focus-visible,
+.shop-hero *:focus-visible,
+.sub-hero *:focus-visible {
+  outline-color: var(--color-gold, #D4A93B);
+  box-shadow: 0 0 0 4px rgba(212,169,59,0.25);
+}
+
+/* ---------- #3: モバイル本文 16px / line-height 1.85 ---------- */
+@media (max-width: 720px) {
+  body {
+    font-size: 16px;
+    line-height: 1.85;
+    -webkit-text-size-adjust: 100%;
+  }
+  p,
+  .article-body p,
+  .faq-a,
+  .product-desc {
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+  small,
+  .text-micro,
+  .text-meta {
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+  /* 12px 以下は WCAG large-text exception 不適用 → 廃止 */
+}
+
+/* ---------- #4: iOS Safari autozoom 防止 ---------- */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  font-size: 16px !important;          /* < 16px だと iOS Safari が自動拡大 */
+  padding: 14px 16px;
+  border: 1px solid var(--color-bone, #EFE8D7);
+  border-radius: 4px;
+  min-height: 48px;
+  font-family: inherit;
+  color: var(--color-ink, #1A1A1A);
+  background: white;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-forest, #0F3D2E);
+  outline: 2px solid var(--color-forest, #0F3D2E);
+  outline-offset: 1px;
+}
+input::placeholder { color: rgba(0,0,0,0.4); }
+
+/* ラベル統一スタイル */
+.form-label,
+.field-label,
+label:not(.checkout-consent):not(.payment-option) {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest, #0F3D2E);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+.required-mark {
+  color: var(--color-red, #C8102E);
+  margin-left: 4px;
+}
+
+/* ---------- #5: Skip link (キーボード優先) ---------- */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  background: var(--color-forest, #0F3D2E);
+  color: white;
+  padding: 12px 20px;
+  z-index: 1000;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 8px;
+}
+
+/* ---------- #6: モーション軽減 (前庭障害対応, WCAG 2.3.3) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- #7: 視覚的フォーカス: 主要 CTA は強化 ---------- */
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-gold:focus-visible,
+.hero-btn-primary:focus-visible,
+.btn-add-cart:focus-visible {
+  outline: 3px solid var(--color-gold, #D4A93B);
+  outline-offset: 3px;
+}
+
+/* ---------- スクリーンリーダー専用テキスト ---------- */
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

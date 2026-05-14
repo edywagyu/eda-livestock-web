@@ -1712,12 +1712,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* 商品タグ（"Chicken · Breast" 等）も整える */
 .product-tag {
   font-family: var(--font-display) !important;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
   font-weight: 500;
-  color: var(--color-gold-soft);
-  text-transform: capitalize;
-  font-style: italic;
+  color: var(--color-forest);              /* gold → forest (WCAG 17:1) */
+  text-transform: uppercase;
+  font-style: normal;
+  opacity: 0.7;
 }
 
 /* ================ Hero 背景ロゴ ================ */
@@ -1934,14 +1935,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   to { opacity: 1; transform: translateY(0); }
 }
 .shop-hero-sub {
-  font-size: clamp(14px, 1.3vw, 16px);
-  color: rgba(255,255,255,0.78);
+  font-size: clamp(15px, 1.3vw, 16.5px);
+  color: rgba(255,255,255,0.95);          /* 0.78 → 0.95 WCAG AA 準拠 */
   line-height: 1.95;
   max-width: 540px;
   margin: 0 0 36px;
   opacity: 0;
   animation: heroFadeIn 0.8s 1.1s var(--ease-out-expo) forwards;
-  font-weight: 500;
+  font-weight: 400;
 }
 .shop-hero-sub strong { color: var(--color-gold); font-weight: 700; }
 .shop-hero-cta {
@@ -5319,14 +5320,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .gift-product-cta {
   font-family: var(--font-jp);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-gold-soft);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-forest);              /* gold-soft → forest (WCAG 17:1) */
   text-decoration: none;
   letter-spacing: 0.02em;
-  transition: color 0.2s;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-forest);
+  display: inline-block;
+  min-height: 44px;
+  transition: opacity 0.2s;
 }
-.gift-product-cta:hover { color: var(--color-forest); }
+.gift-product-cta:hover { opacity: 0.7; }
 
 @media (max-width: 720px) {
   .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
@@ -8600,10 +8605,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <script src="public/js/eda-config.js"></script>
 <script src="public/js/error-tracker.js" defer></script>
 <link rel="stylesheet" href="public/css/jp-typography.css">
+<link rel="stylesheet" href="public/css/a11y.css">
 <link rel="stylesheet" href="public/css/mobile-modern.css">
 <script src="public/js/geo-restrict.js" defer></script>
 </head>
 <body>
+<a href="#main" class="skip-link">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
   <div class="container nav">
     <a href="index.html" class="brand-mark">
@@ -8680,7 +8687,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
       <a href="#quiz" class="hero-btn-ghost">
-        <span>30秒でプラン診断</span>
+        <span>あなたに合う定期便を選ぶ</span>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </a>
     </div>
