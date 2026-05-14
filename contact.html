@@ -3569,9 +3569,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </style>
 <script src="public/js/eda-config.js"></script>
 <link rel="stylesheet" href="public/css/jp-typography.css">
+<link rel="stylesheet" href="public/css/a11y.css">
 <link rel="stylesheet" href="public/css/mobile-modern.css">
 </head>
 <body>
+<a href="#main" class="skip-link">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
   <div class="container nav">
     <a href="index.html" class="brand-mark">
@@ -3687,35 +3689,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         <div class="form-grid">
           <div class="form-field">
             <label>FULL NAME <span class="req">*</span></label>
-            <input type="text" name="name" placeholder="山田 太郎 / Tanaka Taro" required/>
+            <input type="text" name="name"  placeholder="山田 太郎 / Tanaka Taro" aria-label="山田 太郎 / Tanaka Taro" required/>
           </div>
           <div class="form-field">
             <label>TITLE / 役職</label>
-            <input type="text" name="title" placeholder="Buyer · Director · Chef · etc."/>
+            <input type="text" name="title"  placeholder="Buyer · Director · Chef · etc." aria-label="Buyer · Director · Chef · etc."/>
           </div>
           <div class="form-field">
             <label>COMPANY / 会社名</label>
-            <input type="text" name="company" placeholder="株式会社○○ / Hotel ○○"/>
+            <input type="text" name="company"  placeholder="株式会社○○ / Hotel ○○" aria-label="株式会社○○ / Hotel ○○"/>
           </div>
           <div class="form-field">
             <label>WEBSITE</label>
-            <input type="url" name="website" placeholder="https://..."/>
+            <input type="url" name="website"  placeholder="https://..." aria-label="https://..."/>
           </div>
           <div class="form-field">
             <label>EMAIL <span class="req">*</span></label>
-            <input type="email" name="email" placeholder="your@email.com" required/>
+            <input type="email" name="email"  placeholder="your@email.com" aria-label="your@email.com" required/>
           </div>
           <div class="form-field">
             <label>PHONE / WHATSAPP</label>
-            <input type="tel" name="phone" placeholder="+81 90-1234-5678"/>
+            <input type="tel" name="phone"  placeholder="+81 90-1234-5678" aria-label="+81 90-1234-5678"/>
           </div>
           <div class="form-field">
             <label>COUNTRY / 国 <span class="req">*</span></label>
-            <input type="text" name="country" placeholder="Japan / United States / Hong Kong" required/>
+            <input type="text" name="country"  placeholder="Japan / United States / Hong Kong" aria-label="Japan / United States / Hong Kong" required/>
           </div>
           <div class="form-field">
             <label>CITY / 都市</label>
-            <input type="text" name="city" placeholder="Tokyo / New York / Hong Kong"/>
+            <input type="text" name="city"  placeholder="Tokyo / New York / Hong Kong" aria-label="Tokyo / New York / Hong Kong"/>
           </div>
           <div class="form-field">
             <label>PREFERRED CONTACT</label>
@@ -3797,7 +3799,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           </div>
           <div class="form-field full">
             <label>CURRENT WAGYU SUPPLIERS (任意)</label>
-            <input type="text" name="current_suppliers" placeholder="現在の和牛仕入先（あれば）"/>
+            <input type="text" name="current_suppliers"  placeholder="現在の和牛仕入先（あれば）" aria-label="現在の和牛仕入先（あれば）"/>
             <span class="hint">機密情報のためお気軽にご記入ください。情報は厳守いたします。</span>
           </div>
         </div>
@@ -3999,7 +4001,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           </div>
           <div class="form-field full">
             <label>DESTINATION PORT/AIRPORT</label>
-            <input type="text" name="destination" placeholder="HKG / JFK / LHR / etc."/>
+            <input type="text" name="destination"  placeholder="HKG / JFK / LHR / etc." aria-label="HKG / JFK / LHR / etc."/>
           </div>
         </div>
       </div>
@@ -4072,12 +4074,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
           <div class="form-field">
             <label>MESSAGE / メッセージ <span class="req">*</span></label>
-            <textarea name="message" rows="6" placeholder="ご用件の詳細、ご質問、ご要望などをご記入ください。&#10;&#10;Please describe your inquiry in detail." required></textarea>
+            <textarea name="message" rows="6"  placeholder="ご用件の詳細、ご質問、ご要望などをご記入ください。&#10;&#10;Please describe your inquiry in detail." aria-label="ご用件の詳細、ご質問、ご要望などをご記入ください。&#10;&#10;Please describe your inquiry in detail." required></textarea>
           </div>
 
           <div class="form-field">
             <label>ATTACHMENT (任意)</label>
-            <input type="text" name="attachment_note" placeholder="LOI・営業免許証・カタログ等は別途メールで送信ください"/>
+            <input type="text" name="attachment_note"  placeholder="LOI・営業免許証・カタログ等は別途メールで送信ください" aria-label="LOI・営業免許証・カタログ等は別途メールで送信ください"/>
             <span class="hint">大容量ファイルは送信後 backoffice@eda-livestock.com に直接お送りください。</span>
           </div>
 
