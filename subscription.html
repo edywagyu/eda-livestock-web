@@ -26,42 +26,42 @@
  * EDA-LIVESTOCK Subscription Page — shop.html とトーン統一
  * ================================================================ */
 :root {
-  --color-forest: #0F3D2E;
-  --color-forest-deep: #0A2D21;
-  --color-forest-light: #143D2B;
-  --color-gold: #D4A93B;
-  --color-gold-bright: #E5B547;
-  --color-gold-soft: #B8932F;
-  --color-cream: #FAF7F0;
-  --color-paper: #F5EFE3;
-  --color-bone: #EFE8D7;
-  --color-ink: #1A1A1A;
-  --color-ink-muted: #5C5C5C;
-  --color-red: #C8102E;
-  --color-line: rgba(212, 169, 59, 0.18);
-  --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
-  --font-numeric: 'Inter', -apple-system, sans-serif;
-  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
-  --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
-  --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
-  --tracking-wider: 0.12em;
-  --tracking-widest: 0.24em;
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
-  --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg: 0 16px 48px rgba(15, 61, 46, 0.14), 0 4px 12px rgba(0,0,0,0.06);
-  --shadow-xl: 0 28px 72px rgba(15, 61, 46, 0.20), 0 6px 18px rgba(0,0,0,0.08);
+ --color-forest: #0F3D2E;
+ --color-forest-deep: #0A2D21;
+ --color-forest-light: #143D2B;
+ --color-gold: #D4A93B;
+ --color-gold-bright: #E5B547;
+ --color-gold-soft: #B8932F;
+ --color-cream: #FAF7F0;
+ --color-paper: #F5EFE3;
+ --color-bone: #EFE8D7;
+ --color-ink: #1A1A1A;
+ --color-ink-muted: #5C5C5C;
+ --color-red: #C8102E;
+ --color-line: rgba(212, 169, 59, 0.18);
+ --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+ --font-numeric: 'Inter', -apple-system, sans-serif;
+ --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+ --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+ --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
+ --tracking-wider: 0.12em;
+ --tracking-widest: 0.24em;
+ --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+ --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
+ --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
+ --shadow-lg: 0 16px 48px rgba(15, 61, 46, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+ --shadow-xl: 0 28px 72px rgba(15, 61, 46, 0.20), 0 6px 18px rgba(0,0,0,0.08);
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-ink);
-  background: var(--color-cream);
+ margin: 0;
+ font-family: var(--font-body);
+ font-size: 16px;
+ line-height: 1.6;
+ color: var(--color-ink);
+ background: var(--color-cream);
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -85,9 +85,9 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-cycle-num,
 .sub-cycle-time,
 .delivery-time {
-  font-family: var(--font-numeric) !important;
-  font-feature-settings: 'tnum' 1, 'lnum' 1;
-  letter-spacing: -0.01em !important;
+ font-family: var(--font-numeric) !important;
+ font-feature-settings: 'tnum' 1, 'lnum' 1;
+ letter-spacing: -0.01em !important;
 }
 
 .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
@@ -95,20 +95,20 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ================ HEADER ================ */
 .site-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  padding: 16px 0;
-  transition: all 0.35s var(--ease-out-expo);
-  background: rgba(15, 61, 46, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(212, 169, 59, 0.18);
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+ position: fixed;
+ top: 0; left: 0; right: 0;
+ z-index: 1000;
+ padding: 16px 0;
+ transition: all 0.35s var(--ease-out-expo);
+ background: rgba(15, 61, 46, 0.88);
+ backdrop-filter: blur(10px);
+ -webkit-backdrop-filter: blur(10px);
+ border-bottom: 1px solid rgba(212, 169, 59, 0.18);
+ box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
 }
 .site-header.scrolled {
-  background: rgba(15, 61, 46, 0.97);
-  padding: 12px 0;
+ background: rgba(15, 61, 46, 0.97);
+ padding: 12px 0;
 }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand-mark { display: flex; align-items: center; gap: 12px; color: white; flex-shrink: 0; }
@@ -116,14 +116,14 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .primary-nav { flex: 1; display: flex; justify-content: center; }
 .nav-list { display: flex; gap: 28px; }
 .nav-list a {
-  font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  letter-spacing: 0.04em; color: white; position: relative;
-  padding: 8px 0; white-space: nowrap;
+ font-family: var(--font-body); font-size: 13px; font-weight: 500;
+ letter-spacing: 0.04em; color: white; position: relative;
+ padding: 8px 0; white-space: nowrap;
 }
 .nav-list a.current::after,
 .nav-list a:hover::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 1px; background: var(--color-gold);
+ content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+ height: 1px; background: var(--color-gold);
 }
 .nav-utils { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
 .nav-icon { color: white; display: flex; transition: color 0.3s; }
@@ -133,128 +133,128 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ================ HERO ================ */
 .sub-hero {
-  position: relative;
-  min-height: 60vh;
-  background:
-    radial-gradient(circle at 80% 30%, rgba(212,169,59,0.12), transparent 50%),
-    linear-gradient(135deg, #0F3D2E 0%, #0A2D21 60%, #061a12 100%);
-  color: white;
-  padding: 140px 0 80px;
-  overflow: hidden;
+ position: relative;
+ min-height: 60vh;
+ background:
+ radial-gradient(circle at 80% 30%, rgba(212,169,59,0.12), transparent 50%),
+ linear-gradient(135deg, #0F3D2E 0%, #0A2D21 60%, #061a12 100%);
+ color: white;
+ padding: 140px 0 80px;
+ overflow: hidden;
 }
 .sub-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('public/images/products/drive/freezer-stocked.jpg') center/cover;
-  opacity: 0.15;
-  z-index: 0;
+ content: '';
+ position: absolute;
+ inset: 0;
+ background: url('public/images/products/drive/freezer-stocked.jpg') center/cover;
+ opacity: 0.15;
+ z-index: 0;
 }
 .sub-hero-content { position: relative; z-index: 1; max-width: 760px; }
 .sub-hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display); font-size: 11px;
-  letter-spacing: 0.22em; color: var(--color-gold);
-  background: rgba(212,169,59,0.10);
-  border: 1px solid rgba(212,169,59,0.35);
-  padding: 6px 14px; border-radius: 18px;
-  margin-bottom: 22px; font-weight: 700;
+ display: inline-flex; align-items: center; gap: 8px;
+ font-family: var(--font-display); font-size: 11px;
+ letter-spacing: 0.22em; color: var(--color-gold);
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.35);
+ padding: 6px 14px; border-radius: 18px;
+ margin-bottom: 22px; font-weight: 700;
 }
 .sub-hero-eyebrow::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--color-gold);
-  animation: heroDot 1.6s ease-in-out infinite;
+ content: '';
+ width: 6px; height: 6px;
+ border-radius: 50%;
+ background: var(--color-gold);
+ animation: heroDot 1.6s ease-in-out infinite;
 }
 @keyframes heroDot {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212,169,59,0.6); }
-  50%      { opacity: 0.6; box-shadow: 0 0 0 8px rgba(212,169,59,0); }
+ 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212,169,59,0.6); }
+ 50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(212,169,59,0); }
 }
 .sub-hero-title {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(32px, 5.4vw, 60px);
-  line-height: 1.2;
-  font-weight: 700;
-  margin-bottom: 22px;
-  letter-spacing: -0.005em;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(32px, 5.4vw, 60px);
+ line-height: 1.2;
+ font-weight: 700;
+ margin-bottom: 22px;
+ letter-spacing: -0.005em;
 }
 .sub-hero-title .accent { color: var(--color-gold); }
 .sub-hero-sub {
-  font-size: clamp(14px, 1.4vw, 17px);
-  line-height: 1.9;
-  color: rgba(255,255,255,0.85);
-  margin-bottom: 32px;
+ font-size: clamp(14px, 1.4vw, 17px);
+ line-height: 1.9;
+ color: rgba(255,255,255,0.85);
+ margin-bottom: 32px;
 }
 .sub-hero-promo {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(135deg, #9F1D24, #7A1119);
-  padding: 14px 22px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(212,169,59,0.5);
-  margin-bottom: 28px;
-  box-shadow: var(--shadow-md);
+ display: inline-flex;
+ align-items: center;
+ gap: 12px;
+ background: linear-gradient(135deg, #9F1D24, #7A1119);
+ padding: 14px 22px;
+ border-radius: 14px;
+ border: 1.5px solid rgba(212,169,59,0.5);
+ margin-bottom: 28px;
+ box-shadow: var(--shadow-md);
 }
 .sub-hero-promo-tag {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  color: var(--color-gold);
-  font-weight: 700;
-  background: rgba(0,0,0,0.2);
-  padding: 4px 10px;
-  border-radius: 12px;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.22em;
+ color: var(--color-gold);
+ font-weight: 700;
+ background: rgba(0,0,0,0.2);
+ padding: 4px 10px;
+ border-radius: 12px;
 }
 .sub-hero-promo-text {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ font-weight: 700;
+ color: white;
 }
 .sub-hero-promo-text strong {
-  color: var(--color-gold);
-  font-size: 22px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  margin: 0 4px;
-  letter-spacing: -0.01em;
+ color: var(--color-gold);
+ font-size: 22px;
+ font-family: var(--font-display);
+ font-weight: 700;
+ margin: 0 4px;
+ letter-spacing: -0.01em;
 }
 .sub-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
 .btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 28px; border-radius: 30px;
-  font-family: var(--font-jp); font-size: 14px;
-  font-weight: 700; letter-spacing: 0.04em;
-  transition: all 0.3s var(--ease-out-expo);
-  cursor: pointer; white-space: nowrap;
-  border: 1.5px solid transparent;
+ display: inline-flex; align-items: center; gap: 8px;
+ padding: 14px 28px; border-radius: 30px;
+ font-family: var(--font-jp); font-size: 14px;
+ font-weight: 700; letter-spacing: 0.04em;
+ transition: all 0.3s var(--ease-out-expo);
+ cursor: pointer; white-space: nowrap;
+ border: 1.5px solid transparent;
 }
 .btn-gold {
-  background: linear-gradient(135deg, var(--color-gold), #E5B547);
-  color: var(--color-forest-deep);
-  box-shadow: 0 8px 24px rgba(212,169,59,0.3);
+ background: linear-gradient(135deg, var(--color-gold), #E5B547);
+ color: var(--color-forest-deep);
+ box-shadow: 0 8px 24px rgba(212,169,59,0.3);
 }
 .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,169,59,0.4); }
 .btn-ghost {
-  border-color: rgba(212,169,59,0.5);
-  color: var(--color-gold);
+ border-color: rgba(212,169,59,0.5);
+ color: var(--color-gold);
 }
 .btn-ghost:hover { background: rgba(212,169,59,0.12); }
 
 .sub-hero-trust {
-  display: flex; gap: 24px; margin-top: 40px; padding-top: 32px;
-  border-top: 1px solid rgba(212,169,59,0.18);
-  flex-wrap: wrap;
+ display: flex; gap: 24px; margin-top: 40px; padding-top: 32px;
+ border-top: 1px solid rgba(212,169,59,0.18);
+ flex-wrap: wrap;
 }
 .sub-hero-trust-item {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; color: rgba(255,255,255,0.7);
-  font-family: var(--font-jp); font-weight: 600;
+ display: inline-flex; align-items: center; gap: 6px;
+ font-size: 12px; color: rgba(255,255,255,0.7);
+ font-family: var(--font-jp); font-weight: 600;
 }
 .sub-hero-trust-item::before {
-  content: '✓'; color: var(--color-gold); font-weight: 700;
+ content: '✓'; color: var(--color-gold); font-weight: 700;
 }
 
 /* ================ プラン3枚 ================ */
@@ -262,293 +262,293 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ?plan= 指定で来た時：プラン選択セクションを圧縮（プラン変更可能ラベルのみに） */
 .sub-plans-section.plans-compact {
-  padding: 32px 0 0;
-  background: linear-gradient(180deg, var(--color-cream) 0%, white 100%);
+ padding: 32px 0 0;
+ background: linear-gradient(180deg, var(--color-cream) 0%, white 100%);
 }
 .sub-plans-section.plans-compact .sub-plans-grid { display: none; }
 .sub-plans-section.plans-compact .sub-plans-head { margin-bottom: 0; }
 .sub-plans-section.plans-compact .sub-plans-eyebrow {
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  font-size: 11px;
-  letter-spacing: 0.18em;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ font-size: 11px;
+ letter-spacing: 0.18em;
 }
 .sub-plans-section.plans-compact .sub-plans-eyebrow::before {
-  content: '✓ ';
-  font-weight: 800;
+ content: '✓ ';
+ font-weight: 800;
 }
 .sub-plans-section.plans-compact .sub-plans-title {
-  font-size: clamp(20px, 3vw, 28px);
-  margin-bottom: 8px;
+ font-size: clamp(20px, 3vw, 28px);
+ margin-bottom: 8px;
 }
 .sub-plans-section.plans-compact .sub-plans-lead {
-  font-size: 12.5px;
-  margin-bottom: 16px;
+ font-size: 12.5px;
+ margin-bottom: 16px;
 }
 .sub-plans-section.plans-compact::after {
-  content: '↓ 単品追加を選ぶ';
-  display: block;
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  color: var(--color-gold-soft);
-  margin-top: 18px;
-  padding-bottom: 8px;
-  animation: scrollHint 1.6s ease-in-out infinite;
-  font-weight: 700;
+ content: '↓ 単品追加を選ぶ';
+ display: block;
+ text-align: center;
+ font-family: var(--font-display);
+ font-size: 12px;
+ letter-spacing: 0.18em;
+ color: var(--color-gold-soft);
+ margin-top: 18px;
+ padding-bottom: 8px;
+ animation: scrollHint 1.6s ease-in-out infinite;
+ font-weight: 700;
 }
 @keyframes scrollHint {
-  0%, 100% { transform: translateY(0); opacity: 0.6; }
-  50%      { transform: translateY(4px); opacity: 1; }
+ 0%, 100% { transform: translateY(0); opacity: 0.6; }
+ 50% { transform: translateY(4px); opacity: 1; }
 }
 .sub-plans-head { text-align: center; margin: 0 auto 56px; max-width: 720px; }
 .sub-plans-eyebrow {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  color: var(--color-gold);
-  background: white;
-  border: 1px solid rgba(212,169,59,0.35);
-  padding: 6px 16px;
-  border-radius: 18px;
-  margin-bottom: 18px;
-  font-weight: 700;
-  box-shadow: var(--shadow-sm);
+ display: inline-block;
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: 0.22em;
+ color: var(--color-gold);
+ background: white;
+ border: 1px solid rgba(212,169,59,0.35);
+ padding: 6px 16px;
+ border-radius: 18px;
+ margin-bottom: 18px;
+ font-weight: 700;
+ box-shadow: var(--shadow-sm);
 }
 .sub-plans-title {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(28px, 4.4vw, 44px);
-  color: var(--color-forest);
-  margin-bottom: 16px;
-  line-height: 1.3;
-  font-weight: 700;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(28px, 4.4vw, 44px);
+ color: var(--color-forest);
+ margin-bottom: 16px;
+ line-height: 1.3;
+ font-weight: 700;
 }
 .sub-plans-lead {
-  font-size: 15px; line-height: 1.85;
-  color: var(--color-ink-muted); margin: 0 auto; max-width: 580px;
+ font-size: 15px; line-height: 1.85;
+ color: var(--color-ink-muted); margin: 0 auto; max-width: 580px;
 }
 
 .sub-plans-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  max-width: 1080px; margin: 0 auto;
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 20px;
+ max-width: 1080px; margin: 0 auto;
 }
 .sub-plan-card {
-  background: white; border: 1px solid var(--color-bone);
-  border-radius: 16px; padding: 32px 28px 28px;
-  position: relative;
-  transition: all 0.4s var(--ease-out-expo);
-  display: flex; flex-direction: column;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
+ background: white; border: 1px solid var(--color-bone);
+ border-radius: 16px; padding: 32px 28px 28px;
+ position: relative;
+ transition: all 0.4s var(--ease-out-expo);
+ display: flex; flex-direction: column;
+ cursor: pointer;
+ box-shadow: var(--shadow-sm);
 }
 .sub-plan-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-gold);
-  box-shadow: var(--shadow-lg);
+ transform: translateY(-4px);
+ border-color: var(--color-gold);
+ box-shadow: var(--shadow-lg);
 }
 .sub-plan-card.featured {
-  border: 2px solid var(--color-gold);
-  background: linear-gradient(180deg, #FFFCF5, white);
-  box-shadow: var(--shadow-md);
+ border: 2px solid var(--color-gold);
+ background: linear-gradient(180deg, #FFFCF5, white);
+ box-shadow: var(--shadow-md);
 }
 .sub-plan-card.selected {
-  border: 2px solid var(--color-forest);
-  background: linear-gradient(180deg, #F5F9F5, white);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+ border: 2px solid var(--color-forest);
+ background: linear-gradient(180deg, #F5F9F5, white);
+ transform: translateY(-4px);
+ box-shadow: var(--shadow-lg);
 }
 .sub-plan-card.selected::after {
-  content: '✓ 選択中';
-  position: absolute;
-  top: 16px; right: 16px;
-  background: var(--color-forest);
-  color: var(--color-gold);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  padding: 5px 12px;
-  border-radius: 12px;
-  font-weight: 700;
+ content: '✓ 選択中';
+ position: absolute;
+ top: 16px; right: 16px;
+ background: var(--color-forest);
+ color: var(--color-gold);
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.12em;
+ padding: 5px 12px;
+ border-radius: 12px;
+ font-weight: 700;
 }
 .sub-plan-tag {
-  position: absolute; top: -10px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-gold); color: var(--color-forest-deep);
-  font-family: var(--font-display);
-  font-size: 10px; letter-spacing: 0.14em;
-  padding: 4px 14px; border-radius: 12px; font-weight: 700;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(212,169,59,0.4);
+ position: absolute; top: -10px; left: 50%;
+ transform: translateX(-50%);
+ background: var(--color-gold); color: var(--color-forest-deep);
+ font-family: var(--font-display);
+ font-size: 10px; letter-spacing: 0.14em;
+ padding: 4px 14px; border-radius: 12px; font-weight: 700;
+ white-space: nowrap;
+ box-shadow: 0 4px 12px rgba(212,169,59,0.4);
 }
 .sub-plan-cycle {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--color-gold-soft);
-  margin-bottom: 8px;
-  font-weight: 700;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.18em;
+ color: var(--color-gold-soft);
+ margin-bottom: 8px;
+ font-weight: 700;
 }
 .sub-plan-name {
-  font-family: var(--font-jp-serif);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--color-forest);
-  margin-bottom: 4px;
+ font-family: var(--font-jp-serif);
+ font-size: 22px;
+ font-weight: 700;
+ color: var(--color-forest);
+ margin-bottom: 4px;
 }
 .sub-plan-target {
-  font-size: 12px;
-  color: var(--color-gold-soft);
-  font-weight: 700;
-  margin-bottom: 18px;
-  letter-spacing: 0.02em;
+ font-size: 12px;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ margin-bottom: 18px;
+ letter-spacing: 0.02em;
 }
 .sub-plan-items {
-  font-size: 12.5px; line-height: 1.7;
-  color: var(--color-ink-muted);
-  padding: 14px 16px;
-  background: var(--color-paper);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  flex: 1;
+ font-size: 12.5px; line-height: 1.7;
+ color: var(--color-ink-muted);
+ padding: 14px 16px;
+ background: var(--color-paper);
+ border-radius: 10px;
+ margin-bottom: 20px;
+ flex: 1;
 }
 .sub-plan-items b {
-  display: block;
-  font-size: 11.5px;
-  color: var(--color-forest);
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
+ display: block;
+ font-size: 11.5px;
+ color: var(--color-forest);
+ letter-spacing: 0.04em;
+ margin-bottom: 6px;
 }
 
 /* ====== プランスペック一覧 (合計/商品/産地/...) ====== */
 .sub-plan-spec {
-  list-style: none;
-  margin: 0 0 14px;
-  padding: 12px 14px;
-  background: rgba(15,61,46,0.05);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+ list-style: none;
+ margin: 0 0 14px;
+ padding: 12px 14px;
+ background: rgba(15,61,46,0.05);
+ border-radius: 10px;
+ display: flex;
+ flex-direction: column;
+ gap: 6px;
 }
 .sub-plan-spec li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11.5px;
-  line-height: 1.4;
-  color: var(--color-ink);
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ font-size: 11.5px;
+ line-height: 1.4;
+ color: var(--color-ink);
 }
 .sub-plan-spec li b {
-  flex-shrink: 0;
-  width: 64px;
-  font-weight: 700;
-  font-size: 10.5px;
-  letter-spacing: 0.02em;
-  color: var(--color-forest);
-  font-family: var(--font-jp);
+ flex-shrink: 0;
+ width: 64px;
+ font-weight: 700;
+ font-size: 10.5px;
+ letter-spacing: 0.02em;
+ color: var(--color-forest);
+ font-family: var(--font-jp);
 }
 .sub-plan-spec li span {
-  flex: 1;
-  color: var(--color-ink-muted);
-  font-weight: 600;
+ flex: 1;
+ color: var(--color-ink-muted);
+ font-weight: 600;
 }
 
 /* ====== VIP プランカード (subscription.html) ====== */
 .sub-plan-card--vip {
-  background: linear-gradient(180deg, #FFFEF5 0%, #FFFCE8 100%);
-  border: 2px solid var(--color-gold);
-  position: relative;
+ background: linear-gradient(180deg, #FFFEF5 0%, #FFFCE8 100%);
+ border: 2px solid var(--color-gold);
+ position: relative;
 }
 .sub-plan-card--vip::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 4px;
-  background: linear-gradient(90deg, #B89030, #FFE594, #D4A93B, #FFE594, #B89030);
-  border-radius: 14px 14px 0 0;
+ content: '';
+ position: absolute;
+ top: 0; left: 0; right: 0; height: 4px;
+ background: linear-gradient(90deg, #B89030, #FFE594, #D4A93B, #FFE594, #B89030);
+ border-radius: 14px 14px 0 0;
 }
 .sub-plan-tag--vip {
-  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
-  color: var(--color-forest-deep) !important;
+ background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
+ color: var(--color-forest-deep) !important;
 }
 .sub-plan-vip-perk-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  background:
-    radial-gradient(circle at 0% 50%, rgba(212,169,59,0.15), transparent 70%),
-    linear-gradient(135deg, #0F3D2E, #143D2B);
-  color: white;
-  border-radius: 10px;
-  margin: 0 0 14px;
-  border: 1px solid rgba(212,169,59,0.45);
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 12px 14px;
+ background:
+ radial-gradient(circle at 0% 50%, rgba(212,169,59,0.15), transparent 70%),
+ linear-gradient(135deg, #0F3D2E, #143D2B);
+ color: white;
+ border-radius: 10px;
+ margin: 0 0 14px;
+ border: 1px solid rgba(212,169,59,0.45);
 }
 .sub-plan-vip-perk-row > span {
-  font-size: 22px;
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 4px rgba(212,169,59,0.5));
+ font-size: 22px;
+ flex-shrink: 0;
+ filter: drop-shadow(0 0 4px rgba(212,169,59,0.5));
 }
 .sub-plan-vip-perk-row > div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  line-height: 1.3;
+ display: flex;
+ flex-direction: column;
+ gap: 2px;
+ line-height: 1.3;
 }
 .sub-plan-vip-perk-row strong {
-  font-size: 12px;
-  color: var(--color-gold);
-  letter-spacing: 0.02em;
-  font-weight: 700;
+ font-size: 12px;
+ color: var(--color-gold);
+ letter-spacing: 0.02em;
+ font-weight: 700;
 }
 .sub-plan-vip-perk-row small {
-  font-size: 10.5px;
-  color: rgba(255,255,255,0.75);
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.75);
 }
 .sub-plan-pricing { margin-bottom: 16px; }
 .sub-plan-old-price {
-  font-family: var(--font-display);
-  font-size: 14px;
-  color: var(--color-ink-muted);
-  text-decoration: line-through;
-  text-decoration-color: var(--color-red);
+ font-family: var(--font-display);
+ font-size: 14px;
+ color: var(--color-ink-muted);
+ text-decoration: line-through;
+ text-decoration-color: var(--color-red);
 }
 .sub-plan-price {
-  font-family: var(--font-display);
-  font-size: 36px;
-  color: var(--color-forest);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  line-height: 1;
+ font-family: var(--font-display);
+ font-size: 36px;
+ color: var(--color-forest);
+ font-weight: 700;
+ font-variant-numeric: tabular-nums;
+ letter-spacing: -0.02em;
+ line-height: 1;
 }
 .sub-plan-price small {
-  font-family: var(--font-jp);
-  font-size: 12px;
-  color: var(--color-ink-muted);
-  margin-left: 4px;
-  font-weight: 600;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ margin-left: 4px;
+ font-weight: 600;
 }
 .sub-plan-savings {
-  display: inline-block;
-  background: rgba(212,169,59,0.18);
-  color: var(--color-gold-soft);
-  font-size: 11px; font-weight: 700;
-  padding: 3px 10px; border-radius: 10px;
-  margin-top: 6px;
+ display: inline-block;
+ background: rgba(212,169,59,0.18);
+ color: var(--color-gold-soft);
+ font-size: 11px; font-weight: 700;
+ padding: 3px 10px; border-radius: 10px;
+ margin-top: 6px;
 }
 .sub-plan-select-btn {
-  display: block; width: 100%;
-  padding: 12px 18px;
-  background: var(--color-forest); color: white;
-  border-radius: 8px;
-  font-family: var(--font-jp); font-size: 13px;
-  font-weight: 700; letter-spacing: 0.04em;
-  text-align: center;
-  transition: all 0.3s var(--ease-out-expo);
+ display: block; width: 100%;
+ padding: 12px 18px;
+ background: var(--color-forest); color: white;
+ border-radius: 8px;
+ font-family: var(--font-jp); font-size: 13px;
+ font-weight: 700; letter-spacing: 0.04em;
+ text-align: center;
+ transition: all 0.3s var(--ease-out-expo);
 }
 .sub-plan-card:hover .sub-plan-select-btn { background: var(--color-forest-deep); }
 .sub-plan-card.featured .sub-plan-select-btn { background: var(--color-gold); color: var(--color-forest-deep); }
@@ -556,1005 +556,1005 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ================ 詳細セクション (選択中プランの内容物・サイクル) ================ */
 .sub-detail {
-  background: white;
-  padding: 96px 0;
-  position: relative;
-  border-top: 1px solid var(--color-bone);
-  border-bottom: 1px solid var(--color-bone);
+ background: white;
+ padding: 96px 0;
+ position: relative;
+ border-top: 1px solid var(--color-bone);
+ border-bottom: 1px solid var(--color-bone);
 }
 .sub-detail-head { text-align: center; margin-bottom: 56px; }
 .sub-detail-eyebrow {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  color: var(--color-gold);
-  font-weight: 700;
-  margin-bottom: 14px;
+ display: inline-block;
+ font-family: var(--font-display);
+ font-size: 10.5px;
+ letter-spacing: 0.22em;
+ color: var(--color-gold);
+ font-weight: 700;
+ margin-bottom: 14px;
 }
 .sub-detail-title {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 36px);
-  color: var(--color-forest);
-  margin-bottom: 12px;
-  font-weight: 700;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.6vw, 36px);
+ color: var(--color-forest);
+ margin-bottom: 12px;
+ font-weight: 700;
 }
 .sub-detail-plan-name {
-  display: inline-block;
-  font-family: var(--font-jp); /* 日本語見やすく */
-  font-size: 13.5px;
-  letter-spacing: 0.06em;
-  background: var(--color-forest);
-  color: white; /* gold→white でコントラストUP */
-  padding: 8px 22px;
-  border-radius: 16px;
-  font-weight: 700;
+ display: inline-block;
+ font-family: var(--font-jp); /* 日本語見やすく */
+ font-size: 13.5px;
+ letter-spacing: 0.06em;
+ background: var(--color-forest);
+ color: white; /* gold→white でコントラストUP */
+ padding: 8px 22px;
+ border-radius: 16px;
+ font-weight: 700;
 }
 .sub-detail-plan-name strong,
 .sub-detail-plan-name b {
-  color: var(--color-gold);
-  font-family: var(--font-numeric);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  margin: 0 2px;
+ color: var(--color-gold);
+ font-family: var(--font-numeric);
+ font-weight: 800;
+ letter-spacing: -0.01em;
+ margin: 0 2px;
 }
 
 .sub-detail-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 56px;
-  align-items: start;
-  max-width: 1180px; margin: 0 auto;
+ display: grid;
+ grid-template-columns: 1.4fr 1fr;
+ gap: 56px;
+ align-items: start;
+ max-width: 1180px; margin: 0 auto;
 }
 .sub-detail-items {
-  background: var(--color-paper);
-  border-radius: 16px;
-  padding: 32px 36px;
-  border: 1px solid var(--color-bone);
+ background: var(--color-paper);
+ border-radius: 16px;
+ padding: 32px 36px;
+ border: 1px solid var(--color-bone);
 }
 .sub-detail-items h3 {
-  font-family: var(--font-jp-serif);
-  font-size: 18px;
-  color: var(--color-forest);
-  margin-bottom: 22px;
-  padding-bottom: 14px;
-  border-bottom: 1px dashed var(--color-bone);
-  font-weight: 700;
+ font-family: var(--font-jp-serif);
+ font-size: 18px;
+ color: var(--color-forest);
+ margin-bottom: 22px;
+ padding-bottom: 14px;
+ border-bottom: 1px dashed var(--color-bone);
+ font-weight: 700;
 }
 .sub-detail-item-row {
-  display: grid;
-  grid-template-columns: 64px 1fr auto;
-  gap: 18px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(212,169,59,0.12);
-  align-items: center;
+ display: grid;
+ grid-template-columns: 64px 1fr auto;
+ gap: 18px;
+ padding: 14px 0;
+ border-bottom: 1px solid rgba(212,169,59,0.12);
+ align-items: center;
 }
 .sub-detail-item-row:last-child { border-bottom: 0; }
 .sub-detail-item-img {
-  width: 64px; height: 64px;
-  border-radius: 8px;
-  background-color: var(--color-bone);
-  background-size: cover;
-  background-position: center;
-  flex-shrink: 0;
+ width: 64px; height: 64px;
+ border-radius: 8px;
+ background-color: var(--color-bone);
+ background-size: cover;
+ background-position: center;
+ flex-shrink: 0;
 }
 .sub-detail-item-info strong {
-  display: block;
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 2px;
+ display: block;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 2px;
 }
 .sub-detail-item-info span {
-  font-size: 11.5px;
-  color: var(--color-ink-muted);
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
 }
 .sub-detail-item-qty {
-  font-family: var(--font-numeric); /* Inter で数字を見やすく */
-  font-size: 15px;
-  color: var(--color-forest); /* gold-soft が薄かったので濃緑に */
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-  padding: 4px 10px;
-  background: rgba(212,169,59,0.15);
-  border-radius: 6px;
-  border: 1px solid rgba(212,169,59,0.4);
-  white-space: nowrap;
+ font-family: var(--font-numeric); /* Inter で数字を見やすく */
+ font-size: 15px;
+ color: var(--color-forest); /* gold-soft が薄かったので濃緑に */
+ font-weight: 800;
+ font-variant-numeric: tabular-nums;
+ letter-spacing: -0.01em;
+ padding: 4px 10px;
+ background: rgba(212,169,59,0.15);
+ border-radius: 6px;
+ border: 1px solid rgba(212,169,59,0.4);
+ white-space: nowrap;
 }
 
 .sub-detail-side {
-  display: flex; flex-direction: column; gap: 18px;
+ display: flex; flex-direction: column; gap: 18px;
 }
 .sub-detail-card {
-  background: white;
-  border: 1px solid var(--color-bone);
-  border-radius: 14px;
-  padding: 22px 24px;
-  box-shadow: var(--shadow-sm);
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 14px;
+ padding: 22px 24px;
+ box-shadow: var(--shadow-sm);
 }
 .sub-detail-card-head {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 12px;
+ display: flex; align-items: center; gap: 10px;
+ margin-bottom: 12px;
 }
 .sub-detail-card-icon {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
-  color: var(--color-gold);
-  display: flex; align-items: center; justify-content: center;
+ width: 36px; height: 36px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: var(--color-gold);
+ display: flex; align-items: center; justify-content: center;
 }
 .sub-detail-card-icon svg { width: 18px; height: 18px; }
 .sub-detail-card-title {
-  font-family: var(--font-jp); font-size: 13.5px;
-  color: var(--color-forest); font-weight: 700;
+ font-family: var(--font-jp); font-size: 13.5px;
+ color: var(--color-forest); font-weight: 700;
 }
 .sub-detail-card p {
-  font-size: 12px;
-  color: var(--color-ink-muted);
-  line-height: 1.7;
-  margin: 0;
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ line-height: 1.7;
+ margin: 0;
 }
 .sub-detail-card .delivery-date-large {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--color-gold);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  margin: 6px 0 2px;
+ font-family: var(--font-display);
+ font-size: 28px;
+ color: var(--color-gold);
+ font-weight: 700;
+ letter-spacing: -0.01em;
+ margin: 6px 0 2px;
 }
 .sub-detail-card .delivery-time {
-  font-family: var(--font-jp);
-  font-size: 12px;
-  color: var(--color-forest);
-  font-weight: 600;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ color: var(--color-forest);
+ font-weight: 600;
 }
 
 /* ================ 今月だけ追加（アドオン） ================ */
 .sub-addons {
-  padding: 80px 0;
-  background: white;
-  border-top: 1px solid var(--color-bone);
+ padding: 80px 0;
+ background: white;
+ border-top: 1px solid var(--color-bone);
 }
 .sub-addons-head { text-align: center; max-width: 720px; margin: 0 auto 36px; }
 .sub-addons-eyebrow {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  color: var(--color-gold);
-  background: rgba(212,169,59,0.10);
-  border: 1px solid rgba(212,169,59,0.35);
-  padding: 6px 16px;
-  border-radius: 18px;
-  margin-bottom: 16px;
-  font-weight: 700;
+ display: inline-block;
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: 0.22em;
+ color: var(--color-gold);
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.35);
+ padding: 6px 16px;
+ border-radius: 18px;
+ margin-bottom: 16px;
+ font-weight: 700;
 }
 .sub-addons-title {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 34px);
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 12px;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.6vw, 34px);
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 12px;
 }
 .sub-addons-lead {
-  font-size: 13.5px;
-  color: var(--color-ink-muted);
-  line-height: 1.85;
-  margin: 0;
+ font-size: 13.5px;
+ color: var(--color-ink-muted);
+ line-height: 1.85;
+ margin: 0;
 }
 /* Uber Eats 風カテゴリタブ */
 .sub-addons-tabs {
-  display: flex;
-  gap: 8px;
-  max-width: 1180px;
-  margin: 0 auto 20px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px;
+ display: flex;
+ gap: 8px;
+ max-width: 1180px;
+ margin: 0 auto 20px;
+ overflow-x: auto;
+ scrollbar-width: none;
+ -webkit-overflow-scrolling: touch;
+ padding-bottom: 8px;
 }
 .sub-addons-tabs::-webkit-scrollbar { display: none; }
 .sub-addon-tab {
-  flex: 0 0 auto;
-  padding: 8px 16px;
-  background: white;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 18px;
-  font-family: var(--font-jp);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--color-ink-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
+ flex: 0 0 auto;
+ padding: 8px 16px;
+ background: white;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 18px;
+ font-family: var(--font-jp);
+ font-size: 12.5px;
+ font-weight: 600;
+ color: var(--color-ink-muted);
+ cursor: pointer;
+ transition: all 0.2s;
+ white-space: nowrap;
 }
 .sub-addon-tab:hover {
-  border-color: var(--color-gold);
-  color: var(--color-forest);
+ border-color: var(--color-gold);
+ color: var(--color-forest);
 }
 .sub-addon-tab.active {
-  background: var(--color-forest);
-  color: var(--color-gold);
-  border-color: var(--color-forest);
+ background: var(--color-forest);
+ color: var(--color-gold);
+ border-color: var(--color-forest);
 }
 
 .sub-addons-grid {
-  display: flex;
-  gap: 12px;
-  max-width: 1180px;
-  margin: 0 auto 28px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-gold) transparent;
-  padding-bottom: 12px;
-  margin-left: calc(clamp(20px, 4vw, 56px) * -1);
-  margin-right: calc(clamp(20px, 4vw, 56px) * -1);
-  padding-left: clamp(20px, 4vw, 56px);
-  padding-right: clamp(20px, 4vw, 56px);
+ display: flex;
+ gap: 12px;
+ max-width: 1180px;
+ margin: 0 auto 28px;
+ overflow-x: auto;
+ scroll-snap-type: x mandatory;
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: thin;
+ scrollbar-color: var(--color-gold) transparent;
+ padding-bottom: 12px;
+ margin-left: calc(clamp(20px, 4vw, 56px) * -1);
+ margin-right: calc(clamp(20px, 4vw, 56px) * -1);
+ padding-left: clamp(20px, 4vw, 56px);
+ padding-right: clamp(20px, 4vw, 56px);
 }
 .sub-addons-grid::-webkit-scrollbar { height: 6px; }
 .sub-addons-grid::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 3px; }
 .sub-addons-grid::-webkit-scrollbar-track { background: transparent; }
 .sub-addons-grid .sub-addon-card {
-  flex: 0 0 240px;
-  scroll-snap-align: start;
+ flex: 0 0 240px;
+ scroll-snap-align: start;
 }
 .sub-addon-card {
-  background: white;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 12px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s var(--ease-out-expo);
-  box-shadow: var(--shadow-sm);
+ background: white;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 12px;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ transition: all 0.3s var(--ease-out-expo);
+ box-shadow: var(--shadow-sm);
 }
 .sub-addon-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(212,169,59,0.4);
-  box-shadow: var(--shadow-md);
+ transform: translateY(-3px);
+ border-color: rgba(212,169,59,0.4);
+ box-shadow: var(--shadow-md);
 }
 .sub-addon-card.added {
-  border-color: var(--color-forest);
-  background: rgba(15,61,46,0.04);
+ border-color: var(--color-forest);
+ background: rgba(15,61,46,0.04);
 }
 .sub-addon-img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--color-bone);
+ width: 100%;
+ aspect-ratio: 1 / 1;
+ background-size: cover;
+ background-position: center;
+ background-color: var(--color-bone);
 }
 .sub-addon-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
 .sub-addon-name {
-  font-family: var(--font-jp);
-  font-size: 13px;
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 4px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 4px;
 }
 .sub-addon-meta {
-  font-size: 10.5px;
-  color: var(--color-ink-muted);
-  margin-bottom: 10px;
-  flex: 1;
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
+ margin-bottom: 10px;
+ flex: 1;
 }
 .sub-addon-price {
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--color-gold-soft);
-  font-weight: 700;
-  margin-bottom: 8px;
-  font-variant-numeric: tabular-nums;
+ font-family: var(--font-display);
+ font-size: 16px;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ margin-bottom: 8px;
+ font-variant-numeric: tabular-nums;
 }
 .sub-addon-btn {
-  display: block;
-  width: 100%;
-  padding: 8px 12px;
-  background: var(--color-forest);
-  color: white;
-  border-radius: 6px;
-  font-family: var(--font-jp);
-  font-size: 11.5px;
-  font-weight: 700;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
+ display: block;
+ width: 100%;
+ padding: 8px 12px;
+ background: var(--color-forest);
+ color: white;
+ border-radius: 6px;
+ font-family: var(--font-jp);
+ font-size: 11.5px;
+ font-weight: 700;
+ text-align: center;
+ cursor: pointer;
+ transition: all 0.2s;
 }
 .sub-addon-btn:hover { background: var(--color-forest-deep); }
 .sub-addon-card.added .sub-addon-btn { background: var(--color-gold); color: var(--color-forest-deep); }
 
 /* 「これもどうですか？」レコメンド帯 */
 .sub-addons-suggest {
-  max-width: 1180px;
-  margin: 0 auto 20px;
-  background: linear-gradient(90deg, rgba(212,169,59,0.10), rgba(212,169,59,0.04));
-  border: 1.5px dashed rgba(212,169,59,0.5);
-  border-radius: 14px;
-  padding: 18px 22px;
+ max-width: 1180px;
+ margin: 0 auto 20px;
+ background: linear-gradient(90deg, rgba(212,169,59,0.10), rgba(212,169,59,0.04));
+ border: 1.5px dashed rgba(212,169,59,0.5);
+ border-radius: 14px;
+ padding: 18px 22px;
 }
 .sub-addons-suggest-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ margin-bottom: 14px;
 }
 .sub-addons-suggest-icon { font-size: 20px; }
 .sub-addons-suggest-label {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 .sub-addons-suggest-discount {
-  margin-left: auto;
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 12px;
-  letter-spacing: 0.04em;
+ margin-left: auto;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ font-family: var(--font-display);
+ font-size: 12px;
+ font-weight: 700;
+ padding: 4px 12px;
+ border-radius: 12px;
+ letter-spacing: 0.04em;
 }
 .sub-addons-suggest-list {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 4px;
+ display: flex;
+ gap: 10px;
+ overflow-x: auto;
+ scrollbar-width: none;
+ padding-bottom: 4px;
 }
 .sub-addons-suggest-list::-webkit-scrollbar { display: none; }
 .sub-addons-suggest-item {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: white;
-  border: 1px solid var(--color-bone);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-width: 220px;
+ flex: 0 0 auto;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 10px;
+ cursor: pointer;
+ transition: all 0.2s;
+ min-width: 220px;
 }
 .sub-addons-suggest-item:hover {
-  border-color: var(--color-gold);
-  transform: translateX(2px);
+ border-color: var(--color-gold);
+ transform: translateX(2px);
 }
 .sub-addons-suggest-img {
-  width: 40px; height: 40px;
-  border-radius: 8px;
-  background-size: cover;
-  background-position: center;
-  flex-shrink: 0;
+ width: 40px; height: 40px;
+ border-radius: 8px;
+ background-size: cover;
+ background-position: center;
+ flex-shrink: 0;
 }
 .sub-addons-suggest-body { flex: 1; min-width: 0; }
 .sub-addons-suggest-body strong {
-  display: block;
-  font-family: var(--font-jp);
-  font-size: 12.5px;
-  color: var(--color-forest);
-  font-weight: 700;
+ display: block;
+ font-family: var(--font-jp);
+ font-size: 12.5px;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 .sub-addons-suggest-body span {
-  font-size: 10.5px;
-  color: var(--color-ink-muted);
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
 }
 .sub-addons-suggest-price {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  font-family: var(--font-display);
+ display: flex;
+ flex-direction: column;
+ align-items: flex-end;
+ font-family: var(--font-display);
 }
 .sub-addons-suggest-price del {
-  font-size: 10px;
-  color: var(--color-ink-muted);
+ font-size: 10px;
+ color: var(--color-ink-muted);
 }
 .sub-addons-suggest-price strong {
-  font-size: 14px;
-  color: var(--color-gold-soft);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+ font-size: 14px;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ font-variant-numeric: tabular-nums;
 }
 
 .sub-addons-cart {
-  max-width: 720px;
-  margin: 0 auto;
-  background: linear-gradient(135deg, #143D2B, #0F3D2E);
-  color: white;
-  border-radius: 14px;
-  padding: 22px 26px;
-  border: 1px solid rgba(212,169,59,0.3);
-  box-shadow: var(--shadow-md);
+ max-width: 720px;
+ margin: 0 auto;
+ background: linear-gradient(135deg, #143D2B, #0F3D2E);
+ color: white;
+ border-radius: 14px;
+ padding: 22px 26px;
+ border: 1px solid rgba(212,169,59,0.3);
+ box-shadow: var(--shadow-md);
 }
 .discount-tag {
-  font-size: 10px;
-  color: var(--color-gold);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: rgba(212,169,59,0.18);
-  padding: 2px 8px;
-  border-radius: 8px;
-  margin-left: 6px;
+ font-size: 10px;
+ color: var(--color-gold);
+ font-weight: 700;
+ letter-spacing: 0.02em;
+ background: rgba(212,169,59,0.18);
+ padding: 2px 8px;
+ border-radius: 8px;
+ margin-left: 6px;
 }
 .sub-addons-cart-head {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 14px; padding-bottom: 10px;
-  border-bottom: 1px solid rgba(212,169,59,0.2);
+ display: flex; justify-content: space-between; align-items: center;
+ margin-bottom: 14px; padding-bottom: 10px;
+ border-bottom: 1px solid rgba(212,169,59,0.2);
 }
 .sub-addons-cart-label {
-  font-family: var(--font-display);
-  font-size: 11px; letter-spacing: 0.22em;
-  color: var(--color-gold); font-weight: 700;
+ font-family: var(--font-display);
+ font-size: 11px; letter-spacing: 0.22em;
+ color: var(--color-gold); font-weight: 700;
 }
 .sub-addons-cart-count {
-  font-family: var(--font-jp);
-  font-size: 12px;
-  color: rgba(255,255,255,0.85);
-  background: rgba(212,169,59,0.18);
-  padding: 3px 10px; border-radius: 10px;
-  font-weight: 700;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ color: rgba(255,255,255,0.85);
+ background: rgba(212,169,59,0.18);
+ padding: 3px 10px; border-radius: 10px;
+ font-weight: 700;
 }
 .sub-addons-cart-list {
-  display: flex; flex-direction: column; gap: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
+ display: flex; flex-direction: column; gap: 6px;
+ margin-bottom: 12px;
+ font-size: 13px;
 }
 .sub-addons-cart-list .row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 4px 0;
+ display: flex; justify-content: space-between; align-items: center;
+ padding: 4px 0;
 }
 .sub-addons-cart-list .row .rm {
-  font-size: 10px; color: rgba(255,107,107,0.85);
-  cursor: pointer; font-weight: 700;
+ font-size: 10px; color: rgba(255,107,107,0.85);
+ cursor: pointer; font-weight: 700;
 }
 .sub-addons-cart-total {
-  display: flex; justify-content: space-between; align-items: center;
-  padding-top: 10px;
-  border-top: 1px solid rgba(212,169,59,0.2);
-  font-family: var(--font-jp);
-  font-size: 13px; color: white;
+ display: flex; justify-content: space-between; align-items: center;
+ padding-top: 10px;
+ border-top: 1px solid rgba(212,169,59,0.2);
+ font-family: var(--font-jp);
+ font-size: 13px; color: white;
 }
 .sub-addons-cart-total strong {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--color-gold);
-  letter-spacing: -0.01em;
+ font-family: var(--font-display);
+ font-size: 22px;
+ color: var(--color-gold);
+ letter-spacing: -0.01em;
 }
 
 @media (max-width: 720px) {
-  .sub-addons { padding: 40px 0; }
-  .sub-addons-head { margin-bottom: 24px; }
-  .sub-addons-title { font-size: 22px; }
-  .sub-addons-grid {
-    display: flex !important;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    margin: 0 -16px 18px;
-    padding: 4px 16px 12px;
-    gap: 10px;
-  }
-  .sub-addons-grid::-webkit-scrollbar { display: none; }
-  .sub-addon-card { flex: 0 0 60vw; scroll-snap-align: start; }
-  .sub-addons-cart { padding: 18px 16px; }
+ .sub-addons { padding: 40px 0; }
+ .sub-addons-head { margin-bottom: 24px; }
+ .sub-addons-title { font-size: 22px; }
+ .sub-addons-grid {
+ display: flex !important;
+ overflow-x: auto;
+ scroll-snap-type: x mandatory;
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: none;
+ margin: 0 -16px 18px;
+ padding: 4px 16px 12px;
+ gap: 10px;
+ }
+ .sub-addons-grid::-webkit-scrollbar { display: none; }
+ .sub-addon-card { flex: 0 0 60vw; scroll-snap-align: start; }
+ .sub-addons-cart { padding: 18px 16px; }
 }
 
 /* ================ チェックアウトフォーム ================ */
 .sub-checkout {
-  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
-  padding: 96px 0;
+ background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
+ padding: 96px 0;
 }
 .sub-checkout-inner {
-  max-width: 880px; margin: 0 auto;
-  background: white;
-  border-radius: 18px;
-  padding: 48px;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-bone);
+ max-width: 880px; margin: 0 auto;
+ background: white;
+ border-radius: 18px;
+ padding: 48px;
+ box-shadow: var(--shadow-lg);
+ border: 1px solid var(--color-bone);
 }
 .sub-checkout-head { text-align: center; margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--color-bone); }
 .sub-checkout-eyebrow {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  color: var(--color-gold);
-  font-weight: 700;
-  margin-bottom: 12px;
+ display: inline-block;
+ font-family: var(--font-display);
+ font-size: 10.5px;
+ letter-spacing: 0.22em;
+ color: var(--color-gold);
+ font-weight: 700;
+ margin-bottom: 12px;
 }
 .sub-checkout-title {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(22px, 3.2vw, 32px);
-  color: var(--color-forest);
-  margin-bottom: 8px;
-  font-weight: 700;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(22px, 3.2vw, 32px);
+ color: var(--color-forest);
+ margin-bottom: 8px;
+ font-weight: 700;
 }
 .sub-checkout-sub {
-  font-size: 13px;
-  color: var(--color-ink-muted);
-  margin: 0;
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ margin: 0;
 }
 
 .checkout-form { display: grid; gap: 26px; }
 .checkout-section h3 {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 12px;
-  display: flex; align-items: center; gap: 8px;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 12px;
+ display: flex; align-items: center; gap: 8px;
 }
 .checkout-section h3::before {
-  content: counter(step);
-  counter-increment: step;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 700;
-  display: inline-flex; align-items: center; justify-content: center;
+ content: counter(step);
+ counter-increment: step;
+ width: 22px; height: 22px;
+ border-radius: 50%;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ font-family: var(--font-display);
+ font-size: 11px; font-weight: 700;
+ display: inline-flex; align-items: center; justify-content: center;
 }
 .checkout-form { counter-reset: step; }
 
 /* セクション補足説明 */
 .checkout-section-fine {
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--color-ink-muted);
-  margin: -4px 0 14px;
-  padding: 10px 14px;
-  background: rgba(212,169,59,0.08);
-  border-left: 3px solid var(--color-gold);
-  border-radius: 6px;
+ font-size: 12.5px;
+ line-height: 1.6;
+ color: var(--color-ink-muted);
+ margin: -4px 0 14px;
+ padding: 10px 14px;
+ background: rgba(212,169,59,0.08);
+ border-left: 3px solid var(--color-gold);
+ border-radius: 6px;
 }
 .checkout-section-fine strong {
-  color: var(--color-forest);
-  font-weight: 700;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 
 .checkout-row { display: grid; gap: 12px; }
 .checkout-row.cols2 { grid-template-columns: 1fr 1fr; }
 .checkout-field { display: flex; flex-direction: column; gap: 4px; }
 .checkout-field label {
-  font-size: 11.5px;
-  color: var(--color-ink-muted);
-  font-weight: 600;
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
+ font-weight: 600;
 }
 .checkout-field label .required {
-  color: var(--color-red);
-  font-weight: 700;
-  margin-left: 4px;
+ color: var(--color-red);
+ font-weight: 700;
+ margin-left: 4px;
 }
 .checkout-field input,
 .checkout-field select {
-  padding: 12px 14px;
-  border: 1px solid var(--color-bone);
-  border-radius: 8px;
-  background: white;
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-ink);
-  transition: border-color 0.2s;
+ padding: 12px 14px;
+ border: 1px solid var(--color-bone);
+ border-radius: 8px;
+ background: white;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-ink);
+ transition: border-color 0.2s;
 }
 .checkout-field input:focus,
 .checkout-field select:focus {
-  outline: none;
-  border-color: var(--color-gold);
+ outline: none;
+ border-color: var(--color-gold);
 }
 
 .checkout-radio-group { display: grid; gap: 8px; }
 .checkout-radio {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s var(--ease-out-expo);
+ display: flex; align-items: center; gap: 12px;
+ padding: 14px 16px;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 10px;
+ cursor: pointer;
+ transition: all 0.2s var(--ease-out-expo);
 }
 .checkout-radio:hover { border-color: var(--color-gold); background: rgba(212,169,59,0.04); }
 .checkout-radio input { margin: 0; accent-color: var(--color-forest); }
 .checkout-radio strong {
-  font-family: var(--font-jp); font-size: 13.5px;
-  color: var(--color-forest); font-weight: 700;
+ font-family: var(--font-jp); font-size: 13.5px;
+ color: var(--color-forest); font-weight: 700;
 }
 .checkout-radio small {
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  margin-left: auto;
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ margin-left: auto;
 }
 .checkout-radio.selected {
-  border-color: var(--color-forest);
-  background: rgba(15,61,46,0.04);
+ border-color: var(--color-forest);
+ background: rgba(15,61,46,0.04);
 }
 
 .checkout-summary {
-  background: var(--color-forest);
-  color: white;
-  border-radius: 12px;
-  padding: 22px 24px;
-  margin-top: 8px;
+ background: var(--color-forest);
+ color: white;
+ border-radius: 12px;
+ padding: 22px 24px;
+ margin-top: 8px;
 }
 .checkout-summary-row {
-  display: flex; justify-content: space-between; align-items: center;
-  font-family: var(--font-jp); font-size: 13px;
-  padding: 6px 0;
+ display: flex; justify-content: space-between; align-items: center;
+ font-family: var(--font-jp); font-size: 13px;
+ padding: 6px 0;
 }
 .checkout-summary-row.discount strong { color: var(--color-gold); }
 .checkout-summary-row.total {
-  border-top: 1px solid rgba(212,169,59,0.3);
-  margin-top: 8px; padding-top: 12px;
-  font-size: 15px; font-weight: 700;
+ border-top: 1px solid rgba(212,169,59,0.3);
+ margin-top: 8px; padding-top: 12px;
+ font-size: 15px; font-weight: 700;
 }
 .checkout-summary-row.total strong {
-  font-family: var(--font-display); font-size: 26px;
-  color: var(--color-gold); letter-spacing: -0.01em;
+ font-family: var(--font-display); font-size: 26px;
+ color: var(--color-gold); letter-spacing: -0.01em;
 }
 .checkout-fine {
-  font-size: 11px;
-  color: rgba(255,255,255,0.6);
-  margin-top: 8px;
-  line-height: 1.6;
+ font-size: 11px;
+ color: rgba(255,255,255,0.6);
+ margin-top: 8px;
+ line-height: 1.6;
 }
 
 .checkout-submit {
-  width: 100%;
-  padding: 18px;
-  background: linear-gradient(135deg, var(--color-gold), #E5B547);
-  color: var(--color-forest-deep);
-  border-radius: 12px;
-  font-family: var(--font-jp);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  margin-top: 8px;
-  box-shadow: 0 12px 32px rgba(212,169,59,0.3);
-  transition: all 0.3s var(--ease-out-expo);
-  cursor: pointer;
+ width: 100%;
+ padding: 18px;
+ background: linear-gradient(135deg, var(--color-gold), #E5B547);
+ color: var(--color-forest-deep);
+ border-radius: 12px;
+ font-family: var(--font-jp);
+ font-size: 15px;
+ font-weight: 700;
+ letter-spacing: 0.04em;
+ margin-top: 8px;
+ box-shadow: 0 12px 32px rgba(212,169,59,0.3);
+ transition: all 0.3s var(--ease-out-expo);
+ cursor: pointer;
 }
 .checkout-submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(212,169,59,0.45);
+ transform: translateY(-2px);
+ box-shadow: 0 16px 40px rgba(212,169,59,0.45);
 }
 
 .checkout-trust {
-  display: flex; gap: 16px; justify-content: center;
-  flex-wrap: wrap;
-  font-size: 11px; color: var(--color-ink-muted);
-  margin-top: 12px;
+ display: flex; gap: 16px; justify-content: center;
+ flex-wrap: wrap;
+ font-size: 11px; color: var(--color-ink-muted);
+ margin-top: 12px;
 }
 .checkout-trust-item {
-  display: inline-flex; align-items: center; gap: 4px;
+ display: inline-flex; align-items: center; gap: 4px;
 }
 
 /* ================ 安心ポイント 4特徴 ================ */
 .sub-trust { padding: 96px 0; background: white; }
 .sub-trust-head { text-align: center; margin-bottom: 56px; }
 .sub-trust-head h2 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 36px);
-  color: var(--color-forest);
-  font-weight: 700; margin-bottom: 12px;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.6vw, 36px);
+ color: var(--color-forest);
+ font-weight: 700; margin-bottom: 12px;
 }
 .sub-trust-head p {
-  font-size: 14px; line-height: 1.85;
-  color: var(--color-ink-muted);
-  max-width: 580px; margin: 0 auto;
+ font-size: 14px; line-height: 1.85;
+ color: var(--color-ink-muted);
+ max-width: 580px; margin: 0 auto;
 }
 .sub-trust-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 1180px; margin: 0 auto;
+ display: grid; grid-template-columns: repeat(4, 1fr);
+ gap: 20px;
+ max-width: 1180px; margin: 0 auto;
 }
 .sub-trust-card {
-  background: white;
-  border: 1px solid var(--color-bone);
-  border-radius: 14px;
-  padding: 28px 22px;
-  text-align: center;
-  transition: all 0.4s var(--ease-out-expo);
-  box-shadow: var(--shadow-sm);
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 14px;
+ padding: 28px 22px;
+ text-align: center;
+ transition: all 0.4s var(--ease-out-expo);
+ box-shadow: var(--shadow-sm);
 }
 .sub-trust-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(212,169,59,0.4);
-  box-shadow: var(--shadow-md);
+ transform: translateY(-4px);
+ border-color: rgba(212,169,59,0.4);
+ box-shadow: var(--shadow-md);
 }
 .sub-trust-card-icon {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
-  color: var(--color-gold);
-  display: inline-flex; align-items: center; justify-content: center;
-  margin-bottom: 14px;
+ width: 48px; height: 48px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: var(--color-gold);
+ display: inline-flex; align-items: center; justify-content: center;
+ margin-bottom: 14px;
 }
 .sub-trust-card-icon svg { width: 22px; height: 22px; }
 .sub-trust-card h4 {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 8px;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 8px;
 }
 .sub-trust-card p {
-  font-size: 12px;
-  color: var(--color-ink-muted);
-  line-height: 1.7;
-  margin: 0;
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ line-height: 1.7;
+ margin: 0;
 }
 
 /* ================ FAQ ================ */
 .sub-faq { padding: 96px 0; background: var(--color-cream); }
 .sub-faq-head { text-align: center; margin-bottom: 48px; }
 .sub-faq-head h2 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 36px);
-  color: var(--color-forest);
-  font-weight: 700; margin-bottom: 12px;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.6vw, 36px);
+ color: var(--color-forest);
+ font-weight: 700; margin-bottom: 12px;
 }
 .sub-faq-list { max-width: 720px; margin: 0 auto; }
 .faq-item {
-  background: white;
-  border: 1px solid var(--color-bone);
-  border-radius: 12px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  transition: border-color 0.2s;
-  box-shadow: var(--shadow-sm);
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 12px;
+ margin-bottom: 10px;
+ overflow: hidden;
+ transition: border-color 0.2s;
+ box-shadow: var(--shadow-sm);
 }
 .faq-item[open] { border-color: var(--color-gold); }
 .faq-q {
-  padding: 18px 22px;
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
-  cursor: pointer;
-  list-style: none;
-  display: flex; align-items: center; gap: 12px;
+ padding: 18px 22px;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
+ cursor: pointer;
+ list-style: none;
+ display: flex; align-items: center; gap: 12px;
 }
 .faq-q::-webkit-details-marker { display: none; }
 .faq-q::after {
-  content: '+';
-  margin-left: auto;
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--color-gold);
-  transition: transform 0.3s;
+ content: '+';
+ margin-left: auto;
+ font-family: var(--font-display);
+ font-size: 22px;
+ color: var(--color-gold);
+ transition: transform 0.3s;
 }
 .faq-item[open] .faq-q::after { transform: rotate(45deg); }
 .faq-a {
-  padding: 0 22px 18px;
-  font-size: 13px;
-  line-height: 1.85;
-  color: var(--color-ink-muted);
+ padding: 0 22px 18px;
+ font-size: 13px;
+ line-height: 1.85;
+ color: var(--color-ink-muted);
 }
 
 /* ================ お客様の声 ================ */
 .sub-voice {
-  padding: 96px 0;
-  background: linear-gradient(135deg, #0F3D2E, #0A2D21);
-  color: white;
+ padding: 96px 0;
+ background: linear-gradient(135deg, #0F3D2E, #0A2D21);
+ color: white;
 }
 .sub-voice-head { text-align: center; margin-bottom: 48px; }
 .sub-voice-head h2 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 36px);
-  font-weight: 700; color: white; margin-bottom: 12px;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.6vw, 36px);
+ font-weight: 700; color: white; margin-bottom: 12px;
 }
 .sub-voice-head p { font-size: 13.5px; color: rgba(255,255,255,0.7); }
 .sub-voice-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  max-width: 1080px; margin: 0 auto;
+ display: grid; grid-template-columns: repeat(3, 1fr);
+ gap: 20px;
+ max-width: 1080px; margin: 0 auto;
 }
 .sub-voice-card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(212,169,59,0.18);
-  border-radius: 14px;
-  padding: 28px 24px;
-  display: flex; flex-direction: column;
+ background: rgba(255,255,255,0.06);
+ border: 1px solid rgba(212,169,59,0.18);
+ border-radius: 14px;
+ padding: 28px 24px;
+ display: flex; flex-direction: column;
 }
 .sub-voice-stars { color: var(--color-gold); font-size: 13px; letter-spacing: 3px; margin-bottom: 14px; }
 .sub-voice-text {
-  font-family: var(--font-jp-serif);
-  font-size: 14px;
-  line-height: 1.85;
-  margin-bottom: 18px;
-  flex: 1;
+ font-family: var(--font-jp-serif);
+ font-size: 14px;
+ line-height: 1.85;
+ margin-bottom: 18px;
+ flex: 1;
 }
 .sub-voice-author {
-  display: flex; align-items: center; gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.12);
+ display: flex; align-items: center; gap: 12px;
+ padding-top: 16px;
+ border-top: 1px solid rgba(255,255,255,0.12);
 }
 .sub-voice-avatar {
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-gold), var(--color-gold-soft));
-  color: var(--color-forest-deep);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-jp-serif);
-  font-size: 15px; font-weight: 700;
+ width: 38px; height: 38px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, var(--color-gold), var(--color-gold-soft));
+ color: var(--color-forest-deep);
+ display: flex; align-items: center; justify-content: center;
+ font-family: var(--font-jp-serif);
+ font-size: 15px; font-weight: 700;
 }
 .sub-voice-name {
-  font-family: var(--font-jp); font-size: 12px;
-  color: white; font-weight: 600;
+ font-family: var(--font-jp); font-size: 12px;
+ color: white; font-weight: 600;
 }
 .sub-voice-product {
-  font-size: 10.5px;
-  color: rgba(255,255,255,0.55);
-  margin-top: 2px;
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.55);
+ margin-top: 2px;
 }
 
 /* ================ FOOTER CTA ================ */
 .sub-foot-cta {
-  padding: 80px 0;
-  background: var(--color-cream);
-  text-align: center;
+ padding: 80px 0;
+ background: var(--color-cream);
+ text-align: center;
 }
 .sub-foot-cta h2 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(24px, 3.6vw, 36px);
-  color: var(--color-forest);
-  font-weight: 700; margin-bottom: 14px;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.6vw, 36px);
+ color: var(--color-forest);
+ font-weight: 700; margin-bottom: 14px;
 }
 .sub-foot-cta p {
-  font-size: 14px; color: var(--color-ink-muted);
-  margin-bottom: 28px;
+ font-size: 14px; color: var(--color-ink-muted);
+ margin-bottom: 28px;
 }
 
 /* ================ FOOTER ================ */
 .site-footer {
-  background: var(--color-forest-deep);
-  color: rgba(255,255,255,0.7);
-  padding: 56px 0 28px;
-  border-top: 1px solid rgba(212,169,59,0.18);
+ background: var(--color-forest-deep);
+ color: rgba(255,255,255,0.7);
+ padding: 56px 0 28px;
+ border-top: 1px solid rgba(212,169,59,0.18);
 }
 .footer-grid {
-  display: grid; grid-template-columns: 2fr 1fr 1fr;
-  gap: 48px; margin-bottom: 40px;
+ display: grid; grid-template-columns: 2fr 1fr 1fr;
+ gap: 48px; margin-bottom: 40px;
 }
 .footer-brand-name { color: white; font-family: var(--font-display); font-size: 20px; letter-spacing: 0.18em; margin-bottom: 12px; }
 .footer-brand-jp { font-family: var(--font-jp); font-size: 12px; color: rgba(255,255,255,0.6); }
 .footer-list h4 {
-  font-family: var(--font-display); font-size: 11px;
-  letter-spacing: 0.24em; color: var(--color-gold);
-  margin-bottom: 14px;
+ font-family: var(--font-display); font-size: 11px;
+ letter-spacing: 0.24em; color: var(--color-gold);
+ margin-bottom: 14px;
 }
 .footer-list a {
-  display: block; padding: 4px 0;
-  font-size: 13px; color: rgba(255,255,255,0.7);
-  transition: color 0.2s;
+ display: block; padding: 4px 0;
+ font-size: 13px; color: rgba(255,255,255,0.7);
+ transition: color 0.2s;
 }
 .footer-list a:hover { color: var(--color-gold); }
 .footer-bottom {
-  border-top: 1px solid rgba(212,169,59,0.18);
-  padding-top: 24px;
-  font-size: 11px; color: rgba(255,255,255,0.4);
-  display: flex; justify-content: space-between; gap: 16px;
-  flex-wrap: wrap;
+ border-top: 1px solid rgba(212,169,59,0.18);
+ padding-top: 24px;
+ font-size: 11px; color: rgba(255,255,255,0.4);
+ display: flex; justify-content: space-between; gap: 16px;
+ flex-wrap: wrap;
 }
 
 /* ================ RESPONSIVE ================ */
 @media (max-width: 1024px) {
-  .primary-nav { display: none; }
-  .sub-plans-grid { grid-template-columns: 1fr; gap: 14px; max-width: 480px; }
-  .sub-detail-grid { grid-template-columns: 1fr; gap: 32px; }
-  .sub-trust-grid { grid-template-columns: repeat(2, 1fr); }
-  .sub-voice-grid { grid-template-columns: 1fr; gap: 14px; }
-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+ .primary-nav { display: none; }
+ .sub-plans-grid { grid-template-columns: 1fr; gap: 14px; max-width: 480px; }
+ .sub-detail-grid { grid-template-columns: 1fr; gap: 32px; }
+ .sub-trust-grid { grid-template-columns: repeat(2, 1fr); }
+ .sub-voice-grid { grid-template-columns: 1fr; gap: 14px; }
+ .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
 }
 
 @media (max-width: 720px) {
-  :root {
-    --space-section: 48px;
-  }
-  .sub-hero {
-    min-height: auto;
-    padding: 100px 0 56px;
-  }
-  .sub-hero-title { font-size: 28px; line-height: 1.3; }
-  .sub-hero-sub { font-size: 13px; line-height: 1.85; }
-  .sub-hero-promo { padding: 12px 16px; gap: 10px; flex-wrap: wrap; }
-  .sub-hero-promo-text strong { font-size: 18px; }
-  .sub-hero-cta .btn { padding: 12px 18px; font-size: 12.5px; }
-  /* perks chip 4個 — 2x2 grid に揃える (3+1のバランス悪さ解消, Tom指示) */
-  .sub-hero-trust {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 12px;
-    padding-top: 20px;
-    margin-top: 24px;
-    justify-content: center;
-  }
-  .sub-hero-trust-item {
-    font-size: 11.5px;
-    justify-content: center;
-    padding: 6px 8px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(212,169,59,0.18);
-    border-radius: 10px;
-  }
+ :root {
+ --space-section: 48px;
+ }
+ .sub-hero {
+ min-height: auto;
+ padding: 100px 0 56px;
+ }
+ .sub-hero-title { font-size: 28px; line-height: 1.3; }
+ .sub-hero-sub { font-size: 13px; line-height: 1.85; }
+ .sub-hero-promo { padding: 12px 16px; gap: 10px; flex-wrap: wrap; }
+ .sub-hero-promo-text strong { font-size: 18px; }
+ .sub-hero-cta .btn { padding: 12px 18px; font-size: 12.5px; }
+ /* perks chip 4個 — 2x2 grid に揃える (3+1のバランス悪さ解消, Tom指示) */
+ .sub-hero-trust {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 8px 12px;
+ padding-top: 20px;
+ margin-top: 24px;
+ justify-content: center;
+ }
+ .sub-hero-trust-item {
+ font-size: 11.5px;
+ justify-content: center;
+ padding: 6px 8px;
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(212,169,59,0.18);
+ border-radius: 10px;
+ }
 
-  .sub-plans-section,
-  .sub-detail,
-  .sub-checkout,
-  .sub-trust,
-  .sub-faq,
-  .sub-voice,
-  .sub-foot-cta { padding: 40px 0; }
+ .sub-plans-section,
+ .sub-detail,
+ .sub-checkout,
+ .sub-trust,
+ .sub-faq,
+ .sub-voice,
+ .sub-foot-cta { padding: 40px 0; }
 
-  .sub-plans-head { margin-bottom: 28px; }
-  .sub-plans-title { font-size: 22px; }
-  .sub-plans-lead { font-size: 12.5px; line-height: 1.75; }
+ .sub-plans-head { margin-bottom: 28px; }
+ .sub-plans-title { font-size: 22px; }
+ .sub-plans-lead { font-size: 12.5px; line-height: 1.75; }
 
-  .sub-plans-grid {
-    display: flex !important;
-    grid-template-columns: none;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    margin: 0 -16px;
-    padding: 8px 16px 16px;
-    max-width: none;
-  }
-  .sub-plans-grid::-webkit-scrollbar { display: none; }
-  .sub-plan-card {
-    flex: 0 0 78vw;
-    scroll-snap-align: start;
-    padding: 24px 22px 20px;
-  }
-  .sub-plan-name { font-size: 19px; }
-  .sub-plan-price { font-size: 30px; }
-  .sub-plan-items { font-size: 11.5px; padding: 12px 14px; }
+ .sub-plans-grid {
+ display: flex !important;
+ grid-template-columns: none;
+ gap: 12px;
+ overflow-x: auto;
+ scroll-snap-type: x mandatory;
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: none;
+ margin: 0 -16px;
+ padding: 8px 16px 16px;
+ max-width: none;
+ }
+ .sub-plans-grid::-webkit-scrollbar { display: none; }
+ .sub-plan-card {
+ flex: 0 0 78vw;
+ scroll-snap-align: start;
+ padding: 24px 22px 20px;
+ }
+ .sub-plan-name { font-size: 19px; }
+ .sub-plan-price { font-size: 30px; }
+ .sub-plan-items { font-size: 11.5px; padding: 12px 14px; }
 
-  .sub-detail-head { margin-bottom: 28px; }
-  .sub-detail-title { font-size: 20px; }
-  .sub-detail-items { padding: 22px 18px; }
-  .sub-detail-items h3 { font-size: 15px; margin-bottom: 14px; }
-  .sub-detail-item-row { grid-template-columns: 48px 1fr auto; gap: 12px; padding: 10px 0; }
-  .sub-detail-item-img { width: 48px; height: 48px; }
-  .sub-detail-item-info strong { font-size: 13px; }
-  .sub-detail-item-info span { font-size: 11px; }
-  .sub-detail-item-qty { font-size: 12px; }
-  .sub-detail-card { padding: 18px; }
-  .sub-detail-card .delivery-date-large { font-size: 22px; }
+ .sub-detail-head { margin-bottom: 28px; }
+ .sub-detail-title { font-size: 20px; }
+ .sub-detail-items { padding: 22px 18px; }
+ .sub-detail-items h3 { font-size: 15px; margin-bottom: 14px; }
+ .sub-detail-item-row { grid-template-columns: 48px 1fr auto; gap: 12px; padding: 10px 0; }
+ .sub-detail-item-img { width: 48px; height: 48px; }
+ .sub-detail-item-info strong { font-size: 13px; }
+ .sub-detail-item-info span { font-size: 11px; }
+ .sub-detail-item-qty { font-size: 12px; }
+ .sub-detail-card { padding: 18px; }
+ .sub-detail-card .delivery-date-large { font-size: 22px; }
 
-  .sub-checkout-inner { padding: 26px 20px; border-radius: 14px; }
-  .sub-checkout-head { margin-bottom: 24px; padding-bottom: 20px; }
-  .sub-checkout-title { font-size: 20px; }
-  .checkout-row.cols2 { grid-template-columns: 1fr; }
-  .checkout-field input,
-  .checkout-field select { font-size: 16px; min-height: 48px; padding: 12px 14px; } /* iOS Safari の自動ズーム回避: ≥16px 必須 */
-  .checkout-radio { padding: 12px 14px; }
+ .sub-checkout-inner { padding: 26px 20px; border-radius: 14px; }
+ .sub-checkout-head { margin-bottom: 24px; padding-bottom: 20px; }
+ .sub-checkout-title { font-size: 20px; }
+ .checkout-row.cols2 { grid-template-columns: 1fr; }
+ .checkout-field input,
+ .checkout-field select { font-size: 16px; min-height: 48px; padding: 12px 14px; } /* iOS Safari の自動ズーム回避: ≥16px 必須 */
+ .checkout-radio { padding: 12px 14px; }
 
-  .sub-trust-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .sub-trust-card { padding: 18px 14px; }
-  .sub-trust-card-icon { width: 36px; height: 36px; margin-bottom: 10px; }
-  .sub-trust-card h4 { font-size: 12px; }
-  .sub-trust-card p { font-size: 10.5px; }
+ .sub-trust-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+ .sub-trust-card { padding: 18px 14px; }
+ .sub-trust-card-icon { width: 36px; height: 36px; margin-bottom: 10px; }
+ .sub-trust-card h4 { font-size: 12px; }
+ .sub-trust-card p { font-size: 10.5px; }
 
-  .sub-faq-head h2,
-  .sub-trust-head h2,
-  .sub-voice-head h2,
-  .sub-foot-cta h2 { font-size: 22px; }
-  .faq-q { font-size: 13px; padding: 14px 16px; }
-  .faq-a { font-size: 12px; padding: 0 16px 14px; }
+ .sub-faq-head h2,
+ .sub-trust-head h2,
+ .sub-voice-head h2,
+ .sub-foot-cta h2 { font-size: 22px; }
+ .faq-q { font-size: 13px; padding: 14px 16px; }
+ .faq-a { font-size: 12px; padding: 0 16px 14px; }
 
-  .sub-voice-card { padding: 22px 18px; }
-  .sub-voice-text { font-size: 13px; line-height: 1.8; }
+ .sub-voice-card { padding: 22px 18px; }
+ .sub-voice-text { font-size: 13px; line-height: 1.8; }
 
-  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+ .footer-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 </style>
 <script src="public/js/eda-config.js"></script>
@@ -1569,1089 +1569,1082 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 <!-- ========= HEADER ========= -->
 <header class="site-header" id="siteHeader">
-  <div class="container nav">
-    <a href="index.html" class="brand-mark">
-      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
-    </a>
-    <nav class="primary-nav">
-      <ul class="nav-list">
-        <li><a href="shop.html">Shop</a></li>
-        <li><a class="current" href="subscription.html">定期便</a></li>
-        <li><a href="organic.html">Organic</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="global.html">Global</a></li>
-        <li><a href="restaurants.html">Restaurants</a></li>
-        <li><a href="journal.html">Journal</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="nav-utils">
-      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="3" y="3" width="18" height="18" rx="5"/>
-          <circle cx="12" cy="12" r="4"/>
-          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
-        </svg>
-      </a>
-      <a href="shop.html" aria-label="Shop" class="nav-icon" title="ショップへ">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-          <path d="M3 6h2l3 12h11l3-9H6"/>
-          <circle cx="9" cy="20" r="1.4" fill="currentColor"/>
-          <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
-        </svg>
-      </a>
-    </div>
-  </div>
+ <div class="container nav">
+ <a href="index.html" class="brand-mark">
+ <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+ </a>
+ <nav class="primary-nav">
+ <ul class="nav-list">
+ <li><a href="shop.html">Shop</a></li>
+ <li><a class="current" href="subscription.html">定期便</a></li>
+ <li><a href="organic.html">Organic</a></li>
+ <li><a href="about.html">About</a></li>
+ <li><a href="global.html">Global</a></li>
+ <li><a href="restaurants.html">Restaurants</a></li>
+ <li><a href="journal.html">Journal</a></li>
+ <li><a href="contact.html">Contact</a></li>
+ </ul>
+ </nav>
+ <div class="nav-utils">
+ <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+ <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+ <rect x="3" y="3" width="18" height="18" rx="5"/>
+ <circle cx="12" cy="12" r="4"/>
+ <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+ </svg>
+ </a>
+ <a href="shop.html" aria-label="Shop" class="nav-icon" title="ショップへ">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+ <path d="M3 6h2l3 12h11l3-9H6"/>
+ <circle cx="9" cy="20" r="1.4" fill="currentColor"/>
+ <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
+ </svg>
+ </a>
+ </div>
+ </div>
 </header>
 
 <!-- ========= HERO ========= -->
 <section class="sub-hero">
-  <div class="container sub-hero-content">
-    <span class="sub-hero-eyebrow">MONTHLY SUBSCRIPTION · 月1回 自動でお届け</span>
-    <h1 class="sub-hero-title">
-      家族の冷凍庫に、<br/>
-      <span class="accent">月1回。</span>
-    </h1>
-    <p class="sub-hero-sub">
-      抗生物質・ホルモン剤 不使用のお肉が、毎月決まった日にお届け。<br/>
-      買い物の手間ゼロ、安心して使えるストックが冷凍庫にある暮らしへ。
-    </p>
+ <div class="container sub-hero-content">
+ <span class="sub-hero-eyebrow">MONTHLY SUBSCRIPTION · 月1回 自動でお届け</span>
+ <h1 class="sub-hero-title">
+ 家族の冷凍庫に、<br/>
+ <span class="accent">月1回。</span>
+ </h1>
+ <p class="sub-hero-sub">
+ 抗生物質・ホルモン剤 不使用のお肉が、毎月決まった日にお届け。<br/>
+ 買い物の手間ゼロ、安心して使えるストックが冷凍庫にある食卓へ。
+ </p>
 
-    <div class="sub-hero-promo">
-      <span class="sub-hero-promo-tag" id="heroPromoMonth">5月 限定</span>
-      <span class="sub-hero-promo-text">
-        初月 <strong>50%</strong> OFF キャンペーン実施中
-      </span>
-    </div>
+ <div class="sub-hero-cta">
+ <a href="#plans" class="btn btn-gold">プランを選ぶ →</a>
+ <a href="#faq" class="btn btn-ghost">よくある質問</a>
+ </div>
 
-    <div class="sub-hero-cta">
-      <a href="#plans" class="btn btn-gold">プランを選ぶ →</a>
-      <a href="#faq" class="btn btn-ghost">よくある質問</a>
-    </div>
-
-    <div class="sub-hero-trust">
-      <span class="sub-hero-trust-item">初月半額</span>
-      <span class="sub-hero-trust-item">配送無料</span>
-      <span class="sub-hero-trust-item">スキップ可能</span>
-      <span class="sub-hero-trust-item">カスタム可能</span>
-    </div>
-  </div>
+ <div class="sub-hero-trust">
+ <span class="sub-hero-trust-item">送料無料</span>
+ <span class="sub-hero-trust-item">いつでもスキップ</span>
+ <span class="sub-hero-trust-item">3 ヶ月から解約可</span>
+ <span class="sub-hero-trust-item">内容のカスタマイズ可</span>
+ </div>
+ </div>
 </section>
 
 <!-- ========= 3プラン ========= -->
 <section class="sub-plans-section" id="plans">
-  <div class="container">
-    <div class="sub-plans-head">
-      <span class="sub-plans-eyebrow">CHOOSE YOUR PLAN</span>
-      <h2 class="sub-plans-title">ご家族に合わせて、3つから。</h2>
-      <p class="sub-plans-lead">
-        1-2人のお試しから、5人以上の大家族用まで。<br/>
-        すべて初月50%OFF、いつでも変更可能です。
-      </p>
-    </div>
+ <div class="container">
+ <div class="sub-plans-head">
+ <span class="sub-plans-eyebrow">CHOOSE YOUR PLAN</span>
+ <h2 class="sub-plans-title">ご家族に合わせて、3つから。</h2>
+ <p class="sub-plans-lead">
+ おふたりからご家族まで。<br/>
+ 内容のカスタマイズも、いつでも変更も可能です。
+ </p>
+ </div>
 
-    <div class="sub-plans-grid">
-      <article class="sub-plan-card" data-plan="starter">
-        <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
-        <div class="sub-plan-name">ミニプラン</div>
-        <div class="sub-plan-target">1-2人家族 / 約1.6kg / 全 8品</div>
-        <ul class="sub-plan-spec">
-          <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
-          <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
-          <li><b>加工場所</b><span>宮崎</span></li>
-          <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
-          <li><b>保管方法</b><span>冷凍</span></li>
-        </ul>
-        <div class="sub-plan-items">
-          <b>お届け例:</b><br/>
-          🥩 赤身スライス 200g<br/>
-          🔥 赤身焼肉 200g<br/>
-          🥩 サイコロステーキ 200g<br/>
-          🍔 和牛ミンチ 200g<br/>
-          🐓 鶏モモ 200g<br/>
-          🐓 鶏ムネ 200g×2<br/>
-          🐓 鶏ミンチ 200g
-        </div>
-        <div class="sub-plan-pricing">
-          <div class="sub-plan-old-price">通常 ¥6,980</div>
-          <div class="sub-plan-price">¥3,490<small>/初月</small></div>
-          <div class="sub-plan-savings">初月 ¥3,490 OFF / 個別 ¥8,200 より約15%お得</div>
-          <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
-            <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
-            <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
-          </div>
-        </div>
-        <div class="sub-plan-select-btn">このプランを選ぶ →</div>
-      </article>
+ <div class="sub-plans-grid">
+ <article class="sub-plan-card" data-plan="starter">
+ <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
+ <div class="sub-plan-name">ミニプラン</div>
+ <div class="sub-plan-target">1-2人家族 / 約1.6kg / 全 8品</div>
+ <ul class="sub-plan-spec">
+ <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
+ <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
+ <li><b>加工場所</b><span>宮崎</span></li>
+ <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
+ <li><b>保管方法</b><span>冷凍</span></li>
+ </ul>
+ <div class="sub-plan-items">
+ <b>お届け例:</b><br/>
+ 🥩 赤身スライス 200g<br/>
+ 🔥 赤身焼肉 200g<br/>
+ 🥩 サイコロステーキ 200g<br/>
+ 🍔 ミンチ 200g<br/>
+ 🐓 鶏モモ 200g<br/>
+ 🐓 鶏ムネ 200g×2<br/>
+ 🐓 鶏ミンチ 200g
+ </div>
+ <div class="sub-plan-pricing">
+ <div class="sub-plan-old-price">通常 ¥6,980</div>
+ <div class="sub-plan-price">¥3,490<small>/初月</small></div>
+ <div class="sub-plan-savings">初月 ¥3,490 OFF / 個別 ¥8,200 より約15%お得</div>
+ <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
+ <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
+ <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
+ </div>
+ </div>
+ <div class="sub-plan-select-btn">このプランを選ぶ →</div>
+ </article>
 
-      <article class="sub-plan-card featured" data-plan="regular">
-        <span class="sub-plan-tag">人気 No.1</span>
-        <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
-        <div class="sub-plan-name">プロプラン</div>
-        <div class="sub-plan-target">3-4人家族 / 約3.2kg / 全 16品</div>
-        <ul class="sub-plan-spec">
-          <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
-          <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
-          <li><b>加工場所</b><span>宮崎</span></li>
-          <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
-          <li><b>保管方法</b><span>冷凍</span></li>
-        </ul>
-        <div class="sub-plan-items">
-          <b>お届け例:</b><br/>
-          🥩 赤身スライス 200g×2<br/>
-          🔥 赤身焼肉 200g×2<br/>
-          🥩 サイコロステーキ 200g×2<br/>
-          🍔 和牛ミンチ 200g<br/>
-          🐓 鶏モモ 200g×3<br/>
-          🐓 鶏ムネ 200g×3<br/>
-          🐓 鶏ミンチ 200g×3
-        </div>
-        <div class="sub-plan-pricing">
-          <div class="sub-plan-old-price">通常 ¥12,800</div>
-          <div class="sub-plan-price">¥6,400<small>/初月</small></div>
-          <div class="sub-plan-savings">初月 ¥6,400 OFF / 個別 ¥15,000 より約15%お得</div>
-          <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
-            <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
-            <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
-          </div>
-        </div>
-        <div class="sub-plan-select-btn">このプランを選ぶ →</div>
-      </article>
+ <article class="sub-plan-card featured" data-plan="regular">
+ <span class="sub-plan-tag">人気 No.1</span>
+ <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
+ <div class="sub-plan-name">プロプラン</div>
+ <div class="sub-plan-target">3-4人家族 / 約3.2kg / 全 16品</div>
+ <ul class="sub-plan-spec">
+ <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
+ <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
+ <li><b>加工場所</b><span>宮崎</span></li>
+ <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
+ <li><b>保管方法</b><span>冷凍</span></li>
+ </ul>
+ <div class="sub-plan-items">
+ <b>お届け例:</b><br/>
+ 🥩 赤身スライス 200g×2<br/>
+ 🔥 赤身焼肉 200g×2<br/>
+ 🥩 サイコロステーキ 200g×2<br/>
+ 🍔 ミンチ 200g<br/>
+ 🐓 鶏モモ 200g×3<br/>
+ 🐓 鶏ムネ 200g×3<br/>
+ 🐓 鶏ミンチ 200g×3
+ </div>
+ <div class="sub-plan-pricing">
+ <div class="sub-plan-old-price">通常 ¥12,800</div>
+ <div class="sub-plan-price">¥6,400<small>/初月</small></div>
+ <div class="sub-plan-savings">初月 ¥6,400 OFF / 個別 ¥15,000 より約15%お得</div>
+ <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
+ <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
+ <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
+ </div>
+ </div>
+ <div class="sub-plan-select-btn">このプランを選ぶ →</div>
+ </article>
 
-      <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
-        <span class="sub-plan-tag sub-plan-tag--vip">👑 VIP</span>
-        <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
-        <div class="sub-plan-name">VIPプラン</div>
-        <div class="sub-plan-target">5人以上 / 約4.4kg / 全 22品</div>
-        <ul class="sub-plan-spec">
-          <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
-          <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
-          <li><b>加工場所</b><span>宮崎</span></li>
-          <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
-          <li><b>保管方法</b><span>冷凍</span></li>
-        </ul>
-        <div class="sub-plan-items">
-          <b>お届け例:</b><br/>
-          💎 ヒレステーキ 200g<br/>
-          🥩 赤身ステーキ 200g×2<br/>
-          🥩 サーロインステーキ 200g×2<br/>
-          🍔 和牛ミンチ 200g×2<br/>
-          🐓 鶏モモ 200g×5<br/>
-          🐓 鶏ムネ 200g×5<br/>
-          🐓 鶏ミンチ 200g×5
-        </div>
-        <div class="sub-plan-vip-perk-row">
-          <span>🌿</span>
-          <div>
-            <strong>有機JAS 黒毛和牛 優先案内</strong>
-            <small>2026年夏 解禁・月20頭限定の優先購入権</small>
-          </div>
-        </div>
-        <div class="sub-plan-pricing">
-          <div class="sub-plan-old-price">通常 ¥27,400</div>
-          <div class="sub-plan-price">¥13,700<small>/初月</small></div>
-          <div class="sub-plan-savings">初月 ¥13,700 OFF / 個別 ¥32,200 より約15%お得</div>
-          <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
-            <strong>2ヶ月目以降:</strong> ¥27,400/月 (税込・送料込)<br>
-            <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
-          </div>
-        </div>
-        <div class="sub-plan-select-btn">このプランを選ぶ →</div>
-      </article>
-    </div>
-  </div>
+ <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
+ <span class="sub-plan-tag sub-plan-tag--vip">👑 VIP</span>
+ <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
+ <div class="sub-plan-name">VIPプラン</div>
+ <div class="sub-plan-target">5人以上 / 約4.4kg / 全 22品</div>
+ <ul class="sub-plan-spec">
+ <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
+ <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
+ <li><b>加工場所</b><span>宮崎</span></li>
+ <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
+ <li><b>保管方法</b><span>冷凍</span></li>
+ </ul>
+ <div class="sub-plan-items">
+ <b>お届け例:</b><br/>
+ 💎 ヒレステーキ 200g<br/>
+ 🥩 赤身ステーキ 200g×2<br/>
+ 🥩 サーロインステーキ 200g×2<br/>
+ 🍔 ミンチ 200g×2<br/>
+ 🐓 鶏モモ 200g×5<br/>
+ 🐓 鶏ムネ 200g×5<br/>
+ 🐓 鶏ミンチ 200g×5
+ </div>
+ <div class="sub-plan-vip-perk-row">
+ <span>🌿</span>
+ <div>
+ <strong>有機JAS 黒毛和牛 優先案内</strong>
+ <small>2026年夏 解禁・月20頭限定の優先購入権</small>
+ </div>
+ </div>
+ <div class="sub-plan-pricing">
+ <div class="sub-plan-old-price">通常 ¥27,400</div>
+ <div class="sub-plan-price">¥13,700<small>/初月</small></div>
+ <div class="sub-plan-savings">初月 ¥13,700 OFF / 個別 ¥32,200 より約15%お得</div>
+ <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
+ <strong>2ヶ月目以降:</strong> ¥27,400/月 (税込・送料込)<br>
+ <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
+ </div>
+ </div>
+ <div class="sub-plan-select-btn">このプランを選ぶ →</div>
+ </article>
+ </div>
+ </div>
 </section>
 
 <!-- ========= 選択中プランの詳細 ========= -->
 <section class="sub-detail" id="detail">
-  <div class="container">
-    <div class="sub-detail-head">
-      <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
-      <h2 class="sub-detail-title" id="detailPlanTitle">プロプラン定期便の内容</h2>
-      <span class="sub-detail-plan-name" id="detailPlanLabel">3-4人家族向け · 月額 ¥12,800</span>
-    </div>
+ <div class="container">
+ <div class="sub-detail-head">
+ <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
+ <h2 class="sub-detail-title" id="detailPlanTitle">プロプラン定期便の内容</h2>
+ <span class="sub-detail-plan-name" id="detailPlanLabel">3-4人家族向け · 月額 ¥12,800</span>
+ </div>
 
-    <div class="sub-detail-grid">
-      <div class="sub-detail-items" id="detailItemsList">
-        <h3>毎月お届けの内容</h3>
-        <!-- 中身は JS で動的に切替 -->
-      </div>
+ <div class="sub-detail-grid">
+ <div class="sub-detail-items" id="detailItemsList">
+ <h3>毎月お届けの内容</h3>
+ <!-- 中身は JS で動的に切替 -->
+ </div>
 
-      <div class="sub-detail-side">
-        <div class="sub-detail-card">
-          <div class="sub-detail-card-head">
-            <span class="sub-detail-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-            </span>
-            <span class="sub-detail-card-title">次回お届け</span>
-          </div>
-          <div class="delivery-date-large" id="detailNextDeliveryDate">6/1</div>
-          <div class="delivery-time">18:00 - 20:00 帯</div>
-          <p style="margin-top: 8px;">以降、毎月1日に自動でお届け。配送日・時間は変更可能です。</p>
-        </div>
+ <div class="sub-detail-side">
+ <div class="sub-detail-card">
+ <div class="sub-detail-card-head">
+ <span class="sub-detail-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+ <rect x="3" y="4" width="18" height="18" rx="2"/>
+ <line x1="16" y1="2" x2="16" y2="6"/>
+ <line x1="8" y1="2" x2="8" y2="6"/>
+ <line x1="3" y1="10" x2="21" y2="10"/>
+ </svg>
+ </span>
+ <span class="sub-detail-card-title">次回お届け</span>
+ </div>
+ <div class="delivery-date-large" id="detailNextDeliveryDate">6/1</div>
+ <div class="delivery-time">18:00 - 20:00 帯</div>
+ <p style="margin-top: 8px;">以降、毎月1日に自動でお届け。配送日・時間は変更可能です。</p>
+ </div>
 
-        <div class="sub-detail-card">
-          <div class="sub-detail-card-head">
-            <span class="sub-detail-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2 L4 6 V12 C4 17 7 21 12 22 C17 21 20 17 20 12 V6 Z"/>
-                <path d="M9 12 L11 14 L15 10"/>
-              </svg>
-            </span>
-            <span class="sub-detail-card-title">いつでも変更可能</span>
-          </div>
-          <p>スキップ・プラン変更はLINEまたはマイページから1タップで完了。<strong style="color: var(--color-forest);">解約は3ヶ月継続後よりOK</strong>、月途中スキップは初月から自由です。</p>
-        </div>
+ <div class="sub-detail-card">
+ <div class="sub-detail-card-head">
+ <span class="sub-detail-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M12 2 L4 6 V12 C4 17 7 21 12 22 C17 21 20 17 20 12 V6 Z"/>
+ <path d="M9 12 L11 14 L15 10"/>
+ </svg>
+ </span>
+ <span class="sub-detail-card-title">いつでも変更可能</span>
+ </div>
+ <p>スキップ・プラン変更はLINEまたはマイページから1タップで完了。<strong style="color: var(--color-forest);">解約は3ヶ月継続後よりOK</strong>、月途中スキップは初月から自由です。</p>
+ </div>
 
-        <div class="sub-detail-card">
-          <div class="sub-detail-card-head">
-            <span class="sub-detail-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 7 L12 2 L21 7 L12 12 Z"/>
-                <path d="M3 7 V17 L12 22 V12"/>
-                <path d="M21 7 V17 L12 22"/>
-              </svg>
-            </span>
-            <span class="sub-detail-card-title">小分け真空パック</span>
-          </div>
-          <p>すべて1回分ずつ真空パック・冷凍。賞味期限6ヶ月、必要な分だけ解凍できます。</p>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="sub-detail-card">
+ <div class="sub-detail-card-head">
+ <span class="sub-detail-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M3 7 L12 2 L21 7 L12 12 Z"/>
+ <path d="M3 7 V17 L12 22 V12"/>
+ <path d="M21 7 V17 L12 22"/>
+ </svg>
+ </span>
+ <span class="sub-detail-card-title">小分け真空パック</span>
+ </div>
+ <p>すべて1回分ずつ真空パック・冷凍。賞味期限6ヶ月、必要な分だけ解凍できます。</p>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ========= 今月だけ追加（Uber Eats 風 全商品＋10%OFF） ========= -->
 <section class="sub-addons" id="addons">
-  <div class="container">
-    <div class="sub-addons-head">
-      <div class="sub-addons-eyebrow">＋ ADD TO THIS MONTH'S BOX</div>
-      <h2 class="sub-addons-title">サブスクと一緒に、今月だけ。</h2>
-      <p class="sub-addons-lead">
-        <strong style="color: #B91C1C;">サブスクと同梱で全品 10% OFF</strong><br/>
-        定期便と同じ箱に同梱、追加送料0円。今月だけの注文なので来月以降の定期便には影響しません。
-      </p>
-    </div>
+ <div class="container">
+ <div class="sub-addons-head">
+ <div class="sub-addons-eyebrow">＋ ADD TO THIS MONTH'S BOX</div>
+ <h2 class="sub-addons-title">サブスクと一緒に、今月だけ。</h2>
+ <p class="sub-addons-lead">
+ <strong style="color: #B91C1C;">サブスクと同梱で全品 10% OFF</strong><br/>
+ 定期便と同じ箱に同梱、追加送料0円。今月だけの注文なので来月以降の定期便には影響しません。
+ </p>
+ </div>
 
-    <!-- カテゴリタブ -->
-    <div class="sub-addons-tabs" id="subAddonsTabs">
-      <button class="sub-addon-tab active" data-cat="all">すべて</button>
-      <button class="sub-addon-tab" data-cat="steak">ステーキ</button>
-      <button class="sub-addon-tab" data-cat="slice">スライス</button>
-      <button class="sub-addon-tab" data-cat="yakiniku">🔥 焼肉</button>
-      <button class="sub-addon-tab" data-cat="processed">🍔 加工品</button>
-      <button class="sub-addon-tab" data-cat="chicken">🐓 鶏肉</button>
-    </div>
+ <!-- カテゴリタブ -->
+ <div class="sub-addons-tabs" id="subAddonsTabs">
+ <button class="sub-addon-tab active" data-cat="all">すべて</button>
+ <button class="sub-addon-tab" data-cat="steak">ステーキ</button>
+ <button class="sub-addon-tab" data-cat="slice">スライス</button>
+ <button class="sub-addon-tab" data-cat="yakiniku">🔥 焼肉</button>
+ <button class="sub-addon-tab" data-cat="processed">🍔 加工品</button>
+ <button class="sub-addon-tab" data-cat="chicken">🐓 鶏肉</button>
+ </div>
 
-    <div class="sub-addons-grid" id="subAddonsGrid">
-      <!-- JS で生成 -->
-    </div>
+ <div class="sub-addons-grid" id="subAddonsGrid">
+ <!-- JS で生成 -->
+ </div>
 
-    <!-- 「これもどうですか？」レコメンド帯 -->
-    <div class="sub-addons-suggest" id="subAddonsSuggest" style="display:none">
-      <div class="sub-addons-suggest-head">
-        <span class="sub-addons-suggest-icon">💡</span>
-        <span class="sub-addons-suggest-label">これもどうですか？</span>
-        <span class="sub-addons-suggest-discount">+10% OFF</span>
-      </div>
-      <div class="sub-addons-suggest-list" id="subAddonsSuggestList"></div>
-    </div>
+ <!-- 「これもどうですか？」レコメンド帯 -->
+ <div class="sub-addons-suggest" id="subAddonsSuggest" style="display:none">
+ <div class="sub-addons-suggest-head">
+ <span class="sub-addons-suggest-icon">💡</span>
+ <span class="sub-addons-suggest-label">これもどうですか？</span>
+ <span class="sub-addons-suggest-discount">+10% OFF</span>
+ </div>
+ <div class="sub-addons-suggest-list" id="subAddonsSuggestList"></div>
+ </div>
 
-    <!-- 追加サマリーバスケット -->
-    <div class="sub-addons-cart" id="subAddonsCart" style="display:none">
-      <div class="sub-addons-cart-head">
-        <span class="sub-addons-cart-label">追加中のアイテム</span>
-        <span class="sub-addons-cart-count" id="subAddonsCount">0品</span>
-      </div>
-      <div class="sub-addons-cart-list" id="subAddonsList"></div>
-      <div class="sub-addons-cart-total">
-        <span>追加分小計 <span class="discount-tag">(10%OFF適用済)</span></span>
-        <strong id="subAddonsTotal">¥0</strong>
-      </div>
-    </div>
-  </div>
+ <!-- 追加サマリーバスケット -->
+ <div class="sub-addons-cart" id="subAddonsCart" style="display:none">
+ <div class="sub-addons-cart-head">
+ <span class="sub-addons-cart-label">追加中のアイテム</span>
+ <span class="sub-addons-cart-count" id="subAddonsCount">0品</span>
+ </div>
+ <div class="sub-addons-cart-list" id="subAddonsList"></div>
+ <div class="sub-addons-cart-total">
+ <span>追加分小計 <span class="discount-tag">(10%OFF適用済)</span></span>
+ <strong id="subAddonsTotal">¥0</strong>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ========= チェックアウトフォーム ========= -->
 <section class="sub-checkout" id="checkout">
-  <div class="container">
-    <div class="sub-checkout-inner">
-      <div class="sub-checkout-head">
-        <div class="sub-checkout-eyebrow">APPLICATION FORM</div>
-        <h2 class="sub-checkout-title">定期便 申込フォーム</h2>
-        <p class="sub-checkout-sub">3ステップで完了 · 初回のみご入力 · 約1分</p>
-      </div>
+ <div class="container">
+ <div class="sub-checkout-inner">
+ <div class="sub-checkout-head">
+ <div class="sub-checkout-eyebrow">APPLICATION FORM</div>
+ <h2 class="sub-checkout-title">定期便 申込フォーム</h2>
+ <p class="sub-checkout-sub">3ステップで完了 · 初回のみご入力 · 約1分</p>
+ </div>
 
-      <form class="checkout-form" id="checkoutForm" onsubmit="return handleSubmit(event)">
+ <form class="checkout-form" id="checkoutForm" onsubmit="return handleSubmit(event)">
 
-        <div class="checkout-section">
-          <h3>お届け先 情報</h3>
-          <div class="checkout-row cols2">
-            <div class="checkout-field">
-              <label>お名前<span class="required">*</span></label>
-              <input type="text" name="name" placeholder="江田 友輝" autocomplete="name" required>
-            </div>
-            <div class="checkout-field">
-              <label>電話番号<span class="required">*</span></label>
-              <input type="tel" name="tel" placeholder="090-1234-5678" inputmode="tel" autocomplete="tel" required>
-            </div>
-          </div>
-          <div class="checkout-row">
-            <div class="checkout-field">
-              <label>メールアドレス<span class="required">*</span></label>
-              <input type="email" name="email" placeholder="example@example.com" inputmode="email" autocomplete="email" required>
-            </div>
-          </div>
-          <div class="checkout-row cols2">
-            <div class="checkout-field">
-              <label>郵便番号<span class="required">*</span></label>
-              <input type="text" name="zip" placeholder="123-4567" inputmode="numeric" autocomplete="postal-code" maxlength="8" required>
-            </div>
-            <div class="checkout-field">
-              <label>都道府県<span class="required">*</span></label>
-              <select name="pref" autocomplete="address-level1" required>
-                <option value="">選択してください</option>
-                <option>北海道</option><option>青森県</option><option>岩手県</option>
-                <option>宮城県</option><option>秋田県</option><option>山形県</option>
-                <option>福島県</option><option>茨城県</option><option>栃木県</option>
-                <option>群馬県</option><option>埼玉県</option><option>千葉県</option>
-                <option>東京都</option><option>神奈川県</option><option>新潟県</option>
-                <option>富山県</option><option>石川県</option><option>福井県</option>
-                <option>山梨県</option><option>長野県</option><option>岐阜県</option>
-                <option>静岡県</option><option>愛知県</option><option>三重県</option>
-                <option>滋賀県</option><option>京都府</option><option>大阪府</option>
-                <option>兵庫県</option><option>奈良県</option><option>和歌山県</option>
-                <option>鳥取県</option><option>島根県</option><option>岡山県</option>
-                <option>広島県</option><option>山口県</option><option>徳島県</option>
-                <option>香川県</option><option>愛媛県</option><option>高知県</option>
-                <option>福岡県</option><option>佐賀県</option><option>長崎県</option>
-                <option>熊本県</option><option>大分県</option><option>宮崎県</option>
-                <option>鹿児島県</option><option>沖縄県</option>
-              </select>
-            </div>
-          </div>
-          <div class="checkout-row">
-            <div class="checkout-field">
-              <label>市区町村・番地・建物名<span class="required">*</span></label>
-              <input type="text" name="address" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="street-address" required>
-            </div>
-          </div>
-        </div>
+ <div class="checkout-section">
+ <h3>お届け先 情報</h3>
+ <div class="checkout-row cols2">
+ <div class="checkout-field">
+ <label>お名前<span class="required">*</span></label>
+ <input type="text" name="name" placeholder="江田 友輝" autocomplete="name" required>
+ </div>
+ <div class="checkout-field">
+ <label>電話番号<span class="required">*</span></label>
+ <input type="tel" name="tel" placeholder="090-1234-5678" inputmode="tel" autocomplete="tel" required>
+ </div>
+ </div>
+ <div class="checkout-row">
+ <div class="checkout-field">
+ <label>メールアドレス<span class="required">*</span></label>
+ <input type="email" name="email" placeholder="example@example.com" inputmode="email" autocomplete="email" required>
+ </div>
+ </div>
+ <div class="checkout-row cols2">
+ <div class="checkout-field">
+ <label>郵便番号<span class="required">*</span></label>
+ <input type="text" name="zip" placeholder="123-4567" inputmode="numeric" autocomplete="postal-code" maxlength="8" required>
+ </div>
+ <div class="checkout-field">
+ <label>都道府県<span class="required">*</span></label>
+ <select name="pref" autocomplete="address-level1" required>
+ <option value="">選択してください</option>
+ <option>北海道</option><option>青森県</option><option>岩手県</option>
+ <option>宮城県</option><option>秋田県</option><option>山形県</option>
+ <option>福島県</option><option>茨城県</option><option>栃木県</option>
+ <option>群馬県</option><option>埼玉県</option><option>千葉県</option>
+ <option>東京都</option><option>神奈川県</option><option>新潟県</option>
+ <option>富山県</option><option>石川県</option><option>福井県</option>
+ <option>山梨県</option><option>長野県</option><option>岐阜県</option>
+ <option>静岡県</option><option>愛知県</option><option>三重県</option>
+ <option>滋賀県</option><option>京都府</option><option>大阪府</option>
+ <option>兵庫県</option><option>奈良県</option><option>和歌山県</option>
+ <option>鳥取県</option><option>島根県</option><option>岡山県</option>
+ <option>広島県</option><option>山口県</option><option>徳島県</option>
+ <option>香川県</option><option>愛媛県</option><option>高知県</option>
+ <option>福岡県</option><option>佐賀県</option><option>長崎県</option>
+ <option>熊本県</option><option>大分県</option><option>宮崎県</option>
+ <option>鹿児島県</option><option>沖縄県</option>
+ </select>
+ </div>
+ </div>
+ <div class="checkout-row">
+ <div class="checkout-field">
+ <label>市区町村・番地・建物名<span class="required">*</span></label>
+ <input type="text" name="address" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="street-address" required>
+ </div>
+ </div>
+ </div>
 
-        <div class="checkout-section">
-          <h3>お届け時間帯</h3>
-          <p class="checkout-section-fine">お届け日は <strong>毎月1日</strong> に固定（変更不可）。お受け取りいただける時間帯のみご指定ください。</p>
-          <div class="checkout-row" style="margin-top: 12px;">
-            <div class="checkout-field">
-              <label>お届け時間帯</label>
-              <select name="time_slot">
-                <option>午前中（〜12:00）</option>
-                <option>14:00 - 16:00</option>
-                <option>16:00 - 18:00</option>
-                <option selected>18:00 - 20:00（推奨）</option>
-                <option>19:00 - 21:00</option>
-              </select>
-            </div>
-          </div>
-          <input type="hidden" name="delivery_slot" value="day1">
-        </div>
+ <div class="checkout-section">
+ <h3>お届け時間帯</h3>
+ <p class="checkout-section-fine">お届け日は <strong>毎月1日</strong> に固定（変更不可）。お受け取りいただける時間帯のみご指定ください。</p>
+ <div class="checkout-row" style="margin-top: 12px;">
+ <div class="checkout-field">
+ <label>お届け時間帯</label>
+ <select name="time_slot">
+ <option>午前中（〜12:00）</option>
+ <option>14:00 - 16:00</option>
+ <option>16:00 - 18:00</option>
+ <option selected>18:00 - 20:00（推奨）</option>
+ <option>19:00 - 21:00</option>
+ </select>
+ </div>
+ </div>
+ <input type="hidden" name="delivery_slot" value="day1">
+ </div>
 
-        <div class="checkout-section">
-          <h3>お支払い方法</h3>
-          <div class="checkout-radio-group">
-            <label class="checkout-radio selected">
-              <input type="radio" name="payment" value="card" checked>
-              <strong>💳 クレジットカード</strong>
-              <small>VISA · Master · JCB · AMEX</small>
-            </label>
-            <label class="checkout-radio">
-              <input type="radio" name="payment" value="apple">
-              <strong>🍎 Apple Pay</strong>
-              <small>かんたん決済</small>
-            </label>
-          </div>
-        </div>
+ <div class="checkout-section">
+ <h3>お支払い方法</h3>
+ <div class="checkout-radio-group">
+ <label class="checkout-radio selected">
+ <input type="radio" name="payment" value="card" checked>
+ <strong>💳 クレジットカード</strong>
+ <small>VISA · Master · JCB · AMEX</small>
+ </label>
+ <label class="checkout-radio">
+ <input type="radio" name="payment" value="apple">
+ <strong>🍎 Apple Pay</strong>
+ <small>かんたん決済</small>
+ </label>
+ </div>
+ </div>
 
-        <div class="checkout-summary" id="checkoutSummary">
-          <div class="checkout-summary-row">
-            <span id="summaryPlanName">プロプラン定期便</span>
-            <strong id="summaryRegular">¥12,800/月</strong>
-          </div>
-          <div class="checkout-summary-row discount">
-            <span>5月入会 50%OFF</span>
-            <strong id="summaryDiscount">−¥6,400</strong>
-          </div>
-          <div class="checkout-summary-row addon-row" id="summaryAddonRow" style="display:none">
-            <span>🛒 今月だけ追加 <small id="summaryAddonCount">(0品)</small></span>
-            <strong id="summaryAddon">+¥0</strong>
-          </div>
-          <div class="checkout-summary-row total">
-            <span>初月お支払い額</span>
-            <strong id="summaryTotal">¥6,400</strong>
-          </div>
-          <p class="checkout-fine">
-            送料無料 · 2回目以降は通常価格でお届け · いつでもスキップ・解約OK
-          </p>
-        </div>
+ <div class="checkout-summary" id="checkoutSummary">
+ <div class="checkout-summary-row">
+ <span id="summaryPlanName">プロプラン定期便</span>
+ <strong id="summaryRegular">¥12,800/月</strong>
+ </div>
+ <div class="checkout-summary-row discount">
+ <span>5月入会 50%OFF</span>
+ <strong id="summaryDiscount">−¥6,400</strong>
+ </div>
+ <div class="checkout-summary-row addon-row" id="summaryAddonRow" style="display:none">
+ <span>🛒 今月だけ追加 <small id="summaryAddonCount">(0品)</small></span>
+ <strong id="summaryAddon">+¥0</strong>
+ </div>
+ <div class="checkout-summary-row total">
+ <span>初月お支払い額</span>
+ <strong id="summaryTotal">¥6,400</strong>
+ </div>
+ <p class="checkout-fine">
+ 送料無料 · 2回目以降は通常価格でお届け · いつでもスキップ・解約OK
+ </p>
+ </div>
 
-        <button type="submit" class="checkout-submit">
-          📝 定期便を申し込む · ¥<span id="submitAmount">6,400</span>
-        </button>
+ <button type="submit" class="checkout-submit">
+ 📝 定期便を申し込む · ¥<span id="submitAmount">6,400</span>
+ </button>
 
-        <div class="checkout-trust">
-          <span class="checkout-trust-item">🔒 SSL暗号化通信</span>
-          <span class="checkout-trust-item">✓ 利用規約・プライバシーポリシーに同意</span>
-        </div>
-      </form>
-    </div>
-  </div>
+ <div class="checkout-trust">
+ <span class="checkout-trust-item">🔒 SSL暗号化通信</span>
+ <span class="checkout-trust-item">✓ 利用規約・プライバシーポリシーに同意</span>
+ </div>
+ </form>
+ </div>
+ </div>
 </section>
 
 <!-- ========= 4つの特典 ========= -->
 <section class="sub-trust">
-  <div class="container">
-    <div class="sub-trust-head">
-      <h2>定期便だけの、4つの特典。</h2>
-      <p>お得・自由・安心 — すべて1つに。</p>
-    </div>
+ <div class="container">
+ <div class="sub-trust-head">
+ <h2>定期便だけの、4つの特典。</h2>
+ <p>お得・自由・安心 — すべて1つに。</p>
+ </div>
 
-    <div class="sub-trust-grid">
-      <div class="sub-trust-card">
-        <span class="sub-trust-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2 L4 14 H12 L11 22 L20 10 H12 L13 2 Z"/>
-          </svg>
-        </span>
-        <h4>初月 半額</h4>
-        <p>初回限定で 50% OFF。お試し感覚でスタートできます。</p>
-      </div>
+ <div class="sub-trust-grid">
+ <div class="sub-trust-card">
+ <span class="sub-trust-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M12 2 L4 14 H12 L11 22 L20 10 H12 L13 2 Z"/>
+ </svg>
+ </span>
+ <h4>初月 半額</h4>
+ <p>初回限定で 50% OFF。お試し感覚でスタートできます。</p>
+ </div>
 
-      <div class="sub-trust-card">
-        <span class="sub-trust-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 9V15H14V9H2Z"/>
-            <path d="M14 11H18L21 14V15H14"/>
-            <circle cx="6" cy="17" r="1.4" fill="currentColor"/>
-            <circle cx="17" cy="17" r="1.4" fill="currentColor"/>
-          </svg>
-        </span>
-        <h4>配送 無料</h4>
-        <p>毎回送料無料。金額に関係なく冷凍便でお届け。</p>
-      </div>
+ <div class="sub-trust-card">
+ <span class="sub-trust-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M2 9V15H14V9H2Z"/>
+ <path d="M14 11H18L21 14V15H14"/>
+ <circle cx="6" cy="17" r="1.4" fill="currentColor"/>
+ <circle cx="17" cy="17" r="1.4" fill="currentColor"/>
+ </svg>
+ </span>
+ <h4>配送 無料</h4>
+ <p>毎回送料無料。金額に関係なく冷凍便でお届け。</p>
+ </div>
 
-      <div class="sub-trust-card">
-        <span class="sub-trust-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="4" y="4" width="6" height="16" rx="1"/>
-            <rect x="14" y="4" width="6" height="16" rx="1"/>
-          </svg>
-        </span>
-        <h4>スキップ 可能</h4>
-        <p>「今月いらない」をLINEで1タップ。翌月から再開。</p>
-      </div>
+ <div class="sub-trust-card">
+ <span class="sub-trust-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <rect x="4" y="4" width="6" height="16" rx="1"/>
+ <rect x="14" y="4" width="6" height="16" rx="1"/>
+ </svg>
+ </span>
+ <h4>スキップ 可能</h4>
+ <p>「今月いらない」をLINEで1タップ。翌月から再開。</p>
+ </div>
 
-      <div class="sub-trust-card">
-        <span class="sub-trust-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M12 1 V5 M12 19 V23 M4.2 4.2 L7 7 M17 17 L19.8 19.8 M1 12 H5 M19 12 H23 M4.2 19.8 L7 17 M17 7 L19.8 4.2"/>
-          </svg>
-        </span>
-        <h4>カスタム 可能</h4>
-        <p>「鶏多め」「赤身中心」など、LINEで自由に調整。</p>
-      </div>
-    </div>
-  </div>
+ <div class="sub-trust-card">
+ <span class="sub-trust-card-icon">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <circle cx="12" cy="12" r="3"/>
+ <path d="M12 1 V5 M12 19 V23 M4.2 4.2 L7 7 M17 17 L19.8 19.8 M1 12 H5 M19 12 H23 M4.2 19.8 L7 17 M17 7 L19.8 4.2"/>
+ </svg>
+ </span>
+ <h4>カスタム 可能</h4>
+ <p>「鶏多め」「赤身中心」など、LINEで自由に調整。</p>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ========= FAQ ========= -->
 <section class="sub-faq" id="faq">
-  <div class="container">
-    <div class="sub-faq-head">
-      <h2>よくあるご質問</h2>
-      <p style="font-size: 14px; color: var(--color-ink-muted); line-height: 1.85;">
-        ご不明な点はLINE公式アカウントでもお気軽にお問い合わせください。
-      </p>
-    </div>
+ <div class="container">
+ <div class="sub-faq-head">
+ <h2>よくあるご質問</h2>
+ <p style="font-size: 14px; color: var(--color-ink-muted); line-height: 1.85;">
+ ご不明な点はLINE公式アカウントでもお気軽にお問い合わせください。
+ </p>
+ </div>
 
-    <div class="sub-faq-list">
-      <details class="faq-item">
-        <summary class="faq-q">スキップ・解約はどうやるの？</summary>
-        <div class="faq-a">
-          スキップ・プラン変更は<strong>マイページから1タップ、またはLINE公式アカウントで「来月スキップ」「ライトプランに変更」</strong>とメッセージするだけで完了します。電話での引き止めなどは一切ありません。<strong>次回お届け日の5日前まで</strong>に手続きいただければ、すべて反映されます。
-        </div>
-      </details>
+ <div class="sub-faq-list">
+ <details class="faq-item">
+ <summary class="faq-q">スキップ・解約はどうやるの？</summary>
+ <div class="faq-a">
+ スキップ・プラン変更は<strong>マイページから1タップ、またはLINE公式アカウントで「来月スキップ」「ライトプランに変更」</strong>とメッセージするだけで完了します。電話での引き止めなどは一切ありません。<strong>次回お届け日の5日前まで</strong>に手続きいただければ、すべて反映されます。
+ </div>
+ </details>
 
-      <details class="faq-item">
-        <summary class="faq-q">解約はいつできる？</summary>
-        <div class="faq-a">
-          <strong>初回お届けから3ヶ月（3回）以降、いつでも解約が可能</strong>です。これは、お肉本来の魅力を1〜2回ではなく数ヶ月かけて感じていただきたいという想いから設けている期間です。3回目以降の解約はマイページ/LINEから1タップでお手続きいただけます。スキップは1ヶ月目から自由にご利用いただけます。
-        </div>
-      </details>
+ <details class="faq-item">
+ <summary class="faq-q">解約はいつできる？</summary>
+ <div class="faq-a">
+ <strong>初回お届けから3ヶ月（3回）以降、いつでも解約が可能</strong>です。これは、お肉本来の魅力を1〜2回ではなく数ヶ月かけて感じていただきたいという想いから設けている期間です。3回目以降の解約はマイページ/LINEから1タップでお手続きいただけます。スキップは1ヶ月目から自由にご利用いただけます。
+ </div>
+ </details>
 
-      <details class="faq-item">
-        <summary class="faq-q">中身を変更できる？</summary>
-        <div class="faq-a">
-          毎月の内容は固定ですが、<strong>プラン変更</strong>はいつでも可能です。LINE またはマイページから「VIPに変更」「ミニに変更」と1タップで翌月から切り替わります。また「鶏肉多め」「赤身多め」のリクエストもLINEで承ります。
-        </div>
-      </details>
+ <details class="faq-item">
+ <summary class="faq-q">中身を変更できる？</summary>
+ <div class="faq-a">
+ 毎月の内容は固定ですが、<strong>プラン変更</strong>はいつでも可能です。LINE またはマイページから「VIPに変更」「ミニに変更」と1タップで翌月から切り替わります。また「鶏肉多め」「赤身多め」のリクエストもLINEで承ります。
+ </div>
+ </details>
 
-      <details class="faq-item">
-        <summary class="faq-q">配送日は選べる？</summary>
-        <div class="faq-a">
-          毎月 <strong>1日 または 5日</strong> からお選びいただけます。時間帯は午前中・14-16時・16-18時・18-20時・19-21時の5枠から選択可能。お申込み時に設定いただき、後から変更も可能です。
-        </div>
-      </details>
+ <details class="faq-item">
+ <summary class="faq-q">配送日は選べる？</summary>
+ <div class="faq-a">
+ 毎月 <strong>1日 または 5日</strong> からお選びいただけます。時間帯は午前中・14-16時・16-18時・18-20時・19-21時の5枠から選択可能。お申込み時に設定いただき、後から変更も可能です。
+ </div>
+ </details>
 
-      <details class="faq-item">
-        <summary class="faq-q">不在の場合はどうなる？</summary>
-        <div class="faq-a">
-          ヤマト運輸クール宅急便でお届けします。<strong>不在票が投函され、再配達のご依頼が可能</strong>です。冷凍便のため、長期不在予定の場合は事前にスキップ手続きをお願いいたします。
-        </div>
-      </details>
+ <details class="faq-item">
+ <summary class="faq-q">不在の場合はどうなる？</summary>
+ <div class="faq-a">
+ ヤマト運輸クール宅急便でお届けします。<strong>不在票が投函され、再配達のご依頼が可能</strong>です。冷凍便のため、長期不在予定の場合は事前にスキップ手続きをお願いいたします。
+ </div>
+ </details>
 
-      <details class="faq-item">
-        <summary class="faq-q">2回目以降の金額は？</summary>
-        <div class="faq-a">
-          <strong>2回目以降は通常価格</strong>でお届けします。ミニ ¥6,980 / プロ ¥12,800 / VIP ¥27,400（すべて税込・送料無料）。初月50%OFFは初回ご利用の方限定でございます。
-        </div>
-      </details>
+ <details class="faq-item">
+ <summary class="faq-q">2回目以降の金額は？</summary>
+ <div class="faq-a">
+ <strong>2回目以降は通常価格</strong>でお届けします。ミニ ¥6,980 / プロ ¥12,800 / VIP ¥27,400（すべて税込・送料無料）。初月50%OFFは初回ご利用の方限定でございます。
+ </div>
+ </details>
 
-      <details class="faq-item">
-        <summary class="faq-q">支払い方法は？</summary>
-        <div class="faq-a">
-          定期便は<strong>クレジットカード（VISA / Master / JCB / AMEX）・Apple Pay のみ</strong>対応しています（銀行振込は単品注文のみ）。引き落としは毎月のお届け日の前日、ご登録のカードまたはアカウントから自動で処理されます。
-        </div>
-      </details>
+ <details class="faq-item">
+ <summary class="faq-q">支払い方法は？</summary>
+ <div class="faq-a">
+ 定期便は<strong>クレジットカード（VISA / Master / JCB / AMEX）・Apple Pay のみ</strong>対応しています（銀行振込は単品注文のみ）。引き落としは毎月のお届け日の前日、ご登録のカードまたはアカウントから自動で処理されます。
+ </div>
+ </details>
 
-    </div>
-  </div>
+ </div>
+ </div>
 </section>
 
 <!-- ========= お客様の声 ========= -->
 <section class="sub-voice">
-  <div class="container">
-    <div class="sub-voice-head">
-      <h2>定期便ユーザーの声</h2>
-      <p>3-4人家族 · 共働き · 子育て中 — 多くのご家庭で選ばれています。</p>
-    </div>
+ <div class="container">
+ <div class="sub-voice-head">
+ <h2>定期便ユーザーの声</h2>
+ <p>3-4人家族 · 共働き · 子育て中 — 多くのご家庭で選ばれています。</p>
+ </div>
 
-    <div class="sub-voice-grid">
-      <div class="sub-voice-card">
-        <div class="sub-voice-stars">★★★★★</div>
-        <p class="sub-voice-text">毎月決まった日にお肉が届くから、平日の夕食に悩む時間がゼロに。子どもの食べ盛りでも安心して常備できます。</p>
-        <div class="sub-voice-author">
-          <div class="sub-voice-avatar">田</div>
-          <div>
-            <div class="sub-voice-name">田中 様 / 東京都</div>
-            <div class="sub-voice-product">プロプラン定期便 6ヶ月目</div>
-          </div>
-        </div>
-      </div>
+ <div class="sub-voice-grid">
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">毎月決まった日にお肉が届くから、平日の夕食に悩む時間がゼロに。子どもの食べ盛りでも安心して常備できます。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">田</div>
+ <div>
+ <div class="sub-voice-name">田中 様 / 東京都</div>
+ <div class="sub-voice-product">プロプラン定期便 6ヶ月目</div>
+ </div>
+ </div>
+ </div>
 
-      <div class="sub-voice-card">
-        <div class="sub-voice-stars">★★★★★</div>
-        <p class="sub-voice-text">スーパーで何を買うか悩む時間が消えて、夕食を作るストレスが激減。お肉の質も信頼できるので、子どもにも気兼ねなく出せます。</p>
-        <div class="sub-voice-author">
-          <div class="sub-voice-avatar">佐</div>
-          <div>
-            <div class="sub-voice-name">佐藤 様 / 福岡</div>
-            <div class="sub-voice-product">プロプラン定期便 3ヶ月目</div>
-          </div>
-        </div>
-      </div>
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">スーパーで何を買うか悩む時間が消えて、夕食を作るストレスが激減。お肉の質も信頼できるので、子どもにも気兼ねなく出せます。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">佐</div>
+ <div>
+ <div class="sub-voice-name">佐藤 様 / 福岡</div>
+ <div class="sub-voice-product">プロプラン定期便 3ヶ月目</div>
+ </div>
+ </div>
+ </div>
 
-      <div class="sub-voice-card">
-        <div class="sub-voice-stars">★★★★★</div>
-        <p class="sub-voice-text">5人家族なのでVIPプラン。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
-        <div class="sub-voice-author">
-          <div class="sub-voice-avatar">山</div>
-          <div>
-            <div class="sub-voice-name">山田 様 / 大阪</div>
-            <div class="sub-voice-product">VIPプラン定期便 4ヶ月目</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">5人家族なのでVIPプラン。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">山</div>
+ <div>
+ <div class="sub-voice-name">山田 様 / 大阪</div>
+ <div class="sub-voice-product">VIPプラン定期便 4ヶ月目</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ========= FOOTER CTA ========= -->
 <section class="sub-foot-cta">
-  <div class="container">
-    <h2>今月入会で 50%OFF。<br/>家族の冷凍庫に、安心を。</h2>
-    <p>※ 月末までのお申込み限定 · いつでもスキップ・解約OK</p>
-    <a href="#plans" class="btn btn-gold">プランを選び直す ↑</a>
-  </div>
+ <div class="container">
+ <h2>今月入会で 50%OFF。<br/>家族の冷凍庫に、安心を。</h2>
+ <p>※ 月末までのお申込み限定 · いつでもスキップ・解約OK</p>
+ <a href="#plans" class="btn btn-gold">プランを選び直す ↑</a>
+ </div>
 </section>
 
 <!-- ========= FOOTER ========= -->
 <footer class="site-footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand-name">EDA LIVESTOCK</div>
-        <span class="footer-brand-jp">江田畜産株式会社</span>
-      </div>
-      <div class="footer-list">
-        <h4>SHOP</h4>
-        <a href="shop.html">オンラインショップ</a>
-        <a href="subscription.html">定期便</a>
-        <a href="mypage.html">マイページ</a>
-      </div>
-      <div class="footer-list">
-        <h4>COMPANY</h4>
-        <a href="about.html">About</a>
-        <a href="philosophy.html">Philosophy</a>
-        <a href="organic.html">Organic</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Eda Livestock Co., Ltd. All rights reserved.</span>
-      <span>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</span>
-    </div>
-  </div>
+ <div class="container">
+ <div class="footer-grid">
+ <div>
+ <div class="footer-brand-name">EDA LIVESTOCK</div>
+ <span class="footer-brand-jp">江田畜産株式会社</span>
+ </div>
+ <div class="footer-list">
+ <h4>SHOP</h4>
+ <a href="shop.html">オンラインショップ</a>
+ <a href="subscription.html">定期便</a>
+ <a href="mypage.html">マイページ</a>
+ </div>
+ <div class="footer-list">
+ <h4>COMPANY</h4>
+ <a href="about.html">About</a>
+ <a href="philosophy.html">Philosophy</a>
+ <a href="organic.html">Organic</a>
+ <a href="contact.html">Contact</a>
+ </div>
+ </div>
+ <div class="footer-bottom">
+ <span>© 2026 Eda Livestock Co., Ltd. All rights reserved.</span>
+ <span>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</span>
+ </div>
+ </div>
 </footer>
 
 <script>
 /* ============ プラン定義 ============ */
 const PLANS = {
-  starter: {
-    name: 'ミニプラン',
-    target: '1-2人家族 · 約1.6kg · 全 8品',
-    regular: 6980,
-    half: 3490,
-    weight: '約1.6kg',
-    productCount: 8,
-    origin: '肉(宮崎) / 鶏(大分)',
-    process: '宮崎',
-    feed: '抗生物質 / ホルモンフリー',
-    storage: '冷凍',
-    individual: 8200,
-    savingsPct: 15,
-    items: [
-      { name: '赤身スライス',     qty: '200g',      img: 'public/images/products/drive/wagyu-slice.jpg',     desc: 'しゃぶしゃぶ・すき焼きに' },
-      { name: '赤身焼肉',         qty: '200g',      img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '網焼き・タレ焼肉に' },
-      { name: 'サイコロステーキ', qty: '200g',      img: 'public/images/products/drive/cube-steak.jpg',     desc: '転がすだけで完結' },
-      { name: '和牛ミンチ',       qty: '200g',      img: 'public/images/products/drive/minced.jpg',         desc: 'ハンバーグ・ボロネーゼに' },
-      { name: '鶏モモ',           qty: '200g',      img: 'public/images/products/drive/chicken-thigh.jpg',  desc: '無投薬・平飼い・万能部位' },
-      { name: '鶏ムネ',           qty: '200g × 2',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
-      { name: '鶏ミンチ',         qty: '200g',      img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
-    ]
-  },
-  regular: {
-    name: 'プロプラン',
-    target: '3-4人家族 · 約3.2kg · 全 16品',
-    regular: 12800,
-    half: 6400,
-    weight: '約3.2kg',
-    productCount: 16,
-    origin: '肉(宮崎) / 鶏(大分)',
-    process: '宮崎',
-    feed: '抗生物質 / ホルモンフリー',
-    storage: '冷凍',
-    individual: 15000,
-    savingsPct: 15,
-    items: [
-      { name: '赤身スライス',     qty: '200g × 2',  img: 'public/images/products/drive/wagyu-slice.jpg',     desc: 'しゃぶしゃぶ・すき焼きに' },
-      { name: '赤身焼肉',         qty: '200g × 2',  img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '週末の焼肉に' },
-      { name: 'サイコロステーキ', qty: '200g × 2',  img: 'public/images/products/drive/cube-steak.jpg',     desc: '転がすだけで完結' },
-      { name: '和牛ミンチ',       qty: '200g',      img: 'public/images/products/drive/minced.jpg',         desc: 'ハンバーグ・ボロネーゼに' },
-      { name: '鶏モモ',           qty: '200g × 3',  img: 'public/images/products/drive/chicken-thigh.jpg',  desc: '無投薬・万能部位' },
-      { name: '鶏ムネ',           qty: '200g × 3',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
-      { name: '鶏ミンチ',         qty: '200g × 3',  img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
-    ]
-  },
-  volume: {
-    name: 'VIPプラン',
-    target: '5人以上 · 約4.4kg · 全 22品',
-    regular: 27400,
-    half: 13700,
-    weight: '約4.4kg',
-    productCount: 22,
-    origin: '肉(宮崎) / 鶏(大分)',
-    process: '宮崎',
-    feed: '抗生物質 / ホルモンフリー',
-    storage: '冷凍',
-    individual: 32200,
-    savingsPct: 15,
-    vipPerk: '🌿 有機JAS 黒毛和牛 優先案内 (2026年夏 解禁・月20頭限定の優先購入権)',
-    items: [
-      { name: '💎 ヒレステーキ',     qty: '200g',      img: 'public/images/products/drive/fillet.jpg',         desc: '希少部位・最高峰の赤身' },
-      { name: '赤身ステーキ',       qty: '200g × 2',  img: 'public/images/products/drive/red-meat.jpg',       desc: 'モモ系赤身・脂少なめ' },
-      { name: 'サーロインステーキ', qty: '200g × 2',  img: 'public/images/products/drive/sirloin.jpg',        desc: '週末の主役' },
-      { name: '和牛ミンチ',         qty: '200g × 2',  img: 'public/images/products/drive/minced.jpg',         desc: 'ハンバーグ・ボロネーゼに' },
-      { name: '鶏モモ',             qty: '200g × 5',  img: 'public/images/products/drive/chicken-thigh.jpg',  desc: '無投薬・万能部位' },
-      { name: '鶏ムネ',             qty: '200g × 5',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
-      { name: '鶏ミンチ',           qty: '200g × 5',  img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
-    ]
-  }
+ starter: {
+ name: 'ミニプラン',
+ target: '1-2人家族 · 約1.6kg · 全 8品',
+ regular: 6980,
+ half: 3490,
+ weight: '約1.6kg',
+ productCount: 8,
+ origin: '肉(宮崎) / 鶏(大分)',
+ process: '宮崎',
+ feed: '抗生物質 / ホルモンフリー',
+ storage: '冷凍',
+ individual: 8200,
+ savingsPct: 15,
+ items: [
+ { name: '赤身スライス', qty: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ・すき焼きに' },
+ { name: '赤身焼肉', qty: '200g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '網焼き・タレ焼肉に' },
+ { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけで完結' },
+ { name: 'ミンチ', qty: '200g', img: 'public/images/products/drive/minced.jpg', desc: 'ハンバーグ・ボロネーゼに' },
+ { name: '鶏モモ', qty: '200g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・平飼い・万能部位' },
+ { name: '鶏ムネ', qty: '200g × 2', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
+ { name: '鶏ミンチ', qty: '200g', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
+ ]
+ },
+ regular: {
+ name: 'プロプラン',
+ target: '3-4人家族 · 約3.2kg · 全 16品',
+ regular: 12800,
+ half: 6400,
+ weight: '約3.2kg',
+ productCount: 16,
+ origin: '肉(宮崎) / 鶏(大分)',
+ process: '宮崎',
+ feed: '抗生物質 / ホルモンフリー',
+ storage: '冷凍',
+ individual: 15000,
+ savingsPct: 15,
+ items: [
+ { name: '赤身スライス', qty: '200g × 2', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ・すき焼きに' },
+ { name: '赤身焼肉', qty: '200g × 2', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '週末の焼肉に' },
+ { name: 'サイコロステーキ', qty: '200g × 2', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけで完結' },
+ { name: 'ミンチ', qty: '200g', img: 'public/images/products/drive/minced.jpg', desc: 'ハンバーグ・ボロネーゼに' },
+ { name: '鶏モモ', qty: '200g × 3', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・万能部位' },
+ { name: '鶏ムネ', qty: '200g × 3', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
+ { name: '鶏ミンチ', qty: '200g × 3', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
+ ]
+ },
+ volume: {
+ name: 'VIPプラン',
+ target: '5人以上 · 約4.4kg · 全 22品',
+ regular: 27400,
+ half: 13700,
+ weight: '約4.4kg',
+ productCount: 22,
+ origin: '肉(宮崎) / 鶏(大分)',
+ process: '宮崎',
+ feed: '抗生物質 / ホルモンフリー',
+ storage: '冷凍',
+ individual: 32200,
+ savingsPct: 15,
+ vipPerk: '🌿 有機JAS 黒毛和牛 優先案内 (2026年夏 解禁・月20頭限定の優先購入権)',
+ items: [
+ { name: '💎 ヒレステーキ', qty: '200g', img: 'public/images/products/drive/fillet.jpg', desc: '希少部位・上等の赤身' },
+ { name: '赤身ステーキ', qty: '200g × 2', img: 'public/images/products/drive/red-meat.jpg', desc: 'モモ系赤身・脂少なめ' },
+ { name: 'サーロインステーキ', qty: '200g × 2', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
+ { name: 'ミンチ', qty: '200g × 2', img: 'public/images/products/drive/minced.jpg', desc: 'ハンバーグ・ボロネーゼに' },
+ { name: '鶏モモ', qty: '200g × 5', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・万能部位' },
+ { name: '鶏ムネ', qty: '200g × 5', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
+ { name: '鶏ミンチ', qty: '200g × 5', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
+ ]
+ }
 };
 
 /* ============ URL ?plan= 取得 ============ */
 function getInitialPlan() {
-  const params = new URLSearchParams(location.search);
-  const p = (params.get('plan') || '').toLowerCase();
-  if (PLANS[p]) return p;
-  return 'regular';
+ const params = new URLSearchParams(location.search);
+ const p = (params.get('plan') || '').toLowerCase();
+ if (PLANS[p]) return p;
+ return 'regular';
 }
 let currentPlan = getInitialPlan();
 
 /* ============ プラン選択 → 詳細 + チェックアウト更新 ============ */
 function selectPlan(planKey) {
-  if (!PLANS[planKey]) return;
-  currentPlan = planKey;
+ if (!PLANS[planKey]) return;
+ currentPlan = planKey;
 
-  // カードのアクティブ表示
-  document.querySelectorAll('.sub-plan-card').forEach(c => {
-    c.classList.toggle('selected', c.dataset.plan === planKey);
-  });
+ // カードのアクティブ表示
+ document.querySelectorAll('.sub-plan-card').forEach(c => {
+ c.classList.toggle('selected', c.dataset.plan === planKey);
+ });
 
-  const plan = PLANS[planKey];
+ const plan = PLANS[planKey];
 
-  // 詳細セクション
-  document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容';
-  document.getElementById('detailPlanLabel').innerHTML =
-    plan.target + ' · 月額 <strong>¥' + plan.regular.toLocaleString() + '</strong>';
+ // 詳細セクション
+ document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容';
+ document.getElementById('detailPlanLabel').innerHTML =
+ plan.target + ' · 月額 <strong>¥' + plan.regular.toLocaleString() + '</strong>';
 
-  // 内容物リスト
-  const itemsList = document.getElementById('detailItemsList');
-  itemsList.innerHTML = '<h3>毎月お届けの内容</h3>' + plan.items.map(it => `
-    <div class="sub-detail-item-row">
-      <div class="sub-detail-item-img" style="background-image:url('${it.img}')"></div>
-      <div class="sub-detail-item-info">
-        <strong>${it.name}</strong>
-        <span>${it.desc}</span>
-      </div>
-      <div class="sub-detail-item-qty">${it.qty}</div>
-    </div>
-  `).join('');
+ // 内容物リスト
+ const itemsList = document.getElementById('detailItemsList');
+ itemsList.innerHTML = '<h3>毎月お届けの内容</h3>' + plan.items.map(it => `
+ <div class="sub-detail-item-row">
+ <div class="sub-detail-item-img" style="background-image:url('${it.img}')"></div>
+ <div class="sub-detail-item-info">
+ <strong>${it.name}</strong>
+ <span>${it.desc}</span>
+ </div>
+ <div class="sub-detail-item-qty">${it.qty}</div>
+ </div>
+ `).join('');
 
-  // チェックアウトサマリー
-  document.getElementById('summaryPlanName').textContent = plan.name + '定期便';
-  document.getElementById('summaryRegular').textContent = '¥' + plan.regular.toLocaleString() + '/月';
-  document.getElementById('summaryDiscount').textContent = '−¥' + plan.half.toLocaleString();
-  // アドオンを含めた最終金額に更新
-  if (typeof updateCheckoutSummary === 'function') updateCheckoutSummary();
+ // チェックアウトサマリー
+ document.getElementById('summaryPlanName').textContent = plan.name + '定期便';
+ document.getElementById('summaryRegular').textContent = '¥' + plan.regular.toLocaleString() + '/月';
+ document.getElementById('summaryDiscount').textContent = '−¥' + plan.half.toLocaleString();
+ // アドオンを含めた最終金額に更新
+ if (typeof updateCheckoutSummary === 'function') updateCheckoutSummary();
 }
 
 /* ============ プランカード クリック ============ */
 document.querySelectorAll('.sub-plan-card').forEach(card => {
-  card.addEventListener('click', () => {
-    const p = card.dataset.plan;
-    selectPlan(p);
-    // 詳細セクションへスクロール
-    document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+ card.addEventListener('click', () => {
+ const p = card.dataset.plan;
+ selectPlan(p);
+ // 詳細セクションへスクロール
+ document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+ });
 });
 
 /* ============ チェックアウト ラジオボタン ============ */
 document.querySelectorAll('.checkout-radio input').forEach(input => {
-  input.addEventListener('change', () => {
-    const groupName = input.name;
-    document.querySelectorAll(`.checkout-radio input[name="${groupName}"]`).forEach(i => {
-      i.closest('.checkout-radio').classList.toggle('selected', i.checked);
-    });
-  });
+ input.addEventListener('change', () => {
+ const groupName = input.name;
+ document.querySelectorAll(`.checkout-radio input[name="${groupName}"]`).forEach(i => {
+ i.closest('.checkout-radio').classList.toggle('selected', i.checked);
+ });
+ });
 });
 
 /* ============ 旧 handleSubmit (重複削除済) ============
-   下記 L2530 の addon 対応版へ統合 */
+ 下記 L2530 の addon 対応版へ統合 */
 
 /* ============ 今月限定の月名を更新 ============ */
 (function updateMonth() {
-  const now = new Date();
-  const m = now.getMonth() + 1;
-  const el = document.getElementById('heroPromoMonth');
-  if (el) el.textContent = m + '月 限定';
+ const now = new Date();
+ const m = now.getMonth() + 1;
+ const el = document.getElementById('heroPromoMonth');
+ if (el) el.textContent = m + '月 限定';
 })();
 
 /* ============ 次回お届け日（毎月1日固定） ============ */
 (function updateNextDelivery() {
-  const now = new Date();
-  const day = now.getDate();
-  // 毎月1日固定 — 当月1日を過ぎていれば翌月1日
-  const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  // (1日当日 or 過去日の場合は来月1日にする)
-  if (day === 1) {
-    // 当日 1日 の場合: 当日締切までなら今月、過ぎてたら来月
-    next.setMonth(now.getMonth() + 1);
-  }
-  const el = document.getElementById('detailNextDeliveryDate');
-  if (el) el.textContent = (next.getMonth() + 1) + '/' + next.getDate();
+ const now = new Date();
+ const day = now.getDate();
+ // 毎月1日固定 — 当月1日を過ぎていれば翌月1日
+ const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+ // (1日当日 or 過去日の場合は来月1日にする)
+ if (day === 1) {
+ // 当日 1日 の場合: 当日締切までなら今月、過ぎてたら来月
+ next.setMonth(now.getMonth() + 1);
+ }
+ const el = document.getElementById('detailNextDeliveryDate');
+ if (el) el.textContent = (next.getMonth() + 1) + '/' + next.getDate();
 })();
 
 /* ============ ヘッダー scrolled トリガー ============ */
 window.addEventListener('scroll', () => {
-  document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 50);
+ document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 50);
 }, { passive: true });
 
 /* ============ 「今月だけ追加」全商品 + 10%OFF (products-master.js と整合) ============ */
 const ADDONS = [
-  { id: 'sirloin',     cat: 'steak',     name: 'サーロインステーキ', price: 3400, weight: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
-  { id: 'red-meat',    cat: 'steak',     name: '赤身ステーキ',       price: 3400, weight: '200g', img: 'public/images/products/drive/red-meat.jpg', desc: 'ヘルシー志向に' },
-  { id: 'cube',        cat: 'steak',     name: 'サイコロステーキ',   price: 1000, weight: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
-  { id: 'wagyu-slice', cat: 'slice',     name: '赤身スライス',       price: 2600, weight: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ' },
-  { id: 'kiriotoshi',  cat: 'slice',     name: '和牛切り落とし',     price: 1600, weight: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの主役' },
-  { id: 'wagyu-minced',cat: 'slice',     name: '和牛ミンチ',         price: 1350, weight: '200g', img: 'public/images/products/drive/minced.jpg', desc: 'ハンバーグ・ボロネーゼ' },
-  { id: 'yakiniku',    cat: 'yakiniku',  name: 'バラ焼肉',           price: 1500, weight: '200g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット' },
-  { id: 'offal',       cat: 'yakiniku',  name: '和牛ホルモン',       price:  840, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: 'もつ鍋・焼肉に' },
-  { id: 'hamburg',     cat: 'processed', name: '和牛ハンバーグ',     price:  760, weight: '100g',  img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
-  { id: 'roast-beef',  cat: 'processed', name: '和牛ローストビーフ', price: 3000, weight: '100g',  img: 'public/images/products/drive/hamburg.jpg', desc: 'パーティーの前菜' },
-  { id: 'raw-ham',     cat: 'processed', name: '和牛生ハム',         price: 1250, weight: '40g',   img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'ワインに' },
-  { id: 'chicken-breast', cat: 'chicken', name: '平飼い鶏 ムネ',     price: 1280, weight: '500g',  img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
-  { id: 'chicken-thigh',  cat: 'chicken', name: '平飼い鶏 モモ',     price: 1280, weight: '500g',  img: 'public/images/products/drive/chicken-thigh.jpg', desc: '万能部位' },
-  { id: 'chicken-minced', cat: 'chicken', name: '平飼い鶏 ミンチ',   price: 1000, weight: '300g',  img: 'public/images/products/drive/chicken-minced.jpg', desc: '離乳食にも' }
+ { id: 'sirloin', cat: 'steak', name: 'サーロインステーキ', price: 3400, weight: '200g', img: 'public/images/products/drive/sirloin.jpg', desc: '週末の主役' },
+ { id: 'red-meat', cat: 'steak', name: '赤身ステーキ', price: 3400, weight: '200g', img: 'public/images/products/drive/red-meat.jpg', desc: 'ヘルシー志向に' },
+ { id: 'cube', cat: 'steak', name: 'サイコロステーキ', price: 1000, weight: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '転がすだけ' },
+ { id: 'wagyu-slice', cat: 'slice', name: '赤身スライス', price: 2600, weight: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ' },
+ { id: 'kiriotoshi', cat: 'slice', name: '切り落とし', price: 1600, weight: '200g', img: 'public/images/products/drive/kiriotoshi.jpg', desc: '日常使いの主役' },
+ { id: 'wagyu-minced',cat: 'slice', name: 'ミンチ', price: 1350, weight: '200g', img: 'public/images/products/drive/minced.jpg', desc: 'ハンバーグ・ボロネーゼ' },
+ { id: 'yakiniku', cat: 'yakiniku', name: 'バラ焼肉', price: 1500, weight: '200g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: '焼肉用カット' },
+ { id: 'offal', cat: 'yakiniku', name: 'ホルモン', price: 840, weight: '150g', img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: 'もつ鍋・焼肉に' },
+ { id: 'hamburg', cat: 'processed', name: 'ハンバーグ', price: 760, weight: '100g', img: 'public/images/products/drive/hamburg.jpg', desc: '凍ったまま15分' },
+ { id: 'roast-beef', cat: 'processed', name: 'ローストビーフ', price: 3000, weight: '100g', img: 'public/images/products/drive/hamburg.jpg', desc: 'パーティーの前菜' },
+ { id: 'raw-ham', cat: 'processed', name: '生ハム', price: 1250, weight: '40g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'ワインに' },
+ { id: 'chicken-breast', cat: 'chicken', name: '平飼い鶏 ムネ', price: 1280, weight: '500g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく' },
+ { id: 'chicken-thigh', cat: 'chicken', name: '平飼い鶏 モモ', price: 1280, weight: '500g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '万能部位' },
+ { id: 'chicken-minced', cat: 'chicken', name: '平飼い鶏 ミンチ', price: 1000, weight: '300g', img: 'public/images/products/drive/chicken-minced.jpg', desc: '離乳食にも' }
 ];
 const ADDON_DISCOUNT = 0.10; // サブスクと同時購入で 10% OFF
 let addedAddons = []; // {id, qty}
 let currentAddonCat = 'all';
 
 function discountedPrice(p) {
-  return Math.round(p * (1 - ADDON_DISCOUNT));
+ return Math.round(p * (1 - ADDON_DISCOUNT));
 }
 
 function renderAddons() {
-  const grid = document.getElementById('subAddonsGrid');
-  const filtered = currentAddonCat === 'all' ? ADDONS : ADDONS.filter(a => a.cat === currentAddonCat);
-  grid.innerHTML = filtered.map(a => {
-    const added = addedAddons.find(x => x.id === a.id);
-    const disc = discountedPrice(a.price);
-    return `
-      <div class="sub-addon-card ${added ? 'added' : ''}" data-id="${a.id}">
-        <div class="sub-addon-img" style="background-image:url('${a.img}')"></div>
-        <div class="sub-addon-body">
-          <div class="sub-addon-name">${a.name}</div>
-          <div class="sub-addon-meta">${a.weight} · ${a.desc}</div>
-          <div class="sub-addon-price">
-            ¥${disc.toLocaleString()}
-            <small style="display:block;font-size:10px;color:var(--color-ink-muted);font-weight:600;text-decoration:line-through;text-decoration-color:#FF6B6B;">通常 ¥${a.price.toLocaleString()}</small>
-          </div>
-          <button class="sub-addon-btn" onclick="toggleAddon('${a.id}')">
-            ${added ? '✓ 追加済み — 取り消す' : '+ 10%OFFで追加'}
-          </button>
-        </div>
-      </div>
-    `;
-  }).join('');
+ const grid = document.getElementById('subAddonsGrid');
+ const filtered = currentAddonCat === 'all' ? ADDONS : ADDONS.filter(a => a.cat === currentAddonCat);
+ grid.innerHTML = filtered.map(a => {
+ const added = addedAddons.find(x => x.id === a.id);
+ const disc = discountedPrice(a.price);
+ return `
+ <div class="sub-addon-card ${added ? 'added' : ''}" data-id="${a.id}">
+ <div class="sub-addon-img" style="background-image:url('${a.img}')"></div>
+ <div class="sub-addon-body">
+ <div class="sub-addon-name">${a.name}</div>
+ <div class="sub-addon-meta">${a.weight} · ${a.desc}</div>
+ <div class="sub-addon-price">
+ ¥${disc.toLocaleString()}
+ <small style="display:block;font-size:10px;color:var(--color-ink-muted);font-weight:600;text-decoration:line-through;text-decoration-color:#FF6B6B;">通常 ¥${a.price.toLocaleString()}</small>
+ </div>
+ <button class="sub-addon-btn" onclick="toggleAddon('${a.id}')">
+ ${added ? '✓ 追加済み — 取り消す' : '+ 10%OFFで追加'}
+ </button>
+ </div>
+ </div>
+ `;
+ }).join('');
 }
 
 function toggleAddon(id) {
-  const idx = addedAddons.findIndex(x => x.id === id);
-  if (idx >= 0) addedAddons.splice(idx, 1);
-  else addedAddons.push({ id, qty: 1 });
-  renderAddons();
-  renderAddonsCart();
-  renderSuggestions();
-  updateCheckoutSummary(); // ★ 申込フォーム下部の合計を即時更新
+ const idx = addedAddons.findIndex(x => x.id === id);
+ if (idx >= 0) addedAddons.splice(idx, 1);
+ else addedAddons.push({ id, qty: 1 });
+ renderAddons();
+ renderAddonsCart();
+ renderSuggestions();
+ updateCheckoutSummary(); // ★ 申込フォーム下部の合計を即時更新
 }
 
 /* アドオン合計を計算（10%OFF 適用後の額） */
 function getAddonsTotal() {
-  return addedAddons.reduce((sum, x) => {
-    const a = ADDONS.find(p => p.id === x.id);
-    if (!a) return sum;
-    return sum + discountedPrice(a.price) * x.qty;
-  }, 0);
+ return addedAddons.reduce((sum, x) => {
+ const a = ADDONS.find(p => p.id === x.id);
+ if (!a) return sum;
+ return sum + discountedPrice(a.price) * x.qty;
+ }, 0);
 }
 
 /* チェックアウトサマリーを再計算（プラン半額 + アドオン合計） */
 function updateCheckoutSummary() {
-  const plan = PLANS[currentPlan];
-  if (!plan) return;
-  const addonsTotal = getAddonsTotal();
-  const addonCount = addedAddons.length;
-  const total = plan.half + addonsTotal;
+ const plan = PLANS[currentPlan];
+ if (!plan) return;
+ const addonsTotal = getAddonsTotal();
+ const addonCount = addedAddons.length;
+ const total = plan.half + addonsTotal;
 
-  const row = document.getElementById('summaryAddonRow');
-  const cnt = document.getElementById('summaryAddonCount');
-  const sub = document.getElementById('summaryAddon');
-  if (row) {
-    if (addonCount > 0) {
-      row.style.display = '';
-      if (cnt) cnt.textContent = '(' + addonCount + '品)';
-      if (sub) sub.textContent = '+¥' + addonsTotal.toLocaleString();
-    } else {
-      row.style.display = 'none';
-    }
-  }
-  const totalEl = document.getElementById('summaryTotal');
-  if (totalEl) totalEl.textContent = '¥' + total.toLocaleString();
-  const submitEl = document.getElementById('submitAmount');
-  if (submitEl) submitEl.textContent = total.toLocaleString();
+ const row = document.getElementById('summaryAddonRow');
+ const cnt = document.getElementById('summaryAddonCount');
+ const sub = document.getElementById('summaryAddon');
+ if (row) {
+ if (addonCount > 0) {
+ row.style.display = '';
+ if (cnt) cnt.textContent = '(' + addonCount + '品)';
+ if (sub) sub.textContent = '+¥' + addonsTotal.toLocaleString();
+ } else {
+ row.style.display = 'none';
+ }
+ }
+ const totalEl = document.getElementById('summaryTotal');
+ if (totalEl) totalEl.textContent = '¥' + total.toLocaleString();
+ const submitEl = document.getElementById('submitAmount');
+ if (submitEl) submitEl.textContent = total.toLocaleString();
 }
 
 function renderAddonsCart() {
-  const cart = document.getElementById('subAddonsCart');
-  const list = document.getElementById('subAddonsList');
-  const countEl = document.getElementById('subAddonsCount');
-  const totalEl = document.getElementById('subAddonsTotal');
+ const cart = document.getElementById('subAddonsCart');
+ const list = document.getElementById('subAddonsList');
+ const countEl = document.getElementById('subAddonsCount');
+ const totalEl = document.getElementById('subAddonsTotal');
 
-  if (addedAddons.length === 0) {
-    cart.style.display = 'none';
-    return;
-  }
-  cart.style.display = 'block';
-  let total = 0;
-  list.innerHTML = addedAddons.map(x => {
-    const a = ADDONS.find(p => p.id === x.id);
-    const disc = discountedPrice(a.price);
-    total += disc * x.qty;
-    return `
-      <div class="row">
-        <span>${a.name} × ${x.qty}</span>
-        <span>¥${(disc * x.qty).toLocaleString()} <span class="rm" onclick="toggleAddon('${a.id}')">削除</span></span>
-      </div>
-    `;
-  }).join('');
-  countEl.textContent = addedAddons.length + '品';
-  totalEl.textContent = '¥' + total.toLocaleString();
+ if (addedAddons.length === 0) {
+ cart.style.display = 'none';
+ return;
+ }
+ cart.style.display = 'block';
+ let total = 0;
+ list.innerHTML = addedAddons.map(x => {
+ const a = ADDONS.find(p => p.id === x.id);
+ const disc = discountedPrice(a.price);
+ total += disc * x.qty;
+ return `
+ <div class="row">
+ <span>${a.name} × ${x.qty}</span>
+ <span>¥${(disc * x.qty).toLocaleString()} <span class="rm" onclick="toggleAddon('${a.id}')">削除</span></span>
+ </div>
+ `;
+ }).join('');
+ countEl.textContent = addedAddons.length + '品';
+ totalEl.textContent = '¥' + total.toLocaleString();
 }
 
 /* 「これもどうですか？」レコメンド：カートに無い未追加品から3つを薦める */
 function renderSuggestions() {
-  const wrap = document.getElementById('subAddonsSuggest');
-  const list = document.getElementById('subAddonsSuggestList');
-  // 既に1品以上追加されている時のみ表示（Uber Eatsの「あと一品」感）
-  if (addedAddons.length === 0) {
-    wrap.style.display = 'none';
-    return;
-  }
-  // 未追加品からカテゴリの被らないもの3つ
-  const addedCats = addedAddons.map(x => ADDONS.find(a => a.id === x.id).cat);
-  const unadded = ADDONS.filter(a => !addedAddons.find(x => x.id === a.id));
-  // カテゴリが補完的になるよう優先
-  const suggestions = unadded
-    .map(a => ({ ...a, score: addedCats.includes(a.cat) ? 0 : 1 }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
+ const wrap = document.getElementById('subAddonsSuggest');
+ const list = document.getElementById('subAddonsSuggestList');
+ // 既に1品以上追加されている時のみ表示（Uber Eatsの「あと一品」感）
+ if (addedAddons.length === 0) {
+ wrap.style.display = 'none';
+ return;
+ }
+ // 未追加品からカテゴリの被らないもの3つ
+ const addedCats = addedAddons.map(x => ADDONS.find(a => a.id === x.id).cat);
+ const unadded = ADDONS.filter(a => !addedAddons.find(x => x.id === a.id));
+ // カテゴリが補完的になるよう優先
+ const suggestions = unadded
+ .map(a => ({ ...a, score: addedCats.includes(a.cat) ? 0 : 1 }))
+ .sort((a, b) => b.score - a.score)
+ .slice(0, 5);
 
-  if (suggestions.length === 0) {
-    wrap.style.display = 'none';
-    return;
-  }
-  wrap.style.display = 'block';
-  list.innerHTML = suggestions.map(a => {
-    const disc = discountedPrice(a.price);
-    return `
-      <div class="sub-addons-suggest-item" onclick="toggleAddon('${a.id}')">
-        <div class="sub-addons-suggest-img" style="background-image:url('${a.img}')"></div>
-        <div class="sub-addons-suggest-body">
-          <strong>${a.name}</strong>
-          <span>${a.weight} · ${a.desc}</span>
-        </div>
-        <div class="sub-addons-suggest-price">
-          <del>¥${a.price.toLocaleString()}</del>
-          <strong>¥${disc.toLocaleString()}</strong>
-        </div>
-      </div>
-    `;
-  }).join('');
+ if (suggestions.length === 0) {
+ wrap.style.display = 'none';
+ return;
+ }
+ wrap.style.display = 'block';
+ list.innerHTML = suggestions.map(a => {
+ const disc = discountedPrice(a.price);
+ return `
+ <div class="sub-addons-suggest-item" onclick="toggleAddon('${a.id}')">
+ <div class="sub-addons-suggest-img" style="background-image:url('${a.img}')"></div>
+ <div class="sub-addons-suggest-body">
+ <strong>${a.name}</strong>
+ <span>${a.weight} · ${a.desc}</span>
+ </div>
+ <div class="sub-addons-suggest-price">
+ <del>¥${a.price.toLocaleString()}</del>
+ <strong>¥${disc.toLocaleString()}</strong>
+ </div>
+ </div>
+ `;
+ }).join('');
 }
 
 /* カテゴリタブ */
 document.querySelectorAll('.sub-addon-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.sub-addon-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    currentAddonCat = tab.dataset.cat;
-    renderAddons();
-  });
+ tab.addEventListener('click', () => {
+ document.querySelectorAll('.sub-addon-tab').forEach(t => t.classList.remove('active'));
+ tab.classList.add('active');
+ currentAddonCat = tab.dataset.cat;
+ renderAddons();
+ });
 });
 
 // 統合 handleSubmit: plan + 顧客情報 + addons をまとめて localStorage に保存
 function handleSubmit(e) {
-  e.preventDefault();
-  const form = document.getElementById('checkoutForm');
-  const fd = new FormData(form);
+ e.preventDefault();
+ const form = document.getElementById('checkoutForm');
+ const fd = new FormData(form);
 
-  // 顧客プロフィール (checkout.html で再利用)
-  const customer = {
-    name:    fd.get('name')    || '',
-    email:   fd.get('email')   || '',
-    phone:   fd.get('phone')   || '',
-    zip:     fd.get('zip')     || '',
-    pref:    fd.get('pref')    || '',
-    address: fd.get('address') || '',
-    timeSlot: fd.get('time_slot') || '',
-    payment:  fd.get('payment')   || 'card'
-  };
-  localStorage.setItem('eda-customer', JSON.stringify(customer));
-  localStorage.setItem('eda-subscription-pending', JSON.stringify({
-    plan: currentPlan,
-    appliedAt: new Date().toISOString()
-  }));
+ // 顧客プロフィール (checkout.html で再利用)
+ const customer = {
+ name: fd.get('name') || '',
+ email: fd.get('email') || '',
+ phone: fd.get('phone') || '',
+ zip: fd.get('zip') || '',
+ pref: fd.get('pref') || '',
+ address: fd.get('address') || '',
+ timeSlot: fd.get('time_slot') || '',
+ payment: fd.get('payment') || 'card'
+ };
+ localStorage.setItem('eda-customer', JSON.stringify(customer));
+ localStorage.setItem('eda-subscription-pending', JSON.stringify({
+ plan: currentPlan,
+ appliedAt: new Date().toISOString()
+ }));
 
-  // アドオン (10%OFF適用後) を cart に push
-  if (addedAddons.length > 0) {
-    const cartItems = addedAddons.map(x => {
-      const a = ADDONS.find(p => p.id === x.id);
-      const disc = discountedPrice(a.price);
-      return {
-        variantId: 'addon-' + a.id,
-        price: disc,
-        title: a.name + '（今月限り 10%OFF）',
-        variant: 'サブスク同時追加',
-        img: a.img,
-        qty: x.qty
-      };
-    });
-    localStorage.setItem('eda-cart', JSON.stringify(cartItems));
-  } else {
-    localStorage.removeItem('eda-cart');
-  }
+ // アドオン (10%OFF適用後) を cart に push
+ if (addedAddons.length > 0) {
+ const cartItems = addedAddons.map(x => {
+ const a = ADDONS.find(p => p.id === x.id);
+ const disc = discountedPrice(a.price);
+ return {
+ variantId: 'addon-' + a.id,
+ price: disc,
+ title: a.name + '（今月限り 10%OFF）',
+ variant: 'サブスク同時追加',
+ img: a.img,
+ qty: x.qty
+ };
+ });
+ localStorage.setItem('eda-cart', JSON.stringify(cartItems));
+ } else {
+ localStorage.removeItem('eda-cart');
+ }
 
-  // GAS にも申込ログを送信（fire-and-forget - 失敗してもUX影響なし）
-  if (window.EDA_API) {
-    window.EDA_API.post('log_subscription_application', {
-      plan: currentPlan, customer: customer, addons: addedAddons, ts: Date.now()
-    }).catch(() => {});
-  }
+ // GAS にも申込ログを送信（fire-and-forget - 失敗してもUX影響なし）
+ if (window.EDA_API) {
+ window.EDA_API.post('log_subscription_application', {
+ plan: currentPlan, customer: customer, addons: addedAddons, ts: Date.now()
+ }).catch(() => {});
+ }
 
-  // 単純な → checkout.html 遷移ではなく、Stripe Subscription Checkout を直接呼ぶ
-  // (申込フォーム = サブスク開始の意思 → Stripe へ即遷移)
-  const btn = form.querySelector('button[type="submit"]');
-  if (btn) { btn.disabled = true; const _t = btn.textContent; btn.textContent = '決済画面へ移動中…'; btn._t = _t; }
+ // 単純な → checkout.html 遷移ではなく、Stripe Subscription Checkout を直接呼ぶ
+ // (申込フォーム = サブスク開始の意思 → Stripe へ即遷移)
+ const btn = form.querySelector('button[type="submit"]');
+ if (btn) { btn.disabled = true; const _t = btn.textContent; btn.textContent = '決済画面へ移動中…'; btn._t = _t; }
 
-  if (!window.EDA_API) {
-    alert('決済設定が読み込まれていません。ページを再読み込みしてください。');
-    if (btn) { btn.disabled = false; btn.textContent = btn._t || '定期便を申し込む'; }
-    return false;
-  }
+ if (!window.EDA_API) {
+ alert('決済設定が読み込まれていません。ページを再読み込みしてください。');
+ if (btn) { btn.disabled = false; btn.textContent = btn._t || '定期便を申し込む'; }
+ return false;
+ }
 
-  window.EDA_API.post('create_subscription_checkout', {
-    plan: currentPlan,
-    customer: customer,
-    addons: addedAddons.map(x => {
-      const a = ADDONS.find(p => p.id === x.id);
-      return a ? { id: a.id, name: a.name, price: discountedPrice(a.price), qty: x.qty } : null;
-    }).filter(Boolean)
-  }).then(result => {
-    if (result.ok && result.url) {
-      localStorage.setItem('eda-last-order', JSON.stringify({
-        num: result.order_number,
-        session_id: result.session_id,
-        mode: 'subscription',
-        plan: currentPlan,
-        date: new Date().toISOString()
-      }));
-      window.location.href = result.url;
-    } else {
-      throw new Error(result.error || '決済セッション作成に失敗しました');
-    }
-  }).catch(err => {
-    if (btn) { btn.disabled = false; btn.textContent = btn._t || '定期便を申し込む'; }
-    alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
-    console.error('[handleSubmit subscription]', err);
-  });
+ window.EDA_API.post('create_subscription_checkout', {
+ plan: currentPlan,
+ customer: customer,
+ addons: addedAddons.map(x => {
+ const a = ADDONS.find(p => p.id === x.id);
+ return a ? { id: a.id, name: a.name, price: discountedPrice(a.price), qty: x.qty } : null;
+ }).filter(Boolean)
+ }).then(result => {
+ if (result.ok && result.url) {
+ localStorage.setItem('eda-last-order', JSON.stringify({
+ num: result.order_number,
+ session_id: result.session_id,
+ mode: 'subscription',
+ plan: currentPlan,
+ date: new Date().toISOString()
+ }));
+ window.location.href = result.url;
+ } else {
+ throw new Error(result.error || '決済セッション作成に失敗しました');
+ }
+ }).catch(err => {
+ if (btn) { btn.disabled = false; btn.textContent = btn._t || '定期便を申し込む'; }
+ alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
+ console.error('[handleSubmit subscription]', err);
+ });
 
-  return false;
+ return false;
 }
 
 renderAddons();
@@ -2662,77 +2655,77 @@ selectPlan(currentPlan);
 
 /* ============ URLに ?plan= がある場合: プラン選択セクション圧縮 + アドオンへスクロール ============ */
 (function streamlineFromShop() {
-  const params = new URLSearchParams(location.search);
-  if (!params.get('plan')) return;
+ const params = new URLSearchParams(location.search);
+ if (!params.get('plan')) return;
 
-  // プラン選択セクションを「コンパクト確認バー」に置き換え
-  const plansSection = document.getElementById('plans');
-  if (plansSection) {
-    plansSection.classList.add('plans-compact');
-  }
+ // プラン選択セクションを「コンパクト確認バー」に置き換え
+ const plansSection = document.getElementById('plans');
+ if (plansSection) {
+ plansSection.classList.add('plans-compact');
+ }
 
-  // ページ読込後、addons セクションに自動スクロール
-  setTimeout(() => {
-    const addons = document.getElementById('addons');
-    if (addons) addons.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 400);
+ // ページ読込後、addons セクションに自動スクロール
+ setTimeout(() => {
+ const addons = document.getElementById('addons');
+ if (addons) addons.scrollIntoView({ behavior: 'smooth', block: 'start' });
+ }, 400);
 })();
 
 /* ============ 郵便番号→住所 自動補完（zipcloud API） ============ */
 (function zipAutoFill() {
-  const zipInput  = document.querySelector('input[name="zip"]');
-  const prefInput = document.querySelector('select[name="pref"]');
-  const addrInput = document.querySelector('input[name="address"]');
-  if (!zipInput || !prefInput || !addrInput) return;
+ const zipInput = document.querySelector('input[name="zip"]');
+ const prefInput = document.querySelector('select[name="pref"]');
+ const addrInput = document.querySelector('input[name="address"]');
+ if (!zipInput || !prefInput || !addrInput) return;
 
-  // 補完中のフィードバック表示
-  let hint = document.createElement('small');
-  hint.style.cssText = 'display:block;margin-top:4px;font-size:11px;color:var(--color-gold);min-height:14px;';
-  zipInput.parentElement.appendChild(hint);
+ // 補完中のフィードバック表示
+ let hint = document.createElement('small');
+ hint.style.cssText = 'display:block;margin-top:4px;font-size:11px;color:var(--color-gold);min-height:14px;';
+ zipInput.parentElement.appendChild(hint);
 
-  let lastQuery = '';
-  zipInput.addEventListener('input', () => {
-    // 半角数字以外を除去
-    const raw = zipInput.value.replace(/[^\d]/g, '');
-    // 自動でハイフン挿入（123-4567）
-    if (raw.length > 3 && !zipInput.value.includes('-')) {
-      zipInput.value = raw.slice(0, 3) + '-' + raw.slice(3, 7);
-    }
-    // 7桁揃ったら API 問い合わせ
-    if (raw.length === 7 && raw !== lastQuery) {
-      lastQuery = raw;
-      hint.textContent = '🔍 住所を検索中…';
-      hint.style.color = 'var(--color-ink-muted)';
-      fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw)
-        .then(r => r.json())
-        .then(data => {
-          if (data.status === 200 && data.results && data.results[0]) {
-            const r = data.results[0];
-            // 都道府県を select に反映
-            const prefOption = Array.from(prefInput.options).find(o => o.text === r.address1);
-            if (prefOption) prefInput.value = prefOption.value || prefOption.text;
-            // 市区町村+町域を address に
-            const cityTown = (r.address2 || '') + (r.address3 || '');
-            if (cityTown && !addrInput.value.includes(cityTown)) {
-              addrInput.value = cityTown + (addrInput.value ? ' ' + addrInput.value : '');
-            }
-            hint.textContent = '✓ 住所を自動入力しました';
-            hint.style.color = 'var(--color-forest)';
-            // 住所欄にフォーカスして残り（番地・建物名）の入力を促す
-            setTimeout(() => addrInput.focus(), 100);
-          } else {
-            hint.textContent = '⚠ 該当する住所が見つかりません';
-            hint.style.color = '#C8102E';
-          }
-        })
-        .catch(() => {
-          hint.textContent = '※ ネットワークエラー — 手入力でも問題ありません';
-          hint.style.color = 'var(--color-ink-muted)';
-        });
-    } else if (raw.length < 7) {
-      hint.textContent = '';
-    }
-  });
+ let lastQuery = '';
+ zipInput.addEventListener('input', () => {
+ // 半角数字以外を除去
+ const raw = zipInput.value.replace(/[^\d]/g, '');
+ // 自動でハイフン挿入（123-4567）
+ if (raw.length > 3 && !zipInput.value.includes('-')) {
+ zipInput.value = raw.slice(0, 3) + '-' + raw.slice(3, 7);
+ }
+ // 7桁揃ったら API 問い合わせ
+ if (raw.length === 7 && raw !== lastQuery) {
+ lastQuery = raw;
+ hint.textContent = '🔍 住所を検索中…';
+ hint.style.color = 'var(--color-ink-muted)';
+ fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw)
+ .then(r => r.json())
+ .then(data => {
+ if (data.status === 200 && data.results && data.results[0]) {
+ const r = data.results[0];
+ // 都道府県を select に反映
+ const prefOption = Array.from(prefInput.options).find(o => o.text === r.address1);
+ if (prefOption) prefInput.value = prefOption.value || prefOption.text;
+ // 市区町村+町域を address に
+ const cityTown = (r.address2 || '') + (r.address3 || '');
+ if (cityTown && !addrInput.value.includes(cityTown)) {
+ addrInput.value = cityTown + (addrInput.value ? ' ' + addrInput.value : '');
+ }
+ hint.textContent = '✓ 住所を自動入力しました';
+ hint.style.color = 'var(--color-forest)';
+ // 住所欄にフォーカスして残り（番地・建物名）の入力を促す
+ setTimeout(() => addrInput.focus(), 100);
+ } else {
+ hint.textContent = '⚠ 該当する住所が見つかりません';
+ hint.style.color = '#C8102E';
+ }
+ })
+ .catch(() => {
+ hint.textContent = '※ ネットワークエラー — 手入力でも問題ありません';
+ hint.style.color = 'var(--color-ink-muted)';
+ });
+ } else if (raw.length < 7) {
+ hint.textContent = '';
+ }
+ });
 })();
 </script>
 

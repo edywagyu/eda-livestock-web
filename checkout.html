@@ -27,38 +27,38 @@
  * 4購入導線統合: 単品 / 定期便+単品 / ギフト / 複数配送先
  * ================================================================ */
 :root {
-  --color-forest: #0F3D2E;
-  --color-forest-deep: #0A2D21;
-  --color-forest-light: #143D2B;
-  --color-gold: #D4A93B;
-  --color-gold-soft: #B8932F;
-  --color-cream: #FAF7F0;
-  --color-paper: #F5EFE3;
-  --color-bone: #EFE8D7;
-  --color-ink: #1A1A1A;
-  --color-ink-muted: #5C5C5C;
-  --color-red: #C8102E;
-  --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
-  --font-numeric: 'Inter', -apple-system, sans-serif;
-  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
-  --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
-  --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
-  --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg: 0 16px 48px rgba(15, 61, 46, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+ --color-forest: #0F3D2E;
+ --color-forest-deep: #0A2D21;
+ --color-forest-light: #143D2B;
+ --color-gold: #D4A93B;
+ --color-gold-soft: #B8932F;
+ --color-cream: #FAF7F0;
+ --color-paper: #F5EFE3;
+ --color-bone: #EFE8D7;
+ --color-ink: #1A1A1A;
+ --color-ink-muted: #5C5C5C;
+ --color-red: #C8102E;
+ --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+ --font-numeric: 'Inter', -apple-system, sans-serif;
+ --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+ --font-jp: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+ --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', serif;
+ --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+ --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
+ --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
+ --shadow-lg: 0 16px 48px rgba(15, 61, 46, 0.14), 0 4px 12px rgba(0,0,0,0.06);
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-ink);
-  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
-  min-height: 100vh;
+ margin: 0;
+ font-family: var(--font-body);
+ font-size: 16px;
+ line-height: 1.6;
+ color: var(--color-ink);
+ background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
+ min-height: 100vh;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -74,791 +74,791 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .summary-row strong,
 .summary-row.total strong,
 .contact-phone-num {
-  font-family: var(--font-numeric) !important;
-  font-feature-settings: 'tnum' 1, 'lnum' 1;
-  letter-spacing: -0.01em !important;
+ font-family: var(--font-numeric) !important;
+ font-feature-settings: 'tnum' 1, 'lnum' 1;
+ letter-spacing: -0.01em !important;
 }
 
 .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
 
 /* ============ HEADER (シンプル版) ============ */
 .checkout-header {
-  background: white;
-  border-bottom: 1px solid var(--color-bone);
-  padding: 20px 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: var(--shadow-sm);
+ background: white;
+ border-bottom: 1px solid var(--color-bone);
+ padding: 20px 0;
+ position: sticky;
+ top: 0;
+ z-index: 100;
+ box-shadow: var(--shadow-sm);
 }
 .checkout-header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 20px;
 }
 .checkout-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+ display: flex;
+ align-items: center;
+ gap: 12px;
 }
 .checkout-brand img { height: 36px; }
 .checkout-brand-name {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: 0.2em;
-  color: var(--color-forest);
+ font-family: var(--font-display);
+ font-size: 14px;
+ letter-spacing: 0.2em;
+ color: var(--color-forest);
 }
 .checkout-secure {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  letter-spacing: 0.06em;
-  font-weight: 600;
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ letter-spacing: 0.06em;
+ font-weight: 600;
 }
 .checkout-secure svg { width: 14px; height: 14px; }
 
 /* ============ HERO ============ */
 .checkout-hero {
-  padding: 32px 0 24px;
-  text-align: center;
+ padding: 32px 0 24px;
+ text-align: center;
 }
 .checkout-hero h1 {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(22px, 3.4vw, 32px);
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 6px;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(22px, 3.4vw, 32px);
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 6px;
 }
 .checkout-hero p {
-  font-size: 13px;
-  color: var(--color-ink-muted);
-  margin: 0;
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ margin: 0;
 }
 
 /* ============ STEPPER ============ */
 .checkout-stepper {
-  display: flex;
-  justify-content: center;
-  gap: 0;
-  margin: 0 auto 28px;
-  max-width: 720px;
-  padding: 16px 16px;
-  background: white;
-  border-radius: 14px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-bone);
+ display: flex;
+ justify-content: center;
+ gap: 0;
+ margin: 0 auto 28px;
+ max-width: 720px;
+ padding: 16px 16px;
+ background: white;
+ border-radius: 14px;
+ box-shadow: var(--shadow-sm);
+ border: 1px solid var(--color-bone);
 }
 .stepper-step {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-jp);
-  font-size: 12px;
-  color: var(--color-ink-muted);
-  font-weight: 600;
-  position: relative;
-  padding: 0 8px;
+ flex: 1;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ font-weight: 600;
+ position: relative;
+ padding: 0 8px;
 }
 .stepper-step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: -2px; top: 50%; transform: translateY(-50%);
-  width: 12px; height: 1px;
-  background: var(--color-bone);
+ content: '';
+ position: absolute;
+ right: -2px; top: 50%; transform: translateY(-50%);
+ width: 12px; height: 1px;
+ background: var(--color-bone);
 }
 .stepper-num {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  background: var(--color-bone);
-  color: var(--color-ink-muted);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display);
-  font-size: 12px; font-weight: 700;
-  flex-shrink: 0;
+ width: 24px; height: 24px;
+ border-radius: 50%;
+ background: var(--color-bone);
+ color: var(--color-ink-muted);
+ display: flex; align-items: center; justify-content: center;
+ font-family: var(--font-display);
+ font-size: 12px; font-weight: 700;
+ flex-shrink: 0;
 }
 .stepper-step.active { color: var(--color-forest); }
 .stepper-step.active .stepper-num {
-  background: var(--color-forest);
-  color: var(--color-gold);
+ background: var(--color-forest);
+ color: var(--color-gold);
 }
 .stepper-step.done { color: var(--color-forest); }
 .stepper-step.done .stepper-num {
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
 }
 .stepper-step.done .stepper-num::after {
-  content: '✓';
+ content: '✓';
 }
 .stepper-step.done .stepper-num span { display: none; }
 
 /* ============ LAYOUT ============ */
 .checkout-body {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 28px;
-  padding-bottom: 80px;
-  align-items: start;
+ display: grid;
+ grid-template-columns: 1.6fr 1fr;
+ gap: 28px;
+ padding-bottom: 80px;
+ align-items: start;
 }
 
 .checkout-main {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+ display: flex;
+ flex-direction: column;
+ gap: 18px;
 }
 
 .checkout-block {
-  background: white;
-  border-radius: 14px;
-  padding: 28px 32px;
-  border: 1px solid var(--color-bone);
-  box-shadow: var(--shadow-sm);
+ background: white;
+ border-radius: 14px;
+ padding: 28px 32px;
+ border: 1px solid var(--color-bone);
+ box-shadow: var(--shadow-sm);
 }
 .checkout-block-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-bone);
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ margin-bottom: 20px;
+ padding-bottom: 16px;
+ border-bottom: 1px solid var(--color-bone);
 }
 .checkout-block-num {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--color-forest);
-  color: var(--color-gold);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display);
-  font-size: 13px; font-weight: 700;
-  flex-shrink: 0;
+ width: 28px; height: 28px;
+ border-radius: 50%;
+ background: var(--color-forest);
+ color: var(--color-gold);
+ display: flex; align-items: center; justify-content: center;
+ font-family: var(--font-display);
+ font-size: 13px; font-weight: 700;
+ flex-shrink: 0;
 }
 .checkout-block-title {
-  font-family: var(--font-jp);
-  font-size: 15px;
-  color: var(--color-forest);
-  font-weight: 700;
-  letter-spacing: 0.02em;
+ font-family: var(--font-jp);
+ font-size: 15px;
+ color: var(--color-forest);
+ font-weight: 700;
+ letter-spacing: 0.02em;
 }
 .checkout-block-sub {
-  margin-left: auto;
-  font-size: 11px;
-  color: var(--color-ink-muted);
+ margin-left: auto;
+ font-size: 11px;
+ color: var(--color-ink-muted);
 }
 
 /* ============ ORDER LINE ITEMS ============ */
 .order-mode-banner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: rgba(212,169,59,0.10);
-  border: 1px solid rgba(212,169,59,0.3);
-  border-radius: 10px;
-  font-size: 12px;
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 14px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 10px 14px;
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.3);
+ border-radius: 10px;
+ font-size: 12px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 14px;
 }
 .order-mode-banner.subscription {
-  background: rgba(15,61,46,0.06);
-  border-color: rgba(15,61,46,0.18);
+ background: rgba(15,61,46,0.06);
+ border-color: rgba(15,61,46,0.18);
 }
 .order-mode-banner.gift {
-  background: linear-gradient(90deg, rgba(159,29,36,0.08), rgba(159,29,36,0.04));
-  border-color: rgba(159,29,36,0.25);
+ background: linear-gradient(90deg, rgba(159,29,36,0.08), rgba(159,29,36,0.04));
+ border-color: rgba(159,29,36,0.25);
 }
 .prefill-note {
-  margin-top: 10px;
-  padding: 10px 14px;
-  background: rgba(212,169,59,0.10);
-  border: 1px solid rgba(212,169,59,0.35);
-  border-radius: 8px;
-  font-size: 12px;
-  color: var(--color-forest);
-  font-weight: 600;
+ margin-top: 10px;
+ padding: 10px 14px;
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.35);
+ border-radius: 8px;
+ font-size: 12px;
+ color: var(--color-forest);
+ font-weight: 600;
 }
 .order-mode-banner-icon {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+ width: 22px; height: 22px;
+ border-radius: 50%;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ display: flex; align-items: center; justify-content: center;
+ flex-shrink: 0;
 }
 
 .order-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+ display: flex;
+ flex-direction: column;
+ gap: 18px;
 }
 
 /* ====== セクション分け (自分用 / 贈答用) ====== */
 .order-section {
-  border-radius: 14px;
-  padding: 16px 18px 6px;
-  border: 1.5px solid;
-  background: white;
-  position: relative;
+ border-radius: 14px;
+ padding: 16px 18px 6px;
+ border: 1.5px solid;
+ background: white;
+ position: relative;
 }
 .order-section--self {
-  border-color: rgba(15,61,46,0.16);
-  background: linear-gradient(180deg, #FAFAF6 0%, #FFFFFF 100%);
+ border-color: rgba(15,61,46,0.16);
+ background: linear-gradient(180deg, #FAFAF6 0%, #FFFFFF 100%);
 }
 .order-section--gift {
-  border-color: rgba(212,169,59,0.55);
-  background: linear-gradient(180deg, #FFFCEF 0%, #FFFEF8 100%);
-  box-shadow: 0 6px 20px rgba(212,169,59,0.12);
+ border-color: rgba(212,169,59,0.55);
+ background: linear-gradient(180deg, #FFFCEF 0%, #FFFEF8 100%);
+ box-shadow: 0 6px 20px rgba(212,169,59,0.12);
 }
 .order-section-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 10px;
-  margin-bottom: 6px;
-  border-bottom: 1px dashed rgba(15,61,46,0.12);
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ padding-bottom: 10px;
+ margin-bottom: 6px;
+ border-bottom: 1px dashed rgba(15,61,46,0.12);
 }
 .order-section--gift .order-section-head {
-  border-bottom-color: rgba(212,169,59,0.32);
+ border-bottom-color: rgba(212,169,59,0.32);
 }
 .order-section-icon {
-  font-size: 24px;
-  flex-shrink: 0;
-  width: 38px; height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: var(--color-forest);
+ font-size: 24px;
+ flex-shrink: 0;
+ width: 38px; height: 38px;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ border-radius: 50%;
+ background: var(--color-forest);
 }
 .order-section--gift .order-section-icon {
-  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
+ background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
 }
 .order-section-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+ flex: 1;
+ display: flex;
+ flex-direction: column;
+ gap: 1px;
 }
 .order-section-text strong {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 .order-section-text small {
-  font-size: 11.5px;
-  color: var(--color-ink-muted);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
+ font-weight: 600;
+ letter-spacing: 0.02em;
 }
 .order-section-badge {
-  background: linear-gradient(135deg, #FFE594, var(--color-gold));
-  color: var(--color-forest-deep);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  padding: 4px 10px;
-  border-radius: 12px;
-  white-space: nowrap;
-  flex-shrink: 0;
+ background: linear-gradient(135deg, #FFE594, var(--color-gold));
+ color: var(--color-forest-deep);
+ font-size: 10.5px;
+ font-weight: 700;
+ letter-spacing: 0.02em;
+ padding: 4px 10px;
+ border-radius: 12px;
+ white-space: nowrap;
+ flex-shrink: 0;
 }
 
 .order-item {
-  display: grid;
-  grid-template-columns: 64px 1fr auto;
-  gap: 14px;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(15,61,46,0.06);
+ display: grid;
+ grid-template-columns: 64px 1fr auto;
+ gap: 14px;
+ align-items: center;
+ padding: 12px 0;
+ border-bottom: 1px solid rgba(15,61,46,0.06);
 }
 .order-section .order-item:last-child { border-bottom: 0; padding-bottom: 12px; }
 .order-item--sub {
-  background: rgba(212,169,59,0.06);
-  padding-left: 10px;
-  padding-right: 10px;
-  border-radius: 8px;
-  margin-bottom: 6px;
+ background: rgba(212,169,59,0.06);
+ padding-left: 10px;
+ padding-right: 10px;
+ border-radius: 8px;
+ margin-bottom: 6px;
 }
 .order-item-img {
-  width: 64px; height: 64px;
-  border-radius: 8px;
-  background-color: var(--color-bone);
-  background-size: cover;
-  background-position: center;
+ width: 64px; height: 64px;
+ border-radius: 8px;
+ background-color: var(--color-bone);
+ background-size: cover;
+ background-position: center;
 }
 .order-item-info strong {
-  display: block;
-  font-family: var(--font-jp);
-  font-size: 13.5px;
-  color: var(--color-forest);
-  font-weight: 700;
-  margin-bottom: 2px;
+ display: block;
+ font-family: var(--font-jp);
+ font-size: 13.5px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 2px;
 }
 .order-item-info span {
-  font-size: 11.5px;
-  color: var(--color-ink-muted);
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
 }
 .order-item-info .destination-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--color-paper);
-  border: 1px solid var(--color-bone);
-  font-size: 10.5px;
-  color: var(--color-ink-muted);
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-top: 4px;
-  font-weight: 600;
+ display: inline-flex;
+ align-items: center;
+ gap: 4px;
+ background: var(--color-paper);
+ border: 1px solid var(--color-bone);
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
+ padding: 2px 8px;
+ border-radius: 10px;
+ margin-top: 4px;
+ font-weight: 600;
 }
 .order-item-info .destination-pill.gift {
-  background: rgba(159,29,36,0.08);
-  border-color: rgba(159,29,36,0.2);
-  color: #9F1D24;
+ background: rgba(159,29,36,0.08);
+ border-color: rgba(159,29,36,0.2);
+ color: #9F1D24;
 }
 .order-item-price {
-  text-align: right;
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--color-forest);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+ text-align: right;
+ font-family: var(--font-display);
+ font-size: 16px;
+ color: var(--color-forest);
+ font-weight: 700;
+ font-variant-numeric: tabular-nums;
 }
 .order-item-price small {
-  display: block;
-  font-size: 10.5px;
-  color: var(--color-ink-muted);
-  font-family: var(--font-jp);
-  font-weight: 600;
-  margin-top: 2px;
+ display: block;
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
+ font-family: var(--font-jp);
+ font-weight: 600;
+ margin-top: 2px;
 }
 
 /* ============ DESTINATION GROUPS ============ */
 .dest-group {
-  background: var(--color-paper);
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 14px;
-  border: 1px solid var(--color-bone);
+ background: var(--color-paper);
+ border-radius: 12px;
+ padding: 18px 20px;
+ margin-bottom: 14px;
+ border: 1px solid var(--color-bone);
 }
 .dest-group-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 14px;
 }
 .dest-group-title {
-  font-family: var(--font-jp);
-  font-size: 13px;
-  color: var(--color-forest);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ color: var(--color-forest);
+ font-weight: 700;
+ display: flex;
+ align-items: center;
+ gap: 8px;
 }
 .dest-group-title-icon {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  background: var(--color-forest);
-  color: var(--color-gold);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px;
-  flex-shrink: 0;
+ width: 24px; height: 24px;
+ border-radius: 50%;
+ background: var(--color-forest);
+ color: var(--color-gold);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 12px;
+ flex-shrink: 0;
 }
 .dest-group-actions {
-  font-size: 11px;
-  color: var(--color-gold-soft);
-  font-weight: 700;
-  cursor: pointer;
+ font-size: 11px;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ cursor: pointer;
 }
 .dest-group-form { display: grid; gap: 10px; }
 .dest-form-row { display: grid; gap: 10px; }
 .dest-form-row.cols2 { grid-template-columns: 1fr 1fr; }
 .dest-field { display: flex; flex-direction: column; gap: 4px; }
 .dest-field label {
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  font-weight: 600;
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ font-weight: 600;
 }
 .dest-field label .required { color: var(--color-red); margin-left: 4px; }
 .dest-field input,
 .dest-field select,
 .dest-field textarea {
-  padding: 10px 12px;
-  border: 1px solid var(--color-bone);
-  border-radius: 8px;
-  background: white;
-  font-family: var(--font-jp);
-  font-size: 13px;
-  color: var(--color-ink);
-  transition: border-color 0.2s;
-  font-family: inherit;
+ padding: 10px 12px;
+ border: 1px solid var(--color-bone);
+ border-radius: 8px;
+ background: white;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ color: var(--color-ink);
+ transition: border-color 0.2s;
+ font-family: inherit;
 }
 .dest-field input:focus,
 .dest-field select:focus,
 .dest-field textarea:focus {
-  outline: none;
-  border-color: var(--color-gold);
+ outline: none;
+ border-color: var(--color-gold);
 }
 .dest-field textarea {
-  resize: vertical;
-  min-height: 70px;
-  line-height: 1.5;
+ resize: vertical;
+ min-height: 70px;
+ line-height: 1.5;
 }
 
 /* ギフトオプション展開 */
 .gift-options {
-  margin-top: 12px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, rgba(159,29,36,0.06), rgba(159,29,36,0.02));
-  border: 1px dashed rgba(159,29,36,0.3);
-  border-radius: 10px;
+ margin-top: 12px;
+ padding: 14px 16px;
+ background: linear-gradient(135deg, rgba(159,29,36,0.06), rgba(159,29,36,0.02));
+ border: 1px dashed rgba(159,29,36,0.3);
+ border-radius: 10px;
 }
 .gift-options-head {
-  font-family: var(--font-jp);
-  font-size: 12px;
-  color: #9F1D24;
-  font-weight: 700;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ color: #9F1D24;
+ font-weight: 700;
+ margin-bottom: 10px;
+ display: flex;
+ align-items: center;
+ gap: 6px;
 }
 .gift-noshi-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 10px;
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 8px;
+ margin-bottom: 10px;
 }
 .gift-noshi-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 8px;
-  cursor: pointer;
-  background: white;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-forest);
-  transition: all 0.2s;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ padding: 8px 10px;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 8px;
+ cursor: pointer;
+ background: white;
+ font-size: 12px;
+ font-weight: 600;
+ color: var(--color-forest);
+ transition: all 0.2s;
 }
 .gift-noshi-option input { margin: 0; accent-color: var(--color-forest); }
 .gift-noshi-option.selected {
-  border-color: var(--color-forest);
-  background: rgba(15,61,46,0.04);
+ border-color: var(--color-forest);
+ background: rgba(15,61,46,0.04);
 }
 
 /* ============ PAYMENT METHOD ============ */
 .payment-grid {
-  display: grid;
-  gap: 8px;
+ display: grid;
+ gap: 8px;
 }
 .payment-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 18px;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 10px;
-  cursor: pointer;
-  background: white;
-  transition: all 0.25s var(--ease-out-expo);
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ padding: 14px 18px;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 10px;
+ cursor: pointer;
+ background: white;
+ transition: all 0.25s var(--ease-out-expo);
 }
 .payment-option:hover {
-  border-color: var(--color-gold);
-  background: rgba(212,169,59,0.04);
+ border-color: var(--color-gold);
+ background: rgba(212,169,59,0.04);
 }
 .payment-option input { margin: 0; accent-color: var(--color-forest); }
 .payment-option-icon {
-  font-size: 20px;
-  flex-shrink: 0;
+ font-size: 20px;
+ flex-shrink: 0;
 }
 .payment-option-body { flex: 1; }
 .payment-option-name {
-  font-family: var(--font-jp);
-  font-size: 13.5px;
-  color: var(--color-forest);
-  font-weight: 700;
+ font-family: var(--font-jp);
+ font-size: 13.5px;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 .payment-option-desc {
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  margin-top: 2px;
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ margin-top: 2px;
 }
 .payment-option.selected {
-  border-color: var(--color-forest);
-  background: rgba(15,61,46,0.04);
+ border-color: var(--color-forest);
+ background: rgba(15,61,46,0.04);
 }
 
 /* ============ SIDEBAR SUMMARY ============ */
 .checkout-sidebar {
-  position: sticky;
-  top: 96px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+ position: sticky;
+ top: 96px;
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
 }
 .summary-card {
-  background: white;
-  border-radius: 14px;
-  padding: 24px 26px;
-  border: 1px solid var(--color-bone);
-  box-shadow: var(--shadow-md);
+ background: white;
+ border-radius: 14px;
+ padding: 24px 26px;
+ border: 1px solid var(--color-bone);
+ box-shadow: var(--shadow-md);
 }
 .summary-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-bone);
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 14px;
+ padding-bottom: 12px;
+ border-bottom: 1px solid var(--color-bone);
 }
 .summary-title {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-forest);
-  font-weight: 700;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 .summary-edit {
-  font-size: 11px;
-  color: var(--color-gold-soft);
-  font-weight: 700;
-  cursor: pointer;
+ font-size: 11px;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ cursor: pointer;
 }
 .summary-line-items {
-  margin-bottom: 14px;
+ margin-bottom: 14px;
 }
 .summary-line-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 6px 0;
-  font-size: 12.5px;
-  color: var(--color-ink);
+ display: flex;
+ justify-content: space-between;
+ gap: 12px;
+ padding: 6px 0;
+ font-size: 12.5px;
+ color: var(--color-ink);
 }
 .summary-line-item .qty {
-  color: var(--color-ink-muted);
-  font-size: 11px;
-  margin-left: 4px;
+ color: var(--color-ink-muted);
+ font-size: 11px;
+ margin-left: 4px;
 }
 .summary-rows {
-  border-top: 1px solid var(--color-bone);
-  padding-top: 14px;
+ border-top: 1px solid var(--color-bone);
+ padding-top: 14px;
 }
 .summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12.5px;
-  padding: 4px 0;
-  color: var(--color-ink-muted);
+ display: flex;
+ justify-content: space-between;
+ font-size: 12.5px;
+ padding: 4px 0;
+ color: var(--color-ink-muted);
 }
 .summary-row.subscription strong { color: var(--color-forest); }
 .summary-row.discount { color: #9F1D24; font-weight: 700; }
 .summary-row.shipping strong { color: var(--color-forest); }
 .summary-row.total {
-  border-top: 1px solid var(--color-bone);
-  padding-top: 12px;
-  margin-top: 8px;
-  font-size: 16px;
-  color: var(--color-forest);
-  font-weight: 700;
+ border-top: 1px solid var(--color-bone);
+ padding-top: 12px;
+ margin-top: 8px;
+ font-size: 16px;
+ color: var(--color-forest);
+ font-weight: 700;
 }
 .summary-row.total strong {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--color-gold-soft);
-  letter-spacing: -0.01em;
+ font-family: var(--font-display);
+ font-size: 28px;
+ color: var(--color-gold-soft);
+ letter-spacing: -0.01em;
 }
 
 /* 同意チェックボックス */
 .checkout-consent {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 14px 16px;
-  margin: 14px 0 0;
-  background: rgba(212,169,59,0.06);
-  border: 1px solid rgba(212,169,59,0.3);
-  border-radius: 10px;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--color-ink);
-  cursor: pointer;
+ display: flex;
+ align-items: flex-start;
+ gap: 10px;
+ padding: 14px 16px;
+ margin: 14px 0 0;
+ background: rgba(212,169,59,0.06);
+ border: 1px solid rgba(212,169,59,0.3);
+ border-radius: 10px;
+ font-size: 12.5px;
+ line-height: 1.6;
+ color: var(--color-ink);
+ cursor: pointer;
 }
 .checkout-consent input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin-top: 1px;
-  flex-shrink: 0;
-  accent-color: var(--color-gold);
-  cursor: pointer;
+ width: 20px;
+ height: 20px;
+ margin-top: 1px;
+ flex-shrink: 0;
+ accent-color: var(--color-gold);
+ cursor: pointer;
 }
 .checkout-consent a {
-  color: var(--color-gold-soft);
-  text-decoration: underline;
+ color: var(--color-gold-soft);
+ text-decoration: underline;
 }
 .checkout-consent a:hover { color: var(--color-forest); }
 .btn-place-order:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+ opacity: 0.6;
+ cursor: not-allowed;
 }
 .btn-place-order {
-  width: 100%;
-  padding: 18px;
-  background: linear-gradient(135deg, var(--color-gold), #E5B547);
-  color: var(--color-forest-deep);
-  border-radius: 12px;
-  font-family: var(--font-jp);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  margin-top: 18px;
-  box-shadow: 0 12px 32px rgba(212,169,59,0.3);
-  transition: all 0.3s var(--ease-out-expo);
-  cursor: pointer;
+ width: 100%;
+ padding: 18px;
+ background: linear-gradient(135deg, var(--color-gold), #E5B547);
+ color: var(--color-forest-deep);
+ border-radius: 12px;
+ font-family: var(--font-jp);
+ font-size: 15px;
+ font-weight: 700;
+ letter-spacing: 0.04em;
+ margin-top: 18px;
+ box-shadow: 0 12px 32px rgba(212,169,59,0.3);
+ transition: all 0.3s var(--ease-out-expo);
+ cursor: pointer;
 }
 .btn-place-order:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 40px rgba(212,169,59,0.45);
+ transform: translateY(-2px);
+ box-shadow: 0 16px 40px rgba(212,169,59,0.45);
 }
 .btn-place-order:disabled {
-  background: var(--color-bone);
-  color: var(--color-ink-muted);
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
+ background: var(--color-bone);
+ color: var(--color-ink-muted);
+ cursor: not-allowed;
+ box-shadow: none;
+ transform: none;
 }
 .summary-trust {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 12px;
-  font-size: 10.5px;
-  color: var(--color-ink-muted);
+ display: flex;
+ gap: 10px;
+ justify-content: center;
+ flex-wrap: wrap;
+ margin-top: 12px;
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
 }
 .summary-trust-item { display: inline-flex; align-items: center; gap: 4px; }
 
 /* 電話で質問カード */
 .contact-phone-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: white;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 14px;
-  padding: 18px 20px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.25s var(--ease-out-expo);
-  box-shadow: var(--shadow-sm);
+ display: flex;
+ align-items: center;
+ gap: 14px;
+ background: white;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 14px;
+ padding: 18px 20px;
+ text-decoration: none;
+ color: inherit;
+ transition: all 0.25s var(--ease-out-expo);
+ box-shadow: var(--shadow-sm);
 }
 .contact-phone-card:hover {
-  border-color: var(--color-gold);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+ border-color: var(--color-gold);
+ transform: translateY(-2px);
+ box-shadow: var(--shadow-md);
 }
 .contact-phone-icon {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
-  color: var(--color-gold);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+ width: 44px; height: 44px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: var(--color-gold);
+ display: flex; align-items: center; justify-content: center;
+ flex-shrink: 0;
 }
 .contact-phone-body { flex: 1; min-width: 0; }
 .contact-phone-label {
-  font-family: var(--font-jp);
-  font-size: 12.5px;
-  color: var(--color-ink-muted);
-  font-weight: 600;
-  margin-bottom: 2px;
+ font-family: var(--font-jp);
+ font-size: 12.5px;
+ color: var(--color-ink-muted);
+ font-weight: 600;
+ margin-bottom: 2px;
 }
 .contact-phone-num {
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--color-forest);
-  font-weight: 700;
-  letter-spacing: -0.005em;
-  font-variant-numeric: tabular-nums;
+ font-family: var(--font-display);
+ font-size: 16px;
+ color: var(--color-forest);
+ font-weight: 700;
+ letter-spacing: -0.005em;
+ font-variant-numeric: tabular-nums;
 }
 .contact-phone-hours {
-  font-size: 10.5px;
-  color: var(--color-ink-muted);
-  margin-top: 3px;
-  letter-spacing: 0.02em;
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
+ margin-top: 3px;
+ letter-spacing: 0.02em;
 }
 
 /* Mini cart drawer for mobile */
 .mobile-summary-bar {
-  display: none;
-  position: sticky;
-  bottom: 0;
-  left: 0; right: 0;
-  background: white;
-  border-top: 2px solid var(--color-gold);
-  padding: 12px 16px;
-  z-index: 99;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+ display: none;
+ position: sticky;
+ bottom: 0;
+ left: 0; right: 0;
+ background: white;
+ border-top: 2px solid var(--color-gold);
+ padding: 12px 16px;
+ z-index: 99;
+ box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
 }
 
 /* ============ FOOTER ============ */
 .checkout-footer {
-  text-align: center;
-  padding: 24px 0 40px;
-  font-size: 11px;
-  color: var(--color-ink-muted);
+ text-align: center;
+ padding: 24px 0 40px;
+ font-size: 11px;
+ color: var(--color-ink-muted);
 }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 960px) {
-  .checkout-body { grid-template-columns: 1fr; gap: 16px; }
-  .checkout-sidebar { position: static; order: 2; }
-  .checkout-main { order: 1; }
+ .checkout-body { grid-template-columns: 1fr; gap: 16px; }
+ .checkout-sidebar { position: static; order: 2; }
+ .checkout-main { order: 1; }
 }
 
 @media (max-width: 640px) {
-  .checkout-hero { padding: 20px 0 16px; }
-  .checkout-hero h1 { font-size: 20px; }
-  .checkout-stepper {
-    padding: 10px 8px;
-    gap: 4px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .checkout-stepper::-webkit-scrollbar { display: none; }
-  .stepper-step { font-size: 10px; gap: 6px; padding: 0 4px; flex: 0 0 auto; }
-  .stepper-num { width: 20px; height: 20px; font-size: 10.5px; }
-  .stepper-step:not(:last-child)::after { width: 6px; right: -2px; }
-  .stepper-step-label { display: none; }
-  .stepper-step.active .stepper-step-label { display: inline; }
+ .checkout-hero { padding: 20px 0 16px; }
+ .checkout-hero h1 { font-size: 20px; }
+ .checkout-stepper {
+ padding: 10px 8px;
+ gap: 4px;
+ overflow-x: auto;
+ scrollbar-width: none;
+ }
+ .checkout-stepper::-webkit-scrollbar { display: none; }
+ .stepper-step { font-size: 10px; gap: 6px; padding: 0 4px; flex: 0 0 auto; }
+ .stepper-num { width: 20px; height: 20px; font-size: 10.5px; }
+ .stepper-step:not(:last-child)::after { width: 6px; right: -2px; }
+ .stepper-step-label { display: none; }
+ .stepper-step.active .stepper-step-label { display: inline; }
 
-  .checkout-block { padding: 20px 18px; }
-  .checkout-block-head { margin-bottom: 14px; padding-bottom: 12px; }
-  .checkout-block-title { font-size: 14px; }
-  .dest-form-row.cols2 { grid-template-columns: 1fr; }
-  .order-item { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 10px 0; }
-  .order-item-img { width: 48px; height: 48px; }
-  .order-item-info strong { font-size: 12.5px; }
-  .order-item-info span { font-size: 10.5px; }
-  .order-item-price { font-size: 14px; }
-  .gift-noshi-row { grid-template-columns: 1fr; }
-  .payment-option { padding: 12px 14px; }
-  .summary-card { padding: 18px 18px; }
-  .summary-row.total { font-size: 14px; }
-  .summary-row.total strong { font-size: 24px; }
-  .checkout-secure { display: none; }
-  .btn-place-order { font-size: 14px; padding: 16px; min-height: 52px; }
+ .checkout-block { padding: 20px 18px; }
+ .checkout-block-head { margin-bottom: 14px; padding-bottom: 12px; }
+ .checkout-block-title { font-size: 14px; }
+ .dest-form-row.cols2 { grid-template-columns: 1fr; }
+ .order-item { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 10px 0; }
+ .order-item-img { width: 48px; height: 48px; }
+ .order-item-info strong { font-size: 12.5px; }
+ .order-item-info span { font-size: 10.5px; }
+ .order-item-price { font-size: 14px; }
+ .gift-noshi-row { grid-template-columns: 1fr; }
+ .payment-option { padding: 12px 14px; }
+ .summary-card { padding: 18px 18px; }
+ .summary-row.total { font-size: 14px; }
+ .summary-row.total strong { font-size: 24px; }
+ .checkout-secure { display: none; }
+ .btn-place-order { font-size: 14px; padding: 16px; min-height: 52px; }
 
-  /* インプットは min 48px + 16px font (iOS Safari の自動ズーム回避) */
-  .dest-field input,
-  .dest-field select,
-  .dest-field textarea { min-height: 48px; font-size: 16px; padding: 12px 14px; }
+ /* インプットは min 48px + 16px font (iOS Safari の自動ズーム回避) */
+ .dest-field input,
+ .dest-field select,
+ .dest-field textarea { min-height: 48px; font-size: 16px; padding: 12px 14px; }
 }
 </style>
 <script src="public/js/eda-config.js"></script>
@@ -871,210 +871,210 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 <!-- ========= HEADER ========= -->
 <header class="checkout-header">
-  <div class="container checkout-header-inner">
-    <a href="index.html" class="checkout-brand">
-      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK">
-      <span class="checkout-brand-name">CHECKOUT</span>
-    </a>
-    <div style="display:flex;align-items:center;gap:16px;">
-      <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;color:white;font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;">
-        ← 買い物に戻る
-      </a>
-      <a href="tel:08057930708" style="display:inline-flex;align-items:center;gap:4px;color:white;font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;" class="hide-sp">
-        📞 080-5793-0708
-      </a>
-      <div class="checkout-secure">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2"/>
-          <path d="M7 11V7 a5 5 0 0 1 10 0v4"/>
-        </svg>
-        <span class="hide-sp">SSL 暗号化通信 · 安全な決済</span>
-      </div>
-    </div>
-  </div>
+ <div class="container checkout-header-inner">
+ <a href="index.html" class="checkout-brand">
+ <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK">
+ <span class="checkout-brand-name">CHECKOUT</span>
+ </a>
+ <div style="display:flex;align-items:center;gap:16px;">
+ <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;color:white;font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;">
+ ← 買い物に戻る
+ </a>
+ <a href="tel:08057930708" style="display:inline-flex;align-items:center;gap:4px;color:white;font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;" class="hide-sp">
+ 📞 080-5793-0708
+ </a>
+ <div class="checkout-secure">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+ <rect x="3" y="11" width="18" height="11" rx="2"/>
+ <path d="M7 11V7 a5 5 0 0 1 10 0v4"/>
+ </svg>
+ <span class="hide-sp">SSL 暗号化通信 · 安全な決済</span>
+ </div>
+ </div>
+ </div>
 </header>
 
 <main>
-  <div class="container">
+ <div class="container">
 
-    <!-- ========= TITLE + STEPPER ========= -->
-    <div class="checkout-hero">
-      <h1 id="checkoutTitle">ご注文の確認</h1>
-      <p id="checkoutSub">下記内容でお間違いないかご確認ください。</p>
-    </div>
+ <!-- ========= TITLE + STEPPER ========= -->
+ <div class="checkout-hero">
+ <h1 id="checkoutTitle">ご注文の確認</h1>
+ <p id="checkoutSub">下記内容でお間違いないかご確認ください。</p>
+ </div>
 
-    <div class="checkout-stepper">
-      <div class="stepper-step active" data-step="1">
-        <span class="stepper-num"><span>1</span></span>
-        <span class="stepper-step-label">注文内容</span>
-      </div>
-      <div class="stepper-step" data-step="2">
-        <span class="stepper-num"><span>2</span></span>
-        <span class="stepper-step-label">配送先</span>
-      </div>
-      <div class="stepper-step" data-step="3">
-        <span class="stepper-num"><span>3</span></span>
-        <span class="stepper-step-label">お支払い</span>
-      </div>
-      <div class="stepper-step" data-step="4">
-        <span class="stepper-num"><span>4</span></span>
-        <span class="stepper-step-label">確認</span>
-      </div>
-    </div>
+ <div class="checkout-stepper">
+ <div class="stepper-step active" data-step="1">
+ <span class="stepper-num"><span>1</span></span>
+ <span class="stepper-step-label">注文内容</span>
+ </div>
+ <div class="stepper-step" data-step="2">
+ <span class="stepper-num"><span>2</span></span>
+ <span class="stepper-step-label">配送先</span>
+ </div>
+ <div class="stepper-step" data-step="3">
+ <span class="stepper-num"><span>3</span></span>
+ <span class="stepper-step-label">お支払い</span>
+ </div>
+ <div class="stepper-step" data-step="4">
+ <span class="stepper-num"><span>4</span></span>
+ <span class="stepper-step-label">確認</span>
+ </div>
+ </div>
 
-    <!-- ========= BODY ========= -->
-    <div class="checkout-body">
+ <!-- ========= BODY ========= -->
+ <div class="checkout-body">
 
-      <!-- ========= LEFT: MAIN COLUMNS ========= -->
-      <div class="checkout-main">
+ <!-- ========= LEFT: MAIN COLUMNS ========= -->
+ <div class="checkout-main">
 
-        <!-- ① 注文内容 -->
-        <div class="checkout-block">
-          <div class="checkout-block-head">
-            <span class="checkout-block-num">1</span>
-            <span class="checkout-block-title">ご注文内容</span>
-            <a href="shop.html" class="checkout-block-sub">← 商品を追加</a>
-          </div>
+ <!-- ① 注文内容 -->
+ <div class="checkout-block">
+ <div class="checkout-block-head">
+ <span class="checkout-block-num">1</span>
+ <span class="checkout-block-title">ご注文内容</span>
+ <a href="shop.html" class="checkout-block-sub">← 商品を追加</a>
+ </div>
 
-          <div id="orderModeBannerArea"></div>
-          <div class="order-list" id="orderList"></div>
-        </div>
+ <div id="orderModeBannerArea"></div>
+ <div class="order-list" id="orderList"></div>
+ </div>
 
-        <!-- ② 配送先（destination ごとにグループ表示） -->
-        <div class="checkout-block">
-          <div class="checkout-block-head">
-            <span class="checkout-block-num">2</span>
-            <span class="checkout-block-title">お届け先</span>
-            <button class="checkout-block-sub" onclick="addDestination()">＋ 別の配送先を追加</button>
-          </div>
-          <div id="destinationGroups"></div>
-        </div>
+ <!-- ② 配送先（destination ごとにグループ表示） -->
+ <div class="checkout-block">
+ <div class="checkout-block-head">
+ <span class="checkout-block-num">2</span>
+ <span class="checkout-block-title">お届け先</span>
+ <button class="checkout-block-sub" onclick="addDestination()">＋ 別の配送先を追加</button>
+ </div>
+ <div id="destinationGroups"></div>
+ </div>
 
-        <!-- ③ 配送日時 -->
-        <div class="checkout-block">
-          <div class="checkout-block-head">
-            <span class="checkout-block-num">3</span>
-            <span class="checkout-block-title">お届け日時</span>
-            <span class="checkout-block-sub" id="deliveryDateDefault">最短: 自動</span>
-          </div>
-          <div class="dest-form-row cols2">
-            <div class="dest-field">
-              <label>お届け希望日</label>
-              <select id="checkoutDeliveryDate">
-                <option value="">最短日でお届け</option>
-              </select>
-            </div>
-            <div class="dest-field">
-              <label>お届け時間帯</label>
-              <select id="checkoutDeliveryTime">
-                <option value="">指定なし</option>
-                <option>午前中（〜12:00）</option>
-                <option>14:00 - 16:00</option>
-                <option>16:00 - 18:00</option>
-                <option selected>18:00 - 20:00（推奨）</option>
-                <option>19:00 - 21:00</option>
-              </select>
-            </div>
-          </div>
-        </div>
+ <!-- ③ 配送日時 -->
+ <div class="checkout-block">
+ <div class="checkout-block-head">
+ <span class="checkout-block-num">3</span>
+ <span class="checkout-block-title">お届け日時</span>
+ <span class="checkout-block-sub" id="deliveryDateDefault">最短: 自動</span>
+ </div>
+ <div class="dest-form-row cols2">
+ <div class="dest-field">
+ <label>お届け希望日</label>
+ <select id="checkoutDeliveryDate">
+ <option value="">最短日でお届け</option>
+ </select>
+ </div>
+ <div class="dest-field">
+ <label>お届け時間帯</label>
+ <select id="checkoutDeliveryTime">
+ <option value="">指定なし</option>
+ <option>午前中（〜12:00）</option>
+ <option>14:00 - 16:00</option>
+ <option>16:00 - 18:00</option>
+ <option selected>18:00 - 20:00（推奨）</option>
+ <option>19:00 - 21:00</option>
+ </select>
+ </div>
+ </div>
+ </div>
 
-        <!-- ④ お支払い方法 -->
-        <div class="checkout-block">
-          <div class="checkout-block-head">
-            <span class="checkout-block-num">4</span>
-            <span class="checkout-block-title">お支払い方法</span>
-          </div>
-          <div class="payment-grid">
-            <label class="payment-option selected">
-              <input type="radio" name="payment" value="card" checked>
-              <span class="payment-option-icon">💳</span>
-              <div class="payment-option-body">
-                <div class="payment-option-name">クレジットカード</div>
-                <div class="payment-option-desc">VISA · Mastercard · JCB · AMEX</div>
-              </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="apple">
-              <span class="payment-option-icon">🍎</span>
-              <div class="payment-option-body">
-                <div class="payment-option-name">Apple Pay</div>
-                <div class="payment-option-desc">かんたん決済 · タッチID/Face ID</div>
-              </div>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="bank">
-              <span class="payment-option-icon">🏦</span>
-              <div class="payment-option-body">
-                <div class="payment-option-name">銀行振込</div>
-                <div class="payment-option-desc">ご注文確認メールに振込先を記載 · 入金確認後の発送</div>
-              </div>
-            </label>
-          </div>
-        </div>
+ <!-- ④ お支払い方法 -->
+ <div class="checkout-block">
+ <div class="checkout-block-head">
+ <span class="checkout-block-num">4</span>
+ <span class="checkout-block-title">お支払い方法</span>
+ </div>
+ <div class="payment-grid">
+ <label class="payment-option selected">
+ <input type="radio" name="payment" value="card" checked>
+ <span class="payment-option-icon">💳</span>
+ <div class="payment-option-body">
+ <div class="payment-option-name">クレジットカード</div>
+ <div class="payment-option-desc">VISA · Mastercard · JCB · AMEX</div>
+ </div>
+ </label>
+ <label class="payment-option">
+ <input type="radio" name="payment" value="apple">
+ <span class="payment-option-icon">🍎</span>
+ <div class="payment-option-body">
+ <div class="payment-option-name">Apple Pay</div>
+ <div class="payment-option-desc">かんたん決済 · タッチID/Face ID</div>
+ </div>
+ </label>
+ <label class="payment-option">
+ <input type="radio" name="payment" value="bank">
+ <span class="payment-option-icon">🏦</span>
+ <div class="payment-option-body">
+ <div class="payment-option-name">銀行振込</div>
+ <div class="payment-option-desc">ご注文確認メールに振込先を記載 · 入金確認後の発送</div>
+ </div>
+ </label>
+ </div>
+ </div>
 
-      </div>
+ </div>
 
-      <!-- ========= RIGHT: SUMMARY SIDEBAR ========= -->
-      <div class="checkout-sidebar">
-        <div class="summary-card">
-          <div class="summary-head">
-            <span class="summary-title">ご注文サマリー</span>
-            <a href="shop.html" class="summary-edit">編集</a>
-          </div>
+ <!-- ========= RIGHT: SUMMARY SIDEBAR ========= -->
+ <div class="checkout-sidebar">
+ <div class="summary-card">
+ <div class="summary-head">
+ <span class="summary-title">ご注文サマリー</span>
+ <a href="shop.html" class="summary-edit">編集</a>
+ </div>
 
-          <div class="summary-line-items" id="summaryLineItems"></div>
+ <div class="summary-line-items" id="summaryLineItems"></div>
 
-          <div class="summary-rows" id="summaryRows"></div>
+ <div class="summary-rows" id="summaryRows"></div>
 
-          <!-- ギフト仕様について (ギフトモード時のみ表示) -->
-          <div class="gift-spec-info" id="giftSpecInfo" style="display:none;margin:14px 0;padding:14px 16px;background:rgba(212,169,59,0.06);border:1px solid rgba(212,169,59,0.25);border-radius:10px;font-size:12px;line-height:1.6;color:var(--color-forest)">
-            <strong style="display:block;margin-bottom:6px;">🎁 ギフト仕様について</strong>
-            ✅ 化粧箱入り・<strong>のし対応</strong><br>
-            <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(表書き: 御歳暮 / 御中元 / 御祝 / 内祝 等)</small>
-            ✅ 送料込み・税込価格<br>
-            ✅ <strong>個別配送</strong>: 1注文で最大5箇所まで分割可能<br>
-            ⚠️ <strong>メッセージカードは現在お取り扱いしておりません</strong><br>
-            <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(お祝い・お礼状は別途<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="color:#06C755;text-decoration:underline">LINE</a>より承ります)</small>
-          </div>
+ <!-- ギフト仕様について (ギフトモード時のみ表示) -->
+ <div class="gift-spec-info" id="giftSpecInfo" style="display:none;margin:14px 0;padding:14px 16px;background:rgba(212,169,59,0.06);border:1px solid rgba(212,169,59,0.25);border-radius:10px;font-size:12px;line-height:1.6;color:var(--color-forest)">
+ <strong style="display:block;margin-bottom:6px;">🎁 ギフト仕様について</strong>
+ ✅ 化粧箱入り・<strong>のし対応</strong><br>
+ <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(表書き: 御歳暮 / 御中元 / 御祝 / 内祝 等)</small>
+ ✅ 送料込み・税込価格<br>
+ ✅ <strong>個別配送</strong>: 1注文で最大5箇所まで分割可能<br>
+ ⚠️ <strong>メッセージカードは現在お取り扱いしておりません</strong><br>
+ <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(お祝い・お礼状は別途<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="color:#06C755;text-decoration:underline">LINE</a>より承ります)</small>
+ </div>
 
-          <label class="checkout-consent">
-            <input type="checkbox" id="checkoutConsent" required>
-            <span>
-              <a href="terms.html" target="_blank">利用規約</a>・<a href="privacy.html" target="_blank">プライバシーポリシー</a>・<a href="tokushoho.html" target="_blank">特定商取引法に基づく表記</a>に同意の上、注文を確定します。
-            </span>
-          </label>
+ <label class="checkout-consent">
+ <input type="checkbox" id="checkoutConsent" required>
+ <span>
+ <a href="terms.html" target="_blank">利用規約</a>・<a href="privacy.html" target="_blank">プライバシーポリシー</a>・<a href="tokushoho.html" target="_blank">特定商取引法に基づく表記</a>に同意の上、注文を確定します。
+ </span>
+ </label>
 
-          <button class="btn-place-order" id="btnPlaceOrder" onclick="placeOrder()">
-            ご注文を確定する →
-          </button>
+ <button class="btn-place-order" id="btnPlaceOrder" onclick="placeOrder()">
+ ご注文を確定する →
+ </button>
 
-          <div class="summary-trust">
-            <span class="summary-trust-item">🔒 SSL暗号化</span>
-            <span class="summary-trust-item">💳 Stripe決済</span>
-          </div>
-        </div>
+ <div class="summary-trust">
+ <span class="summary-trust-item">🔒 SSL暗号化</span>
+ <span class="summary-trust-item">💳 Stripe決済</span>
+ </div>
+ </div>
 
-        <!-- 電話で質問 (担当者直通) -->
-        <a href="tel:08057930708" class="contact-phone-card">
-          <div class="contact-phone-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-          </div>
-          <div class="contact-phone-body">
-            <div class="contact-phone-label">電話で質問する</div>
-            <div class="contact-phone-num">担当者に直通 · 080-5793-0708</div>
-            <div class="contact-phone-hours">平日 9:00〜18:00 / 不在の際は折り返します</div>
-          </div>
-        </a>
-      </div>
+ <!-- 電話で質問 (担当者直通) -->
+ <a href="tel:08057930708" class="contact-phone-card">
+ <div class="contact-phone-icon">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+ </svg>
+ </div>
+ <div class="contact-phone-body">
+ <div class="contact-phone-label">電話で質問する</div>
+ <div class="contact-phone-num">担当者に直通 · 080-5793-0708</div>
+ <div class="contact-phone-hours">平日 9:00〜18:00 / 不在の際は折り返します</div>
+ </div>
+ </a>
+ </div>
 
-    </div>
-  </div>
+ </div>
+ </div>
 </main>
 
 <footer class="checkout-footer">
-  © 2026 Eda Livestock Co., Ltd. · <a href="contact.html" style="color: var(--color-gold-soft);">困った時はこちら →</a>
+ © 2026 Eda Livestock Co., Ltd. · <a href="contact.html" style="color: var(--color-gold-soft);">困った時はこちら →</a>
 </footer>
 
 <script>
@@ -1090,696 +1090,696 @@ const SUB_KEY = 'eda-subscription-pending';
 
 /* ---- プラン定義 (subscription と整合) ---- */
 const PLANS = {
-  starter: { name: 'ミニプラン', regular: 6980, half: 3490 },
-  regular: { name: 'プロプラン', regular: 12800, half: 6400 },
-  volume:  { name: 'VIPプラン', regular: 19800, half: 9900 }
+ starter: { name: 'ミニプラン', regular: 6980, half: 3490 },
+ regular: { name: 'プロプラン', regular: 12800, half: 6400 },
+ volume: { name: 'VIPプラン', regular: 19800, half: 9900 }
 };
 
 /* ---- 状態 ---- */
 let cartItems = [];
-let subscription = null;        // { plan: 'regular' } or null
-let senderName = '';            // ギフト時の依頼人名（注文者）
+let subscription = null; // { plan: 'regular' } or null
+let senderName = ''; // ギフト時の依頼人名（注文者）
 let destinations = [
-  { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
+ { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
 ];
 
 /* ---- 初期化 ---- */
 function init() {
-  try { cartItems = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) {}
-  try { subscription = JSON.parse(localStorage.getItem(SUB_KEY) || 'null'); } catch (e) {}
+ try { cartItems = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) {}
+ try { subscription = JSON.parse(localStorage.getItem(SUB_KEY) || 'null'); } catch (e) {}
 
-  // URL params から自動セット可能（subscription.html からの遷移）
-  const params = new URLSearchParams(location.search);
-  if (params.get('plan') && PLANS[params.get('plan')]) {
-    subscription = { plan: params.get('plan') };
-    localStorage.setItem(SUB_KEY, JSON.stringify(subscription));
-  }
-  if (params.get('mode') === 'gift') {
-    cartItems.forEach(i => { i.gift = true; });
-  }
+ // URL params から自動セット可能（subscription.html からの遷移）
+ const params = new URLSearchParams(location.search);
+ if (params.get('plan') && PLANS[params.get('plan')]) {
+ subscription = { plan: params.get('plan') };
+ localStorage.setItem(SUB_KEY, JSON.stringify(subscription));
+ }
+ if (params.get('mode') === 'gift') {
+ cartItems.forEach(i => { i.gift = true; });
+ }
 
-  // ★ subscription.html で入力済の顧客情報を読み込んでプリフィル
-  try {
-    const c = JSON.parse(localStorage.getItem('eda-customer') || 'null');
-    if (c) {
-      destinations[0].name    = c.name    || '';
-      destinations[0].tel     = c.phone   || '';
-      destinations[0].email   = c.email   || '';
-      destinations[0].zip     = c.zip     || '';
-      destinations[0].pref    = c.pref    || '';
-      destinations[0].address = c.address || '';
-    }
-  } catch (e) {}
+ // ★ subscription.html で入力済の顧客情報を読み込んでプリフィル
+ try {
+ const c = JSON.parse(localStorage.getItem('eda-customer') || 'null');
+ if (c) {
+ destinations[0].name = c.name || '';
+ destinations[0].tel = c.phone || '';
+ destinations[0].email = c.email || '';
+ destinations[0].zip = c.zip || '';
+ destinations[0].pref = c.pref || '';
+ destinations[0].address = c.address || '';
+ }
+ } catch (e) {}
 
-  // すべての単品を最初は self に紐付け
-  destinations[0].itemIds = cartItems.map((_, i) => i);
+ // すべての単品を最初は self に紐付け
+ destinations[0].itemIds = cartItems.map((_, i) => i);
 
-  // mode=multi で来た場合: ギフト送付先を自動追加 (空のまま2件目を表示)
-  if (params.get('mode') === 'multi') {
-    destinations.push({
-      id: 'gift-' + Date.now(),
-      type: 'gift', name: '', tel: '', zip: '', pref: '', address: '',
-      noshi: 'none', fromName: '', message: '', itemIds: []
-    });
-  }
+ // mode=multi で来た場合: ギフト送付先を自動追加 (空のまま2件目を表示)
+ if (params.get('mode') === 'multi') {
+ destinations.push({
+ id: 'gift-' + Date.now(),
+ type: 'gift', name: '', tel: '', zip: '', pref: '', address: '',
+ noshi: 'none', fromName: '', message: '', itemIds: []
+ });
+ }
 
-  renderOrderList();
-  renderDestinations();
-  renderSummary();
-  buildDeliveryDateOptions();
+ renderOrderList();
+ renderDestinations();
+ renderSummary();
+ buildDeliveryDateOptions();
 
-  // subscription 経由の場合、プリフィル済の通知
-  if (params.get('from') === 'subscription' && destinations[0].name) {
-    setTimeout(() => {
-      const banner = document.getElementById('orderModeBannerArea');
-      if (banner) {
-        const note = document.createElement('div');
-        note.className = 'prefill-note';
-        note.innerHTML = '✓ 定期便申込フォームから入力情報を引き継ぎました（編集可能）';
-        banner.appendChild(note);
-      }
-    }, 100);
-  }
-  // multi 経由の場合のガイダンス
-  if (params.get('mode') === 'multi') {
-    setTimeout(() => {
-      const banner = document.getElementById('orderModeBannerArea');
-      if (banner) {
-        const note = document.createElement('div');
-        note.className = 'prefill-note';
-        note.innerHTML = '🎁 複数の方へ贈るモード — 「+ 別の配送先を追加」で最大 5 件まで送り先を分けられます。各アイテムを送り先にドラッグまたはチェックで割当て。';
-        banner.appendChild(note);
-      }
-    }, 100);
-  }
+ // subscription 経由の場合、プリフィル済の通知
+ if (params.get('from') === 'subscription' && destinations[0].name) {
+ setTimeout(() => {
+ const banner = document.getElementById('orderModeBannerArea');
+ if (banner) {
+ const note = document.createElement('div');
+ note.className = 'prefill-note';
+ note.innerHTML = '✓ 定期便申込フォームから入力情報を引き継ぎました（編集可能）';
+ banner.appendChild(note);
+ }
+ }, 100);
+ }
+ // multi 経由の場合のガイダンス
+ if (params.get('mode') === 'multi') {
+ setTimeout(() => {
+ const banner = document.getElementById('orderModeBannerArea');
+ if (banner) {
+ const note = document.createElement('div');
+ note.className = 'prefill-note';
+ note.innerHTML = '🎁 複数の方へ贈るモード — 「+ 別の配送先を追加」で最大 5 件まで送り先を分けられます。各アイテムを送り先にドラッグまたはチェックで割当て。';
+ banner.appendChild(note);
+ }
+ }, 100);
+ }
 }
 
 /* ---- モード判定バナー ---- */
 function getMode() {
-  const hasSub = !!subscription;
-  const hasItems = cartItems.length > 0;
-  const hasGift = cartItems.some(i => i.gift);
-  const hasMultiDest = destinations.length > 1;
-  if (hasMultiDest) return 'multi';
-  if (hasSub && hasItems) return 'subandadd';
-  if (hasSub) return 'subscription';
-  if (hasGift) return 'gift';
-  return 'single';
+ const hasSub = !!subscription;
+ const hasItems = cartItems.length > 0;
+ const hasGift = cartItems.some(i => i.gift);
+ const hasMultiDest = destinations.length > 1;
+ if (hasMultiDest) return 'multi';
+ if (hasSub && hasItems) return 'subandadd';
+ if (hasSub) return 'subscription';
+ if (hasGift) return 'gift';
+ return 'single';
 }
 function renderModeBanner() {
-  const area = document.getElementById('orderModeBannerArea');
-  const mode = getMode();
-  const labels = {
-    single:     { cls: '', icon: '🛒', text: '単品のお買い物' },
-    subscription:{ cls: 'subscription', icon: '⭐', text: '定期便のお申込み' },
-    subandadd:  { cls: 'subscription', icon: '⭐', text: '定期便 + 今月限りの追加購入' },
-    gift:       { cls: 'gift', icon: '🎁', text: '贈り物として配送' },
-    multi:      { cls: '', icon: '📦', text: '複数の配送先に分けてお届け' }
-  };
-  const m = labels[mode];
-  area.innerHTML = `
-    <div class="order-mode-banner ${m.cls}">
-      <span class="order-mode-banner-icon">${m.icon}</span>
-      <span>${m.text}</span>
-    </div>
-  `;
+ const area = document.getElementById('orderModeBannerArea');
+ const mode = getMode();
+ const labels = {
+ single: { cls: '', icon: '🛒', text: '単品のお買い物' },
+ subscription:{ cls: 'subscription', icon: '⭐', text: '定期便のお申込み' },
+ subandadd: { cls: 'subscription', icon: '⭐', text: '定期便 + 今月限りの追加購入' },
+ gift: { cls: 'gift', icon: '🎁', text: '贈り物として配送' },
+ multi: { cls: '', icon: '📦', text: '複数の配送先に分けてお届け' }
+ };
+ const m = labels[mode];
+ area.innerHTML = `
+ <div class="order-mode-banner ${m.cls}">
+ <span class="order-mode-banner-icon">${m.icon}</span>
+ <span>${m.text}</span>
+ </div>
+ `;
 }
 
 /* ---- 注文リスト（自分用 / 贈答用 を2セクションに分離） ---- */
 function renderOrderList() {
-  renderModeBanner();
-  const list = document.getElementById('orderList');
+ renderModeBanner();
+ const list = document.getElementById('orderList');
 
-  // 1. 定期便（あれば常に自分用セクションへ）
-  const subHtml = (subscription && PLANS[subscription.plan]) ? (() => {
-    const p = PLANS[subscription.plan];
-    return `
-      <div class="order-item order-item--sub" data-id="sub">
-        <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
-        <div class="order-item-info">
-          <strong>⭐ ${p.name}</strong>
-          <span>毎月お届け · 初月50%OFF適用</span>
-        </div>
-        <div class="order-item-price">
-          ¥${p.half.toLocaleString()}
-          <small>通常 ¥${p.regular.toLocaleString()}/月</small>
-        </div>
-      </div>
-    `;
-  })() : '';
+ // 1. 定期便（あれば常に自分用セクションへ）
+ const subHtml = (subscription && PLANS[subscription.plan]) ? (() => {
+ const p = PLANS[subscription.plan];
+ return `
+ <div class="order-item order-item--sub" data-id="sub">
+ <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
+ <div class="order-item-info">
+ <strong>⭐ ${p.name}</strong>
+ <span>毎月お届け · 初月50%OFF適用</span>
+ </div>
+ <div class="order-item-price">
+ ¥${p.half.toLocaleString()}
+ <small>通常 ¥${p.regular.toLocaleString()}/月</small>
+ </div>
+ </div>
+ `;
+ })() : '';
 
-  // 2. 単品アイテムを「自分用」「贈答用」に分類
-  const selfItems = [];
-  const giftBuckets = new Map(); // dest index → { dest, items[] }
+ // 2. 単品アイテムを「自分用」「贈答用」に分類
+ const selfItems = [];
+ const giftBuckets = new Map(); // dest index → { dest, items[] }
 
-  cartItems.forEach((item, i) => {
-    const dest = findItemDestination(i);
-    if (dest && dest.type === 'gift') {
-      const key = destinations.indexOf(dest);
-      if (!giftBuckets.has(key)) giftBuckets.set(key, { dest, items: [] });
-      giftBuckets.get(key).items.push({ item, i });
-    } else {
-      selfItems.push({ item, i });
-    }
-  });
+ cartItems.forEach((item, i) => {
+ const dest = findItemDestination(i);
+ if (dest && dest.type === 'gift') {
+ const key = destinations.indexOf(dest);
+ if (!giftBuckets.has(key)) giftBuckets.set(key, { dest, items: [] });
+ giftBuckets.get(key).items.push({ item, i });
+ } else {
+ selfItems.push({ item, i });
+ }
+ });
 
-  function renderItemRow({ item, i }) {
-    return `
-      <div class="order-item" data-id="${i}">
-        <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
-        <div class="order-item-info">
-          <strong>${item.title}</strong>
-          <span>${item.variant} × ${item.qty}</span>
-        </div>
-        <div class="order-item-price">
-          ¥${(item.price * item.qty).toLocaleString()}
-          <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
-        </div>
-      </div>
-    `;
-  }
+ function renderItemRow({ item, i }) {
+ return `
+ <div class="order-item" data-id="${i}">
+ <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
+ <div class="order-item-info">
+ <strong>${item.title}</strong>
+ <span>${item.variant} × ${item.qty}</span>
+ </div>
+ <div class="order-item-price">
+ ¥${(item.price * item.qty).toLocaleString()}
+ <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
+ </div>
+ </div>
+ `;
+ }
 
-  let html = '';
+ let html = '';
 
-  // --- 自分用セクション（定期便 + 自分用 単品） ---
-  if (subHtml || selfItems.length > 0) {
-    const selfCount = (subHtml ? 1 : 0) + selfItems.length;
-    html += `
-      <section class="order-section order-section--self">
-        <header class="order-section-head">
-          <span class="order-section-icon">📦</span>
-          <div class="order-section-text">
-            <strong>ご自分用</strong>
-            <small>ご自宅へお届け · ${selfCount} 点</small>
-          </div>
-        </header>
-        ${subHtml}
-        ${selfItems.map(renderItemRow).join('')}
-      </section>
-    `;
-  }
+ // --- 自分用セクション（定期便 + 自分用 単品） ---
+ if (subHtml || selfItems.length > 0) {
+ const selfCount = (subHtml ? 1 : 0) + selfItems.length;
+ html += `
+ <section class="order-section order-section--self">
+ <header class="order-section-head">
+ <span class="order-section-icon">📦</span>
+ <div class="order-section-text">
+ <strong>ご自分用</strong>
+ <small>ご自宅へお届け · ${selfCount} 点</small>
+ </div>
+ </header>
+ ${subHtml}
+ ${selfItems.map(renderItemRow).join('')}
+ </section>
+ `;
+ }
 
-  // --- 贈答用セクション（複数の送り先ごとに分けて表示） ---
-  giftBuckets.forEach(({ dest, items }, key) => {
-    const giftCount = items.length;
-    const recipientLabel = dest.name
-      ? `${dest.name} 様 へ`
-      : `ギフト受取人 #${[...giftBuckets.keys()].indexOf(key) + 1}`;
-    html += `
-      <section class="order-section order-section--gift">
-        <header class="order-section-head">
-          <span class="order-section-icon">🎁</span>
-          <div class="order-section-text">
-            <strong>贈り物</strong>
-            <small>${recipientLabel} · ${giftCount} 点</small>
-          </div>
-          <span class="order-section-badge">のし・化粧箱 無料</span>
-        </header>
-        ${items.map(renderItemRow).join('')}
-      </section>
-    `;
-  });
+ // --- 贈答用セクション（複数の送り先ごとに分けて表示） ---
+ giftBuckets.forEach(({ dest, items }, key) => {
+ const giftCount = items.length;
+ const recipientLabel = dest.name
+ ? `${dest.name} 様 へ`
+ : `ギフト受取人 #${[...giftBuckets.keys()].indexOf(key) + 1}`;
+ html += `
+ <section class="order-section order-section--gift">
+ <header class="order-section-head">
+ <span class="order-section-icon">🎁</span>
+ <div class="order-section-text">
+ <strong>贈り物</strong>
+ <small>${recipientLabel} · ${giftCount} 点</small>
+ </div>
+ <span class="order-section-badge">のし・化粧箱 無料</span>
+ </header>
+ ${items.map(renderItemRow).join('')}
+ </section>
+ `;
+ });
 
-  if (!html) {
-    html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
-  }
-  list.innerHTML = html;
+ if (!html) {
+ html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
+ }
+ list.innerHTML = html;
 }
 
 /* ---- 配送先グループ ---- */
 function findItemDestination(itemIdx) {
-  return destinations.find(d => d.itemIds.includes(itemIdx));
+ return destinations.find(d => d.itemIds.includes(itemIdx));
 }
 
 function renderDestinations() {
-  const wrap = document.getElementById('destinationGroups');
-  let html = '';
-  destinations.forEach((dest, dIdx) => {
-    const isGift = dest.type === 'gift';
-    const title = isGift
-      ? `🎁 ギフト送付先 ${dIdx > 0 ? `${dIdx}` : ''}`
-      : '📦 ご自宅にお届け';
-    const removable = dIdx > 0;
-    html += `
-      <div class="dest-group">
-        <div class="dest-group-head">
-          <span class="dest-group-title">
-            <span class="dest-group-title-icon">${isGift ? '🎁' : '📦'}</span>
-            ${title}
-          </span>
-          ${removable ? `<button class="dest-group-actions" onclick="removeDestination(${dIdx})">削除</button>` : ''}
-        </div>
-        <div class="dest-group-form">
-          ${ subscription && dIdx === 0 && !isGift ? '' : '' /* 定期便登録者の自宅は別途トップで取得 */ }
-          <div class="dest-form-row cols2">
-            <div class="dest-field">
-              <label>${isGift ? '受取人' : 'お名前'}<span class="required">*</span></label>
-              <input type="text" value="${dest.name || ''}"  placeholder="江田 友輝" aria-label="江田 友輝"
-                     autocomplete="${isGift ? 'off' : 'name'}"
-                     oninput="updateDestField(${dIdx}, 'name', this.value)" required>
-            </div>
-            <div class="dest-field">
-              <label>電話番号<span class="required">*</span></label>
-              <input type="tel" value="${dest.tel || ''}"  placeholder="090-1234-5678" aria-label="090-1234-5678"
-                     inputmode="tel" autocomplete="${isGift ? 'off' : 'tel'}"
-                     oninput="updateDestField(${dIdx}, 'tel', this.value)" required>
-            </div>
-          </div>
-          <div class="dest-form-row cols2">
-            <div class="dest-field">
-              <label>郵便番号<span class="required">*</span></label>
-              <input type="text" value="${dest.zip || ''}"  placeholder="123-4567" aria-label="123-4567"
-                     inputmode="numeric" autocomplete="${isGift ? 'off' : 'postal-code'}" maxlength="8"
-                     oninput="updateDestField(${dIdx}, 'zip', this.value); autoFillFromZip(this, ${dIdx})" required>
-            </div>
-            <div class="dest-field">
-              <label>都道府県<span class="required">*</span></label>
-              <select autocomplete="${isGift ? 'off' : 'address-level1'}" onchange="updateDestField(${dIdx}, 'pref', this.value)" required>
-                ${prefOptions(dest.pref)}
-              </select>
-            </div>
-          </div>
-          <div class="dest-form-row">
-            <div class="dest-field">
-              <label>市区町村・番地・建物名<span class="required">*</span></label>
-              <input type="text" value="${dest.address || ''}"  placeholder="渋谷区神宮前 1-1-1 マンション101号" aria-label="渋谷区神宮前 1-1-1 マンション101号"
-                     autocomplete="${isGift ? 'off' : 'street-address'}"
-                     oninput="updateDestField(${dIdx}, 'address', this.value)" required>
-            </div>
-          </div>
-          ${ dIdx === 0 ? `
-            <div class="dest-form-row">
-              <div class="dest-field">
-                <label>メールアドレス<span class="required">*</span>（ご注文確認用）</label>
-                <input type="email" value="${dest.email || ''}"  placeholder="example@example.com" aria-label="example@example.com"
-                       inputmode="email" autocomplete="email"
-                       oninput="updateDestField(${dIdx}, 'email', this.value)" required>
-              </div>
-            </div>
-          ` : '' }
+ const wrap = document.getElementById('destinationGroups');
+ let html = '';
+ destinations.forEach((dest, dIdx) => {
+ const isGift = dest.type === 'gift';
+ const title = isGift
+ ? `🎁 ギフト送付先 ${dIdx > 0 ? `${dIdx}` : ''}`
+ : '📦 ご自宅にお届け';
+ const removable = dIdx > 0;
+ html += `
+ <div class="dest-group">
+ <div class="dest-group-head">
+ <span class="dest-group-title">
+ <span class="dest-group-title-icon">${isGift ? '🎁' : '📦'}</span>
+ ${title}
+ </span>
+ ${removable ? `<button class="dest-group-actions" onclick="removeDestination(${dIdx})">削除</button>` : ''}
+ </div>
+ <div class="dest-group-form">
+ ${ subscription && dIdx === 0 && !isGift ? '' : '' /* 定期便登録者の自宅は別途トップで取得 */ }
+ <div class="dest-form-row cols2">
+ <div class="dest-field">
+ <label>${isGift ? '受取人' : 'お名前'}<span class="required">*</span></label>
+ <input type="text" value="${dest.name || ''}" placeholder="江田 友輝" aria-label="江田 友輝"
+ autocomplete="${isGift ? 'off' : 'name'}"
+ oninput="updateDestField(${dIdx}, 'name', this.value)" required>
+ </div>
+ <div class="dest-field">
+ <label>電話番号<span class="required">*</span></label>
+ <input type="tel" value="${dest.tel || ''}" placeholder="090-1234-5678" aria-label="090-1234-5678"
+ inputmode="tel" autocomplete="${isGift ? 'off' : 'tel'}"
+ oninput="updateDestField(${dIdx}, 'tel', this.value)" required>
+ </div>
+ </div>
+ <div class="dest-form-row cols2">
+ <div class="dest-field">
+ <label>郵便番号<span class="required">*</span></label>
+ <input type="text" value="${dest.zip || ''}" placeholder="123-4567" aria-label="123-4567"
+ inputmode="numeric" autocomplete="${isGift ? 'off' : 'postal-code'}" maxlength="8"
+ oninput="updateDestField(${dIdx}, 'zip', this.value); autoFillFromZip(this, ${dIdx})" required>
+ </div>
+ <div class="dest-field">
+ <label>都道府県<span class="required">*</span></label>
+ <select autocomplete="${isGift ? 'off' : 'address-level1'}" onchange="updateDestField(${dIdx}, 'pref', this.value)" required>
+ ${prefOptions(dest.pref)}
+ </select>
+ </div>
+ </div>
+ <div class="dest-form-row">
+ <div class="dest-field">
+ <label>市区町村・番地・建物名<span class="required">*</span></label>
+ <input type="text" value="${dest.address || ''}" placeholder="渋谷区神宮前 1-1-1 マンション101号" aria-label="渋谷区神宮前 1-1-1 マンション101号"
+ autocomplete="${isGift ? 'off' : 'street-address'}"
+ oninput="updateDestField(${dIdx}, 'address', this.value)" required>
+ </div>
+ </div>
+ ${ dIdx === 0 ? `
+ <div class="dest-form-row">
+ <div class="dest-field">
+ <label>メールアドレス<span class="required">*</span>（ご注文確認用）</label>
+ <input type="email" value="${dest.email || ''}" placeholder="example@example.com" aria-label="example@example.com"
+ inputmode="email" autocomplete="email"
+ oninput="updateDestField(${dIdx}, 'email', this.value)" required>
+ </div>
+ </div>
+ ` : '' }
 
-          ${ isGift ? `
-            <div class="gift-options">
-              <div class="gift-options-head">🎁 ギフト用オプション</div>
-              <div class="dest-field" style="margin-bottom: 12px;">
-                <label>依頼人名（差出人として記載されます）<span class="required">*</span></label>
-                <input type="text" value="${dest.fromName || ''}"  placeholder="例: 江田 友輝" aria-label="例: 江田 友輝"
-                       oninput="updateDestField(${dIdx}, 'fromName', this.value)" required>
-              </div>
-              <div class="gift-noshi-row">
-                <label class="gift-noshi-option ${dest.noshi === 'oseibo' ? 'selected' : ''}">
-                  <input type="radio" name="noshi-${dIdx}" value="oseibo" ${dest.noshi === 'oseibo' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'oseibo')">
-                  御歳暮
-                </label>
-                <label class="gift-noshi-option ${dest.noshi === 'ochugen' ? 'selected' : ''}">
-                  <input type="radio" name="noshi-${dIdx}" value="ochugen" ${dest.noshi === 'ochugen' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'ochugen')">
-                  御中元
-                </label>
-                <label class="gift-noshi-option ${dest.noshi === 'uchiwai' ? 'selected' : ''}">
-                  <input type="radio" name="noshi-${dIdx}" value="uchiwai" ${dest.noshi === 'uchiwai' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'uchiwai')">
-                  内祝
-                </label>
-                <label class="gift-noshi-option ${dest.noshi === 'none' ? 'selected' : ''}">
-                  <input type="radio" name="noshi-${dIdx}" value="none" ${dest.noshi === 'none' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'none')">
-                  のし不要
-                </label>
-              </div>
-              <p style="font-size: 11px; color: var(--color-ink-muted); margin: 8px 0 0;">
-                ※ 価格・伝票は同梱しません。受取人には金額が分かりません。
-              </p>
-            </div>
-          ` : '' }
-        </div>
-      </div>
-    `;
-  });
-  wrap.innerHTML = html;
+ ${ isGift ? `
+ <div class="gift-options">
+ <div class="gift-options-head">🎁 ギフト用オプション</div>
+ <div class="dest-field" style="margin-bottom: 12px;">
+ <label>依頼人名（差出人として記載されます）<span class="required">*</span></label>
+ <input type="text" value="${dest.fromName || ''}" placeholder="例: 江田 友輝" aria-label="例: 江田 友輝"
+ oninput="updateDestField(${dIdx}, 'fromName', this.value)" required>
+ </div>
+ <div class="gift-noshi-row">
+ <label class="gift-noshi-option ${dest.noshi === 'oseibo' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="oseibo" ${dest.noshi === 'oseibo' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'oseibo')">
+ 御歳暮
+ </label>
+ <label class="gift-noshi-option ${dest.noshi === 'ochugen' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="ochugen" ${dest.noshi === 'ochugen' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'ochugen')">
+ 御中元
+ </label>
+ <label class="gift-noshi-option ${dest.noshi === 'uchiwai' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="uchiwai" ${dest.noshi === 'uchiwai' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'uchiwai')">
+ 内祝
+ </label>
+ <label class="gift-noshi-option ${dest.noshi === 'none' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="none" ${dest.noshi === 'none' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'none')">
+ のし不要
+ </label>
+ </div>
+ <p style="font-size: 11px; color: var(--color-ink-muted); margin: 8px 0 0;">
+ ※ 価格・伝票は同梱しません。受取人には金額が分かりません。
+ </p>
+ </div>
+ ` : '' }
+ </div>
+ </div>
+ `;
+ });
+ wrap.innerHTML = html;
 }
 
 function prefOptions(selected) {
-  const prefs = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
-  let html = '<option value="">選択</option>';
-  prefs.forEach(p => {
-    html += `<option ${selected === p ? 'selected' : ''}>${p}</option>`;
-  });
-  return html;
+ const prefs = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+ let html = '<option value="">選択</option>';
+ prefs.forEach(p => {
+ html += `<option ${selected === p ? 'selected' : ''}>${p}</option>`;
+ });
+ return html;
 }
 
 function updateDestField(idx, key, value) {
-  destinations[idx][key] = value;
-  if (key === 'noshi') {
-    renderDestinations(); // ラジオの selected 表示再描画
-  }
+ destinations[idx][key] = value;
+ if (key === 'noshi') {
+ renderDestinations(); // ラジオの selected 表示再描画
+ }
 }
 
 /* 郵便番号→住所 自動補完 (zipcloud) — 7桁入力で都道府県+市区町村+町域を入れる */
 const _zipFetchCache = {};
 function autoFillFromZip(inputEl, dIdx) {
-  let raw = (inputEl.value || '').replace(/[^\d]/g, '');
-  // ハイフン自動挿入
-  if (raw.length > 3 && !inputEl.value.includes('-')) {
-    inputEl.value = raw.slice(0, 3) + '-' + raw.slice(3, 7);
-    destinations[dIdx].zip = inputEl.value;
-  }
-  if (raw.length !== 7) return;
-  if (_zipFetchCache[raw]) {
-    applyZipResult(_zipFetchCache[raw], dIdx);
-    return;
-  }
-  fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw)
-    .then(r => r.json())
-    .then(data => {
-      if (data.status === 200 && data.results && data.results[0]) {
-        _zipFetchCache[raw] = data.results[0];
-        applyZipResult(data.results[0], dIdx);
-      }
-    }).catch(() => {});
+ let raw = (inputEl.value || '').replace(/[^\d]/g, '');
+ // ハイフン自動挿入
+ if (raw.length > 3 && !inputEl.value.includes('-')) {
+ inputEl.value = raw.slice(0, 3) + '-' + raw.slice(3, 7);
+ destinations[dIdx].zip = inputEl.value;
+ }
+ if (raw.length !== 7) return;
+ if (_zipFetchCache[raw]) {
+ applyZipResult(_zipFetchCache[raw], dIdx);
+ return;
+ }
+ fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + raw)
+ .then(r => r.json())
+ .then(data => {
+ if (data.status === 200 && data.results && data.results[0]) {
+ _zipFetchCache[raw] = data.results[0];
+ applyZipResult(data.results[0], dIdx);
+ }
+ }).catch(() => {});
 }
 function applyZipResult(r, dIdx) {
-  destinations[dIdx].pref = r.address1;
-  const cityTown = (r.address2 || '') + (r.address3 || '');
-  if (cityTown && !(destinations[dIdx].address || '').includes(cityTown)) {
-    destinations[dIdx].address = cityTown + (destinations[dIdx].address ? ' ' + destinations[dIdx].address : '');
-  }
-  renderDestinations(); // 反映
+ destinations[dIdx].pref = r.address1;
+ const cityTown = (r.address2 || '') + (r.address3 || '');
+ if (cityTown && !(destinations[dIdx].address || '').includes(cityTown)) {
+ destinations[dIdx].address = cityTown + (destinations[dIdx].address ? ' ' + destinations[dIdx].address : '');
+ }
+ renderDestinations(); // 反映
 }
 
 function addDestination() {
-  destinations.push({
-    id: 'gift-' + Date.now(),
-    type: 'gift',
-    name: '', tel: '', zip: '', pref: '', address: '',
-    noshi: 'none', message: '',
-    itemIds: []
-  });
-  renderDestinations();
-  renderOrderList(); // バナー更新
+ destinations.push({
+ id: 'gift-' + Date.now(),
+ type: 'gift',
+ name: '', tel: '', zip: '', pref: '', address: '',
+ noshi: 'none', message: '',
+ itemIds: []
+ });
+ renderDestinations();
+ renderOrderList(); // バナー更新
 }
 
 function removeDestination(idx) {
-  if (idx === 0) return;
-  const itemsBack = destinations[idx].itemIds || [];
-  // 削除されるグループのアイテムは self に戻す
-  destinations[0].itemIds = [...new Set([...destinations[0].itemIds, ...itemsBack])];
-  destinations.splice(idx, 1);
-  renderDestinations();
-  renderOrderList();
+ if (idx === 0) return;
+ const itemsBack = destinations[idx].itemIds || [];
+ // 削除されるグループのアイテムは self に戻す
+ destinations[0].itemIds = [...new Set([...destinations[0].itemIds, ...itemsBack])];
+ destinations.splice(idx, 1);
+ renderDestinations();
+ renderOrderList();
 }
 
 /* ---- サマリー ---- */
 function renderSummary() {
-  const lineItems = document.getElementById('summaryLineItems');
-  const rows = document.getElementById('summaryRows');
+ const lineItems = document.getElementById('summaryLineItems');
+ const rows = document.getElementById('summaryRows');
 
-  let itemsHtml = '';
-  let subTotal = 0;
+ let itemsHtml = '';
+ let subTotal = 0;
 
-  if (subscription && PLANS[subscription.plan]) {
-    const p = PLANS[subscription.plan];
-    itemsHtml += `<div class="summary-line-item"><span>${p.name}<span class="qty">×1</span></span><span>¥${p.half.toLocaleString()}</span></div>`;
-    subTotal += p.half;
-  }
+ if (subscription && PLANS[subscription.plan]) {
+ const p = PLANS[subscription.plan];
+ itemsHtml += `<div class="summary-line-item"><span>${p.name}<span class="qty">×1</span></span><span>¥${p.half.toLocaleString()}</span></div>`;
+ subTotal += p.half;
+ }
 
-  cartItems.forEach(item => {
-    const line = item.price * item.qty;
-    itemsHtml += `<div class="summary-line-item"><span>${item.title}<span class="qty">×${item.qty}</span></span><span>¥${line.toLocaleString()}</span></div>`;
-    subTotal += line;
-  });
+ cartItems.forEach(item => {
+ const line = item.price * item.qty;
+ itemsHtml += `<div class="summary-line-item"><span>${item.title}<span class="qty">×${item.qty}</span></span><span>¥${line.toLocaleString()}</span></div>`;
+ subTotal += line;
+ });
 
-  if (!itemsHtml) {
-    itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
-  }
-  lineItems.innerHTML = itemsHtml;
+ if (!itemsHtml) {
+ itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
+ }
+ lineItems.innerHTML = itemsHtml;
 
-  // 送料 (10%税込) — 11,000円(税込)以上で本州送料無料 / 定期便はプランに送料込
-  const shipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
-  // ギフト追加配送 (1,100円 税込/件)
-  const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0).length * 1100;
-  // 50% off if subscription only
-  const subSavings = subscription && PLANS[subscription.plan]
-    ? (PLANS[subscription.plan].regular - PLANS[subscription.plan].half) : 0;
+ // 送料 (10%税込) — 11,000円(税込)以上で本州送料無料 / 定期便はプランに送料込
+ const shipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
+ // ギフト追加配送 (1,100円 税込/件)
+ const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0).length * 1100;
+ // 50% off if subscription only
+ const subSavings = subscription && PLANS[subscription.plan]
+ ? (PLANS[subscription.plan].regular - PLANS[subscription.plan].half) : 0;
 
-  const total = subTotal + shipping + giftShipping;
+ const total = subTotal + shipping + giftShipping;
 
-  // 軽減税率 内消費税の計算 (税込価格→内税)
-  //   食品 (subTotal): 軽減税率 8% → tax = subTotal × 8/108
-  //   送料 (shipping + giftShipping): 標準税率 10% → tax = ship × 10/110
-  const tax8 = Math.round(subTotal * 8 / 108);
-  const tax10 = Math.round((shipping + giftShipping) * 10 / 110);
-  const taxTotal = tax8 + tax10;
+ // 軽減税率 内消費税の計算 (税込価格→内税)
+ // 食品 (subTotal): 軽減税率 8% → tax = subTotal × 8/108
+ // 送料 (shipping + giftShipping): 標準税率 10% → tax = ship × 10/110
+ const tax8 = Math.round(subTotal * 8 / 108);
+ const tax10 = Math.round((shipping + giftShipping) * 10 / 110);
+ const taxTotal = tax8 + tax10;
 
-  let rowsHtml = '';
-  if (subSavings > 0) {
-    rowsHtml += `<div class="summary-row discount"><span>初月50%OFF適用</span><strong>−¥${subSavings.toLocaleString()}</strong></div>`;
-  }
-  rowsHtml += `
-    <div class="summary-row">
-      <span>商品小計<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
-      <strong>¥${subTotal.toLocaleString()}</strong>
-    </div>
-    <div class="summary-row shipping">
-      <span>配送料 (自宅)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
-      <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
-    </div>
-  `;
-  if (giftShipping > 0) {
-    rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料 (${giftShipping/1100}件)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span><strong>¥${giftShipping.toLocaleString()}</strong></div>`;
-  }
-  // 内消費税の内訳表示
-  rowsHtml += `
-    <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-top:8px;border-top:1px dashed rgba(15,61,46,0.15);">
-      <span>内消費税</span>
-      <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${taxTotal.toLocaleString()}</strong>
-    </div>
-    <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
-      <span style="font-size:10px;">　└ 8%対象（食品）</span>
-      <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax8.toLocaleString()}</strong>
-    </div>`;
-  if (tax10 > 0) {
-    rowsHtml += `<div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
-      <span style="font-size:10px;">　└ 10%対象（送料）</span>
-      <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax10.toLocaleString()}</strong>
-    </div>`;
-  }
-  rowsHtml += `
-    <div class="summary-row total">
-      <span>合計（税込）</span>
-      <strong>¥${total.toLocaleString()}</strong>
-    </div>
-  `;
-  // 本州送料無料まであと
-  if (!subscription && shipping > 0 && subTotal > 0) {
-    const remain = 11000 - subTotal;
-    if (remain > 0 && remain <= 5000) {
-      rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.10);padding:8px 10px;border-radius:8px;font-size:11px;color:var(--color-forest);"><span>あと¥${remain.toLocaleString()}で送料無料</span><strong style="font-size:11px;">▸</strong></div>`;
-    }
-  }
-  rows.innerHTML = rowsHtml;
+ let rowsHtml = '';
+ if (subSavings > 0) {
+ rowsHtml += `<div class="summary-row discount"><span>初月50%OFF適用</span><strong>−¥${subSavings.toLocaleString()}</strong></div>`;
+ }
+ rowsHtml += `
+ <div class="summary-row">
+ <span>商品小計<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
+ <strong>¥${subTotal.toLocaleString()}</strong>
+ </div>
+ <div class="summary-row shipping">
+ <span>配送料 (自宅)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
+ <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
+ </div>
+ `;
+ if (giftShipping > 0) {
+ rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料 (${giftShipping/1100}件)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span><strong>¥${giftShipping.toLocaleString()}</strong></div>`;
+ }
+ // 内消費税の内訳表示
+ rowsHtml += `
+ <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-top:8px;border-top:1px dashed rgba(15,61,46,0.15);">
+ <span>内消費税</span>
+ <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${taxTotal.toLocaleString()}</strong>
+ </div>
+ <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
+ <span style="font-size:10px;">　└ 8%対象（食品）</span>
+ <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax8.toLocaleString()}</strong>
+ </div>`;
+ if (tax10 > 0) {
+ rowsHtml += `<div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
+ <span style="font-size:10px;">　└ 10%対象（送料）</span>
+ <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax10.toLocaleString()}</strong>
+ </div>`;
+ }
+ rowsHtml += `
+ <div class="summary-row total">
+ <span>合計（税込）</span>
+ <strong>¥${total.toLocaleString()}</strong>
+ </div>
+ `;
+ // 本州送料無料まであと
+ if (!subscription && shipping > 0 && subTotal > 0) {
+ const remain = 11000 - subTotal;
+ if (remain > 0 && remain <= 5000) {
+ rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.10);padding:8px 10px;border-radius:8px;font-size:11px;color:var(--color-forest);"><span>あと¥${remain.toLocaleString()}で送料無料</span><strong style="font-size:11px;">▸</strong></div>`;
+ }
+ }
+ rows.innerHTML = rowsHtml;
 
-  // タイトル更新
-  const titleEl = document.getElementById('checkoutTitle');
-  const mode = getMode();
-  const titles = {
-    single: 'ご注文の確認',
-    subscription: '定期便のお申込み',
-    subandadd: '定期便 + 追加購入',
-    gift: 'ギフトのご注文',
-    multi: '複数配送先のご注文'
-  };
-  titleEl.textContent = titles[mode] || 'ご注文の確認';
+ // タイトル更新
+ const titleEl = document.getElementById('checkoutTitle');
+ const mode = getMode();
+ const titles = {
+ single: 'ご注文の確認',
+ subscription: '定期便のお申込み',
+ subandadd: '定期便 + 追加購入',
+ gift: 'ギフトのご注文',
+ multi: '複数配送先のご注文'
+ };
+ titleEl.textContent = titles[mode] || 'ご注文の確認';
 
-  // ギフト仕様の表示制御 (gift / multi モードのみ)
-  const giftSpec = document.getElementById('giftSpecInfo');
-  if (giftSpec) {
-    giftSpec.style.display = (mode === 'gift' || mode === 'multi') ? '' : 'none';
-  }
+ // ギフト仕様の表示制御 (gift / multi モードのみ)
+ const giftSpec = document.getElementById('giftSpecInfo');
+ if (giftSpec) {
+ giftSpec.style.display = (mode === 'gift' || mode === 'multi') ? '' : 'none';
+ }
 
-  // ボタン状態
-  const btn = document.getElementById('btnPlaceOrder');
-  btn.disabled = (cartItems.length === 0 && !subscription);
+ // ボタン状態
+ const btn = document.getElementById('btnPlaceOrder');
+ btn.disabled = (cartItems.length === 0 && !subscription);
 }
 
 /* ---- 配送日オプション ----
-   ▸ 定期便あり: お届け日は「毎月1日」固定 (時間帯のみ選択可)
-   ▸ 単品/ギフトのみ: 最短日（3日後〜）+ 14日先まで選択可
+ ▸ 定期便あり: お届け日は「毎月1日」固定 (時間帯のみ選択可)
+ ▸ 単品/ギフトのみ: 最短日（3日後〜）+ 14日先まで選択可
 */
 function buildDeliveryDateOptions() {
-  const select = document.getElementById('checkoutDeliveryDate');
-  const days = ['日','月','火','水','木','金','土'];
-  const now = new Date();
-  const defaultLabel = document.getElementById('deliveryDateDefault');
-  const dateField = select ? select.closest('.dest-field') : null;
+ const select = document.getElementById('checkoutDeliveryDate');
+ const days = ['日','月','火','水','木','金','土'];
+ const now = new Date();
+ const defaultLabel = document.getElementById('deliveryDateDefault');
+ const dateField = select ? select.closest('.dest-field') : null;
 
-  // 定期便モードの場合: 毎月1日固定
-  if (subscription && PLANS[subscription.plan]) {
-    // 翌月1日を計算
-    const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const m = nextFirst.getMonth() + 1;
-    const dd = nextFirst.getDate();
-    const w = days[nextFirst.getDay()];
-    const label = `${m}月${dd}日（${w}）`;
+ // 定期便モードの場合: 毎月1日固定
+ if (subscription && PLANS[subscription.plan]) {
+ // 翌月1日を計算
+ const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+ const m = nextFirst.getMonth() + 1;
+ const dd = nextFirst.getDate();
+ const w = days[nextFirst.getDay()];
+ const label = `${m}月${dd}日（${w}）`;
 
-    // select を読み取り専用化（HTML上は disabled で固定値表示）
-    select.innerHTML = `<option selected>${label}</option>`;
-    select.disabled = true;
-    select.style.background = 'rgba(212,169,59,0.10)';
-    select.style.cursor = 'not-allowed';
+ // select を読み取り専用化（HTML上は disabled で固定値表示）
+ select.innerHTML = `<option selected>${label}</option>`;
+ select.disabled = true;
+ select.style.background = 'rgba(212,169,59,0.10)';
+ select.style.cursor = 'not-allowed';
 
-    // ラベル変更
-    if (defaultLabel) {
-      defaultLabel.textContent = '定期便 · 毎月1日 固定';
-      defaultLabel.style.color = 'var(--color-gold)';
-    }
+ // ラベル変更
+ if (defaultLabel) {
+ defaultLabel.textContent = '定期便 · 毎月1日 固定';
+ defaultLabel.style.color = 'var(--color-gold)';
+ }
 
-    // 既存の補足説明を入れ替え
-    if (dateField) {
-      let note = dateField.querySelector('.delivery-sub-note');
-      if (!note) {
-        note = document.createElement('small');
-        note.className = 'delivery-sub-note';
-        note.style.cssText = 'display:block;margin-top:6px;font-size:11px;color:var(--color-gold);font-weight:600';
-        dateField.appendChild(note);
-      }
-      note.innerHTML = '⭐ 定期便のお届けは <strong>毎月1日</strong> に固定です。時間帯のみご指定ください。';
-    }
-    return;
-  }
+ // 既存の補足説明を入れ替え
+ if (dateField) {
+ let note = dateField.querySelector('.delivery-sub-note');
+ if (!note) {
+ note = document.createElement('small');
+ note.className = 'delivery-sub-note';
+ note.style.cssText = 'display:block;margin-top:6px;font-size:11px;color:var(--color-gold);font-weight:600';
+ dateField.appendChild(note);
+ }
+ note.innerHTML = '⭐ 定期便のお届けは <strong>毎月1日</strong> に固定です。時間帯のみご指定ください。';
+ }
+ return;
+ }
 
-  // 単品/ギフトモード
-  select.disabled = false;
-  select.style.background = '';
-  select.style.cursor = '';
-  if (defaultLabel) {
-    defaultLabel.textContent = '最短: 自動';
-    defaultLabel.style.color = '';
-  }
-  if (dateField) {
-    const note = dateField.querySelector('.delivery-sub-note');
-    if (note) note.remove();
-  }
+ // 単品/ギフトモード
+ select.disabled = false;
+ select.style.background = '';
+ select.style.cursor = '';
+ if (defaultLabel) {
+ defaultLabel.textContent = '最短: 自動';
+ defaultLabel.style.color = '';
+ }
+ if (dateField) {
+ const note = dateField.querySelector('.delivery-sub-note');
+ if (note) note.remove();
+ }
 
-  const start = new Date(now);
-  start.setDate(start.getDate() + 3);
-  let html = '<option value="">最短日でお届け（3日後〜）</option>';
-  for (let i = 0; i < 14; i++) {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    const m = d.getMonth() + 1;
-    const dd = d.getDate();
-    const w = days[d.getDay()];
-    html += `<option>${m}月${dd}日（${w}）</option>`;
-  }
-  select.innerHTML = html;
+ const start = new Date(now);
+ start.setDate(start.getDate() + 3);
+ let html = '<option value="">最短日でお届け（3日後〜）</option>';
+ for (let i = 0; i < 14; i++) {
+ const d = new Date(start);
+ d.setDate(start.getDate() + i);
+ const m = d.getMonth() + 1;
+ const dd = d.getDate();
+ const w = days[d.getDay()];
+ html += `<option>${m}月${dd}日（${w}）</option>`;
+ }
+ select.innerHTML = html;
 }
 
 /* ---- 支払いラジオ ---- */
 document.querySelectorAll('.payment-option input').forEach(input => {
-  input.addEventListener('change', () => {
-    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-    input.closest('.payment-option').classList.add('selected');
-  });
+ input.addEventListener('change', () => {
+ document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+ input.closest('.payment-option').classList.add('selected');
+ });
 });
 
 /* ---- 注文確定 (Stripe Checkout 連携) ---- */
 async function placeOrder() {
-  // バリデーション
-  for (const d of destinations) {
-    if (d.itemIds.length === 0 && d.type === 'gift') continue;
-    if (!d.name || !d.tel || !d.zip || !d.pref || !d.address) {
-      alert('配送先の必須項目を入力してください。');
-      return;
-    }
-    if (d === destinations[0] && !d.email) {
-      alert('ご注文確認用メールアドレスを入力してください。');
-      return;
-    }
-  }
-  // 規約同意チェック
-  const consent = document.getElementById('checkoutConsent');
-  if (consent && !consent.checked) {
-    alert('利用規約・プライバシーポリシーに同意のうえご注文ください。');
-    consent.focus();
-    return;
-  }
+ // バリデーション
+ for (const d of destinations) {
+ if (d.itemIds.length === 0 && d.type === 'gift') continue;
+ if (!d.name || !d.tel || !d.zip || !d.pref || !d.address) {
+ alert('配送先の必須項目を入力してください。');
+ return;
+ }
+ if (d === destinations[0] && !d.email) {
+ alert('ご注文確認用メールアドレスを入力してください。');
+ return;
+ }
+ }
+ // 規約同意チェック
+ const consent = document.getElementById('checkoutConsent');
+ if (consent && !consent.checked) {
+ alert('利用規約・プライバシーポリシーに同意のうえご注文ください。');
+ consent.focus();
+ return;
+ }
 
-  const mode = getMode();
-  const isSubscription = !!subscription && mode !== 'single' && mode !== 'gift' && mode !== 'multi';
-  const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
+ const mode = getMode();
+ const isSubscription = !!subscription && mode !== 'single' && mode !== 'gift' && mode !== 'multi';
+ const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
 
-  // LINE セッションがあれば line_uid を添付 (マイページからの再注文時)
-  let lineSession = null;
-  try {
-    const raw = localStorage.getItem('eda-mypage-session');
-    if (raw) lineSession = JSON.parse(raw);
-  } catch (_) {}
+ // LINE セッションがあれば line_uid を添付 (マイページからの再注文時)
+ let lineSession = null;
+ try {
+ const raw = localStorage.getItem('eda-mypage-session');
+ if (raw) lineSession = JSON.parse(raw);
+ } catch (_) {}
 
-  // 注文ペイロード組み立て
-  const orderPayload = {
-    mode: mode,
-    customer: {
-      name:    destinations[0].name,
-      email:   destinations[0].email,
-      phone:   destinations[0].tel,
-      zip:     destinations[0].zip,
-      pref:    destinations[0].pref,
-      address: destinations[0].address,
-      line_uid:     lineSession?.line_uid || '',
-      line_name:    lineSession?.display_name || ''
-    },
-    destinations: destinations.map(d => ({
-      type: d.type,
-      name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
-      noshi: d.noshi || null, fromName: d.fromName || null,
-      items: d.itemIds.map(i => cartItems[i]).filter(Boolean)
-    })),
-    items: cartItems,
-    subscription: subscription,
-    payment_method: payment,
-    quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
-  };
+ // 注文ペイロード組み立て
+ const orderPayload = {
+ mode: mode,
+ customer: {
+ name: destinations[0].name,
+ email: destinations[0].email,
+ phone: destinations[0].tel,
+ zip: destinations[0].zip,
+ pref: destinations[0].pref,
+ address: destinations[0].address,
+ line_uid: lineSession?.line_uid || '',
+ line_name: lineSession?.display_name || ''
+ },
+ destinations: destinations.map(d => ({
+ type: d.type,
+ name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
+ noshi: d.noshi || null, fromName: d.fromName || null,
+ items: d.itemIds.map(i => cartItems[i]).filter(Boolean)
+ })),
+ items: cartItems,
+ subscription: subscription,
+ payment_method: payment,
+ quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
+ };
 
-  // UI: ローディング
-  const btn = document.getElementById('btnPlaceOrder');
-  if (btn) { btn.disabled = true; btn.textContent = '決済画面へ移動中…'; }
+ // UI: ローディング
+ const btn = document.getElementById('btnPlaceOrder');
+ if (btn) { btn.disabled = true; btn.textContent = '決済画面へ移動中…'; }
 
-  try {
-    const action = (subscription && PLANS[subscription.plan]) ? 'create_subscription_checkout' : 'create_checkout';
-    if (action === 'create_subscription_checkout') {
-      orderPayload.plan = subscription.plan;
-    }
+ try {
+ const action = (subscription && PLANS[subscription.plan]) ? 'create_subscription_checkout' : 'create_checkout';
+ if (action === 'create_subscription_checkout') {
+ orderPayload.plan = subscription.plan;
+ }
 
-    if (!window.EDA_API) throw new Error('決済設定が読み込まれていません。ページを再読み込みしてください。');
+ if (!window.EDA_API) throw new Error('決済設定が読み込まれていません。ページを再読み込みしてください。');
 
-    const result = await window.EDA_API.post(action, orderPayload);
+ const result = await window.EDA_API.post(action, orderPayload);
 
-    if (!result.ok || !result.url) {
-      throw new Error(result.error || '決済セッション作成に失敗しました。お手数ですが LINE までお問い合わせください。');
-    }
+ if (!result.ok || !result.url) {
+ throw new Error(result.error || '決済セッション作成に失敗しました。お手数ですが LINE までお問い合わせください。');
+ }
 
-    // ローカルに pending 状態保存 (Stripe から戻ったとき表示用)
-    localStorage.setItem('eda-last-order', JSON.stringify({
-      num: result.order_number || '',
-      session_id: result.session_id,
-      mode: mode,
-      date: new Date().toISOString()
-    }));
+ // ローカルに pending 状態保存 (Stripe から戻ったとき表示用)
+ localStorage.setItem('eda-last-order', JSON.stringify({
+ num: result.order_number || '',
+ session_id: result.session_id,
+ mode: mode,
+ date: new Date().toISOString()
+ }));
 
-    // Stripe Checkout 画面へリダイレクト
-    window.location.href = result.url;
+ // Stripe Checkout 画面へリダイレクト
+ window.location.href = result.url;
 
-  } catch (err) {
-    if (btn) { btn.disabled = false; btn.textContent = 'ご注文を確定する →'; }
-    alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
-    console.error('[placeOrder]', err);
-  }
+ } catch (err) {
+ if (btn) { btn.disabled = false; btn.textContent = 'ご注文を確定する →'; }
+ alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
+ console.error('[placeOrder]', err);
+ }
 }
 
 // 合計金額計算（subscription + cart 全体）
 function calcTotalAmount() {
-  let total = 0;
-  if (subscription && PLANS[subscription.plan]) total += PLANS[subscription.plan].half;
-  cartItems.forEach(it => { total += (it.price || 0) * (it.qty || 1); });
-  return total;
+ let total = 0;
+ if (subscription && PLANS[subscription.plan]) total += PLANS[subscription.plan].half;
+ cartItems.forEach(it => { total += (it.price || 0) * (it.qty || 1); });
+ return total;
 }
 
 /* ---- 初期化実行 ---- */

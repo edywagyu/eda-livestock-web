@@ -24,43 +24,43 @@
  * EDA-LIVESTOCK Design System (shared)
  * ================================================================ */
 :root {
-  --color-forest: #0F3D2E;
-  --color-forest-deep: #0A2D21;
-  --color-forest-light: #143D2B;
-  --color-gold: #D4A93B;
-  --color-gold-bright: #E5B547;
-  --color-gold-soft: #B8932F;
-  --color-cream: #FAF7F0;
-  --color-paper: #F5EFE3;
-  --color-bone: #EFE8D7;
-  --color-ink: #1A1A1A;
-  --color-ink-muted: #5C5C5C;
-  --color-red: #C8102E;
-  --color-line: rgba(212, 169, 59, 0.18);
-  --font-display: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
-  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
-  --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
-  --font-jp-serif: 'Noto Serif JP', serif;
-  --tracking-tight: -0.01em;
-  --tracking-wide: 0.04em;
-  --tracking-wider: 0.12em;
-  --tracking-widest: 0.24em;
-  --space-section: clamp(80px, 12vw, 160px);
-  --space-section-sm: clamp(48px, 8vw, 96px);
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+ --color-forest: #0F3D2E;
+ --color-forest-deep: #0A2D21;
+ --color-forest-light: #143D2B;
+ --color-gold: #D4A93B;
+ --color-gold-bright: #E5B547;
+ --color-gold-soft: #B8932F;
+ --color-cream: #FAF7F0;
+ --color-paper: #F5EFE3;
+ --color-bone: #EFE8D7;
+ --color-ink: #1A1A1A;
+ --color-ink-muted: #5C5C5C;
+ --color-red: #C8102E;
+ --color-line: rgba(212, 169, 59, 0.18);
+ --font-display: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
+ --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+ --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
+ --font-jp-serif: 'Noto Serif JP', serif;
+ --tracking-tight: -0.01em;
+ --tracking-wide: 0.04em;
+ --tracking-wider: 0.12em;
+ --tracking-widest: 0.24em;
+ --space-section: clamp(80px, 12vw, 160px);
+ --space-section-sm: clamp(48px, 8vw, 96px);
+ --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+ --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
-  margin: 0;
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-ink);
-  background: var(--color-cream);
-  overflow-x: hidden;
+ margin: 0;
+ font-family: var(--font-body);
+ font-weight: 400;
+ font-size: 16px;
+ line-height: 1.6;
+ color: var(--color-ink);
+ background: var(--color-cream);
+ overflow-x: hidden;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -73,30 +73,30 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ HEADER ================ */
 .site-header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 20px 0;
-  transition: all 0.4s var(--ease-out-expo);
-  background: rgba(15, 61, 46, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+ position: fixed;
+ top: 0; left: 0; right: 0;
+ z-index: 100;
+ padding: 20px 0;
+ transition: all 0.4s var(--ease-out-expo);
+ background: rgba(15, 61, 46, 0.96);
+ backdrop-filter: blur(12px);
+ -webkit-backdrop-filter: blur(12px);
 }
 .site-header.scrolled { padding: 14px 0; }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand-mark {
-  display: flex; align-items: center; gap: 12px;
-  color: white; flex-shrink: 0;
+ display: flex; align-items: center; gap: 12px;
+ color: white; flex-shrink: 0;
 }
 .brand-mark-img { height: 44px; width: auto; flex-shrink: 0; }
 .nav-utils { display: flex; align-items: center; gap: 16px; }
 .nav-icon { color: white; display: flex; transition: color 0.3s; position: relative; }
 .nav-icon:hover { color: var(--color-gold); }
 .nav-back {
-  display: flex; align-items: center; gap: 8px;
-  color: white; font-family: var(--font-display);
-  font-size: 13px; letter-spacing: var(--tracking-wider);
-  transition: color 0.3s;
+ display: flex; align-items: center; gap: 8px;
+ color: white; font-family: var(--font-display);
+ font-size: 13px; letter-spacing: var(--tracking-wider);
+ transition: color 0.3s;
 }
 .nav-back:hover { color: var(--color-gold); }
 .nav-back svg { flex-shrink: 0; }
@@ -116,496 +116,496 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .footer-col a { font-size: 13px; opacity: 0.8; transition: opacity 0.3s; }
 .footer-col a:hover { opacity: 1; color: var(--color-gold); }
 .footer-bottom {
-  display: flex; justify-content: space-between; align-items: center;
-  padding-top: 32px; border-top: 1px solid var(--color-line);
-  font-size: 12px; opacity: 0.5; letter-spacing: var(--tracking-wide);
+ display: flex; justify-content: space-between; align-items: center;
+ padding-top: 32px; border-top: 1px solid var(--color-line);
+ font-size: 12px; opacity: 0.5; letter-spacing: var(--tracking-wide);
 }
 
 /* ================ HEADER ANIMATION ================ */
 .site-header { animation: headerSlideIn 0.8s cubic-bezier(0.5, 0, 0, 1) both; }
 @keyframes headerSlideIn {
-  from { transform: translateY(-100%); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+ from { transform: translateY(-100%); opacity: 0; }
+ to { transform: translateY(0); opacity: 1; }
 }
 
 /* ================ PAGE HEADER ================ */
 .page-header {
-  background: var(--color-forest);
-  color: white;
-  padding: 140px 0 64px;
-  position: relative;
-  overflow: hidden;
+ background: var(--color-forest);
+ color: white;
+ padding: 140px 0 64px;
+ position: relative;
+ overflow: hidden;
 }
 .page-header::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 80% 30%, rgba(212, 169, 59, 0.1) 0%, transparent 50%);
+ content: '';
+ position: absolute; inset: 0;
+ background: radial-gradient(circle at 80% 30%, rgba(212, 169, 59, 0.1) 0%, transparent 50%);
 }
 .page-header-content { position: relative; z-index: 1; }
 .page-eyebrow { color: var(--color-gold); font-family: var(--font-display); font-size: 13px; letter-spacing: var(--tracking-widest); }
 .page-title {
-  font-family: var(--font-display);
-  font-size: clamp(48px, 8vw, 100px);
-  line-height: 0.92;
-  margin: 16px 0 16px;
+ font-family: var(--font-display);
+ font-size: clamp(48px, 8vw, 100px);
+ line-height: 0.92;
+ margin: 16px 0 16px;
 }
 .page-subtitle {
-  font-family: var(--font-jp-serif);
-  font-size: clamp(14px, 1.2vw, 17px);
-  line-height: 1.85;
-  max-width: 480px;
-  opacity: 0.8;
-  margin: 0;
+ font-family: var(--font-jp-serif);
+ font-size: clamp(14px, 1.2vw, 17px);
+ line-height: 1.85;
+ max-width: 480px;
+ opacity: 0.8;
+ margin: 0;
 }
 
 /* ================ MY PAGE SPECIFIC ================ */
 
 /* Login Section */
 .mypage-login-section {
-  padding: 48px 0 64px;
+ padding: 48px 0 64px;
 }
 .login-card {
-  max-width: 480px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 12px;
-  padding: 40px 32px;
-  box-shadow: 0 4px 24px rgba(15, 61, 46, 0.06);
-  border: 1px solid var(--color-bone);
+ max-width: 480px;
+ margin: 0 auto;
+ background: white;
+ border-radius: 12px;
+ padding: 40px 32px;
+ box-shadow: 0 4px 24px rgba(15, 61, 46, 0.06);
+ border: 1px solid var(--color-bone);
 }
 .login-card-title {
-  font-family: var(--font-jp-serif);
-  font-size: 20px;
-  color: var(--color-forest);
-  margin: 0 0 8px;
-  text-align: center;
+ font-family: var(--font-jp-serif);
+ font-size: 20px;
+ color: var(--color-forest);
+ margin: 0 0 8px;
+ text-align: center;
 }
 .login-card-sub {
-  font-size: 13px;
-  color: var(--color-ink-muted);
-  text-align: center;
-  margin: 0 0 28px;
-  line-height: 1.7;
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ text-align: center;
+ margin: 0 0 28px;
+ line-height: 1.7;
 }
 .login-icon {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
+ display: flex;
+ justify-content: center;
+ margin-bottom: 24px;
 }
 .login-icon-circle {
-  width: 64px; height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-light));
-  display: flex; align-items: center; justify-content: center;
-  color: var(--color-gold);
+ width: 64px; height: 64px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-light));
+ display: flex; align-items: center; justify-content: center;
+ color: var(--color-gold);
 }
 .login-tabs {
-  display: flex;
-  border-bottom: 2px solid var(--color-bone);
-  margin-bottom: 24px;
+ display: flex;
+ border-bottom: 2px solid var(--color-bone);
+ margin-bottom: 24px;
 }
 .login-tab {
-  flex: 1;
-  padding: 12px 0;
-  text-align: center;
-  font-family: var(--font-jp);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink-muted);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: all 0.3s;
-  background: none;
-  border-top: none; border-left: none; border-right: none;
+ flex: 1;
+ padding: 12px 0;
+ text-align: center;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 500;
+ color: var(--color-ink-muted);
+ cursor: pointer;
+ border-bottom: 2px solid transparent;
+ margin-bottom: -2px;
+ transition: all 0.3s;
+ background: none;
+ border-top: none; border-left: none; border-right: none;
 }
 .login-tab.active {
-  color: var(--color-forest);
-  border-bottom-color: var(--color-gold);
+ color: var(--color-forest);
+ border-bottom-color: var(--color-gold);
 }
 .login-input-wrap {
-  position: relative;
-  margin-bottom: 20px;
+ position: relative;
+ margin-bottom: 20px;
 }
 .login-input {
-  width: 100%;
-  padding: 14px 16px 14px 44px;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 8px;
-  font-family: var(--font-jp);
-  font-size: 15px;
-  color: var(--color-ink);
-  background: var(--color-cream);
-  transition: border-color 0.3s, box-shadow 0.3s;
-  outline: none;
+ width: 100%;
+ padding: 14px 16px 14px 44px;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 8px;
+ font-family: var(--font-jp);
+ font-size: 15px;
+ color: var(--color-ink);
+ background: var(--color-cream);
+ transition: border-color 0.3s, box-shadow 0.3s;
+ outline: none;
 }
 .login-input:focus {
-  border-color: var(--color-gold);
-  box-shadow: 0 0 0 3px rgba(212, 169, 59, 0.12);
+ border-color: var(--color-gold);
+ box-shadow: 0 0 0 3px rgba(212, 169, 59, 0.12);
 }
 .login-input::placeholder {
-  color: #B0A894;
-  font-size: 14px;
+ color: #B0A894;
+ font-size: 14px;
 }
 .login-input-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-gold-soft);
+ position: absolute;
+ left: 14px;
+ top: 50%;
+ transform: translateY(-50%);
+ color: var(--color-gold-soft);
 }
 .login-btn {
-  width: 100%;
-  padding: 15px;
-  background: var(--color-forest);
-  color: white;
-  font-family: var(--font-display);
-  font-size: 15px;
-  letter-spacing: var(--tracking-wider);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.5, 0, 0, 1);
-  position: relative;
-  overflow: hidden;
+ width: 100%;
+ padding: 15px;
+ background: var(--color-forest);
+ color: white;
+ font-family: var(--font-display);
+ font-size: 15px;
+ letter-spacing: var(--tracking-wider);
+ border: none;
+ border-radius: 8px;
+ cursor: pointer;
+ transition: all 0.3s cubic-bezier(0.5, 0, 0, 1);
+ position: relative;
+ overflow: hidden;
 }
 .login-btn:hover {
-  background: var(--color-forest-deep);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(15, 61, 46, 0.2);
+ background: var(--color-forest-deep);
+ transform: translateY(-1px);
+ box-shadow: 0 4px 16px rgba(15, 61, 46, 0.2);
 }
 .login-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+ opacity: 0.5;
+ cursor: not-allowed;
+ transform: none;
+ box-shadow: none;
 }
 .login-error {
-  display: none;
-  padding: 12px 16px;
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
-  border-radius: 8px;
-  color: #991B1B;
-  font-size: 13px;
-  margin-bottom: 20px;
-  line-height: 1.6;
+ display: none;
+ padding: 12px 16px;
+ background: #FEF2F2;
+ border: 1px solid #FECACA;
+ border-radius: 8px;
+ color: #991B1B;
+ font-size: 13px;
+ margin-bottom: 20px;
+ line-height: 1.6;
 }
 .login-error.show { display: block; }
 
 /* Loading Spinner */
 .spinner-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(250, 247, 240, 0.85);
-  backdrop-filter: blur(4px);
-  z-index: 200;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 20px;
+ display: none;
+ position: fixed;
+ inset: 0;
+ background: rgba(250, 247, 240, 0.85);
+ backdrop-filter: blur(4px);
+ z-index: 200;
+ justify-content: center;
+ align-items: center;
+ flex-direction: column;
+ gap: 20px;
 }
 .spinner-overlay.show { display: flex; }
 .spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--color-bone);
-  border-top-color: var(--color-gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+ width: 40px; height: 40px;
+ border: 3px solid var(--color-bone);
+ border-top-color: var(--color-gold);
+ border-radius: 50%;
+ animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner-text {
-  font-family: var(--font-jp);
-  font-size: 14px;
-  color: var(--color-ink-muted);
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-ink-muted);
 }
 
 /* Dashboard */
 .dashboard-section {
-  display: none;
-  padding: 0 0 64px;
+ display: none;
+ padding: 0 0 64px;
 }
 .dashboard-section.show { display: block; }
 
 /* Welcome Card */
 .welcome-card {
-  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
-  color: white;
-  border-radius: 16px;
-  padding: 32px 28px;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: white;
+ border-radius: 16px;
+ padding: 32px 28px;
+ margin-bottom: 24px;
+ position: relative;
+ overflow: hidden;
 }
 .welcome-card::before {
-  content: '';
-  position: absolute;
-  top: -40%; right: -20%;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(212, 169, 59, 0.15), transparent 70%);
-  border-radius: 50%;
+ content: '';
+ position: absolute;
+ top: -40%; right: -20%;
+ width: 200px; height: 200px;
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.15), transparent 70%);
+ border-radius: 50%;
 }
 .welcome-name {
-  font-family: var(--font-jp-serif);
-  font-size: 22px;
-  margin: 0 0 4px;
-  position: relative;
+ font-family: var(--font-jp-serif);
+ font-size: 22px;
+ margin: 0 0 4px;
+ position: relative;
 }
 .welcome-label {
-  font-size: 12px;
-  opacity: 0.7;
-  margin: 0 0 20px;
-  position: relative;
+ font-size: 12px;
+ opacity: 0.7;
+ margin: 0 0 20px;
+ position: relative;
 }
 .welcome-stats {
-  display: flex;
-  gap: 24px;
-  position: relative;
+ display: flex;
+ gap: 24px;
+ position: relative;
 }
 .welcome-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+ display: flex;
+ flex-direction: column;
+ gap: 2px;
 }
 .welcome-stat-num {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--color-gold);
-  line-height: 1;
+ font-family: var(--font-display);
+ font-size: 28px;
+ color: var(--color-gold);
+ line-height: 1;
 }
 .welcome-stat-label {
-  font-size: 11px;
-  opacity: 0.6;
-  letter-spacing: 0.02em;
+ font-size: 11px;
+ opacity: 0.6;
+ letter-spacing: 0.02em;
 }
 
 /* Subscription Badge */
 .sub-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 16px;
-  position: relative;
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 6px 14px;
+ border-radius: 20px;
+ font-size: 12px;
+ font-weight: 500;
+ margin-bottom: 16px;
+ position: relative;
 }
 .sub-badge.active {
-  background: rgba(212, 169, 59, 0.15);
-  color: var(--color-gold);
-  border: 1px solid rgba(212, 169, 59, 0.3);
+ background: rgba(212, 169, 59, 0.15);
+ color: var(--color-gold);
+ border: 1px solid rgba(212, 169, 59, 0.3);
 }
 .sub-badge.inactive {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+ background: rgba(255, 255, 255, 0.08);
+ color: rgba(255, 255, 255, 0.5);
+ border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .sub-badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: currentColor;
+ width: 6px; height: 6px;
+ border-radius: 50%;
+ background: currentColor;
 }
 
 /* Section Titles */
 .dash-section-title {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: var(--tracking-widest);
-  color: var(--color-gold-soft);
-  margin: 32px 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+ font-family: var(--font-display);
+ font-size: 14px;
+ letter-spacing: var(--tracking-widest);
+ color: var(--color-gold-soft);
+ margin: 32px 0 16px;
+ display: flex;
+ align-items: center;
+ gap: 12px;
 }
 .dash-section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--color-bone);
+ content: '';
+ flex: 1;
+ height: 1px;
+ background: var(--color-bone);
 }
 
 /* Order Cards */
 .order-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 16px;
-  border: 1px solid var(--color-bone);
-  transition: all 0.4s var(--ease-out-expo);
+ background: white;
+ border-radius: 12px;
+ padding: 24px;
+ margin-bottom: 16px;
+ border: 1px solid var(--color-bone);
+ transition: all 0.4s var(--ease-out-expo);
 }
 .order-card:hover {
-  border-color: var(--color-gold);
-  box-shadow: 0 8px 32px rgba(15, 61, 46, 0.06);
-  transform: translateY(-2px);
+ border-color: var(--color-gold);
+ box-shadow: 0 8px 32px rgba(15, 61, 46, 0.06);
+ transform: translateY(-2px);
 }
 .order-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ margin-bottom: 16px;
 }
 .order-number {
-  font-family: var(--font-display);
-  font-size: 14px;
-  letter-spacing: var(--tracking-wider);
-  color: var(--color-forest);
+ font-family: var(--font-display);
+ font-size: 14px;
+ letter-spacing: var(--tracking-wider);
+ color: var(--color-forest);
 }
 .order-date {
-  font-size: 12px;
-  color: var(--color-ink-muted);
-  margin-top: 2px;
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ margin-top: 2px;
 }
 .status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  border-radius: 16px;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: var(--font-jp);
-  white-space: nowrap;
+ display: inline-flex;
+ align-items: center;
+ gap: 5px;
+ padding: 5px 12px;
+ border-radius: 16px;
+ font-size: 11px;
+ font-weight: 600;
+ font-family: var(--font-jp);
+ white-space: nowrap;
 }
 .status-badge.pending {
-  background: #FEF3C7;
-  color: #92400E;
+ background: #FEF3C7;
+ color: #92400E;
 }
 .status-badge.preparing {
-  background: #DBEAFE;
-  color: #1E40AF;
+ background: #DBEAFE;
+ color: #1E40AF;
 }
 .status-badge.shipped {
-  background: #D1FAE5;
-  color: #065F46;
+ background: #D1FAE5;
+ color: #065F46;
 }
 .status-badge.delivered {
-  background: #F3F4F6;
-  color: #6B7280;
+ background: #F3F4F6;
+ color: #6B7280;
 }
 .status-badge-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: currentColor;
+ width: 5px; height: 5px;
+ border-radius: 50%;
+ background: currentColor;
 }
 .order-items {
-  border-top: 1px solid var(--color-bone);
-  padding-top: 14px;
+ border-top: 1px solid var(--color-bone);
+ padding-top: 14px;
 }
 .order-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  font-size: 13px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 6px 0;
+ font-size: 13px;
 }
 .order-item-name {
-  color: var(--color-ink);
-  font-family: var(--font-jp);
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding-right: 12px;
+ color: var(--color-ink);
+ font-family: var(--font-jp);
+ flex: 1;
+ min-width: 0;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ padding-right: 12px;
 }
 .order-item-qty {
-  color: var(--color-ink-muted);
-  font-size: 12px;
-  margin-right: 12px;
-  white-space: nowrap;
+ color: var(--color-ink-muted);
+ font-size: 12px;
+ margin-right: 12px;
+ white-space: nowrap;
 }
 .order-item-price {
-  font-family: var(--font-display);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--color-forest);
-  white-space: nowrap;
+ font-family: var(--font-display);
+ font-size: 13px;
+ letter-spacing: 0.04em;
+ color: var(--color-forest);
+ white-space: nowrap;
 }
 .order-total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 12px;
-  margin-top: 8px;
-  border-top: 1px solid var(--color-bone);
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding-top: 12px;
+ margin-top: 8px;
+ border-top: 1px solid var(--color-bone);
 }
 .order-total-label {
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: var(--tracking-widest);
-  color: var(--color-ink-muted);
+ font-family: var(--font-display);
+ font-size: 12px;
+ letter-spacing: var(--tracking-widest);
+ color: var(--color-ink-muted);
 }
 .order-total-price {
-  font-family: var(--font-display);
-  font-size: 20px;
-  color: var(--color-forest);
-  letter-spacing: 0.04em;
+ font-family: var(--font-display);
+ font-size: 20px;
+ color: var(--color-forest);
+ letter-spacing: 0.04em;
 }
 .order-tracking {
-  margin-top: 12px;
+ margin-top: 12px;
 }
 .tracking-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  background: var(--color-cream);
-  border-radius: 8px;
-  font-size: 12px;
-  color: var(--color-forest);
-  font-weight: 500;
-  transition: all 0.3s;
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 8px 14px;
+ background: var(--color-cream);
+ border-radius: 8px;
+ font-size: 12px;
+ color: var(--color-forest);
+ font-weight: 500;
+ transition: all 0.3s;
 }
 .tracking-link:hover {
-  background: var(--color-bone);
-  color: var(--color-gold-soft);
+ background: var(--color-bone);
+ color: var(--color-gold-soft);
 }
 
 /* Subscription Card */
 .sub-card {
-  background: white;
-  border-radius: 12px;
-  padding: 28px;
-  border: 1px solid var(--color-bone);
-  position: relative;
-  overflow: hidden;
+ background: white;
+ border-radius: 12px;
+ padding: 28px;
+ border: 1px solid var(--color-bone);
+ position: relative;
+ overflow: hidden;
 }
 .sub-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-gold), var(--color-gold-bright));
+ content: '';
+ position: absolute;
+ top: 0; left: 0; right: 0;
+ height: 3px;
+ background: linear-gradient(90deg, var(--color-gold), var(--color-gold-bright));
 }
 .sub-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 16px;
 }
 .sub-plan-name {
-  font-family: var(--font-jp-serif);
-  font-size: 18px;
-  color: var(--color-forest);
-  margin: 0;
+ font-family: var(--font-jp-serif);
+ font-size: 18px;
+ color: var(--color-forest);
+ margin: 0;
 }
 .sub-plan-price {
-  font-family: var(--font-display);
-  font-size: 22px;
-  color: var(--color-gold-soft);
+ font-family: var(--font-display);
+ font-size: 22px;
+ color: var(--color-gold-soft);
 }
 .sub-plan-price small {
-  font-size: 12px;
-  opacity: 0.7;
+ font-size: 12px;
+ opacity: 0.7;
 }
 .sub-detail-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--color-bone);
-  font-size: 13px;
+ display: flex;
+ justify-content: space-between;
+ padding: 10px 0;
+ border-bottom: 1px solid var(--color-bone);
+ font-size: 13px;
 }
 .sub-detail-row:last-child { border-bottom: none; }
 .sub-detail-label { color: var(--color-ink-muted); }
@@ -613,160 +613,160 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* LINE CTA */
 .line-cta {
-  background: white;
-  border-radius: 12px;
-  padding: 28px;
-  border: 1px solid var(--color-bone);
-  text-align: center;
-  margin-top: 24px;
+ background: white;
+ border-radius: 12px;
+ padding: 28px;
+ border: 1px solid var(--color-bone);
+ text-align: center;
+ margin-top: 24px;
 }
 .line-cta-title {
-  font-family: var(--font-jp-serif);
-  font-size: 17px;
-  color: var(--color-forest);
-  margin: 0 0 8px;
+ font-family: var(--font-jp-serif);
+ font-size: 17px;
+ color: var(--color-forest);
+ margin: 0 0 8px;
 }
 .line-cta-desc {
-  font-size: 13px;
-  color: var(--color-ink-muted);
-  margin: 0 0 20px;
-  line-height: 1.7;
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ margin: 0 0 20px;
+ line-height: 1.7;
 }
 .line-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 32px;
-  background: #06C755;
-  color: white;
-  border-radius: 8px;
-  font-family: var(--font-jp);
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ padding: 14px 32px;
+ background: #06C755;
+ color: white;
+ border-radius: 8px;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ font-weight: 600;
+ border: none;
+ cursor: pointer;
+ transition: all 0.3s;
+ text-decoration: none;
 }
 .line-btn:hover {
-  background: #05B04C;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(6, 199, 85, 0.25);
+ background: #05B04C;
+ transform: translateY(-1px);
+ box-shadow: 0 4px 16px rgba(6, 199, 85, 0.25);
 }
 
 /* Empty state */
 .empty-orders {
-  text-align: center;
-  padding: 48px 24px;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid var(--color-bone);
+ text-align: center;
+ padding: 48px 24px;
+ background: white;
+ border-radius: 12px;
+ border: 1px solid var(--color-bone);
 }
 .empty-orders-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  opacity: 0.4;
+ font-size: 48px;
+ margin-bottom: 16px;
+ opacity: 0.4;
 }
 .empty-orders-text {
-  font-family: var(--font-jp);
-  font-size: 15px;
-  color: var(--color-ink-muted);
-  margin: 0 0 20px;
+ font-family: var(--font-jp);
+ font-size: 15px;
+ color: var(--color-ink-muted);
+ margin: 0 0 20px;
 }
 .shop-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 24px;
-  background: var(--color-forest);
-  color: white;
-  border-radius: 8px;
-  font-family: var(--font-display);
-  font-size: 13px;
-  letter-spacing: var(--tracking-wider);
-  transition: all 0.3s;
-  text-decoration: none;
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 12px 24px;
+ background: var(--color-forest);
+ color: white;
+ border-radius: 8px;
+ font-family: var(--font-display);
+ font-size: 13px;
+ letter-spacing: var(--tracking-wider);
+ transition: all 0.3s;
+ text-decoration: none;
 }
 .shop-link:hover {
-  background: var(--color-forest-deep);
-  transform: translateY(-1px);
+ background: var(--color-forest-deep);
+ transform: translateY(-1px);
 }
 
 /* Logout */
 .logout-row {
-  text-align: center;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid var(--color-bone);
+ text-align: center;
+ margin-top: 32px;
+ padding-top: 24px;
+ border-top: 1px solid var(--color-bone);
 }
 .logout-btn {
-  font-size: 13px;
-  color: var(--color-ink-muted);
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-family: var(--font-jp);
-  transition: color 0.3s;
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ cursor: pointer;
+ background: none;
+ border: none;
+ font-family: var(--font-jp);
+ transition: color 0.3s;
 }
 .logout-btn:hover { color: var(--color-red); }
 
 /* Animations */
 .fade-in {
-  animation: fadeInUp 0.6s var(--ease-out-expo) both;
+ animation: fadeInUp 0.6s var(--ease-out-expo) both;
 }
 .fade-in-d1 { animation-delay: 0.1s; }
 .fade-in-d2 { animation-delay: 0.2s; }
 .fade-in-d3 { animation-delay: 0.3s; }
 .fade-in-d4 { animation-delay: 0.4s; }
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+ from { opacity: 0; transform: translateY(16px); }
+ to { opacity: 1; transform: translateY(0); }
 }
 
 /* ================ RESPONSIVE ================ */
 @media (max-width: 1024px) {
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+ .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 640px) {
-  :root {
-    --space-section: 48px;
-    --space-section-sm: 32px;
-  }
-  .container { padding: 0 16px; }
-  .brand-mark-img { height: 36px; }
-  .page-header { padding: 100px 0 40px; }
-  .page-title { font-size: 42px; margin: 12px 0 12px; }
-  .page-subtitle { font-size: 13px; }
-  .login-card { padding: 28px 20px; }
-  .welcome-card { padding: 24px 20px; }
-  .welcome-name { font-size: 19px; }
-  .welcome-stat-num { font-size: 24px; }
-  .welcome-stats { gap: 20px; }
-  .order-card { padding: 20px 16px; }
-  .order-card-head { flex-direction: column; gap: 8px; }
-  .order-item { font-size: 12px; }
-  .order-total-price { font-size: 18px; }
-  .sub-card { padding: 20px 16px; }
-  .sub-action-btn { font-size: 12px !important; padding: 9px 12px !important; }
-  .reward-prog-card { padding: 18px 16px !important; }
-  .coupon-card { padding: 14px 14px !important; }
+ :root {
+ --space-section: 48px;
+ --space-section-sm: 32px;
+ }
+ .container { padding: 0 16px; }
+ .brand-mark-img { height: 36px; }
+ .page-header { padding: 100px 0 40px; }
+ .page-title { font-size: 42px; margin: 12px 0 12px; }
+ .page-subtitle { font-size: 13px; }
+ .login-card { padding: 28px 20px; }
+ .welcome-card { padding: 24px 20px; }
+ .welcome-name { font-size: 19px; }
+ .welcome-stat-num { font-size: 24px; }
+ .welcome-stats { gap: 20px; }
+ .order-card { padding: 20px 16px; }
+ .order-card-head { flex-direction: column; gap: 8px; }
+ .order-item { font-size: 12px; }
+ .order-total-price { font-size: 18px; }
+ .sub-card { padding: 20px 16px; }
+ .sub-action-btn { font-size: 12px !important; padding: 9px 12px !important; }
+ .reward-prog-card { padding: 18px 16px !important; }
+ .coupon-card { padding: 14px 14px !important; }
 }
 
 /* ==== Subscription Action Buttons ==== */
 .sub-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 11px 16px;
-  background: white;
-  border: 1.5px solid var(--color-bone);
-  border-radius: 10px;
-  font-family: var(--font-jp);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-forest);
-  cursor: pointer;
-  transition: all 0.2s;
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 11px 16px;
+ background: white;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 10px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--color-forest);
+ cursor: pointer;
+ transition: all 0.2s;
 }
 .sub-action-btn:hover { border-color: var(--color-gold); transform: translateY(-1px); }
 .sub-action-btn.cancel { color: #C8102E; margin-left: auto; border-color: #FECACA; }
@@ -774,198 +774,198 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ==== 4-Purchase Reward Progress ==== */
 .reward-prog-card {
-  background: linear-gradient(135deg, #0F3D2E 0%, #143D2B 100%);
-  color: #fff;
-  border-radius: 14px;
-  padding: 22px 20px;
-  position: relative;
-  overflow: hidden;
+ background: linear-gradient(135deg, #0F3D2E 0%, #143D2B 100%);
+ color: #fff;
+ border-radius: 14px;
+ padding: 22px 20px;
+ position: relative;
+ overflow: hidden;
 }
 .reward-prog-card::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 140px; height: 140px;
-  background: radial-gradient(circle, rgba(212,169,59,0.25), transparent 70%);
-  border-radius: 50%;
+ content: '';
+ position: absolute;
+ top: -40px; right: -40px;
+ width: 140px; height: 140px;
+ background: radial-gradient(circle, rgba(212,169,59,0.25), transparent 70%);
+ border-radius: 50%;
 }
 .reward-prog-eyebrow {
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: var(--tracking-widest);
-  color: var(--color-gold);
-  margin: 0 0 4px;
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: var(--tracking-widest);
+ color: var(--color-gold);
+ margin: 0 0 4px;
 }
 .reward-prog-title {
-  font-family: var(--font-jp-serif);
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 4px;
+ font-family: var(--font-jp-serif);
+ font-size: 18px;
+ font-weight: 700;
+ margin: 0 0 4px;
 }
 .reward-prog-sub {
-  font-size: 12px;
-  opacity: 0.7;
-  margin: 0 0 18px;
+ font-size: 12px;
+ opacity: 0.7;
+ margin: 0 0 18px;
 }
 .reward-prog-steps {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  margin-bottom: 16px;
-  z-index: 1;
+ display: flex;
+ justify-content: space-between;
+ position: relative;
+ margin-bottom: 16px;
+ z-index: 1;
 }
 .reward-prog-line {
-  position: absolute;
-  top: 18px; left: 18px; right: 18px;
-  height: 3px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 2px;
-  z-index: -1;
+ position: absolute;
+ top: 18px; left: 18px; right: 18px;
+ height: 3px;
+ background: rgba(255,255,255,0.15);
+ border-radius: 2px;
+ z-index: -1;
 }
 .reward-prog-line-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #D4A93B, #E5B547);
-  border-radius: 2px;
-  transition: width 0.6s ease;
+ height: 100%;
+ background: linear-gradient(90deg, #D4A93B, #E5B547);
+ border-radius: 2px;
+ transition: width 0.6s ease;
 }
 .reward-prog-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-  text-align: center;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 6px;
+ flex: 1;
+ text-align: center;
 }
 .reward-prog-dot {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 700;
-  border: 2px solid rgba(255,255,255,0.15);
-  position: relative;
+ width: 36px; height: 36px;
+ border-radius: 50%;
+ background: rgba(255,255,255,0.1);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 16px;
+ font-weight: 700;
+ border: 2px solid rgba(255,255,255,0.15);
+ position: relative;
 }
 .reward-prog-dot.done {
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  border-color: var(--color-gold);
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ border-color: var(--color-gold);
 }
 .reward-prog-dot.next {
-  background: rgba(212,169,59,0.2);
-  color: var(--color-gold);
-  border-color: var(--color-gold);
-  animation: pulse 2s ease-in-out infinite;
+ background: rgba(212,169,59,0.2);
+ color: var(--color-gold);
+ border-color: var(--color-gold);
+ animation: pulse 2s ease-in-out infinite;
 }
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212,169,59,0.5); }
-  50% { box-shadow: 0 0 0 8px rgba(212,169,59,0); }
+ 0%, 100% { box-shadow: 0 0 0 0 rgba(212,169,59,0.5); }
+ 50% { box-shadow: 0 0 0 8px rgba(212,169,59,0); }
 }
 .reward-prog-step-label {
-  font-size: 9px;
-  letter-spacing: 0.04em;
-  opacity: 0.7;
+ font-size: 9px;
+ letter-spacing: 0.04em;
+ opacity: 0.7;
 }
 .reward-prog-next {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(212,169,59,0.3);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 12px;
-  line-height: 1.6;
-  position: relative;
-  z-index: 1;
+ background: rgba(255,255,255,0.08);
+ border: 1px solid rgba(212,169,59,0.3);
+ border-radius: 10px;
+ padding: 12px 14px;
+ font-size: 12px;
+ line-height: 1.6;
+ position: relative;
+ z-index: 1;
 }
 .reward-prog-next strong { color: var(--color-gold); }
 
 /* ==== Coupons ==== */
 .coupon-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px 16px;
-  margin-bottom: 10px;
-  border: 1.5px dashed var(--color-gold);
-  position: relative;
-  overflow: hidden;
+ background: #fff;
+ border-radius: 12px;
+ padding: 16px 16px;
+ margin-bottom: 10px;
+ border: 1.5px dashed var(--color-gold);
+ position: relative;
+ overflow: hidden;
 }
 .coupon-card.expired { opacity: 0.5; border-style: solid; border-color: var(--color-bone); }
 .coupon-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ margin-bottom: 8px;
 }
 .coupon-value {
-  font-family: var(--font-display);
-  font-size: 26px;
-  color: var(--color-forest);
-  letter-spacing: 0.04em;
-  line-height: 1;
+ font-family: var(--font-display);
+ font-size: 26px;
+ color: var(--color-forest);
+ letter-spacing: 0.04em;
+ line-height: 1;
 }
 .coupon-status {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  padding: 3px 10px;
-  border-radius: 10px;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.06em;
+ padding: 3px 10px;
+ border-radius: 10px;
 }
 .coupon-status.active { background: #D1FAE5; color: #065F46; }
 .coupon-status.expiring { background: #FEF3C7; color: #92400E; animation: pulse 2s infinite; }
 .coupon-status.used { background: #F3F4F6; color: #6B7280; }
 .coupon-status.expired { background: #FEE2E2; color: #991B1B; }
 .coupon-name {
-  font-family: var(--font-jp);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-ink);
-  margin: 4px 0 6px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--color-ink);
+ margin: 4px 0 6px;
 }
 .coupon-meta {
-  font-size: 11px;
-  color: var(--color-ink-muted);
-  line-height: 1.6;
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ line-height: 1.6;
 }
 .coupon-code-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--color-bone);
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ margin-top: 10px;
+ padding-top: 10px;
+ border-top: 1px dashed var(--color-bone);
 }
 .coupon-code-text {
-  flex: 1;
-  font-family: 'SF Mono', Menlo, monospace;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-forest);
-  letter-spacing: 0.06em;
-  background: var(--color-paper);
-  padding: 6px 10px;
-  border-radius: 6px;
-  user-select: all;
+ flex: 1;
+ font-family: 'SF Mono', Menlo, monospace;
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--color-forest);
+ letter-spacing: 0.06em;
+ background: var(--color-paper);
+ padding: 6px 10px;
+ border-radius: 6px;
+ user-select: all;
 }
 .coupon-copy-btn {
-  background: var(--color-forest);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  padding: 8px 14px;
-  border: 0;
-  border-radius: 6px;
-  cursor: pointer;
+ background: var(--color-forest);
+ color: #fff;
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: 0.08em;
+ padding: 8px 14px;
+ border: 0;
+ border-radius: 6px;
+ cursor: pointer;
 }
 .coupon-copy-btn.copied { background: #06C755; }
 
 @media (max-width: 640px) {
-  .reward-prog-step-label { font-size: 10.5px; line-height: 1.3; }
-  .line-cta { padding: 24px 16px; }
-  .site-footer { padding: 40px 0 20px; }
-  .footer-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
-  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+ .reward-prog-step-label { font-size: 10.5px; line-height: 1.3; }
+ .line-cta { padding: 24px 16px; }
+ .site-footer { padding: 40px 0 20px; }
+ .footer-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
+ .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
 }
 </style>
 <script src="public/js/eda-config.js"></script>
@@ -982,275 +982,275 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <!-- ========= HEADER ========= -->
 <header class="site-header" id="siteHeader">
-  <div class="container nav">
-    <a href="index.html" class="brand-mark">
-      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
-    </a>
-    <div class="nav-utils">
-      <a href="shop.html" class="nav-back">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-        SHOP
-      </a>
-    </div>
-  </div>
+ <div class="container nav">
+ <a href="index.html" class="brand-mark">
+ <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+ </a>
+ <div class="nav-utils">
+ <a href="shop.html" class="nav-back">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+ <path d="M19 12H5M12 19l-7-7 7-7"/>
+ </svg>
+ SHOP
+ </a>
+ </div>
+ </div>
 </header>
 
 <!-- ========= PAGE HEADER ========= -->
 <section class="page-header">
-  <div class="container">
-    <div class="page-header-content">
-      <p class="page-eyebrow">MY PAGE</p>
-      <h1 class="page-title">MYPAGE</h1>
-      <p class="page-subtitle">注文履歴の確認、配送状況の追跡、定期便の管理をまとめてご確認いただけます。</p>
-    </div>
-  </div>
+ <div class="container">
+ <div class="page-header-content">
+ <p class="page-eyebrow">MY PAGE</p>
+ <h1 class="page-title">MYPAGE</h1>
+ <p class="page-subtitle">注文履歴の確認、配送状況の追跡、定期便の管理をまとめてご確認いただけます。</p>
+ </div>
+ </div>
 </section>
 
 <!-- ========= LIFF AUTH SECTION ========= -->
 <section class="mypage-login-section" id="loginSection">
-  <div class="container-narrow">
-    <!-- 初期状態: LIFF 読込中 -->
-    <div class="login-card" id="liffLoading" style="text-align:center;padding:48px 32px;">
-      <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(15,61,46,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
-      <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE 認証を確認中...</p>
-    </div>
+ <div class="container-narrow">
+ <!-- 初期状態: LIFF 読込中 -->
+ <div class="login-card" id="liffLoading" style="text-align:center;padding:48px 32px;">
+ <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(15,61,46,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
+ <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE 認証を確認中...</p>
+ </div>
 
-    <!-- ① LIFF 外アクセス: LINE 公式アカウントから入ってもらう -->
-    <div class="login-card" id="liffExternal" style="display:none;">
-      <div class="login-icon">
-        <div class="login-icon-circle" style="background:#06C755;">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="color:white;">
-            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM12 22C5.385 22 0 17.5 0 12S5.385 2 12 2s12 4.5 12 10c0 5.5-5.385 10-12 10z"/>
-          </svg>
-        </div>
-      </div>
-      <h2 class="login-card-title">LINE 公式アカウントから<br>マイページへお入りください</h2>
-      <p class="login-card-sub" style="margin-bottom:24px;">
-        マイページは <strong>LINE 認証必須</strong> でセキュアに保護されています。<br>
-        以下より公式アカウントを追加し、メニューからマイページへお進みください。
-      </p>
-      <a href="https://line.me/R/ti/p/@706sgiuq" class="login-btn" style="background:#06C755;color:white;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
-        LINE で友だち追加 / 開く
-      </a>
-      <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:16px;line-height:1.5">
-        @706sgiuq · 江田畜産公式アカウント
-      </p>
-      <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
-        <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
-          <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
-        </div>
-      </div>
-    </div>
+ <!-- ① LIFF 外アクセス: LINE 公式アカウントから入ってもらう -->
+ <div class="login-card" id="liffExternal" style="display:none;">
+ <div class="login-icon">
+ <div class="login-icon-circle" style="background:#06C755;">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="color:white;">
+ <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM12 22C5.385 22 0 17.5 0 12S5.385 2 12 2s12 4.5 12 10c0 5.5-5.385 10-12 10z"/>
+ </svg>
+ </div>
+ </div>
+ <h2 class="login-card-title">LINE 公式アカウントから<br>マイページへお入りください</h2>
+ <p class="login-card-sub" style="margin-bottom:24px;">
+ マイページは <strong>LINE 認証必須</strong> でセキュアに保護されています。<br>
+ 以下より公式アカウントを追加し、メニューからマイページへお進みください。
+ </p>
+ <a href="https://line.me/R/ti/p/@706sgiuq" class="login-btn" style="background:#06C755;color:white;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;">
+ <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+ LINE で友だち追加 / 開く
+ </a>
+ <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:16px;line-height:1.5">
+ @706sgiuq · 江田畜産公式アカウント
+ </p>
+ <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
+ <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
+ <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+ <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
+ <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
+ </div>
+ </div>
+ </div>
 
-    <!-- ② LIFF 内: LINE 認証ログイン中 -->
-    <div class="login-card" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;">
-      <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(6,199,85,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
-      <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE で認証中...</p>
-    </div>
+ <!-- ② LIFF 内: LINE 認証ログイン中 -->
+ <div class="login-card" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;">
+ <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(6,199,85,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
+ <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE で認証中...</p>
+ </div>
 
-    <!-- ③ LIFF 内 認証成功 + 新規 (line_uid 未連携) → アカウント連携フォーム -->
-    <div class="login-card" id="liffLinkAccount" style="display:none;">
-      <div class="login-icon">
-        <div class="login-icon-circle">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-          </svg>
-        </div>
-      </div>
-      <h2 class="login-card-title" id="liffWelcomeName">LINE 認証完了</h2>
-      <p class="login-card-sub" style="margin-bottom:20px;">
-        過去にメールアドレスでご注文いただいた方は、<br>
-        <strong>下記からアカウント連携</strong>すると注文履歴がご確認できます。
-      </p>
+ <!-- ③ LIFF 内 認証成功 + 新規 (line_uid 未連携) → アカウント連携フォーム -->
+ <div class="login-card" id="liffLinkAccount" style="display:none;">
+ <div class="login-icon">
+ <div class="login-icon-circle">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+ <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+ <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+ </svg>
+ </div>
+ </div>
+ <h2 class="login-card-title" id="liffWelcomeName">LINE 認証完了</h2>
+ <p class="login-card-sub" style="margin-bottom:20px;">
+ 過去にメールアドレスでご注文いただいた方は、<br>
+ <strong>下記からアカウント連携</strong>すると注文履歴がご確認できます。
+ </p>
 
-      <form id="linkForm" onsubmit="return false;">
-        <div class="login-input-wrap">
-          <span class="login-input-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <path d="M22 4L12 13 2 4"/>
-            </svg>
-          </span>
-          <input type="email" class="login-input" id="linkEmailInput"  placeholder="ご注文時のメールアドレス" aria-label="ご注文時のメールアドレス" autocomplete="email" required>
-        </div>
-        <button type="submit" class="login-btn" id="linkBtn">
-          アカウントを連携する
-        </button>
-        <div class="login-error" id="linkError"></div>
-      </form>
+ <form id="linkForm" onsubmit="return false;">
+ <div class="login-input-wrap">
+ <span class="login-input-icon">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+ <rect x="2" y="4" width="20" height="16" rx="2"/>
+ <path d="M22 4L12 13 2 4"/>
+ </svg>
+ </span>
+ <input type="email" class="login-input" id="linkEmailInput" placeholder="ご注文時のメールアドレス" aria-label="ご注文時のメールアドレス" autocomplete="email" required>
+ </div>
+ <button type="submit" class="login-btn" id="linkBtn">
+ アカウントを連携する
+ </button>
+ <div class="login-error" id="linkError"></div>
+ </form>
 
-      <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
-        <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
-          <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
-        </div>
-      </div>
-    </div>
+ <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
+ <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
+ <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+ <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
+ <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
+ </div>
+ </div>
+ </div>
 
-  </div>
+ </div>
 </section>
 
 <!-- ========= LOADING ========= -->
 <div class="spinner-overlay" id="spinner">
-  <div class="spinner"></div>
-  <p class="spinner-text">ご注文情報を確認しています...</p>
+ <div class="spinner"></div>
+ <p class="spinner-text">ご注文情報を確認しています...</p>
 </div>
 
 <!-- ========= DASHBOARD ========= -->
 <section class="dashboard-section" id="dashboard">
-  <div class="container-narrow">
+ <div class="container-narrow">
 
-    <!-- Welcome Card -->
-    <div class="welcome-card fade-in" id="welcomeCard">
-      <div id="subBadgeArea"></div>
-      <h2 class="welcome-name" id="customerName"></h2>
-      <p class="welcome-label" id="welcomeLabel">いつもご利用ありがとうございます</p>
-      <div class="welcome-stats">
-        <div class="welcome-stat">
-          <span class="welcome-stat-num" id="totalOrders">0</span>
-          <span class="welcome-stat-label">ご注文回数</span>
-        </div>
-        <div class="welcome-stat">
-          <span class="welcome-stat-num" id="totalSpent">0</span>
-          <span class="welcome-stat-label">累計お買い上げ</span>
-        </div>
-      </div>
-    </div>
+ <!-- Welcome Card -->
+ <div class="welcome-card fade-in" id="welcomeCard">
+ <div id="subBadgeArea"></div>
+ <h2 class="welcome-name" id="customerName"></h2>
+ <p class="welcome-label" id="welcomeLabel">いつもご利用ありがとうございます</p>
+ <div class="welcome-stats">
+ <div class="welcome-stat">
+ <span class="welcome-stat-num" id="totalOrders">0</span>
+ <span class="welcome-stat-label">ご注文回数</span>
+ </div>
+ <div class="welcome-stat">
+ <span class="welcome-stat-num" id="totalSpent">0</span>
+ <span class="welcome-stat-label">累計お買い上げ</span>
+ </div>
+ </div>
+ </div>
 
-    <!-- 4回購入 進捗（基盤顧客チャレンジ） -->
-    <div id="rewardProgressSection" class="fade-in fade-in-d1" style="display:none;margin-bottom:32px"></div>
+ <!-- 4回購入 進捗（基盤顧客チャレンジ） -->
+ <div id="rewardProgressSection" class="fade-in fade-in-d1" style="display:none;margin-bottom:32px"></div>
 
-    <!-- 保有クーポン -->
-    <div id="couponsSection" class="fade-in fade-in-d1" style="display:none;margin-bottom:32px">
-      <h3 class="dash-section-title">YOUR COUPONS</h3>
-      <div id="couponsList"></div>
-    </div>
+ <!-- 保有クーポン -->
+ <div id="couponsSection" class="fade-in fade-in-d1" style="display:none;margin-bottom:32px">
+ <h3 class="dash-section-title">YOUR COUPONS</h3>
+ <div id="couponsList"></div>
+ </div>
 
-    <!-- Subscription Section -->
-    <div id="subSection" style="display:none;">
-      <h3 class="dash-section-title fade-in fade-in-d1">SUBSCRIPTION</h3>
-      <div class="sub-card fade-in fade-in-d1" id="subCard"></div>
+ <!-- Subscription Section -->
+ <div id="subSection" style="display:none;">
+ <h3 class="dash-section-title fade-in fade-in-d1">SUBSCRIPTION</h3>
+ <div class="sub-card fade-in fade-in-d1" id="subCard"></div>
 
-      <!-- 定期便アクション -->
-      <div id="subActions" class="fade-in fade-in-d2" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
-        <button class="sub-action-btn skip" onclick="subSkip()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-          次回をスキップ
-        </button>
-        <button class="sub-action-btn change" onclick="subChange()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          プラン変更
-        </button>
-        <button class="sub-action-btn pause" onclick="subPause()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          一時停止
-        </button>
-        <button class="sub-action-btn cancel" onclick="subCancel()">
-          解約する
-        </button>
-      </div>
-    </div>
+ <!-- 定期便アクション -->
+ <div id="subActions" class="fade-in fade-in-d2" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+ <button class="sub-action-btn skip" onclick="subSkip()">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+ 次回をスキップ
+ </button>
+ <button class="sub-action-btn change" onclick="subChange()">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+ プラン変更
+ </button>
+ <button class="sub-action-btn pause" onclick="subPause()">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+ 一時停止
+ </button>
+ <button class="sub-action-btn cancel" onclick="subCancel()">
+ 解約する
+ </button>
+ </div>
+ </div>
 
-    <!-- Order History -->
-    <h3 class="dash-section-title fade-in fade-in-d2">ORDER HISTORY</h3>
-    <div id="ordersContainer" class="fade-in fade-in-d2"></div>
+ <!-- Order History -->
+ <h3 class="dash-section-title fade-in fade-in-d2">ORDER HISTORY</h3>
+ <div id="ordersContainer" class="fade-in fade-in-d2"></div>
 
-    <!-- LINE CTA -->
-    <div class="line-cta fade-in fade-in-d3">
-      <h3 class="line-cta-title">LINE公式アカウント</h3>
-      <p class="line-cta-desc">
-        お友だち追加で配送通知やお得な情報をLINEでお届け。<br>
-        新商品・セール情報もいち早くお届けします。
-      </p>
-      <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="line-btn">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-        </svg>
-        友だち追加
-      </a>
-    </div>
+ <!-- LINE CTA -->
+ <div class="line-cta fade-in fade-in-d3">
+ <h3 class="line-cta-title">LINE公式アカウント</h3>
+ <p class="line-cta-desc">
+ お友だち追加で配送通知やお得な情報をLINEでお届け。<br>
+ 新商品・セール情報もいち早くお届けします。
+ </p>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="line-btn">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+ <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+ </svg>
+ 友だち追加
+ </a>
+ </div>
 
-    <!-- Logout -->
-    <div class="logout-row fade-in fade-in-d4">
-      <button class="logout-btn" id="logoutBtn">ログアウト</button>
-    </div>
-  </div>
+ <!-- Logout -->
+ <div class="logout-row fade-in fade-in-d4">
+ <button class="logout-btn" id="logoutBtn">ログアウト</button>
+ </div>
+ </div>
 </section>
 
 <!-- ========= FOOTER ========= -->
 <footer class="site-footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a href="index.html" class="footer-brand-row">
-          <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/>
-          <span>
-            <span class="footer-brand">EDA-LIVESTOCK</span>
-            <span class="footer-brand-jp">江田畜産株式会社</span>
-          </span>
-        </a>
-        <p class="footer-tagline">
-          <strong>100年続く畜産を、創造する。</strong><br/>
-          Sustainable Japanese Wagyu —<br/>
-          Livestock for the Next Century.
-        </p>
-        <div class="footer-meta">
-          <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
-          <p>事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
-          <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h4>Brand</h4>
-        <ul>
-          <li><a href="about.html">江田畜産について</a></li>
-          <li><a href="philosophy.html">Philosophy / 4つの定義</a></li>
-          <li><a href="organic.html">3 Brands</a></li>
-          <li><a href="global.html">Global Export</a></li>
-          <li><a href="journey.html">Our Journey</a></li>
+ <div class="container">
+ <div class="footer-grid">
+ <div>
+ <a href="index.html" class="footer-brand-row">
+ <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/>
+ <span>
+ <span class="footer-brand">EDA-LIVESTOCK</span>
+ <span class="footer-brand-jp">江田畜産株式会社</span>
+ </span>
+ </a>
+ <p class="footer-tagline">
+ <strong>100年続く畜産を、創造する。</strong><br/>
+ Sustainable Japanese Wagyu —<br/>
+ Livestock for the Next Century.
+ </p>
+ <div class="footer-meta">
+ <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
+ <p>事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
+ <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
+ </div>
+ </div>
+ <div class="footer-col">
+ <h4>Brand</h4>
+ <ul>
+ <li><a href="about.html">江田畜産について</a></li>
+ <li><a href="philosophy.html">Philosophy / 4つの定義</a></li>
+ <li><a href="organic.html">3 Brands</a></li>
+ <li><a href="global.html">Global Export</a></li>
+ <li><a href="journey.html">Our Journey</a></li>
 
 
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Buy & Find</h4>
-        <ul>
-          <li><a href="shop.html">Online Shop</a></li>
-          <li><a href="restaurants.html">Restaurants</a></li>
+ </ul>
+ </div>
+ <div class="footer-col">
+ <h4>Buy & Find</h4>
+ <ul>
+ <li><a href="shop.html">Online Shop</a></li>
+ <li><a href="restaurants.html">Restaurants</a></li>
 
-          <li><a href="subscription.html">Subscription</a></li>
-          <li><a href="shop.html#gift">Gift</a></li>
-        </ul>
-      </div>
-            <div class="footer-col">
-        <h4>Connect</h4>
-        <ul>
-          <li><a href="journal.html">Journal</a></li>
-          <li><a href="press.html">Press &amp; Media</a></li>
-          <li><a href="press-kit.html">Press Kit</a></li>
-          <li><a href="awards.html">Awards</a></li>
-          <li><a href="terms.html">利用規約</a></li>
-          <li><a href="privacy.html">プライバシーポリシー</a></li>
-          <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINE 公式アカウント</a></li>
-          <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
-          <li><a href="tel:08057930708">080-5793-0708</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
-      <span>Confidential &mdash; All Rights Reserved</span>
-    </div>
-  </div>
+ <li><a href="subscription.html">Subscription</a></li>
+ <li><a href="shop.html#gift">Gift</a></li>
+ </ul>
+ </div>
+ <div class="footer-col">
+ <h4>Connect</h4>
+ <ul>
+ <li><a href="journal.html">Journal</a></li>
+ <li><a href="press.html">Press &amp; Media</a></li>
+ <li><a href="press-kit.html">Press Kit</a></li>
+ <li><a href="awards.html">Awards</a></li>
+ <li><a href="terms.html">利用規約</a></li>
+ <li><a href="privacy.html">プライバシーポリシー</a></li>
+ <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
+ <li><a href="contact.html">Contact</a></li>
+ <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINE 公式アカウント</a></li>
+ <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
+ <li><a href="tel:08057930708">080-5793-0708</a></li>
+ </ul>
+ </div>
+ </div>
+ <div class="footer-bottom">
+ <span>&copy; 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
+ <span>Confidential &mdash; All Rights Reserved</span>
+ </div>
+ </div>
 </footer>
 
 <script>
@@ -1262,23 +1262,23 @@ const GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
 /* ---- Header scroll ---- */
 const header = document.getElementById('siteHeader');
 if (header) {
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 80) header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
-  }, { passive: true });
+ window.addEventListener('scroll', () => {
+ if (window.scrollY > 80) header.classList.add('scrolled');
+ else header.classList.remove('scrolled');
+ }, { passive: true });
 }
 
 /* ============================================================
-   LIFF (LINE Front-end Framework) 認証フロー
-   ============================================================
-   流れ:
-   1. liff.init() で LIFF SDK 初期化
-   2. liff.isLoggedIn() ? → liff.getProfile() で line_uid 取得
-                       NO → liff.login() で LINE ログイン誘導
-   3. line_uid を GAS line_login に送信
-   4. 結果が { matched: true, customer, orders } → ダッシュボード
-                  { matched: false } → アカウント連携フォーム表示
-   ============================================================ */
+ LIFF (LINE Front-end Framework) 認証フロー
+ ============================================================
+ 流れ:
+ 1. liff.init() で LIFF SDK 初期化
+ 2. liff.isLoggedIn() ? → liff.getProfile() で line_uid 取得
+ NO → liff.login() で LINE ログイン誘導
+ 3. line_uid を GAS line_login に送信
+ 4. 結果が { matched: true, customer, orders } → ダッシュボード
+ { matched: false } → アカウント連携フォーム表示
+ ============================================================ */
 const LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '';
 const loginSection = document.getElementById('loginSection');
 const dashboard = document.getElementById('dashboard');
@@ -1292,471 +1292,471 @@ const liffLinkAccount = document.getElementById('liffLinkAccount');
 let currentSession = null;
 let currentLineProfile = null;
 try {
-  const saved = localStorage.getItem('eda-mypage-session');
-  if (saved) currentSession = JSON.parse(saved);
+ const saved = localStorage.getItem('eda-mypage-session');
+ if (saved) currentSession = JSON.parse(saved);
 } catch (_) {}
 
 /* ---- LIFF 初期化 ---- */
 async function initLiff() {
-  if (!LIFF_ID) {
-    // LIFF_ID 未設定 → 外部アクセス画面
-    showState('external');
-    return;
-  }
-  try {
-    await liff.init({ liffId: LIFF_ID });
-    if (!liff.isInClient() && !liff.isLoggedIn()) {
-      // 外部ブラウザ + 未ログイン → LIFF Login へ誘導
-      // (Tom指示: LINE経由必須なので、外部ブラウザでも一応 login flow を提供)
-      showState('external');
-      return;
-    }
-    if (!liff.isLoggedIn()) {
-      liff.login({ redirectUri: location.href });
-      return;
-    }
-    // ログイン済み → プロフィール取得
-    showState('authenticating');
-    const profile = await liff.getProfile();
-    currentLineProfile = profile;
-    await tryLineLogin(profile);
-  } catch (err) {
-    console.error('[LIFF init error]', err);
-    showState('external');
-  }
+ if (!LIFF_ID) {
+ // LIFF_ID 未設定 → 外部アクセス画面
+ showState('external');
+ return;
+ }
+ try {
+ await liff.init({ liffId: LIFF_ID });
+ if (!liff.isInClient() && !liff.isLoggedIn()) {
+ // 外部ブラウザ + 未ログイン → LIFF Login へ誘導
+ // (Tom指示: LINE経由必須なので、外部ブラウザでも一応 login flow を提供)
+ showState('external');
+ return;
+ }
+ if (!liff.isLoggedIn()) {
+ liff.login({ redirectUri: location.href });
+ return;
+ }
+ // ログイン済み → プロフィール取得
+ showState('authenticating');
+ const profile = await liff.getProfile();
+ currentLineProfile = profile;
+ await tryLineLogin(profile);
+ } catch (err) {
+ console.error('[LIFF init error]', err);
+ showState('external');
+ }
 }
 
 /* line_uid で GAS にログイン照会 */
 async function tryLineLogin(profile) {
-  try {
-    const result = await window.EDA_API.post('line_login', {
-      line_uid: profile.userId,
-      display_name: profile.displayName,
-      picture_url: profile.pictureUrl || ''
-    });
-    if (result.ok && result.matched && result.customer) {
-      // 既存顧客 → ダッシュボード
-      currentSession = {
-        line_uid: profile.userId,
-        display_name: profile.displayName,
-        email: result.customer.email || '',
-        issued: Date.now()
-      };
-      localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
-      renderDashboard(result.customer, result.orders || []);
-    } else {
-      // line_uid 未連携 → アカウント連携フォーム
-      showState('linkAccount');
-      document.getElementById('liffWelcomeName').textContent =
-        (profile.displayName || 'ご利用ありがとうございます') + ' 様';
-    }
-  } catch (err) {
-    console.error('[line_login error]', err);
-    showError(document.getElementById('linkError'), 'LINE ログインに失敗しました');
-    showState('linkAccount');
-  }
+ try {
+ const result = await window.EDA_API.post('line_login', {
+ line_uid: profile.userId,
+ display_name: profile.displayName,
+ picture_url: profile.pictureUrl || ''
+ });
+ if (result.ok && result.matched && result.customer) {
+ // 既存顧客 → ダッシュボード
+ currentSession = {
+ line_uid: profile.userId,
+ display_name: profile.displayName,
+ email: result.customer.email || '',
+ issued: Date.now()
+ };
+ localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+ renderDashboard(result.customer, result.orders || []);
+ } else {
+ // line_uid 未連携 → アカウント連携フォーム
+ showState('linkAccount');
+ document.getElementById('liffWelcomeName').textContent =
+ (profile.displayName || 'ご利用ありがとうございます') + ' 様';
+ }
+ } catch (err) {
+ console.error('[line_login error]', err);
+ showError(document.getElementById('linkError'), 'LINE ログインに失敗しました');
+ showState('linkAccount');
+ }
 }
 
 /* 状態切替 */
 function showState(state) {
-  [liffLoading, liffExternal, liffAuthenticating, liffLinkAccount].forEach(el => {
-    if (el) el.style.display = 'none';
-  });
-  if (state === 'external') liffExternal.style.display = '';
-  else if (state === 'authenticating') liffAuthenticating.style.display = '';
-  else if (state === 'linkAccount') liffLinkAccount.style.display = '';
+ [liffLoading, liffExternal, liffAuthenticating, liffLinkAccount].forEach(el => {
+ if (el) el.style.display = 'none';
+ });
+ if (state === 'external') liffExternal.style.display = '';
+ else if (state === 'authenticating') liffAuthenticating.style.display = '';
+ else if (state === 'linkAccount') liffLinkAccount.style.display = '';
 }
 
 /* アカウント連携: メール → line_uid と紐付け */
 document.getElementById('linkForm')?.addEventListener('submit', async () => {
-  const email = document.getElementById('linkEmailInput').value.trim();
-  const errEl = document.getElementById('linkError');
-  if (!email.includes('@')) { showError(errEl, '正しいメールアドレスを入力してください'); return; }
-  if (!currentLineProfile) { showError(errEl, 'LINE プロフィールが取得できません'); return; }
+ const email = document.getElementById('linkEmailInput').value.trim();
+ const errEl = document.getElementById('linkError');
+ if (!email.includes('@')) { showError(errEl, '正しいメールアドレスを入力してください'); return; }
+ if (!currentLineProfile) { showError(errEl, 'LINE プロフィールが取得できません'); return; }
 
-  const btn = document.getElementById('linkBtn');
-  btn.disabled = true; btn.textContent = '連携中...';
-  try {
-    const result = await window.EDA_API.post('line_link_account', {
-      line_uid: currentLineProfile.userId,
-      display_name: currentLineProfile.displayName,
-      email: email
-    });
-    if (!result.ok) throw new Error(result.error || '連携に失敗しました');
-    if (!result.customer) throw new Error('該当するご注文が見つかりませんでした。メールアドレスをご確認ください。');
+ const btn = document.getElementById('linkBtn');
+ btn.disabled = true; btn.textContent = '連携中...';
+ try {
+ const result = await window.EDA_API.post('line_link_account', {
+ line_uid: currentLineProfile.userId,
+ display_name: currentLineProfile.displayName,
+ email: email
+ });
+ if (!result.ok) throw new Error(result.error || '連携に失敗しました');
+ if (!result.customer) throw new Error('該当するご注文が見つかりませんでした。メールアドレスをご確認ください。');
 
-    currentSession = {
-      line_uid: currentLineProfile.userId,
-      display_name: currentLineProfile.displayName,
-      email,
-      issued: Date.now()
-    };
-    localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
-    renderDashboard(result.customer, result.orders || []);
-  } catch (err) {
-    showError(errEl, err.message || '連携に失敗しました');
-    btn.disabled = false; btn.textContent = 'アカウントを連携する';
-  }
+ currentSession = {
+ line_uid: currentLineProfile.userId,
+ display_name: currentLineProfile.displayName,
+ email,
+ issued: Date.now()
+ };
+ localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+ renderDashboard(result.customer, result.orders || []);
+ } catch (err) {
+ showError(errEl, err.message || '連携に失敗しました');
+ btn.disabled = false; btn.textContent = 'アカウントを連携する';
+ }
 });
 
 function showError(el, msg) {
-  if (!el) return;
-  el.textContent = msg;
-  el.classList.add('show');
-  el.style.cssText = 'display:block;color:var(--color-red);font-size:12px;margin-top:12px;text-align:center;';
+ if (!el) return;
+ el.textContent = msg;
+ el.classList.add('show');
+ el.style.cssText = 'display:block;color:var(--color-red);font-size:12px;margin-top:12px;text-align:center;';
 }
 
 /* ---- 起動 ---- */
 // LIFF SDK 読込待ち
 if (typeof liff !== 'undefined') {
-  initLiff();
+ initLiff();
 } else {
-  // SDK 読込み待機
-  const checkInterval = setInterval(() => {
-    if (typeof liff !== 'undefined') {
-      clearInterval(checkInterval);
-      initLiff();
-    }
-  }, 100);
-  setTimeout(() => clearInterval(checkInterval), 5000);
+ // SDK 読込み待機
+ const checkInterval = setInterval(() => {
+ if (typeof liff !== 'undefined') {
+ clearInterval(checkInterval);
+ initLiff();
+ }
+ }, 100);
+ setTimeout(() => clearInterval(checkInterval), 5000);
 }
 
 /* ---- Render Dashboard ---- */
 function renderDashboard(customer, orders) {
-  spinner.classList.remove('show');
-  loginSection.style.display = 'none';
-  dashboard.classList.add('show');
+ spinner.classList.remove('show');
+ loginSection.style.display = 'none';
+ dashboard.classList.add('show');
 
-  /* Welcome card */
-  document.getElementById('customerName').textContent = (customer.name || 'お客') + ' 様';
-  document.getElementById('totalOrders').textContent = customer.total_orders || orders.length || 0;
+ /* Welcome card */
+ document.getElementById('customerName').textContent = (customer.name || 'お客') + ' 様';
+ document.getElementById('totalOrders').textContent = customer.total_orders || orders.length || 0;
 
-  const spent = customer.total_spent || 0;
-  document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
+ const spent = customer.total_spent || 0;
+ document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
 
-  /* Subscription badge */
-  const badgeArea = document.getElementById('subBadgeArea');
-  if (customer.subscription && customer.subscription.active) {
-    badgeArea.innerHTML = '<div class="sub-badge active"><span class="sub-badge-dot"></span>定期便ご利用中</div>';
-    renderSubscription(customer.subscription);
-  } else {
-    badgeArea.innerHTML = '';
-  }
+ /* Subscription badge */
+ const badgeArea = document.getElementById('subBadgeArea');
+ if (customer.subscription && customer.subscription.active) {
+ badgeArea.innerHTML = '<div class="sub-badge active"><span class="sub-badge-dot"></span>定期便ご利用中</div>';
+ renderSubscription(customer.subscription);
+ } else {
+ badgeArea.innerHTML = '';
+ }
 
-  /* 4回購入 進捗 */
-  renderRewardProgress(customer.total_orders || orders.length || 0);
+ /* 4回購入 進捗 */
+ renderRewardProgress(customer.total_orders || orders.length || 0);
 
-  /* 保有クーポン */
-  renderCoupons(customer.coupons || generateDemoCoupons(customer.total_orders || 0));
+ /* 保有クーポン */
+ renderCoupons(customer.coupons || generateDemoCoupons(customer.total_orders || 0));
 
-  /* Orders */
-  renderOrders(orders);
+ /* Orders */
+ renderOrders(orders);
 
-  /* Scroll to dashboard smoothly */
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+ /* Scroll to dashboard smoothly */
+ window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ---- Render Orders ---- */
 function renderOrders(orders) {
-  const container = document.getElementById('ordersContainer');
+ const container = document.getElementById('ordersContainer');
 
-  if (!orders || orders.length === 0) {
-    container.innerHTML = '<div class="empty-orders">' +
-      '<div class="empty-orders-icon">&#x1F4E6;</div>' +
-      '<p class="empty-orders-text">まだご注文がありません</p>' +
-      '<a href="shop.html" class="shop-link">ショップを見る</a>' +
-      '</div>';
-    return;
-  }
+ if (!orders || orders.length === 0) {
+ container.innerHTML = '<div class="empty-orders">' +
+ '<div class="empty-orders-icon">&#x1F4E6;</div>' +
+ '<p class="empty-orders-text">まだご注文がありません</p>' +
+ '<a href="shop.html" class="shop-link">ショップを見る</a>' +
+ '</div>';
+ return;
+ }
 
-  const statusMap = {
-    'pending':    { label: '未発送',     class: 'pending' },
-    'preparing':  { label: '発送準備中', class: 'preparing' },
-    'shipped':    { label: '発送済',     class: 'shipped' },
-    'delivered':  { label: '配達完了',   class: 'delivered' }
-  };
+ const statusMap = {
+ 'pending': { label: '未発送', class: 'pending' },
+ 'preparing': { label: '発送準備中', class: 'preparing' },
+ 'shipped': { label: '発送済', class: 'shipped' },
+ 'delivered': { label: '配達完了', class: 'delivered' }
+ };
 
-  let html = '';
-  orders.forEach(order => {
-    const st = statusMap[order.status] || statusMap['pending'];
+ let html = '';
+ orders.forEach(order => {
+ const st = statusMap[order.status] || statusMap['pending'];
 
-    let itemsHtml = '';
-    if (order.items && order.items.length) {
-      order.items.forEach(item => {
-        itemsHtml += '<div class="order-item">' +
-          '<span class="order-item-name">' + escapeHtml(item.title || item.name) + '</span>' +
-          '<span class="order-item-qty">x' + (item.qty || 1) + '</span>' +
-          '<span class="order-item-price">' + formatYen(item.price * (item.qty || 1)) + '</span>' +
-          '</div>';
-      });
-    }
+ let itemsHtml = '';
+ if (order.items && order.items.length) {
+ order.items.forEach(item => {
+ itemsHtml += '<div class="order-item">' +
+ '<span class="order-item-name">' + escapeHtml(item.title || item.name) + '</span>' +
+ '<span class="order-item-qty">x' + (item.qty || 1) + '</span>' +
+ '<span class="order-item-price">' + formatYen(item.price * (item.qty || 1)) + '</span>' +
+ '</div>';
+ });
+ }
 
-    let trackingHtml = '';
-    if (order.tracking_number) {
-      const yamatoUrl = 'https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number=' + encodeURIComponent(order.tracking_number);
-      trackingHtml = '<div class="order-tracking">' +
-        '<a href="' + yamatoUrl + '" target="_blank" rel="noopener" class="tracking-link">' +
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg>' +
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
-        ' 配送状況を確認 (' + escapeHtml(order.tracking_number) + ')' +
-        '</a></div>';
-    }
+ let trackingHtml = '';
+ if (order.tracking_number) {
+ const yamatoUrl = 'https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number=' + encodeURIComponent(order.tracking_number);
+ trackingHtml = '<div class="order-tracking">' +
+ '<a href="' + yamatoUrl + '" target="_blank" rel="noopener" class="tracking-link">' +
+ '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg>' +
+ '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
+ ' 配送状況を確認 (' + escapeHtml(order.tracking_number) + ')' +
+ '</a></div>';
+ }
 
-    const orderDate = order.date ? formatDate(order.date) : '';
+ const orderDate = order.date ? formatDate(order.date) : '';
 
-    html += '<div class="order-card">' +
-      '<div class="order-card-head">' +
-      '<div><div class="order-number">ORDER #' + escapeHtml(order.order_number || order.id || '-') + '</div>' +
-      '<div class="order-date">' + orderDate + '</div></div>' +
-      '<span class="status-badge ' + st.class + '"><span class="status-badge-dot"></span>' + st.label + '</span>' +
-      '</div>' +
-      '<div class="order-items">' + itemsHtml + '</div>' +
-      '<div class="order-total-row">' +
-      '<span class="order-total-label">TOTAL</span>' +
-      '<span class="order-total-price">' + formatYen(order.total || 0) + '</span>' +
-      '</div>' +
-      trackingHtml +
-      '</div>';
-  });
+ html += '<div class="order-card">' +
+ '<div class="order-card-head">' +
+ '<div><div class="order-number">ORDER #' + escapeHtml(order.order_number || order.id || '-') + '</div>' +
+ '<div class="order-date">' + orderDate + '</div></div>' +
+ '<span class="status-badge ' + st.class + '"><span class="status-badge-dot"></span>' + st.label + '</span>' +
+ '</div>' +
+ '<div class="order-items">' + itemsHtml + '</div>' +
+ '<div class="order-total-row">' +
+ '<span class="order-total-label">TOTAL</span>' +
+ '<span class="order-total-price">' + formatYen(order.total || 0) + '</span>' +
+ '</div>' +
+ trackingHtml +
+ '</div>';
+ });
 
-  container.innerHTML = html;
+ container.innerHTML = html;
 }
 
 /* ---- Render Reward Progress (4-purchase journey) ---- */
 function renderRewardProgress(count) {
-  const sec = document.getElementById('rewardProgressSection');
-  if (!sec) return;
-  sec.style.display = '';
+ const sec = document.getElementById('rewardProgressSection');
+ if (!sec) return;
+ sec.style.display = '';
 
-  const stages = [
-    { num: 1, reward: '20%OFF', code: 'WELCOME20' },
-    { num: 2, reward: '🍗 鳥セット 無料', code: 'CHK-FREE' },
-    { num: 3, reward: '🍔 ハンバーグ 無料', code: 'BURGER-FREE' },
-    { num: 4, reward: '👑 年間10%OFF', code: 'ANNUAL10' }
-  ];
-  const next = Math.min(count + 1, 4);
-  const fillPct = count >= 4 ? 100 : Math.max(0, Math.min(100, (count / 4) * 100));
+ const stages = [
+ { num: 1, reward: '20%OFF', code: 'WELCOME20' },
+ { num: 2, reward: '🍗 鳥セット 無料', code: 'CHK-FREE' },
+ { num: 3, reward: '🍔 ハンバーグ 無料', code: 'BURGER-FREE' },
+ { num: 4, reward: '👑 年間10%OFF', code: 'ANNUAL10' }
+ ];
+ const next = Math.min(count + 1, 4);
+ const fillPct = count >= 4 ? 100 : Math.max(0, Math.min(100, (count / 4) * 100));
 
-  let stepsHtml = '';
-  stages.forEach((s, i) => {
-    const isDone = count >= s.num;
-    const isNext = !isDone && (s.num === next);
-    const cls = isDone ? 'done' : (isNext ? 'next' : '');
-    stepsHtml += `
-      <div class="reward-prog-step">
-        <div class="reward-prog-dot ${cls}">${isDone ? '✓' : s.num}</div>
-        <div class="reward-prog-step-label">${escapeHtml(s.reward.split(' ')[0])}</div>
-      </div>
-    `;
-  });
+ let stepsHtml = '';
+ stages.forEach((s, i) => {
+ const isDone = count >= s.num;
+ const isNext = !isDone && (s.num === next);
+ const cls = isDone ? 'done' : (isNext ? 'next' : '');
+ stepsHtml += `
+ <div class="reward-prog-step">
+ <div class="reward-prog-dot ${cls}">${isDone ? '✓' : s.num}</div>
+ <div class="reward-prog-step-label">${escapeHtml(s.reward.split(' ')[0])}</div>
+ </div>
+ `;
+ });
 
-  let nextMsg = '';
-  if (count >= 4) {
-    nextMsg = `<strong>🎊 基盤顧客認定済み</strong><br>ANNUAL10 でご注文時に <strong>1年間10%OFF</strong> が適用されます`;
-  } else {
-    const nx = stages[next - 1];
-    nextMsg = `あと <strong>${4 - count}回</strong> のご購入で <strong>${escapeHtml(nx.reward)}</strong> をプレゼント<br>次回（${next}回目）の特典: <strong>${escapeHtml(nx.reward)}</strong> が自動付与されます`;
-  }
+ let nextMsg = '';
+ if (count >= 4) {
+ nextMsg = `<strong>🎊 基盤顧客認定済み</strong><br>ANNUAL10 でご注文時に <strong>1年間10%OFF</strong> が適用されます`;
+ } else {
+ const nx = stages[next - 1];
+ nextMsg = `あと <strong>${4 - count}回</strong> のご購入で <strong>${escapeHtml(nx.reward)}</strong> をプレゼント<br>次回（${next}回目）の特典: <strong>${escapeHtml(nx.reward)}</strong> が自動付与されます`;
+ }
 
-  sec.innerHTML = `
-    <div class="reward-prog-card">
-      <p class="reward-prog-eyebrow">CUSTOMER REWARDS</p>
-      <h3 class="reward-prog-title">基盤顧客チャレンジ</h3>
-      <p class="reward-prog-sub">これまでのご購入: <strong style="color:var(--color-gold)">${count}回</strong></p>
-      <div class="reward-prog-steps">
-        <div class="reward-prog-line"><div class="reward-prog-line-fill" style="width:${fillPct}%"></div></div>
-        ${stepsHtml}
-      </div>
-      <div class="reward-prog-next">${nextMsg}</div>
-    </div>
-  `;
+ sec.innerHTML = `
+ <div class="reward-prog-card">
+ <p class="reward-prog-eyebrow">CUSTOMER REWARDS</p>
+ <h3 class="reward-prog-title">基盤顧客チャレンジ</h3>
+ <p class="reward-prog-sub">これまでのご購入: <strong style="color:var(--color-gold)">${count}回</strong></p>
+ <div class="reward-prog-steps">
+ <div class="reward-prog-line"><div class="reward-prog-line-fill" style="width:${fillPct}%"></div></div>
+ ${stepsHtml}
+ </div>
+ <div class="reward-prog-next">${nextMsg}</div>
+ </div>
+ `;
 }
 
 /* ---- Render Coupons ---- */
 function renderCoupons(coupons) {
-  const sec = document.getElementById('couponsSection');
-  const list = document.getElementById('couponsList');
-  if (!sec || !list) return;
-  if (!coupons || coupons.length === 0) {
-    sec.style.display = 'none';
-    return;
-  }
-  sec.style.display = '';
-  list.innerHTML = coupons.map(c => {
-    const status = c.status || 'active';
-    const stCls = status;
-    const stLabel = { active: '有効', expiring: '期限間近', used: '使用済', expired: '失効' }[status] || '有効';
-    const cardCls = (status === 'expired' || status === 'used') ? 'coupon-card expired' : 'coupon-card';
-    return `
-      <div class="${cardCls}">
-        <div class="coupon-head">
-          <div>
-            <div class="coupon-value">${escapeHtml(c.value || '')}</div>
-            <div class="coupon-name">${escapeHtml(c.name || '')}</div>
-          </div>
-          <span class="coupon-status ${stCls}">${stLabel}</span>
-        </div>
-        <div class="coupon-meta">${escapeHtml(c.description || '')}<br>${escapeHtml(c.expires || '')}</div>
-        ${(status === 'active' || status === 'expiring') ? `
-          <div class="coupon-code-row">
-            <span class="coupon-code-text" id="cpn-${escapeHtml(c.code)}">${escapeHtml(c.code)}</span>
-            <button class="coupon-copy-btn" onclick="copyCoupon('${escapeHtml(c.code)}', this)">コピー</button>
-          </div>
-        ` : ''}
-      </div>
-    `;
-  }).join('');
+ const sec = document.getElementById('couponsSection');
+ const list = document.getElementById('couponsList');
+ if (!sec || !list) return;
+ if (!coupons || coupons.length === 0) {
+ sec.style.display = 'none';
+ return;
+ }
+ sec.style.display = '';
+ list.innerHTML = coupons.map(c => {
+ const status = c.status || 'active';
+ const stCls = status;
+ const stLabel = { active: '有効', expiring: '期限間近', used: '使用済', expired: '失効' }[status] || '有効';
+ const cardCls = (status === 'expired' || status === 'used') ? 'coupon-card expired' : 'coupon-card';
+ return `
+ <div class="${cardCls}">
+ <div class="coupon-head">
+ <div>
+ <div class="coupon-value">${escapeHtml(c.value || '')}</div>
+ <div class="coupon-name">${escapeHtml(c.name || '')}</div>
+ </div>
+ <span class="coupon-status ${stCls}">${stLabel}</span>
+ </div>
+ <div class="coupon-meta">${escapeHtml(c.description || '')}<br>${escapeHtml(c.expires || '')}</div>
+ ${(status === 'active' || status === 'expiring') ? `
+ <div class="coupon-code-row">
+ <span class="coupon-code-text" id="cpn-${escapeHtml(c.code)}">${escapeHtml(c.code)}</span>
+ <button class="coupon-copy-btn" onclick="copyCoupon('${escapeHtml(c.code)}', this)">コピー</button>
+ </div>
+ ` : ''}
+ </div>
+ `;
+ }).join('');
 }
 
 function copyCoupon(code, btn) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(code).then(() => {
-      const orig = btn.textContent;
-      btn.textContent = '✓ コピー済';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
-    });
-  }
+ if (navigator.clipboard) {
+ navigator.clipboard.writeText(code).then(() => {
+ const orig = btn.textContent;
+ btn.textContent = '✓ コピー済';
+ btn.classList.add('copied');
+ setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+ });
+ }
 }
 
 /* デモ用クーポン生成（GAS未デプロイ時） */
 function generateDemoCoupons(orderCount) {
-  const all = [];
-  if (orderCount === 0) {
-    all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', expires: '2026/05/24まで', status: 'expiring' });
-  }
-  if (orderCount >= 1 && orderCount < 2) {
-    all.push({ code: 'CHK-FREE', value: '無料', name: '🍗 鳥もも・むねセット', description: '次回ご注文時に自動付与（¥4,200相当）', expires: '2026/06/10まで', status: 'active' });
-  }
-  if (orderCount >= 2 && orderCount < 3) {
-    all.push({ code: 'BURGER-FREE', value: '無料', name: '🍔 無添加ハンバーグ2個', description: '3回目購入特典', expires: '2026/06/10まで', status: 'active' });
-  }
-  if (orderCount >= 3) {
-    all.push({ code: 'ANNUAL10', value: '10%OFF', name: '👑 年間10%OFF（30日以内利用必須）', description: '30日以内に使うと1年間10%OFF / 併用不可', expires: '2026/06/10まで（要利用）', status: 'expiring' });
-  }
-  // 過去のクーポン
-  all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
-  return all;
+ const all = [];
+ if (orderCount === 0) {
+ all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', expires: '2026/05/24まで', status: 'expiring' });
+ }
+ if (orderCount >= 1 && orderCount < 2) {
+ all.push({ code: 'CHK-FREE', value: '無料', name: '🍗 鳥もも・むねセット', description: '次回ご注文時に自動付与（¥4,200相当）', expires: '2026/06/10まで', status: 'active' });
+ }
+ if (orderCount >= 2 && orderCount < 3) {
+ all.push({ code: 'BURGER-FREE', value: '無料', name: '🍔 無添加ハンバーグ2個', description: '3回目購入特典', expires: '2026/06/10まで', status: 'active' });
+ }
+ if (orderCount >= 3) {
+ all.push({ code: 'ANNUAL10', value: '10%OFF', name: '👑 年間10%OFF（30日以内利用必須）', description: '30日以内に使うと1年間10%OFF / 併用不可', expires: '2026/06/10まで（要利用）', status: 'expiring' });
+ }
+ // 過去のクーポン
+ all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
+ return all;
 }
 
 /* ---- Subscription Actions (GAS 連携版) ---- */
 async function subSkip() {
-  if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
-  if (!confirm('次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\n※スタッフがLINE/メールで詳細をご連絡いたします')) return;
-  try {
-    const result = await window.EDA_API.post('skip_subscription', {
-      email: currentSession.email,
-      reason: 'mypage_user_action'
-    });
-    if (result.ok) {
-      toast('スキップ申請を受け付けました。担当者からご連絡します');
-    } else {
-      toast('申請に失敗しました: ' + (result.error || ''));
-    }
-  } catch (err) {
-    toast('通信エラーが発生しました');
-  }
+ if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
+ if (!confirm('次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\n※スタッフがLINE/メールで詳細をご連絡いたします')) return;
+ try {
+ const result = await window.EDA_API.post('skip_subscription', {
+ email: currentSession.email,
+ reason: 'mypage_user_action'
+ });
+ if (result.ok) {
+ toast('スキップ申請を受け付けました。担当者からご連絡します');
+ } else {
+ toast('申請に失敗しました: ' + (result.error || ''));
+ }
+ } catch (err) {
+ toast('通信エラーが発生しました');
+ }
 }
 function subChange() {
-  if (!confirm('プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）')) return;
-  window.open('https://line.me/R/ti/p/@706sgiuq', '_blank');
+ if (!confirm('プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）')) return;
+ window.open('https://line.me/R/ti/p/@706sgiuq', '_blank');
 }
 async function subPause() {
-  if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
-  if (!confirm('定期便を一時停止しますか？\nいつでも再開できます\n\n※スタッフから停止期間の確認連絡をいたします')) return;
-  try {
-    const result = await window.EDA_API.post('skip_subscription', {
-      email: currentSession.email,
-      reason: 'mypage_user_pause_request'
-    });
-    if (result.ok) toast('一時停止リクエストを受け付けました');
-    else toast('申請に失敗しました');
-  } catch (err) {
-    toast('通信エラーが発生しました');
-  }
+ if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
+ if (!confirm('定期便を一時停止しますか？\nいつでも再開できます\n\n※スタッフから停止期間の確認連絡をいたします')) return;
+ try {
+ const result = await window.EDA_API.post('skip_subscription', {
+ email: currentSession.email,
+ reason: 'mypage_user_pause_request'
+ });
+ if (result.ok) toast('一時停止リクエストを受け付けました');
+ else toast('申請に失敗しました');
+ } catch (err) {
+ toast('通信エラーが発生しました');
+ }
 }
 async function subCancel() {
-  if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
-  if (!confirm('本当に定期便を解約しますか？\n\n・継続利用で得られる年間特典が失効します\n・3ヶ月未満の場合は事務手数料3,300円が発生します\n・スタッフから最終確認のご連絡をいたします')) return;
-  const reason = prompt('差し支えなければ解約理由をお聞かせください（任意）');
-  try {
-    const result = await window.EDA_API.post('cancel_subscription', {
-      email: currentSession.email,
-      reason: reason || '理由未記入'
-    });
-    if (result.ok) toast('解約申請を受け付けました。担当者からご連絡します');
-    else toast('申請に失敗しました: ' + (result.error || ''));
-  } catch (err) {
-    toast('通信エラーが発生しました');
-  }
+ if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
+ if (!confirm('本当に定期便を解約しますか？\n\n・継続利用で得られる年間特典が失効します\n・3ヶ月未満の場合は事務手数料3,300円が発生します\n・スタッフから最終確認のご連絡をいたします')) return;
+ const reason = prompt('差し支えなければ解約理由をお聞かせください（任意）');
+ try {
+ const result = await window.EDA_API.post('cancel_subscription', {
+ email: currentSession.email,
+ reason: reason || '理由未記入'
+ });
+ if (result.ok) toast('解約申請を受け付けました。担当者からご連絡します');
+ else toast('申請に失敗しました: ' + (result.error || ''));
+ } catch (err) {
+ toast('通信エラーが発生しました');
+ }
 }
 function toast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#0F3D2E;color:#fff;padding:14px 24px;border-radius:24px;font-size:13px;font-weight:600;z-index:1000;box-shadow:0 4px 16px rgba(0,0,0,0.2);max-width:90%;text-align:center';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+ const t = document.createElement('div');
+ t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#0F3D2E;color:#fff;padding:14px 24px;border-radius:24px;font-size:13px;font-weight:600;z-index:1000;box-shadow:0 4px 16px rgba(0,0,0,0.2);max-width:90%;text-align:center';
+ t.textContent = msg;
+ document.body.appendChild(t);
+ setTimeout(() => t.remove(), 3000);
 }
 
 /* ---- Render Subscription ---- */
 function renderSubscription(sub) {
-  const section = document.getElementById('subSection');
-  const card = document.getElementById('subCard');
-  section.style.display = '';
+ const section = document.getElementById('subSection');
+ const card = document.getElementById('subCard');
+ section.style.display = '';
 
-  card.innerHTML = '<div class="sub-card-head">' +
-    '<h4 class="sub-plan-name">' + escapeHtml(sub.plan_name || '定期便') + '</h4>' +
-    '<span class="sub-plan-price">' + formatYen(sub.price || 0) + '<small>/月</small></span>' +
-    '</div>' +
-    '<div class="sub-detail-row"><span class="sub-detail-label">ステータス</span>' +
-    '<span class="sub-detail-value" style="color:var(--color-gold)">利用中</span></div>' +
-    '<div class="sub-detail-row"><span class="sub-detail-label">次回お届け日</span>' +
-    '<span class="sub-detail-value">' + (sub.next_delivery ? formatDate(sub.next_delivery) : '-') + '</span></div>' +
-    '<div class="sub-detail-row"><span class="sub-detail-label">お届けサイクル</span>' +
-    '<span class="sub-detail-value">' + escapeHtml(sub.cycle || '毎月') + '</span></div>' +
-    '<div class="sub-detail-row"><span class="sub-detail-label">ご利用開始日</span>' +
-    '<span class="sub-detail-value">' + (sub.start_date ? formatDate(sub.start_date) : '-') + '</span></div>';
+ card.innerHTML = '<div class="sub-card-head">' +
+ '<h4 class="sub-plan-name">' + escapeHtml(sub.plan_name || '定期便') + '</h4>' +
+ '<span class="sub-plan-price">' + formatYen(sub.price || 0) + '<small>/月</small></span>' +
+ '</div>' +
+ '<div class="sub-detail-row"><span class="sub-detail-label">ステータス</span>' +
+ '<span class="sub-detail-value" style="color:var(--color-gold)">利用中</span></div>' +
+ '<div class="sub-detail-row"><span class="sub-detail-label">次回お届け日</span>' +
+ '<span class="sub-detail-value">' + (sub.next_delivery ? formatDate(sub.next_delivery) : '-') + '</span></div>' +
+ '<div class="sub-detail-row"><span class="sub-detail-label">お届けサイクル</span>' +
+ '<span class="sub-detail-value">' + escapeHtml(sub.cycle || '毎月') + '</span></div>' +
+ '<div class="sub-detail-row"><span class="sub-detail-label">ご利用開始日</span>' +
+ '<span class="sub-detail-value">' + (sub.start_date ? formatDate(sub.start_date) : '-') + '</span></div>';
 }
 
 /* ---- Logout (LIFF) ---- */
 document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('eda-mypage-session');
-  currentSession = null;
-  currentLineProfile = null;
-  dashboard.classList.remove('show');
-  loginSection.style.display = '';
-  document.getElementById('subSection').style.display = 'none';
+ localStorage.removeItem('eda-mypage-session');
+ currentSession = null;
+ currentLineProfile = null;
+ dashboard.classList.remove('show');
+ loginSection.style.display = '';
+ document.getElementById('subSection').style.display = 'none';
 
-  // LIFF logout (LINE 内では効かないが外部ブラウザ対応)
-  try {
-    if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
-      liff.logout();
-    }
-  } catch (e) {}
+ // LIFF logout (LINE 内では効かないが外部ブラウザ対応)
+ try {
+ if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+ liff.logout();
+ }
+ } catch (e) {}
 
-  // 状態を external 表示に戻す
-  showState('external');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+ // 状態を external 表示に戻す
+ showState('external');
+ window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 /* ---- Helpers ---- */
 function formatYen(n) {
-  return '¥' + Number(n).toLocaleString('ja-JP');
+ return '¥' + Number(n).toLocaleString('ja-JP');
 }
 function formatDate(d) {
-  const date = new Date(d);
-  if (isNaN(date.getTime())) return d;
-  return date.getFullYear() + '/' +
-    String(date.getMonth() + 1).padStart(2, '0') + '/' +
-    String(date.getDate()).padStart(2, '0');
+ const date = new Date(d);
+ if (isNaN(date.getTime())) return d;
+ return date.getFullYear() + '/' +
+ String(date.getMonth() + 1).padStart(2, '0') + '/' +
+ String(date.getDate()).padStart(2, '0');
 }
 function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+ if (!str) return '';
+ return String(str)
+ .replace(/&/g, '&amp;')
+ .replace(/</g, '&lt;')
+ .replace(/>/g, '&gt;')
+ .replace(/"/g, '&quot;');
 }
 </script>
 <script src="public/js/line-float.js" defer></script>

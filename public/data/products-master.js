@@ -27,7 +27,7 @@
       name: 'サーロインステーキ', variant: '1枚 200g',
       price: 3400, weight: 200, stock: 18, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Sirloin Steak',
-      description: '背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。',
+      description: 'ロース芯から切り出した一枚。塩のみで、フライパンに 90 秒。日曜の昼食に。',
       images: ['public/images/products/drive/sirloin.jpg']
     },
     {
@@ -36,7 +36,7 @@
       name: '赤身ステーキ', variant: '1枚 200g',
       price: 3400, weight: 200, stock: 15, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Red Meat Steak',
-      description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。',
+      description: 'モモの中心から、繊維の細かい部分だけを。脂が少なく、鉄分が高い。',
       images: ['public/images/products/drive/red-meat.jpg']
     },
     {
@@ -45,7 +45,7 @@
       name: 'サイコロステーキ', variant: '1袋 200g',
       price: 1000, weight: 200, stock: 22, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Cube Steak',
-      description: 'ステーキ用の正肉を一口大にカット。フライパンで転がすだけ。お子さまにも大人気。',
+      description: 'ひと口大に切り分けたステーキ用の正肉。お弁当や、忙しい平日の夕食に。',
       images: ['public/images/products/drive/cube-steak.jpg']
     },
 
@@ -56,16 +56,16 @@
       name: '赤身スライス', variant: '1袋 200g',
       price: 2600, weight: 200, stock: 12, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Slice',
-      description: '約2mm厚の薄切り。しゃぶしゃぶなら出汁に数秒くぐらせるだけ。すき焼き、冷しゃぶサラダにも。',
+      description: '2mm 厚の薄切り。出汁に数秒くぐらせる、しゃぶしゃぶに。すき焼きにも。',
       images: ['public/images/products/drive/wagyu-slice.jpg']
     },
     {
       productId: 'P005', variantId: 'KIRIOTOSHI', sku: 'EDA-KIRI-200',
       stripePriceId: 'price_1TW74nGSkhU1UEcigrD4ATBJ',
-      name: '和牛切り落とし', variant: '1袋 200g',
+      name: '切り落とし', variant: '1袋 200g',
       price: 1600, weight: 200, stock: 30, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kiriotoshi',
-      description: '部位の端材を集めたお得な切り落とし。牛丼・カレー・肉じゃが・炒め物に。冷凍ストックの主役。',
+      description: '部位を選ばず集めた、家庭用の切り落とし。煮込み、炒め、丼に。',
       images: ['public/images/products/drive/kiriotoshi.jpg']
     },
 
@@ -76,16 +76,16 @@
       name: 'バラ焼肉', variant: '1袋 200g',
       price: 1500, weight: 200, stock: 11, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
-      description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。',
+      description: 'バラ肉を焼肉用に。赤身と脂が交互に重なる、三枚肉の構造。塩で、タレで。',
       images: ['public/images/products/drive/yakiniku-brisket.jpg']
     },
     {
       productId: 'P007', variantId: 'OFFAL', sku: 'EDA-OFFAL-150',
       stripePriceId: 'price_1TW74pGSkhU1UEcizY8WlJPz',
-      name: '和牛ホルモン', variant: '1袋 150g',
+      name: 'ホルモン', variant: '1袋 150g',
       price: 840, weight: 150, stock: 8, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Offal',
-      description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。',
+      description: '小腸と大腸のミックス。下処理済み。もつ鍋に、焼きホルモンに。',
       images: ['public/images/products/drive/yakiniku-brisket.jpg']
     },
 
@@ -93,37 +93,37 @@
     {
       productId: 'P008', variantId: 'HAMBURG', sku: 'EDA-HAMBURG-100',
       stripePriceId: 'price_1TW74qGSkhU1UEciphBYGBDO',
-      name: '江田和牛ハンバーグ', variant: '1個 100g',
+      name: 'ハンバーグ', variant: '1個 100g',
       price: 760, weight: 100, stock: 40, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg',
-      description: '和牛100%のシンプル配合。冷蔵庫で半日解凍してからフライパンで蒸し焼き。お子さまの夕食に。',
+      description: '和牛 100%。冷凍庫で 6 ヶ月、フライパンで蒸し焼き 8 分。',
       images: ['public/images/products/drive/hamburg.jpg']
     },
     {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-100',
       stripePriceId: 'price_1TW74qGSkhU1UEciK9LE14vR',
-      name: '和牛ローストビーフ', variant: '1袋 100g',
+      name: 'ローストビーフ', variant: '1袋 100g',
       price: 3000, weight: 100, stock: 6, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Roast Beef',
-      description: '赤身を低温でじっくりロースト。解凍して薄くスライスするだけ。パーティーの前菜に。',
+      description: '赤身を低温でロースト。解凍して、薄く切る。会の前菜に。',
       images: ['public/images/products/drive/hamburg.jpg']
     },
     {
       productId: 'P010', variantId: 'RAW-HAM', sku: 'EDA-RAWHAM-40',
       stripePriceId: 'price_1TW74rGSkhU1UEcidTIwRPd5',
-      name: '和牛生ハム', variant: '個包装 40g',
+      name: '生ハム', variant: '個包装 40g',
       price: 1250, weight: 40, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Raw Ham',
-      description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとはまったく異なる深みのある旨み。ワインに。',
+      description: '赤身を低温で長時間熟成。豚とは異なる、和牛だけの深み。ワインの夕べに。',
       images: ['public/images/products/drive/wagyu-slice.jpg']
     },
     {
       productId: 'P010B', variantId: 'WAGYU-MINCED', sku: 'EDA-WGYMINCED-200',
       stripePriceId: 'price_1TW74sGSkhU1UEci63HCdIsL',
-      name: '和牛ミンチ', variant: '1袋 200g',
+      name: 'ミンチ', variant: '1袋 200g',
       price: 1350, weight: 200, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Minced',
-      description: '江田和牛 100% の粗挽きミンチ。ハンバーグ・ボロネーゼ・タコライス・キーマカレーに。和牛100%の旨み。',
+      description: '和牛 100% の粗挽き。ハンバーグ、ボロネーゼ、キーマカレーに。',
       images: ['public/images/products/drive/minced.jpg']
     },
 
@@ -134,7 +134,7 @@
       name: '平飼い鶏 ムネ', variant: '1袋 500g',
       price: 1280, weight: 500, stock: 20, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Breast',
-      description: '高タンパク・低脂肪のムネ肉。無投薬の平飼い鶏は身が締まって旨みが濃い。',
+      description: '大分県・無投薬の平飼い農家のもの。低脂肪・高タンパク。サラダチキン、バンバンジーに。',
       images: ['public/images/products/drive/chicken-breast.jpg']
     },
     {
@@ -143,7 +143,7 @@
       name: '平飼い鶏 モモ', variant: '1袋 500g',
       price: 1280, weight: 500, stock: 24, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Thigh',
-      description: '大分県産 平飼い・無投薬。照り焼き・唐揚げ・煮込みまで万能。',
+      description: '大分県・無投薬の平飼い農家のもの。照り焼き、唐揚げ、煮込みまで。',
       images: ['public/images/products/drive/chicken-thigh.jpg']
     },
     {
@@ -152,7 +152,7 @@
       name: '平飼い鶏 ミンチ', variant: '1袋 300g',
       price: 1000, weight: 300, stock: 16, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Minced',
-      description: 'つくね、そぼろ、鶏団子鍋に。無投薬で離乳食にも安心。',
+      description: '大分県・無投薬の平飼い農家のもの。つくね、そぼろ、鶏団子鍋に。',
       images: ['public/images/products/drive/chicken-minced.jpg']
     },
 
@@ -164,7 +164,7 @@
       price: 3840, weight: 500, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Breast',
       isOrganic: true,
-      description: '有機JAS認証相当の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ最高峰の一品。',
+      description: '有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
       images: ['public/images/products/drive/chicken-breast.jpg']
     },
     {
@@ -174,7 +174,7 @@
       price: 3840, weight: 500, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Thigh',
       isOrganic: true,
-      description: '有機JAS認証相当の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。',
+      description: '有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
       images: ['public/images/products/drive/chicken-thigh.jpg']
     },
     {
@@ -184,7 +184,7 @@
       price: 3000, weight: 300, stock: 5, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Minced',
       isOrganic: true,
-      description: '有機JAS認証相当の無農薬飼料・無投薬。最高級のオーガニック鶏ミンチ。離乳食・つくねに。',
+      description: '有機 JAS 認証相当の無農薬飼料、無投薬。離乳食、つくねに。',
       images: ['public/images/products/drive/chicken-minced.jpg']
     },
 
@@ -195,7 +195,7 @@
       name: 'ヒレステーキ ギフト【松】', variant: '450g',
       price: 16800, weight: 450, stock: 10, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · MATSU',
-      description: '江田畜産が誇る希少部位、ヒレを450g。きめ細かな赤身で、脂身が少なく食べやすい最上ランク。大切な方への最高峰の贈り物。',
+      description: '希少部位のヒレ、450g。脂が少なく、繊維がきめ細かい。大切な方への一品に。',
       images: ['public/images/products/drive/premium-slice.jpg']
     },
     {
@@ -204,7 +204,7 @@
       name: '赤身ステーキ ギフト【竹】', variant: '750g',
       price: 12800, weight: 750, stock: 12, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · TAKE',
-      description: '脂身少なく鉄分・たんぱく質がしっかり摂れる赤身ステーキを750g。健康を気遣う方、ご年配の方、筋トレ層への贈り物に最適。',
+      description: '赤身ステーキを 750g。脂が少なく、鉄分が高い。健康を気遣う方への贈り物に。',
       images: ['public/images/products/drive/red-meat.jpg']
     },
     {
@@ -213,7 +213,7 @@
       name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 100g×5',
       price: 5980, weight: 500, stock: 18, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · UME',
-      description: '江田和牛100%・無投薬の手作りハンバーグを5個。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。',
+      description: '和牛 100% のハンバーグを 5 個。ご家庭への手土産に。',
       images: ['public/images/products/drive/hamburg.jpg']
     },
 
