@@ -46,7 +46,7 @@
   --tracking-wide: 0.04em;
   --tracking-wider: 0.12em;
   --tracking-widest: 0.24em;
-  --space-section: clamp(80px, 12vw, 160px);
+  --space-section: clamp(120px, 16vw, 200px);   /* +50% Editorial Refresh */
   --space-section-sm: clamp(48px, 8vw, 96px);
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
@@ -232,9 +232,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ IMAGE COMPONENTS ================ */
 .member-photo.has-img { background: var(--color-forest-deep); }
 .member-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.92); }
-.product-card-img.has-img, .restaurant-card-img.has-img, .journal-card-img.has-img { background: transparent; }
-.product-card-img.has-img img, .restaurant-card-img.has-img img, .journal-card-img.has-img img { width: 100%; height: 100%; object-fit: cover; }
+/* 商品画像の漆黒背景 → クリーム multiply (Editorial Refresh #8) */
+.product-card-img.has-img { background: var(--color-paper); }
+.product-card-img.has-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  mix-blend-mode: multiply;
+  filter: contrast(1.05) saturate(1.05);
+}
+.restaurant-card-img.has-img, .journal-card-img.has-img { background: transparent; }
+.restaurant-card-img.has-img img, .journal-card-img.has-img img { width: 100%; height: 100%; object-fit: cover; }
 .product-card-img.has-img::after, .restaurant-card-img.has-img::after, .journal-card-img.has-img::after, .member-photo.has-img::after { display: none; }
+/* 背景画像方式 (data-label) も同様 */
+.product-card-img[style*="background-image"] { background-color: var(--color-paper); background-blend-mode: multiply; }
 .product-card-img.has-img { background: transparent; }
 
 /* Gallery */
@@ -1861,12 +1870,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* タイトル：2行 + 段階フェードイン */
 .shop-hero-title {
   font-family: var(--font-jp-serif);
-  font-size: clamp(40px, 7vw, 84px);
-  line-height: 1.08;
+  font-size: clamp(34px, 5.8vw, 64px);    /* 84→64 控えめに */
+  line-height: 1.18;
   color: white;
   margin: 14px 0 28px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: 500;                        /* 700→500 editorial */
+  letter-spacing: 0.005em;
 }
 /* 1行目：リード（小さめ、サブで導入） */
 .hero-line--lead {
@@ -1946,21 +1955,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .hero-btn-primary {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  padding: 16px 32px !important;
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  background: var(--color-gold) !important;
-  color: var(--color-forest-deep) !important;
-  border: 0 !important;
-  border-radius: 30px !important;
-  letter-spacing: 0.04em !important;
-  transition: all 0.3s var(--ease-out-expo) !important;
-  box-shadow: 0 10px 28px rgba(212,169,59,0.35);
+  gap: 12px !important;
+  padding: 18px 36px !important;
+  font-family: var(--font-display);
+  font-size: 13px !important;
+  font-weight: 500 !important;            /* 700→500 editorial */
+  background: transparent !important;
+  color: white !important;
+  border: 1px solid rgba(255,255,255,0.7) !important;
+  border-radius: 0 !important;            /* pill → 直角でprestige */
+  letter-spacing: 0.14em !important;       /* wider editorial tracking */
+  text-transform: uppercase;
+  transition: all 0.4s var(--ease-out-expo) !important;
 }
 .hero-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 36px rgba(212,169,59,0.5);
+  background: white !important;
+  color: var(--color-forest) !important;
+  border-color: white !important;
 }
 .hero-btn-primary svg { transition: transform 0.3s; }
 .hero-btn-primary:hover svg { transform: translateX(4px); }
@@ -10244,7 +10255,15 @@ function toggleUnboxingSound() {
     <!-- 複数人へ送る導線（grid 外に移動: フル幅センター配置） -->
     <div class="gift-multi-cta">
       <div class="gift-multi-cta-inner">
-        <span class="gift-multi-cta-icon">🎁</span>
+        <span class="gift-multi-cta-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"/>
+            <rect x="2" y="7" width="20" height="5"/>
+            <line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+          </svg>
+        </span>
         <div class="gift-multi-cta-text">
           <strong>複数の方へ、まとめて贈りたい</strong>
           <small>1注文で <b>最大5箇所</b> までお届け先を分けて発送。各送り先で個別の<b>のし対応</b>。</small>
@@ -12350,9 +12369,9 @@ body.has-sticky-cart .floating-phone-btn {
 
   // 3段階の締切バケット定義
   const CUTOFF_BUCKETS = [
-    { until: 10, label: '10:00', addDays: 2, tag: '☀️', lead: '朝のうちにご注文で' },
-    { until: 17, label: '17:00', addDays: 3, tag: '🥩', lead: '午後のご注文で'     },
-    { until: 22, label: '22:00', addDays: 3, tag: '🌃', lead: '夜のご注文で'        }
+    { until: 10, label: '10:00', addDays: 2, tag: '', lead: '朝のうちにご注文で' },
+    { until: 17, label: '17:00', addDays: 3, tag: '', lead: '午後のご注文で'     },
+    { until: 22, label: '22:00', addDays: 3, tag: '', lead: '夜のご注文で'        }
   ];
 
   function pickBucket(hour) {
@@ -12407,7 +12426,7 @@ body.has-sticky-cart .floating-phone-btn {
       arrival = calcArrival(tomorrow, 2);
       cutoffLabel = '明日 10:00';
       addDays = 3;
-      tag = '🌙';
+      tag = '';
       lead = '深夜のご注文も';
       isToday = false;
       remain = remainText(now, 10);
