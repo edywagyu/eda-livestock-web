@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="metaTitle">商品詳細 | 江田畜産</title>
+<meta name="description" id="metaDesc" content="江田畜産オンラインショップ — 商品の詳細をご確認いただけます。">
+<meta property="og:type" content="product">
+<meta property="og:title" content="商品詳細 | 江田畜産">
+<meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
+<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" id="canonicalLink" href="https://edywagyu.github.io/eda-livestock-web/product.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="public/css/jp-typography.css">
+<link rel="stylesheet" href="public/css/a11y.css">
+<link rel="stylesheet" href="public/css/mobile-modern.css">
+
+<style>
+:root {
+  --color-forest: #0F3D2E;
+  --color-forest-deep: #0A2D21;
+  --color-gold: #D4A93B;
+  --color-gold-soft: #B8932F;
+  --color-cream: #FAF7F0;
+  --color-paper: #F5EFE3;
+  --color-bone: #EFE8D7;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #5C5C5C;
+  --color-red: #C8102E;
+  --color-line: rgba(212, 169, 59, 0.18);
+  --font-display: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
+  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
+  --font-jp-serif: 'Noto Serif JP', serif;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  -webkit-text-size-adjust: 100%;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { border: 0; background: transparent; cursor: pointer; font: inherit; color: inherit; }
+ul { list-style: none; padding: 0; margin: 0; }
+h1, h2, h3, h4 { font-weight: 500; margin: 0; }
+
+/* ============ HEADER ============ */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(15,61,46,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(212,169,59,0.15);
+}
+.site-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1440px; margin: 0 auto;
+  padding: 16px clamp(20px, 4vw, 56px);
+}
+.brand-link {
+  display: flex; align-items: center; gap: 10px;
+  color: white;
+}
+.brand-img { height: 36px; }
+.brand-mono {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+}
+.back-link {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: rgba(255,255,255,0.85);
+}
+.back-link:hover { color: var(--color-gold); }
+
+/* ============ MAIN ============ */
+.pdp-main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 80px) clamp(20px, 4vw, 56px) 120px;
+}
+
+/* ============ BREADCRUMB ============ */
+.breadcrumb {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-ink-muted);
+  margin-bottom: 32px;
+}
+.breadcrumb a { color: inherit; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--color-forest); }
+.breadcrumb-sep { margin: 0 10px; opacity: 0.5; }
+
+/* ============ PDP GRID ============ */
+.pdp-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  align-items: start;
+}
+
+/* ============ GALLERY ============ */
+.pdp-gallery {
+  position: sticky;
+  top: 80px;
+}
+.pdp-gallery-main {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: var(--color-paper);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  position: relative;
+}
+.pdp-gallery-main img {
+  width: 100%; height: 100%; object-fit: cover;
+  mix-blend-mode: multiply;
+  filter: contrast(1.05);
+}
+.pdp-gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.pdp-thumb {
+  aspect-ratio: 1;
+  background: var(--color-paper);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  padding: 0;
+  transition: border-color 0.2s;
+}
+.pdp-thumb.active { border-color: var(--color-forest); }
+.pdp-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  mix-blend-mode: multiply;
+}
+
+/* ============ INFO ============ */
+.pdp-info {
+  padding-top: 8px;
+}
+.pdp-category {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-forest);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+.pdp-title {
+  font-family: var(--font-jp-serif);
+  font-size: clamp(28px, 3.6vw, 44px);
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--color-forest);
+  margin-bottom: 12px;
+  letter-spacing: 0.005em;
+}
+.pdp-variant-label {
+  font-family: var(--font-jp);
+  font-size: 14px;
+  color: var(--color-ink-muted);
+  margin-bottom: 28px;
+}
+.pdp-price {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--color-forest);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.pdp-price-note {
+  font-size: 12px;
+  color: var(--color-ink-muted);
+  margin-bottom: 36px;
+}
+
+.pdp-description {
+  font-size: 15px;
+  line-height: 1.95;
+  color: var(--color-ink);
+  margin-bottom: 36px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--color-bone);
+}
+
+/* ============ SPEC ============ */
+.pdp-spec {
+  margin-bottom: 40px;
+}
+.pdp-spec-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-forest);
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+.pdp-spec-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-bone);
+  font-size: 14px;
+}
+.pdp-spec-row > dt {
+  font-family: var(--font-jp);
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  letter-spacing: 0.02em;
+}
+.pdp-spec-row > dd {
+  margin: 0;
+  font-family: var(--font-jp);
+  color: var(--color-ink);
+}
+
+/* ============ VARIANT SELECT ============ */
+.pdp-variant-section {
+  margin-bottom: 32px;
+}
+.pdp-variant-label-sm {
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-forest);
+  margin-bottom: 10px;
+}
+.pdp-variant-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--color-bone);
+  border-radius: 4px;
+  font-family: var(--font-jp);
+  font-size: 16px;
+  color: var(--color-ink);
+  background: white;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" fill="none" stroke="%230F3D2E" stroke-width="1.5"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+
+/* ============ QTY ============ */
+.pdp-qty-section {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 32px;
+}
+.pdp-qty-label {
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-forest);
+}
+.pdp-qty {
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--color-bone);
+  border-radius: 4px;
+}
+.pdp-qty button {
+  width: 44px; height: 44px;
+  font-size: 18px;
+  color: var(--color-forest);
+}
+.pdp-qty input {
+  width: 56px; height: 44px;
+  text-align: center;
+  border: 0;
+  border-left: 1px solid var(--color-bone);
+  border-right: 1px solid var(--color-bone);
+  font-family: var(--font-jp);
+  font-size: 16px;
+  color: var(--color-ink);
+}
+
+/* ============ CTA ============ */
+.pdp-cta-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.pdp-cta-primary {
+  display: block;
+  width: 100%;
+  padding: 20px;
+  background: var(--color-forest);
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pdp-cta-primary:hover { background: var(--color-forest-deep); }
+.pdp-cta-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.pdp-cta-secondary {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  background: transparent;
+  color: var(--color-forest);
+  border: 1px solid var(--color-forest);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+
+.pdp-meta {
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 12px;
+  color: var(--color-ink-muted);
+}
+.pdp-meta-row {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.pdp-meta-row svg { flex-shrink: 0; opacity: 0.6; }
+
+/* ============ DETAILS (accordion) ============ */
+.pdp-details {
+  margin-top: 80px;
+  border-top: 1px solid var(--color-bone);
+}
+.pdp-detail-item {
+  border-bottom: 1px solid var(--color-bone);
+}
+.pdp-detail-summary {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 24px 0;
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
+  color: var(--color-forest);
+  cursor: pointer;
+  list-style: none;
+  font-weight: 500;
+}
+.pdp-detail-summary::-webkit-details-marker { display: none; }
+.pdp-detail-summary::after {
+  content: '+';
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  transition: transform 0.3s;
+}
+details[open] .pdp-detail-summary::after { content: '−'; }
+.pdp-detail-body {
+  padding: 0 0 28px;
+  font-size: 14.5px;
+  line-height: 1.95;
+  color: var(--color-ink-muted);
+}
+
+/* ============ RELATED ============ */
+.pdp-related {
+  margin-top: 96px;
+  padding-top: 80px;
+  border-top: 1px solid var(--color-bone);
+}
+.pdp-related-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-forest);
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0.7;
+}
+.pdp-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.pdp-related-card {
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-out-expo);
+}
+.pdp-related-card:hover { transform: translateY(-4px); }
+.pdp-related-img {
+  aspect-ratio: 4 / 5;
+  background: var(--color-paper);
+  overflow: hidden;
+}
+.pdp-related-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  mix-blend-mode: multiply;
+}
+.pdp-related-body {
+  padding: 20px 24px 28px;
+}
+.pdp-related-name {
+  font-family: var(--font-jp-serif);
+  font-size: 18px;
+  color: var(--color-forest);
+  margin-bottom: 4px;
+}
+.pdp-related-price {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-forest);
+  margin-bottom: 8px;
+}
+.pdp-related-link {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--color-forest);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .pdp-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pdp-gallery { position: static; }
+  .pdp-related-grid { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 720px) {
+  .pdp-main { padding: 24px 20px 100px; }
+  .pdp-title { font-size: 26px; }
+  .pdp-price { font-size: 26px; }
+  .pdp-spec-row { grid-template-columns: 90px 1fr; gap: 16px; font-size: 13px; }
+  /* sticky な購入CTA */
+  .pdp-sticky-cta {
+    position: fixed;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    left: 12px; right: 12px;
+    z-index: 88;
+    padding: 16px 20px;
+    background: rgba(15,61,46,0.95);
+    backdrop-filter: blur(12px);
+    color: white;
+    border-radius: 100px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 16px 40px rgba(15,61,46,0.3);
+    transform: translateY(120%);
+    transition: transform 0.3s var(--ease-out-expo);
+  }
+  .pdp-sticky-cta.show { transform: translateY(0); }
+  .pdp-sticky-cta-info {
+    display: flex; flex-direction: column;
+    font-family: var(--font-display);
+    line-height: 1.2;
+  }
+  .pdp-sticky-cta-price { font-size: 17px; }
+  .pdp-sticky-cta-name { font-size: 10px; opacity: 0.8; letter-spacing: 0.06em; }
+  .pdp-sticky-cta-btn {
+    padding: 12px 20px;
+    background: var(--color-gold);
+    color: var(--color-forest-deep);
+    border-radius: 100px;
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">本文へスキップ</a>
+
+<!-- HEADER -->
+<header class="site-header" role="banner">
+  <nav class="site-nav" aria-label="メインナビ">
+    <a href="index.html" class="brand-link">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-img">
+      <span class="brand-mono">EDA LIVESTOCK</span>
+    </a>
+    <a href="shop.html" class="back-link">← BACK TO COLLECTION</a>
+  </nav>
+</header>
+
+<main class="pdp-main" id="main" role="main">
+
+  <nav class="breadcrumb" aria-label="パンくず">
+    <a href="index.html">Home</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="shop.html">Collection</a>
+    <span class="breadcrumb-sep">/</span>
+    <span id="bcCategory">Loading…</span>
+    <span class="breadcrumb-sep">/</span>
+    <span id="bcName">…</span>
+  </nav>
+
+  <div class="pdp-grid">
+
+    <!-- ===== GALLERY ===== -->
+    <section class="pdp-gallery" aria-label="商品画像">
+      <div class="pdp-gallery-main">
+        <img id="galMain" src="public/images/products/drive/sirloin.jpg" alt="">
+      </div>
+      <div class="pdp-gallery-thumbs" id="galThumbs"></div>
+    </section>
+
+    <!-- ===== INFO ===== -->
+    <section class="pdp-info">
+      <div class="pdp-category" id="pdpCategory">Beef</div>
+      <h1 class="pdp-title" id="pdpTitle">サーロインステーキ</h1>
+      <div class="pdp-variant-label" id="pdpVariant">1枚 200g</div>
+
+      <div class="pdp-price" id="pdpPrice">¥3,400</div>
+      <p class="pdp-price-note">送料込み・税込</p>
+
+      <p class="pdp-description" id="pdpDescription">
+        ロース芯から切り出した一枚。塩のみで、フライパンに 90 秒。日曜の昼食に。
+      </p>
+
+      <!-- バリアント選択 -->
+      <div class="pdp-variant-section" id="variantSection" hidden>
+        <label class="pdp-variant-label-sm" for="variantSelect">セット</label>
+        <select class="pdp-variant-select" id="variantSelect"></select>
+      </div>
+
+      <!-- 数量 -->
+      <div class="pdp-qty-section">
+        <span class="pdp-qty-label">数量</span>
+        <div class="pdp-qty">
+          <button type="button" onclick="changeQty(-1)" aria-label="減らす">−</button>
+          <input type="number" id="qty" value="1" min="1" max="20" aria-label="数量">
+          <button type="button" onclick="changeQty(1)" aria-label="増やす">+</button>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="pdp-cta-section">
+        <button class="pdp-cta-primary" id="addToCartBtn" onclick="addToCart()">追加する</button>
+        <a class="pdp-cta-secondary" href="subscription.html">月の定期便で受け取る</a>
+      </div>
+
+      <!-- メタ情報 -->
+      <div class="pdp-meta">
+        <div class="pdp-meta-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="1" y="3" width="15" height="13"/>
+            <path d="M16 8h4l3 3v5h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+          <span>冷凍便でお届け · 賞味期限 製造日より 6 ヶ月</span>
+        </div>
+        <div class="pdp-meta-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M22 4L12 13 2 4"/>
+          </svg>
+          <span>¥11,000 (税込) 以上で全国送料無料</span>
+        </div>
+        <div class="pdp-meta-row">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>
+          </svg>
+          <span>抗生物質・成長促進剤 不使用</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ ACCORDION DETAILS ============ -->
+  <section class="pdp-details">
+    <details class="pdp-detail-item" open>
+      <summary class="pdp-detail-summary">商品仕様</summary>
+      <div class="pdp-detail-body">
+        <dl class="pdp-spec" id="pdpSpec"></dl>
+      </div>
+    </details>
+    <details class="pdp-detail-item">
+      <summary class="pdp-detail-summary">解凍方法</summary>
+      <div class="pdp-detail-body">
+        <p>冷凍状態のまま、冷蔵庫でゆっくり解凍してください (約 8 時間)。<br>
+        急ぐ場合は、真空袋のまま流水で約 30 分。<br>
+        解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>
+      </div>
+    </details>
+    <details class="pdp-detail-item">
+      <summary class="pdp-detail-summary">調理のヒント</summary>
+      <div class="pdp-detail-body" id="pdpCookingTips">
+        <p>塩のみで、フライパンに 90 秒。<br>
+        強火で表面を焼き固め、肉汁を閉じ込めます。</p>
+      </div>
+    </details>
+    <details class="pdp-detail-item">
+      <summary class="pdp-detail-summary">配送について</summary>
+      <div class="pdp-detail-body">
+        <p>ヤマト運輸クール宅急便 (冷凍便) でお届けします。<br>
+        最短 3 営業日。お届け日時のご指定も可能です。<br>
+        ¥11,000 (税込) 以上のご注文で全国送料無料 (北海道・沖縄含む)。</p>
+      </div>
+    </details>
+    <details class="pdp-detail-item">
+      <summary class="pdp-detail-summary">原産地・飼育について</summary>
+      <div class="pdp-detail-body" id="pdpOriginInfo">
+        <p>宮崎県・自社牧場にて、30 ヶ月以上飼育。<br>
+        抗生物質・成長促進剤・ホルモン剤は一切使用しておりません。<br>
+        飼料の一部は自社で配合し、輸入依存を減らす取り組みを続けています。</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ RELATED ============ -->
+  <section class="pdp-related">
+    <p class="pdp-related-title">— You May Also Like —</p>
+    <div class="pdp-related-grid" id="relatedGrid"></div>
+  </section>
+
+</main>
+
+<!-- ============ MOBILE STICKY CTA ============ -->
+<div class="pdp-sticky-cta" id="stickyCta">
+  <div class="pdp-sticky-cta-info">
+    <span class="pdp-sticky-cta-name" id="stickyName">サーロインステーキ</span>
+    <span class="pdp-sticky-cta-price" id="stickyPrice">¥3,400</span>
+  </div>
+  <button class="pdp-sticky-cta-btn" onclick="addToCart()">追加</button>
+</div>
+
+<!-- ============ SCRIPTS ============ -->
+<script src="public/js/eda-config.js"></script>
+<script src="public/data/products-master.js?v=2026.05.14-pdp"></script>
+<script src="public/js/error-tracker.js" defer></script>
+<script src="public/js/mobile-tabbar.js" defer></script>
+<script src="public/js/mobile-nav-hide.js" defer></script>
+<script src="public/js/line-float.js" defer></script>
+
+<script>
+/* ============================================================
+   Product Detail Page — 動的レンダリング
+   URL: product.html?id=P001  (productId 指定)
+   ============================================================ */
+(function () {
+  'use strict';
+
+  const params = new URLSearchParams(location.search);
+  const productId = params.get('id') || 'P001';
+  const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+  const product = all.find(p => p.productId === productId) || all[0];
+  if (!product) {
+    document.querySelector('#pdpTitle').textContent = '商品が見つかりません';
+    return;
+  }
+
+  /* === タイトル・SEO === */
+  document.title = product.name + ' | 江田畜産';
+  document.getElementById('metaTitle').textContent = product.name + ' | 江田畜産';
+  document.getElementById('metaDesc').setAttribute('content', product.description);
+  document.getElementById('canonicalLink').setAttribute('href',
+    'https://edywagyu.github.io/eda-livestock-web/product.html?id=' + productId);
+
+  /* === 基本情報 === */
+  document.getElementById('bcCategory').textContent = product.categoryLabel || '商品';
+  document.getElementById('bcName').textContent = product.name;
+  document.getElementById('pdpCategory').textContent = product.tagEn || product.categoryLabel || '';
+  document.getElementById('pdpTitle').textContent = product.name;
+  document.getElementById('pdpVariant').textContent = product.variant || '';
+  document.getElementById('pdpPrice').textContent = '¥' + (product.price || 0).toLocaleString();
+  document.getElementById('pdpDescription').textContent = product.description;
+  document.getElementById('stickyName').textContent = product.name;
+  document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
+
+  /* === ギャラリー === */
+  const images = (product.images && product.images.length) ? product.images : ['public/images/cuts/hero-0.jpeg'];
+  const galMain = document.getElementById('galMain');
+  galMain.src = images[0];
+  galMain.alt = product.name;
+  const thumbs = document.getElementById('galThumbs');
+  if (images.length > 1) {
+    thumbs.innerHTML = images.map((src, i) => `
+      <button class="pdp-thumb ${i === 0 ? 'active' : ''}" onclick="selectThumb(this, '${src}')">
+        <img src="${src}" alt="${product.name} ${i+1}">
+      </button>
+    `).join('');
+  }
+
+  /* === スペック === */
+  const spec = document.getElementById('pdpSpec');
+  const rows = [
+    ['内容量', product.variant || ''],
+    ['原産地', product.category === 'chicken' || product.category === 'chicken-org' ? '大分県' : '宮崎県'],
+    ['飼育', product.category === 'chicken' || product.category === 'chicken-org' ? '提携農家 平飼い・無投薬' : '自社飼育 30 ヶ月以上・無投薬'],
+    ['加工地', '宮崎県'],
+    ['保管', '冷凍 (-18°C 以下)'],
+    ['賞味期限', '製造日より 6 ヶ月'],
+    ['アレルゲン', product.category === 'beef' ? '牛肉' : (product.category === 'chicken' || product.category === 'chicken-org') ? '鶏肉' : '牛肉']
+  ];
+  spec.innerHTML = rows.map(([k, v]) => `<div class="pdp-spec-row"><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+
+  /* === 鶏は仕入れ表示 === */
+  if (product.category === 'chicken' || product.category === 'chicken-org') {
+    document.getElementById('pdpOriginInfo').innerHTML = `
+      <p>大分県の提携農家にて、無投薬・平飼いで育てられた鶏。<br>
+      ${product.isOrganic ? '飼料は有機 JAS 認証相当の無農薬。月に少量のみの取り扱いです。' : '私たちが選んだ農家からのみ仕入れ、抗生物質・成長促進剤は使用していません。'}</p>
+    `;
+  }
+
+  /* === 関連商品 === */
+  const related = all.filter(p =>
+    p.productId !== productId &&
+    p.category === product.category &&
+    (!p.comingSoon)
+  ).slice(0, 3);
+  document.getElementById('relatedGrid').innerHTML = related.map(p => `
+    <a href="product.html?id=${p.productId}" class="pdp-related-card">
+      <div class="pdp-related-img">
+        <img src="${(p.images && p.images[0]) || 'public/images/cuts/hero-0.jpeg'}" alt="${p.name}">
+      </div>
+      <div class="pdp-related-body">
+        <h3 class="pdp-related-name">${p.name}</h3>
+        <div class="pdp-related-price">¥${(p.price || 0).toLocaleString()}</div>
+        <span class="pdp-related-link">VIEW →</span>
+      </div>
+    </a>
+  `).join('');
+
+  /* === Sticky CTA 表示制御 === */
+  if (window.innerWidth <= 720) {
+    const sticky = document.getElementById('stickyCta');
+    const primaryBtn = document.getElementById('addToCartBtn');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        sticky.classList.toggle('show', !e.isIntersecting);
+      });
+    }, { threshold: 0.1 });
+    obs.observe(primaryBtn);
+  }
+
+  /* === Global state === */
+  window.__pdpProduct = product;
+})();
+
+/* === Gallery thumb 切替 === */
+function selectThumb(el, src) {
+  document.getElementById('galMain').src = src;
+  document.querySelectorAll('.pdp-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* === 数量増減 === */
+function changeQty(delta) {
+  const input = document.getElementById('qty');
+  const v = Math.max(1, Math.min(20, (+input.value || 1) + delta));
+  input.value = v;
+}
+
+/* === カート追加 === */
+function addToCart() {
+  const product = window.__pdpProduct;
+  if (!product) return;
+  const qty = +document.getElementById('qty').value || 1;
+  const item = {
+    variantId: product.variantId,
+    productId: product.productId,
+    title: product.name,
+    variant: product.variant || '',
+    price: product.price || 0,
+    qty: qty,
+    img: (product.images && product.images[0]) || '',
+    stripePriceId: product.stripePriceId || ''
+  };
+  try {
+    const cart = JSON.parse(localStorage.getItem('eda-cart') || '[]');
+    const existing = cart.find(c => c.variantId === item.variantId);
+    if (existing) {
+      existing.qty += qty;
+    } else {
+      cart.push(item);
+    }
+    localStorage.setItem('eda-cart', JSON.stringify(cart));
+    /* 視覚フィードバック */
+    const btn = document.getElementById('addToCartBtn');
+    const originalText = btn.textContent;
+    btn.textContent = '✓ カートに追加しました';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }, 2000);
+  } catch (e) { console.error(e); }
+}
+</script>
+</body>
+</html>

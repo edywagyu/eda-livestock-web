@@ -1761,6 +1761,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  object-fit: cover;
  animation: heroZoom 24s ease-in-out infinite alternate;
 }
+.shop-hero-img:not([src]),
+.shop-hero-img[src=""] { display: none; }
 @keyframes heroZoom {
  from { transform: scale(1); }
  to { transform: scale(1.08); }
@@ -8658,6 +8660,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <section class="shop-hero">
  <img class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/>
  <div class="shop-hero-bg">
+ <!--
+   ▼ Tom: ショップヒーローに実写を入れる場合
+   1. 写真を public/images/hero/ に置く（例: public/images/hero/shop-cuts.jpg）
+   2. 下の img src を差し替える（現在は表示されません）
+   3. 推奨: 部位カット・盛り付け・厨房など、お肉そのものが映る写真
+ -->
+ <img class="shop-hero-img" src="" alt="" loading="eager" fetchpriority="high"/>
  <div class="shop-hero-overlay"></div>
  </div>
  <div class="container shop-hero-content">
@@ -12535,5 +12544,7 @@ function copyPopCoupon() {
 <script src="public/js/image-lightbox.js" defer></script>
 <script src="public/js/mobile-tabbar.js" defer></script>
 <script src="public/js/mobile-nav-hide.js" defer></script>
+<script src="public/data/products-master.js" defer></script>
+<script src="public/js/pdp-link.js" defer></script>
 </body>
 </html>

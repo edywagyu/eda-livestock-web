@@ -142,14 +142,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  padding: 140px 0 80px;
  overflow: hidden;
 }
-.sub-hero::before {
- content: '';
+/* ▼ Tom: 写真差し替えスロット — sub-hero-photo の src を差し替え。空のままならグラデのみ表示 */
+.sub-hero-photo {
  position: absolute;
  inset: 0;
- background: url('public/images/products/drive/freezer-stocked.jpg') center/cover;
- opacity: 0.15;
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
  z-index: 0;
+ opacity: 0.32;
+ mix-blend-mode: luminosity;
 }
+.sub-hero-photo:not([src]),
+.sub-hero-photo[src=""] { display: none; }
 .sub-hero-content { position: relative; z-index: 1; max-width: 760px; }
 .sub-hero-eyebrow {
  display: inline-flex; align-items: center; gap: 8px;
@@ -1606,6 +1611,13 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 <!-- ========= HERO ========= -->
 <section class="sub-hero">
+ <!--
+   ▼ Tom: 定期便ヒーローに実写を入れる場合
+   1. 写真を public/images/hero/ に置く（例: public/images/hero/subscription-table.jpg）
+   2. 下の img src を差し替える（現在は表示されません）
+   3. 推奨: 家族の食卓・冷凍庫・お肉の盛り合わせなど
+ -->
+ <img class="sub-hero-photo" src="" alt="" loading="eager" fetchpriority="high"/>
  <div class="container sub-hero-content">
  <span class="sub-hero-eyebrow">MONTHLY SUBSCRIPTION · 月1回 自動でお届け</span>
  <h1 class="sub-hero-title">
@@ -1671,7 +1683,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-savings">初月 ¥3,490 OFF / 個別 ¥8,200 より約15%お得</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
+ <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
  </div>
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
@@ -1705,7 +1717,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-savings">初月 ¥6,400 OFF / 個別 ¥15,000 より約15%お得</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
+ <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
  </div>
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
@@ -1746,7 +1758,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-savings">初月 ¥13,700 OFF / 個別 ¥32,200 より約15%お得</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥27,400/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月 (それ以前の解約は事務手数料¥3,300)
+ <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
  </div>
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
@@ -2180,6 +2192,51 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <h2>今月入会で 50%OFF。<br/>家族の冷凍庫に、安心を。</h2>
  <p>※ 月末までのお申込み限定 · いつでもスキップ・解約OK</p>
  <a href="#plans" class="btn btn-gold">プランを選び直す ↑</a>
+ </div>
+</section>
+
+<!-- ========= ご利用規約（定期便） ========= -->
+<section class="sub-terms" id="terms" style="padding:64px 0 40px;background:#FBF8F2;border-top:1px solid rgba(0,0,0,0.06);">
+ <div class="container" style="max-width:760px;">
+ <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;letter-spacing:0.04em;color:#1A1A1A;margin:0 0 8px;">ご利用規約・お申し込みについて</h2>
+ <p style="font-size:12px;color:#666;margin:0 0 24px;letter-spacing:0.02em;">Subscription Terms</p>
+
+ <dl style="font-size:13px;line-height:1.9;color:#1A1A1A;letter-spacing:0.02em;">
+ <dt style="font-weight:600;margin-top:18px;">ご契約期間とご解約</dt>
+ <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
+ 定期便は <strong>3回（3ヶ月）からのご解約</strong> となります。お肉本来の魅力を、数ヶ月かけて味わっていただきたいという考えに基づき設けております。3回目以降のご解約はマイページまたはLINEから1タップで完了します。
+ </dd>
+
+ <dt style="font-weight:600;margin-top:18px;">3回未満での中途解約について</dt>
+ <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
+ やむを得ないご事情で3回お届け前にご解約をご希望の場合、事務手数料として <strong>¥3,300（税込）</strong> を頂戴いたします。お引越しや体調の変化など、事情に応じて柔軟にご相談を承りますので、まずはLINEまたはお問い合わせまでご連絡ください。
+ </dd>
+
+ <dt style="font-weight:600;margin-top:18px;">スキップ・プラン変更</dt>
+ <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
+ スキップ・プラン変更はお申込み <strong>初月から自由</strong> にご利用いただけます。次回お届け日の <strong>5日前</strong> までにマイページまたはLINEからお手続きください。
+ </dd>
+
+ <dt style="font-weight:600;margin-top:18px;">お支払いと請求</dt>
+ <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
+ クレジットカード（VISA / Master / JCB / AMEX）または Apple Pay に対応。お届け日の前日に自動引き落としいたします。
+ </dd>
+
+ <dt style="font-weight:600;margin-top:18px;">配送について</dt>
+ <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
+ ヤマト運輸クール宅急便でお届けします。長期不在予定の場合は、お届け5日前までにスキップ手続きをお願いいたします。
+ </dd>
+
+ <dt style="font-weight:600;margin-top:18px;">初月割引について</dt>
+ <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
+ 初月50%OFFは、はじめてご利用の方限定です。2回目以降は通常価格（ミニ ¥6,980 / プロ ¥12,800 / VIP ¥27,400・税込・送料込）でのお届けとなります。
+ </dd>
+ </dl>
+
+ <p style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(0,0,0,0.08);font-size:11px;color:#888;letter-spacing:0.02em;line-height:1.8;">
+ 詳細は <a href="terms.html" style="color:#0F3D2E;text-decoration:underline;">ご利用規約</a> および <a href="tokushoho.html" style="color:#0F3D2E;text-decoration:underline;">特定商取引法に基づく表記</a> をご確認ください。<br>
+ ご不明な点は <a href="contact.html" style="color:#0F3D2E;text-decoration:underline;">お問い合わせ</a> またはLINE公式アカウントまで。
+ </p>
  </div>
 </section>
 
