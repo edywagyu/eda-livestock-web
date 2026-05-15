@@ -53,7 +53,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 .app {
   max-width: 480px;
   margin: 0 auto;
-  min-height: 100vh; min-height: 100dvh;
+  min-height: 100vh; height: 100dvh; min-height: 100dvh;
   background: #f5f5f7;
   position: relative;
   display: flex;
@@ -112,8 +112,8 @@ ul { list-style: none; padding: 0; margin: 0; }
   width: 100%;
   max-width: 480px;
   background: rgba(255,255,255,.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  
+  
   border-top: 1px solid rgba(0,0,0,.08);
   padding: 6px 0 calc(6px + var(--safe-bottom));
   display: flex;
@@ -437,7 +437,7 @@ ul { list-style: none; padding: 0; margin: 0; }
   transition: all .15s;
 }
 .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
-.pin-dot.error { background: var(--red); border-color: var(--red); animation: shake .3s; }
+.pin-dot.error { background: var(--red); border-color: var(--red); /* disabled: shake */ }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-4px); }

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Journal | 江田畜産の記録 | EDA-LIVESTOCK</title>
-<meta name="description" content="創業ストーリー、農場の四季、シェフとの対話。江田畜産が発信するオウンドメディア。">
+<title>ジャーナル｜江田畜産 — 食と暮らしの記録</title>
+<meta name="description" content="江田畜産が綴る、食・暮らし・畜産にまつわる読みもの。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Journal | 江田畜産の取り組み">
 <meta property="og:description" content="畜産の現場から、サステナビリティと品質への想いをお届けします。">
@@ -533,7 +533,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .marquee-track {
  display: inline-flex;
  gap: 64px;
- animation: marqueeSlide 32s linear infinite;
+ /* disabled: marqueeSlide */
 }
 .marquee-item {
  font-family: var(--font-display);
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid;
  grid-template-columns: 1fr 1fr;
  align-items: stretch;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
 }
 .sticky-split-left {
  position: sticky;
@@ -1237,7 +1237,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HERO ================ */
 .hero {
  position: relative;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
  background: var(--color-forest);
  color: white;
  display: flex;
@@ -1317,7 +1317,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  width: 1px;
  height: 56px;
  background: linear-gradient(180deg, transparent 0%, var(--color-gold) 100%);
- animation: scrollPulse 2.4s var(--ease-in-out-cubic) infinite;
+ /* disabled: scrollPulse */
 }
 @keyframes scrollPulse {
  0% { transform: scaleY(0); transform-origin: top; }
@@ -2870,7 +2870,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .btn-add-cart.added {
  background: var(--color-gold);
- animation: cartPop 0.4s ease;
+ /* disabled: cartPop */
 }
 @keyframes cartPop {
  0% { transform: scale(1); }

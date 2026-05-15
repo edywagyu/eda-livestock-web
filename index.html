@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>江田畜産 — 無投薬 30ヶ月の黒毛和牛と大分平飼い鶏 | 宮崎</title>
-<meta name="description" content="抗生物質・ホルモン剤 不使用。30ヶ月以上、自然のリズムで育てた黒毛和牛と、大分の平飼い農家から仕入れる無投薬鶏。家族の冷凍庫に、安心を。">
+<title>江田畜産 — 無投薬 30ヶ月育成の和牛・平飼い鶏 | 宮崎</title>
+<meta name="description" content="黒毛和牛・平飼い鶏を、ご家庭の食卓へ。30ヶ月以上 無投薬で育てた江田畜産の直送便。¥11,000以上送料無料・3-7日でお届け。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="江田畜産オンラインショップ | 100年続く畜産を、創造する。">
 <meta property="og:description" content="無投薬・オーガニック専門の黒毛和牛 直販。冷凍便で全国へ毎日発送中。">
@@ -533,7 +533,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .marquee-track {
  display: inline-flex;
  gap: 64px;
- animation: marqueeSlide 32s linear infinite;
+ /* disabled: marqueeSlide */
 }
 .marquee-item {
  font-family: var(--font-display);
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid;
  grid-template-columns: 1fr 1fr;
  align-items: stretch;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
 }
 .sticky-split-left {
  position: sticky;
@@ -1261,7 +1261,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HERO ================ */
 .hero {
  position: relative;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
  background: var(--color-forest);
  color: white;
  display: flex;
@@ -1362,7 +1362,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  width: 1px;
  height: 56px;
  background: linear-gradient(180deg, transparent 0%, var(--color-gold) 100%);
- animation: scrollPulse 2.4s var(--ease-in-out-cubic) infinite;
+ /* disabled: scrollPulse */
 }
 @keyframes scrollPulse {
  0% { transform: scaleY(0); transform-origin: top; }
@@ -3138,7 +3138,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .btn-add-cart.added {
  background: var(--color-gold);
- animation: cartPop 0.4s ease;
+ /* disabled: cartPop */
 }
 @keyframes cartPop {
  0% { transform: scale(1); }
@@ -3915,7 +3915,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
    3. 推奨サイズ: 2560×1440px 以上、横長、JPEG 高品質
    4. 暗めの写真（牧場・牛・畜舎の夕景など）が forest×gold パレットと馴染みます
  -->
- <img class="hero-photo" src="" alt="" loading="eager" fetchpriority="high"/>
+ <img class="hero-photo" src="public/images/cuts/hero-0.webp" alt="" loading="eager" fetchpriority="high"/>
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
 
  <div class="container hero-content">

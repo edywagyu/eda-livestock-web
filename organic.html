@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>有機JAS 黒毛和牛 — 2026年夏 解禁 | 江田畜産</title>
-<meta name="description" content="世界初の有機JAS認証 黒毛和牛。月間20頭限定。VIPプラン会員 優先案内。">
+<title>有機JAS 黒毛和牛 — 2026年夏 解禁。</title>
+<meta name="description" content="世界初、有機JAS 認証 黒毛和牛。月20頭限定、定期便VIP会員に優先案内。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Organic Wagyu | 江田畜産の3ブランド">
 <meta property="og:description" content="無投薬・オーガニック飼料による A5 等級の黒毛和牛。Eda 90 / 4 Years Premium / Original Eda Wagyu の3ブランド体系。">
@@ -533,7 +533,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .marquee-track {
  display: inline-flex;
  gap: 64px;
- animation: marqueeSlide 32s linear infinite;
+ /* disabled: marqueeSlide */
 }
 .marquee-item {
  font-family: var(--font-display);
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid;
  grid-template-columns: 1fr 1fr;
  align-items: stretch;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
 }
 .sticky-split-left {
  position: sticky;
@@ -1237,7 +1237,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HERO ================ */
 .hero {
  position: relative;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
  background: var(--color-forest);
  color: white;
  display: flex;
@@ -1317,7 +1317,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  width: 1px;
  height: 56px;
  background: linear-gradient(180deg, transparent 0%, var(--color-gold) 100%);
- animation: scrollPulse 2.4s var(--ease-in-out-cubic) infinite;
+ /* disabled: scrollPulse */
 }
 @keyframes scrollPulse {
  0% { transform: scaleY(0); transform-origin: top; }
@@ -2870,7 +2870,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .btn-add-cart.added {
  background: var(--color-gold);
- animation: cartPop 0.4s ease;
+ /* disabled: cartPop */
 }
 @keyframes cartPop {
  0% { transform: scale(1); }

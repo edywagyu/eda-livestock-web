@@ -27,3 +27,8 @@ venv/
 # Editor
 .idea/
 .vscode/
+
+# Internal manifests (do not commit)
+staff-manifest.json
+.DS_Store
+*.log
