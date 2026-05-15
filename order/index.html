@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ご注文ありがとうございました — 江田畜産</title>
+<meta name="robots" content="noindex">
+<style>
+body{margin:0;font-family:'Hiragino Kaku Gothic ProN',system-ui,sans-serif;background:#FBF8F2;color:#1A1A1A;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center}
+.box{max-width:480px}
+.spin{width:48px;height:48px;border:3px solid #EFE8D7;border-top-color:#0F3D2E;border-radius:50%;animation:s 1s linear infinite;margin:0 auto 24px}
+@keyframes s{to{transform:rotate(360deg)}}
+h1{font-size:18px;margin:0 0 8px;color:#0F3D2E;font-weight:600}
+p{font-size:14px;color:#5C5C5C;line-height:1.7;margin:0}
+</style>
+<script>
+/* /order/ → /order-complete.html へ即時転送 (Stripe success_url 受け) */
+(function(){
+  var q = location.search || '';
+  /* 0.3秒後に転送 (ローディング表示を一瞬見せる) */
+  setTimeout(function(){
+    location.replace('/eda-livestock-web/order-complete.html' + q);
+  }, 300);
+})();
+</script>
+</head>
+<body>
+<div class="box">
+<div class="spin"></div>
+<h1>ご注文ありがとうございました</h1>
+<p>注文確認ページへ移動しています…</p>
+</div>
+</body>
+</html>
