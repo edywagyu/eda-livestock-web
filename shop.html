@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>オンラインショップ — 江田畜産の和牛と平飼い鶏</title>
-<meta name="description" content="サーロイン・赤身・ヒレ・ハンバーグ・贈答ギフトまで。冷凍便で全国へ、¥11,000以上で送料無料。最短3日でお届け。">
+<title>オンラインショップ｜江田畜産 — 無投薬 和牛・平飼い鶏</title>
+<meta name="description" content="サーロイン・赤身ステーキ・平飼い鶏の通販。最短3日で全国へ。¥11,000以上 送料無料。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Online Shop | 江田畜産">
 <meta property="og:description" content="黒毛和牛 A5・無投薬オーガニック和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
@@ -552,7 +552,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .marquee-track {
  display: inline-flex;
  gap: 64px;
- animation: marqueeSlide 32s linear infinite;
+ /* disabled: marqueeSlide */
 }
 .marquee-item {
  font-family: var(--font-display);
@@ -624,7 +624,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid;
  grid-template-columns: 1fr 1fr;
  align-items: stretch;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
 }
 .sticky-split-left {
  position: sticky;
@@ -1256,7 +1256,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HERO ================ */
 .hero {
  position: relative;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
  background: var(--color-forest);
  color: white;
  display: flex;
@@ -1336,7 +1336,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  width: 1px;
  height: 56px;
  background: linear-gradient(180deg, transparent 0%, var(--color-gold) 100%);
- animation: scrollPulse 2.4s var(--ease-in-out-cubic) infinite;
+ /* disabled: scrollPulse */
 }
 @keyframes scrollPulse {
  0% { transform: scaleY(0); transform-origin: top; }
@@ -1640,7 +1640,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  gap: 36px;
  white-space: nowrap;
- animation: marqueeScroll 38s linear infinite;
+ /* disabled: marqueeScroll */
  will-change: transform;
  font-family: var(--font-jp);
  font-size: 12px;
@@ -1731,7 +1731,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  pointer-events: none;
  mix-blend-mode: soft-light;
  filter: brightness(1.8) blur(1px);
- animation: heroBgFloat 12s ease-in-out infinite alternate;
+ /* disabled: heroBgFloat */
 }
 @keyframes heroBgFloat {
  from { transform: translate(0, 0) rotate(0deg); }
@@ -1780,7 +1780,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  position: absolute;
  border-radius: 50%;
  background: rgba(212,169,59,0.08);
- animation: floatBlob 18s ease-in-out infinite;
+ /* disabled: floatBlob */
 }
 .shop-hero-overlay::before {
  width: 380px; height: 380px;
@@ -1843,7 +1843,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  width: 6px; height: 6px;
  background: var(--color-gold);
  border-radius: 50%;
- animation: heroPulse 1.6s ease-in-out infinite;
+ /* disabled: heroPulse */
 }
 @keyframes heroPulse {
  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212,169,59,0.5); }
@@ -2030,7 +2030,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  top: 6px;
  left: 50%;
  transform: translateX(-50%);
- animation: scrollWheel 1.8s ease-in-out infinite;
+ /* disabled: scrollWheel */
 }
 @keyframes scrollWheel {
  0%, 100% { opacity: 0; transform: translate(-50%, 0); }
@@ -7305,7 +7305,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .btn-add-cart.added {
  background: var(--color-gold);
- animation: cartPop 0.4s ease;
+ /* disabled: cartPop */
 }
 @keyframes cartPop {
  0% { transform: scale(1); }
@@ -8662,7 +8662,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
    2. 下の img src を差し替える（現在は表示されません）
    3. 推奨: 部位カット・盛り付け・厨房など、お肉そのものが映る写真
  -->
- <img class="shop-hero-img" src="" alt="" loading="eager" fetchpriority="high"/>
+ <img class="shop-hero-img" src="public/images/products/drive/sirloin.webp" alt="" loading="eager" fetchpriority="high"/>
  <div class="shop-hero-overlay"></div>
  </div>
  <div class="container shop-hero-content">

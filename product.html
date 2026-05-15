@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="metaTitle">商品詳細 | 江田畜産</title>
+<title>商品詳細｜江田畜産 オンラインショップ</title>
 <meta name="description" id="metaDesc" content="江田畜産オンラインショップ — 商品の詳細をご確認いただけます。">
 <meta property="og:type" content="product">
 <meta property="og:title" content="商品詳細 | 江田畜産">
@@ -448,7 +448,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   .pdp-price { font-size: 26px; }
   .pdp-spec-row { grid-template-columns: 90px 1fr; gap: 16px; font-size: 13px; }
   /* sticky な購入CTA */
-  .pdp-sticky-cta {
+  .pdp-sticky-cta--hidden { transform: translateY(110%) !important; pointer-events: none; }
+.pdp-sticky-cta {
     position: fixed;
     bottom: calc(72px + env(safe-area-inset-bottom));
     left: 12px; right: 12px;
@@ -462,7 +463,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     box-shadow: 0 16px 40px rgba(15,61,46,0.3);
     transform: translateY(120%);
     transition: transform 0.3s var(--ease-out-expo);
-  }
+  
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);}
   .pdp-sticky-cta.show { transform: translateY(0); }
   .pdp-sticky-cta-info {
     display: flex; flex-direction: column;
@@ -840,6 +842,32 @@ function addToCart() {
   } catch (e) { console.error(e); }
 }
 </script>
-<script src="public/js/eda-bundle.js" defer></script>
+<script src="public/js/eda-bundle.js" defer>
+  /* === Sticky CTA: スクロール下向き時のみ表示 === */
+  (function(){
+    const cta = document.querySelector('.pdp-sticky-cta');
+    if (!cta) return;
+    let lastY = window.scrollY;
+    let ticking = false;
+    function update() {
+      const y = window.scrollY;
+      const dy = y - lastY;
+      if (Math.abs(dy) > 6) {
+        if (dy > 0 && y > 200) {
+          cta.classList.remove('pdp-sticky-cta--hidden');
+        } else if (dy < 0) {
+          cta.classList.add('pdp-sticky-cta--hidden');
+        }
+        lastY = y;
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, {passive: true});
+    cta.classList.add('pdp-sticky-cta--hidden');
+  })();
+
+</script>
 </body>
 </html>

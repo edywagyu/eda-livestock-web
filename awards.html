@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Awards & Certifications | 受賞・認証 | EDA-LIVESTOCK</title>
-<meta name="description" content="世界初オーガニック認証、4年連続内閣総理大臣賞受賞血統、ANAファーストクラス採用、京王百貨店60周年記念選定。">
+<title>Awards & Certifications — 受賞と認証｜江田畜産</title>
+<meta name="description" content="和牛オリンピック金賞、有機JAS同等性、地理的表示等の実績。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Awards | 受賞歴">
 <meta property="og:description" content="宮崎牛 共進会・全国和牛能力共進会など、江田畜産の受賞実績。">
@@ -533,7 +533,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .marquee-track {
  display: inline-flex;
  gap: 64px;
- animation: marqueeSlide 32s linear infinite;
+ /* disabled: marqueeSlide */
 }
 .marquee-item {
  font-family: var(--font-display);
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid;
  grid-template-columns: 1fr 1fr;
  align-items: stretch;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
 }
 .sticky-split-left {
  position: sticky;
@@ -1237,7 +1237,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HERO ================ */
 .hero {
  position: relative;
- min-height: 100vh; min-height: 100dvh;
+ min-height: 100vh; height: 100dvh; min-height: 100dvh;
  background: var(--color-forest);
  color: white;
  display: flex;
@@ -1317,7 +1317,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  width: 1px;
  height: 56px;
  background: linear-gradient(180deg, transparent 0%, var(--color-gold) 100%);
- animation: scrollPulse 2.4s var(--ease-in-out-cubic) infinite;
+ /* disabled: scrollPulse */
 }
 @keyframes scrollPulse {
  0% { transform: scaleY(0); transform-origin: top; }
@@ -2870,7 +2870,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .btn-add-cart.added {
  background: var(--color-gold);
- animation: cartPop 0.4s ease;
+ /* disabled: cartPop */
 }
 @keyframes cartPop {
  0% { transform: scale(1); }
