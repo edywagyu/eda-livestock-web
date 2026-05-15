@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>レジ | Checkout | EDA-LIVESTOCK</title>
-<meta name="description" content="江田畜産 ご注文 — 単品・定期便・ギフト・複数配送先すべてに対応した安心のチェックアウト。">
+<title>ご注文手続き — 江田畜産オンラインショップ</title>
+<meta name="description" content="ご注文内容のご確認とお支払い。クレジットカード・Apple Pay 対応。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Checkout | ご注文の確認">
 <meta property="og:description" content="安全な Stripe Checkout でお支払いください。">
@@ -18,9 +18,6 @@
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/checkout.html">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ================================================================
  * EDA-LIVESTOCK Unified Checkout
@@ -58,7 +55,7 @@ body {
  line-height: 1.6;
  color: var(--color-ink);
  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
- min-height: 100vh;
+ min-height: 100vh; min-height: 100dvh;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -860,11 +857,27 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .dest-field select,
  .dest-field textarea { min-height: 48px; font-size: 16px; padding: 12px 14px; }
 }
+
+/* === Performance: reduce motion / save battery === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* 装飾的な無限アニメはビューポート外で停止 */
+.animate-paused-when-offscreen { animation-play-state: paused; }
+.animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<script src="public/js/eda-config.js"></script>
-<script src="public/js/error-tracker.js" defer></script>
+<link rel="stylesheet" href="public/css/eda-core.css">
 <link rel="stylesheet" href="public/css/jp-typography.css">
 <link rel="stylesheet" href="public/css/a11y.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
 <a href="#main" class="skip-link">本文へスキップ</a>
@@ -873,7 +886,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <header class="checkout-header">
  <div class="container checkout-header-inner">
  <a href="index.html" class="checkout-brand">
- <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK">
+ <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK"></picture>
  <span class="checkout-brand-name">CHECKOUT</span>
  </a>
  <div style="display:flex;align-items:center;gap:16px;">
@@ -1215,7 +1228,7 @@ function renderOrderList() {
  const p = PLANS[subscription.plan];
  return `
  <div class="order-item order-item--sub" data-id="sub">
- <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
+ <div class="order-item-img" style="background-image: image-set(url('public/images/products/drive/premium-slice.webp') type('image/webp'), url('public/images/products/drive/premium-slice.jpg'))"></div>
  <div class="order-item-info">
  <strong>⭐ ${p.name}</strong>
  <span>毎月お届け · 初月50%OFF適用</span>
@@ -1786,6 +1799,6 @@ function calcTotalAmount() {
 init();
 </script>
 
-<script src="public/js/line-float.js" defer></script>
+<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>

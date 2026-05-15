@@ -18,7 +18,6 @@
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/order-complete.html">
 
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* ================================================================
  * EDA-LIVESTOCK Design System (shared)
@@ -127,7 +126,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ ORDER COMPLETE ================ */
 .complete-page {
- min-height: 100vh;
+ min-height: 100vh; min-height: 100dvh;
  padding: 120px 0 64px;
  display: flex;
  flex-direction: column;
@@ -934,11 +933,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .footer-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
 }
+
+/* === Performance: reduce motion / save battery === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* 装飾的な無限アニメはビューポート外で停止 */
+.animate-paused-when-offscreen { animation-play-state: paused; }
+.animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<script src="public/js/eda-config.js"></script>
-<script src="public/js/error-tracker.js" defer></script>
+<link rel="stylesheet" href="public/css/eda-core.css">
 <link rel="stylesheet" href="public/css/jp-typography.css">
 <link rel="stylesheet" href="public/css/a11y.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
 <a href="#main" class="skip-link">本文へスキップ</a>
@@ -947,7 +962,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <header class="site-header" id="siteHeader">
  <div class="container nav">
  <a href="index.html" class="brand-mark">
- <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+ <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
  </a>
  <div class="nav-utils">
  <a href="shop.html" class="nav-back">
@@ -1220,7 +1235,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="footer-grid">
  <div>
  <a href="index.html" class="footer-brand-row">
- <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/>
+ <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/></picture>
  <span>
  <span class="footer-brand">EDA-LIVESTOCK</span>
  <span class="footer-brand-jp">江田畜産株式会社</span>
@@ -1570,6 +1585,6 @@ function showCopied(btn) {
  }, 2000);
 }
 </script>
-<script src="public/js/line-float.js" defer></script>
+<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>
