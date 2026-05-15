@@ -11316,23 +11316,21 @@ body.has-sticky-cart .floating-phone-btn {
 
 <script>
 /* ============ ステータスフィルタ ============ */
-/* ============ 牛肉タブを価格昇順でソート（有機JAS は最後） ============ */
+/* ============ 商品並び：HTMLソース順を維持（プレミアム→普及）。
+   有機JAS の coming-soon カードのみ末尾に押し出す ============ */
 (function sortBeefByPrice() {
  document.querySelectorAll('.product-grid[data-cat="beef"], .product-grid[data-cat="chicken"]').forEach(grid => {
  const cards = Array.from(grid.querySelectorAll('.product-card'));
- cards.forEach(c => {
- // sort-price 指定があれば優先（有機JAS の COMING SOON 用に大きな値）
+ cards.forEach((c, idx) => {
+ // data-sort-price 指定（有機JAS COMING SOON）→ 末尾固定
  if (c.dataset.sortPrice) {
- c._sortPrice = parseInt(c.dataset.sortPrice);
+ c._sortKey = 900000 + parseInt(c.dataset.sortPrice);
  return;
  }
- // それ以外は data-variants の最初の variant の価格
- try {
- const variants = JSON.parse(c.dataset.variants || '[]');
- c._sortPrice = variants.length ? variants[0].p : 999999;
- } catch (e) { c._sortPrice = 999999; }
+ // それ以外は HTML 記述順を維持（サーロイン→赤身→...の意図された並び）
+ c._sortKey = idx;
  });
- cards.sort((a, b) => a._sortPrice - b._sortPrice);
+ cards.sort((a, b) => a._sortKey - b._sortKey);
  cards.forEach(c => grid.appendChild(c));
  });
 })();
