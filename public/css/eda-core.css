@@ -24,6 +24,9 @@
   --font-jp: 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', system-ui, sans-serif;
   --font-body: 'Inter', 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
   --font-mono: 'SF Mono', 'Monaco', 'Menlo', monospace;
+  /* === Numeric: 価格・数字は可読性最優先 ===
+     Cormorant italic は装飾向き。価格・カウンタには SF Pro / Inter */
+  --font-numeric: 'Inter', -apple-system, 'SF Pro Display', 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
 
   /* Easing */
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
@@ -85,4 +88,67 @@ h1, h2, h3 {
 .cv-auto {
   content-visibility: auto;
   contain-intrinsic-size: 800px;
+}
+
+/* ================================================================
+   NUMERIC OVERRIDE — 価格・数字は Cormorant italic ではなく
+   Inter / SF Pro で確実に読める形に統一
+   ※ !important で各 HTML 内の <style> ブロックを上書き
+   ================================================================ */
+.price,
+[class*="-price"],
+[class*="price-"],
+.num,
+[class*="-num"],
+[class*="num-"],
+[class*="stat-num"],
+.amount, .total, .cost, .qty, .quantity,
+.hero-stat-num, .sub-stat-num,
+.cover-stat-num, .global-stat-num,
+.welcome-stat-num, .vision-problem-stat,
+.product-price, .pdp-price, .pdp-price-note,
+.sub-plan-price, .sub-plan-old-price, .sub-plan-savings,
+.order-total-price, .order-number-value,
+.cart-item-price, .cart-subtotal-price, .cart-subtotal,
+.sub-addon-price, .sub-addons-cart-total, .sub-addons-suggest-price,
+.summary-item-price, .summary-row-total, .summary-row.total,
+.gift-product-price, .dyn-card-price, .p-card-price,
+.counter-num, .three-good-num, .brand-tier-num,
+.guide-card-num, .step-num, .stepper-num,
+.checkout-block-num, .flow-num, .cut-num,
+.growth-num, .form-section-num,
+.welcome-stat, .trust-stat,
+.line-track-copy-num,
+.sub-promo-banner-num, .wagyu-guide-num-label,
+.unboxing-step-num, .vision-card-num,
+.sticky-cart-total,
+.audience-phone-num, .contact-phone-num,
+.product-stat-item strong,
+.pdp-spec-row > dd,
+.pdp-sticky-cta-price,
+.sub-hero-promo-text,
+.sub-hero-promo-text strong,
+[data-numeric] {
+  font-family: var(--font-numeric) !important;
+  font-style: normal !important;
+  font-variant-numeric: tabular-nums !important;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0 !important;
+}
+
+/* 価格表記は太めで力強く */
+.product-price, .pdp-price, .sub-plan-price,
+.hero-stat-num, .cover-stat-num, .global-stat-num,
+.welcome-stat-num, .sub-stat-num,
+[class*="-stat-num"], .counter-num,
+.cart-subtotal-price, .order-total-price,
+.sticky-cart-total, .pdp-sticky-cta-price {
+  font-weight: 600 !important;
+}
+
+/* 「¥」マークは少し細く */
+.price::first-letter,
+[class*="-price"]:not(:empty)::first-letter {
+  font-weight: 500;
+  opacity: 0.85;
 }
