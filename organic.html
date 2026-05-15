@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Organic Wagyu 2026 | EDA-LIVESTOCK</title>
-<meta name="description" content="2026年1月、世界初のオーガニック認証和牛「特選江田和牛」がローンチ。">
+<title>有機JAS 黒毛和牛 — 2026年夏 解禁 | 江田畜産</title>
+<meta name="description" content="世界初の有機JAS認証 黒毛和牛。月間20頭限定。VIPプラン会員 優先案内。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Organic Wagyu | 江田畜産の3ブランド">
 <meta property="og:description" content="無投薬・オーガニック飼料による A5 等級の黒毛和牛。Eda 90 / 4 Years Premium / Original Eda Wagyu の3ブランド体系。">
@@ -18,7 +18,6 @@
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/organic.html">
 
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
  * ================================================================ */
@@ -606,12 +605,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid;
  grid-template-columns: 1fr 1fr;
  align-items: stretch;
- min-height: 100vh;
+ min-height: 100vh; min-height: 100dvh;
 }
 .sticky-split-left {
  position: sticky;
  top: 0;
- height: 100vh;
+ height: 100vh; height: 100dvh;
  overflow: hidden;
 }
 .sticky-split-left img { width: 100%; height: 100%; object-fit: cover; }
@@ -1238,7 +1237,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HERO ================ */
 .hero {
  position: relative;
- min-height: 100vh;
+ min-height: 100vh; min-height: 100dvh;
  background: var(--color-forest);
  color: white;
  display: flex;
@@ -1890,8 +1889,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  justify-content: space-between;
  padding: 12px 16px;
  background: rgba(10,45,33,0.95);
- backdrop-filter: blur(12px);
- -webkit-backdrop-filter: blur(12px);
  border-top: 1px solid rgba(212,169,59,0.2);
  transform: translateY(100%);
  transition: transform 0.4s var(--ease-out-expo);
@@ -3566,18 +3563,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .product-buy { flex-direction: column; }
  .variant-select { width: 100%; }
 }
+
+/* === Performance: reduce motion / save battery === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* 装飾的な無限アニメはビューポート外で停止 */
+.animate-paused-when-offscreen { animation-play-state: paused; }
+.animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<script src="public/js/eda-config.js"></script>
+<link rel="stylesheet" href="public/css/eda-core.css">
 <link rel="stylesheet" href="public/css/jp-typography.css">
 <link rel="stylesheet" href="public/css/a11y.css">
 <link rel="stylesheet" href="public/css/mobile-modern.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
 <a href="#main" class="skip-link">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
  <div class="container nav">
  <a href="index.html" class="brand-mark">
- <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+ <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
  </a>
  <nav class="primary-nav">
  <ul class="nav-list">
@@ -3616,8 +3630,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="container page-header-content">
  <span class="eyebrow page-eyebrow">— World's First Organic Wagyu —</span>
  <h1 class="page-title">
- Organic.<br class="hide-sp"/>
- <span class="accent">Global Standard.</span>
+ Organic.<span class="accent">Global Standard.</span>
  </h1>
  <p class="page-subtitle">
  2026年2月、特選江田和牛（Premium EdaWagyu）が世界初のオーガニック認証黒毛和牛としてローンチ。<br/>
@@ -3632,8 +3645,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="reveal" style="text-align: center; margin-bottom: 64px;">
  <span class="eyebrow text-gold has-dash">2 Brands · 1 Philosophy</span>
  <h2 class="philosophy-title">
- Two Tiers,<br class="hide-sp"/>
- <span class="em">One Standard.</span>
+ Two Tiers,<span class="em">One Standard.</span>
  </h2>
  <p class="lead" style="max-width: 720px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
  2026年2月、江田畜産は2ブランド体制で再構築。<br/>
@@ -3713,8 +3725,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="reveal" style="text-align: center; margin-bottom: 64px;">
  <span class="eyebrow text-gold has-dash">Global Organic Standard</span>
  <h2 class="philosophy-title">
- World Standard.<br class="hide-sp"/>
- <span class="em">Japan, Behind.</span>
+ World Standard.<span class="em">Japan, Behind.</span>
  </h2>
  <p class="lead" style="max-width: 720px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
  オーガニックは、世界の食市場における基本言語。<br/>
@@ -3925,8 +3936,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="reveal" style="text-align: center; margin-bottom: 56px;">
  <span class="eyebrow text-gold has-dash">Why It Matters</span>
  <h2 class="philosophy-title">
- Beyond<br class="hide-sp"/>
- <span class="em">A5 / BMS / Region.</span>
+ Beyond<span class="em">A5 / BMS / Region.</span>
  </h2>
  </div>
 
@@ -3959,7 +3969,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="footer-grid">
  <div>
  <a href="index.html" class="footer-brand-row">
- <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/>
+ <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/></picture>
  <span>
  <span class="footer-brand">EDA-LIVESTOCK</span>
  <span class="footer-brand-jp">江田畜産株式会社</span>
@@ -4441,9 +4451,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  })();
 </script>
 
-<script src="public/js/mobile-menu.js" defer></script>
-<script src="public/js/line-float.js" defer></script>
-<script src="public/js/mobile-tabbar.js" defer></script>
-<script src="public/js/mobile-nav-hide.js" defer></script>
+<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>

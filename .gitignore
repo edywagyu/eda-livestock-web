@@ -15,3 +15,15 @@ EDA-LIVESTOCK_営業資料_*.pdf
 # GAS デプロイ用シークレット
 gas/.clasp.json
 gas/credentials.json
+
+# 内部スタッフメタ（公開不要）
+staff-manifest.json
+
+# Python/Node ツール
+.venv/
+venv/
+.cache/
+
+# Editor
+.idea/
+.vscode/

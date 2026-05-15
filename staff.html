@@ -53,7 +53,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 .app {
   max-width: 480px;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh;
   background: #f5f5f7;
   position: relative;
   display: flex;
@@ -1111,16 +1111,34 @@ ul { list-style: none; padding: 0; margin: 0; }
   border-radius: 10px;
   font-weight: 700;
 }
+
+/* === Performance: reduce motion / save battery === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* 装飾的な無限アニメはビューポート外で停止 */
+.animate-paused-when-offscreen { animation-play-state: paused; }
+.animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
 
 <!-- ★ 商品マスター（shop.html と共有・単一データソース）— ?v= を更新するとキャッシュ突破 -->
 <script src="public/data/products-master.js?v=2026.05.12-006-stripe"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="public/css/eda-core.css">
 </head>
 <body>
 
 <!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
-  <img src="public/images/logo/eda-livestock-logo-transparent.png" class="login-logo" alt="">
+  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" class="login-logo" alt=""></picture>
   <div class="login-brand">EDA STAFF</div>
   <div class="login-sub">江田畜産 業務管理</div>
 
@@ -3568,5 +3586,6 @@ function enterDemoQuick() {
   renderPin();
 })();
 </script>
+<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>

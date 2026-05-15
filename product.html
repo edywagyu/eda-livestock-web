@@ -12,9 +12,7 @@
 <meta property="og:locale" content="ja_JP">
 <link rel="canonical" id="canonicalLink" href="https://edywagyu.github.io/eda-livestock-web/product.html">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="public/css/eda-core.css">
 <link rel="stylesheet" href="public/css/jp-typography.css">
 <link rel="stylesheet" href="public/css/a11y.css">
 <link rel="stylesheet" href="public/css/mobile-modern.css">
@@ -120,17 +118,21 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 }
 .pdp-gallery-main {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  background: var(--color-paper);
+  aspect-ratio: 1 / 1;
+  background: var(--color-paper, #FBF8F2);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 12px;
   position: relative;
 }
+.pdp-gallery-main picture {
+  display: block;
+  width: 100%; height: 100%;
+}
 .pdp-gallery-main img {
-  width: 100%; height: 100%; object-fit: cover;
-  mix-blend-mode: multiply;
-  filter: contrast(1.05);
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
 }
 .pdp-gallery-thumbs {
   display: grid;
@@ -150,7 +152,6 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 .pdp-thumb.active { border-color: var(--color-forest); }
 .pdp-thumb img {
   width: 100%; height: 100%; object-fit: cover;
-  mix-blend-mode: multiply;
 }
 
 /* ============ INFO ============ */
@@ -482,7 +483,24 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     letter-spacing: 0.1em;
   }
 }
+
+/* === Performance: reduce motion / save battery === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* 装飾的な無限アニメはビューポート外で停止 */
+.animate-paused-when-offscreen { animation-play-state: paused; }
+.animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
 <a href="#main" class="skip-link">本文へスキップ</a>
@@ -491,7 +509,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 <header class="site-header" role="banner">
   <nav class="site-nav" aria-label="メインナビ">
     <a href="index.html" class="brand-link">
-      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-img">
+      <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-img"></picture>
       <span class="brand-mono">EDA LIVESTOCK</span>
     </a>
     <a href="shop.html" class="back-link">← BACK TO COLLECTION</a>
@@ -515,7 +533,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     <!-- ===== GALLERY ===== -->
     <section class="pdp-gallery" aria-label="商品画像">
       <div class="pdp-gallery-main">
-        <img id="galMain" src="public/images/products/drive/sirloin.jpg" alt="">
+        <picture><source type="image/webp" srcset="public/images/products/drive/sirloin.webp"><img loading="lazy" decoding="async" id="galMain" src="public/images/products/drive/sirloin.jpg" alt=""></picture>
       </div>
       <div class="pdp-gallery-thumbs" id="galThumbs"></div>
     </section>
@@ -642,13 +660,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/js/eda-config.js"></script>
 <script src="public/data/products-master.js?v=2026.05.14-pdp"></script>
-<script src="public/js/error-tracker.js" defer></script>
-<script src="public/js/mobile-tabbar.js" defer></script>
-<script src="public/js/mobile-nav-hide.js" defer></script>
-<script src="public/js/line-float.js" defer></script>
-
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -738,16 +750,41 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     </a>
   `).join('');
 
-  /* === Sticky CTA 表示制御 === */
+  /* === Sticky CTA 表示制御 ===
+     - 上にスクロール (戻る) ＝隠す（ユーザーが戻りたい時の邪魔を最小化）
+     - 下にスクロール ＝ 表示（CTA を見せる）
+     - 主CTA がビューポート内なら常に隠す
+  */
   if (window.innerWidth <= 720) {
     const sticky = document.getElementById('stickyCta');
     const primaryBtn = document.getElementById('addToCartBtn');
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        sticky.classList.toggle('show', !e.isIntersecting);
+    let lastY = window.scrollY;
+    let primaryBtnVisible = true;
+    let raf = null;
+
+    /* 主CTA可視性は IO で監視 */
+    new IntersectionObserver(entries => {
+      entries.forEach(e => { primaryBtnVisible = e.isIntersecting; });
+    }, { threshold: 0.1 }).observe(primaryBtn);
+
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const goingDown = y > lastY + 4;
+        const goingUp = y < lastY - 4;
+        if (primaryBtnVisible || y < 200) {
+          sticky.classList.remove('show');
+        } else if (goingDown) {
+          sticky.classList.add('show');
+        } else if (goingUp) {
+          sticky.classList.remove('show');
+        }
+        lastY = y;
+        raf = null;
       });
-    }, { threshold: 0.1 });
-    obs.observe(primaryBtn);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
   /* === Global state === */
@@ -804,5 +841,6 @@ function addToCart() {
   } catch (e) { console.error(e); }
 }
 </script>
+<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>
