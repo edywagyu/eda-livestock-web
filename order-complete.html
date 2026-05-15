@@ -1298,6 +1298,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 </footer>
 
+<script src="public/js/eda-bundle.js"></script>
 <script>
 /* ================================================================
  * ORDER COMPLETE — Client Logic
@@ -1365,7 +1366,7 @@ if (header) {
  const res = await fetch(GAS_API_URL + '?action=order_status&session_id=' + encodeURIComponent(sessionId));
  const data = await res.json();
 
- if (data.success && data.order) {
+ if ((data.ok || data.success) && data.order) {  /* GAS は ok を返す */
  loading.style.display = 'none';
  success.style.display = '';
  renderOrder(data.order);
@@ -1374,7 +1375,7 @@ if (header) {
  loading.style.display = 'none';
  error.style.display = '';
  document.getElementById('errorMessage').textContent =
- data.message || 'ご注文情報が見つかりませんでした。';
+ data.error || data.message || 'ご注文情報が見つかりませんでした。';
  }
  } catch (err) {
  loading.style.display = 'none';
@@ -1585,6 +1586,5 @@ function showCopied(btn) {
  }, 2000);
 }
 </script>
-<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>
