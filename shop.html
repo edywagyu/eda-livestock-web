@@ -235,14 +235,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img.has-img { background: var(--color-paper); }
 .product-card-img.has-img img {
  width: 100%; height: 100%; object-fit: cover;
- mix-blend-mode: multiply;
  filter: contrast(1.05) saturate(1.05);
-}
+ }
 .restaurant-card-img.has-img, .journal-card-img.has-img { background: transparent; }
 .restaurant-card-img.has-img img, .journal-card-img.has-img img { width: 100%; height: 100%; object-fit: cover; }
 .product-card-img.has-img::after, .restaurant-card-img.has-img::after, .journal-card-img.has-img::after, .member-photo.has-img::after { display: none; }
 /* 背景画像方式 (data-label) も同様 */
-.product-card-img[style*="background-image"] { background-color: var(--color-paper); background-blend-mode: multiply; }
+.product-card-img[style*="background-image"] { background-color: var(--color-paper); }
 .product-card-img.has-img { background: transparent; }
 
 /* Gallery */
@@ -6359,9 +6358,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* クリーム下地 + screen blend で黒背景写真を白っぽく持ち上げ (Tom design critique #8) */
 .product-card-img {
  background-color: var(--color-paper) !important;
- background-blend-mode: screen;
- filter: contrast(1.05) saturate(1.05);
-}
+ }
 .product-card-img[data-label="SIRLOIN"] { background-image: image-set(url('public/images/products/drive/sirloin.webp') type('image/webp'), url('public/images/products/drive/sirloin.jpg')); }
 .product-card-img[data-label="RED MEAT"] { background-image: image-set(url('public/images/products/drive/red-meat.webp') type('image/webp'), url('public/images/products/drive/red-meat.jpg')); }
 .product-card-img[data-label="MISUJI"] { background-image: image-set(url('public/images/products/drive/misuji.webp') type('image/webp'), url('public/images/products/drive/misuji.jpg')); }
