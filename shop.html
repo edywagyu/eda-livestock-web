@@ -6620,65 +6620,57 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ============================================================
-   MEMBER GATE — 有機JAS 黒毛和牛は会員 (LINE 連携済) のみ閲覧可
-   ・body.is-member クラスがあれば: 価格・詳細を全て表示
-   ・なければ: 🔒 ロックオーバーレイ + LINE 連携 CTA
+   MEMBER GATE (有機JAS 牛肉) — チキンと同じ部分ロック UI に統一
+   ・商品名・ORGANIC バッジ・写真 は見せる (会員登録インセンティブ)
+   ・価格・詳細・CTA は blur で隠す
    ============================================================ */
-/* 非会員時: 鍵オーバーレイをカード全体に重ねる */
 .product-card--organic-wagyu .organic-wagyu-lock {
- position: absolute;
- inset: 0;
+ position: relative;
+ margin: 8px 16px;
+ padding: 14px 12px;
+ background: linear-gradient(180deg, rgba(15,61,46,0.04), rgba(15,61,46,0.08));
+ border: 1px dashed rgba(212,169,59,0.5);
+ border-radius: 8px;
  display: flex;
  flex-direction: column;
  align-items: center;
- justify-content: center;
- gap: 12px;
- padding: 24px;
- background: linear-gradient(180deg, rgba(10,29,21,0.92), rgba(6,15,11,0.96));
- backdrop-filter: blur(6px);
- -webkit-backdrop-filter: blur(6px);
- z-index: 10;
+ gap: 8px;
  text-align: center;
- border-radius: inherit;
 }
 .organic-wagyu-lock-icon {
- width: 36px; height: 36px;
+ width: 26px; height: 26px;
  border-radius: 50%;
  background: rgba(212,169,59,0.18);
- border: 1px solid rgba(212,169,59,0.4);
  display: flex; align-items: center; justify-content: center;
- font-size: 16px;
+ font-size: 12px;
  color: var(--color-gold);
 }
 .organic-wagyu-lock-title {
- font-family: var(--font-jp-serif);
- font-size: 14px;
+ font-family: var(--font-jp);
+ font-size: 12px;
  color: var(--color-gold);
  font-weight: 700;
- letter-spacing: 0.04em;
- line-height: 1.5;
+ letter-spacing: 0.02em;
 }
 .organic-wagyu-lock-desc {
- font-size: 11.5px;
- color: rgba(255,255,255,0.7);
- line-height: 1.7;
- max-width: 220px;
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.85);
+ line-height: 1.6;
 }
 .organic-wagyu-lock-cta {
  display: inline-flex;
  align-items: center;
- gap: 6px;
- padding: 9px 18px;
+ gap: 4px;
+ padding: 6px 14px;
  background: var(--color-gold);
  color: var(--color-forest-deep);
  font-family: var(--font-jp);
- font-size: 12px;
+ font-size: 11px;
  font-weight: 700;
- border-radius: 20px;
+ border-radius: 14px;
  letter-spacing: 0.04em;
  text-decoration: none;
  transition: transform 0.2s ease;
- margin-top: 4px;
 }
 .organic-wagyu-lock-cta:hover {
  transform: translateY(-1px);
@@ -6689,14 +6681,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 body.is-member .product-card--organic-wagyu .organic-wagyu-lock {
  display: none;
 }
-/* 非会員モード: 価格や説明は伏字に (見えないように) */
+/* 非会員モード: 価格・詳細・購入 CTA を blur で隠す (商品名/写真/ORGANIC バッジは鮮明) */
 body:not(.is-member) .product-card--organic-wagyu .product-desc,
 body:not(.is-member) .product-card--organic-wagyu .product-price,
-body:not(.is-member) .product-card--organic-wagyu .product-tag-row,
+body:not(.is-member) .product-card--organic-wagyu .product-tag-row .product-price,
 body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap {
  filter: blur(4px);
  pointer-events: none;
  user-select: none;
+}
+/* 会員登録インセンティブを残すため、商品名・写真・バッジは鮮明に */
+body:not(.is-member) .product-card--organic-wagyu .product-name,
+body:not(.is-member) .product-card--organic-wagyu .product-card-img,
+body:not(.is-member) .product-card--organic-wagyu .badge-organic,
+body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-overlay {
+ filter: none !important;
 }
 
 /* ============================================================
