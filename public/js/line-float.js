@@ -1,74 +1,74 @@
 /* ============================================================
-   eda-livestock — 浮遊LINE質問ボタン 共通スクリプト
-   - 対象: 全顧客向けページ (shop / subscription / checkout
-            以外で .floating-phone-btn を既に持つページはスキップ)
-   - 効果: 右下に LINE@706sgiuq への直リンクを配置
+   江田畜産 — 浮遊「電話はこちら」ボタン (日本国内のみ表示)
+   - tel:09047241063 でモバイルから直接発信
+   - 国外アクセスでは非表示
    ============================================================ */
 (function () {
   'use strict';
 
+  function isJapanLocale() {
+    try {
+      const lang = (navigator.language || '').toLowerCase();
+      if (lang.startsWith('ja')) return true;
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (tz === 'Asia/Tokyo') return true;
+      const langs = (navigator.languages || []).join(',').toLowerCase();
+      if (langs.includes('ja')) return true;
+      return false;
+    } catch (e) { return true; }
+  }
+
   function init() {
-    // 既に専用LINE/電話ボタンを持つページはスキップ
-    if (document.querySelector('.eda-floating-line') || document.querySelector('.floating-phone-btn')) return;
+    if (document.querySelector('.eda-floating-phone') || document.querySelector('.floating-phone-btn')) return;
     if (document.querySelector('[data-no-floating-line]')) return;
+    if (!isJapanLocale()) return;
 
     const css = `
-.eda-floating-line {
+.eda-floating-phone {
   position: fixed; right: 16px; bottom: 16px; z-index: 92;
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 10px 16px 10px 12px;
-  background: linear-gradient(135deg, #06C755 0%, #0AB04C 100%);
+  padding: 10px 18px 10px 12px;
+  background: linear-gradient(135deg, #0F3D2E 0%, #0A2D21 100%);
   color: #fff; border-radius: 32px;
-  border: 1.5px solid rgba(255,255,255,0.4);
-  box-shadow: 0 8px 24px rgba(6,199,85,0.35), 0 2px 8px rgba(0,0,0,0.1);
+  border: 1.5px solid rgba(212,169,59,0.5);
+  box-shadow: 0 8px 24px rgba(15,61,46,0.35), 0 2px 8px rgba(0,0,0,0.12);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(.16,1,.3,1);
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
 }
-.eda-floating-line:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(6,199,85,0.5); }
-.eda-floating-line-icon {
+.eda-floating-phone:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,61,46,0.45); }
+.eda-floating-phone-icon {
   width: 36px; height: 36px; border-radius: 50%;
-  background: #fff; color: #06C755;
+  background: #D4A93B; color: #0A2D21;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.eda-floating-line-text { display: flex; flex-direction: column; line-height: 1.2; }
-.eda-floating-line-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
-.eda-floating-line-text small { font-size: 10px; color: rgba(255,255,255,0.85); margin-top: 2px; }
+.eda-floating-phone-text { display: flex; flex-direction: column; line-height: 1.2; }
+.eda-floating-phone-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: #D4A93B; }
+.eda-floating-phone-text .num { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; margin-top: 2px; font-family: 'Inter', sans-serif; }
 @media (max-width: 720px) {
-  /* モバイルではアイコンのみ表示 (FAB スタイル) → コンテンツ視認性最大化 */
-  .eda-floating-line {
-    right: 14px; bottom: 14px;
-    padding: 0;
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    justify-content: center;
-    gap: 0;
-  }
-  .eda-floating-line-icon { width: 52px; height: 52px; background: transparent; color: #fff; }
-  .eda-floating-line-icon svg { width: 26px; height: 26px; }
-  .eda-floating-line-text { display: none; }
-  /* sticky-cart-bar が出ているときは LINE ボタンを上に持ち上げる (衝突回避) */
-  body.has-sticky-cart .eda-floating-line { bottom: 84px; }
+  .eda-floating-phone { right: 14px; bottom: 14px; padding: 0; width: 52px; height: 52px; border-radius: 50%; justify-content: center; gap: 0; }
+  .eda-floating-phone-icon { width: 52px; height: 52px; background: transparent; color: #D4A93B; }
+  .eda-floating-phone-icon svg { width: 26px; height: 26px; }
+  .eda-floating-phone-text { display: none; }
+  body.has-sticky-cart .eda-floating-phone { bottom: 84px; }
 }`;
     const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
 
     const a = document.createElement('a');
-    a.href = 'https://line.me/R/ti/p/@706sgiuq';
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.className = 'eda-floating-line';
-    a.setAttribute('aria-label', 'LINE で江田畜産に質問');
+    a.href = 'tel:09047241063';
+    a.className = 'eda-floating-phone';
+    a.setAttribute('aria-label', '電話で江田畜産に問い合わせ 090-4724-1063');
     a.innerHTML = `
-      <span class="eda-floating-line-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/>
+      <span class="eda-floating-phone-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
         </svg>
       </span>
-      <span class="eda-floating-line-text">
-        <strong>LINE で質問</strong>
-        <small>江田畜産公式 / 平日9-18時 返信</small>
+      <span class="eda-floating-phone-text">
+        <strong>電話はこちら</strong>
+        <span class="num">090-4724-1063</span>
       </span>`;
     document.body.appendChild(a);
   }

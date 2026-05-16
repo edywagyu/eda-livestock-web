@@ -318,46 +318,62 @@
   }
 })();
 
-/* ===== line-float.js ===== */
+/* ===== line-float.js (REPURPOSED: 電話ボタン) ===== */
 /* ============================================================
-   eda-livestock — 浮遊LINE質問ボタン 共通スクリプト
-   - 対象: 全顧客向けページ (shop / subscription / checkout
-            以外で .floating-phone-btn を既に持つページはスキップ)
-   - 効果: 右下に LINE@706sgiuq への直リンクを配置
+   江田畜産 — 浮遊「電話はこちら」ボタン (日本国内のみ表示)
+   - 国外アクセスでは非表示
+   - tel:09047241063 でモバイルから直接発信
+   - デスクトップでは番号を可読表示
    ============================================================ */
 (function () {
   'use strict';
 
+  /* 日本以外のロケールでは非表示 (簡易判定) */
+  function isJapanLocale() {
+    try {
+      const lang = (navigator.language || '').toLowerCase();
+      if (lang.startsWith('ja')) return true;
+      /* タイムゾーン判定 (より精度高) */
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (tz === 'Asia/Tokyo') return true;
+      /* navigator.languages にも 'ja' 含まれていれば OK */
+      const langs = (navigator.languages || []).join(',').toLowerCase();
+      if (langs.includes('ja')) return true;
+      return false;
+    } catch (e) {
+      return true; /* 判定失敗時は表示 (default fallback) */
+    }
+  }
+
   function init() {
-    // 既に専用LINE/電話ボタンを持つページはスキップ
-    if (document.querySelector('.eda-floating-line') || document.querySelector('.floating-phone-btn')) return;
+    if (document.querySelector('.eda-floating-phone') || document.querySelector('.floating-phone-btn')) return;
     if (document.querySelector('[data-no-floating-line]')) return;
+    if (!isJapanLocale()) return;  /* 海外 IP / 設定では非表示 */
 
     const css = `
-.eda-floating-line {
+.eda-floating-phone {
   position: fixed; right: 16px; bottom: 16px; z-index: 92;
   display: inline-flex; align-items: center; gap: 10px;
-  padding: 10px 16px 10px 12px;
-  background: linear-gradient(135deg, #06C755 0%, #0AB04C 100%);
+  padding: 10px 18px 10px 12px;
+  background: linear-gradient(135deg, #0F3D2E 0%, #0A2D21 100%);
   color: #fff; border-radius: 32px;
-  border: 1.5px solid rgba(255,255,255,0.4);
-  box-shadow: 0 8px 24px rgba(6,199,85,0.35), 0 2px 8px rgba(0,0,0,0.1);
+  border: 1.5px solid rgba(212,169,59,0.5);
+  box-shadow: 0 8px 24px rgba(15,61,46,0.35), 0 2px 8px rgba(0,0,0,0.12);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(.16,1,.3,1);
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
 }
-.eda-floating-line:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(6,199,85,0.5); }
-.eda-floating-line-icon {
+.eda-floating-phone:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,61,46,0.45); }
+.eda-floating-phone-icon {
   width: 36px; height: 36px; border-radius: 50%;
-  background: #fff; color: #06C755;
+  background: #D4A93B; color: #0A2D21;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.eda-floating-line-text { display: flex; flex-direction: column; line-height: 1.2; }
-.eda-floating-line-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
-.eda-floating-line-text small { font-size: 10px; color: rgba(255,255,255,0.85); margin-top: 2px; }
+.eda-floating-phone-text { display: flex; flex-direction: column; line-height: 1.2; }
+.eda-floating-phone-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: #D4A93B; }
+.eda-floating-phone-text .num { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; margin-top: 2px; font-family: 'Inter', sans-serif; }
 @media (max-width: 720px) {
-  /* モバイルではアイコンのみ表示 (FAB スタイル) → コンテンツ視認性最大化 */
-  .eda-floating-line {
+  .eda-floating-phone {
     right: 14px; bottom: 14px;
     padding: 0;
     width: 52px; height: 52px;
@@ -365,31 +381,28 @@
     justify-content: center;
     gap: 0;
   }
-  .eda-floating-line-icon { width: 52px; height: 52px; background: transparent; color: #fff; }
-  .eda-floating-line-icon svg { width: 26px; height: 26px; }
-  .eda-floating-line-text { display: none; }
-  /* sticky-cart-bar が出ているときは LINE ボタンを上に持ち上げる (衝突回避) */
-  body.has-sticky-cart .eda-floating-line { bottom: 84px; }
+  .eda-floating-phone-icon { width: 52px; height: 52px; background: transparent; color: #D4A93B; }
+  .eda-floating-phone-icon svg { width: 26px; height: 26px; }
+  .eda-floating-phone-text { display: none; }
+  body.has-sticky-cart .eda-floating-phone { bottom: 84px; }
 }`;
     const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);
 
     const a = document.createElement('a');
-    a.href = 'https://line.me/R/ti/p/@706sgiuq';
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.className = 'eda-floating-line';
-    a.setAttribute('aria-label', 'LINE で江田畜産に質問');
+    a.href = 'tel:09047241063';
+    a.className = 'eda-floating-phone';
+    a.setAttribute('aria-label', '電話で江田畜産に問い合わせ 090-4724-1063');
     a.innerHTML = `
-      <span class="eda-floating-line-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/>
+      <span class="eda-floating-phone-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>
         </svg>
       </span>
-      <span class="eda-floating-line-text">
-        <strong>LINE で質問</strong>
-        <small>江田畜産公式 / 平日9-18時 返信</small>
+      <span class="eda-floating-phone-text">
+        <strong>電話はこちら</strong>
+        <span class="num">090-4724-1063</span>
       </span>`;
     document.body.appendChild(a);
   }
@@ -522,132 +535,18 @@
   else init();
 })();
 
-/* ===== mobile-tabbar.js ===== */
-/* ============================================================
-   江田畜産 — モバイル底部タブバー
-   - Apple / Instagram / NIKE パターン
-   - 5 タブ: Home / Shop / Cart / 定期便 / マイページ
-   - スクロールダウンで隠す, アップで再表示
-   - カートバッジ自動更新
-   ============================================================ */
+/* ===== mobile-tabbar.js (DISABLED) ===== */
+/* Tom 指示で削除。既存ページの DOM・body class クリーンアップだけ実行 */
 (function () {
   'use strict';
-
-  // checkout / order-complete / 404 / staff など UI 集中するページは除外
-  const SKIP_PATHS = ['/checkout.html', '/order-complete.html', '/404.html', '/staff.html', '/dashboard.html', '/test-checkout.html'];
-  const path = location.pathname;
-  if (SKIP_PATHS.some(p => path.endsWith(p))) return;
-
-  function init() {
-    // 既に追加されている場合 skip
-    if (document.querySelector('.eda-mobile-tabbar')) return;
-
-    // 現在のパスから active を判定
-    const isActive = (file) => {
-      const cleanPath = path.replace(/\/$/, '') || '/index.html';
-      return cleanPath.endsWith(file);
-    };
-
-    const tabs = [
-      {
-        href: 'index.html',
-        label: 'ホーム',
-        active: isActive('/index.html') || path === '/' || path.endsWith('/'),
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>'
-      },
-      {
-        href: 'shop.html',
-        label: 'Shop',
-        active: isActive('/shop.html'),
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="18" cy="21" r="1.5"/><path d="M3 4h2l2.7 12.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.5L22 8H6"/></svg>'
-      },
-      {
-        href: 'subscription.html',
-        label: '定期便',
-        active: isActive('/subscription.html'),
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4M16 3v4"/></svg>'
-      },
-      {
-        href: 'shop.html?openCart=1',
-        label: 'カート',
-        active: false,
-        isCart: true,
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>'
-      },
-      {
-        href: 'mypage.html',
-        label: 'マイページ',
-        active: isActive('/mypage.html'),
-        icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>'
-      }
-    ];
-
-    const html = `
-      <nav class="eda-mobile-tabbar" id="edaMobileTabbar" aria-label="モバイルメインナビ">
-        <div class="eda-mobile-tabbar-inner">
-          ${tabs.map(t => `
-            <a href="${t.href}" class="eda-mobile-tab ${t.active ? 'active' : ''}" ${t.isCart ? 'data-cart-tab' : ''}>
-              ${t.icon}
-              <span>${t.label}</span>
-              ${t.isCart ? '<span class="eda-mobile-tab-badge" id="edaTabCartBadge">0</span>' : ''}
-            </a>
-          `).join('')}
-        </div>
-      </nav>
-    `;
-    document.body.insertAdjacentHTML('beforeend', html);
-    document.body.classList.add('has-mobile-tabbar');
-
-    /* スクロール方向で表示・非表示 */
-    const tabbar = document.getElementById('edaMobileTabbar');
-    let lastY = window.scrollY;
-    let raf = null;
-    window.addEventListener('scroll', () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        const y = window.scrollY;
-        const dy = y - lastY;
-        if (Math.abs(dy) > 6) {
-          if (dy > 0 && y > 100) {
-            tabbar.classList.add('hide');
-          } else {
-            tabbar.classList.remove('hide');
-          }
-          lastY = y;
-        }
-        raf = null;
-      });
-    }, { passive: true });
-
-    /* カートバッジ自動更新 (localStorage監視) */
-    const badgeEl = document.getElementById('edaTabCartBadge');
-    function updateCartBadge() {
-      try {
-        const cart = JSON.parse(localStorage.getItem('eda-cart') || '[]');
-        const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
-        if (badgeEl) {
-          badgeEl.textContent = total;
-          badgeEl.classList.toggle('show', total > 0);
-        }
-      } catch (e) {}
-    }
-    updateCartBadge();
-    window.addEventListener('storage', updateCartBadge);
-    setInterval(updateCartBadge, 2000);
-
-    /* ?openCart=1 で着地したら shop のカートをすぐ開く */
-    if (path.endsWith('shop.html') && location.search.includes('openCart=1')) {
-      setTimeout(() => {
-        const btn = document.getElementById('cartBtn') || document.querySelector('.nav-cart');
-        if (btn) btn.click();
-      }, 300);
-    }
+  function cleanup() {
+    document.body.classList.remove('has-mobile-tabbar');
+    document.querySelectorAll('.eda-mobile-tabbar, #edaMobileTabbar, .mobile-tabbar').forEach(el => el.remove());
   }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', cleanup);
   } else {
-    init();
+    cleanup();
   }
 })();
 
