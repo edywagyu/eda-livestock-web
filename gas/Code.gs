@@ -245,6 +245,23 @@ function createCheckout(body) {
   // - なければ ad-hoc price_data (互換性維持)
   const lineItems = [];
   const items = collectItems(body);
+
+  // ★ 在庫上限チェック (在庫切れ → 注文受付拒否)
+  // products シートから現在在庫を取得して、各 cart item を検証
+  try {
+    const stockErrors = validateStockBeforeCheckout(items);
+    if (stockErrors.length > 0) {
+      return jsonResponse({
+        ok: false,
+        error: 'OUT_OF_STOCK',
+        message: '以下の商品は在庫不足のため注文できません:\n' + stockErrors.join('\n'),
+        out_of_stock: stockErrors
+      });
+    }
+  } catch (e) {
+    // 在庫検証エラーは fail-open (シート未作成時など) → ログだけ
+    log('stock_check_warn', { error: e.message });
+  }
   items.forEach(it => {
     if (it.stripePriceId) {
       lineItems.push({
@@ -300,7 +317,13 @@ function createCheckout(body) {
       customer_phone: body.customer && body.customer.phone,
       line_uid:     (body.customer && body.customer.line_uid) || '',
       line_name:    (body.customer && body.customer.line_name) || '',
-      destinations_json: JSON.stringify(body.destinations || [])
+      destinations_json: JSON.stringify(body.destinations || []),
+      /* ★ 在庫 decrement 用に items を保存 (Stripe metadata は 500 文字制限) */
+      items_json: JSON.stringify(items.map(it => ({
+        title: it.title || it.name || '',
+        variant: it.variant || '',
+        qty: it.qty || 1
+      }))).slice(0, 480)
     }
   };
 
@@ -485,7 +508,64 @@ function finalizeOrder(session) {
     last_order_at: new Date()
   });
 
+  // ★ 在庫を decrement (payment_status='paid' のみ)
+  if (session.payment_status === 'paid') {
+    try {
+      decrementStockAfterOrder(session, meta);
+    } catch (e) {
+      log('stock_decrement_error', { error: e.message, order: orderNum });
+    }
+  }
+
   return jsonResponse({ ok:true, order: orderNum });
+}
+
+/* ============================================================
+   注文確定後に products シートの stock を減算
+   ・metadata に items_json があれば使う (未保存の場合は line_items から取得)
+   ・1つ=1, 2つセット=2, 3つセット=3 のユニット換算
+   ============================================================ */
+function decrementStockAfterOrder(session, meta) {
+  const sh = ss().getSheetByName('products');
+  if (!sh) return;
+  const data = sh.getDataRange().getValues();
+  if (data.length < 2) return;
+  const headers = data[0];
+  const titleIdx = headers.indexOf('name');
+  const stockIdx = headers.indexOf('stock');
+  if (titleIdx === -1 || stockIdx === -1) return;
+
+  function variantUnits(variant) {
+    if (!variant) return 1;
+    if (String(variant).indexOf('3つ') >= 0) return 3;
+    if (String(variant).indexOf('2つ') >= 0) return 2;
+    return 1;
+  }
+
+  let items = [];
+  try {
+    items = JSON.parse(meta.items_json || '[]');
+  } catch (e) {}
+  if (!items.length) return;
+
+  // title ごとに必要ユニットを集計
+  const unitsByTitle = {};
+  items.forEach(it => {
+    const t = it.title || it.name || '';
+    const u = variantUnits(it.variant) * (it.qty || 1);
+    unitsByTitle[t] = (unitsByTitle[t] || 0) + u;
+  });
+
+  // products シートの該当行を減算
+  for (let i = 1; i < data.length; i++) {
+    const title = data[i][titleIdx];
+    const consumed = unitsByTitle[title];
+    if (consumed > 0) {
+      const cur = Number(data[i][stockIdx]) || 0;
+      const next = Math.max(0, cur - consumed);
+      sh.getRange(i + 1, stockIdx + 1).setValue(next);
+    }
+  }
 }
 
 function logSubscriptionCreated(sub) {
@@ -847,6 +927,53 @@ function collectItems(body) {
     (d.items || []).forEach(i => items.push(i));
   });
   return items;
+}
+
+/* ============================================================
+   在庫検証: products シートから現在在庫を取得して
+   カート内の各 item が在庫を超えないかチェック
+   返り値: error メッセージ配列 (空 = OK, 非空 = 在庫不足)
+   ============================================================ */
+function validateStockBeforeCheckout(items) {
+  const errors = [];
+  try {
+    const sh = ss().getSheetByName('products');
+    if (!sh) return errors; // sheet 未作成時は fail-open
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return errors;
+    const headers = data[0];
+    const titleIdx = headers.indexOf('name');
+    const variantIdIdx = headers.indexOf('variantId');
+    const stockIdx = headers.indexOf('stock');
+    if (titleIdx === -1 || stockIdx === -1) return errors;
+
+    // 商品ごとの「ユニット消費」を集計 (1つ=1, 2つセット=2, 3つセット=3)
+    function variantUnits(variant) {
+      if (!variant) return 1;
+      if (String(variant).indexOf('3つ') >= 0) return 3;
+      if (String(variant).indexOf('2つ') >= 0) return 2;
+      return 1;
+    }
+    const cartUnitsByTitle = {};
+    items.forEach(it => {
+      const t = it.title || it.name || '';
+      const units = variantUnits(it.variant) * (it.qty || 1);
+      cartUnitsByTitle[t] = (cartUnitsByTitle[t] || 0) + units;
+    });
+
+    // products シートの stock と比較
+    for (let i = 1; i < data.length; i++) {
+      const title = data[i][titleIdx];
+      const stock = Number(data[i][stockIdx]) || 0;
+      const needed = cartUnitsByTitle[title] || 0;
+      if (needed > 0 && needed > stock) {
+        errors.push(`「${title}」: 在庫 ${stock} 点 / 注文 ${needed} 点 (${needed - stock} 点 不足)`);
+      }
+    }
+  } catch (e) {
+    log('stock_validate_error', { error: e.message });
+  }
+  return errors;
 }
 
 function calcShipping(subtotal, pref) {
