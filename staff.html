@@ -2122,10 +2122,34 @@ async function loadInventory() {
   try {
     const res = await fetch(GAS_URL + '?action=staff_inventory');
     const data = await res.json();
-    inventoryCache = data.products || [];
+    const gasProducts = data.products || [];
+
+    /* ★ MERGE LOGIC: products-master.js を正本として、GAS の在庫を上書きで合体
+       - master の全 23 商品が常に表示される (単品・ギフト・有機JAS 全て)
+       - GAS に同 SKU/productId があれば在庫情報を採用
+       - GAS に追加商品があれば末尾に追加 */
+    const merged = JSON.parse(JSON.stringify(DEMO_PRODUCTS));  // master clone
+    gasProducts.forEach(gp => {
+      const idx = merged.findIndex(m =>
+        m.productId === gp.productId ||
+        m.sku === gp.sku ||
+        m.variantId === gp.variantId
+      );
+      if (idx >= 0) {
+        // 既存: GAS の field で上書き (stock / price / temp など)
+        merged[idx] = { ...merged[idx], ...gp };
+      } else {
+        // 新規: 末尾に追加
+        merged.push(gp);
+      }
+    });
+    inventoryCache = merged;
     renderInventory();
   } catch (e) {
-    list.innerHTML = '<div class="empty">読み込み失敗: ' + e.message + '</div>';
+    /* GAS 接続失敗時も master からフォールバック */
+    console.warn('[staff] inventory fetch failed, falling back to master:', e);
+    inventoryCache = JSON.parse(JSON.stringify(DEMO_PRODUCTS));
+    renderInventory();
   }
 }
 

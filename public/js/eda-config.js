@@ -28,7 +28,7 @@
     // 形式: 1234567890-AbcdEfgh (アプリ作成後の "LIFF ID")
     LIFF_ID: '',
     // 連絡先
-    PHONE: '08057930708',
+    PHONE: '09047241063',
     EMAIL: 'backoffice@eda-livestock.com'
   };
 
