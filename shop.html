@@ -2064,26 +2064,43 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  pointer-events: none;
 }
 .shop-trust-inner {
- display: flex;
- justify-content: center;
- gap: 32px;
- flex-wrap: wrap;
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 0;
  position: relative;
  z-index: 1;
+ max-width: 880px;
+ margin: 0 auto;
 }
 .shop-trust-item {
  font-family: var(--font-jp);
- font-size: 12px;
+ font-size: 12.5px;
  letter-spacing: 0.04em;
  color: var(--color-ink-muted);
- white-space: nowrap;
- display: inline-flex;
+ display: flex;
  align-items: center;
- gap: 6px;
+ justify-content: center;
+ gap: 8px;
+ padding: 2px 16px;
+ border-right: 1px solid rgba(212,169,59,0.25);
+ white-space: nowrap;
 }
+.shop-trust-item:last-child { border-right: 0; }
 .shop-trust-item strong {
  color: var(--color-forest);
  font-weight: 700;
+}
+@media (max-width: 720px) {
+ .shop-trust-inner {
+ grid-template-columns: 1fr;
+ gap: 8px;
+ padding: 4px 0;
+ }
+ .shop-trust-item {
+ border-right: 0;
+ padding: 6px 16px;
+ font-size: 12px;
+ }
 }
 
 /* ================ LINE BANNER ================ */
@@ -3759,35 +3776,73 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin-top: 24px;
 }
 .quiz-actions .btn { min-width: 220px; }
+/* ============ プロ仕様 CTA (Apple/Aesop tone) ============ */
 .quiz-cta-primary {
- padding: 16px 32px !important;
- font-size: 15px !important;
+ position: relative;
+ display: inline-flex !important;
+ align-items: center;
+ justify-content: center;
+ gap: 12px;
+ min-width: 280px !important;
+ padding: 18px 40px !important;
+ font-size: 16px !important;
  font-weight: 700 !important;
- letter-spacing: 0.04em;
- background: linear-gradient(135deg, var(--color-gold) 0%, #E5B547 100%) !important;
- color: var(--color-forest-deep) !important;
- border-color: var(--color-gold) !important;
- box-shadow: 0 6px 20px rgba(212,169,59,0.35);
- transition: transform 0.25s ease, box-shadow 0.25s ease;
+ letter-spacing: 0.06em !important;
+ background: linear-gradient(180deg, var(--color-forest) 0%, var(--color-forest-deep) 100%) !important;
+ color: white !important;
+ border: 0 !important;
+ border-radius: 4px !important;
+ box-shadow:
+   0 4px 0 var(--color-forest-deep),
+   0 12px 32px rgba(15,61,46,0.25);
+ transition: transform 0.18s ease, box-shadow 0.18s ease;
+ overflow: hidden;
+}
+.quiz-cta-primary::before {
+ content: '';
+ position: absolute;
+ inset: 0;
+ background: linear-gradient(110deg, transparent 35%, rgba(212,169,59,0.18) 50%, transparent 65%);
+ transform: translateX(-100%);
+ transition: transform 0.7s ease;
+ pointer-events: none;
 }
 .quiz-cta-primary:hover {
  transform: translateY(-2px);
- box-shadow: 0 10px 28px rgba(212,169,59,0.45);
- color: var(--color-forest-deep) !important;
+ box-shadow:
+   0 6px 0 var(--color-forest-deep),
+   0 18px 40px rgba(15,61,46,0.35);
+ color: white !important;
 }
+.quiz-cta-primary:hover::before { transform: translateX(100%); }
+.quiz-cta-primary:active {
+ transform: translateY(2px);
+ box-shadow: 0 2px 0 var(--color-forest-deep), 0 4px 8px rgba(15,61,46,0.15);
+}
+
 .quiz-cta-secondary {
  background: transparent !important;
  color: var(--color-forest) !important;
  border: 1px solid var(--color-bone) !important;
- padding: 14px 28px !important;
+ padding: 16px 28px !important;
  font-size: 13px !important;
+ font-weight: 500 !important;
+ letter-spacing: 0.04em;
+ border-radius: 4px !important;
+ transition: border-color 0.2s ease, color 0.2s ease;
 }
+.quiz-cta-secondary:hover {
+ border-color: var(--color-forest) !important;
+ color: var(--color-forest-deep) !important;
+}
+
 .quiz-cta-trust {
  text-align: center;
  font-size: 11.5px;
  color: var(--color-ink-muted);
- margin-top: 14px;
- letter-spacing: 0.02em;
+ margin-top: 18px;
+ letter-spacing: 0.04em;
+ font-family: var(--font-jp);
 }
 
 .quiz-restart {
@@ -3897,42 +3952,77 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  line-height: 1.7;
 }
 
-/* ============ 料金まとめ ============ */
+/* ============ 料金まとめ (プロ仕様) ============ */
 .quiz-price-summary {
- background: linear-gradient(135deg, #FBF6E8, #FEF9E7);
- border: 1.5px solid var(--color-gold);
- border-radius: 14px;
- padding: 18px 22px;
- margin: 24px 0;
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 4px;
+ padding: 24px 28px;
+ margin: 28px 0;
+ position: relative;
+ box-shadow: 0 1px 0 rgba(15,61,46,0.04), 0 8px 28px rgba(15,61,46,0.06);
+}
+.quiz-price-summary::before {
+ content: 'PRICING';
+ position: absolute;
+ top: -8px; left: 24px;
+ background: white;
+ padding: 0 8px;
+ font-family: var(--font-display);
+ font-size: 9.5px;
+ letter-spacing: 0.28em;
+ color: var(--color-gold-soft);
+ font-weight: 700;
 }
 .quiz-price-row {
  display: flex;
  justify-content: space-between;
  align-items: baseline;
- padding: 6px 0;
+ padding: 8px 0;
  font-size: 13px;
+ color: var(--color-ink);
 }
 .quiz-price-row--strike {
- color: var(--color-ink-muted);
+ color: rgba(0,0,0,0.4);
  text-decoration: line-through;
- text-decoration-color: rgba(0,0,0,0.3);
+ text-decoration-color: rgba(0,0,0,0.35);
+ padding: 8px 0;
 }
+.quiz-price-row--strike span:first-child { font-size: 11px; }
+.quiz-price-row--strike span:last-child { font-size: 14px; }
+
 .quiz-price-row--accent {
- padding: 10px 0;
- border-top: 1px solid rgba(212,169,59,0.3);
- border-bottom: 1px solid rgba(212,169,59,0.3);
+ padding: 14px 0;
+ margin: 4px 0;
+ border-top: 1px solid var(--color-bone);
+ border-bottom: 1px solid var(--color-bone);
+ background: linear-gradient(180deg, rgba(212,169,59,0.04), rgba(212,169,59,0.08));
+ padding-left: 14px;
+ padding-right: 14px;
+ border-radius: 3px;
+ margin-left: -14px;
+ margin-right: -14px;
+}
+.quiz-price-row--accent strong:first-child {
+ font-size: 13px;
  color: var(--color-forest);
- font-size: 18px;
+ letter-spacing: 0.02em;
+ font-weight: 700;
 }
 .quiz-price-row--accent strong:last-child {
- color: var(--color-red);
- font-size: 22px;
+ color: var(--color-forest);
+ font-size: 28px;
  font-weight: 700;
+ letter-spacing: -0.02em;
 }
 .quiz-price-row--small {
  font-size: 11px;
  color: var(--color-ink-muted);
- padding: 4px 0;
+ padding: 6px 0;
+ letter-spacing: 0.02em;
+}
+.quiz-price-row--small span:first-child {
+ color: rgba(0,0,0,0.5);
 }
 
 /* ============ クイズ結果: アドオン + 節約 ============ */
@@ -4912,14 +5002,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card .product-stats {
  margin-left: 16px;
  margin-right: 16px;
- margin-top: auto;
+ margin-top: 0;  /* product-buy 側に margin-top: auto を集約 */
  margin-bottom: 12px;
 }
 .product-card .product-buy {
  padding: 0 16px 16px;
- margin-top: auto;
+ margin-top: auto !important;  /* ★ 必ずカード最下部に固定 */
 }
 .product-card .product-buy + .product-stats { margin-top: 0; }
+
+/* description は flex grow せず, product-buy だけが auto で底に行く */
+.product-card .product-desc {
+ flex: 0 0 auto;
+}
+.product-card .product-meta-delivery {
+ margin-top: 4px; /* 「最短 5月20日 にお届け」もタイトに */
+}
+.product-card .variant-select-wrap,
+.product-card .variant-select {
+ margin-top: 8px; /* バリアントセレクトと cart button の間隔 */
+}
 
 /* 横スクロール表示モード */
 .product-grid.swipe {
@@ -6498,11 +6600,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 #productSearch:focus { border-color: var(--color-gold) !important; box-shadow: 0 0 0 4px rgba(212,169,59,0.15); }
 .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .product-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
-.product-card { position: relative; transition: transform 0.6s var(--ease-out-expo); display: block; }
+.product-card { position: relative; transition: transform 0.6s var(--ease-out-expo); display: flex; flex-direction: column; }
 .product-card:hover { transform: translateY(-2px); }
 .product-card-img {
  aspect-ratio: 1;
- background-color: var(--color-paper);
+ background-color: #0A0A0A;  /* ★ 黒背景に戻す (写真の黒枠と一体化させる) */
  background-size: cover;
  background-position: center;
  position: relative;
@@ -6523,9 +6625,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img::after { display: none; }
 
 /* ============ 実写マッピング（江田畜産 実物写真） ============ */
-/* クリーム下地 + screen blend で黒背景写真を白っぽく持ち上げ (Tom design critique #8) */
+/* 元の黒背景写真をそのまま見せる editorial 演出 */
 .product-card-img {
- background-color: var(--color-paper) !important;
+ background-color: #0A0A0A !important;
  }
 .product-card-img[data-label="SIRLOIN"] { background-image: image-set(url('public/images/products/drive/sirloin.webp') type('image/webp'), url('public/images/products/drive/sirloin.jpg')); }
 .product-card-img[data-label="RED MEAT"] { background-image: image-set(url('public/images/products/drive/red-meat.webp') type('image/webp'), url('public/images/products/drive/red-meat.jpg')); }
@@ -6788,49 +6890,77 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ============================================================
-   MEMBER GATE (有機JAS 牛肉) — チキンと同じ部分ロック UI に統一
-   ・商品名・ORGANIC バッジ・写真 は見せる (会員登録インセンティブ)
-   ・価格・詳細・CTA は blur で隠す
+   MEMBER GATE — 牛肉/チキン 共通の部分ロック UI
+   ・商品名・ORGANIC バッジ・写真は通常カードと同じ表示
+   ・価格・詳細・CTA だけ blur で隠す
+   ・カード上部にロックボックス (会員登録 CTA)
    ============================================================ */
-.product-card--organic-wagyu .organic-wagyu-lock {
+/* 牛肉 有機JAS / チキンオーガニック どちらでも同じ見た目に */
+.product-card--organic-wagyu,
+.product-card--organic {
+ background: white !important; /* 通常カードと同じ白背景 */
+ border: 1px solid var(--color-bone) !important;
+}
+.product-card--organic-wagyu .product-card-img,
+.product-card--organic .product-card-img {
+ background-color: #0A0A0A !important; /* 画像エリアは黒 (通常カードと同じ) */
+}
+.product-card--organic-wagyu .product-name,
+.product-card--organic .product-name {
+ color: var(--color-ink) !important; /* 黒文字 (通常カード同じ) */
+}
+.product-card--organic-wagyu .product-desc,
+.product-card--organic .product-desc {
+ color: var(--color-ink-muted) !important;
+}
+
+/* 共通ロックボックス (両カテゴリに適用) */
+.product-card--organic-wagyu .organic-wagyu-lock,
+.product-card--organic .org-chk-lock {
  position: relative;
- margin: 8px 16px;
+ margin: 12px 16px 0;
  padding: 14px 12px;
- background: linear-gradient(180deg, rgba(15,61,46,0.04), rgba(15,61,46,0.08));
- border: 1px dashed rgba(212,169,59,0.5);
- border-radius: 8px;
+ background: linear-gradient(135deg, #FBF6E8 0%, #FEF9E7 100%);
+ border: 1px dashed var(--color-gold);
+ border-radius: 10px;
  display: flex;
  flex-direction: column;
  align-items: center;
- gap: 8px;
+ gap: 6px;
  text-align: center;
+ z-index: 5;
 }
-.organic-wagyu-lock-icon {
- width: 26px; height: 26px;
+.organic-wagyu-lock-icon,
+.org-chk-lock-icon {
+ width: 30px; height: 30px;
  border-radius: 50%;
- background: rgba(212,169,59,0.18);
+ background: var(--color-gold);
  display: flex; align-items: center; justify-content: center;
- font-size: 12px;
- color: var(--color-gold);
+ font-size: 13px;
+ color: var(--color-forest-deep);
+ box-shadow: 0 2px 8px rgba(212,169,59,0.3);
 }
-.organic-wagyu-lock-title {
+.organic-wagyu-lock-title,
+.org-chk-lock-title {
  font-family: var(--font-jp);
  font-size: 12px;
- color: var(--color-gold);
+ color: var(--color-forest);
  font-weight: 700;
- letter-spacing: 0.02em;
+ letter-spacing: 0.04em;
 }
-.organic-wagyu-lock-desc {
+.organic-wagyu-lock-desc,
+.org-chk-lock-desc {
  font-size: 10.5px;
- color: rgba(255,255,255,0.85);
+ color: var(--color-ink-muted);
  line-height: 1.6;
 }
-.organic-wagyu-lock-cta {
+.organic-wagyu-lock-cta,
+.org-chk-lock-cta {
  display: inline-flex;
  align-items: center;
  gap: 4px;
- padding: 6px 14px;
- background: var(--color-gold);
+ padding: 7px 16px;
+ background: linear-gradient(135deg, var(--color-gold), #E5B547);
  color: var(--color-forest-deep);
  font-family: var(--font-jp);
  font-size: 11px;
@@ -6839,31 +6969,48 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.04em;
  text-decoration: none;
  transition: transform 0.2s ease;
+ box-shadow: 0 4px 12px rgba(212,169,59,0.25);
+ margin-top: 2px;
 }
-.organic-wagyu-lock-cta:hover {
+.organic-wagyu-lock-cta:hover,
+.org-chk-lock-cta:hover {
  transform: translateY(-1px);
- background: #E5B547;
+ box-shadow: 0 6px 14px rgba(212,169,59,0.4);
 }
 
 /* 会員モード: ロック非表示 */
-body.is-member .product-card--organic-wagyu .organic-wagyu-lock {
+body.is-member .product-card--organic-wagyu .organic-wagyu-lock,
+body.is-member .product-card--organic .org-chk-lock {
  display: none;
 }
-/* 非会員モード: 価格・詳細・購入 CTA を blur で隠す (商品名/写真/ORGANIC バッジは鮮明) */
+/* 非会員モード: 価格・説明・カート/CTA を blur (商品名/画像/バッジは鮮明) */
 body:not(.is-member) .product-card--organic-wagyu .product-desc,
 body:not(.is-member) .product-card--organic-wagyu .product-price,
-body:not(.is-member) .product-card--organic-wagyu .product-tag-row .product-price,
-body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap {
+body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap,
+body:not(.is-member) .product-card--organic .product-price,
+body:not(.is-member) .product-card--organic .product-desc,
+body:not(.is-member) .product-card--organic .product-stats,
+body:not(.is-member) .product-card--organic .product-buy,
+body:not(.is-member) .product-card--organic select.variant-select,
+body:not(.is-member) .product-card--organic .btn-add-cart {
  filter: blur(4px);
  pointer-events: none;
  user-select: none;
 }
-/* 会員登録インセンティブを残すため、商品名・写真・バッジは鮮明に */
+/* 商品名/画像/バッジは鮮明維持 */
 body:not(.is-member) .product-card--organic-wagyu .product-name,
 body:not(.is-member) .product-card--organic-wagyu .product-card-img,
 body:not(.is-member) .product-card--organic-wagyu .badge-organic,
-body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-overlay {
+body:not(.is-member) .product-card--organic .product-name,
+body:not(.is-member) .product-card--organic .product-card-img,
+body:not(.is-member) .product-card--organic .badge-organic {
  filter: none !important;
+}
+
+/* COMING SOON オーバーレイは有機JAS のみ表示 (販売前の演出) */
+.product-card--organic-wagyu .organic-wagyu-overlay {
+ background: rgba(0,0,0,0.6);
+ color: var(--color-gold);
 }
 
 /* ============================================================
