@@ -3753,10 +3753,43 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .quiz-actions {
  display: flex;
- gap: 10px;
+ gap: 12px;
  justify-content: center;
  flex-wrap: wrap;
+ margin-top: 24px;
 }
+.quiz-actions .btn { min-width: 220px; }
+.quiz-cta-primary {
+ padding: 16px 32px !important;
+ font-size: 15px !important;
+ font-weight: 700 !important;
+ letter-spacing: 0.04em;
+ background: linear-gradient(135deg, var(--color-gold) 0%, #E5B547 100%) !important;
+ color: var(--color-forest-deep) !important;
+ border-color: var(--color-gold) !important;
+ box-shadow: 0 6px 20px rgba(212,169,59,0.35);
+ transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.quiz-cta-primary:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 10px 28px rgba(212,169,59,0.45);
+ color: var(--color-forest-deep) !important;
+}
+.quiz-cta-secondary {
+ background: transparent !important;
+ color: var(--color-forest) !important;
+ border: 1px solid var(--color-bone) !important;
+ padding: 14px 28px !important;
+ font-size: 13px !important;
+}
+.quiz-cta-trust {
+ text-align: center;
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
+ margin-top: 14px;
+ letter-spacing: 0.02em;
+}
+
 .quiz-restart {
  font-size: 12px;
  color: var(--color-ink-muted);
@@ -3765,6 +3798,141 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  border: 0;
  cursor: pointer;
  margin-top: 16px;
+}
+
+/* ============ クイズ結果: プラン全詳細 ============ */
+.quiz-plan-details {
+ margin: 28px 0;
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 16px;
+}
+@media (max-width: 720px) {
+ .quiz-plan-details { grid-template-columns: 1fr; }
+}
+.quiz-plan-section {
+ background: #FFFFFF;
+ border: 1px solid var(--color-bone);
+ border-radius: 12px;
+ padding: 20px 22px;
+}
+.quiz-plan-section--vip {
+ grid-column: 1 / -1;
+ background: linear-gradient(135deg, rgba(212,169,59,0.06), rgba(212,169,59,0.12));
+ border: 1px solid rgba(212,169,59,0.3);
+}
+.quiz-plan-section-title {
+ margin-bottom: 14px;
+ padding-bottom: 10px;
+ border-bottom: 1px solid var(--color-bone);
+}
+.quiz-plan-section-eyebrow {
+ display: block;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.22em;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ margin-bottom: 4px;
+}
+.quiz-plan-section h4 {
+ font-family: var(--font-jp-serif);
+ font-size: 16px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin: 0;
+}
+.quiz-plan-contents {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ display: grid;
+ gap: 6px;
+}
+.quiz-plan-contents li {
+ font-size: 13px;
+ color: var(--color-ink);
+ padding-left: 16px;
+ position: relative;
+ line-height: 1.7;
+}
+.quiz-plan-contents li::before {
+ content: '·';
+ position: absolute; left: 4px;
+ color: var(--color-gold);
+ font-weight: 700;
+ font-size: 18px;
+ line-height: 1;
+}
+.quiz-plan-note {
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
+ margin: 14px 0 0;
+ line-height: 1.7;
+}
+.quiz-plan-specs {
+ margin: 0;
+ display: grid;
+ gap: 8px;
+}
+.quiz-plan-spec-row {
+ display: grid;
+ grid-template-columns: 90px 1fr;
+ gap: 10px;
+ font-size: 12.5px;
+ line-height: 1.7;
+}
+.quiz-plan-spec-row dt {
+ font-weight: 700;
+ color: var(--color-forest);
+}
+.quiz-plan-spec-row dd {
+ margin: 0;
+ color: var(--color-ink);
+}
+.quiz-plan-vip-perk-desc {
+ font-size: 12px;
+ color: var(--color-ink);
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* ============ 料金まとめ ============ */
+.quiz-price-summary {
+ background: linear-gradient(135deg, #FBF6E8, #FEF9E7);
+ border: 1.5px solid var(--color-gold);
+ border-radius: 14px;
+ padding: 18px 22px;
+ margin: 24px 0;
+}
+.quiz-price-row {
+ display: flex;
+ justify-content: space-between;
+ align-items: baseline;
+ padding: 6px 0;
+ font-size: 13px;
+}
+.quiz-price-row--strike {
+ color: var(--color-ink-muted);
+ text-decoration: line-through;
+ text-decoration-color: rgba(0,0,0,0.3);
+}
+.quiz-price-row--accent {
+ padding: 10px 0;
+ border-top: 1px solid rgba(212,169,59,0.3);
+ border-bottom: 1px solid rgba(212,169,59,0.3);
+ color: var(--color-forest);
+ font-size: 18px;
+}
+.quiz-price-row--accent strong:last-child {
+ color: var(--color-red);
+ font-size: 22px;
+ font-weight: 700;
+}
+.quiz-price-row--small {
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ padding: 4px 0;
 }
 
 /* ============ クイズ結果: アドオン + 節約 ============ */
@@ -12091,25 +12259,69 @@ body.has-sticky-cart .floating-phone-btn {
  const isLight = (fam === 'fam_12' || (freq === 'freq_low' && budget === 'budget_low'));
  const isBig = (fam === 'fam_5plus' || (fam === 'fam_34_big' && freq === 'freq_high') || budget === 'budget_high');
 
- if (isLight) {
- plan = 'ミニプラン';
- planKey = 'starter';
- planPrice = 6980;
- planWeight = '約1.2kg';
- planDesc = '1-2人家族・お試し向け';
- } else if (isBig) {
- plan = 'VIPプラン';
- planKey = 'volume';
- planPrice = 19800;
- planWeight = '約4.0kg';
- planDesc = '5人以上の大家族・ヘビーユーザー向け';
- } else {
- plan = 'プロプラン';
- planKey = 'regular';
- planPrice = 12800;
- planWeight = '約2.5kg';
- planDesc = '4人家族・週末に和牛も楽しみたい';
+ /* ★ プラン定義は subscription.html と完全同期 */
+ const PLAN_DATA = {
+ starter: {
+ name: 'ミニプラン', key: 'starter', price: 6980, weight: '約1.6kg', items: 8,
+ cycle: 'LIGHT · 毎月お届け',
+ desc: '1-2人家族・お試し向け',
+ contents: [
+ '赤身スライス 200g',
+ '赤身焼肉 200g',
+ 'サイコロステーキ 200g',
+ 'ミンチ 200g',
+ '鶏モモ 200g',
+ '鶏ムネ 200g × 2',
+ '鶏ミンチ 200g'
+ ]
+ },
+ regular: {
+ name: 'プロプラン', key: 'regular', price: 12800, weight: '約3.2kg', items: 16,
+ cycle: 'FAMILY · 毎月お届け',
+ desc: '4人家族・週末に和牛も楽しみたい',
+ featured: true,
+ contents: [
+ '赤身スライス 200g × 2',
+ '赤身焼肉 200g × 2',
+ 'サイコロステーキ 200g × 2',
+ 'ミンチ 200g',
+ '鶏モモ 200g × 3',
+ '鶏ムネ 200g × 3',
+ '鶏ミンチ 200g × 3'
+ ]
+ },
+ volume: {
+ name: 'VIPプラン', key: 'volume', price: 27400, weight: '約4.4kg', items: 22,
+ cycle: 'GRAND · 毎月お届け',
+ desc: '5人以上の大家族・ヘビーユーザー向け',
+ vip: true,
+ contents: [
+ 'ヒレステーキ 200g',
+ '赤身ステーキ 200g × 2',
+ 'サーロインステーキ 200g × 2',
+ 'ミンチ 200g × 2',
+ '鶏モモ 200g × 5',
+ '鶏ムネ 200g × 5',
+ '鶏ミンチ 200g × 5'
+ ]
  }
+ };
+ const SHARED_SPECS = [
+ { k: '商品', v: '和牛 + 鶏肉' },
+ { k: '産地', v: '肉 (宮崎) / 鶏 (大分)' },
+ { k: '加工場所', v: '宮崎' },
+ { k: '飼料', v: '抗生物質 / ホルモン剤 不使用' },
+ { k: '保管方法', v: '冷凍 (賞味期限 6ヶ月)' },
+ { k: '配送', v: 'クール宅急便 / 送料無料' }
+ ];
+
+ const planKey_ = isLight ? 'starter' : (isBig ? 'volume' : 'regular');
+ const planData = PLAN_DATA[planKey_];
+ plan = planData.name;
+ planKey = planData.key;
+ planPrice = planData.price;
+ planWeight = planData.weight;
+ planDesc = planData.desc;
 
  // アドオン提案（planKey で判定）
  if (use === 'use_kids' && planKey !== 'volume') {
@@ -12212,16 +12424,50 @@ body.has-sticky-cart .floating-phone-btn {
  <div class="quiz-result-stats">
  <div class="quiz-result-stat">
  <div class="quiz-result-stat-num">¥${planPrice.toLocaleString()}</div>
- <div class="quiz-result-stat-label">月額</div>
+ <div class="quiz-result-stat-label">月額 (2ヶ月目以降)</div>
  </div>
  <div class="quiz-result-stat">
  <div class="quiz-result-stat-num">${planWeight}</div>
- <div class="quiz-result-stat-label">内容量</div>
+ <div class="quiz-result-stat-label">内容量 / ${planData.items}品</div>
  </div>
  <div class="quiz-result-stat">
  <div class="quiz-result-stat-num">¥${Math.round(planPrice / 25).toLocaleString()}</div>
  <div class="quiz-result-stat-label">1食換算</div>
  </div>
+ </div>
+
+ <!-- ★ プラン全詳細: 毎月の内容 ★ -->
+ <div class="quiz-plan-details">
+ <div class="quiz-plan-section">
+ <div class="quiz-plan-section-title">
+ <span class="quiz-plan-section-eyebrow">MONTHLY DELIVERY</span>
+ <h4>毎月お届けする内容</h4>
+ </div>
+ <ul class="quiz-plan-contents">
+ ${planData.contents.map(item => `<li>${item}</li>`).join('')}
+ </ul>
+ <p class="quiz-plan-note">※ 内容はお肉の状況により多少入れ替わる場合があります。リクエストにも対応可能。</p>
+ </div>
+
+ <div class="quiz-plan-section">
+ <div class="quiz-plan-section-title">
+ <span class="quiz-plan-section-eyebrow">SPECS</span>
+ <h4>仕様</h4>
+ </div>
+ <dl class="quiz-plan-specs">
+ ${SHARED_SPECS.map(s => `<div class="quiz-plan-spec-row"><dt>${s.k}</dt><dd>${s.v}</dd></div>`).join('')}
+ </dl>
+ </div>
+
+ ${planData.vip ? `
+ <div class="quiz-plan-section quiz-plan-section--vip">
+ <div class="quiz-plan-section-title">
+ <span class="quiz-plan-section-eyebrow">VIP PERK</span>
+ <h4>👑 有機JAS 黒毛和牛 優先案内</h4>
+ </div>
+ <p class="quiz-plan-vip-perk-desc">2026年夏 解禁・月20頭限定の優先購入権。VIP会員のみ。</p>
+ </div>
+ ` : ''}
  </div>
 
  ${addons.length > 0 ? `
@@ -12241,14 +12487,55 @@ body.has-sticky-cart .floating-phone-btn {
  </div>
  ` : ''}
 
+ <!-- 料金まとめ -->
+ <div class="quiz-price-summary">
+ <div class="quiz-price-row quiz-price-row--strike">
+ <span>通常価格</span>
+ <span>¥${planPrice.toLocaleString()}</span>
+ </div>
+ <div class="quiz-price-row quiz-price-row--accent">
+ <span><strong>初月 ${_m}月限定 50% OFF</strong></span>
+ <span><strong>¥${_halfPrice.toLocaleString()}</strong></span>
+ </div>
+ <div class="quiz-price-row quiz-price-row--small">
+ <span>2ヶ月目以降</span>
+ <span>¥${planPrice.toLocaleString()}/月 (税込・送料込)</span>
+ </div>
+ <div class="quiz-price-row quiz-price-row--small">
+ <span>最低継続</span>
+ <span>3ヶ月 (以降いつでも解約可)</span>
+ </div>
+ </div>
+
+ <!-- ★ メイン CTA: 直接 checkout へ ★ -->
  <div class="quiz-actions">
- <a href="subscription.html?plan=${planKey}" class="btn btn-gold">${plan}を見る →</a>
- <a href="#products" class="btn" style="border-color:var(--color-bone);color:var(--color-forest)">単品も見る</a>
+ <a href="javascript:void(0)" onclick="window._quizGoCheckout('${planKey}')" class="btn btn-gold quiz-cta-primary">
+ このプランで申し込む &nbsp;→
+ </a>
+ <a href="subscription.html?plan=${planKey}#detail" class="btn quiz-cta-secondary">プラン詳細をもっと見る</a>
+ </div>
+ <div class="quiz-cta-trust">
+ ✓ スキップ自由 &nbsp;・&nbsp; ✓ 送料無料 &nbsp;・&nbsp; ✓ 3ヶ月から解約可
  </div>
  <button class="quiz-restart" onclick="window._quizRestart()">もう一度診断する</button>
  </div>
  `;
  }
+
+ /* ★ プランを選んで直接 checkout に飛ぶ
+    クイズ結果プラン + アドオン を localStorage に保存して
+    checkout.html?plan=X に遷移 */
+ window._quizGoCheckout = function(planKey) {
+ try {
+ /* subscription localStorage に書き込み (checkout.html が読む) */
+ const subData = { plan: planKey };
+ localStorage.setItem('eda-subscription-pending', JSON.stringify(subData));
+ /* クイズ結果をマーカーとして保存 (後で reporting 用) */
+ const ck = localStorage.getItem('eda-checkout-source') || '';
+ localStorage.setItem('eda-checkout-source', 'quiz_recommend_' + planKey);
+ } catch (e) {}
+ location.href = 'checkout.html?plan=' + encodeURIComponent(planKey) + '&from=quiz';
+ };
 
  window._quizAnswer = function(i) {
  answers[step] = questions[step].opts[i].tag;
