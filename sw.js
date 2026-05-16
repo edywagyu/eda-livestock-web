@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-05-15-004-lock-bottom';
+const CACHE_VERSION = 'eda-v2026-05-15-005-js-network-first';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -69,11 +69,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* 画像・CSS・JS: cache-first */
+  /* JS / CSS: network-first (新しい変更を即時反映、フォールバックでキャッシュ)
+     画像 / フォント: cache-first (滅多に変わらない) */
+  if (req.destination === 'script' || req.destination === 'style') {
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE_VERSION).then((c) => c.put(req, clone));
+        }
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  /* 画像・フォント: cache-first */
   event.respondWith(
     caches.match(req).then((cached) => {
       return cached || fetch(req).then((res) => {
-        if (res.ok && (req.destination === 'image' || req.destination === 'style' || req.destination === 'script' || req.destination === 'font')) {
+        if (res.ok && (req.destination === 'image' || req.destination === 'font')) {
           const clone = res.clone();
           caches.open(CACHE_VERSION).then((c) => c.put(req, clone));
         }
