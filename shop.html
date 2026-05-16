@@ -6914,15 +6914,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-ink-muted) !important;
 }
 
-/* 共通ロックボックス — 「カートに追加」エリア (カード下部) にオーバーレイ
+/* 共通ロックボックス — カード中央寄り (商品名の少し下) に配置
    ・写真・商品名・ORGANIC バッジは見せる
-   ・blur されてる価格・desc・cart の上にロック CTA を重ねる */
+   ・blur されてる desc/価格 領域の中央あたりにロック CTA を重ねる */
 .product-card--organic-wagyu .organic-wagyu-lock,
 .product-card--organic .org-chk-lock {
  position: absolute;
  left: 12px;
  right: 12px;
- bottom: 12px;
+ top: 62%;  /* カード高さ 62% から下に展開 = 商品名の少し下に登場 */
  padding: 14px 12px;
  background: linear-gradient(135deg, rgba(251,246,232,0.97), rgba(254,249,231,0.97));
  backdrop-filter: blur(6px);
