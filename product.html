@@ -119,7 +119,7 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 .pdp-gallery-main {
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: var(--color-paper, #FBF8F2);
+  background: #0A0A0A;  /* ★ 黒背景 (撮影の黒バックと一体化) */
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -141,7 +141,7 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 }
 .pdp-thumb {
   aspect-ratio: 1;
-  background: var(--color-paper);
+  background: #0A0A0A;  /* サムネも黒背景 */
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
@@ -448,7 +448,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   .pdp-price { font-size: 26px; }
   .pdp-spec-row { grid-template-columns: 90px 1fr; gap: 16px; font-size: 13px; }
   /* sticky な購入CTA */
-  .pdp-sticky-cta--hidden { transform: translateY(110%) !important; pointer-events: none; }
+  /* sticky-cta-hidden 状態は廃止 — 常時表示で cart button が常に見える */
 .pdp-sticky-cta {
     position: fixed;
     bottom: calc(72px + env(safe-area-inset-bottom));
@@ -842,32 +842,6 @@ function addToCart() {
   } catch (e) { console.error(e); }
 }
 </script>
-<script src="public/js/eda-bundle.js" defer>
-  /* === Sticky CTA: スクロール下向き時のみ表示 === */
-  (function(){
-    const cta = document.querySelector('.pdp-sticky-cta');
-    if (!cta) return;
-    let lastY = window.scrollY;
-    let ticking = false;
-    function update() {
-      const y = window.scrollY;
-      const dy = y - lastY;
-      if (Math.abs(dy) > 6) {
-        if (dy > 0 && y > 200) {
-          cta.classList.remove('pdp-sticky-cta--hidden');
-        } else if (dy < 0) {
-          cta.classList.add('pdp-sticky-cta--hidden');
-        }
-        lastY = y;
-      }
-      ticking = false;
-    }
-    window.addEventListener('scroll', () => {
-      if (!ticking) { requestAnimationFrame(update); ticking = true; }
-    }, {passive: true});
-    cta.classList.add('pdp-sticky-cta--hidden');
-  })();
-
-</script>
+<script src="public/js/eda-bundle.js" defer></script>
 </body>
 </html>

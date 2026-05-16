@@ -164,7 +164,7 @@
       price: 3840, weight: 500, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Breast',
       isOrganic: true,
-      description: '有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
+      description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
       images: ['public/images/products/drive/chicken-breast.jpg']
     },
     {
@@ -174,7 +174,7 @@
       price: 3840, weight: 500, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Thigh',
       isOrganic: true,
-      description: '有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
+      description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
       images: ['public/images/products/drive/chicken-thigh.jpg']
     },
     {
@@ -184,7 +184,7 @@
       price: 3000, weight: 300, stock: 5, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Minced',
       isOrganic: true,
-      description: '有機 JAS 認証相当の無農薬飼料、無投薬。離乳食、つくねに。',
+      description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。離乳食、つくねに。',
       images: ['public/images/products/drive/chicken-minced.jpg']
     },
 
