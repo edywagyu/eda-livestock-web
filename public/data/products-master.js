@@ -86,7 +86,7 @@
       price: 840, weight: 150, stock: 8, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Offal',
       description: '小腸と大腸のミックス。下処理済み。もつ鍋に、焼きホルモンに。',
-      images: ['public/images/products/drive/yakiniku-brisket.jpg']
+      images: ['public/images/products/drive/offal.jpg']
     },
 
     /* ===== 牛肉 加工品 ===== */
@@ -106,7 +106,7 @@
       price: 3000, weight: 100, stock: 6, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Roast Beef',
       description: '赤身を低温でロースト。解凍して、薄く切る。会の前菜に。',
-      images: ['public/images/products/drive/hamburg.jpg']
+      images: ['public/images/products/drive/thin-roast.jpg']
     },
     {
       productId: 'P010', variantId: 'RAW-HAM', sku: 'EDA-RAWHAM-40',
@@ -115,7 +115,7 @@
       price: 1250, weight: 40, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Raw Ham',
       description: '赤身を低温で長時間熟成。豚とは異なる、和牛だけの深み。ワインの夕べに。',
-      images: ['public/images/products/drive/wagyu-slice.jpg']
+      images: ['public/images/products/drive/raw-ham.jpg']
     },
     {
       productId: 'P010B', variantId: 'WAGYU-MINCED', sku: 'EDA-WGYMINCED-200',
@@ -196,7 +196,7 @@
       price: 16800, weight: 450, stock: 10, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · MATSU',
       description: '希少部位のヒレ、450g。脂が少なく、繊維がきめ細かい。大切な方への一品に。',
-      images: ['public/images/products/drive/premium-slice.jpg']
+      images: ['public/images/products/drive/fillet.jpg']
     },
     {
       productId: 'P018', variantId: 'GIFT-TAKE', sku: 'EDA-GIFT-TAKE-750',
