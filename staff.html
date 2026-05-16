@@ -1568,7 +1568,7 @@ const STAFF_PIN_KEY = 'eda-staff-pin';
 const GAS_URL_KEY   = 'eda-staff-gas-url';
 const SESSION_KEY   = 'eda-staff-session';
 
-let GAS_URL = localStorage.getItem(GAS_URL_KEY) || '';
+let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
 let pinBuffer = '';
 let inventoryCache = [];
 let ordersCache = [];
@@ -1714,11 +1714,11 @@ const DEMO_PRODUCTS_FALLBACK = [
   { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: '部位の端材を集めたお得な切り落とし。牛丼・カレー・肉じゃが・炒め物に。', images: ['public/images/products/drive/kiriotoshi.jpg'] },
   /* ===== 牛肉 焼肉系 ===== */
   { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 200g',  price: 1500, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-200',    weight: 200, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
-  { productId: 'P007', variantId: 'OFFAL',            name: '和牛ホルモン',                 variant: '1袋 150g',  price:  840, stock:  8, temp: '冷凍', category: '牛肉', sku: 'EDA-OFFAL-150',   weight: 150, description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
+  { productId: 'P007', variantId: 'OFFAL',            name: '和牛ホルモン',                 variant: '1袋 150g',  price:  840, stock:  8, temp: '冷凍', category: '牛肉', sku: 'EDA-OFFAL-150',   weight: 150, description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。', images: ['public/images/products/drive/offal.jpg'] },
   /* ===== 牛肉 加工品 ===== */
   { productId: 'P008', variantId: 'HAMBURG',          name: '江田和牛ハンバーグ',           variant: '1個 100g',  price:  760, stock: 40, temp: '冷凍', category: '牛肉', sku: 'EDA-HAMBURG-100', weight: 100, description: '和牛100%のシンプル配合。冷蔵庫で半日解凍してからフライパンで蒸し焼き。', images: ['public/images/products/drive/hamburg.jpg'] },
-  { productId: 'P009', variantId: 'ROAST-BEEF',       name: '和牛ローストビーフ',           variant: '1袋 100g',  price: 3000, stock:  6, temp: '冷凍', category: '牛肉', sku: 'EDA-ROAST-100',   weight: 100, description: '赤身を低温でじっくりロースト。解凍して薄くスライスするだけ。', images: ['public/images/products/drive/hamburg.jpg'] },
-  { productId: 'P010', variantId: 'RAW-HAM',          name: '和牛生ハム',                   variant: '個包装 40g', price: 1250, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-RAWHAM-40',   weight:  40, description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとは別次元の旨み。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+  { productId: 'P009', variantId: 'ROAST-BEEF',       name: '和牛ローストビーフ',           variant: '1袋 100g',  price: 3000, stock:  6, temp: '冷凍', category: '牛肉', sku: 'EDA-ROAST-100',   weight: 100, description: '赤身を低温でじっくりロースト。解凍して薄くスライスするだけ。', images: ['public/images/products/drive/thin-roast.jpg'] },
+  { productId: 'P010', variantId: 'RAW-HAM',          name: '和牛生ハム',                   variant: '個包装 40g', price: 1250, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-RAWHAM-40',   weight:  40, description: '江田和牛の赤身を低温で長時間熟成。豚の生ハムとは別次元の旨み。', images: ['public/images/products/drive/raw-ham.jpg'] },
   { productId: 'P010B', variantId: 'WAGYU-MINCED',    name: '和牛ミンチ',                   variant: '1袋 200g',  price: 1350, stock: 14, temp: '冷凍', category: '牛肉', sku: 'EDA-WGYMINCED-200', weight: 200, description: '江田和牛 100% の粗挽きミンチ。ハンバーグ・ボロネーゼ・タコライス・キーマカレーに。', images: ['public/images/products/drive/minced.jpg'] },
 
   /* ===== 鶏肉 平飼い（標準） ===== */
