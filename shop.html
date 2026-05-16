@@ -6890,6 +6890,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ============================================================
+   在庫バッジ (在庫切れ / 残り少)
+   ============================================================ */
+.stock-badge-overlay {
+ position: absolute;
+ top: 10px;
+ left: 10px;
+ padding: 5px 12px;
+ border-radius: 14px;
+ font-family: var(--font-jp);
+ font-size: 11px;
+ font-weight: 700;
+ letter-spacing: 0.04em;
+ z-index: 6;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.stock-badge-overlay.stock-out {
+ background: rgba(200, 16, 46, 0.92);
+ color: white;
+}
+.stock-badge-overlay.stock-low {
+ background: rgba(255, 159, 28, 0.92);
+ color: white;
+}
+
+/* ============================================================
    MEMBER GATE — 牛肉/チキン 共通の部分ロック UI (CLEAN 版)
    ・写真・名前・ORGANIC バッジ・短い説明: 通常カードと完全に同じ位置
    ・価格・詳細・カート CTA: 完全非表示 (display: none, no blur)
@@ -11374,7 +11399,42 @@ body.has-sticky-cart .floating-phone-btn {
  return STRIPE_PRICE_BY_TITLE[key] || null;
  }
 
+ /* ★ 在庫上限チェック — products-master.js の stock を読む
+    title (例: サーロインステーキ) + variant (1つ / 2つセット / 3つセット) → 単位数 */
+ function variantUnits(variant) {
+ if (!variant) return 1;
+ if (variant.includes('3つ')) return 3;
+ if (variant.includes('2つ')) return 2;
+ return 1;
+ }
+ function getStockForTitle(title) {
+ try {
+ const master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+ const m = master.find(p => p.name === title);
+ if (m && typeof m.stock === 'number') return m.stock;
+ } catch(e) {}
+ return Infinity; /* master 不明時は制限なし (旧動作) */
+ }
+ function currentCartUnits(title) {
+ return items
+ .filter(i => i.title === title)
+ .reduce((sum, i) => sum + (variantUnits(i.variant) * (i.qty || 1)), 0);
+ }
+
  function addToCart(variantId, price, title, variant, img) {
+ /* ★ 在庫上限チェック */
+ const stock = getStockForTitle(title);
+ const addUnits = variantUnits(variant);
+ const currentUnits = currentCartUnits(title);
+ if (currentUnits + addUnits > stock) {
+ const remaining = Math.max(0, stock - currentUnits);
+ if (remaining === 0) {
+ alert(`「${title}」は在庫切れです。\n再入荷をお待ちください。`);
+ } else {
+ alert(`「${title}」の在庫は残り ${remaining} 点です。\nそれ以上はご注文いただけません。`);
+ }
+ return false;
+ }
  const existing = items.find(i => i.variantId === variantId);
  if (existing) {
  existing.qty++;
@@ -11385,6 +11445,7 @@ body.has-sticky-cart .floating-phone-btn {
  save();
  renderCart();
  openCart();
+ return true;
  }
 
  /* --- Gift order: 単品/セットをギフトモードでcheckoutへ --- */
@@ -11726,6 +11787,61 @@ body.has-sticky-cart .floating-phone-btn {
  cards.sort((a, b) => a._sortKey - b._sortKey);
  cards.forEach(c => grid.appendChild(c));
  });
+})();
+
+/* ============ 在庫バッジ装飾 ============
+   products-master.js の stock を読んで、各カードに「残り N」や「在庫切れ」を表示
+   stock = 0 → カートボタンを無効化 */
+(function stockBadgeInit() {
+ function tryDecorate() {
+ const master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+ if (!master.length) {
+ setTimeout(tryDecorate, 200);
+ return;
+ }
+ const stockByTitle = {};
+ master.forEach(p => { if (p.name) stockByTitle[p.name] = p.stock; });
+
+ document.querySelectorAll('.product-card').forEach(card => {
+ const nameEl = card.querySelector('.product-name');
+ if (!nameEl) return;
+ const title = nameEl.textContent.trim();
+ const stock = stockByTitle[title];
+ if (stock === undefined) return;
+
+ /* 既存バッジ除去 (重複防止) */
+ card.querySelectorAll('.stock-badge-overlay').forEach(el => el.remove());
+
+ if (stock === 0) {
+ /* 在庫切れ */
+ const b = document.createElement('div');
+ b.className = 'stock-badge-overlay stock-out';
+ b.textContent = '在庫切れ';
+ card.appendChild(b);
+ /* カートボタン disable */
+ const btn = card.querySelector('.btn-add-cart');
+ if (btn) {
+ btn.disabled = true;
+ btn.textContent = '在庫切れ';
+ btn.style.opacity = '0.5';
+ btn.style.cursor = 'not-allowed';
+ }
+ } else if (stock <= 5) {
+ /* 残り少 */
+ const b = document.createElement('div');
+ b.className = 'stock-badge-overlay stock-low';
+ b.textContent = '残り ' + stock + ' 点';
+ card.appendChild(b);
+ }
+ });
+ }
+ if (document.readyState === 'loading') {
+ document.addEventListener('DOMContentLoaded', tryDecorate);
+ } else {
+ tryDecorate();
+ }
+ /* localStorage の eda-cart が変わるたびに在庫表示更新 */
+ window.addEventListener('storage', tryDecorate);
 })();
 
 (function statusFilterInit() {

@@ -1742,21 +1742,54 @@ const DEMO_PRODUCTS_FALLBACK = [
 ];
 
 /* ============================================================
+   定期便 3 プラン — STAFF 在庫管理用 (subscription.html と整合)
+   ============================================================ */
+const SUBSCRIPTION_PLANS = [
+  {
+    productId: 'SUB-MINI', variantId: 'SUB-MINI', sku: 'EDA-SUB-MINI',
+    stripePriceId: 'price_1TWAN0GSkhU1UEciNGZHORc3',
+    name: 'ミニプラン 定期便', variant: '毎月お届け · 1-2人家族',
+    price: 6980, stock: 999, temp: '冷凍', category: '定期便',
+    description: '約1.6kg / 全8品 / 初月50%OFF (¥3,490) / 2ヶ月目以降 ¥6,980/月',
+    images: ['public/images/products/drive/yakiniku-brisket.jpg']
+  },
+  {
+    productId: 'SUB-PRO', variantId: 'SUB-PRO', sku: 'EDA-SUB-PRO',
+    stripePriceId: 'price_1TWAN0GSkhU1UEciKod4PGpk',
+    name: 'プロプラン 定期便', variant: '毎月お届け · 3-4人家族',
+    price: 12800, stock: 999, temp: '冷凍', category: '定期便',
+    description: '約3.2kg / 全16品 / 初月50%OFF (¥6,400) / 2ヶ月目以降 ¥12,800/月 / 人気No.1',
+    images: ['public/images/products/drive/red-meat.jpg']
+  },
+  {
+    productId: 'SUB-VIP', variantId: 'SUB-VIP', sku: 'EDA-SUB-VIP',
+    stripePriceId: 'price_1TWAN1GSkhU1UEciXQJyqNet',
+    name: 'VIPプラン 定期便', variant: '毎月お届け · 5人以上',
+    price: 27400, stock: 999, temp: '冷凍', category: '定期便',
+    description: '約4.4kg / 全22品 / 初月50%OFF (¥13,700) / 2ヶ月目以降 ¥27,400/月 / 有機JAS 優先案内',
+    images: ['public/images/products/drive/sirloin.jpg']
+  }
+];
+
+/* ============================================================
    商品マスター解決: window.EDA_PRODUCTS_MASTER を最優先で使う
    ------------------------------------------------------------
    - products-master.js が読み込まれていれば、それを正本として使用
-   - カテゴリラベル等、staff.html の表示形式に合わせて正規化
+   - 加えて定期便 3 プランも常に末尾追加
    ============================================================ */
 function resolveProductsMaster() {
+  let base;
   if (typeof window !== 'undefined' && window.EDA_PRODUCTS_MASTER && Array.isArray(window.EDA_PRODUCTS_MASTER.products)) {
-    // 商品マスターのカテゴリは英語キー (beef/chicken/etc) → staff 表示用に正規化
-    return window.EDA_PRODUCTS_MASTER.products.map(p => ({
+    base = window.EDA_PRODUCTS_MASTER.products.map(p => ({
       ...p,
       category: p.categoryLabel || p.category, // 表示用は categoryLabel を優先
     }));
+  } else {
+    console.warn('[staff.html] products-master.js が見つかりません。フォールバックを使用します。');
+    base = DEMO_PRODUCTS_FALLBACK;
   }
-  console.warn('[staff.html] products-master.js が見つかりません。フォールバックを使用します。');
-  return DEMO_PRODUCTS_FALLBACK;
+  /* 定期便 3 プランを末尾追加 (STAFF でも在庫管理可能に) */
+  return [...base, ...SUBSCRIPTION_PLANS];
 }
 // DEMO_PRODUCTS は実質「マスター解決の結果」を保持する getter
 const DEMO_PRODUCTS = resolveProductsMaster();
