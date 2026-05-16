@@ -1719,11 +1719,24 @@ async function placeOrder() {
  const isSubscription = !!subscription && mode !== 'single' && mode !== 'gift' && mode !== 'multi';
  const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
 
- // LINE セッションがあれば line_uid を添付 (マイページからの再注文時)
+ // LINE セッションがあれば line_uid を添付 (マイページ / 会員ゲートからの再注文時)
  let lineSession = null;
  try {
+ /* mypage-session を優先 (LIFF 経由の正規ログイン) */
  const raw = localStorage.getItem('eda-mypage-session');
  if (raw) lineSession = JSON.parse(raw);
+ /* fallback: member-gate.js が保存した独立キー */
+ if (!lineSession || !lineSession.line_uid) {
+ const uid = localStorage.getItem('eda-member-line-uid');
+ const name = localStorage.getItem('eda-member-name');
+ const email = localStorage.getItem('eda-member-email');
+ if (uid || email) {
+ lineSession = lineSession || {};
+ lineSession.line_uid = lineSession.line_uid || uid || '';
+ lineSession.display_name = lineSession.display_name || name || '';
+ lineSession.email = lineSession.email || email || '';
+ }
+ }
  } catch (_) {}
 
  // 注文ペイロード組み立て
