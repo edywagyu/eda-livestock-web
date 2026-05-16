@@ -24,18 +24,23 @@
   const KEY_TOKEN = 'eda-member-token';
   const KEY_LINKED_AT = 'eda-member-linked-at';
 
-  /* 会員かどうか判定 */
+  /* 会員かどうか判定
+     ・新キー (eda-member-line-uid / eda-member-email)
+     ・旧キー (eda-mypage-session.line_uid) のどちらでも会員扱い */
   function isMember() {
     try {
       const uid = localStorage.getItem(KEY_UID);
       const email = localStorage.getItem(KEY_EMAIL);
-      return !!(uid || email);
+      if (uid || email) return true;
+      const session = JSON.parse(localStorage.getItem('eda-mypage-session') || '{}');
+      return !!(session.line_uid || session.email);
     } catch (e) {
       return false;
     }
   }
 
-  /* 会員ステートにする */
+  /* 会員ステートにする
+     ※ checkout.html が読む 'eda-mypage-session' にも書き込んで動線統一 */
   function unlockMember(data) {
     data = data || {};
     try {
@@ -44,6 +49,18 @@
       if (data.name)     localStorage.setItem(KEY_NAME, data.name);
       if (data.token)    localStorage.setItem(KEY_TOKEN, data.token);
       localStorage.setItem(KEY_LINKED_AT, new Date().toISOString());
+
+      /* ★ checkout.html / 既存ページ互換: eda-mypage-session にも保存 */
+      const existing = (function() {
+        try { return JSON.parse(localStorage.getItem('eda-mypage-session') || '{}'); } catch(e) { return {}; }
+      })();
+      const session = {
+        line_uid: data.line_uid || existing.line_uid || '',
+        display_name: data.name || existing.display_name || '',
+        email: data.email || existing.email || '',
+        issued: Date.now()
+      };
+      localStorage.setItem('eda-mypage-session', JSON.stringify(session));
     } catch (e) {}
     applyMemberMode(true);
   }
@@ -56,6 +73,7 @@
       localStorage.removeItem(KEY_NAME);
       localStorage.removeItem(KEY_TOKEN);
       localStorage.removeItem(KEY_LINKED_AT);
+      localStorage.removeItem('eda-mypage-session');  /* checkout 互換 */
     } catch (e) {}
     applyMemberMode(false);
   }
