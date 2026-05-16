@@ -6890,6 +6890,62 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ============================================================
+   ★ 「カートに追加」ボタン強制表示 (regression防止)
+   通常商品カードの product-buy・cart button は必ず見えるように
+   ============================================================ */
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .product-buy {
+ display: flex !important;
+ visibility: visible !important;
+ opacity: 1 !important;
+ flex-direction: column !important;
+ gap: 8px !important;
+ padding: 12px 16px 16px !important;
+ margin-top: auto !important;
+}
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .btn-add-cart {
+ display: block !important;
+ visibility: visible !important;
+ opacity: 1 !important;
+ width: 100% !important;
+ padding: 14px 16px !important;
+ background: var(--color-forest) !important;
+ color: white !important;
+ font-family: var(--font-jp) !important;
+ font-size: 13px !important;
+ font-weight: 700 !important;
+ border-radius: 8px !important;
+ border: 0 !important;
+ letter-spacing: 0.04em !important;
+ cursor: pointer !important;
+ box-shadow: 0 2px 6px rgba(15,61,46,0.12) !important;
+ transition: background 0.2s, transform 0.18s !important;
+}
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .btn-add-cart:hover {
+ background: var(--color-forest-deep) !important;
+ transform: translateY(-1px) !important;
+}
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .btn-add-cart:disabled {
+ opacity: 0.5 !important;
+ cursor: not-allowed !important;
+}
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .variant-select {
+ width: 100% !important;
+ padding: 10px 32px 10px 14px !important;
+ border-radius: 8px !important;
+ border: 1px solid var(--color-bone) !important;
+ background: white !important;
+ font-family: var(--font-jp) !important;
+ font-size: 13px !important;
+ color: var(--color-ink) !important;
+ cursor: pointer !important;
+ appearance: none !important;
+ -webkit-appearance: none !important;
+ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6B6B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+ background-repeat: no-repeat !important;
+ background-position: right 10px center !important;
+}
+
+/* ============================================================
    在庫バッジ (在庫切れ / 残り少)
    ============================================================ */
 .stock-badge-overlay {
