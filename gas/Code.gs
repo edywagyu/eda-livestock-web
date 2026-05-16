@@ -121,6 +121,10 @@ function doGet(e) {
       case 'public_products':   return publicProducts();
       case 'dashboard':         return dashboardSummary(e.parameter);
       case 'line_friends':      return lineFriends();
+      /* ===== Customer Segmentation (LINE 配信用) ===== */
+      case 'customers_segment': return customersSegment(e.parameter);
+      case 'customers_csv':     return customersCsv(e.parameter);
+      case 'segment_stats':     return segmentStats();
       case 'customer_lookup':   return customerLookup(e.parameter);
       case 'check_config':      return jsonResponse(checkConfig());
       case 'setup':             return runSetup(e.parameter);
@@ -440,7 +444,7 @@ function finalizeOrder(session) {
   const sh = sheet('orders', [
     'order_number','placed_at','session_id','customer_name','customer_email','customer_phone',
     'mode','total','shipping','payment_status','payment_method',
-    'destinations_json','items_json','metadata_json'
+    'destinations_json','items_json','metadata_json','line_uid','line_name'
   ]);
   const meta = session.metadata || {};
   const orderNum = meta.order_number || ('SESSION-' + session.id.slice(-8));
@@ -460,7 +464,9 @@ function finalizeOrder(session) {
     (session.payment_method_types && session.payment_method_types[0]) || 'card',
     meta.destinations_json || '[]',
     meta.line_items_json || '[]',
-    JSON.stringify(meta)
+    JSON.stringify(meta),
+    meta.line_uid || '',   // ★ LINE 連携: orders に line_uid を直接記録
+    meta.line_name || ''
   ]);
 
   // メール通知 (顧客 + スタッフ)
@@ -984,7 +990,7 @@ function sendStaffNotificationEmail(session, orderNum) {
    ============================================================ */
 function initSheets() {
   const s = ss(); // SPREADSHEET_ID 未設定なら自動作成 + Script Property 保存
-  sheet('orders', ['order_number','placed_at','session_id','customer_name','customer_email','customer_phone','mode','total','shipping','payment_status','payment_method','destinations_json','items_json','metadata_json']);
+  sheet('orders', ['order_number','placed_at','session_id','customer_name','customer_email','customer_phone','mode','total','shipping','payment_status','payment_method','destinations_json','items_json','metadata_json','line_uid','line_name']);
   sheet('pending_orders', ['created_at','order_number','session_id','mode','customer_json','destinations_json','subtotal','shipping','total']);
   sheet('subscriptions', ['subscription_id','customer_id','plan','status','started_at','current_period_end','metadata_json']);
   sheet('subscription_applications', ['ts','plan','customer_json','addons_json']);
@@ -1145,6 +1151,191 @@ function lineLinkAccount(body) {
       line_name: body.display_name || ''
     };
     return jsonResponse({ ok:true, customer, orders });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+/* ============================================================
+   CUSTOMER SEGMENTATION — LINE 公式メッセージ送信用セグメント抽出
+   ------------------------------------------------------------
+   GET ?action=customers_segment&type=<segment_type>
+   返却: { ok, count, customers: [{customer_id,email,name,line_uid,line_name,total_spent,order_count,last_order,...}] }
+
+   segment_type:
+   - line_purchased  : LINE 友だち + 購入済 (リピート訴求・VIP案内)
+   - line_only       : LINE 友だち のみ・購入なし (初回 50%OFF クーポン)
+   - purchased_only  : 購入済 / LINE 未連携 (LINE 連携 5%OFF クーポン)
+   - churn_risk      : 最終注文から 30 日以上経過 (カムバッククーポン)
+   - vip             : 累計 ¥30,000 以上 (VIP 限定案内)
+   ============================================================ */
+function customersSegment(params) {
+  try {
+    const type = (params && params.type) || 'all';
+    const sh = sheet('customers');
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, count:0, customers:[] });
+
+    const headers = data[0];
+    const idx = (col) => headers.indexOf(col);
+
+    const now = new Date();
+    const DAY_30_MS = 30 * 24 * 60 * 60 * 1000;
+
+    const customers = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const customer = {};
+      headers.forEach((h, k) => { customer[h] = row[k]; });
+
+      const has_line = !!customer.line_uid;
+      const has_orders = (Number(customer.order_count) || 0) > 0;
+      const total_spent = Number(customer.total_spent) || 0;
+
+      let last_order_at = customer.last_order_at || customer.last_order;
+      if (last_order_at && typeof last_order_at === 'string') {
+        try { last_order_at = new Date(last_order_at); } catch(e) { last_order_at = null; }
+      }
+      const days_since_last = last_order_at ? Math.floor((now - last_order_at) / (24*60*60*1000)) : 9999;
+
+      let match = false;
+      switch (type) {
+        case 'line_purchased':  match = has_line && has_orders; break;
+        case 'line_only':       match = has_line && !has_orders; break;
+        case 'purchased_only':  match = !has_line && has_orders; break;
+        case 'churn_risk':      match = has_orders && days_since_last > 30; break;
+        case 'vip':             match = total_spent >= 30000; break;
+        case 'all':             match = true; break;
+        default:                match = false;
+      }
+
+      if (match) {
+        customers.push({
+          customer_id: customer.customer_id,
+          email: customer.email,
+          name: customer.name,
+          phone: customer.phone,
+          line_uid: customer.line_uid,
+          line_name: customer.line_name,
+          total_spent: total_spent,
+          order_count: Number(customer.order_count) || 0,
+          first_order: customer.first_order,
+          last_order: customer.last_order,
+          days_since_last_order: has_orders ? days_since_last : null,
+          has_line: has_line,
+          has_orders: has_orders
+        });
+      }
+    }
+
+    return jsonResponse({
+      ok: true,
+      type: type,
+      count: customers.length,
+      generated_at: new Date().toISOString(),
+      customers: customers
+    });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+/* ============================================================
+   CUSTOMER CSV EXPORT — LINE Official Account Manager オーディエンス import 用
+   ------------------------------------------------------------
+   GET ?action=customers_csv&type=<segment_type>[&format=line_audience|standard]
+
+   format:
+   - line_audience  : line_uid のみ 1 列 (LINE Manager オーディエンス import 形式)
+   - standard       : 全項目 CSV (Excel 互換)
+   - default        : standard
+   ============================================================ */
+function customersCsv(params) {
+  try {
+    const type = (params && params.type) || 'all';
+    const format = (params && params.format) || 'standard';
+
+    // 内部で customersSegment を呼ぶ (重複ロジック排除)
+    const segmentRes = customersSegment({ type: type });
+    const data = JSON.parse(segmentRes.getContent());
+    if (!data.ok) throw new Error(data.error || 'segment failed');
+
+    let csv = '';
+
+    if (format === 'line_audience') {
+      // LINE Official Manager オーディエンス: line_uid のみ・ヘッダーなし
+      csv = data.customers
+        .filter(c => c.line_uid)
+        .map(c => c.line_uid)
+        .join('\n');
+    } else {
+      // 標準 CSV (BOM 付き Excel 互換)
+      csv = '﻿'; // UTF-8 BOM
+      csv += 'customer_id,email,name,phone,line_uid,line_name,total_spent,order_count,first_order,last_order,days_since_last_order,has_line,has_orders\n';
+      data.customers.forEach(c => {
+        const fields = [
+          c.customer_id || '',
+          c.email || '',
+          (c.name || '').replace(/,/g, ' '),
+          c.phone || '',
+          c.line_uid || '',
+          (c.line_name || '').replace(/,/g, ' '),
+          c.total_spent,
+          c.order_count,
+          c.first_order || '',
+          c.last_order || '',
+          c.days_since_last_order != null ? c.days_since_last_order : '',
+          c.has_line ? 'TRUE' : 'FALSE',
+          c.has_orders ? 'TRUE' : 'FALSE'
+        ];
+        // フィールドにカンマや改行を含む場合は "..." で包む
+        csv += fields.map(f => {
+          const s = String(f);
+          if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+            return '"' + s.replace(/"/g, '""') + '"';
+          }
+          return s;
+        }).join(',') + '\n';
+      });
+    }
+
+    const filename = 'eda_customers_' + type + '_' + Utilities.formatDate(new Date(), 'JST', 'yyyyMMdd_HHmm') + '.csv';
+
+    return ContentService.createTextOutput(csv)
+      .setMimeType(ContentService.MimeType.CSV)
+      .downloadAsFile(filename);
+  } catch (e) {
+    return ContentService.createTextOutput('Error: ' + e.message).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
+/* ============================================================
+   SEGMENT STATS — ダッシュボード用のセグメント別人数集計
+   GET ?action=segment_stats
+   ============================================================ */
+function segmentStats() {
+  try {
+    const types = ['line_purchased', 'line_only', 'purchased_only', 'churn_risk', 'vip', 'all'];
+    const stats = {};
+    types.forEach(t => {
+      const res = customersSegment({ type: t });
+      const data = JSON.parse(res.getContent());
+      stats[t] = data.count || 0;
+    });
+
+    return jsonResponse({
+      ok: true,
+      generated_at: new Date().toISOString(),
+      segments: stats,
+      summary: {
+        total_customers: stats.all,
+        line_linked: stats.line_purchased + stats.line_only,
+        line_linked_rate: stats.all > 0 ? Math.round((stats.line_purchased + stats.line_only) / stats.all * 100) : 0,
+        purchased: stats.line_purchased + stats.purchased_only,
+        churn_risk_count: stats.churn_risk,
+        vip_count: stats.vip
+      }
+    });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
   }
