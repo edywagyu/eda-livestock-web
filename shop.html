@@ -7034,11 +7034,13 @@ body.is-member .product-card--organic .org-chk-lock {
 /* ============================================================
    ロックボックス — 通常カードの「product-buy」位置 (=最下部) に配置
    ぼかしを完全に廃止。下部のカート位置を丸ごとロックで置き換え
+   🔴 order: 99 で flex の最後 (=写真より下) に必ず配置
    ============================================================ */
 .product-card--organic-wagyu .organic-wagyu-lock,
 .product-card--organic .org-chk-lock {
+ order: 99 !important;  /* HTMLは photo より前にあるが、視覚的には最下部 */
  margin: 12px 16px 16px;
- margin-top: auto;  /* flex column の中で最下部に押し込む */
+ margin-top: auto;  /* flex column の中で最下部に押し込む (補助) */
  padding: 12px 14px;
  background: linear-gradient(180deg, rgba(212,169,59,0.06), rgba(212,169,59,0.12));
  border: 1px dashed rgba(212,169,59,0.5);
