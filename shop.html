@@ -6890,167 +6890,80 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ============================================================
-   MEMBER GATE — 牛肉/チキン 共通の部分ロック UI
-   ・商品名・ORGANIC バッジ・写真は通常カードと同じ表示
-   ・価格・詳細・CTA だけ blur で隠す
-   ・カード上部にロックボックス (会員登録 CTA)
+   MEMBER GATE — 牛肉/チキン 共通の部分ロック UI (CLEAN 版)
+   ・写真・名前・ORGANIC バッジ・短い説明: 通常カードと完全に同じ位置
+   ・価格・詳細・カート CTA: 完全非表示 (display: none, no blur)
+   ・カード下部にロック CTA を配置 (元の cart 位置)
    ============================================================ */
-/* 牛肉 有機JAS / チキンオーガニック どちらでも同じ見た目に */
 .product-card--organic-wagyu,
 .product-card--organic {
- background: white !important; /* 通常カードと同じ白背景 */
+ background: white !important;
  border: 1px solid var(--color-bone) !important;
+ position: relative;
 }
 .product-card--organic-wagyu .product-card-img,
 .product-card--organic .product-card-img {
- background-color: #0A0A0A !important; /* 画像エリアは黒 (通常カードと同じ) */
+ background-color: #0A0A0A !important;
 }
 .product-card--organic-wagyu .product-name,
 .product-card--organic .product-name {
- color: var(--color-ink) !important; /* 黒文字 (通常カード同じ) */
+ color: var(--color-ink) !important;
 }
 .product-card--organic-wagyu .product-desc,
 .product-card--organic .product-desc {
  color: var(--color-ink-muted) !important;
 }
 
-/* 共通ロックボックス — カード中央寄り (商品名の少し下) に配置
-   ・写真・商品名・ORGANIC バッジは見せる
-   ・blur されてる desc/価格 領域の中央あたりにロック CTA を重ねる */
-.product-card--organic-wagyu .organic-wagyu-lock,
-.product-card--organic .org-chk-lock {
- position: absolute;
- left: 12px;
- right: 12px;
- top: 62%;  /* カード高さ 62% から下に展開 = 商品名の少し下に登場 */
- padding: 14px 12px;
- background: linear-gradient(135deg, rgba(251,246,232,0.97), rgba(254,249,231,0.97));
- backdrop-filter: blur(6px);
- -webkit-backdrop-filter: blur(6px);
- border: 1px solid var(--color-gold);
- border-radius: 10px;
- box-shadow: 0 6px 20px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1);
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 6px;
- text-align: center;
- z-index: 15;
-}
-/* オーバーレイ時はカード内のすべての要素より上に */
-.product-card--organic-wagyu,
-.product-card--organic {
- position: relative;
-}
-.organic-wagyu-lock-icon,
-.org-chk-lock-icon {
- width: 30px; height: 30px;
- border-radius: 50%;
- background: var(--color-gold);
- display: flex; align-items: center; justify-content: center;
- font-size: 13px;
- color: var(--color-forest-deep);
- box-shadow: 0 2px 8px rgba(212,169,59,0.3);
-}
-.organic-wagyu-lock-title,
-.org-chk-lock-title {
- font-family: var(--font-jp);
- font-size: 12px;
- color: var(--color-forest);
- font-weight: 700;
- letter-spacing: 0.04em;
-}
-.organic-wagyu-lock-desc,
-.org-chk-lock-desc {
- font-size: 10.5px;
- color: var(--color-ink-muted);
- line-height: 1.6;
-}
-.organic-wagyu-lock-cta,
-.org-chk-lock-cta {
- display: inline-flex;
- align-items: center;
- gap: 4px;
- padding: 7px 16px;
- background: linear-gradient(135deg, var(--color-gold), #E5B547);
- color: var(--color-forest-deep);
- font-family: var(--font-jp);
- font-size: 11px;
- font-weight: 700;
- border-radius: 14px;
- letter-spacing: 0.04em;
- text-decoration: none;
- transition: transform 0.2s ease;
- box-shadow: 0 4px 12px rgba(212,169,59,0.25);
- margin-top: 2px;
-}
-.organic-wagyu-lock-cta:hover,
-.org-chk-lock-cta:hover {
- transform: translateY(-1px);
- box-shadow: 0 6px 14px rgba(212,169,59,0.4);
+/* 非会員モード: 価格・stats・購入 UI を完全非表示 (blur 削除) */
+body:not(.is-member) .product-card--organic-wagyu .product-price,
+body:not(.is-member) .product-card--organic-wagyu .product-tag-row .product-price,
+body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap,
+body:not(.is-member) .product-card--organic .product-tag-row .product-price,
+body:not(.is-member) .product-card--organic .product-stats,
+body:not(.is-member) .product-card--organic .product-buy {
+ display: none !important;
 }
 
-/* 会員モード: ロック非表示 */
+/* 会員モード: ロック非表示 + 価格表示 */
 body.is-member .product-card--organic-wagyu .organic-wagyu-lock,
 body.is-member .product-card--organic .org-chk-lock {
- display: none;
-}
-/* 非会員モード: 価格・説明・カート/CTA を blur (商品名/画像/バッジは鮮明) */
-body:not(.is-member) .product-card--organic-wagyu .product-desc,
-body:not(.is-member) .product-card--organic-wagyu .product-price,
-body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap,
-body:not(.is-member) .product-card--organic .product-price,
-body:not(.is-member) .product-card--organic .product-desc,
-body:not(.is-member) .product-card--organic .product-stats,
-body:not(.is-member) .product-card--organic .product-buy,
-body:not(.is-member) .product-card--organic select.variant-select,
-body:not(.is-member) .product-card--organic .btn-add-cart {
- filter: blur(4px);
- pointer-events: none;
- user-select: none;
-}
-/* 商品名/画像/バッジは鮮明維持 */
-body:not(.is-member) .product-card--organic-wagyu .product-name,
-body:not(.is-member) .product-card--organic-wagyu .product-card-img,
-body:not(.is-member) .product-card--organic-wagyu .badge-organic,
-body:not(.is-member) .product-card--organic .product-name,
-body:not(.is-member) .product-card--organic .product-card-img,
-body:not(.is-member) .product-card--organic .badge-organic {
- filter: none !important;
+ display: none !important;
 }
 
-/* COMING SOON オーバーレイは有機JAS のみ表示 (販売前の演出) */
+/* COMING SOON オーバーレイは有機JAS のみ */
 .product-card--organic-wagyu .organic-wagyu-overlay {
  background: rgba(0,0,0,0.6);
  color: var(--color-gold);
 }
 
 /* ============================================================
-   オーガニックチキン: 部分ロック
-   ・商品画像・名前・ORGANIC バッジは見せる (会員登録インセンティブ)
-   ・価格・詳細説明・カート追加 UI を会員限定に
+   ロックボックス — 通常カードの「product-buy」位置 (=最下部) に配置
+   ぼかしを完全に廃止。下部のカート位置を丸ごとロックで置き換え
    ============================================================ */
+.product-card--organic-wagyu .organic-wagyu-lock,
 .product-card--organic .org-chk-lock {
- position: relative;
- margin: 8px 16px;
- padding: 14px 12px;
- background: linear-gradient(180deg, rgba(15,61,46,0.04), rgba(15,61,46,0.08));
- border: 1px dashed rgba(15,61,46,0.25);
+ margin: 12px 16px 16px;
+ margin-top: auto;  /* flex column の中で最下部に押し込む */
+ padding: 12px 14px;
+ background: linear-gradient(180deg, rgba(212,169,59,0.06), rgba(212,169,59,0.12));
+ border: 1px dashed rgba(212,169,59,0.5);
  border-radius: 8px;
  display: flex;
  flex-direction: column;
  align-items: center;
- gap: 8px;
+ gap: 6px;
  text-align: center;
 }
+.organic-wagyu-lock-icon,
 .org-chk-lock-icon {
- width: 26px; height: 26px;
+ width: 24px; height: 24px;
  border-radius: 50%;
- background: rgba(15,61,46,0.08);
+ background: var(--color-gold);
  display: flex; align-items: center; justify-content: center;
- font-size: 12px;
- color: var(--color-forest);
+ font-size: 11px;
+ color: var(--color-forest-deep);
 }
+.organic-wagyu-lock-title,
 .org-chk-lock-title {
  font-family: var(--font-jp);
  font-size: 12px;
@@ -7058,48 +6971,30 @@ body:not(.is-member) .product-card--organic .badge-organic {
  color: var(--color-forest);
  letter-spacing: 0.02em;
 }
+.organic-wagyu-lock-desc,
 .org-chk-lock-desc {
  font-size: 10.5px;
  color: var(--color-ink-muted);
  line-height: 1.6;
+ max-width: 200px;
 }
+/* ぼかしボタン削除: lock 内のリンク を非表示 (Tom 指示) */
+.organic-wagyu-lock-cta,
 .org-chk-lock-cta {
- display: inline-flex; align-items: center; gap: 4px;
- padding: 6px 14px;
- background: var(--color-gold);
- color: var(--color-forest-deep);
- font-family: var(--font-jp);
- font-size: 11px; font-weight: 700;
- border-radius: 14px;
- letter-spacing: 0.04em;
+ display: none !important;
+}
+/* lock 全体をクリッカブルにする (LINE 友だち追加へ) */
+.product-card--organic-wagyu .organic-wagyu-lock,
+.product-card--organic .org-chk-lock {
+ cursor: pointer;
  text-decoration: none;
- transition: transform 0.2s ease;
+ transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.org-chk-lock-cta:hover {
+.product-card--organic-wagyu .organic-wagyu-lock:hover,
+.product-card--organic .org-chk-lock:hover {
  transform: translateY(-1px);
- background: #E5B547;
-}
-
-/* 会員モード: 部分ロック非表示 */
-body.is-member .product-card--organic .org-chk-lock {
- display: none;
-}
-/* 非会員モード: 価格・詳細・購入UIを blur で隠す。商品名と画像は見せる */
-body:not(.is-member) .product-card--organic .product-price,
-body:not(.is-member) .product-card--organic .product-desc,
-body:not(.is-member) .product-card--organic .product-stats,
-body:not(.is-member) .product-card--organic .product-buy,
-body:not(.is-member) .product-card--organic select.variant-select,
-body:not(.is-member) .product-card--organic .btn-add-cart {
- filter: blur(4px);
- pointer-events: none;
- user-select: none;
-}
-/* 商品名と ORGANIC バッジ・写真は鮮明に表示 (会員登録インセンティブ) */
-body:not(.is-member) .product-card--organic .product-name,
-body:not(.is-member) .product-card--organic .badge.badge-organic,
-body:not(.is-member) .product-card--organic .product-card-img {
- filter: none !important;
+ border-color: var(--color-gold);
+ box-shadow: 0 6px 16px rgba(212,169,59,0.2);
 }
 /* CTA をカード最下部に押し下げる */
 .organic-wagyu-cta-wrap {
@@ -9697,12 +9592,7 @@ body:not(.is-member) .product-card--organic .product-card-img {
  <!-- ===== 有機JAS 黒毛和牛（2026年夏解禁・牛肉タブの最右端） ===== -->
  <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999999" data-variants='[]'>
  <!-- 非会員ロックオーバーレイ (CSS で会員時は非表示) -->
- <div class="organic-wagyu-lock">
- <div class="organic-wagyu-lock-icon">🔒</div>
- <div class="organic-wagyu-lock-title">会員様限定</div>
- <div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock-cta">LINE で会員登録 →</a>
- </div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock"><div class="organic-wagyu-lock-icon">🔒</div><div class="organic-wagyu-lock-title">会員様限定</div><div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div></a>
 
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SIRLOIN">
  <span class="badge badge-organic">ORGANIC</span>
@@ -9718,12 +9608,7 @@ body:not(.is-member) .product-card--organic .product-card-img {
 
  <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999998" data-variants='[]'>
  <!-- 非会員ロックオーバーレイ (CSS で会員時は非表示) -->
- <div class="organic-wagyu-lock">
- <div class="organic-wagyu-lock-icon">🔒</div>
- <div class="organic-wagyu-lock-title">会員様限定</div>
- <div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock-cta">LINE で会員登録 →</a>
- </div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock"><div class="organic-wagyu-lock-icon">🔒</div><div class="organic-wagyu-lock-title">会員様限定</div><div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div></a>
 
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC RIBEYE">
  <span class="badge badge-organic">ORGANIC</span>
@@ -9739,12 +9624,7 @@ body:not(.is-member) .product-card--organic .product-card-img {
 
  <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999997" data-variants='[]'>
  <!-- 非会員ロックオーバーレイ (CSS で会員時は非表示) -->
- <div class="organic-wagyu-lock">
- <div class="organic-wagyu-lock-icon">🔒</div>
- <div class="organic-wagyu-lock-title">会員様限定</div>
- <div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock-cta">LINE で会員登録 →</a>
- </div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock"><div class="organic-wagyu-lock-icon">🔒</div><div class="organic-wagyu-lock-title">会員様限定</div><div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div></a>
 
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC FILLET">
  <span class="badge badge-organic">ORGANIC</span>
@@ -9814,12 +9694,7 @@ body:not(.is-member) .product-card--organic .product-card-img {
 
  <!-- オーガニックライン（プレミアム / 価格3倍） -->
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ","p":3840},{"id":"organic-chicken-breast-2","t":"2つセット【5%オフ】","p":7296}]'>
- <div class="org-chk-lock">
- <div class="org-chk-lock-icon">🔒</div>
- <div class="org-chk-lock-title">会員様限定</div>
- <div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="org-chk-lock-cta">LINE で会員登録 →</a>
- </div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN BREAST"><span class="badge badge-organic">ORGANIC</span></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥3,840〜</span></div>
@@ -9836,12 +9711,7 @@ body:not(.is-member) .product-card--organic .product-card-img {
  </div>
 
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-thigh","t":"1つ","p":3840},{"id":"organic-chicken-thigh-2","t":"2つセット【5%オフ】","p":7296}]'>
- <div class="org-chk-lock">
- <div class="org-chk-lock-icon">🔒</div>
- <div class="org-chk-lock-title">会員様限定</div>
- <div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="org-chk-lock-cta">LINE で会員登録 →</a>
- </div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge badge-organic">ORGANIC</span></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥3,840〜</span></div>
@@ -9858,12 +9728,7 @@ body:not(.is-member) .product-card--organic .product-card-img {
  </div>
 
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-minced","t":"1つ","p":3000},{"id":"organic-chicken-minced-2","t":"2つセット【5%オフ】","p":5700}]'>
- <div class="org-chk-lock">
- <div class="org-chk-lock-icon">🔒</div>
- <div class="org-chk-lock-title">会員様限定</div>
- <div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="org-chk-lock-cta">LINE で会員登録 →</a>
- </div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN MINCED"><span class="badge badge-organic">ORGANIC</span></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥3,000〜</span></div>
