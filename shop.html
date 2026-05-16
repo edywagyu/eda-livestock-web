@@ -6618,6 +6618,86 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: rgba(0,0,0,0.55);
  z-index: 1;
 }
+
+/* ============================================================
+   MEMBER GATE — 有機JAS 黒毛和牛は会員 (LINE 連携済) のみ閲覧可
+   ・body.is-member クラスがあれば: 価格・詳細を全て表示
+   ・なければ: 🔒 ロックオーバーレイ + LINE 連携 CTA
+   ============================================================ */
+/* 非会員時: 鍵オーバーレイをカード全体に重ねる */
+.product-card--organic-wagyu .organic-wagyu-lock {
+ position: absolute;
+ inset: 0;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ gap: 12px;
+ padding: 24px;
+ background: linear-gradient(180deg, rgba(10,29,21,0.92), rgba(6,15,11,0.96));
+ backdrop-filter: blur(6px);
+ -webkit-backdrop-filter: blur(6px);
+ z-index: 10;
+ text-align: center;
+ border-radius: inherit;
+}
+.organic-wagyu-lock-icon {
+ width: 36px; height: 36px;
+ border-radius: 50%;
+ background: rgba(212,169,59,0.18);
+ border: 1px solid rgba(212,169,59,0.4);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 16px;
+ color: var(--color-gold);
+}
+.organic-wagyu-lock-title {
+ font-family: var(--font-jp-serif);
+ font-size: 14px;
+ color: var(--color-gold);
+ font-weight: 700;
+ letter-spacing: 0.04em;
+ line-height: 1.5;
+}
+.organic-wagyu-lock-desc {
+ font-size: 11.5px;
+ color: rgba(255,255,255,0.7);
+ line-height: 1.7;
+ max-width: 220px;
+}
+.organic-wagyu-lock-cta {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 9px 18px;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ font-family: var(--font-jp);
+ font-size: 12px;
+ font-weight: 700;
+ border-radius: 20px;
+ letter-spacing: 0.04em;
+ text-decoration: none;
+ transition: transform 0.2s ease;
+ margin-top: 4px;
+}
+.organic-wagyu-lock-cta:hover {
+ transform: translateY(-1px);
+ background: #E5B547;
+}
+
+/* 会員モード: ロック非表示 */
+body.is-member .product-card--organic-wagyu .organic-wagyu-lock {
+ display: none;
+}
+/* 非会員モード: 価格や説明は伏字に (見えないように) */
+body:not(.is-member) .product-card--organic-wagyu .product-desc,
+body:not(.is-member) .product-card--organic-wagyu .product-price,
+body:not(.is-member) .product-card--organic-wagyu .product-tag-row,
+body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap {
+ filter: blur(4px);
+ pointer-events: none;
+ user-select: none;
+}
 /* CTA をカード最下部に押し下げる */
 .organic-wagyu-cta-wrap {
  margin-top: auto; /* flex column 内で最下部にプッシュ */
@@ -9213,6 +9293,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <!-- ===== 有機JAS 黒毛和牛（2026年夏解禁・牛肉タブの最右端） ===== -->
  <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999999" data-variants='[]'>
+ <!-- 非会員ロックオーバーレイ (CSS で会員時は非表示) -->
+ <div class="organic-wagyu-lock">
+ <div class="organic-wagyu-lock-icon">🔒</div>
+ <div class="organic-wagyu-lock-title">会員様限定</div>
+ <div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock-cta">LINE で会員登録 →</a>
+ </div>
+
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SIRLOIN">
  <span class="badge badge-organic">ORGANIC</span>
  <div class="organic-wagyu-overlay">COMING SOON</div>
@@ -9226,6 +9314,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </article>
 
  <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999998" data-variants='[]'>
+ <!-- 非会員ロックオーバーレイ (CSS で会員時は非表示) -->
+ <div class="organic-wagyu-lock">
+ <div class="organic-wagyu-lock-icon">🔒</div>
+ <div class="organic-wagyu-lock-title">会員様限定</div>
+ <div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock-cta">LINE で会員登録 →</a>
+ </div>
+
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC RIBEYE">
  <span class="badge badge-organic">ORGANIC</span>
  <div class="organic-wagyu-overlay">COMING SOON</div>
@@ -9239,6 +9335,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </article>
 
  <article class="product-card product-card--organic-wagyu" data-sub="organic" data-no-status="1" data-no-delivery="1" data-sort-price="999997" data-variants='[]'>
+ <!-- 非会員ロックオーバーレイ (CSS で会員時は非表示) -->
+ <div class="organic-wagyu-lock">
+ <div class="organic-wagyu-lock-icon">🔒</div>
+ <div class="organic-wagyu-lock-title">会員様限定</div>
+ <div class="organic-wagyu-lock-desc">LINE 友だち追加でお肉の詳細・お値段をご覧いただけます</div>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="organic-wagyu-lock-cta">LINE で会員登録 →</a>
+ </div>
+
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC FILLET">
  <span class="badge badge-organic">ORGANIC</span>
  <div class="organic-wagyu-overlay">COMING SOON</div>
@@ -12532,5 +12636,6 @@ function copyPopCoupon() {
 
 <script src="public/data/products-master.js" defer></script>
 <script src="public/js/eda-bundle.js" defer></script>
+<script src="public/js/member-gate.js" defer></script>
 </body>
 </html>

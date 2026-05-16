@@ -1357,9 +1357,24 @@ async function tryLineLogin(profile) {
  issued: Date.now()
  };
  localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+ // ★ 会員ゲート解錠 (shop.html の有機JAS ロック解除)
+ if (typeof window.unlockMember === 'function') {
+ window.unlockMember({
+ line_uid: profile.userId,
+ name: profile.displayName,
+ email: result.customer.email || ''
+ });
+ }
  renderDashboard(result.customer, result.orders || []);
  } else {
  // line_uid 未連携 → アカウント連携フォーム
+ // LINE ログインだけでも会員扱いにする (line_uid あれば識別できる)
+ if (typeof window.unlockMember === 'function') {
+ window.unlockMember({
+ line_uid: profile.userId,
+ name: profile.displayName
+ });
+ }
  showState('linkAccount');
  document.getElementById('liffWelcomeName').textContent =
  (profile.displayName || 'ご利用ありがとうございます') + ' 様';
@@ -1774,5 +1789,6 @@ function escapeHtml(str) {
 }
 </script>
 <script src="public/js/eda-bundle.js" defer></script>
+<script src="public/js/member-gate.js" defer></script>
 </body>
 </html>
