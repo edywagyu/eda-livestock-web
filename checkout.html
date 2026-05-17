@@ -1252,6 +1252,7 @@ function init() {
  renderDestinations();
  renderSummary();
  buildDeliveryDateOptions();
+ lockPaymentMethodForSubscription();
 
  // subscription 経由の場合、プリフィル済の通知
  if (params.get('from') === 'subscription' && destinations[0].name) {
@@ -1809,7 +1810,10 @@ async function placeOrder() {
 
  const mode = getMode();
  const isSubscription = !!subscription && mode !== 'single' && mode !== 'gift' && mode !== 'multi';
- const payment = (document.querySelector('input[name="payment_method"]:checked') || {}).value || 'card';
+ /* 🔴 セレクタ修正: フォーム上の name="payment" と一致させる (旧 "payment_method" は誤り) */
+ let payment = (document.querySelector('input[name="payment"]:checked') || {}).value || 'card';
+ /* サブスク (定期便) は Stripe 仕様上カードのみ — 銀行振込/コンビニで auto-debit 不可 */
+ if (subscription && PLANS[subscription.plan]) payment = 'card';
 
  // LINE セッションがあれば line_uid を添付 (マイページ / 会員ゲートからの再注文時)
  let lineSession = null;
@@ -1890,6 +1894,30 @@ async function placeOrder() {
  alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
  console.error('[placeOrder]', err);
  }
+}
+
+/* 🔴 サブスクが選択されてる場合、決済方法をクレカに固定し
+   銀行振込/Apple Pay の選択肢をグレー化 (Stripe 仕様で auto-debit はカードのみ) */
+function lockPaymentMethodForSubscription() {
+  const hasSub = subscription && PLANS[subscription.plan];
+  if (!hasSub) return;
+  /* クレカを強制選択 */
+  const cardRadio = document.querySelector('input[name="payment"][value="card"]');
+  if (cardRadio) cardRadio.checked = true;
+  /* 銀行振込・Apple Pay を無効化 */
+  ['bank', 'apple'].forEach(val => {
+    const radio = document.querySelector('input[name="payment"][value="' + val + '"]');
+    if (!radio) return;
+    radio.disabled = true;
+    const label = radio.closest('.payment-option');
+    if (label) {
+      label.style.opacity = '0.4';
+      label.style.cursor = 'not-allowed';
+      label.style.pointerEvents = 'none';
+      const desc = label.querySelector('.payment-option-desc');
+      if (desc) desc.textContent = '※ 定期便はクレジットカードのみ対応';
+    }
+  });
 }
 
 // 合計金額計算（subscription + cart 全体）
