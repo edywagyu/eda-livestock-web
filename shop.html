@@ -12121,6 +12121,8 @@ body.has-sticky-cart .floating-phone-btn {
  }
  /* localStorage の eda-cart が変わるたびに在庫表示更新 */
  window.addEventListener('storage', tryDecorate);
+ /* 🔴 products-loader.js が GAS から取得後に再描画呼び出すための公開関数 */
+ window.refreshStockBadges = tryDecorate;
 })();
 
 (function statusFilterInit() {
