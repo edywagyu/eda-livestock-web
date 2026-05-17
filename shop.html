@@ -7089,14 +7089,38 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-ink-muted) !important;
 }
 
-/* 非会員モード: 価格・stats・購入 UI を完全非表示 (blur 削除) */
+/* 非会員モード: 価格・stats のみ非表示 (購入 UI は「LINEで会員登録」ボタンに置換) */
 body:not(.is-member) .product-card--organic-wagyu .product-price,
 body:not(.is-member) .product-card--organic-wagyu .product-tag-row .product-price,
 body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap,
 body:not(.is-member) .product-card--organic .product-tag-row .product-price,
-body:not(.is-member) .product-card--organic .product-stats,
-body:not(.is-member) .product-card--organic .product-buy {
+body:not(.is-member) .product-card--organic .product-stats {
  display: none !important;
+}
+/* 会員登録ボタン (LINE で会員登録 →) */
+.btn-member-register {
+ display: flex !important;
+ align-items: center;
+ justify-content: center;
+ width: 100% !important;
+ padding: 14px 16px !important;
+ background: linear-gradient(135deg, #06C755 0%, #04A847 100%);
+ color: white !important;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 700;
+ letter-spacing: 0.04em;
+ border-radius: 8px;
+ border: 0;
+ box-shadow: 0 4px 12px rgba(6,199,85,0.3);
+ transition: transform 0.18s, box-shadow 0.2s;
+ text-decoration: none;
+ white-space: nowrap;
+}
+.btn-member-register:hover {
+ transform: translateY(-1px);
+ box-shadow: 0 6px 16px rgba(6,199,85,0.45);
+ color: white !important;
 }
 
 /* 会員モード: ロック非表示 + 価格表示 */
@@ -7118,8 +7142,8 @@ body.is-member .product-card--organic .org-chk-lock {
    ============================================================ */
 .product-card--organic-wagyu .organic-wagyu-lock,
 .product-card--organic .org-chk-lock {
- order: 99 !important;  /* HTMLは photo より前にあるが、視覚的には説明文の直下 */
- margin: 10px 16px 16px;  /* margin-top: auto を削除 → 説明文の直下に密着 (Tom指示) */
+ order: 5 !important;  /* desc(0)の後、delivery(6)の前 = 普通カードの stats 位置 */
+ margin: 10px 16px 8px;
  padding: 12px 14px;
  background: linear-gradient(180deg, rgba(212,169,59,0.06), rgba(212,169,59,0.12));
  border: 1px dashed rgba(212,169,59,0.5);
@@ -7129,6 +7153,16 @@ body.is-member .product-card--organic .org-chk-lock {
  align-items: center;
  gap: 6px;
  text-align: center;
+}
+/* 🔴 デリバリー予定 と 購入ボタンは lock の下に配置 (最短日付の位置を揃える) */
+.product-card--organic .delivery-estimate,
+.product-card--organic-wagyu .delivery-estimate {
+ order: 6 !important;
+}
+.product-card--organic .product-buy,
+.product-card--organic-wagyu .product-buy,
+.product-card--organic-wagyu .organic-wagyu-cta-wrap {
+ order: 7 !important;
 }
 .organic-wagyu-lock-icon,
 .org-chk-lock-icon {
@@ -11688,6 +11722,14 @@ body.has-sticky-cart .floating-phone-btn {
  const title = (card.querySelector('.product-name') || {}).textContent || '';
  const imgEl = card.querySelector('.product-card-img img');
  const img = imgEl ? imgEl.src : '';
+
+ /* 🔴 オーガニックカード(非会員時): LINE で会員登録 ボタンに置換 */
+ const isOrganic = card.classList.contains('product-card--organic') || card.classList.contains('product-card--organic-wagyu');
+ const isMember = document.body.classList.contains('is-member');
+ if (isOrganic && !isMember) {
+   buyEl.innerHTML = '<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="btn-member-register">LINE で会員登録 →</a>';
+   return;  /* カート系のセットアップはスキップ */
+ }
 
  let html = '';
  if (variants.length > 1) {
