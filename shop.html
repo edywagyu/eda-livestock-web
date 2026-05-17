@@ -12026,21 +12026,8 @@ body.has-sticky-cart .floating-phone-btn {
  }
  }
 
- /* ---- Fetch from GAS ---- */
- var GAS_URL = getGasUrl();
- if (!GAS_URL) {
- /* GAS未設定の場合、新着セクションを表示しない（静的な既存商品のみで動作） */
- return;
- }
-
- fetch(GAS_URL + '?action=public_products')
- .then(function(r) { return r.json(); })
- .then(function(data) { renderDynProducts(data.products || []); })
- .catch(function(e) {
- console.warn('Failed to load dynamic products:', e);
- var section = document.getElementById('dynProducts');
- if (section) section.hidden = true;
- });
+ /* 🔴 新商品レンダラーを公開: refreshProductCards() から HTML に無い商品だけ渡される */
+ window.__dynRenderNew = renderDynProducts;
 })();
 </script>
 
@@ -12123,6 +12110,110 @@ body.has-sticky-cart .floating-phone-btn {
  window.addEventListener('storage', tryDecorate);
  /* 🔴 products-loader.js が GAS から取得後に再描画呼び出すための公開関数 */
  window.refreshStockBadges = tryDecorate;
+})();
+
+/* ============================================================
+   🔴 GAS マスター → HTML カード への完全反映 (Tom指示)
+   ・price 表示の更新 (¥3,400〜 → ¥3,800〜 等)
+   ・data-variants の単一価格更新
+   ・published=FALSE → カード非表示
+   ・新商品 (HTML に無い productId) → 動的レンダリング
+   ============================================================ */
+(function() {
+ 'use strict';
+ const PRODUCT_NAME_MAP = {
+   /* HTML カード名 → GAS 商品 productId 紐付け (productId 列が空の場合のフォールバック) */
+ };
+
+ function applyMaster() {
+   const products = (window.EDA_PRODUCTS_MASTER || {}).products || [];
+   if (!products.length) return;
+   const byName = {};
+   const byId = {};
+   products.forEach(p => {
+     if (p.name) byName[p.name] = p;
+     if (p.productId) byId[p.productId] = p;
+   });
+
+   const matchedNames = new Set();
+
+   document.querySelectorAll('.product-card').forEach(card => {
+     const nameEl = card.querySelector('.product-name');
+     if (!nameEl) return;
+     const name = nameEl.textContent.trim();
+     const p = byName[name];
+     if (!p) return;
+     matchedNames.add(name);
+
+     /* 1. published=FALSE → 非表示 */
+     if (p.published === false) {
+       card.style.display = 'none';
+       return;
+     } else {
+       card.style.display = '';  /* 元に戻す (TRUE に変えた場合) */
+     }
+
+     /* 2. price 表示更新 */
+     if (p.price && p.price > 0) {
+       const priceEl = card.querySelector('.product-tag-row .product-price');
+       if (priceEl) {
+         const hasTilde = priceEl.textContent.includes('〜');
+         priceEl.textContent = '¥' + Number(p.price).toLocaleString() + (hasTilde ? '〜' : '');
+       }
+
+       /* 3. data-variants の比例更新 (multi-pack の割引率維持) + ドロップダウン同期 */
+       try {
+         const v = JSON.parse(card.dataset.variants || '[]');
+         if (v.length > 0 && v[0].p) {
+           const oldBase = v[0].p;
+           const newBase = p.price;
+           if (oldBase !== newBase) {
+             v.forEach((item, i) => {
+               if (i === 0) item.p = newBase;
+               else item.p = Math.round(newBase * (item.p / oldBase));
+             });
+             card.dataset.variants = JSON.stringify(v);
+
+             /* ドロップダウン (<select> option) の価格表記を更新 */
+             const selectEl = card.querySelector('select.variant-select');
+             if (selectEl) {
+               const options = selectEl.querySelectorAll('option');
+               options.forEach((opt, i) => {
+                 if (v[i]) opt.textContent = v[i].t + ' — ¥' + v[i].p.toLocaleString();
+               });
+             }
+             /* 静的バリアント表示 (単一価格カード) */
+             const staticEl = card.querySelector('.variant-select--static');
+             if (staticEl) {
+               staticEl.textContent = v[0].t + ' — ¥' + v[0].p.toLocaleString();
+             }
+           }
+         }
+       } catch (e) {}
+     }
+   });
+
+   /* 4. 新商品: HTML に無い productId を動的レンダリング */
+   const newProducts = products.filter(p => {
+     return p.published !== false
+       && !p.comingSoon
+       && p.name
+       && !matchedNames.has(p.name)
+       && p.price > 0;
+   });
+   if (newProducts.length && typeof window.__dynRenderNew === 'function') {
+     window.__dynRenderNew(newProducts);
+   }
+ }
+
+ window.refreshProductCards = applyMaster;
+
+ /* DOMContentLoaded 後 + products-loader が呼ぶ */
+ if (document.readyState === 'loading') {
+   document.addEventListener('DOMContentLoaded', applyMaster);
+ } else {
+   applyMaster();
+ }
 })();
 
 (function statusFilterInit() {
