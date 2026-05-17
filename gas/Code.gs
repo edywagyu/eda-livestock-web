@@ -119,6 +119,9 @@ function doGet(e) {
       case 'ping':              return ping();
       case 'order_status':      return orderStatus(e.parameter.session_id);
       case 'public_products':   return publicProducts();
+      case 'public_gifts':      return publicGifts();
+      case 'public_subscriptions': return publicSubscriptionPlans();
+      case 'public_catalog':    return publicCatalog();
       case 'dashboard':         return dashboardSummary(e.parameter);
       case 'line_friends':      return lineFriends();
       /* ===== Customer Segmentation (LINE 配信用) ===== */
@@ -194,6 +197,10 @@ function doPost(e) {
       case 'staff_update_stock':           return staffUpdateStock(body);
       case 'staff_product_save':           return staffProductSave(body);
       case 'staff_product_delete':         return staffProductDelete(body);
+      case 'staff_gift_save':              return staffGiftSave(body);
+      case 'staff_gift_delete':            return staffGiftDelete(body);
+      case 'staff_subscription_save':      return staffSubscriptionSave(body);
+      case 'staff_subscription_delete':    return staffSubscriptionDelete(body);
       case 'staff_ship':                   return staffShip(body);
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
@@ -859,7 +866,7 @@ function cancelSubscription(body) {
    GET: public_products / dashboard / line_friends
    ============================================================ */
 function publicProducts() {
-  // products シートがあれば返す、なければ products-master.js とは独立した最小返り値
+  // products シートがあれば返す、なければ空配列
   try {
     const sh = ss().getSheetByName('products');
     if (sh) {
@@ -873,6 +880,45 @@ function publicProducts() {
     }
   } catch (e) {}
   return jsonResponse({ ok:true, products: [] });
+}
+
+/* 全カタログを1回で返す (shop.html の起動時取得を効率化) */
+function publicCatalog() {
+  const out = { ok: true, products: [], gifts: [], plans: [] };
+  try {
+    const sh = ss().getSheetByName('products');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      const headers = data[0];
+      out.products = data.slice(1).map(row => {
+        const p = {}; headers.forEach((h, i) => p[h] = row[i]);
+        return p;
+      });
+    }
+  } catch (e) {}
+  try {
+    const sh = ss().getSheetByName('gifts');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      const headers = data[0];
+      out.gifts = data.slice(1).map(row => {
+        const g = {}; headers.forEach((h, i) => g[h] = row[i]);
+        return g;
+      }).filter(g => g.published === true || g.published === 'TRUE' || g.published === 'true');
+    }
+  } catch (e) {}
+  try {
+    const sh = ss().getSheetByName('subscription_plans');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      const headers = data[0];
+      out.plans = data.slice(1).map(row => {
+        const p = {}; headers.forEach((h, i) => p[h] = row[i]);
+        return p;
+      }).filter(p => p.published === true || p.published === 'TRUE' || p.published === 'true');
+    }
+  } catch (e) {}
+  return jsonResponse(out);
 }
 
 function dashboardSummary(params) {
@@ -1489,14 +1535,27 @@ function staffDashboard() {
    在庫上書きシート (stock_overrides) があれば、その値を返却。
    なければ products-master.js のデフォルト stock を返す (フロント側で同期)。
 */
+/* ============================================================
+   PRODUCTS シート操作 — products タブが SOT (Single Source of Truth)
+   ・public_products / staff_inventory: 同じデータを返す
+   ・staff_update_stock / staff_product_save: products シートを直接更新
+   ・staff_product_delete: products シートから行削除
+   ・旧 product_overrides / stock_overrides は廃止 (使わない)
+   ============================================================ */
+const PRODUCTS_HEADERS = [
+  'productId','variantId','sku','stripePriceId',
+  'name','variant','price','weight','stock','temp',
+  'category','categoryLabel','tagEn','description',
+  'image','isOrganic','comingSoon','published'
+];
+
+function productsSheet() {
+  return sheet('products', PRODUCTS_HEADERS);
+}
+
 function staffInventory() {
   try {
-    const sh = ss().getSheetByName('stock_overrides');
-    if (!sh) {
-      // 初回: 空シートを作成
-      sheet('stock_overrides', ['variantId','sku','name','stock','price','active','updated_at']);
-      return jsonResponse({ ok:true, products: [], source: 'empty (use frontend master)' });
-    }
+    const sh = productsSheet();
     const data = sh.getDataRange().getValues();
     if (data.length < 2) return jsonResponse({ ok:true, products: [], source: 'empty' });
     const headers = data[0];
@@ -1504,86 +1563,214 @@ function staffInventory() {
       const p = {}; headers.forEach((h, i) => p[h] = row[i]);
       return p;
     });
-    return jsonResponse({ ok:true, products, source: 'sheet:stock_overrides' });
+    return jsonResponse({ ok:true, products, source: 'sheet:products' });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
   }
 }
 
-/* POST staff_update_stock { variantId, sku, name, stock } */
+/* POST staff_update_stock { variantId, stock } — 在庫数のみ高速更新 */
 function staffUpdateStock(body) {
   if (!body.variantId) throw new Error('variantId required');
-  const sh = sheet('stock_overrides', ['variantId','sku','name','stock','price','active','updated_at']);
+  const sh = productsSheet();
   const data = sh.getDataRange().getValues();
   const headers = data[0];
   const vidIdx = headers.indexOf('variantId');
-  let foundRow = -1;
+  const stockIdx = headers.indexOf('stock');
   for (let i = 1; i < data.length; i++) {
-    if (data[i][vidIdx] === body.variantId) { foundRow = i + 1; break; }
+    if (data[i][vidIdx] === body.variantId) {
+      sh.getRange(i + 1, stockIdx + 1).setValue(Number(body.stock) || 0);
+      return jsonResponse({ ok:true, row: i + 1 });
+    }
   }
-  const row = [
-    body.variantId,
-    body.sku || '',
-    body.name || '',
-    Number(body.stock) || 0,
-    body.price !== undefined ? Number(body.price) : '',
-    body.active !== undefined ? body.active : true,
-    new Date()
-  ];
-  if (foundRow > 0) {
-    sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
-  } else {
-    sh.appendRow(row);
-  }
-  return jsonResponse({ ok:true });
+  return jsonResponse({ ok:false, error: 'variantId not found in products sheet' });
 }
 
-/* POST staff_product_save { variantId, sku, name, price, stock, category, ... } */
+/* POST staff_product_save { 全フィールド } — 新規追加 or 全フィールド更新 */
 function staffProductSave(body) {
   if (!body.variantId) throw new Error('variantId required');
-  const sh = sheet('product_overrides', ['variantId','sku','name','category','variant','price','stock','active','description','updated_at']);
+  const sh = productsSheet();
   const data = sh.getDataRange().getValues();
   const headers = data[0];
   const vidIdx = headers.indexOf('variantId');
+
+  /* 既存行を探す */
   let foundRow = -1;
   for (let i = 1; i < data.length; i++) {
     if (data[i][vidIdx] === body.variantId) { foundRow = i + 1; break; }
   }
-  const row = [
-    body.variantId,
-    body.sku || '',
-    body.name || '',
-    body.category || '',
-    body.variant || '',
-    Number(body.price) || 0,
-    Number(body.stock) || 0,
-    body.active !== false,
-    body.description || '',
-    new Date()
-  ];
+
+  /* 全フィールドを配列化 (PRODUCTS_HEADERS の順序) */
+  const row = headers.map(h => {
+    const v = body[h];
+    if (v === undefined || v === null) return '';
+    /* 数値カラムは Number 化 */
+    if (h === 'price' || h === 'weight' || h === 'stock') return Number(v) || 0;
+    /* boolean カラムは TRUE/FALSE 文字列 */
+    if (h === 'isOrganic' || h === 'comingSoon' || h === 'published') {
+      return (v === true || v === 'TRUE' || v === 'true') ? 'TRUE' : 'FALSE';
+    }
+    return String(v);
+  });
+
   if (foundRow > 0) {
     sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
+    return jsonResponse({ ok:true, action: 'updated', row: foundRow });
   } else {
     sh.appendRow(row);
+    return jsonResponse({ ok:true, action: 'created' });
   }
-  return jsonResponse({ ok:true });
 }
 
 /* POST staff_product_delete { variantId } */
 function staffProductDelete(body) {
   if (!body.variantId) throw new Error('variantId required');
-  ['stock_overrides','product_overrides'].forEach(name => {
-    try {
-      const sh = ss().getSheetByName(name);
-      if (!sh) return;
-      const data = sh.getDataRange().getValues();
-      const vidIdx = data[0].indexOf('variantId');
-      for (let i = data.length - 1; i >= 1; i--) {
-        if (data[i][vidIdx] === body.variantId) sh.deleteRow(i + 1);
-      }
-    } catch (e) {}
+  const sh = productsSheet();
+  const data = sh.getDataRange().getValues();
+  const vidIdx = data[0].indexOf('variantId');
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][vidIdx] === body.variantId) {
+      sh.deleteRow(i + 1);
+      return jsonResponse({ ok:true, deleted_row: i + 1 });
+    }
+  }
+  return jsonResponse({ ok:false, error: 'variantId not found' });
+}
+
+/* ============================================================
+   GIFTS シート操作 (Phase 3)
+   ============================================================ */
+const GIFTS_HEADERS = [
+  'giftId','name','badgeText','price','weight','description',
+  'stripePriceId','image','servings','noteHtml','published'
+];
+
+function giftsSheet() {
+  return sheet('gifts', GIFTS_HEADERS);
+}
+
+function publicGifts() {
+  try {
+    const sh = giftsSheet();
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, gifts: [] });
+    const headers = data[0];
+    const gifts = data.slice(1).map(row => {
+      const g = {}; headers.forEach((h, i) => g[h] = row[i]);
+      return g;
+    }).filter(g => g.published === true || g.published === 'TRUE' || g.published === 'true');
+    return jsonResponse({ ok:true, gifts });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+function staffGiftSave(body) {
+  if (!body.giftId) throw new Error('giftId required');
+  const sh = giftsSheet();
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const idIdx = headers.indexOf('giftId');
+  let foundRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][idIdx] === body.giftId) { foundRow = i + 1; break; }
+  }
+  const row = headers.map(h => {
+    const v = body[h];
+    if (v === undefined || v === null) return '';
+    if (h === 'price' || h === 'weight') return Number(v) || 0;
+    if (h === 'published') return (v === true || v === 'TRUE' || v === 'true') ? 'TRUE' : 'FALSE';
+    return String(v);
   });
-  return jsonResponse({ ok:true });
+  if (foundRow > 0) {
+    sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
+    return jsonResponse({ ok:true, action: 'updated' });
+  } else {
+    sh.appendRow(row);
+    return jsonResponse({ ok:true, action: 'created' });
+  }
+}
+
+function staffGiftDelete(body) {
+  if (!body.giftId) throw new Error('giftId required');
+  const sh = giftsSheet();
+  const data = sh.getDataRange().getValues();
+  const idIdx = data[0].indexOf('giftId');
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][idIdx] === body.giftId) {
+      sh.deleteRow(i + 1);
+      return jsonResponse({ ok:true });
+    }
+  }
+  return jsonResponse({ ok:false, error: 'giftId not found' });
+}
+
+/* ============================================================
+   SUBSCRIPTIONS シート操作 (Phase 4)
+   ============================================================ */
+const SUBS_HEADERS = [
+  'planId','name','target','spec','oldPrice','firstMonthPrice','savings',
+  'stripePriceId','items','featured','badgeLabel','vipPerk','image','published'
+];
+
+function subscriptionPlansSheet() {
+  return sheet('subscription_plans', SUBS_HEADERS);
+}
+
+function publicSubscriptionPlans() {
+  try {
+    const sh = subscriptionPlansSheet();
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, plans: [] });
+    const headers = data[0];
+    const plans = data.slice(1).map(row => {
+      const p = {}; headers.forEach((h, i) => p[h] = row[i]);
+      return p;
+    }).filter(p => p.published === true || p.published === 'TRUE' || p.published === 'true');
+    return jsonResponse({ ok:true, plans });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+function staffSubscriptionSave(body) {
+  if (!body.planId) throw new Error('planId required');
+  const sh = subscriptionPlansSheet();
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const idIdx = headers.indexOf('planId');
+  let foundRow = -1;
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][idIdx] === body.planId) { foundRow = i + 1; break; }
+  }
+  const row = headers.map(h => {
+    const v = body[h];
+    if (v === undefined || v === null) return '';
+    if (h === 'oldPrice' || h === 'firstMonthPrice' || h === 'savings') return Number(v) || 0;
+    if (h === 'featured' || h === 'published') return (v === true || v === 'TRUE' || v === 'true') ? 'TRUE' : 'FALSE';
+    return String(v);
+  });
+  if (foundRow > 0) {
+    sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
+    return jsonResponse({ ok:true, action: 'updated' });
+  } else {
+    sh.appendRow(row);
+    return jsonResponse({ ok:true, action: 'created' });
+  }
+}
+
+function staffSubscriptionDelete(body) {
+  if (!body.planId) throw new Error('planId required');
+  const sh = subscriptionPlansSheet();
+  const data = sh.getDataRange().getValues();
+  const idIdx = data[0].indexOf('planId');
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (data[i][idIdx] === body.planId) {
+      sh.deleteRow(i + 1);
+      return jsonResponse({ ok:true });
+    }
+  }
+  return jsonResponse({ ok:false, error: 'planId not found' });
 }
 
 /* GET staff_orders */
