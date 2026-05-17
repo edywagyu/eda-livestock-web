@@ -7114,9 +7114,8 @@ body.is-member .product-card--organic .org-chk-lock {
    ============================================================ */
 .product-card--organic-wagyu .organic-wagyu-lock,
 .product-card--organic .org-chk-lock {
- order: 99 !important;  /* HTMLは photo より前にあるが、視覚的には最下部 */
- margin: 12px 16px 16px;
- margin-top: auto;  /* flex column の中で最下部に押し込む (補助) */
+ order: 99 !important;  /* HTMLは photo より前にあるが、視覚的には説明文の直下 */
+ margin: 10px 16px 16px;  /* margin-top: auto を削除 → 説明文の直下に密着 (Tom指示) */
  padding: 12px 14px;
  background: linear-gradient(180deg, rgba(212,169,59,0.06), rgba(212,169,59,0.12));
  border: 1px dashed rgba(212,169,59,0.5);
