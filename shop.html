@@ -8888,12 +8888,29 @@ body.is-member .product-card--organic .org-chk-lock {
  text-align: center;
  }
  .sub-plan-target {
- font-size: 9.5px !important;
- line-height: 1.4 !important;
- text-align: center;
- white-space: normal;
+ display: flex !important;
+ flex-direction: column !important;
+ align-items: center;
+ gap: 2px;
  margin-bottom: 8px;
- padding: 0 2px;
+ padding: 0;
+ background: none !important;
+ border: 0 !important;
+ }
+ .sub-plan-target .sub-plan-target-size {
+ display: block;
+ font-size: 12px !important;
+ font-weight: 700;
+ color: var(--color-gold);
+ white-space: nowrap;
+ line-height: 1.2;
+ }
+ .sub-plan-target .sub-plan-target-spec {
+ display: block;
+ font-size: 10px !important;
+ color: rgba(255,255,255,0.7);
+ white-space: nowrap;
+ line-height: 1.2;
  }
  .sub-plan-pricing { text-align: center; margin-top: auto; padding-top: 6px; }
  .sub-plan-old-price { font-size: 10px !important; margin-bottom: 2px; }
@@ -8917,11 +8934,9 @@ body.is-member .product-card--organic .org-chk-lock {
  .sub-promo-deadline-suffix { font-size: 10px !important; padding-left: 6px !important; margin-left: 2px !important; }
  .sub-promo-microcopy { font-size: 11px; line-height: 1.4; }
  .shop-sub-plans-wrap { margin-bottom: 28px; }
- /* モバイルではBOX化せず、シンプルな2列リストに (Tom指示) */
+ /* モバイルではこのセクション完全非表示 (Tom指示) */
  .shop-sub-features {
- grid-template-columns: 1fr 1fr;
- margin-bottom: 16px;
- gap: 6px;
+ display: none !important;
  }
  .shop-sub-feature {
  background: transparent;
@@ -9068,22 +9083,9 @@ body.is-member .product-card--organic .org-chk-lock {
  scroll-snap-align: start;
  }
 
- /* 定期便 4特徴 — 横スワイプ */
+ /* 定期便 4特徴 — Tom指示「モバイルでスライド部分削除」 */
  .shop-sub-features {
- display: flex !important;
- grid-template-columns: none !important;
- gap: 10px !important;
- overflow-x: auto;
- scroll-snap-type: x mandatory;
- -webkit-overflow-scrolling: touch;
- scrollbar-width: none;
- margin: 0 -16px 20px !important;
- padding: 4px 16px 8px;
- }
- .shop-sub-features::-webkit-scrollbar { display: none; }
- .shop-sub-feature {
- flex: 0 0 60vw;
- scroll-snap-align: start;
+ display: none !important;
  }
 
  /* お客様の声 */
@@ -9417,7 +9419,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="ship-cd-headline" id="shipCdHeadline">本日のご注文で <strong>最短 3日後</strong>にお届け</div>
  <div class="ship-cd-meta" id="shipCdMeta"><span class="ship-cd-note">※ 朝10時 / 午後17時 / 夜22時 の3段階で配送日を自動判定</span></div>
  </div>
- <a href="#products" class="ship-cd-cta">Collection →</a>
+ <!-- Tom指示: ship-countdown-barのCTAボタン削除 → 配送日理解のみ目的 -->
  </div>
  </div>
 </section>
@@ -10214,7 +10216,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-plan-badge sub-plan-badge--mini">🌱</div>
  <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
  <div class="sub-plan-name">ミニプラン</div>
- <div class="sub-plan-target">1-2人家族 / 約1.6kg / 8品</div>
+ <div class="sub-plan-target"><span class="sub-plan-target-size">1-2人家族</span><span class="sub-plan-target-spec">1.6kg・8品</span></div>
  <ul class="sub-plan-items">
  <li>🐃 赤身スライス 200g</li>
  <li>🐃 赤身焼肉 200g</li>
@@ -10237,7 +10239,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-plan-badge sub-plan-badge--pro">🏆</div>
  <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
  <div class="sub-plan-name">プロプラン</div>
- <div class="sub-plan-target">3-4人家族 / 約3.2kg / 16品</div>
+ <div class="sub-plan-target"><span class="sub-plan-target-size">3-4人家族</span><span class="sub-plan-target-spec">3.2kg・16品</span></div>
  <ul class="sub-plan-items">
  <li>🐃 赤身スライス 200g×2</li>
  <li>🐃 赤身焼肉 200g×2</li>
@@ -10260,7 +10262,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-plan-badge sub-plan-badge--vip">👑</div>
  <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
  <div class="sub-plan-name">VIPプラン</div>
- <div class="sub-plan-target">5人以上 / 約4.4kg / 22品</div>
+ <div class="sub-plan-target"><span class="sub-plan-target-size">5人以上</span><span class="sub-plan-target-spec">4.4kg・22品</span></div>
  <ul class="sub-plan-items">
  <li>ヒレステーキ 200g</li>
  <li>🐃 赤身ステーキ 200g×2</li>
@@ -10307,10 +10309,9 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
- <!-- 5. CTAボタン中央 -->
+ <!-- 5. CTAボタン中央 — Tom指示「詳細を見るボタンのみ」 -->
  <div class="shop-sub-cta-row">
- <a href="#quiz" class="btn btn-gold" style="font-size:13px">あなたのプラン診断 →</a>
- <a href="subscription.html" class="btn" style="border-color: rgba(212,169,59,.6); color: var(--color-gold); font-size:13px">全プラン詳細</a>
+ <a href="subscription.html" class="btn btn-gold" style="font-size:14px">詳細を見る →</a>
  </div>
  <p class="shop-sub-fine">※ 初月のみ50%OFF / 2回目以降は通常価格 / 解約は3ヶ月継続後より可能</p>
 
