@@ -79,6 +79,10 @@
     if (typeof window.refreshStockBadges === 'function') {
       window.refreshStockBadges();
     }
+    /* 価格・公開ステータス更新 + 新商品レンダリング */
+    if (typeof window.refreshProductCards === 'function') {
+      window.refreshProductCards();
+    }
 
     console.log('[products-loader] スプシから ' + normalized.length + ' 商品を取得 (GAS)');
   }
