@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-05-17-026-organic-lock-up-register-btn';
+const CACHE_VERSION = 'eda-v2026-05-17-027-3plans-1screen';
 const CORE_ASSETS = [
   './',
   'index.html',
