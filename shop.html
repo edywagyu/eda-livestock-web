@@ -10209,7 +10209,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
- <!-- 3. プラン一覧（クリックで subscription.html へ） -->
+ <!-- 3. プラン一覧 — 静的 HTML はフォールバック / __renderPlans(plans) で上書き -->
  <div class="shop-sub-plans-wrap">
  <div class="sub-plans-grid">
  <a href="subscription.html?plan=starter" class="sub-plan-mini">
@@ -10217,15 +10217,6 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
  <div class="sub-plan-name">ミニプラン</div>
  <div class="sub-plan-target"><span class="sub-plan-target-size">1-2人家族</span><span class="sub-plan-target-spec">1.6kg・8品</span></div>
- <ul class="sub-plan-items">
- <li>🐃 赤身スライス 200g</li>
- <li>🐃 赤身焼肉 200g</li>
- <li>🐃 サイコロステーキ 200g</li>
- <li>🐃 ミンチ 200g</li>
- <li>鶏モモ 200g</li>
- <li>鶏ムネ 200g×2</li>
- <li>鶏ミンチ 200g</li>
- </ul>
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">¥6,980</div>
  <div class="sub-plan-price">¥3,490<small>/初月</small></div>
@@ -10233,22 +10224,12 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  <div class="sub-plan-cta-link">🛒 購入する →</div>
  </a>
-
  <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
  <span class="sub-plan-tag">人気 No.1</span>
  <div class="sub-plan-badge sub-plan-badge--pro">🏆</div>
  <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
  <div class="sub-plan-name">プロプラン</div>
  <div class="sub-plan-target"><span class="sub-plan-target-size">3-4人家族</span><span class="sub-plan-target-spec">3.2kg・16品</span></div>
- <ul class="sub-plan-items">
- <li>🐃 赤身スライス 200g×2</li>
- <li>🐃 赤身焼肉 200g×2</li>
- <li>🐃 サイコロステーキ 200g×2</li>
- <li>🐃 ミンチ 200g</li>
- <li>鶏モモ 200g×3</li>
- <li>鶏ムネ 200g×3</li>
- <li>鶏ミンチ 200g×3</li>
- </ul>
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">¥12,800</div>
  <div class="sub-plan-price">¥6,400<small>/初月</small></div>
@@ -10256,33 +10237,16 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  <div class="sub-plan-cta-link">🛒 購入する →</div>
  </a>
-
  <a href="subscription.html?plan=volume" class="sub-plan-mini sub-plan-mini--vip">
  <span class="sub-plan-tag sub-plan-tag--vip">VIP 限定特典</span>
  <div class="sub-plan-badge sub-plan-badge--vip">👑</div>
  <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
  <div class="sub-plan-name">VIPプラン</div>
  <div class="sub-plan-target"><span class="sub-plan-target-size">5人以上</span><span class="sub-plan-target-spec">4.4kg・22品</span></div>
- <ul class="sub-plan-items">
- <li>ヒレステーキ 200g</li>
- <li>🐃 赤身ステーキ 200g×2</li>
- <li>🐃 サーロインステーキ 200g×2</li>
- <li>🐃 ミンチ 200g×2</li>
- <li>鶏モモ 200g×5</li>
- <li>鶏ムネ 200g×5</li>
- <li>鶏ミンチ 200g×5</li>
- </ul>
- <div class="sub-plan-vip-perk">
- <span class="sub-plan-vip-perk-icon">🌿</span>
- <div class="sub-plan-vip-perk-text">
- <strong>有機JAS 黒毛和牛 優先案内</strong>
- <small>2026年夏 解禁・月20頭限定の優先購入権</small>
- </div>
- </div>
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">¥27,400</div>
  <div class="sub-plan-price">¥13,700<small>/初月</small></div>
- <div class="sub-plan-savings">−¥13,700 OFF / 個別 ¥32,200 → 15%お得</div>
+ <div class="sub-plan-savings">−¥13,700 OFF</div>
  </div>
  <div class="sub-plan-cta-link">🛒 購入する →</div>
  </a>
@@ -10899,10 +10863,10 @@ function toggleUnboxingSound() {
 
  <!-- ギフト仕様の詳細は購入確定後のチェックアウト/確認ページに記載 -->
 
- <!-- ギフト商品 3点（松・竹・梅） — モバイル横スクロール対応 -->
+ <!-- ギフト商品 — 静的 HTML はフォールバック / スプシ動的レンダリング上書き対応 -->
  <div class="gift-products-grid" id="gift-products">
  <div class="gift-product-card">
- <div class="gift-product-img gift-product-img--fillet" style="background-image: image-set(url('public/images/products/drive/fillet.webp') type('image/webp'), url('public/images/products/drive/fillet.jpg'))">
+ <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/fillet.webp') type('image/webp'), url('public/images/products/drive/fillet.jpg'))">
  <span class="gift-product-rank">松</span>
  </div>
  <div class="gift-product-body">
@@ -12028,6 +11992,106 @@ body.has-sticky-cart .floating-phone-btn {
 
  /* 🔴 新商品レンダラーを公開: refreshProductCards() から HTML に無い商品だけ渡される */
  window.__dynRenderNew = renderDynProducts;
+})();
+
+/* ============================================================
+   🎁 ギフトレンダラー — products-loader.js から呼び出される
+   GAS の public_gifts データから #gift-products に動的生成
+   ============================================================ */
+(function() {
+  'use strict';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+  function escAttr(s) { return esc(s).replace(/'/g, '&#39;'); }
+
+  window.__renderGifts = function(gifts) {
+    const grid = document.getElementById('gift-products');
+    if (!grid || !Array.isArray(gifts) || gifts.length === 0) return;
+    grid.innerHTML = gifts.map(g => {
+      const giftId = esc(g.giftId);
+      const name = esc(g.name);
+      const badge = esc(g.badgeText || '');
+      const price = Number(g.price || 0);
+      const img = esc(g.image || '');
+      const desc = esc(g.description || '');
+      const servings = esc(g.servings || ((g.weight || '') + 'g'));
+      const rankClass = giftId === 'take' ? 'rank-take' : (giftId === 'ume' ? 'rank-ume' : '');
+      const onclickArg = name + ' ' + (g.weight ? g.weight + 'g' : '');
+      return ''
+        + '<div class="gift-product-card">'
+        + '  <div class="gift-product-img" style="' + (img ? 'background-image:url(\'' + escAttr(img) + '\')' : '') + '">'
+        + '    ' + (badge ? '<span class="gift-product-rank ' + rankClass + '">' + badge + '</span>' : '')
+        + '  </div>'
+        + '  <div class="gift-product-body">'
+        + '    <h3>' + name + '</h3>'
+        + '    <p>' + desc + '</p>'
+        + '    <div class="gift-product-meta">'
+        + '      <span class="gift-product-vol">' + servings + '</span>'
+        + '      <span class="gift-product-price">¥' + price.toLocaleString() + '<small>送料込み・税込</small></span>'
+        + '    </div>'
+        + '    <button onclick="orderGift(\'' + escAttr(giftId) + '\', ' + price + ', \'' + escAttr(onclickArg) + '\')" class="gift-product-cta">贈答用に注文する →</button>'
+        + '  </div>'
+        + '</div>';
+    }).join('');
+  };
+})();
+
+/* ============================================================
+   📅 定期便プランレンダラー — products-loader.js から呼び出される
+   GAS の public_subscriptions データから定期便セクションに動的生成
+   ============================================================ */
+(function() {
+  'use strict';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+  function escAttr(s) { return esc(s).replace(/'/g, '&#39;'); }
+
+  window.__renderPlans = function(plans) {
+    const grid = document.querySelector('.sub-plans-grid');
+    if (!grid || !Array.isArray(plans) || plans.length === 0) return;
+    grid.innerHTML = plans.map(p => {
+      const planId = esc(p.planId);
+      const name = esc(p.name);
+      const target = esc(p.target);
+      const spec = esc(p.spec);
+      const oldPrice = Number(p.oldPrice || 0);
+      const firstPrice = Number(p.firstMonthPrice || 0);
+      const savings = Number(p.savings || (oldPrice - firstPrice));
+      const items = String(p.items || '').split(/[,、]\s*/).filter(Boolean);
+      const featured = (p.featured === true || p.featured === 'TRUE' || p.featured === 'true');
+      const badgeLabel = esc(p.badgeLabel || '');
+      const vipPerk = esc(p.vipPerk || '');
+      const featuredClass = featured ? ' featured' : '';
+      const featuredTag = featured && badgeLabel ? '<span class="sub-plan-tag">' + badgeLabel + '</span>' : '';
+      const vipTag = !featured && badgeLabel ? '<span class="sub-plan-tag sub-plan-tag--vip">' + badgeLabel + '</span>' : '';
+      const planBadgeIcon = planId === 'mini' ? '🌱' : (planId === 'pro' ? '🏆' : '👑');
+      const planBadgeCls = planId === 'mini' ? 'sub-plan-badge--mini' : (planId === 'pro' ? 'sub-plan-badge--pro' : 'sub-plan-badge--vip');
+      const vipClass = planId === 'vip' ? ' sub-plan-mini--vip' : '';
+      const itemsHtml = items.length ? '<ul class="sub-plan-items">' + items.map(it => '<li>' + esc(it) + '</li>').join('') + '</ul>' : '';
+      const vipPerkHtml = vipPerk ? ''
+        + '<div class="sub-plan-vip-perk">'
+        + '  <span class="sub-plan-vip-perk-icon">🌿</span>'
+        + '  <div class="sub-plan-vip-perk-text">'
+        + '    <strong>' + esc(vipPerk.split(/\s*\(/)[0]) + '</strong>'
+        + (vipPerk.includes('(') ? '    <small>' + esc(vipPerk.replace(/^[^(]+\(/, '').replace(/\)\s*$/, '')) + '</small>' : '')
+        + '  </div>'
+        + '</div>' : '';
+      return ''
+        + '<a href="subscription.html?plan=' + escAttr(planId) + '" class="sub-plan-mini' + featuredClass + vipClass + '">'
+        + (featuredTag || vipTag)
+        + '<div class="sub-plan-badge ' + planBadgeCls + '">' + planBadgeIcon + '</div>'
+        + '<div class="sub-plan-cycle">' + esc(planId.toUpperCase()) + ' · 毎月お届け</div>'
+        + '<div class="sub-plan-name">' + name + '</div>'
+        + '<div class="sub-plan-target"><span class="sub-plan-target-size">' + target + '</span><span class="sub-plan-target-spec">' + spec + '</span></div>'
+        + itemsHtml
+        + vipPerkHtml
+        + '<div class="sub-plan-pricing">'
+        + '  <div class="sub-plan-old-price">¥' + oldPrice.toLocaleString() + '</div>'
+        + '  <div class="sub-plan-price">¥' + firstPrice.toLocaleString() + '<small>/初月</small></div>'
+        + (savings ? '  <div class="sub-plan-savings">−¥' + savings.toLocaleString() + ' OFF</div>' : '')
+        + '</div>'
+        + '<div class="sub-plan-cta-link">🛒 購入する →</div>'
+        + '</a>';
+    }).join('');
+  };
 })();
 </script>
 
