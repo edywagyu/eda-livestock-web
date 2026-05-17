@@ -7089,10 +7089,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-ink-muted) !important;
 }
 
-/* 非会員モード: 価格・stats のみ非表示 (購入 UI は「LINEで会員登録」ボタンに置換) */
+/* 非会員モード: 価格・stats のみ非表示 (購入 UI は JS で「LINEで会員登録」ボタンに置換) */
 body:not(.is-member) .product-card--organic-wagyu .product-price,
 body:not(.is-member) .product-card--organic-wagyu .product-tag-row .product-price,
-body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-cta-wrap,
 body:not(.is-member) .product-card--organic .product-tag-row .product-price,
 body:not(.is-member) .product-card--organic .product-stats {
  display: none !important;
@@ -11744,6 +11743,19 @@ body.has-sticky-cart .floating-phone-btn {
 
  /* --- Initialize product cards --- */
  document.querySelectorAll('.product-card[data-variants]').forEach(card => {
+ /* 🔴 オーガニックカード(非会員時): variants 有無に関わらず LINE 会員登録ボタンに置換 */
+ const isOrganic = card.classList.contains('product-card--organic') || card.classList.contains('product-card--organic-wagyu');
+ const isMember = document.body.classList.contains('is-member');
+ if (isOrganic && !isMember) {
+   /* .product-buy (鶏オーガニック) / .organic-wagyu-cta-wrap (牛オーガニック) の両方に対応 */
+   const ctaEl = card.querySelector('.product-buy') || card.querySelector('.organic-wagyu-cta-wrap');
+   if (ctaEl) {
+     ctaEl.innerHTML = '<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="btn-member-register">LINE で会員登録 →</a>';
+     ctaEl.style.display = 'block';  /* 旧 display:none ルール上書き */
+   }
+   return;
+ }
+
  const buyEl = card.querySelector('.product-buy');
  if (!buyEl) return;
 
@@ -11754,14 +11766,6 @@ body.has-sticky-cart .floating-phone-btn {
  const title = (card.querySelector('.product-name') || {}).textContent || '';
  const imgEl = card.querySelector('.product-card-img img');
  const img = imgEl ? imgEl.src : '';
-
- /* 🔴 オーガニックカード(非会員時): LINE で会員登録 ボタンに置換 */
- const isOrganic = card.classList.contains('product-card--organic') || card.classList.contains('product-card--organic-wagyu');
- const isMember = document.body.classList.contains('is-member');
- if (isOrganic && !isMember) {
-   buyEl.innerHTML = '<a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="btn-member-register">LINE で会員登録 →</a>';
-   return;  /* カート系のセットアップはスキップ */
- }
 
  let html = '';
  if (variants.length > 1) {
