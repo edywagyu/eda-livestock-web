@@ -4,13 +4,20 @@
    GAS Web App から products シート を取得し、
    window.EDA_PRODUCTS_MASTER を上書きする。
 
+   バックエンドスプシ: 1k98VW296Quw7F9-HqFNwtGKxfySGjdAA-FE1vobX3Nk
+   (江田畜産_EC_オペレーション・GAS 自動連携済み)
+   ↓ products タブ
+   https://docs.google.com/spreadsheets/d/1k98VW296Quw7F9-HqFNwtGKxfySGjdAA-FE1vobX3Nk/edit#gid=144544549
+
    フロー:
    1. products-master.js が defer で読み込まれる (フォールバック)
    2. このスクリプトが GAS から最新を fetch
    3. 成功したら window.EDA_PRODUCTS_MASTER を上書き → stock badge 等が再描画
    4. 失敗したら products-master.js のデータをそのまま使う
 
-   GAS URL は eda-bundle.js の getGasUrl() と同じものを使用。
+   STAFF 編集:
+   - スプシを直接編集 → 5 分以内に shop.html に反映 (sessionStorage キャッシュ)
+   - 在庫だけは STAFF.html からも変更可能 (GAS staff_update_stock)
    ============================================================ */
 
 (function() {
