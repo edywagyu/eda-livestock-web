@@ -2763,12 +2763,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.06em;
 }
 
-/* 初月50%OFF メインバナー — 目立ち強化版 (Tom指示) */
+/* 初月50%OFF メインバナー — 「ゴールドチケット」配色 (Tom指示: 色変更) */
 .sub-promo-banner {
  background:
-   radial-gradient(circle at 15% 50%, rgba(212,169,59,0.18) 0%, transparent 60%),
-   linear-gradient(135deg, #0F3D2E 0%, #061410 100%);
- color: white;
+   linear-gradient(135deg, #FFE594 0%, #D4A93B 55%, #B8932F 100%);
+ color: var(--color-forest-deep);
  border-radius: 14px;
  padding: 26px 30px;
  margin-bottom: 0;
@@ -2778,70 +2777,72 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-family: var(--font-jp);
  position: relative;
  overflow: hidden;
- border: 2px solid var(--color-gold);
+ border: 2px solid #FFFFFF;
  box-shadow:
-   0 0 0 1px rgba(212,169,59,0.2),
-   0 8px 28px rgba(212,169,59,0.25),
-   0 4px 12px rgba(0,0,0,0.3),
-   inset 0 1px 0 rgba(255,213,128,0.15);
- animation: promoBannerGlow 3s ease-in-out infinite;
+   0 0 0 2px rgba(15,61,46,0.85),
+   0 10px 32px rgba(212,169,59,0.55),
+   0 4px 14px rgba(0,0,0,0.25),
+   inset 0 1px 0 rgba(255,255,255,0.5);
+ animation: promoBannerGlow 2.6s ease-in-out infinite;
 }
 @keyframes promoBannerGlow {
  0%, 100% {
    box-shadow:
-     0 0 0 1px rgba(212,169,59,0.2),
-     0 8px 28px rgba(212,169,59,0.25),
-     0 4px 12px rgba(0,0,0,0.3),
-     inset 0 1px 0 rgba(255,213,128,0.15);
+     0 0 0 2px rgba(15,61,46,0.85),
+     0 10px 32px rgba(212,169,59,0.55),
+     0 4px 14px rgba(0,0,0,0.25),
+     inset 0 1px 0 rgba(255,255,255,0.5);
  }
  50% {
    box-shadow:
-     0 0 0 1px rgba(212,169,59,0.4),
-     0 8px 36px rgba(212,169,59,0.5),
-     0 4px 14px rgba(0,0,0,0.35),
-     inset 0 1px 0 rgba(255,213,128,0.25);
+     0 0 0 2px rgba(15,61,46,0.85),
+     0 12px 44px rgba(255,229,148,0.85),
+     0 6px 18px rgba(0,0,0,0.3),
+     inset 0 1px 0 rgba(255,255,255,0.7);
  }
 }
 .sub-promo-banner::before {
- /* 斜めストライプ (もう少し見える) */
+ /* 斜めストライプ (深緑で締める) */
  content: '';
  position: absolute;
  inset: 0;
  background: repeating-linear-gradient(45deg,
  transparent 0,
- transparent 16px,
- rgba(212,169,59,0.08) 16px,
- rgba(212,169,59,0.08) 18px);
+ transparent 18px,
+ rgba(15,61,46,0.08) 18px,
+ rgba(15,61,46,0.08) 20px);
  pointer-events: none;
 }
 .sub-promo-banner::after {
- /* 右上「期間限定」リボン風アクセント */
+ /* 右上「期間限定」リボン (深緑×白) */
  content: '期間限定';
  position: absolute;
  top: 10px;
  right: -32px;
  transform: rotate(35deg);
- background: linear-gradient(90deg, #D4A93B, #B8932F);
- color: #0A2D21;
+ background: linear-gradient(90deg, #0F3D2E, #061410);
+ color: #FFE594;
  font-size: 9px;
  font-weight: 800;
  letter-spacing: 0.18em;
  padding: 4px 38px;
- box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+ box-shadow: 0 2px 6px rgba(0,0,0,0.35);
  pointer-events: none;
  z-index: 2;
 }
 .sub-promo-banner > * { position: relative; z-index: 1; }
 
-/* 巨大な 50% 数字 */
+/* 巨大な 50% 数字 — 深緑で力強く */
 .sub-promo-banner-num {
  font-family: var(--font-display);
- font-size: 68px;
+ font-size: 72px;
  font-weight: 800;
  letter-spacing: -0.03em;
  line-height: 1;
- color: var(--color-gold);
- text-shadow: 0 0 24px rgba(212,169,59,0.55), 0 4px 16px rgba(0,0,0,0.4);
+ color: var(--color-forest-deep);
+ text-shadow:
+   0 2px 0 rgba(255,255,255,0.4),
+   0 4px 12px rgba(0,0,0,0.15);
  display: flex;
  align-items: center;
  justify-content: center;
@@ -2850,59 +2851,62 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .sub-promo-banner-text {
  font-size: 13px;
  line-height: 1.5;
- font-weight: 600;
+ font-weight: 700;
  flex: 1;
  display: flex;
  flex-direction: column;
  justify-content: center;
  gap: 8px;
+ color: var(--color-forest-deep);
 }
 .sub-promo-banner-text strong {
  font-size: 17px;
- color: var(--color-gold);
+ color: var(--color-forest-deep);
  letter-spacing: 0.02em;
 }
 
-/* 締切バー：⏰ 今月末まで・残り XX 日 — 脈打つアニメ */
+/* 締切バー — 深緑背景で文字反転して目立つ */
 .sub-promo-deadline {
  display: inline-flex;
  align-items: center;
  gap: 8px;
  font-size: 13px;
  font-weight: 700;
- background: linear-gradient(90deg, rgba(212,169,59,0.35), rgba(212,169,59,0.18));
- border: 1.5px solid rgba(255,213,128,0.7);
- padding: 7px 16px;
- border-radius: 16px;
- color: white;
+ background: linear-gradient(90deg, #0F3D2E, #061410);
+ border: 1.5px solid rgba(255,255,255,0.5);
+ padding: 8px 16px;
+ border-radius: 18px;
+ color: #FFFFFF;
  align-self: flex-start;
  letter-spacing: 0.02em;
- box-shadow: 0 0 12px rgba(212,169,59,0.2);
+ box-shadow:
+   0 4px 12px rgba(0,0,0,0.2),
+   inset 0 1px 0 rgba(255,229,148,0.15);
 }
 .sub-promo-deadline-dot {
  width: 6px;
  height: 6px;
  border-radius: 50%;
  background: #FFD580;
- box-shadow: 0 0 8px #FFD580;
+ box-shadow: 0 0 10px #FFD580;
  animation: promoDotPulse 1.4s ease-in-out infinite;
 }
 @keyframes promoDotPulse {
  0%, 100% { opacity: 0.7; transform: scale(1); }
- 50% { opacity: 1; transform: scale(1.4); }
+ 50% { opacity: 1; transform: scale(1.5); }
 }
 .sub-promo-deadline strong {
  font-size: 20px !important;
  font-family: var(--font-display);
- color: var(--color-gold) !important;
+ color: #FFE594 !important;
  font-variant-numeric: tabular-nums;
  letter-spacing: -0.01em;
- text-shadow: 0 2px 8px rgba(212,169,59,0.5);
+ text-shadow: 0 0 12px rgba(255,229,148,0.6);
  animation: promoNumPulse 1.4s ease-in-out infinite;
 }
 @keyframes promoNumPulse {
  0%, 100% { transform: scale(1); }
- 50% { transform: scale(1.08); }
+ 50% { transform: scale(1.1); }
 }
 .sub-promo-microcopy {
  font-size: 10.5px;
