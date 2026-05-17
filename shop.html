@@ -6977,6 +6977,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: white;
 }
 
+/* 🔴 オーガニックカードはタグ重複防止: ORGANIC バッジだけ残す
+   (会員ロック中なので「残り5点」「先週1位」は意味なし＋ORGANICを隠してしまう) */
+.product-card--organic .stock-badge-overlay,
+.product-card--organic .status-badge-injected,
+.product-card--organic-wagyu .stock-badge-overlay,
+.product-card--organic-wagyu .status-badge-injected {
+ display: none !important;
+}
+
 /* ============================================================
    MEMBER GATE — 牛肉/チキン 共通の部分ロック UI (CLEAN 版)
    ・写真・名前・ORGANIC バッジ・短い説明: 通常カードと完全に同じ位置
