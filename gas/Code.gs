@@ -305,7 +305,7 @@ function createCheckout(body) {
   const successUrl = cfg('SUCCESS_URL') + '?session_id={CHECKOUT_SESSION_ID}&order=' + encodeURIComponent(orderNum);
   const cancelUrl = cfg('CANCEL_URL');
 
-  // 決済方法
+  // 決済方法 (単発購入のみ・サブスクは create_subscription_checkout でカード固定)
   const methodTypes = ['card'];
   if (body.payment_method === 'bank') methodTypes.push('konbini', 'customer_balance');
 
@@ -315,6 +315,14 @@ function createCheckout(body) {
     cancel_url: cancelUrl,
     locale: 'ja',
     payment_method_types: methodTypes,
+    /* 🔴 Stripe Japan 銀行振込: customer_balance には funding_type と
+       bank_transfer.type=jp_bank_transfer の指定が必須 */
+    payment_method_options: methodTypes.indexOf('customer_balance') >= 0 ? {
+      customer_balance: {
+        funding_type: 'bank_transfer',
+        bank_transfer: { type: 'jp_bank_transfer' }
+      }
+    } : undefined,
     customer_email: body.customer && body.customer.email,
     line_items: lineItems,
     metadata: {
