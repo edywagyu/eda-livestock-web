@@ -1230,8 +1230,16 @@ ul { list-style: none; padding: 0; margin: 0; }
       </div>
 
       <!-- 📊 アクセス分析ウィジェット (NEW) -->
-      <div class="section-label">📊 アクセス分析 <span style="font-size:10px;color:var(--muted);font-weight:400" id="analyticsPeriodLabel">直近7日</span></div>
+      <div class="section-label">📊 アクセス分析</div>
       <div class="card" style="padding:14px 16px;background:#fff">
+        <!-- 🔴 期間セレクター (1日/7日/30日/90日) -->
+        <div style="display:flex;gap:4px;margin-bottom:14px;background:var(--paper);padding:4px;border-radius:8px">
+          <button class="ana-range active" data-range="1"  onclick="setAnalyticsRange(1)"  style="flex:1;padding:6px 4px;border:0;background:var(--forest);color:#fff;font-size:11px;border-radius:6px;font-weight:700;cursor:pointer">今日</button>
+          <button class="ana-range"        data-range="7"  onclick="setAnalyticsRange(7)"  style="flex:1;padding:6px 4px;border:0;background:transparent;color:var(--muted);font-size:11px;border-radius:6px;font-weight:600;cursor:pointer">7日</button>
+          <button class="ana-range"        data-range="30" onclick="setAnalyticsRange(30)" style="flex:1;padding:6px 4px;border:0;background:transparent;color:var(--muted);font-size:11px;border-radius:6px;font-weight:600;cursor:pointer">30日</button>
+          <button class="ana-range"        data-range="90" onclick="setAnalyticsRange(90)" style="flex:1;padding:6px 4px;border:0;background:transparent;color:var(--muted);font-size:11px;border-radius:6px;font-weight:600;cursor:pointer">90日</button>
+          <button class="ana-range"        data-range="365" onclick="setAnalyticsRange(365)" style="flex:1;padding:6px 4px;border:0;background:transparent;color:var(--muted);font-size:11px;border-radius:6px;font-weight:600;cursor:pointer">1年</button>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:14px">
           <div style="text-align:center">
             <div style="font-size:20px;font-weight:800;color:var(--forest)" id="aPv">-</div>
@@ -2216,32 +2224,57 @@ async function loadDashboard() {
   loadAnalytics();
 }
 
-/* 📊 ANALYTICS ウィジェット */
+/* 📊 ANALYTICS ウィジェット — 期間切替対応 */
+let _analyticsRange = 1; /* デフォルト: 今日 */
+function setAnalyticsRange(days) {
+  _analyticsRange = days;
+  /* ボタンの active 切替 */
+  document.querySelectorAll('.ana-range').forEach(b => {
+    const isActive = String(b.dataset.range) === String(days);
+    b.style.background = isActive ? 'var(--forest)' : 'transparent';
+    b.style.color = isActive ? '#fff' : 'var(--muted)';
+    b.classList.toggle('active', isActive);
+  });
+  loadAnalytics();
+}
+
 async function loadAnalytics() {
   const $ = id => document.getElementById(id);
+  const days = _analyticsRange || 1;
   if (isDemoMode()) {
-    $('aPv').textContent = '142';
-    $('aSessions').textContent = '38';
-    $('aCart').textContent = '12';
+    /* デモ: 期間に応じた仮データ */
+    const mult = days;
+    $('aPv').textContent = String(142 * mult);
+    $('aSessions').textContent = String(38 * mult);
+    $('aCart').textContent = String(12 * mult);
     $('aCVR').textContent = '7.9';
     $('aYday').textContent = '128';
     $('aYdayP').textContent = '2';
-    $('aPeriodRev').textContent = '¥87k';
-    $('aTopProducts').innerHTML = '🥇 サーロイン (8回)<br>🥈 平飼い鶏ムネ (5回)<br>🥉 切り落とし (3回)';
-    $('aTopReferrers').innerHTML = '🔗 (direct) 24<br>🔗 line.me 8<br>🔗 google.com 6';
+    $('aPeriodRev').textContent = '¥' + Math.round(87 * mult) + 'k';
+    $('aTopProducts').innerHTML = '🥇 サーロイン (' + (8*mult) + '回)<br>🥈 平飼い鶏ムネ (' + (5*mult) + '回)<br>🥉 切り落とし (' + (3*mult) + '回)';
+    $('aTopReferrers').innerHTML = '🔗 (direct) ' + (24*mult) + '<br>🔗 line.me ' + (8*mult) + '<br>🔗 google.com ' + (6*mult);
     return;
   }
   try {
-    const res = await fetch(GAS_URL + '?action=staff_analytics&range=7d');
+    const res = await fetch(GAS_URL + '?action=staff_analytics&range=' + days + 'd');
     const d = await res.json();
     if (!d.ok) return;
     const t = d.today || {};
     const y = d.yesterday || {};
     const p = d.period || {};
-    $('aPv').textContent = t.pv || 0;
-    $('aSessions').textContent = t.sessions || 0;
-    $('aCart').textContent = t.addCart || 0;
-    $('aCVR').textContent = (t.cvr || 0).toFixed(1);
+    /* 期間=1日 → 今日のデータ表示 / それ以外 → 期間累計 */
+    const usePeriod = days > 1;
+    const data = usePeriod ? p : t;
+    $('aPv').textContent = data.pv || 0;
+    $('aSessions').textContent = data.sessions || 0;
+    $('aCart').textContent = data.addCart || 0;
+    $('aCVR').textContent = (data.cvr || 0).toFixed(1);
+    /* ラベルも切替 */
+    const labelMap = { 1: '本日', 7: '7日', 30: '30日', 90: '90日', 365: '1年' };
+    const lbl = labelMap[days] || (days + '日');
+    const lblEls = document.querySelectorAll('.card .stat-mini-label, [data-ana-label]');
+    /* 簡易: 期間=1ならそのまま、それ以外なら "期間PV" にする */
+    /* 詳細は HTML 側 label を JS から書き換え */
     $('aYday').textContent = y.pv || 0;
     $('aYdayP').textContent = y.purchase || 0;
     $('aPeriodRev').textContent = '¥' + Math.round((p.revenue || 0) / 1000) + 'k';
