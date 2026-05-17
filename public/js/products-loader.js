@@ -4,10 +4,10 @@
    GAS Web App から products シート を取得し、
    window.EDA_PRODUCTS_MASTER を上書きする。
 
-   バックエンドスプシ: 1k98VW296Quw7F9-HqFNwtGKxfySGjdAA-FE1vobX3Nk
-   (江田畜産_EC_オペレーション・GAS 自動連携済み)
+   バックエンドスプシ: 1kMLksRzJRFMKXotwF8IILZJlgUcjpxI84lRZoEBaOMo
+   (江田畜産_EC_オペレーション_2026-05-17・GAS「江田畜産_EC_API」連携)
    ↓ products タブ
-   https://docs.google.com/spreadsheets/d/1k98VW296Quw7F9-HqFNwtGKxfySGjdAA-FE1vobX3Nk/edit#gid=144544549
+   https://docs.google.com/spreadsheets/d/1kMLksRzJRFMKXotwF8IILZJlgUcjpxI84lRZoEBaOMo/edit
 
    フロー:
    1. products-master.js が defer で読み込まれる (フォールバック)
@@ -23,7 +23,7 @@
 (function() {
   'use strict';
 
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
 
   /* 5分キャッシュ (sessionStorage) — 同じ訪問内で何度も叩かない */
   const CACHE_KEY = 'eda-products-cache';
