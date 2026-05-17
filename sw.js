@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-05-17-028-wagyu-organic-register';
+const CACHE_VERSION = 'eda-v2026-05-17-029-deadline-readable';
 const CORE_ASSETS = [
   './',
   'index.html',
