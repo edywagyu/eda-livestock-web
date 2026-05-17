@@ -8051,19 +8051,31 @@ body.is-member .product-card--organic .org-chk-lock {
  .shop-hero-badge-label { font-size: 10px; }
  .hide-sp { display: none; }
 
- /* ---- Trust strip (3項目だけなので中央寄せのまま、サイズダウン) ---- */
+ /* ---- Trust strip (1行で収める / Tom指示) ---- */
  .shop-trust-inner {
  display: flex;
- gap: 10px;
- flex-wrap: wrap;
- justify-content: center;
+ gap: 4px;
+ flex-wrap: nowrap !important;  /* 🔴 1行固定 */
+ justify-content: space-between;
+ align-items: center;
  padding: 4px 8px;
- animation: none !important; /* オーバーフロー防止 */
+ animation: none !important;
  width: 100% !important;
  max-width: 100%;
+ overflow-x: auto;  /* 万一はみ出してもスクロールで対応 */
+ -webkit-overflow-scrolling: touch;
+ scrollbar-width: none;
  }
- .shop-trust-item { font-size: 10.5px; }
- .shop-trust-item strong { font-size: 10.5px; }
+ .shop-trust-inner::-webkit-scrollbar { display: none; }
+ .shop-trust-item {
+ font-size: 9.5px;
+ padding: 2px 4px !important;
+ white-space: nowrap;
+ gap: 4px !important;
+ flex: 0 0 auto;
+ border-right: 0 !important;
+ }
+ .shop-trust-item strong { font-size: 9.5px; }
 
  /* ---- LINE Banner ---- */
  .shop-line-inner {
