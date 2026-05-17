@@ -3611,6 +3611,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-weight: 700;
 }
 .quiz-title strong { color: var(--color-gold); }
+/* デスクトップ/モバイル切替 (Tom指示: モバイルは2行で誘いやすく) */
+.quiz-only-mobile { display: none; }
+.quiz-only-desktop { display: inline; }
+@media (max-width: 720px) {
+ .quiz-only-mobile { display: inline; }
+ .quiz-only-desktop { display: none; }
+}
 .quiz-sub {
  text-align: left;
  font-size: 12.5px;
@@ -8648,8 +8655,9 @@ body.is-member .product-card--organic .org-chk-lock {
  .quiz-card::before { font-size: 9px; padding: 7px 16px; letter-spacing: 0.22em; }
  .quiz-card-body { padding: 18px 18px 22px; }
  .quiz-eyebrow { font-size: 9.5px; padding: 4px 10px; margin-bottom: 10px; letter-spacing: 0.18em; }
- .quiz-title { font-size: 17px !important; line-height: 1.4 !important; margin-bottom: 4px !important; }
- .quiz-sub { font-size: 11px; line-height: 1.55; margin-bottom: 14px; padding-bottom: 10px; }
+ .quiz-title { font-size: 21px !important; line-height: 1.45 !important; margin-bottom: 10px !important; }
+ .quiz-title strong { display: block; margin-top: 4px; }
+ .quiz-sub { font-size: 14px !important; line-height: 1.65 !important; margin-bottom: 18px !important; padding-bottom: 14px !important; }
  .quiz-progress { margin-bottom: 14px; gap: 8px; }
  .quiz-progress-label { font-size: 10px; }
  .quiz-progress-bars { gap: 3px; }
@@ -10566,8 +10574,14 @@ function toggleUnboxingSound() {
  <div class="quiz-card">
  <div class="quiz-card-body">
  <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
- <h2 class="quiz-title">お肉事情診断<strong>あなたに最適なプラン</strong>を5問でご提案</h2>
- <p class="quiz-sub">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約60秒・回答は記録されません。</p>
+ <h2 class="quiz-title">
+   <span class="quiz-only-desktop">お肉事情診断<strong>あなたに最適なプラン</strong>を5問でご提案</span>
+   <span class="quiz-only-mobile">あなたに合う和牛は？<br/><strong>60秒で、ぴったりの定期便を。</strong></span>
+ </h2>
+ <p class="quiz-sub">
+   <span class="quiz-only-desktop">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約60秒・回答は記録されません。</span>
+   <span class="quiz-only-mobile">5問だけ。ご家族にぴったりのプランをご提案します。</span>
+ </p>
 
  <div class="quiz-progress">
  <span class="quiz-progress-label">Q.<span id="quizCurrentQ">1</span> / <span id="quizTotalQ">5</span></span>
