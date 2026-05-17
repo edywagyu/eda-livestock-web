@@ -7789,13 +7789,16 @@ body.is-member .product-card--organic .org-chk-lock {
 }
 
 .product-card .product-buy {
- flex-wrap: wrap;
+ flex-wrap: nowrap !important;  /* 🔴 wrap だと btn が次カラムに押し出されて消える */
  flex-direction: column;
 }
 .product-card .product-buy .variant-select {
  font-size: 11px;
  width: 100%;
- flex: 1 1 100%;
+ flex: 0 0 auto !important;  /* 🔴 flex-basis: 100% だと select が高さ100%占有 → btn が消える */
+}
+.product-card .product-buy .btn-add-cart {
+ flex: 0 0 auto !important;
 }
 .product-card .product-buy .btn-add-cart {
  width: 100%;
