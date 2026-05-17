@@ -8,7 +8,7 @@
   'use strict';
 
   // ↓↓↓ 本番 GAS Web App URL (2026-05-12 デプロイ) ↓↓↓
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
   // ↑↑↑ ここまで ↑↑↑
 
   // localStorage で上書き可能 (ステージング/ローカルで別URL試す用)
