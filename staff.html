@@ -1285,9 +1285,9 @@ ul { list-style: none; padding: 0; margin: 0; }
     <!-- ============ CATALOG (商品) ============ -->
     <section class="section" id="sec-catalog">
       <div class="pills">
-        <div class="pill active" data-sub="inv" onclick="switchSub('catalog','inv')">在庫</div>
-        <div class="pill" data-sub="sets" onclick="switchSub('catalog','sets')">セット</div>
-        <div class="pill" data-sub="subs" onclick="switchSub('catalog','subs')">定期便</div>
+        <div class="pill active" data-sub="inv" onclick="switchSub('catalog','inv')">商品</div>
+        <div class="pill" data-sub="gifts" onclick="switchSub('catalog','gifts')">🎁 ギフト</div>
+        <div class="pill" data-sub="subs" onclick="switchSub('catalog','subs')">📅 定期便</div>
       </div>
 
       <!-- 在庫 -->
@@ -1319,18 +1319,29 @@ ul { list-style: none; padding: 0; margin: 0; }
         <div id="invList"></div>
       </div>
 
-      <!-- セット商品 -->
-      <div class="subsection" id="sub-sets">
-        <button class="btn-add" onclick="openForm('set')">
+      <!-- ギフト 🎁 -->
+      <div class="subsection" id="sub-gifts">
+        <button class="btn-add" onclick="openGiftForm()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          新しいセットを作成
+          新しいギフトを追加
         </button>
-        <div id="setList"></div>
+        <div class="refresh-btn" onclick="loadGifts()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          更新する
+        </div>
+        <div id="giftList"></div>
       </div>
 
-      <!-- 定期便プラン -->
+      <!-- 定期便プラン 📅 -->
       <div class="subsection" id="sub-subs">
-        <div class="section-label">定期便プラン管理</div>
+        <button class="btn-add" onclick="openSubForm()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新しい定期便プランを追加
+        </button>
+        <div class="refresh-btn" onclick="loadSubscriptions()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          更新する
+        </div>
         <div id="subList"></div>
       </div>
     </section>
@@ -2103,7 +2114,7 @@ function switchTab(tab) {
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'sec-' + tab));
 
   if (tab === 'home')    loadDashboard();
-  if (tab === 'catalog') { loadInventory(); loadSets(); loadSubs(); }
+  if (tab === 'catalog') { loadInventory(); loadGifts(); loadSubscriptions(); }
   if (tab === 'orders')  loadOrders();
   if (tab === 'ship' && !selectedOrder) renderShipEmpty();
   if (tab === 'cust')    loadCustomers();
@@ -2117,6 +2128,12 @@ function switchSub(parent, sub) {
   if (!section) return;
   section.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.sub === sub));
   section.querySelectorAll('.subsection').forEach(s => s.classList.toggle('active', s.id === 'sub-' + sub));
+  /* タブ切替時にデータ load */
+  if (parent === 'catalog') {
+    if (sub === 'gifts') loadGifts();
+    if (sub === 'subs') loadSubscriptions();
+    if (sub === 'inv') loadInventory();
+  }
 }
 
 /* ================ SETTINGS ================ */
@@ -3128,20 +3145,20 @@ function renderProductForm(p) {
     <div class="form-row">
       <div class="form-field">
         <label>バリエーション名</label>
-        <input type="text" id="pf-variant" value="${escapeHtml(p.variant || '')}" placeholder="例: 500g">
+        <input type="text" id="pf-variant" value="${escapeHtml(p.variant || '')}" placeholder="例: 1袋 500g">
       </div>
       <div class="form-field">
-        <label>SKU</label>
+        <label>SKU (商品コード)</label>
         <input type="text" id="pf-sku" value="${escapeHtml(p.sku || '')}" placeholder="例: EDA-WGY-SL-500">
       </div>
     </div>
     <div class="form-row">
       <div class="form-field">
-        <label>価格（円・税込）</label>
-        <input type="number" id="pf-price" value="${p.price || ''}" placeholder="12800">
+        <label>価格（円・税込）*</label>
+        <input type="number" id="pf-price" value="${p.price || ''}" placeholder="3400">
       </div>
       <div class="form-field">
-        <label>在庫数</label>
+        <label>在庫数 *</label>
         <input type="number" id="pf-stock" value="${p.stock !== undefined ? p.stock : ''}" placeholder="10">
       </div>
     </div>
@@ -3150,17 +3167,98 @@ function renderProductForm(p) {
       <input type="number" id="pf-weight" value="${p.weight || ''}" placeholder="500">
     </div>
 
+    <!-- 🔴 詳細設定 (Shopify 並み) -->
+    <details style="background:var(--paper);border-radius:8px;padding:0;margin:14px 0">
+      <summary style="padding:12px 14px;cursor:pointer;font-weight:600;font-size:13px;color:var(--forest)">
+        🔧 詳細設定 (Stripe / カテゴリ / フラグ)
+      </summary>
+      <div style="padding:0 14px 14px">
+
+        <div class="form-field">
+          <label>商品ID (productId) ${editingProduct ? '— 編集不可' : '— 自動生成'}</label>
+          <input type="text" id="pf-productId" value="${escapeHtml(p.productId || '')}" placeholder="P024 (自動)" ${editingProduct ? 'readonly style="background:#f5f5f5"' : ''}>
+        </div>
+
+        <div class="form-field">
+          <label>Stripe Price ID *</label>
+          <input type="text" id="pf-stripePriceId" value="${escapeHtml(p.stripePriceId || '')}" placeholder="price_1TW74kGSkhU1UEci...">
+          <p class="img-help" style="color:var(--muted);font-size:10.5px;margin-top:4px">
+            ⚠️ Stripe Dashboard で商品+価格を作成 → Price ID をコピペ。決済に必須。
+          </p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>内部カテゴリ (category)</label>
+            <select id="pf-category2">
+              <option value="beef"        ${p.category === 'beef' ? 'selected' : ''}>beef (牛肉)</option>
+              <option value="chicken"     ${p.category === 'chicken' ? 'selected' : ''}>chicken (鶏肉)</option>
+              <option value="chicken-org" ${p.category === 'chicken-org' ? 'selected' : ''}>chicken-org (オーガニック鶏)</option>
+              <option value="gift"        ${p.category === 'gift' ? 'selected' : ''}>gift (ギフト)</option>
+              <option value="organic-wgy" ${p.category === 'organic-wgy' ? 'selected' : ''}>organic-wgy (有機JAS和牛)</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>表示用カテゴリ</label>
+            <input type="text" id="pf-categoryLabel" value="${escapeHtml(p.categoryLabel || '')}" placeholder="牛肉 / 鶏肉 / ギフト / 有機和牛">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>英語タグ (tagEn)</label>
+          <input type="text" id="pf-tagEn" value="${escapeHtml(p.tagEn || '')}" placeholder="例: Sirloin Steak">
+          <p class="img-help" style="color:var(--muted);font-size:10.5px;margin-top:4px">
+            shop.html カード上部の小文字英語 (STEAK · SIRLOIN 等)
+          </p>
+        </div>
+
+        <div class="form-field">
+          <label>画像パス</label>
+          <input type="text" id="pf-image" value="${escapeHtml((p.images && p.images[0]) || p.image || '')}" placeholder="public/images/products/drive/sirloin.jpg">
+          <p class="img-help" style="color:var(--muted);font-size:10.5px;margin-top:4px">
+            上記の画像アップロードを使うと自動で埋まります。URLでも可。
+          </p>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label>温度帯</label>
+            <select id="pf-temp2">
+              <option ${p.temp === '冷凍' ? 'selected' : ''}>冷凍</option>
+              <option ${p.temp === '冷蔵' ? 'selected' : ''}>冷蔵</option>
+              <option ${p.temp === '常温' ? 'selected' : ''}>常温</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>有機JAS フラグ</label>
+            <select id="pf-isOrganic">
+              <option value="false" ${!p.isOrganic ? 'selected' : ''}>通常</option>
+              <option value="true"  ${p.isOrganic ? 'selected' : ''}>有機JAS</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>近日公開 (Coming Soon)</label>
+          <select id="pf-comingSoon">
+            <option value="false" ${!p.comingSoon ? 'selected' : ''}>販売中</option>
+            <option value="true"  ${p.comingSoon ? 'selected' : ''}>Coming Soon (写真エリアに表示)</option>
+          </select>
+        </div>
+      </div>
+    </details>
+
     <div class="form-field">
-      <label>公開ステータス</label>
+      <label>公開ステータス *</label>
       <select id="pf-published">
         <option value="false" ${!p.published ? 'selected' : ''}>下書き（shop.htmlに表示しない）</option>
-        <option value="true"  ${p.published ? 'selected' : ''}>公開（shop.htmlに表示する）</option>
+        <option value="true"  ${p.published === true || p.published === 'TRUE' || p.published === 'true' || p.published === undefined ? 'selected' : ''}>公開（shop.htmlに表示する）</option>
       </select>
     </div>
 
-    <div class="form-field" style="background:var(--paper);padding:10px;border-radius:8px;font-size:11px;color:var(--muted);line-height:1.6">
-      💡 「公開」を選ぶと <code>shop.html</code> の「新着商品」セクションに自動表示されます。<br>
-      在庫0の商品は公開でも非表示になります。
+    <div class="form-field" style="background:#FEF3C7;padding:10px 12px;border-radius:8px;font-size:11px;color:#92400E;line-height:1.6">
+      💡 保存後、shop.html リロードで <strong>5分以内</strong>に反映されます (キャッシュ更新待ち)。<br>
+      ⚠️ 在庫0の商品は「在庫切れ」赤バッジ + カート無効化されます。
     </div>
 
     ${editingProduct ? `
@@ -3519,14 +3617,10 @@ function closeForm() {
   document.getElementById('formSheet').classList.remove('open');
 }
 function submitForm() {
-  if (window._formType === 'product') {
-    saveProduct();
-    return;
-  }
-  if (window._formType === 'rewards') {
-    saveRewards();
-    return;
-  }
+  if (window._formType === 'product')     { saveProduct(); return; }
+  if (window._formType === 'rewards')     { saveRewards(); return; }
+  if (window._formType === 'gift')        { saveGift(); return; }
+  if (window._formType === 'subscription'){ saveSub(); return; }
   toast(isDemoMode() ? '🎭 デモ: 保存したフリ' : '保存しました', 'success');
   closeForm();
 }
@@ -3558,20 +3652,42 @@ function saveProduct() {
   const name = document.getElementById('pf-name').value.trim();
   if (!name) { toast('商品名を入力してください', 'error'); return; }
 
+  /* 詳細設定セクションは optional, デフォルトはトップフォームの値を使う */
+  const _val = (id, def) => {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : def;
+  };
+  const _bool = (id, def) => {
+    const el = document.getElementById(id);
+    return el ? el.value === 'true' : def;
+  };
+
+  const inputProductId = _val('pf-productId', '');
+  const inputSku = _val('pf-sku', '');
+  const inputImage = _val('pf-image', '');
+  const imageFromUpload = (editingImages || [])[0] || '';
+
   const product = {
-    productId: editingProduct ? editingProduct.productId : 'P' + Date.now(),
-    variantId: editingProduct ? editingProduct.variantId : (document.getElementById('pf-sku').value.trim() || 'V' + Date.now()),
+    productId: editingProduct ? editingProduct.productId : (inputProductId || ('P' + Date.now())),
+    variantId: editingProduct ? editingProduct.variantId : (inputSku || ('V' + Date.now())),
+    sku: inputSku,
+    stripePriceId: _val('pf-stripePriceId', ''),
     name: name,
-    variant: document.getElementById('pf-variant').value.trim(),
-    category: document.getElementById('pf-category').value,
-    temp: document.getElementById('pf-temp').value,
+    variant: _val('pf-variant', ''),
+    /* 詳細設定の category がなければトップの category を使う */
+    category: _val('pf-category2', '') || (document.getElementById('pf-category')?.value || ''),
+    categoryLabel: _val('pf-categoryLabel', ''),
+    tagEn: _val('pf-tagEn', ''),
+    temp: _val('pf-temp2', '') || (document.getElementById('pf-temp')?.value || '冷凍'),
     description: document.getElementById('pf-description').value.trim(),
-    sku: document.getElementById('pf-sku').value.trim(),
     price: parseInt(document.getElementById('pf-price').value) || 0,
     stock: parseInt(document.getElementById('pf-stock').value) || 0,
     weight: parseInt(document.getElementById('pf-weight').value) || 0,
+    isOrganic: _bool('pf-isOrganic', false),
+    comingSoon: _bool('pf-comingSoon', false),
     published: document.getElementById('pf-published').value === 'true',
-    images: editingImages.slice()
+    image: imageFromUpload || inputImage || '',
+    images: editingImages.slice()  // 旧フォーマット互換
   };
 
   if (isDemoMode()) {
@@ -3620,7 +3736,7 @@ function deleteProduct() {
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ variantId: editingProduct.variantId })
   }).then(r => r.json()).then(res => {
-    if (res.success) {
+    if (res.ok || res.success) {
       toast('削除しました', 'success');
       loadInventory();
       closeForm();
@@ -3628,6 +3744,348 @@ function deleteProduct() {
       toast('削除失敗: ' + (res.error || 'unknown'), 'error');
     }
   }).catch(e => toast('通信エラー: ' + e.message, 'error'));
+}
+
+/* ============================================================
+   🎁 GIFTS — フォーム / 保存 / 削除 / 一覧
+   ============================================================ */
+let editingGift = null;
+let giftsCache = [];
+
+function loadGifts() {
+  if (isDemoMode()) {
+    giftsCache = [
+      { giftId:'matsu', name:'ヒレステーキ ギフト【松】', badgeText:'松', price:16800, weight:450, image:'public/images/products/drive/fillet.jpg', published:true },
+      { giftId:'take',  name:'赤身ステーキ ギフト【竹】', badgeText:'竹', price:12800, weight:750, image:'public/images/products/drive/red-meat.jpg', published:true },
+      { giftId:'ume',   name:'ハンバーグ ギフト【梅】',    badgeText:'梅', price: 5980, weight:500, image:'public/images/products/drive/hamburg.jpg', published:true }
+    ];
+    renderGiftList();
+    return;
+  }
+  fetch(GAS_URL + '?action=public_gifts')
+    .then(r => r.json())
+    .then(d => {
+      giftsCache = (d.gifts || []).map(g => ({ ...g, published: g.published === true || g.published === 'TRUE' || g.published === 'true' }));
+      renderGiftList();
+    })
+    .catch(e => toast('ギフト取得失敗: ' + e.message, 'error'));
+}
+
+function renderGiftList() {
+  const list = document.getElementById('giftList');
+  if (!list) return;
+  if (!giftsCache.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 20px;font-size:13px">ギフトが登録されていません<br><small>「新しいギフトを追加」から作成してください</small></div>';
+    return;
+  }
+  list.innerHTML = giftsCache.map(g => `
+    <div class="inv-card" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;margin-bottom:8px;border:1px solid var(--paper);cursor:pointer" onclick="openGiftForm(${JSON.stringify(g).replace(/"/g,'&quot;')})">
+      <div style="width:56px;height:56px;background:#000 ${g.image ? 'url(\\''+g.image+'\\') center/cover' : ''};border-radius:6px;flex-shrink:0"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px">${g.badgeText ? '【'+g.badgeText+'】' : ''}${g.name || ''}</div>
+        <div style="font-size:11.5px;color:var(--muted)">¥${Number(g.price||0).toLocaleString()} · ${g.weight || ''}g · ${g.published ? '✅ 公開中' : '⛔ 下書き'}</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+function openGiftForm(g) {
+  editingGift = g && g.giftId ? g : null;
+  document.getElementById('formTitle').textContent = editingGift ? 'ギフト編集' : '新しいギフト';
+  document.getElementById('formBody').innerHTML = renderGiftForm(editingGift || {});
+  document.getElementById('formSheet').classList.add('open');
+  window._formType = 'gift';
+}
+
+function renderGiftForm(g) {
+  return `
+    <div class="form-field">
+      <label>ギフト名 *</label>
+      <input type="text" id="gf-name" value="${escapeHtml(g.name || '')}" placeholder="例: ヒレステーキ ギフト【松】">
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>ギフトID ${editingGift ? '— 編集不可' : ''} *</label>
+        <input type="text" id="gf-giftId" value="${escapeHtml(g.giftId || '')}" placeholder="matsu / take / ume / 任意" ${editingGift ? 'readonly style="background:#f5f5f5"' : ''}>
+      </div>
+      <div class="form-field">
+        <label>バッジ文字 (松/竹/梅 等)</label>
+        <input type="text" id="gf-badgeText" value="${escapeHtml(g.badgeText || '')}" placeholder="松">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>価格（円・送料込み・税込）*</label>
+        <input type="number" id="gf-price" value="${g.price || ''}" placeholder="16800">
+      </div>
+      <div class="form-field">
+        <label>重量（g）</label>
+        <input type="number" id="gf-weight" value="${g.weight || ''}" placeholder="450">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>商品説明</label>
+      <textarea id="gf-description" rows="3" placeholder="希少部位のヒレを 450g。脂が少なく...">${escapeHtml(g.description || '')}</textarea>
+    </div>
+    <div class="form-field">
+      <label>Stripe Price ID *</label>
+      <input type="text" id="gf-stripePriceId" value="${escapeHtml(g.stripePriceId || '')}" placeholder="price_1TW74xGSkhU1UEci...">
+      <p class="img-help" style="color:var(--muted);font-size:10.5px;margin-top:4px">Stripe で「ギフト用」商品+価格を作成 → コピペ</p>
+    </div>
+    <div class="form-field">
+      <label>画像パス</label>
+      <input type="text" id="gf-image" value="${escapeHtml(g.image || '')}" placeholder="public/images/products/drive/fillet.jpg">
+    </div>
+    <div class="form-field">
+      <label>人数目安</label>
+      <input type="text" id="gf-servings" value="${escapeHtml(g.servings || '')}" placeholder="例: 3-4人前">
+    </div>
+    <div class="form-field">
+      <label>サブテキスト (HTML可)</label>
+      <input type="text" id="gf-noteHtml" value="${escapeHtml(g.noteHtml || '')}" placeholder="<strong>のし対応</strong>/<strong>送料込み</strong>/<strong>冷凍便</strong>">
+    </div>
+    <div class="form-field">
+      <label>公開ステータス *</label>
+      <select id="gf-published">
+        <option value="false" ${!g.published ? 'selected' : ''}>下書き</option>
+        <option value="true"  ${g.published || g.published === undefined ? 'selected' : ''}>公開</option>
+      </select>
+    </div>
+    ${editingGift ? `
+    <div class="form-field" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--paper)">
+      <button type="button" onclick="deleteGift()" style="background:none;border:1px solid #e74c3c;color:#e74c3c;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%">🗑 このギフトを削除</button>
+    </div>` : ''}
+  `;
+}
+
+function saveGift() {
+  const name = document.getElementById('gf-name').value.trim();
+  const giftId = document.getElementById('gf-giftId').value.trim();
+  if (!name) { toast('ギフト名を入力してください', 'error'); return; }
+  if (!giftId) { toast('ギフトIDを入力してください', 'error'); return; }
+  const gift = {
+    giftId,
+    name,
+    badgeText: document.getElementById('gf-badgeText').value.trim(),
+    price: parseInt(document.getElementById('gf-price').value) || 0,
+    weight: parseInt(document.getElementById('gf-weight').value) || 0,
+    description: document.getElementById('gf-description').value.trim(),
+    stripePriceId: document.getElementById('gf-stripePriceId').value.trim(),
+    image: document.getElementById('gf-image').value.trim(),
+    servings: document.getElementById('gf-servings').value.trim(),
+    noteHtml: document.getElementById('gf-noteHtml').value.trim(),
+    published: document.getElementById('gf-published').value === 'true'
+  };
+  if (isDemoMode()) {
+    if (editingGift) { const i = giftsCache.findIndex(g => g.giftId === editingGift.giftId); if (i>=0) giftsCache[i] = gift; }
+    else giftsCache.unshift(gift);
+    renderGiftList();
+    toast('🎭 デモ: ' + (editingGift ? '更新' : '追加'), 'success');
+    closeForm();
+    return;
+  }
+  fetch(GAS_URL + '?action=staff_gift_save', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(gift) })
+    .then(r => r.json()).then(res => {
+      if (res.ok) { toast((editingGift?'更新':'追加')+'しました', 'success'); loadGifts(); closeForm(); }
+      else toast('保存失敗: ' + (res.error || 'unknown'), 'error');
+    }).catch(e => toast('通信エラー: ' + e.message, 'error'));
+}
+
+function deleteGift() {
+  if (!editingGift) return;
+  if (!confirm(`「${editingGift.name}」を削除します。よろしいですか?`)) return;
+  if (isDemoMode()) {
+    giftsCache = giftsCache.filter(g => g.giftId !== editingGift.giftId);
+    renderGiftList(); toast('🎭 デモ: 削除', 'success'); closeForm(); return;
+  }
+  fetch(GAS_URL + '?action=staff_gift_delete', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ giftId: editingGift.giftId }) })
+    .then(r => r.json()).then(res => {
+      if (res.ok) { toast('削除しました', 'success'); loadGifts(); closeForm(); }
+      else toast('削除失敗: ' + (res.error || 'unknown'), 'error');
+    }).catch(e => toast('通信エラー: ' + e.message, 'error'));
+}
+
+/* ============================================================
+   📅 SUBSCRIPTIONS — フォーム / 保存 / 削除 / 一覧
+   ============================================================ */
+let editingSub = null;
+let subsCache = [];
+
+function loadSubscriptions() {
+  if (isDemoMode()) {
+    subsCache = [
+      { planId:'mini', name:'ミニプラン', target:'1-2人家族', spec:'1.6kg・8品', oldPrice:6980, firstMonthPrice:3490, published:true, featured:false },
+      { planId:'pro',  name:'プロプラン', target:'3-4人家族', spec:'3.2kg・16品', oldPrice:12800, firstMonthPrice:6400, published:true, featured:true, badgeLabel:'人気 No.1' },
+      { planId:'vip',  name:'VIPプラン', target:'5人以上', spec:'4.4kg・22品', oldPrice:27400, firstMonthPrice:13700, published:true, featured:false, badgeLabel:'VIP 限定特典' }
+    ];
+    renderSubList();
+    return;
+  }
+  fetch(GAS_URL + '?action=public_subscriptions')
+    .then(r => r.json())
+    .then(d => {
+      subsCache = (d.plans || []).map(p => ({ ...p,
+        published: p.published === true || p.published === 'TRUE' || p.published === 'true',
+        featured: p.featured === true || p.featured === 'TRUE' || p.featured === 'true'
+      }));
+      renderSubList();
+    })
+    .catch(e => toast('定期便取得失敗: ' + e.message, 'error'));
+}
+
+function renderSubList() {
+  const list = document.getElementById('subList');
+  if (!list) return;
+  if (!subsCache.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 20px;font-size:13px">定期便プランが登録されていません</div>';
+    return;
+  }
+  list.innerHTML = subsCache.map(s => `
+    <div class="inv-card" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;margin-bottom:8px;border:1px solid var(--paper);cursor:pointer;${s.featured?'box-shadow:0 0 0 2px var(--gold)':''}" onclick="openSubForm(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+      <div style="font-size:24px;flex-shrink:0">${s.featured ? '🏆' : '📦'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px">${s.name || ''} ${s.badgeLabel ? '<span style="background:var(--gold);color:#fff;font-size:9px;padding:2px 6px;border-radius:8px;margin-left:6px">'+s.badgeLabel+'</span>' : ''}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${s.target} · ${s.spec} · 初月 ¥${Number(s.firstMonthPrice||0).toLocaleString()} · ${s.published ? '✅ 公開中' : '⛔ 下書き'}</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+function openSubForm(s) {
+  editingSub = s && s.planId ? s : null;
+  document.getElementById('formTitle').textContent = editingSub ? '定期便プラン編集' : '新しい定期便プラン';
+  document.getElementById('formBody').innerHTML = renderSubForm(editingSub || {});
+  document.getElementById('formSheet').classList.add('open');
+  window._formType = 'subscription';
+}
+
+function renderSubForm(s) {
+  return `
+    <div class="form-field">
+      <label>プラン名 *</label>
+      <input type="text" id="sf-name" value="${escapeHtml(s.name || '')}" placeholder="例: ミニプラン">
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>プランID ${editingSub ? '— 編集不可' : ''} *</label>
+        <input type="text" id="sf-planId" value="${escapeHtml(s.planId || '')}" placeholder="mini / pro / vip" ${editingSub ? 'readonly style="background:#f5f5f5"' : ''}>
+      </div>
+      <div class="form-field">
+        <label>対象 (target)</label>
+        <input type="text" id="sf-target" value="${escapeHtml(s.target || '')}" placeholder="1-2人家族">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>仕様 (spec)</label>
+      <input type="text" id="sf-spec" value="${escapeHtml(s.spec || '')}" placeholder="1.6kg・8品">
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>通常価格 (oldPrice) *</label>
+        <input type="number" id="sf-oldPrice" value="${s.oldPrice || ''}" placeholder="6980">
+      </div>
+      <div class="form-field">
+        <label>初月価格 (firstMonthPrice) *</label>
+        <input type="number" id="sf-firstMonthPrice" value="${s.firstMonthPrice || ''}" placeholder="3490">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>割引額表示 (savings)</label>
+      <input type="number" id="sf-savings" value="${s.savings || ''}" placeholder="3490">
+      <p class="img-help" style="color:var(--muted);font-size:10.5px;margin-top:4px">通常 - 初月 (例: 6980-3490=3490)</p>
+    </div>
+    <div class="form-field">
+      <label>Stripe Price ID (Subscription) *</label>
+      <input type="text" id="sf-stripePriceId" value="${escapeHtml(s.stripePriceId || '')}" placeholder="price_1TWAN0GSkhU1UEci...">
+    </div>
+    <div class="form-field">
+      <label>含まれる商品 (items)</label>
+      <textarea id="sf-items" rows="4" placeholder="赤身スライス 200g, 赤身焼肉 200g, ...">${escapeHtml(s.items || '')}</textarea>
+      <p class="img-help" style="color:var(--muted);font-size:10.5px;margin-top:4px">カンマ区切り。shop.html で改行表示される</p>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>「人気No.1」ハイライト</label>
+        <select id="sf-featured">
+          <option value="false" ${!s.featured ? 'selected' : ''}>通常</option>
+          <option value="true"  ${s.featured ? 'selected' : ''}>ハイライト (金枠)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>バッジ文字</label>
+        <input type="text" id="sf-badgeLabel" value="${escapeHtml(s.badgeLabel || '')}" placeholder="人気 No.1 / VIP 限定特典">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>VIP特典 (vipPerk) — 表示する場合のみ</label>
+      <input type="text" id="sf-vipPerk" value="${escapeHtml(s.vipPerk || '')}" placeholder="有機JAS 黒毛和牛 優先案内">
+    </div>
+    <div class="form-field">
+      <label>画像パス</label>
+      <input type="text" id="sf-image" value="${escapeHtml(s.image || '')}" placeholder="public/images/products/drive/sirloin.jpg">
+    </div>
+    <div class="form-field">
+      <label>公開ステータス *</label>
+      <select id="sf-published">
+        <option value="false" ${!s.published ? 'selected' : ''}>下書き</option>
+        <option value="true"  ${s.published || s.published === undefined ? 'selected' : ''}>公開</option>
+      </select>
+    </div>
+    ${editingSub ? `
+    <div class="form-field" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--paper)">
+      <button type="button" onclick="deleteSub()" style="background:none;border:1px solid #e74c3c;color:#e74c3c;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%">🗑 このプランを削除</button>
+    </div>` : ''}
+  `;
+}
+
+function saveSub() {
+  const name = document.getElementById('sf-name').value.trim();
+  const planId = document.getElementById('sf-planId').value.trim();
+  if (!name || !planId) { toast('プラン名と planId は必須', 'error'); return; }
+  const plan = {
+    planId, name,
+    target: document.getElementById('sf-target').value.trim(),
+    spec: document.getElementById('sf-spec').value.trim(),
+    oldPrice: parseInt(document.getElementById('sf-oldPrice').value) || 0,
+    firstMonthPrice: parseInt(document.getElementById('sf-firstMonthPrice').value) || 0,
+    savings: parseInt(document.getElementById('sf-savings').value) || 0,
+    stripePriceId: document.getElementById('sf-stripePriceId').value.trim(),
+    items: document.getElementById('sf-items').value.trim(),
+    featured: document.getElementById('sf-featured').value === 'true',
+    badgeLabel: document.getElementById('sf-badgeLabel').value.trim(),
+    vipPerk: document.getElementById('sf-vipPerk').value.trim(),
+    image: document.getElementById('sf-image').value.trim(),
+    published: document.getElementById('sf-published').value === 'true'
+  };
+  if (isDemoMode()) {
+    if (editingSub) { const i = subsCache.findIndex(p => p.planId === editingSub.planId); if (i>=0) subsCache[i] = plan; }
+    else subsCache.unshift(plan);
+    renderSubList();
+    toast('🎭 デモ: ' + (editingSub ? '更新' : '追加'), 'success');
+    closeForm();
+    return;
+  }
+  fetch(GAS_URL + '?action=staff_subscription_save', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(plan) })
+    .then(r => r.json()).then(res => {
+      if (res.ok) { toast((editingSub?'更新':'追加')+'しました', 'success'); loadSubscriptions(); closeForm(); }
+      else toast('保存失敗: ' + (res.error || 'unknown'), 'error');
+    }).catch(e => toast('通信エラー: ' + e.message, 'error'));
+}
+
+function deleteSub() {
+  if (!editingSub) return;
+  if (!confirm(`「${editingSub.name}」を削除します。よろしいですか?`)) return;
+  if (isDemoMode()) {
+    subsCache = subsCache.filter(p => p.planId !== editingSub.planId);
+    renderSubList(); toast('🎭 デモ: 削除', 'success'); closeForm(); return;
+  }
+  fetch(GAS_URL + '?action=staff_subscription_delete', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ planId: editingSub.planId }) })
+    .then(r => r.json()).then(res => {
+      if (res.ok) { toast('削除しました', 'success'); loadSubscriptions(); closeForm(); }
+      else toast('削除失敗: ' + (res.error || 'unknown'), 'error');
+    }).catch(e => toast('通信エラー: ' + e.message, 'error'));
 }
 
 /* ================ DEMO QUICK ENTRY ================ */

@@ -87,24 +87,44 @@
     console.log('[products-loader] スプシから ' + normalized.length + ' 商品を取得 (GAS)');
   }
 
+  /* ギフト・定期便プランの適用 */
+  function applyGifts(gifts) {
+    if (typeof window.__renderGifts === 'function') {
+      try { window.__renderGifts(gifts || []); } catch(e) { console.warn('[products-loader] renderGifts エラー:', e); }
+    }
+  }
+  function applyPlans(plans) {
+    if (typeof window.__renderPlans === 'function') {
+      try { window.__renderPlans(plans || []); } catch(e) { console.warn('[products-loader] renderPlans エラー:', e); }
+    }
+  }
+
   /* メイン処理 */
   function load() {
     /* キャッシュヒット → 即適用 */
     const cached = getCached();
     if (cached) {
-      applyProducts(cached);
+      applyProducts(cached.products || cached);
+      if (cached.gifts) applyGifts(cached.gifts);
+      if (cached.plans) applyPlans(cached.plans);
       return;
     }
 
-    /* GAS から fetch */
-    fetch(GAS_URL + '?action=public_products', { cache: 'no-store' })
+    /* GAS から fetch (public_catalog で全部一括取得) */
+    fetch(GAS_URL + '?action=public_catalog', { cache: 'no-store' })
       .then(r => r.json())
       .then(data => {
-        if (data && data.ok && Array.isArray(data.products) && data.products.length > 0) {
-          setCached(data.products);
-          applyProducts(data.products);
+        if (data && data.ok) {
+          const products = data.products || [];
+          const gifts = data.gifts || [];
+          const plans = data.plans || [];
+          setCached({ products, gifts, plans });
+          if (products.length > 0) applyProducts(products);
+          applyGifts(gifts);
+          applyPlans(plans);
+          console.log('[products-loader] catalog 取得完了 (products:' + products.length + ' / gifts:' + gifts.length + ' / plans:' + plans.length + ')');
         } else {
-          console.warn('[products-loader] GAS が空配列を返した。products-master.js を使用。');
+          console.warn('[products-loader] GAS が空を返した。products-master.js を使用。');
         }
       })
       .catch(e => {
