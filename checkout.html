@@ -1860,6 +1860,17 @@ async function placeOrder() {
  quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
  };
 
+ /* 📊 Analytics: 決済開始イベント */
+ if (window.edaAnalytics) {
+   const totalAmount = calcTotalAmount();
+   window.edaAnalytics.beginCheckout(totalAmount, {
+     payment_method: payment,
+     mode: mode,
+     item_count: cartItems.length,
+     has_subscription: !!(subscription && PLANS[subscription.plan])
+   });
+ }
+
  // UI: ローディング
  const btn = document.getElementById('btnPlaceOrder');
  if (btn) { btn.disabled = true; btn.textContent = '決済画面へ移動中…'; }
@@ -1932,6 +1943,7 @@ function calcTotalAmount() {
 init();
 </script>
 
+<script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
 </body>
 </html>

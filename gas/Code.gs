@@ -137,6 +137,7 @@ function doGet(e) {
       case 'staff_dashboard':   return staffDashboard();
       case 'staff_inventory':   return staffInventory();
       case 'staff_orders':      return staffOrders();
+      case 'staff_analytics':   return staffAnalytics(e.parameter);
       case 'b2_csv':            return b2CsvExport();
       default:                  return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
@@ -204,6 +205,7 @@ function doPost(e) {
       case 'staff_ship':                   return staffShip(body);
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
+      case 'log_event':                    return logEvent(body);
       case 'log_subscription_application': return logSubscriptionApplication(body);
       case 'request_otp':                  return requestOtp(body);
       case 'verify_otp':                   return verifyOtp(body);
@@ -531,6 +533,9 @@ function finalizeOrder(session) {
       log('stock_decrement_error', { error: e.message, order: orderNum });
     }
   }
+
+  /* 📊 Analytics: purchase イベント記録 */
+  try { logPurchaseEvent(session); } catch (e) {}
 
   return jsonResponse({ ok:true, order: orderNum });
 }
@@ -1869,4 +1874,216 @@ function checkConfig() {
   });
   Logger.log(JSON.stringify(result, null, 2));
   return result;
+}
+
+/* ============================================================
+   📊 ANALYTICS — 自前の軽量計測 (GA4 不要)
+   ・log_event: フロントから POST されるイベントを events シートに記録
+   ・staff_analytics: STAFF ダッシュボード用に集計を返す
+
+   events シートのスキーマ:
+   ts | event_type | session_id | page | product_id | value | referrer | ua | meta_json
+
+   サポートイベント:
+   - page_view       (ページ閲覧)
+   - view_item       (商品詳細閲覧)
+   - add_to_cart     (カート追加)
+   - remove_from_cart(カート削除)
+   - view_cart       (カート画面表示)
+   - begin_checkout  (決済開始)
+   - purchase        (購入完了・Stripe webhook から発火)
+   - line_click      (LINE 友だち追加クリック)
+   - quiz_start      (診断開始)
+   - quiz_complete   (診断完了)
+   ============================================================ */
+const EVENTS_HEADERS = ['ts','event_type','session_id','page','product_id','value','referrer','ua','meta_json'];
+
+function eventsSheet() {
+  return sheet('events', EVENTS_HEADERS);
+}
+
+function logEvent(body) {
+  if (!body || !body.event_type) return jsonResponse({ ok:false, error: 'event_type required' });
+  const sh = eventsSheet();
+  sh.appendRow([
+    new Date(),
+    body.event_type,
+    body.session_id || '',
+    body.page || '',
+    body.product_id || '',
+    Number(body.value) || 0,
+    body.referrer || '',
+    (body.ua || '').slice(0, 200),
+    JSON.stringify(body.meta || {}).slice(0, 500)
+  ]);
+  return jsonResponse({ ok:true });
+}
+
+/* GAS から呼び出して purchase イベントを記録 (Stripe webhook から) */
+function logPurchaseEvent(session) {
+  try {
+    const sh = eventsSheet();
+    const meta = session.metadata || {};
+    sh.appendRow([
+      new Date(),
+      'purchase',
+      meta.session_id || session.id || '',
+      '/order',
+      '',  // product_id (商品複数の場合は meta_json 参照)
+      Number(session.amount_total) || 0,
+      '',  // referrer
+      '',  // ua (webhook から推定不可)
+      JSON.stringify({
+        order_number: meta.order_number,
+        customer_email: session.customer_details && session.customer_details.email,
+        items: meta.items_json,
+        payment_method: (session.payment_method_types || [])[0]
+      }).slice(0, 500)
+    ]);
+  } catch (e) {
+    log('logPurchaseEvent_error', { error: e.message });
+  }
+}
+
+function staffAnalytics(params) {
+  const range = params && params.range ? params.range : '7d';
+  const days = Math.max(1, parseInt(range) || 7);
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const today0 = new Date(); today0.setHours(0,0,0,0);
+  const yesterday0 = new Date(today0.getTime() - 24*60*60*1000);
+
+  try {
+    const sh = ss().getSheetByName('events');
+    if (!sh) return jsonResponse({ ok:true, summary: emptyAnalytics(), source: 'no_events_sheet' });
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return jsonResponse({ ok:true, summary: emptyAnalytics(), source: 'empty' });
+
+    const headers = data[0];
+    const tsIdx = headers.indexOf('ts');
+    const typeIdx = headers.indexOf('event_type');
+    const sidIdx = headers.indexOf('session_id');
+    const pidIdx = headers.indexOf('product_id');
+    const valIdx = headers.indexOf('value');
+    const refIdx = headers.indexOf('referrer');
+
+    /* 集計 */
+    const today = { pv:0, sessions:new Set(), addCart:0, beginCheckout:0, purchase:0, revenue:0 };
+    const yesterday = { pv:0, sessions:new Set(), addCart:0, beginCheckout:0, purchase:0, revenue:0 };
+    const period = { pv:0, sessions:new Set(), addCart:0, beginCheckout:0, purchase:0, revenue:0 };
+
+    /* 日別トレンド (期間中) */
+    const dayMap = {}; /* { 'YYYY-MM-DD': { pv, purchase, revenue } } */
+    /* 商品別 add_to_cart カウント */
+    const productCart = {};
+    /* 流入元 (referrer) カウント */
+    const refMap = {};
+
+    for (let i = 1; i < data.length; i++) {
+      const ts = new Date(data[i][tsIdx]);
+      if (isNaN(ts.getTime())) continue;
+      if (ts < since) continue;
+
+      const type = data[i][typeIdx];
+      const sid = data[i][sidIdx];
+      const pid = data[i][pidIdx];
+      const val = Number(data[i][valIdx]) || 0;
+      const ref = data[i][refIdx];
+
+      /* 集計バケット決定 */
+      const isToday = ts >= today0;
+      const isYesterday = ts >= yesterday0 && ts < today0;
+
+      function add(bucket) {
+        if (type === 'page_view') bucket.pv++;
+        if (sid) bucket.sessions.add(sid);
+        if (type === 'add_to_cart') bucket.addCart++;
+        if (type === 'begin_checkout') bucket.beginCheckout++;
+        if (type === 'purchase') { bucket.purchase++; bucket.revenue += val; }
+      }
+      add(period);
+      if (isToday) add(today);
+      if (isYesterday) add(yesterday);
+
+      /* 日別トレンド */
+      const dayKey = ts.toISOString().slice(0,10);
+      if (!dayMap[dayKey]) dayMap[dayKey] = { pv:0, purchase:0, revenue:0, sessions:new Set() };
+      if (type === 'page_view') dayMap[dayKey].pv++;
+      if (type === 'purchase') { dayMap[dayKey].purchase++; dayMap[dayKey].revenue += val; }
+      if (sid) dayMap[dayKey].sessions.add(sid);
+
+      /* 商品別 */
+      if (type === 'add_to_cart' && pid) {
+        productCart[pid] = (productCart[pid] || 0) + 1;
+      }
+      /* 流入元 */
+      if (type === 'page_view' && ref) {
+        const host = ref.replace(/^https?:\/\//, '').split('/')[0] || '(direct)';
+        refMap[host] = (refMap[host] || 0) + 1;
+      }
+    }
+
+    /* CVR 計算 */
+    const todayCVR = today.sessions.size > 0 ? (today.purchase / today.sessions.size * 100) : 0;
+    const yCVR = yesterday.sessions.size > 0 ? (yesterday.purchase / yesterday.sessions.size * 100) : 0;
+    const periodCVR = period.sessions.size > 0 ? (period.purchase / period.sessions.size * 100) : 0;
+
+    /* 日別配列 (古い順) */
+    const trend = Object.keys(dayMap).sort().map(d => ({
+      date: d,
+      pv: dayMap[d].pv,
+      sessions: dayMap[d].sessions.size,
+      purchase: dayMap[d].purchase,
+      revenue: dayMap[d].revenue
+    }));
+
+    /* TOP5 商品 */
+    const topProducts = Object.keys(productCart)
+      .map(pid => ({ product: pid, count: productCart[pid] }))
+      .sort((a,b) => b.count - a.count)
+      .slice(0, 5);
+
+    /* TOP5 流入元 */
+    const topReferrers = Object.keys(refMap)
+      .map(host => ({ host, count: refMap[host] }))
+      .sort((a,b) => b.count - a.count)
+      .slice(0, 5);
+
+    return jsonResponse({
+      ok: true,
+      range_days: days,
+      today: {
+        pv: today.pv, sessions: today.sessions.size,
+        addCart: today.addCart, beginCheckout: today.beginCheckout,
+        purchase: today.purchase, revenue: today.revenue,
+        cvr: Math.round(todayCVR * 100) / 100
+      },
+      yesterday: {
+        pv: yesterday.pv, sessions: yesterday.sessions.size,
+        purchase: yesterday.purchase, revenue: yesterday.revenue,
+        cvr: Math.round(yCVR * 100) / 100
+      },
+      period: {
+        pv: period.pv, sessions: period.sessions.size,
+        addCart: period.addCart, beginCheckout: period.beginCheckout,
+        purchase: period.purchase, revenue: period.revenue,
+        cvr: Math.round(periodCVR * 100) / 100
+      },
+      trend: trend,
+      top_products: topProducts,
+      top_referrers: topReferrers
+    });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+function emptyAnalytics() {
+  return {
+    today: { pv:0, sessions:0, addCart:0, beginCheckout:0, purchase:0, revenue:0, cvr:0 },
+    yesterday: { pv:0, sessions:0, purchase:0, revenue:0, cvr:0 },
+    period: { pv:0, sessions:0, addCart:0, beginCheckout:0, purchase:0, revenue:0, cvr:0 },
+    trend: [],
+    top_products: [],
+    top_referrers: []
+  };
 }
