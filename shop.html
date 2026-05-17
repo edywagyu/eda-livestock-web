@@ -2763,44 +2763,85 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.06em;
 }
 
-/* 初月50%OFF メインバナー — 「今月だけ」緊急感を最大化 */
+/* 初月50%OFF メインバナー — 目立ち強化版 (Tom指示) */
 .sub-promo-banner {
- background: linear-gradient(135deg, var(--color-forest) 0%, var(--color-forest-deep) 100%);
+ background:
+   radial-gradient(circle at 15% 50%, rgba(212,169,59,0.18) 0%, transparent 60%),
+   linear-gradient(135deg, #0F3D2E 0%, #061410 100%);
  color: white;
- border-radius: 12px;
- padding: 22px 28px;
+ border-radius: 14px;
+ padding: 26px 30px;
  margin-bottom: 0;
  display: flex;
  align-items: center;
- gap: 24px;
+ gap: 28px;
  font-family: var(--font-jp);
  position: relative;
  overflow: hidden;
- border: 1px solid rgba(212,169,59,0.3);
+ border: 2px solid var(--color-gold);
+ box-shadow:
+   0 0 0 1px rgba(212,169,59,0.2),
+   0 8px 28px rgba(212,169,59,0.25),
+   0 4px 12px rgba(0,0,0,0.3),
+   inset 0 1px 0 rgba(255,213,128,0.15);
+ animation: promoBannerGlow 3s ease-in-out infinite;
+}
+@keyframes promoBannerGlow {
+ 0%, 100% {
+   box-shadow:
+     0 0 0 1px rgba(212,169,59,0.2),
+     0 8px 28px rgba(212,169,59,0.25),
+     0 4px 12px rgba(0,0,0,0.3),
+     inset 0 1px 0 rgba(255,213,128,0.15);
+ }
+ 50% {
+   box-shadow:
+     0 0 0 1px rgba(212,169,59,0.4),
+     0 8px 36px rgba(212,169,59,0.5),
+     0 4px 14px rgba(0,0,0,0.35),
+     inset 0 1px 0 rgba(255,213,128,0.25);
+ }
 }
 .sub-promo-banner::before {
- /* 斜めストライプ */
+ /* 斜めストライプ (もう少し見える) */
  content: '';
  position: absolute;
  inset: 0;
  background: repeating-linear-gradient(45deg,
  transparent 0,
- transparent 20px,
- rgba(212,169,59,0.05) 20px,
- rgba(212,169,59,0.05) 22px);
+ transparent 16px,
+ rgba(212,169,59,0.08) 16px,
+ rgba(212,169,59,0.08) 18px);
  pointer-events: none;
+}
+.sub-promo-banner::after {
+ /* 右上「期間限定」リボン風アクセント */
+ content: '期間限定';
+ position: absolute;
+ top: 10px;
+ right: -32px;
+ transform: rotate(35deg);
+ background: linear-gradient(90deg, #D4A93B, #B8932F);
+ color: #0A2D21;
+ font-size: 9px;
+ font-weight: 800;
+ letter-spacing: 0.18em;
+ padding: 4px 38px;
+ box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+ pointer-events: none;
+ z-index: 2;
 }
 .sub-promo-banner > * { position: relative; z-index: 1; }
 
 /* 巨大な 50% 数字 */
 .sub-promo-banner-num {
  font-family: var(--font-display);
- font-size: 56px;
- font-weight: 700;
- letter-spacing: -0.02em;
+ font-size: 68px;
+ font-weight: 800;
+ letter-spacing: -0.03em;
  line-height: 1;
  color: var(--color-gold);
- text-shadow: 0 4px 16px rgba(0,0,0,0.3);
+ text-shadow: 0 0 24px rgba(212,169,59,0.55), 0 4px 16px rgba(0,0,0,0.4);
  display: flex;
  align-items: center;
  justify-content: center;
@@ -2814,35 +2855,54 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  flex-direction: column;
  justify-content: center;
- gap: 6px;
+ gap: 8px;
 }
 .sub-promo-banner-text strong {
- font-size: 15px;
+ font-size: 17px;
  color: var(--color-gold);
+ letter-spacing: 0.02em;
 }
 
-/* 締切バー：⏰ 今月末まで・残り XX 日 */
+/* 締切バー：⏰ 今月末まで・残り XX 日 — 脈打つアニメ */
 .sub-promo-deadline {
  display: inline-flex;
  align-items: center;
  gap: 8px;
- font-size: 12.5px;
+ font-size: 13px;
  font-weight: 700;
- background: linear-gradient(90deg, rgba(255,213,128,0.25), rgba(255,213,128,0.12));
- border: 1px solid rgba(255,213,128,0.5);
- padding: 6px 14px;
+ background: linear-gradient(90deg, rgba(212,169,59,0.35), rgba(212,169,59,0.18));
+ border: 1.5px solid rgba(255,213,128,0.7);
+ padding: 7px 16px;
  border-radius: 16px;
  color: white;
  align-self: flex-start;
  letter-spacing: 0.02em;
+ box-shadow: 0 0 12px rgba(212,169,59,0.2);
+}
+.sub-promo-deadline-dot {
+ width: 6px;
+ height: 6px;
+ border-radius: 50%;
+ background: #FFD580;
+ box-shadow: 0 0 8px #FFD580;
+ animation: promoDotPulse 1.4s ease-in-out infinite;
+}
+@keyframes promoDotPulse {
+ 0%, 100% { opacity: 0.7; transform: scale(1); }
+ 50% { opacity: 1; transform: scale(1.4); }
 }
 .sub-promo-deadline strong {
- font-size: 17px !important;
+ font-size: 20px !important;
  font-family: var(--font-display);
  color: var(--color-gold) !important;
  font-variant-numeric: tabular-nums;
  letter-spacing: -0.01em;
  text-shadow: 0 2px 8px rgba(212,169,59,0.5);
+ animation: promoNumPulse 1.4s ease-in-out infinite;
+}
+@keyframes promoNumPulse {
+ 0%, 100% { transform: scale(1); }
+ 50% { transform: scale(1.08); }
 }
 .sub-promo-microcopy {
  font-size: 10.5px;
@@ -10576,7 +10636,7 @@ function toggleUnboxingSound() {
  <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
  <h2 class="quiz-title">
    <span class="quiz-only-desktop">お肉事情診断<strong>あなたに最適なプラン</strong>を5問でご提案</span>
-   <span class="quiz-only-mobile">あなたに合う和牛は？<br/><strong>60秒で、ぴったりの定期便を。</strong></span>
+   <span class="quiz-only-mobile">あなたに合うお肉は？<br/><strong>60秒で、ぴったりの定期便を。</strong></span>
  </h2>
  <p class="quiz-sub">
    <span class="quiz-only-desktop">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約60秒・回答は記録されません。</span>
