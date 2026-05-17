@@ -11675,6 +11675,8 @@ body.has-sticky-cart .floating-phone-btn {
  save();
  renderCart();
  openCart();
+ /* 📊 Analytics: カート追加イベント */
+ if (window.edaAnalytics) window.edaAnalytics.addToCart(variantId, price, { title: title, variant: variant });
  return true;
  }
 
@@ -13598,6 +13600,7 @@ function copyPopCoupon() {
      スプシ: 1tNbIvsTkqrJiWtgpKCHevs_qeVjfNny0FPEsqTtxruM の products タブ -->
 <script src="public/data/products-master.js" defer></script>
 <script src="public/js/products-loader.js?v=001" defer></script>
+<script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 </body>
