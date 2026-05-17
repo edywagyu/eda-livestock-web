@@ -2868,8 +2868,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* 締切バー — 深緑背景で文字反転して目立つ */
 .sub-promo-deadline {
  display: inline-flex;
- align-items: center;
- gap: 8px;
+ align-items: baseline;
+ gap: 6px;
  font-size: 13px;
  font-weight: 700;
  background: linear-gradient(90deg, #0F3D2E, #061410);
@@ -2882,6 +2882,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  box-shadow:
    0 4px 12px rgba(0,0,0,0.2),
    inset 0 1px 0 rgba(255,229,148,0.15);
+ white-space: nowrap !important;  /* 🔴 改行禁止 (Tom指示) */
+ width: auto;
+ max-width: none;
+ flex-shrink: 0;
+}
+.sub-promo-deadline-label,
+.sub-promo-deadline-unit,
+.sub-promo-deadline-suffix {
+ white-space: nowrap;
+ display: inline-block;
+}
+.sub-promo-deadline-suffix {
+ font-size: 11px;
+ opacity: 0.85;
+ margin-left: 4px;
+ padding-left: 8px;
+ border-left: 1px solid rgba(255,255,255,0.3);
 }
 .sub-promo-deadline-dot {
  width: 6px;
@@ -8889,8 +8906,15 @@ body.is-member .product-card--organic .org-chk-lock {
  .sub-promo-banner-num small { font-size: 14px !important; }
  .sub-promo-banner-text { font-size: 12px; }
  .sub-promo-banner-text strong { font-size: 13.5px; }
- .sub-promo-deadline { font-size: 11px; padding: 4px 10px; }
- .sub-promo-deadline strong { font-size: 14px !important; }
+ .sub-promo-deadline {
+   font-size: 12px;
+   padding: 6px 12px;
+   gap: 5px !important;
+   white-space: nowrap !important;
+   flex-wrap: nowrap !important;
+ }
+ .sub-promo-deadline strong { font-size: 18px !important; line-height: 1 !important; }
+ .sub-promo-deadline-suffix { font-size: 10px !important; padding-left: 6px !important; margin-left: 2px !important; }
  .sub-promo-microcopy { font-size: 11px; line-height: 1.4; }
  .shop-sub-plans-wrap { margin-bottom: 28px; }
  /* モバイルではBOX化せず、シンプルな2列リストに (Tom指示) */
@@ -10173,7 +10197,10 @@ body.is-member .product-card--organic .org-chk-lock {
  <strong>初月50%OFF</strong>キャンペーン実施中
  <span class="sub-promo-deadline">
  <span class="sub-promo-deadline-dot"></span>
- <span id="subPromoMonth">5月</span>末まで・残り <strong id="subPromoDaysLeft">20</strong>日
+ <span class="sub-promo-deadline-label">残り</span>
+ <strong id="subPromoDaysLeft">20</strong>
+ <span class="sub-promo-deadline-unit">日</span>
+ <span class="sub-promo-deadline-suffix" id="subPromoMonth" data-suffix="まで">5月末まで</span>
  </span>
  <span class="sub-promo-microcopy">今月入会のみ適用 / 来月以降は通常価格</span>
  </div>
@@ -12416,7 +12443,7 @@ body.has-sticky-cart .floating-phone-btn {
  // 定期コース 初月50%OFF 締切バー
  const subPromoMonth = document.getElementById('subPromoMonth');
  const subPromoDaysLeft = document.getElementById('subPromoDaysLeft');
- if (subPromoMonth) subPromoMonth.textContent = m + '月';
+ if (subPromoMonth) subPromoMonth.textContent = m + '月末まで';
  if (subPromoDaysLeft) subPromoDaysLeft.textContent = String(daysLeft);
  }
  update();
