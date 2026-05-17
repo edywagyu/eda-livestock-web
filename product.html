@@ -571,7 +571,29 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <!-- CTA -->
       <div class="pdp-cta-section">
         <button class="pdp-cta-primary" id="addToCartBtn" onclick="addToCart()">追加する</button>
-        <a class="pdp-cta-secondary" href="subscription.html">月の定期便で受け取る</a>
+      </div>
+
+      <!-- 🔴 定期便アップグレード提案 (動的・含まれるプランがあれば表示) -->
+      <div id="pdpSubscriptionUpsell" class="pdp-sub-upsell" style="display:none;margin-top:18px;padding:18px 18px 16px;background:linear-gradient(135deg,#0F3D2E 0%,#061410 100%);color:#fff;border-radius:14px;border:1.5px solid var(--color-gold);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;background:var(--color-gold);color:var(--color-forest-deep);font-size:9px;font-weight:800;letter-spacing:0.12em;padding:4px 14px;border-bottom-left-radius:10px">期間限定 初月50%OFF</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-gold);letter-spacing:0.1em;margin-bottom:6px;margin-top:2px">
+          <span>📅</span><span>SAVE MORE — 定期便ならお得</span>
+        </div>
+        <div id="pdpSubName" style="font-family:var(--font-jp-serif,serif);font-size:18px;font-weight:700;margin-bottom:4px;color:#fff">—</div>
+        <div id="pdpSubItems" style="font-size:11.5px;color:rgba(255,255,255,0.75);line-height:1.55;margin-bottom:12px">—</div>
+        <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:14px">
+          <div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.55);text-decoration:line-through" id="pdpSubOldPrice">—</div>
+            <div style="font-size:22px;font-weight:800;color:var(--color-gold);line-height:1" id="pdpSubFirstPrice">—</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px">初月価格 (税込)</div>
+          </div>
+          <div style="flex:1"></div>
+          <div style="text-align:right">
+            <div style="display:inline-block;padding:4px 10px;background:rgba(212,169,59,0.18);border:1px solid rgba(212,169,59,0.4);border-radius:14px;font-size:11px;font-weight:700;color:var(--color-gold)" id="pdpSubSavings">—</div>
+          </div>
+        </div>
+        <a id="pdpSubCta" href="subscription.html" class="pdp-sub-cta" style="display:block;padding:12px 16px;background:var(--color-gold);color:var(--color-forest-deep);font-weight:800;font-size:13px;text-align:center;border-radius:8px;text-decoration:none;letter-spacing:0.02em">この定期便で申し込む →</a>
+        <div style="font-size:10px;color:rgba(255,255,255,0.55);text-align:center;margin-top:8px">スキップ・カスタム可 / 解約は3ヶ月継続後</div>
       </div>
 
       <!-- メタ情報 -->
@@ -751,6 +773,11 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     </a>
   `).join('');
 
+  /* === 🔴 定期便アップグレード提案 ===
+     スプシ subscription_plans から、この商品が含まれるプランを探し、
+     最もお得な (firstMonthPrice / 商品数 最小) プランを提案 */
+  loadSubscriptionUpsell(product);
+
   /* === Sticky CTA 表示制御 ===
      - 上にスクロール (戻る) ＝隠す（ユーザーが戻りたい時の邪魔を最小化）
      - 下にスクロール ＝ 表示（CTA を見せる）
@@ -791,6 +818,71 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   /* === Global state === */
   window.__pdpProduct = product;
 })();
+
+/* ============================================================
+   🔴 定期便アップグレード提案 — GAS から subscription_plans を取得
+   この商品の name (or 一部) が含まれるプランを探し、UI に表示
+   ============================================================ */
+async function loadSubscriptionUpsell(product) {
+  if (!product || !product.name) return;
+  /* オーガニック/COMING SOON は対象外 */
+  if (product.comingSoon || product.category === 'organic-wgy' || product.category === 'gift') return;
+  const GAS = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
+  let plans = [];
+  try {
+    /* sessionStorage キャッシュ (5分) */
+    const cacheKey = 'eda-plans-cache';
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      try { const c = JSON.parse(cached); if (Date.now() - c.ts < 5*60*1000) plans = c.plans; } catch(e) {}
+    }
+    if (!plans.length) {
+      const res = await fetch(GAS + '?action=public_subscriptions', { cache: 'no-store' });
+      const data = await res.json();
+      plans = (data && data.plans) || [];
+      try { sessionStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), plans })); } catch(e) {}
+    }
+  } catch (e) { return; }
+  if (!plans.length) return;
+
+  /* この商品名が items に含まれるプランをフィルター */
+  const productKeyword = product.name.replace(/【.*?】/g, '').trim();
+  const shortName = productKeyword.split(/[ ・]/)[0]; /* 例: 「サーロインステーキ」 → 「サーロインステーキ」, 「平飼い鶏 ムネ」 → 「平飼い鶏」 */
+  const matching = plans.filter(p => {
+    const items = String(p.items || '').toLowerCase();
+    return items.includes(productKeyword.toLowerCase()) || items.includes(shortName.toLowerCase());
+  });
+
+  /* マッチするプランがなければ featured (人気No.1) プランを提案 */
+  let plan = matching.length ? matching[0] : plans.find(p => p.featured === true || p.featured === 'TRUE' || p.featured === 'true');
+  if (!plan) plan = plans[0]; /* それでもなければ先頭 */
+  if (!plan) return;
+
+  /* UI 反映 */
+  const el = document.getElementById('pdpSubscriptionUpsell');
+  if (!el) return;
+  const itemsStr = String(plan.items || '').split(/[,、]\s*/).filter(Boolean);
+  /* この商品をハイライト */
+  const highlightedItems = itemsStr.map(it => {
+    const matched = it.toLowerCase().includes(productKeyword.toLowerCase()) || it.toLowerCase().includes(shortName.toLowerCase());
+    return matched ? '<span style="color:var(--color-gold);font-weight:700">' + it + '</span>' : it;
+  });
+  const itemsHtml = highlightedItems.length > 4
+    ? highlightedItems.slice(0, 4).join(' / ') + ' / 他 ' + (highlightedItems.length - 4) + '品'
+    : highlightedItems.join(' / ');
+
+  document.getElementById('pdpSubName').textContent = plan.name + ' (' + (plan.target || '') + ' / ' + (plan.spec || '') + ')';
+  document.getElementById('pdpSubItems').innerHTML = '含まれる: ' + (itemsHtml || '—');
+  const oldP = Number(plan.oldPrice) || 0;
+  const firstP = Number(plan.firstMonthPrice) || 0;
+  document.getElementById('pdpSubOldPrice').textContent = '通常 ¥' + oldP.toLocaleString();
+  document.getElementById('pdpSubFirstPrice').textContent = '¥' + firstP.toLocaleString();
+  const savings = oldP - firstP;
+  document.getElementById('pdpSubSavings').textContent = savings > 0 ? '−¥' + savings.toLocaleString() + ' お得' : '50%OFF';
+  document.getElementById('pdpSubCta').href = 'subscription.html?plan=' + (plan.planId || '');
+  document.getElementById('pdpSubCta').textContent = (plan.name || '定期便') + 'で申し込む →';
+  el.style.display = 'block';
+}
 
 /* === Gallery thumb 切替 === */
 function selectThumb(el, src) {
@@ -842,6 +934,17 @@ function addToCart() {
   } catch (e) { console.error(e); }
 }
 </script>
+<script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
+<script>
+/* PDP: view_item イベント送信 */
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(location.search);
+  const pid = params.get('id') || '';
+  const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+  const p = all.find(x => x.productId === pid);
+  if (window.edaAnalytics && p) window.edaAnalytics.viewItem(pid, p.price);
+});
+</script>
 </body>
 </html>
