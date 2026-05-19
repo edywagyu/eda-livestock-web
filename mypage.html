@@ -1452,7 +1452,13 @@ if (typeof liff !== 'undefined') {
  initLiff();
  }
  }, 100);
- setTimeout(() => clearInterval(checkInterval), 5000);
+ setTimeout(() => {
+ clearInterval(checkInterval);
+ // ★ 5秒でSDKロードできなかった場合、外部アクセス画面を表示
+ if (typeof liff === 'undefined') {
+  showState('external');
+ }
+ }, 5000);
 }
 
 /* ---- Render Dashboard ---- */
@@ -1760,6 +1766,11 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
  dashboard.classList.remove('show');
  loginSection.style.display = '';
  document.getElementById('subSection').style.display = 'none';
+
+ // ★ 会員ゲート解除 (shop.html の有機JAS ロックを戻す)
+ if (typeof window.lockMember === 'function') {
+ window.lockMember();
+ }
 
  // LIFF logout (LINE 内では効かないが外部ブラウザ対応)
  try {
