@@ -34,7 +34,7 @@
     LINE_AT_ID: '@706sgiuq',
     // LIFF ID (LINE Front-end Framework) ← Tom が LINE Developers Console で発行後ここに記入
     // 形式: 1234567890-AbcdEfgh (アプリ作成後の "LIFF ID")
-    LIFF_ID: '',
+    LIFF_ID: '1657458587-mz1dR9e6',
     // 連絡先
     PHONE: '09047241063',
     EMAIL: 'backoffice@eda-livestock.com'
