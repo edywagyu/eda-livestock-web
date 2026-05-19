@@ -84,18 +84,17 @@
       window.refreshProductCards();
     }
 
-    console.log('[products-loader] スプシから ' + normalized.length + ' 商品を取得 (GAS)');
   }
 
   /* ギフト・定期便プランの適用 */
   function applyGifts(gifts) {
     if (typeof window.__renderGifts === 'function') {
-      try { window.__renderGifts(gifts || []); } catch(e) { console.warn('[products-loader] renderGifts エラー:', e); }
+      try { window.__renderGifts(gifts || []); } catch(e) {}
     }
   }
   function applyPlans(plans) {
     if (typeof window.__renderPlans === 'function') {
-      try { window.__renderPlans(plans || []); } catch(e) { console.warn('[products-loader] renderPlans エラー:', e); }
+      try { window.__renderPlans(plans || []); } catch(e) {}
     }
   }
 
@@ -122,13 +121,10 @@
           if (products.length > 0) applyProducts(products);
           applyGifts(gifts);
           applyPlans(plans);
-          console.log('[products-loader] catalog 取得完了 (products:' + products.length + ' / gifts:' + gifts.length + ' / plans:' + plans.length + ')');
         } else {
-          console.warn('[products-loader] GAS が空を返した。products-master.js を使用。');
         }
       })
       .catch(e => {
-        console.warn('[products-loader] GAS 取得失敗 (products-master.js を使用):', e.message);
       });
   }
 

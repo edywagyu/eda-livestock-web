@@ -103,10 +103,5 @@
     init();
   }
 
-  /* デバッグ用 URL パラメータ (?member=on / off) */
-  try {
-    const p = new URLSearchParams(location.search);
-    if (p.get('member') === 'on') unlockMember({ line_uid: 'DEMO_UID', name: 'デモ会員' });
-    if (p.get('member') === 'off') lockMember();
-  } catch (e) {}
+  // Debug bypass removed for production
 })();

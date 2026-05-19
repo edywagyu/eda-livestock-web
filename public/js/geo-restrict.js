@@ -7,11 +7,7 @@
 (function () {
   'use strict';
 
-  // 開発者用: ?bypass=tom で国チェックをバイパス
-  if (location.search.includes('bypass=tom')) {
-    localStorage.setItem('eda-geo-bypass', '1');
-  }
-  if (localStorage.getItem('eda-geo-bypass') === '1') return;
+  // Debug bypass removed for production
 
   // セッション内で1回確認すれば OK
   const cached = sessionStorage.getItem('eda-geo-country');
