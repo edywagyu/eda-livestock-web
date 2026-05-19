@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#0F3D2E"/>
+  <text x="256" y="200" text-anchor="middle" dominant-baseline="central"
+        font-family="Georgia, 'Times New Roman', serif" font-weight="700"
+        font-size="160" fill="#D4A93B" letter-spacing="-4">EDA</text>
+  <line x1="100" y1="260" x2="412" y2="260" stroke="#D4A93B" stroke-width="3" opacity="0.5"/>
+  <text x="256" y="340" text-anchor="middle" dominant-baseline="central"
+        font-family="'Helvetica Neue', Arial, sans-serif" font-weight="400"
+        font-size="52" fill="#FAF7F0" letter-spacing="16">LIVESTOCK</text>
+</svg>

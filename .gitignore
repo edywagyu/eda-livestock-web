@@ -3,6 +3,8 @@
 __pycache__/
 node_modules/
 .env
+.env*
+*.env
 
 # 大容量バイナリ資料 (ローカル保持のみ)
 会社資料/
@@ -19,6 +21,10 @@ gas/credentials.json
 # 内部スタッフメタ（公開不要）
 staff-manifest.json
 
+# ローカル調査・テスト用（デプロイ不要）
+research/
+test-checkout.html
+
 # Python/Node ツール
 .venv/
 venv/
@@ -28,7 +34,4 @@ venv/
 .idea/
 .vscode/
 
-# Internal manifests (do not commit)
-staff-manifest.json
-.DS_Store
 *.log
