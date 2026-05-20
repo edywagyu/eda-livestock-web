@@ -1388,6 +1388,7 @@ function lineRegister(body) {
     var linkedAtIdx = ensureCol('linked_at');
     var zipIdx      = ensureCol('zip');
     var addressIdx  = ensureCol('address');
+    var surveyIdx   = ensureCol('survey_json');
 
     /* ---- 既存チェック (line_uid) ---- */
     for (var i = 1; i < data.length; i++) {
@@ -1408,14 +1409,28 @@ function lineRegister(body) {
     row[linkedAtIdx] = new Date();
     row[zipIdx]      = body.zip || '';
     row[addressIdx]  = body.address || '';
+    row[surveyIdx]   = JSON.stringify(body.survey || {});
     row[headers.indexOf('total_spent')]  = 0;
     row[headers.indexOf('order_count')]  = 0;
     sh.appendRow(row);
 
+    // アンケート回答を別シートにも記録 (分析用)
+    try {
+      var surveySheet = sheet('member_surveys', ['ts','line_uid','name','age','family','meat_beef','meat_chicken','frequency','budget','values','source']);
+      var sv = body.survey || {};
+      surveySheet.appendRow([
+        new Date(), body.line_uid, body.name || body.display_name || '',
+        sv.age || '', sv.family || '',
+        (sv.meat_beef || []).join(','), (sv.meat_chicken || []).join(','),
+        sv.frequency || '', sv.budget || '',
+        (sv.values || []).join(','), sv.source || ''
+      ]);
+    } catch(e) { log('survey_save_error', { error: e.message }); }
+
     var custName = body.name || body.display_name || '';
 
-    // LINE プッシュ通知: 会員登録完了 + オーガニック商品リンク
-    sendLinePush(body.line_uid, [buildRegisterSuccessMessage(custName)]);
+    // LINE プッシュ通知: 会員登録完了 + 無投薬ムネ肉特典
+    sendLinePush(body.line_uid, [buildRegisterRewardMessage(custName)]);
 
     return jsonResponse({
       ok: true,
@@ -1498,12 +1513,13 @@ function buildLinkSuccessMessage(customerName) {
   };
 }
 
-/** 新規会員登録後に送る Flex Message */
-function buildRegisterSuccessMessage(customerName) {
-  var liffShop = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/shop.html';
+/** 新規会員登録後に送る Flex Message (無投薬ムネ肉特典) */
+function buildRegisterRewardMessage(customerName) {
+  var liffShop = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/shop.html?item=mune250';
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
   return {
     type: 'flex',
-    altText: '会員登録完了 — オーガニック和牛がご覧いただけます',
+    altText: '🍗 無投薬ムネ肉250g プレゼント！ — 会員登録ありがとうございます',
     contents: {
       type: 'bubble',
       hero: {
@@ -1518,8 +1534,11 @@ function buildRegisterSuccessMessage(customerName) {
         layout: 'vertical',
         spacing: 'md',
         contents: [
-          { type: 'text', text: '🎉 会員登録ありがとうございます', weight: 'bold', size: 'lg', color: '#1a1a1a' },
-          { type: 'text', text: (customerName || 'お客') + '様、限定のオーガニック和牛商品がご覧いただけるようになりました。', wrap: true, size: 'sm', color: '#666666' }
+          { type: 'text', text: '🍗 無投薬ムネ肉 250g GET!', weight: 'bold', size: 'lg', color: '#2d5016' },
+          { type: 'text', text: greeting + '、会員登録ありがとうございます！特典の無投薬ムネ肉250gをお受け取りください。', wrap: true, size: 'sm', color: '#666666' },
+          { type: 'separator' },
+          { type: 'text', text: '受け取り方法', weight: 'bold', size: 'xs', color: '#888888', margin: 'md' },
+          { type: 'text', text: '下のボタンからムネ肉をカートに追加 → お会計時に自動で0円に！', wrap: true, size: 'xs', color: '#999999' }
         ]
       },
       footer: {
@@ -1529,9 +1548,17 @@ function buildRegisterSuccessMessage(customerName) {
         contents: [
           {
             type: 'button',
-            action: { type: 'uri', label: 'オーガニック製品を見る', uri: liffShop },
+            action: { type: 'uri', label: '🍗 無投薬ムネ肉を見る', uri: liffShop },
             style: 'primary',
-            color: '#2d5016'
+            color: '#2d5016',
+            height: 'sm'
+          },
+          {
+            type: 'button',
+            action: { type: 'uri', label: 'オーガニック製品を見る', uri: liffShop.replace('?item=mune250', '') },
+            style: 'link',
+            color: '#2d5016',
+            height: 'sm'
           }
         ]
       }
