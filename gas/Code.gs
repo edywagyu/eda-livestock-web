@@ -194,6 +194,7 @@ function doPost(e) {
       /* ===== LINE LIFF Auth ===== */
       case 'line_login':                   return lineLogin(body);
       case 'line_link_account':            return lineLinkAccount(body);
+      case 'line_register':                return lineRegister(body);
       /* ===== STAFF (POST) ===== */
       case 'staff_update_stock':           return staffUpdateStock(body);
       case 'staff_product_save':           return staffProductSave(body);
@@ -1339,6 +1340,76 @@ function lineLinkAccount(body) {
     return jsonResponse({ ok:true, customer, orders });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
+  }
+}
+
+/* POST line_register { line_uid, display_name, name, phone, zip, address }
+   - LINE 友だち追加からの新規会員登録（注文不要）
+   - line_uid で既存チェック → 既存なら返却のみ、新規なら customers に追加
+*/
+function lineRegister(body) {
+  if (!body.line_uid) throw new Error('line_uid required');
+
+  try {
+    var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
+    var data = sh.getDataRange().getValues();
+    var headers = data[0];
+
+    /* ---- 列を確保 (なければ追加) ---- */
+    function ensureCol(name) {
+      var idx = headers.indexOf(name);
+      if (idx === -1) {
+        idx = headers.length;
+        sh.getRange(1, idx + 1).setValue(name);
+        headers.push(name);
+      }
+      return idx;
+    }
+    var lineIdx     = ensureCol('line_uid');
+    var nameIdx     = ensureCol('name');
+    var phoneIdx    = ensureCol('phone');
+    var lineNameIdx = ensureCol('line_name');
+    var linkedAtIdx = ensureCol('linked_at');
+    var zipIdx      = ensureCol('zip');
+    var addressIdx  = ensureCol('address');
+
+    /* ---- 既存チェック (line_uid) ---- */
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][lineIdx]) === String(body.line_uid)) {
+        var customer = {};
+        headers.forEach(function(h, idx) { customer[h] = data[i][idx]; });
+        return jsonResponse({ ok: true, customer: customer, is_new: false });
+      }
+    }
+
+    /* ---- 新規登録 ---- */
+    var row = new Array(headers.length).fill('');
+    row[headers.indexOf('customer_id')] = Utilities.getUuid();
+    row[nameIdx]     = body.name || body.display_name || '';
+    row[phoneIdx]    = body.phone || '';
+    row[lineIdx]     = body.line_uid;
+    row[lineNameIdx] = body.display_name || '';
+    row[linkedAtIdx] = new Date();
+    row[zipIdx]      = body.zip || '';
+    row[addressIdx]  = body.address || '';
+    row[headers.indexOf('total_spent')]  = 0;
+    row[headers.indexOf('order_count')]  = 0;
+    sh.appendRow(row);
+
+    return jsonResponse({
+      ok: true,
+      is_new: true,
+      customer: {
+        name:     body.name || body.display_name || '',
+        phone:    body.phone || '',
+        line_uid: body.line_uid,
+        line_name: body.display_name || '',
+        zip:      body.zip || '',
+        address:  body.address || ''
+      }
+    });
+  } catch (e) {
+    return jsonResponse({ ok: false, error: e.message });
   }
 }
 
