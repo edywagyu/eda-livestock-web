@@ -1899,7 +1899,8 @@ async function placeOrder() {
  num: result.order_number || '',
  session_id: result.session_id,
  mode: mode,
- date: new Date().toISOString()
+ date: new Date().toISOString(),
+ email: destinations[0].email || ''
  }));
 
  // Stripe Checkout 画面へリダイレクト
