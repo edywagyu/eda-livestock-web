@@ -1302,7 +1302,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================================================================
  * MY PAGE — Client Logic
  * ================================================================ */
-const GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
+let GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
 
 /* ---- Header scroll ---- */
 const header = document.getElementById('siteHeader');
@@ -1362,7 +1362,7 @@ function showOtpError(msg) {
  4. 結果が { matched: true, customer, orders } → ダッシュボード
  { matched: false } → アカウント連携フォーム表示
  ============================================================ */
-const LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '';
+let LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '';
 const loginSection = document.getElementById('loginSection');
 const dashboard = document.getElementById('dashboard');
 const spinner = document.getElementById('spinner');
@@ -1571,25 +1571,33 @@ function showError(el, msg) {
 }
 
 /* ---- 起動 ---- */
-// LIFF SDK 読込待ち
-if (typeof liff !== 'undefined') {
- initLiff();
-} else {
- // SDK 読込み待機
- const checkInterval = setInterval(() => {
- if (typeof liff !== 'undefined') {
- clearInterval(checkInterval);
- initLiff();
+// LIFF SDK + eda-bundle.js (defer) 両方の読込待ち
+function bootApp() {
+ // ★ eda-bundle.js (defer) が後からロードされるため、EDA_CONFIG を再取得
+ if (window.EDA_CONFIG) {
+ LIFF_ID = window.EDA_CONFIG.LIFF_ID || '';
+ GAS_API_URL = window.EDA_CONFIG.GAS_URL || '';
  }
- }, 100);
- setTimeout(() => {
- clearInterval(checkInterval);
- // ★ 5秒でSDKロードできなかった場合、外部アクセス画面を表示
- if (typeof liff === 'undefined') {
-  showState('external');
- }
- }, 5000);
+ initLiff();
 }
+const _bootInterval = setInterval(() => {
+ if (typeof liff !== 'undefined' && window.EDA_CONFIG) {
+ clearInterval(_bootInterval);
+ LIFF_ID = window.EDA_CONFIG.LIFF_ID || '';
+ GAS_API_URL = window.EDA_CONFIG.GAS_URL || '';
+ initLiff();
+ }
+}, 100);
+setTimeout(() => {
+ clearInterval(_bootInterval);
+ // 5秒で揃わなかった場合 → とりあえず起動
+ if (window.EDA_CONFIG) {
+ LIFF_ID = window.EDA_CONFIG.LIFF_ID || '';
+ GAS_API_URL = window.EDA_CONFIG.GAS_URL || '';
+ }
+ if (typeof liff !== 'undefined' && !_liffReady) initLiff();
+ else if (!_liffReady) showState('external');
+}, 5000);
 
 /* ---- Render Dashboard ---- */
 function renderDashboard(customer, orders) {
