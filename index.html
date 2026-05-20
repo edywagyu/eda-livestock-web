@@ -1498,20 +1498,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .map-pin {
  position: absolute;
  transform: translate(-50%, -50%);
- width: 14px;
- height: 14px;
+ width: 8px;
+ height: 8px;
  border-radius: 50%;
- border: 2px solid #fff;
+ border: 1.5px solid #fff;
  background: var(--color-gold);
  cursor: pointer;
  padding: 0;
- box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0.6);
+ box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0.5);
  transition: transform 0.2s, box-shadow 0.2s;
  z-index: 2;
- animation: pinRipple 2.4s ease-out infinite;
+ animation: pinRipple 3s ease-out infinite;
 }
 .map-pin:hover {
- transform: translate(-50%, -50%) scale(1.4);
+ transform: translate(-50%, -50%) scale(1.6);
  z-index: 10;
 }
 .map-pin.pin-y1 { background: #FFE594; }
@@ -1519,8 +1519,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .map-pin.pin-y3 { background: var(--color-gold-soft); }
 /* 本拠地: 星形 */
 .map-pin.map-pin-home {
- width: 28px;
- height: 28px;
+ width: 16px;
+ height: 16px;
  background: transparent;
  border: 0;
  box-shadow: none;
@@ -1536,9 +1536,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  line-height: 1;
 }
 @keyframes pinRipple {
- 0% { box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0.7); }
- 70% { box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 14px rgba(212,169,59,0); }
- 100% { box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0); }
+ 0% { box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0.5); }
+ 70% { box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 6px rgba(212,169,59,0); }
+ 100% { box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0); }
 }
 @keyframes pinHomeGlow {
  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(212,169,59,0.9)); }
@@ -3336,8 +3336,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 12px 10px 10px;
  aspect-ratio: 950/620;
  }
- .map-pin { width: 11px; height: 11px; border-width: 1.5px; }
- .map-pin.map-pin-home { width: 22px; height: 22px; }
+ .map-pin { width: 6px; height: 6px; border-width: 1px; }
+ .map-pin.map-pin-home { width: 12px; height: 12px; }
  .pin-home-star { font-size: 22px; }
  .pin-tooltip { font-size: 10px; padding: 4px 8px; }
  .world-map-legend { font-size: 10px; gap: 10px; padding-top: 6px; }
@@ -3918,6 +3918,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <li><a href="restaurants.html">Restaurants</a></li>
  <li><a href="journal.html">Journal</a></li>
  <li><a href="contact.html">Contact</a></li>
+ <li><a href="mypage.html" class="nav-mypage-link">マイページ</a></li>
  </ul>
  </nav>
  <div class="nav-utils">
@@ -3949,7 +3950,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
    3. 推奨サイズ: 2560×1440px 以上、横長、JPEG 高品質
    4. 暗めの写真（牧場・牛・畜舎の夕景など）が forest×gold パレットと馴染みます
  -->
- <img class="hero-photo" src="public/images/cuts/hero-0.webp" alt="" loading="eager" fetchpriority="high"/>
+ <!-- hero-photo: 現在はグラデーションのみ表示。写真を戻す場合は src に画像パスを入れる -->
+ <img class="hero-photo" src="" alt="" loading="eager" fetchpriority="high" style="display:none;"/>
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
 
  <div class="container hero-content">

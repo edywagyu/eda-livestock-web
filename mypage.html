@@ -1057,6 +1057,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:16px;line-height:1.5">
  @706sgiuq · 江田畜産公式アカウント
  </p>
+ <!-- メールでログイン（LINE外のブラウザ向け） -->
+ <div style="margin-top:28px;border-top:1px solid rgba(15,61,46,0.1);padding-top:24px;">
+ <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 12px;">LINE 以外のブラウザからログイン</p>
+ <div id="otpStep1">
+ <div class="login-input-wrap">
+ <span class="login-input-icon">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+ </span>
+ <input type="email" class="login-input" id="otpEmailInput" placeholder="ご注文時のメールアドレス" autocomplete="email">
+ </div>
+ <button class="login-btn" style="background:var(--color-forest);color:#fff;margin-top:8px;" onclick="sendOtp()">
+ 認証コードを送信
+ </button>
+ </div>
+ <div id="otpStep2" style="display:none;">
+ <p style="font-size:13px;color:var(--color-ink);text-align:center;margin:0 0 12px;font-weight:600;">6桁の認証コードを入力</p>
+ <div class="login-input-wrap">
+ <span class="login-input-icon" style="font-size:16px;">🔑</span>
+ <input type="text" class="login-input" id="otpCodeInput" placeholder="123456" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="letter-spacing:0.3em;text-align:center;font-size:20px;font-weight:700;">
+ </div>
+ <button class="login-btn" style="background:var(--color-forest);color:#fff;margin-top:8px;" onclick="verifyOtp()">
+ ログイン
+ </button>
+ <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:8px;">メールが届かない場合は迷惑メールフォルダをご確認ください</p>
+ </div>
+ <div class="login-error" id="otpError"></div>
+ </div>
+
  <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
  <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
@@ -1285,6 +1313,47 @@ if (header) {
  if (window.scrollY > 80) header.classList.add('scrolled');
  else header.classList.remove('scrolled');
  }, { passive: true });
+}
+
+/* ============================================================
+ Email OTP ログイン（LINE外ブラウザ向け）
+ ============================================================ */
+let _otpEmail = '';
+async function sendOtp() {
+ const email = document.getElementById('otpEmailInput').value.trim();
+ if (!email || !email.includes('@')) { showOtpError('メールアドレスを入力してください'); return; }
+ _otpEmail = email;
+ try {
+   const res = await fetch(GAS_API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'request_otp', email}) });
+   const data = await res.json();
+   if (data.ok) {
+     document.getElementById('otpStep1').style.display = 'none';
+     document.getElementById('otpStep2').style.display = 'block';
+     showOtpError('');
+   } else { showOtpError(data.error || '送信失敗。登録されていないメールアドレスの可能性があります'); }
+ } catch(e) { showOtpError('通信エラー。しばらくしてお試しください'); }
+}
+async function verifyOtp() {
+ const code = document.getElementById('otpCodeInput').value.trim();
+ if (!code || code.length < 6) { showOtpError('6桁のコードを入力してください'); return; }
+ try {
+   const res = await fetch(GAS_API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'verify_otp', email: _otpEmail, code}) });
+   const data = await res.json();
+   if (data.ok) {
+     showOtpError('');
+     // OTP 認証成功 → セッション保存してダッシュボード表示
+     const session = { email: _otpEmail, auth: 'otp', ts: Date.now() };
+     try { localStorage.setItem('eda-mypage-session', JSON.stringify(session)); } catch(e){}
+     document.getElementById('loginSection').style.display = 'none';
+     document.getElementById('dashboard').style.display = 'block';
+     if (data.orders) renderOrders(data.orders);
+     if (data.customer) renderCustomer(data.customer);
+   } else { showOtpError(data.error || 'コードが正しくないか期限切れです'); }
+ } catch(e) { showOtpError('通信エラー'); }
+}
+function showOtpError(msg) {
+ const el = document.getElementById('otpError');
+ if (el) { el.textContent = msg; el.classList.toggle('show', !!msg); }
 }
 
 /* ============================================================
