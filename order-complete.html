@@ -626,51 +626,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  transform: translateY(-2px);
  box-shadow: 0 6px 24px rgba(6, 199, 85, 0.35);
 }
-.line-track-copy {
- margin-top: 20px;
- padding-top: 20px;
- border-top: 1px dashed rgba(6, 199, 85, 0.3);
-}
-.line-track-copy-label {
+.line-track-auto-note {
+ margin-top: 16px;
  font-size: 12px;
- color: var(--color-ink-muted);
- margin: 0 0 10px;
-}
-.line-track-copy-row {
- display: flex;
- align-items: center;
- justify-content: center;
- gap: 8px;
- background: var(--color-paper);
- border-radius: 8px;
- padding: 10px 16px;
-}
-.line-track-copy-num {
- font-family: var(--font-display);
- font-size: 20px;
- letter-spacing: 0.06em;
- color: var(--color-forest);
-}
-.line-track-copy-btn {
- display: inline-flex;
- align-items: center;
- gap: 4px;
- padding: 6px 14px;
- background: var(--color-forest);
- color: white;
- font-family: var(--font-jp);
- font-size: 12px;
+ color: #06C755;
  font-weight: 500;
- border-radius: 6px;
- border: none;
- cursor: pointer;
- transition: all 0.2s;
-}
-.line-track-copy-btn:hover {
- background: var(--color-forest-deep);
-}
-.line-track-copy-btn.copied {
- background: #06C755;
+ opacity: 0.85;
 }
 .timeline-line-note {
  margin: 20px 0 0;
@@ -932,7 +893,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .line-track-title { font-size: 17px; }
  .line-track-benefits { grid-template-columns: 1fr; gap: 10px; }
  .line-track-btn { font-size: 15px; padding: 16px; }
- .line-track-copy-num { font-size: 17px; }
  .line-cta-card { padding: 24px 16px; }
  .site-footer { padding: 40px 0 20px; }
  .footer-grid { grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
@@ -1100,19 +1060,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
  <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.271.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.515.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
  </svg>
- LINEで配送を追跡する
+ LINE で配送通知を受け取る
  </a>
 
- <div class="line-track-copy">
- <p class="line-track-copy-label">追加後、以下の注文番号を送信してください</p>
- <div class="line-track-copy-row">
- <span class="line-track-copy-num" id="lineCopyNum">#----</span>
- <button class="line-track-copy-btn" id="copyOrderBtn" onclick="copyOrderNumber()">
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
- コピー
- </button>
- </div>
- </div>
+ <p class="line-track-auto-note">タップするだけでアカウントが自動連携されます</p>
  </div>
 
  <!-- Delivery Timeline -->
@@ -1353,6 +1304,7 @@ if (header) {
  mode: last.mode,
  total: last.total,
  date: last.date,
+ customer_email: last.email || '',
  items: []
  });
  clearLocalCart();
@@ -1403,6 +1355,7 @@ if (header) {
  mode: last && last.mode,
  total: last && last.total,
  date: last && last.date,
+ customer_email: (last && last.email) || '',
  items: []
  });
  clearLocalCart();
@@ -1415,9 +1368,15 @@ function renderOrder(order) {
  const orderNum = order.order_number || order.id || '----';
  document.getElementById('orderNumber').textContent = '#' + orderNum;
 
- /* LINE copy element */
- const lineCopy = document.getElementById('lineCopyNum');
- if (lineCopy) lineCopy.textContent = '#' + orderNum;
+ /* ★ LINE 自動連携: LIFF URL にメールアドレスを埋め込んで CTA を差し替え */
+ const customerEmail = order.customer_email || order.email || '';
+ if (customerEmail) {
+   const liffId = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '1657458587-mz1dR9e6';
+   const encoded = btoa(customerEmail);
+   const liffUrl = 'https://liff.line.me/' + liffId + '/line-link.html?e=' + encodeURIComponent(encoded);
+   const lineBtn = document.getElementById('lineTrackBtn');
+   if (lineBtn) lineBtn.href = liffUrl;
+ }
 
  /* Timeline date */
  if (order.date) {
@@ -1479,35 +1438,6 @@ function escapeHtml(str) {
  .replace(/</g, '&lt;')
  .replace(/>/g, '&gt;')
  .replace(/"/g, '&quot;');
-}
-
-/* ---- Copy Order Number ---- */
-function copyOrderNumber() {
- const numEl = document.getElementById('lineCopyNum');
- const btn = document.getElementById('copyOrderBtn');
- if (!numEl) return;
-
- const text = numEl.textContent.trim();
-
- if (navigator.clipboard && navigator.clipboard.writeText) {
- navigator.clipboard.writeText(text).then(function() {
- showCopied(btn);
- }).catch(function() {
- fallbackCopy(text, btn);
- });
- } else {
- fallbackCopy(text, btn);
- }
-}
-
-function fallbackCopy(text, btn) {
- var ta = document.createElement('textarea');
- ta.value = text;
- ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
- document.body.appendChild(ta);
- ta.select();
- try { document.execCommand('copy'); showCopied(btn); } catch(e) {}
- document.body.removeChild(ta);
 }
 
 /* ---- Survey ---- */
@@ -1581,16 +1511,6 @@ function submitSurvey() {
  });
 }
 
-function showCopied(btn) {
- if (!btn) return;
- var orig = btn.innerHTML;
- btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> コピー済';
- btn.classList.add('copied');
- setTimeout(function() {
- btn.innerHTML = orig;
- btn.classList.remove('copied');
- }, 2000);
-}
 </script>
 </body>
 </html>

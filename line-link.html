@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>LINE連携 — EDA LIVESTOCK</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg"/>
+<style>
+  :root{--bg:#FAFAF7;--fg:#1A1A1A;--green:#0F3D2E;--gold:#D4A93B;--line:#06C755;--gray:#888;--radius:14px}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px}
+  .card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 20px rgba(0,0,0,.06);padding:36px 28px;max-width:380px;width:100%;text-align:center}
+  .logo{font-size:13px;letter-spacing:.12em;color:var(--green);font-weight:700;margin-bottom:24px}
+  .logo span{color:var(--gold)}
+
+  /* States */
+  .state{display:none}
+  .state.active{display:block}
+
+  /* Loading */
+  .spinner{width:44px;height:44px;border:3px solid #eee;border-top-color:var(--line);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 20px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{color:var(--gray);font-size:14px;line-height:1.6}
+
+  /* Success */
+  .success-icon{width:64px;height:64px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .success-icon svg{color:#fff}
+  .success-title{font-size:20px;font-weight:700;margin-bottom:8px}
+  .success-sub{font-size:14px;color:var(--gray);line-height:1.6;margin-bottom:24px}
+  .success-benefits{text-align:left;background:#f8f8f5;border-radius:10px;padding:16px 18px;margin-bottom:24px}
+  .success-benefits li{font-size:13px;color:#555;margin-bottom:8px;list-style:none;padding-left:22px;position:relative}
+  .success-benefits li::before{content:"✓";position:absolute;left:0;color:var(--line);font-weight:700}
+  .success-benefits li:last-child{margin-bottom:0}
+  .btn-close-liff{display:inline-block;background:var(--line);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;width:100%}
+  .btn-close-liff:active{opacity:.85}
+
+  /* Error */
+  .error-icon{width:64px;height:64px;border-radius:50%;background:#F44;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .error-icon svg{color:#fff}
+  .error-title{font-size:18px;font-weight:700;margin-bottom:8px}
+  .error-msg{font-size:14px;color:var(--gray);line-height:1.6;margin-bottom:24px}
+  .btn-retry{display:inline-block;background:var(--green);color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:50px;text-decoration:none;border:none;cursor:pointer}
+
+  /* Already linked */
+  .already-icon{width:64px;height:64px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .already-icon svg{color:#fff}
+
+  .footer-text{margin-top:24px;font-size:11px;color:#bbb}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">EDA<span>·</span>LIVESTOCK</div>
+
+  <!-- STATE: Loading / Linking -->
+  <div class="state active" id="stateLoading">
+    <div class="spinner"></div>
+    <p class="loading-text" id="loadingText">LINE 認証中…</p>
+  </div>
+
+  <!-- STATE: Success -->
+  <div class="state" id="stateSuccess">
+    <div class="success-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
+    </div>
+    <h2 class="success-title">連携完了！</h2>
+    <p class="success-sub" id="successName">LINEアカウントが連携されました</p>
+    <ul class="success-benefits">
+      <li>発送したらLINEで即通知</li>
+      <li>追跡番号もLINEに届きます</li>
+      <li>届いたらお知らせ</li>
+      <li>会員限定商品にアクセス</li>
+    </ul>
+    <button class="btn-close-liff" onclick="closeLiff()">LINEに戻る</button>
+  </div>
+
+  <!-- STATE: Already linked -->
+  <div class="state" id="stateAlready">
+    <div class="already-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
+    </div>
+    <h2 class="success-title">連携済みです</h2>
+    <p class="success-sub">このLINEアカウントは既に連携されています。<br/>配送通知はLINEにお届けします。</p>
+    <button class="btn-close-liff" onclick="closeLiff()">LINEに戻る</button>
+  </div>
+
+  <!-- STATE: Error -->
+  <div class="state" id="stateError">
+    <div class="error-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
+    </div>
+    <h2 class="error-title">連携できませんでした</h2>
+    <p class="error-msg" id="errorMsg">エラーが発生しました。</p>
+    <a href="https://line.me/R/oaMessage/@706sgiuq/?お問い合わせ" class="btn-retry">LINEでお問い合わせ</a>
+  </div>
+</div>
+
+<p class="footer-text">© 2026 EDA-LIVESTOCK CO., LTD.</p>
+
+<!-- LIFF SDK -->
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="public/js/eda-config.js?v=005"></script>
+<script>
+/* ================================================================
+   LINE AUTO-LINK — LIFF ページ
+   ================================================================
+   order-complete.html の CTA から LIFF URL 経由で開かれる。
+   URL パラメータ ?e=BASE64(email) を受け取り、
+   LINE プロファイル + email で GAS line_link_account を呼んで自動連携。
+   ================================================================ */
+(async function() {
+  'use strict';
+
+  const LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '1657458587-mz1dR9e6';
+
+  /* ---- State helpers ---- */
+  function showState(id) {
+    document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+    var el = document.getElementById('state' + id);
+    if (el) el.classList.add('active');
+  }
+  function setLoading(text) {
+    var el = document.getElementById('loadingText');
+    if (el) el.textContent = text;
+  }
+  function showError(msg) {
+    var el = document.getElementById('errorMsg');
+    if (el) el.textContent = msg;
+    showState('Error');
+  }
+
+  /* ---- URL params ---- */
+  var params = new URLSearchParams(window.location.search);
+  var encodedEmail = params.get('e') || '';
+  var customerEmail = '';
+  try {
+    customerEmail = encodedEmail ? atob(encodedEmail) : '';
+  } catch(e) {
+    customerEmail = encodedEmail; // fallback: maybe it was plain text
+  }
+
+  if (!customerEmail) {
+    showError('メールアドレスが見つかりません。注文完了ページからもう一度お試しください。');
+    return;
+  }
+
+  /* ---- LIFF Init ---- */
+  setLoading('LINE 認証中…');
+
+  if (typeof liff === 'undefined') {
+    // SDK failed to load — wait a bit
+    await new Promise(function(r) { setTimeout(r, 3000); });
+    if (typeof liff === 'undefined') {
+      showError('LINE SDK の読み込みに失敗しました。ページを再読み込みしてください。');
+      return;
+    }
+  }
+
+  try {
+    await liff.init({ liffId: LIFF_ID });
+  } catch (e) {
+    console.error('[LIFF init]', e);
+    showError('LINE の初期化に失敗しました。ページを再読み込みしてください。');
+    return;
+  }
+
+  /* ---- Login if needed ---- */
+  if (!liff.isLoggedIn()) {
+    // Redirect to LINE login — will come back to this URL with auth
+    liff.login({ redirectUri: window.location.href });
+    return;
+  }
+
+  /* ---- Get LINE Profile ---- */
+  setLoading('プロフィール取得中…');
+  var profile;
+  try {
+    profile = await liff.getProfile();
+  } catch (e) {
+    console.error('[getProfile]', e);
+    showError('LINE プロフィールの取得に失敗しました。');
+    return;
+  }
+
+  var lineUid = profile.userId;
+  var displayName = profile.displayName || '';
+
+  if (!lineUid) {
+    showError('LINE の認証情報が取得できませんでした。');
+    return;
+  }
+
+  /* ---- Check if already linked ---- */
+  setLoading('アカウント確認中…');
+  try {
+    var loginCheck = await window.EDA_API.post('line_login', {
+      line_uid: lineUid,
+      display_name: displayName
+    });
+    if (loginCheck.ok && loginCheck.matched) {
+      // Already linked
+      showState('Already');
+      return;
+    }
+  } catch(e) {
+    // Continue to linking even if check fails
+    console.warn('[lineLogin check]', e);
+  }
+
+  /* ---- Link Account ---- */
+  setLoading('アカウント連携中…');
+  try {
+    var result = await window.EDA_API.post('line_link_account', {
+      line_uid: lineUid,
+      display_name: displayName,
+      email: customerEmail
+    });
+
+    if (result.ok && result.customer) {
+      // Success!
+      var nameEl = document.getElementById('successName');
+      if (nameEl) {
+        nameEl.textContent = (displayName || 'LINE') + ' と注文情報が連携されました';
+      }
+      showState('Success');
+    } else if (result.error && result.error.indexOf('no orders') >= 0) {
+      showError('このメールアドレスの注文が見つかりませんでした。注文に使用したメールアドレスか確認してください。');
+    } else {
+      showError(result.error || '連携に失敗しました。時間をおいてもう一度お試しください。');
+    }
+  } catch (e) {
+    console.error('[lineLinkAccount]', e);
+    showError('通信エラーが発生しました。時間をおいてもう一度お試しください。');
+  }
+})();
+
+/* ---- Close LIFF ---- */
+function closeLiff() {
+  if (typeof liff !== 'undefined' && liff.isInClient && liff.isInClient()) {
+    liff.closeWindow();
+  } else {
+    window.close();
+  }
+}
+</script>
+</body>
+</html>
