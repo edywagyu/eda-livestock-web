@@ -10,7 +10,7 @@
   :root{--bg:#FAFAF7;--fg:#1A1A1A;--green:#0F3D2E;--gold:#D4A93B;--line:#06C755;--gray:#888;--radius:14px}
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px}
-  .card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 20px rgba(0,0,0,.06);padding:36px 28px;max-width:380px;width:100%;text-align:center}
+  .card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 20px rgba(0,0,0,.06);padding:36px 28px;max-width:400px;width:100%;text-align:center}
   .logo{font-size:13px;letter-spacing:.12em;color:var(--green);font-weight:700;margin-bottom:24px}
   .logo span{color:var(--gold)}
 
@@ -23,17 +23,20 @@
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading-text{color:var(--gray);font-size:14px;line-height:1.6}
 
-  /* Success */
+  /* Success / Already */
   .success-icon{width:64px;height:64px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
   .success-icon svg{color:#fff}
   .success-title{font-size:20px;font-weight:700;margin-bottom:8px}
   .success-sub{font-size:14px;color:var(--gray);line-height:1.6;margin-bottom:24px}
   .success-benefits{text-align:left;background:#f8f8f5;border-radius:10px;padding:16px 18px;margin-bottom:24px}
   .success-benefits li{font-size:13px;color:#555;margin-bottom:8px;list-style:none;padding-left:22px;position:relative}
-  .success-benefits li::before{content:"✓";position:absolute;left:0;color:var(--line);font-weight:700}
+  .success-benefits li::before{content:"\2713";position:absolute;left:0;color:var(--line);font-weight:700}
   .success-benefits li:last-child{margin-bottom:0}
-  .btn-close-liff{display:inline-block;background:var(--line);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;width:100%}
-  .btn-close-liff:active{opacity:.85}
+  .btn-primary{display:inline-block;background:var(--line);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;width:100%}
+  .btn-primary:active{opacity:.85}
+  .btn-shop{display:inline-block;background:var(--green);color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:50px;text-decoration:none;border:none;cursor:pointer;width:100%;margin-top:10px}
+  .already-icon{width:64px;height:64px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+  .already-icon svg{color:#fff}
 
   /* Error */
   .error-icon{width:64px;height:64px;border-radius:50%;background:#F44;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
@@ -42,9 +45,25 @@
   .error-msg{font-size:14px;color:var(--gray);line-height:1.6;margin-bottom:24px}
   .btn-retry{display:inline-block;background:var(--green);color:#fff;font-size:14px;font-weight:600;padding:12px 28px;border-radius:50px;text-decoration:none;border:none;cursor:pointer}
 
-  /* Already linked */
-  .already-icon{width:64px;height:64px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
-  .already-icon svg{color:#fff}
+  /* Registration Form */
+  .reg-title{font-size:18px;font-weight:700;margin-bottom:4px}
+  .reg-sub{font-size:13px;color:var(--gray);margin-bottom:20px;line-height:1.5}
+  .form-group{text-align:left;margin-bottom:16px}
+  .form-label{display:block;font-size:12px;font-weight:600;color:#555;margin-bottom:6px;letter-spacing:.03em}
+  .form-label .req{color:#E55;font-size:10px;margin-left:4px}
+  .form-input{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:15px;font-family:inherit;background:#FAFAF7;transition:border-color .2s}
+  .form-input:focus{outline:none;border-color:var(--line);background:#fff}
+  .form-input::placeholder{color:#bbb}
+  .form-row{display:flex;gap:10px}
+  .form-row .form-group{flex:1}
+  .form-row .form-group.narrow{flex:0 0 120px}
+  .btn-register{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#06C755,#04A847);color:#fff;font-size:15px;font-weight:700;border:none;border-radius:50px;cursor:pointer;margin-top:20px;box-shadow:0 4px 16px rgba(6,199,85,.3);transition:transform .15s}
+  .btn-register:active{transform:scale(.97)}
+  .btn-register:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+  /* Unlock success */
+  .unlock-icon{font-size:48px;margin-bottom:16px}
+  .unlock-badge{display:inline-block;background:linear-gradient(135deg,var(--green),#1a5e42);color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;padding:6px 16px;border-radius:50px;margin-bottom:16px}
 
   .footer-text{margin-top:24px;font-size:11px;color:#bbb}
 </style>
@@ -54,13 +73,55 @@
 <div class="card">
   <div class="logo">EDA<span>·</span>LIVESTOCK</div>
 
-  <!-- STATE: Loading / Linking -->
+  <!-- STATE: Loading -->
   <div class="state active" id="stateLoading">
     <div class="spinner"></div>
     <p class="loading-text" id="loadingText">LINE 認証中…</p>
   </div>
 
-  <!-- STATE: Success -->
+  <!-- STATE: Registration Form (未購入者) -->
+  <div class="state" id="stateRegister">
+    <h2 class="reg-title">会員登録</h2>
+    <p class="reg-sub">登録すると会員限定のオーガニック和牛をご覧いただけます</p>
+    <form id="regForm" onsubmit="return submitRegistration(event)">
+      <div class="form-group">
+        <label class="form-label">お名前<span class="req">必須</span></label>
+        <input type="text" class="form-input" id="regName" placeholder="山田 太郎" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">携帯番号<span class="req">必須</span></label>
+        <input type="tel" class="form-input" id="regPhone" placeholder="090-1234-5678" required/>
+      </div>
+      <div class="form-row">
+        <div class="form-group narrow">
+          <label class="form-label">郵便番号</label>
+          <input type="text" class="form-input" id="regZip" placeholder="123-4567" inputmode="numeric" maxlength="8"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">住所</label>
+          <input type="text" class="form-input" id="regAddress" placeholder="東京都渋谷区..."/>
+        </div>
+      </div>
+      <button type="submit" class="btn-register" id="regSubmit">会員登録する</button>
+    </form>
+  </div>
+
+  <!-- STATE: Unlock Success (会員登録完了) -->
+  <div class="state" id="stateUnlocked">
+    <div class="unlock-icon">&#x1F513;</div>
+    <div class="unlock-badge">MEMBER UNLOCKED</div>
+    <h2 class="success-title">会員登録完了！</h2>
+    <p class="success-sub">オーガニック和牛の限定商品が<br/>ロック解除されました</p>
+    <ul class="success-benefits">
+      <li>会員限定オーガニック和牛を購入可能</li>
+      <li>新商品・入荷情報をLINEでお届け</li>
+      <li>会員様限定クーポンを配信</li>
+    </ul>
+    <a href="https://edywagyu.github.io/eda-livestock-web/shop.html" class="btn-shop">商品を見る</a>
+    <button class="btn-primary" style="margin-top:10px;background:var(--line)" onclick="closeLiff()">LINEに戻る</button>
+  </div>
+
+  <!-- STATE: Link Success (購入済の人の自動連携) -->
   <div class="state" id="stateSuccess">
     <div class="success-icon">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
@@ -73,7 +134,7 @@
       <li>届いたらお知らせ</li>
       <li>会員限定商品にアクセス</li>
     </ul>
-    <button class="btn-close-liff" onclick="closeLiff()">LINEに戻る</button>
+    <button class="btn-primary" onclick="closeLiff()">LINEに戻る</button>
   </div>
 
   <!-- STATE: Already linked -->
@@ -81,9 +142,10 @@
     <div class="already-icon">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg>
     </div>
-    <h2 class="success-title">連携済みです</h2>
-    <p class="success-sub">このLINEアカウントは既に連携されています。<br/>配送通知はLINEにお届けします。</p>
-    <button class="btn-close-liff" onclick="closeLiff()">LINEに戻る</button>
+    <h2 class="success-title">登録済みです</h2>
+    <p class="success-sub">このLINEアカウントは既に会員登録されています。</p>
+    <a href="https://edywagyu.github.io/eda-livestock-web/shop.html" class="btn-shop">商品を見る</a>
+    <button class="btn-primary" style="margin-top:10px;background:var(--line)" onclick="closeLiff()">LINEに戻る</button>
   </div>
 
   <!-- STATE: Error -->
@@ -91,33 +153,36 @@
     <div class="error-icon">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/></svg>
     </div>
-    <h2 class="error-title">連携できませんでした</h2>
-    <p class="error-msg" id="errorMsg">エラーが発生しました。</p>
+    <h2 class="error-title">エラーが発生しました</h2>
+    <p class="error-msg" id="errorMsg">しばらくしてからもう一度お試しください。</p>
     <a href="https://line.me/R/oaMessage/@706sgiuq/?お問い合わせ" class="btn-retry">LINEでお問い合わせ</a>
   </div>
 </div>
 
-<p class="footer-text">© 2026 EDA-LIVESTOCK CO., LTD.</p>
+<p class="footer-text">&copy; 2026 EDA-LIVESTOCK CO., LTD.</p>
 
 <!-- LIFF SDK -->
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="public/js/eda-config.js?v=005"></script>
 <script>
 /* ================================================================
-   LINE AUTO-LINK — LIFF ページ
+   LINE LINK / REGISTER — LIFF
    ================================================================
-   order-complete.html の CTA から LIFF URL 経由で開かれる。
-   URL パラメータ ?e=BASE64(email) を受け取り、
-   LINE プロファイル + email で GAS line_link_account を呼んで自動連携。
+   2 つのモード:
+   A) ?e=BASE64(email) あり → 購入済の自動連携 (line_link_account)
+   B) パラメータなし → 未購入者の会員登録フォーム (line_register)
    ================================================================ */
+var _lineUid = '';
+var _displayName = '';
+
 (async function() {
   'use strict';
 
-  const LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '1657458587-mz1dR9e6';
+  var LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '1657458587-mz1dR9e6';
 
-  /* ---- State helpers ---- */
+  /* ---- helpers ---- */
   function showState(id) {
-    document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.state').forEach(function(s) { s.classList.remove('active'); });
     var el = document.getElementById('state' + id);
     if (el) el.classList.add('active');
   }
@@ -130,27 +195,22 @@
     if (el) el.textContent = msg;
     showState('Error');
   }
+  /* expose for form submit */
+  window._showState = showState;
+  window._showError = showError;
 
   /* ---- URL params ---- */
   var params = new URLSearchParams(window.location.search);
   var encodedEmail = params.get('e') || '';
   var customerEmail = '';
-  try {
-    customerEmail = encodedEmail ? atob(encodedEmail) : '';
-  } catch(e) {
-    customerEmail = encodedEmail; // fallback: maybe it was plain text
-  }
+  try { customerEmail = encodedEmail ? atob(encodedEmail) : ''; } catch(e) { customerEmail = encodedEmail; }
 
-  if (!customerEmail) {
-    showError('メールアドレスが見つかりません。注文完了ページからもう一度お試しください。');
-    return;
-  }
+  var isAutoLink = !!customerEmail; // true = 購入済, false = 新規登録
 
   /* ---- LIFF Init ---- */
   setLoading('LINE 認証中…');
 
   if (typeof liff === 'undefined') {
-    // SDK failed to load — wait a bit
     await new Promise(function(r) { setTimeout(r, 3000); });
     if (typeof liff === 'undefined') {
       showError('LINE SDK の読み込みに失敗しました。ページを再読み込みしてください。');
@@ -162,18 +222,16 @@
     await liff.init({ liffId: LIFF_ID });
   } catch (e) {
     console.error('[LIFF init]', e);
-    showError('LINE の初期化に失敗しました。ページを再読み込みしてください。');
+    showError('LINE の初期化に失敗しました。');
     return;
   }
 
-  /* ---- Login if needed ---- */
   if (!liff.isLoggedIn()) {
-    // Redirect to LINE login — will come back to this URL with auth
     liff.login({ redirectUri: window.location.href });
     return;
   }
 
-  /* ---- Get LINE Profile ---- */
+  /* ---- Get Profile ---- */
   setLoading('プロフィール取得中…');
   var profile;
   try {
@@ -184,57 +242,105 @@
     return;
   }
 
-  var lineUid = profile.userId;
-  var displayName = profile.displayName || '';
+  _lineUid = profile.userId;
+  _displayName = profile.displayName || '';
 
-  if (!lineUid) {
+  if (!_lineUid) {
     showError('LINE の認証情報が取得できませんでした。');
     return;
   }
 
-  /* ---- Check if already linked ---- */
+  /* ---- Check if already registered ---- */
   setLoading('アカウント確認中…');
   try {
     var loginCheck = await window.EDA_API.post('line_login', {
-      line_uid: lineUid,
-      display_name: displayName
+      line_uid: _lineUid,
+      display_name: _displayName
     });
     if (loginCheck.ok && loginCheck.matched) {
-      // Already linked
       showState('Already');
       return;
     }
   } catch(e) {
-    // Continue to linking even if check fails
     console.warn('[lineLogin check]', e);
   }
 
-  /* ---- Link Account ---- */
-  setLoading('アカウント連携中…');
-  try {
-    var result = await window.EDA_API.post('line_link_account', {
-      line_uid: lineUid,
-      display_name: displayName,
-      email: customerEmail
-    });
-
-    if (result.ok && result.customer) {
-      // Success!
-      var nameEl = document.getElementById('successName');
-      if (nameEl) {
-        nameEl.textContent = (displayName || 'LINE') + ' と注文情報が連携されました';
+  /* ---- MODE A: Auto-link (購入済) ---- */
+  if (isAutoLink) {
+    setLoading('アカウント連携中…');
+    try {
+      var result = await window.EDA_API.post('line_link_account', {
+        line_uid: _lineUid,
+        display_name: _displayName,
+        email: customerEmail
+      });
+      if (result.ok && result.customer) {
+        var nameEl = document.getElementById('successName');
+        if (nameEl) nameEl.textContent = (_displayName || 'LINE') + ' と注文情報が連携されました';
+        showState('Success');
+      } else if (result.error && result.error.indexOf('no orders') >= 0) {
+        /* 注文が見つからない → 登録フォームにフォールバック */
+        document.getElementById('regName').value = _displayName;
+        showState('Register');
+      } else {
+        showError(result.error || '連携に失敗しました。');
       }
-      showState('Success');
-    } else if (result.error && result.error.indexOf('no orders') >= 0) {
-      showError('このメールアドレスの注文が見つかりませんでした。注文に使用したメールアドレスか確認してください。');
-    } else {
-      showError(result.error || '連携に失敗しました。時間をおいてもう一度お試しください。');
+    } catch (e) {
+      console.error('[lineLinkAccount]', e);
+      showError('通信エラーが発生しました。');
     }
-  } catch (e) {
-    console.error('[lineLinkAccount]', e);
-    showError('通信エラーが発生しました。時間をおいてもう一度お試しください。');
+    return;
   }
+
+  /* ---- MODE B: Registration Form (未購入者) ---- */
+  document.getElementById('regName').value = _displayName;
+  showState('Register');
+
 })();
+
+/* ---- Registration submit ---- */
+function submitRegistration(e) {
+  e.preventDefault();
+  var btn = document.getElementById('regSubmit');
+  btn.disabled = true;
+  btn.textContent = '登録中…';
+
+  var name    = document.getElementById('regName').value.trim();
+  var phone   = document.getElementById('regPhone').value.trim();
+  var zip     = document.getElementById('regZip').value.trim();
+  var address = document.getElementById('regAddress').value.trim();
+
+  if (!name || !phone) {
+    alert('お名前と携帯番号は必須です。');
+    btn.disabled = false;
+    btn.textContent = '会員登録する';
+    return false;
+  }
+
+  window.EDA_API.post('line_register', {
+    line_uid: _lineUid,
+    display_name: _displayName,
+    name: name,
+    phone: phone,
+    zip: zip,
+    address: address
+  }).then(function(result) {
+    if (result.ok) {
+      if (result.is_new === false) {
+        window._showState('Already');
+      } else {
+        window._showState('Unlocked');
+      }
+    } else {
+      window._showError(result.error || '登録に失敗しました。');
+    }
+  }).catch(function(err) {
+    console.error('[lineRegister]', err);
+    window._showError('通信エラーが発生しました。');
+  });
+
+  return false;
+}
 
 /* ---- Close LIFF ---- */
 function closeLiff() {
