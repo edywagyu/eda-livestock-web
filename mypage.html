@@ -1036,30 +1036,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE 認証を確認中...</p>
  </div>
 
- <!-- ① LIFF 外アクセス: LINE 公式アカウントから入ってもらう -->
+ <!-- ① LIFF 外アクセス: ログイン方法選択 -->
  <div class="login-card" id="liffExternal" style="display:none;">
  <div class="login-icon">
- <div class="login-icon-circle" style="background:#06C755;">
- <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" style="color:white;">
- <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zM12 22C5.385 22 0 17.5 0 12S5.385 2 12 2s12 4.5 12 10c0 5.5-5.385 10-12 10z"/>
- </svg>
+ <div class="login-icon-circle">
+ <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
  </div>
  </div>
- <h2 class="login-card-title">LINE 公式アカウントから<br>マイページへお入りください</h2>
+ <h2 class="login-card-title">マイページにログイン</h2>
  <p class="login-card-sub" style="margin-bottom:24px;">
- マイページは <strong>LINE 認証必須</strong> でセキュアに保護されています。<br>
- 以下より公式アカウントを追加し、メニューからマイページへお進みください。
+ ご注文履歴・定期便・配送状況を確認できます。
  </p>
- <a href="https://line.me/R/ti/p/@706sgiuq" class="login-btn" style="background:#06C755;color:white;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;">
+ <!-- LINE でログイン（OAuth ウェブフロー） -->
+ <button class="login-btn" id="lineLoginBtn" onclick="liffLineLogin()" style="background:#06C755;color:white;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-weight:700;">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
- LINE で友だち追加 / 開く
- </a>
- <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:16px;line-height:1.5">
- @706sgiuq · 江田畜産公式アカウント
+ LINE でログイン
+ </button>
+ <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:10px;line-height:1.5;">
+ LINE アカウントで認証して自動ログインします
  </p>
  <!-- メールでログイン（LINE外のブラウザ向け） -->
- <div style="margin-top:28px;border-top:1px solid rgba(15,61,46,0.1);padding-top:24px;">
- <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 12px;">LINE 以外のブラウザからログイン</p>
+ <div style="margin-top:24px;border-top:1px solid rgba(15,61,46,0.1);padding-top:20px;">
+ <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 12px;">メールアドレスでログイン</p>
  <div id="otpStep1">
  <div class="login-input-wrap">
  <span class="login-input-icon">
@@ -1341,13 +1339,10 @@ async function verifyOtp() {
    const data = await res.json();
    if (data.ok) {
      showOtpError('');
-     // OTP 認証成功 → セッション保存してダッシュボード表示
-     const session = { email: _otpEmail, auth: 'otp', ts: Date.now() };
+     // OTP 認証成功 → セッション+キャッシュ保存してダッシュボード表示
+     const session = { email: _otpEmail, auth: 'otp', ts: Date.now(), cache: { customer: data.customer || null, orders: data.orders || [] } };
      try { localStorage.setItem('eda-mypage-session', JSON.stringify(session)); } catch(e){}
-     document.getElementById('loginSection').style.display = 'none';
-     document.getElementById('dashboard').style.display = 'block';
-     if (data.orders) renderOrders(data.orders);
-     if (data.customer) renderCustomer(data.customer);
+     renderDashboard(data.customer || { name: _otpEmail.split('@')[0], email: _otpEmail }, data.orders || []);
    } else { showOtpError(data.error || 'コードが正しくないか期限切れです'); }
  } catch(e) { showOtpError('通信エラー'); }
 }
@@ -1385,23 +1380,35 @@ try {
 } catch (_) {}
 
 /* ---- LIFF 初期化 ---- */
+let _liffReady = false;
 async function initLiff() {
+ // ★ セッション復元: 30日以内の既存セッションがあればダッシュボード復元
+ if (currentSession) {
+ const ts = currentSession.issued || currentSession.ts || 0;
+ if (ts && (Date.now() - ts < 30 * 24 * 60 * 60 * 1000)) {
+  await restoreSession(currentSession);
+  return;
+ }
+ // 期限切れ → クリア
+ localStorage.removeItem('eda-mypage-session');
+ currentSession = null;
+ }
+
  if (!LIFF_ID) {
- // LIFF_ID 未設定 → 外部アクセス画面
  showState('external');
  return;
  }
  try {
  await liff.init({ liffId: LIFF_ID });
+ _liffReady = true;
  if (!liff.isInClient() && !liff.isLoggedIn()) {
- // 外部ブラウザ + 未ログイン → LIFF Login へ誘導
- // (Tom指示: LINE経由必須なので、外部ブラウザでも一応 login flow を提供)
- showState('external');
- return;
+  // 外部ブラウザ + 未ログイン → ログイン選択画面
+  showState('external');
+  return;
  }
  if (!liff.isLoggedIn()) {
- liff.login({ redirectUri: location.href });
- return;
+  liff.login({ redirectUri: location.href });
+  return;
  }
  // ログイン済み → プロフィール取得
  showState('authenticating');
@@ -1412,6 +1419,60 @@ async function initLiff() {
  console.error('[LIFF init error]', err);
  showState('external');
  }
+}
+
+/* ---- LINE OAuth ウェブログイン (外部ブラウザ用) ---- */
+function liffLineLogin() {
+ if (_liffReady && typeof liff !== 'undefined') {
+ liff.login({ redirectUri: window.location.href });
+ } else {
+ // LIFF 未初期化 → 直接 LINE 友だち追加ページ
+ window.location.href = 'https://line.me/R/ti/p/@706sgiuq';
+ }
+}
+
+/* ---- セッション復元 ---- */
+async function restoreSession(session) {
+ showState('authenticating');
+ try {
+ if (session.line_uid) {
+  // LINE セッション → GAS で再照合（最新データ取得）
+  const result = await window.EDA_API.post('line_login', {
+  line_uid: session.line_uid,
+  display_name: session.display_name || ''
+  });
+  if (result.ok && result.matched && result.customer) {
+  renderDashboard(result.customer, result.orders || []);
+  return;
+  }
+ }
+ if (session.auth === 'otp' && session.email && session.cache) {
+  // OTP セッション → キャッシュデータで復元
+  loginSection.style.display = 'none';
+  dashboard.classList.add('show');
+  if (session.cache.customer) {
+  document.getElementById('customerName').textContent = (session.cache.customer.name || 'お客') + ' 様';
+  document.getElementById('totalOrders').textContent = session.cache.customer.total_orders || 0;
+  const spent = session.cache.customer.total_spent || 0;
+  document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
+  }
+  if (session.cache.orders) renderOrders(session.cache.orders);
+  return;
+ }
+ } catch (e) {
+ console.warn('[session restore failed]', e);
+ }
+ // 復元失敗 → セッションクリアしてログイン画面
+ localStorage.removeItem('eda-mypage-session');
+ currentSession = null;
+ if (!LIFF_ID) { showState('external'); return; }
+ try {
+ if (typeof liff !== 'undefined' && !_liffReady) {
+  await liff.init({ liffId: LIFF_ID });
+  _liffReady = true;
+ }
+ } catch(_) {}
+ showState('external');
 }
 
 /* line_uid で GAS にログイン照会 */
