@@ -328,7 +328,7 @@ function createCheckout(body) {
         bank_transfer: { type: 'jp_bank_transfer' }
       }
     } : undefined,
-    customer_email: body.customer && body.customer.email,
+    customer_email: (body.customer && body.customer.email) || undefined,
     line_items: lineItems,
     metadata: {
       order_number: orderNum,
@@ -337,6 +337,7 @@ function createCheckout(body) {
       customer_phone: body.customer && body.customer.phone,
       line_uid:     (body.customer && body.customer.line_uid) || '',
       line_name:    (body.customer && body.customer.line_name) || '',
+      contact_method: (body.customer && body.customer.contact_method) || '',
       destinations_json: JSON.stringify(body.destinations || []),
       /* ★ 在庫 decrement 用に items を保存 (Stripe metadata は 500 文字制限) */
       items_json: JSON.stringify(items.map(it => ({
@@ -487,7 +488,7 @@ function finalizeOrder(session) {
   const sh = sheet('orders', [
     'order_number','placed_at','session_id','customer_name','customer_email','customer_phone',
     'mode','total','shipping','payment_status','payment_method',
-    'destinations_json','items_json','metadata_json','line_uid','line_name'
+    'destinations_json','items_json','metadata_json','line_uid','line_name','contact_method'
   ]);
   const meta = session.metadata || {};
   const orderNum = meta.order_number || ('SESSION-' + session.id.slice(-8));
@@ -509,10 +510,19 @@ function finalizeOrder(session) {
     meta.line_items_json || '[]',
     JSON.stringify(meta),
     meta.line_uid || '',   // ★ LINE 連携: orders に line_uid を直接記録
-    meta.line_name || ''
+    meta.line_name || '',
+    meta.contact_method || ''
   ]);
 
-  // メール通知 (顧客 + スタッフ)
+  // 通知 (顧客 + スタッフ)
+  // contact_method=line の場合は LINE push、email の場合はメール
+  var contactMethod = meta.contact_method || '';
+  if (contactMethod === 'line' && meta.line_uid) {
+    sendLinePush(meta.line_uid, [buildOrderConfirmMessage(
+      meta.customer_name || '', orderNum, Math.round(total / 100)
+    )]);
+  }
+  // メール: contact_method に関係なくメールがあれば送信 (受注確認)
   sendCustomerReceiptEmail(session, orderNum);
   sendStaffNotificationEmail(session, orderNum);
 
@@ -1522,6 +1532,61 @@ function buildRegisterSuccessMessage(customerName) {
             action: { type: 'uri', label: 'オーガニック製品を見る', uri: liffShop },
             style: 'primary',
             color: '#2d5016'
+          }
+        ]
+      }
+    }
+  };
+}
+
+function buildOrderConfirmMessage(customerName, orderNum, totalYen) {
+  var liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  return {
+    type: 'flex',
+    altText: '【江田畜産】ご注文を受け付けました（' + orderNum + '）',
+    contents: {
+      type: 'bubble',
+      hero: {
+        type: 'image',
+        url: 'https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg',
+        size: 'full',
+        aspectRatio: '20:9',
+        aspectMode: 'cover'
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'md',
+        contents: [
+          { type: 'text', text: '✅ ご注文ありがとうございます', weight: 'bold', size: 'md', color: '#2d5016' },
+          { type: 'text', text: greeting + '、ご注文を受け付けました。', size: 'sm', color: '#555555', wrap: true },
+          { type: 'separator' },
+          { type: 'box', layout: 'horizontal', contents: [
+            { type: 'text', text: '注文番号', size: 'xs', color: '#888888', flex: 3 },
+            { type: 'text', text: orderNum, size: 'xs', color: '#333333', flex: 5, align: 'end' }
+          ]},
+          { type: 'box', layout: 'horizontal', contents: [
+            { type: 'text', text: '合計金額', size: 'xs', color: '#888888', flex: 3 },
+            { type: 'text', text: '¥' + (totalYen || 0).toLocaleString(), size: 'xs', color: '#333333', weight: 'bold', flex: 5, align: 'end' }
+          ]},
+          { type: 'text', text: '配送状況はマイページでご確認いただけます。発送時にもLINEでお知らせします。', size: 'xxs', color: '#999999', wrap: true, margin: 'md' }
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'button',
+            action: {
+              type: 'uri',
+              label: '📦 配送状況を確認する',
+              uri: 'https://liff.line.me/' + liffId + '/mypage.html'
+            },
+            style: 'primary',
+            color: '#2d5016',
+            height: 'sm'
           }
         ]
       }
