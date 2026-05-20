@@ -33,6 +33,8 @@
  *      - SUCCESS_URL              : https://edywagyu.github.io/eda-livestock-web/order-complete.html
  *      - CANCEL_URL               : https://edywagyu.github.io/eda-livestock-web/checkout.html
  *      - STAFF_NOTIFICATION_EMAIL : tomoki@eda-livestock.com (新規注文通知の宛先)
+ *      - LINE_CHANNEL_TOKEN      : Messaging API チャネルアクセストークン (長期)
+ *      - LIFF_ID                 : 1657458587-mz1dR9e6 (LIFF アプリ ID)
  *   3. Sheets を作成、上記 SPREADSHEET_ID をコピー
  *   4. デプロイ → 新規デプロイ → 種類「ウェブアプリ」
  *      - 実行ユーザー: 自分
@@ -1337,6 +1339,10 @@ function lineLinkAccount(body) {
       line_uid: body.line_uid,
       line_name: body.display_name || ''
     };
+
+    // LINE プッシュ通知: 連携完了 + 配送状況リンク
+    sendLinePush(body.line_uid, [buildLinkSuccessMessage(customer_name)]);
+
     return jsonResponse({ ok:true, customer, orders });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
@@ -1396,11 +1402,16 @@ function lineRegister(body) {
     row[headers.indexOf('order_count')]  = 0;
     sh.appendRow(row);
 
+    var custName = body.name || body.display_name || '';
+
+    // LINE プッシュ通知: 会員登録完了 + オーガニック商品リンク
+    sendLinePush(body.line_uid, [buildRegisterSuccessMessage(custName)]);
+
     return jsonResponse({
       ok: true,
       is_new: true,
       customer: {
-        name:     body.name || body.display_name || '',
+        name:     custName,
         phone:    body.phone || '',
         line_uid: body.line_uid,
         line_name: body.display_name || '',
@@ -1411,6 +1422,111 @@ function lineRegister(body) {
   } catch (e) {
     return jsonResponse({ ok: false, error: e.message });
   }
+}
+
+/* ============================================================
+   LINE Messaging API — Push Message ヘルパー
+   ============================================================
+   GAS Script Properties に LINE_CHANNEL_TOKEN を設定必須。
+   LINE Developers Console → エダチク公式LINE → Messaging API設定
+   → チャネルアクセストークン（長期）を発行して貼り付ける。
+*/
+function sendLinePush(lineUid, messages) {
+  var token = cfg('LINE_CHANNEL_TOKEN');
+  if (!token || !lineUid) return;
+  try {
+    UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + token },
+      payload: JSON.stringify({ to: lineUid, messages: messages }),
+      muteHttpExceptions: true
+    });
+  } catch (e) {
+    log('line_push_error', { line_uid: lineUid, error: e.message });
+  }
+}
+
+/** 購入済顧客の連携完了後に送る Flex Message */
+function buildLinkSuccessMessage(customerName) {
+  var liffMypage = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/mypage.html';
+  return {
+    type: 'flex',
+    altText: 'アカウント連携完了 — 配送状況はこちらから確認できます',
+    contents: {
+      type: 'bubble',
+      hero: {
+        type: 'image',
+        url: 'https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg',
+        size: 'full',
+        aspectRatio: '20:9',
+        aspectMode: 'cover'
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'md',
+        contents: [
+          { type: 'text', text: '✅ アカウント連携完了', weight: 'bold', size: 'lg', color: '#1a1a1a' },
+          { type: 'text', text: (customerName || 'お客') + '様、連携ありがとうございます。\n注文履歴・配送状況をいつでもLINEから確認できます。', wrap: true, size: 'sm', color: '#666666' }
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'sm',
+        contents: [
+          {
+            type: 'button',
+            action: { type: 'uri', label: '📦 配送状況を確認する', uri: liffMypage },
+            style: 'primary',
+            color: '#2d5016'
+          }
+        ]
+      }
+    }
+  };
+}
+
+/** 新規会員登録後に送る Flex Message */
+function buildRegisterSuccessMessage(customerName) {
+  var liffShop = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/shop.html';
+  return {
+    type: 'flex',
+    altText: '会員登録完了 — オーガニック和牛がご覧いただけます',
+    contents: {
+      type: 'bubble',
+      hero: {
+        type: 'image',
+        url: 'https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg',
+        size: 'full',
+        aspectRatio: '20:9',
+        aspectMode: 'cover'
+      },
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'md',
+        contents: [
+          { type: 'text', text: '🎉 会員登録ありがとうございます', weight: 'bold', size: 'lg', color: '#1a1a1a' },
+          { type: 'text', text: (customerName || 'お客') + '様、限定のオーガニック和牛商品がご覧いただけるようになりました。', wrap: true, size: 'sm', color: '#666666' }
+        ]
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        spacing: 'sm',
+        contents: [
+          {
+            type: 'button',
+            action: { type: 'uri', label: '🥩 オーガニック和牛を見る', uri: liffShop },
+            style: 'primary',
+            color: '#2d5016'
+          }
+        ]
+      }
+    }
+  };
 }
 
 /* ============================================================
