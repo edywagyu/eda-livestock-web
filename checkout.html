@@ -597,6 +597,114 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  background: rgba(15,61,46,0.04);
 }
 
+/* ============ CONTACT METHOD CHOICE ============ */
+.contact-choice-section {
+ margin-top: 4px;
+ padding: 18px 20px;
+ background: rgba(15,61,46,0.025);
+ border: 1.5px solid var(--color-bone);
+ border-radius: 12px;
+}
+.contact-choice-head {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ margin-bottom: 14px;
+ font-family: var(--font-jp);
+ font-size: 13.5px;
+ font-weight: 700;
+ color: var(--color-forest);
+}
+.contact-choice-head .required { color: var(--color-red); margin-left: 2px; }
+.contact-choice-sub {
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
+ margin: -8px 0 14px;
+ line-height: 1.5;
+}
+.contact-choice-grid {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 8px;
+ margin-bottom: 0;
+}
+.contact-choice-option {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 14px 16px;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 10px;
+ cursor: pointer;
+ background: white;
+ transition: all 0.25s var(--ease-out-expo);
+}
+.contact-choice-option:hover {
+ border-color: var(--color-gold);
+ background: rgba(212,169,59,0.04);
+}
+.contact-choice-option input[type="radio"] { margin: 0; accent-color: var(--color-forest); }
+.contact-choice-option-icon {
+ font-size: 20px;
+ flex-shrink: 0;
+}
+.contact-choice-option-body { flex: 1; }
+.contact-choice-option-name {
+ font-family: var(--font-jp);
+ font-size: 13px;
+ color: var(--color-forest);
+ font-weight: 700;
+}
+.contact-choice-option-desc {
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ margin-top: 2px;
+}
+.contact-choice-option.selected {
+ border-color: var(--color-forest);
+ background: rgba(15,61,46,0.04);
+}
+.contact-choice-detail {
+ margin-top: 12px;
+ padding: 12px 14px;
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 8px;
+}
+.contact-line-status {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ font-size: 13px;
+ font-weight: 600;
+}
+.contact-line-status.linked { color: #06C755; }
+.contact-line-status.not-linked { color: var(--color-ink-muted); }
+.contact-line-btn {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ gap: 6px;
+ margin-top: 8px;
+ padding: 10px 20px;
+ background: #06C755;
+ color: #fff;
+ font-size: 13px;
+ font-weight: 700;
+ border: none;
+ border-radius: 50px;
+ text-decoration: none;
+ cursor: pointer;
+ width: 100%;
+ transition: opacity 0.2s;
+}
+.contact-line-btn:active { opacity: 0.85; }
+
+@media (max-width: 640px) {
+ .contact-choice-grid { grid-template-columns: 1fr; }
+ .contact-choice-section { padding: 14px 16px; }
+}
+
 /* ============ SIDEBAR SUMMARY ============ */
 .checkout-sidebar {
  position: sticky;
@@ -1213,6 +1321,52 @@ let destinations = [
  { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
 ];
 
+/* ---- 配送状況 連絡方法 (LINE or メール) ---- */
+let contactMethod = ''; // 'line' | 'email' | ''
+
+function getLineUid() {
+ try {
+   const raw = localStorage.getItem('eda-mypage-session');
+   if (raw) { const s = JSON.parse(raw); if (s && s.line_uid) return s.line_uid; }
+   const uid = localStorage.getItem('eda-member-line-uid');
+   if (uid) return uid;
+ } catch (_) {}
+ return '';
+}
+
+function setContactMethod(method) {
+ contactMethod = method;
+ // ラジオ UI 更新
+ document.querySelectorAll('.contact-choice-option').forEach(el => {
+   el.classList.toggle('selected', el.dataset.method === method);
+   const radio = el.querySelector('input[type="radio"]');
+   if (radio) radio.checked = (el.dataset.method === method);
+ });
+ // 詳細パネル表示切替
+ const lineDetail = document.getElementById('contactDetailLine');
+ const emailDetail = document.getElementById('contactDetailEmail');
+ if (lineDetail) lineDetail.style.display = method === 'line' ? 'block' : 'none';
+ if (emailDetail) emailDetail.style.display = method === 'email' ? 'block' : 'none';
+
+ // LINE 選択時: line_uid の有無でステータス切替
+ if (method === 'line') {
+   const uid = getLineUid();
+   const statusEl = document.getElementById('contactLineStatus');
+   const btnEl = document.getElementById('contactLineBtn');
+   if (statusEl && btnEl) {
+     if (uid) {
+       statusEl.textContent = '✅ LINE連携済み — 配送状況をLINEでお届けします';
+       statusEl.className = 'contact-line-status linked';
+       btnEl.style.display = 'none';
+     } else {
+       statusEl.textContent = 'LINE友だち追加が必要です';
+       statusEl.className = 'contact-line-status not-linked';
+       btnEl.style.display = 'flex';
+     }
+   }
+ }
+}
+
 /* ---- 初期化 ---- */
 function init() {
  try { cartItems = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) {}
@@ -1252,6 +1406,9 @@ function init() {
  noshi: 'none', fromName: '', message: '', itemIds: []
  });
  }
+
+ // LINE 会員なら contactMethod を自動プリセット
+ if (getLineUid()) contactMethod = 'line';
 
  renderOrderList();
  renderDestinations();
@@ -1479,12 +1636,47 @@ function renderDestinations() {
  </div>
  </div>
  ${ dIdx === 0 ? `
- <div class="dest-form-row">
- <div class="dest-field">
- <label>メールアドレス<span class="required">*</span>（ご注文確認用）</label>
- <input type="email" value="${dest.email || ''}" placeholder="example@example.com" aria-label="example@example.com"
- inputmode="email" autocomplete="email"
- oninput="updateDestField(${dIdx}, 'email', this.value)" required>
+ <div class="contact-choice-section">
+ <div class="contact-choice-head">📱 配送状況の受け取り方法<span class="required">*</span></div>
+ <p class="contact-choice-sub">ご注文の配送状況をお届けするため、いずれかをお選びください。</p>
+ <div class="contact-choice-grid">
+   <label class="contact-choice-option ${contactMethod === 'line' ? 'selected' : ''}" data-method="line" onclick="setContactMethod('line')">
+     <input type="radio" name="contact_method" value="line" ${contactMethod === 'line' ? 'checked' : ''}>
+     <span class="contact-choice-option-icon">💬</span>
+     <div class="contact-choice-option-body">
+       <div class="contact-choice-option-name">LINE で受け取る</div>
+       <div class="contact-choice-option-desc">LINEで配送状況をお知らせ</div>
+     </div>
+   </label>
+   <label class="contact-choice-option ${contactMethod === 'email' ? 'selected' : ''}" data-method="email" onclick="setContactMethod('email')">
+     <input type="radio" name="contact_method" value="email" ${contactMethod === 'email' ? 'checked' : ''}>
+     <span class="contact-choice-option-icon">✉️</span>
+     <div class="contact-choice-option-body">
+       <div class="contact-choice-option-name">メールで受け取る</div>
+       <div class="contact-choice-option-desc">メールで配送状況をお知らせ</div>
+     </div>
+   </label>
+ </div>
+ <div id="contactDetailLine" style="display:${contactMethod === 'line' ? 'block' : 'none'}">
+   <div class="contact-choice-detail">
+     <div id="contactLineStatus" class="contact-line-status ${getLineUid() ? 'linked' : 'not-linked'}">
+       ${getLineUid() ? '✅ LINE連携済み — 配送状況をLINEでお届けします' : 'LINE友だち追加が必要です'}
+     </div>
+     <a id="contactLineBtn" href="https://liff.line.me/1657458587-mz1dR9e6" target="_blank" class="contact-line-btn"
+        style="display:${getLineUid() ? 'none' : 'flex'}">
+       LINE 友だち追加する
+     </a>
+   </div>
+ </div>
+ <div id="contactDetailEmail" style="display:${contactMethod === 'email' ? 'block' : 'none'}">
+   <div class="contact-choice-detail">
+     <div class="dest-field">
+       <label>メールアドレス<span class="required">*</span></label>
+       <input type="email" value="${dest.email || ''}" placeholder="example@example.com" aria-label="example@example.com"
+         inputmode="email" autocomplete="email"
+         oninput="updateDestField(${dIdx}, 'email', this.value)" required>
+     </div>
+   </div>
  </div>
  </div>
  ` : '' }
@@ -1800,9 +1992,19 @@ async function placeOrder() {
  alert('配送先の必須項目を入力してください。');
  return;
  }
- if (d === destinations[0] && !d.email) {
- alert('ご注文確認用メールアドレスを入力してください。');
- return;
+ if (d === destinations[0]) {
+   if (!contactMethod) {
+     alert('配送状況の受け取り方法（LINEまたはメール）を選択してください。');
+     return;
+   }
+   if (contactMethod === 'line' && !getLineUid()) {
+     alert('LINE友だち追加を完了してください。ボタンからLINE連携できます。');
+     return;
+   }
+   if (contactMethod === 'email' && !d.email) {
+     alert('メールアドレスを入力してください。');
+     return;
+   }
  }
  }
  // 規約同意チェック
@@ -1845,13 +2047,14 @@ async function placeOrder() {
  mode: mode,
  customer: {
  name: destinations[0].name,
- email: destinations[0].email,
+ email: contactMethod === 'email' ? destinations[0].email : (destinations[0].email || ''),
  phone: destinations[0].tel,
  zip: destinations[0].zip,
  pref: destinations[0].pref,
  address: destinations[0].address,
  line_uid: lineSession?.line_uid || '',
- line_name: lineSession?.display_name || ''
+ line_name: lineSession?.display_name || '',
+ contact_method: contactMethod
  },
  destinations: destinations.map(d => ({
  type: d.type,
@@ -1944,6 +2147,16 @@ function calcTotalAmount() {
  cartItems.forEach(it => { total += (it.price || 0) * (it.qty || 1); });
  return total;
 }
+
+/* ---- LIFF から戻ってきた時に LINE ステータスを再チェック ---- */
+document.addEventListener('visibilitychange', () => {
+ if (document.visibilityState === 'visible' && contactMethod === 'line') {
+   setContactMethod('line'); // re-evaluate getLineUid()
+ }
+});
+window.addEventListener('focus', () => {
+ if (contactMethod === 'line') setContactMethod('line');
+});
 
 /* ---- 初期化実行 ---- */
 init();
