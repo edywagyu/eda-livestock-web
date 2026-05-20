@@ -1519,7 +1519,7 @@ function buildRegisterSuccessMessage(customerName) {
         contents: [
           {
             type: 'button',
-            action: { type: 'uri', label: '🥩 オーガニック和牛を見る', uri: liffShop },
+            action: { type: 'uri', label: 'オーガニック製品を見る', uri: liffShop },
             style: 'primary',
             color: '#2d5016'
           }
