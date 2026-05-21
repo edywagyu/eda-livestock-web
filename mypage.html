@@ -1400,7 +1400,12 @@ async function initLiff() {
  await liff.init({ liffId: LIFF_ID });
  _liffReady = true;
  if (!liff.isInClient() && !liff.isLoggedIn()) {
-  // 外部ブラウザ + 未ログイン → ログイン選択画面
+  // モバイル → 自動で LINE OAuth に遷移（ボタン押し不要）
+  if (/iPhone|iPad|Android/i.test(navigator.userAgent)) {
+  liff.login({ redirectUri: window.location.href });
+  return;
+  }
+  // デスクトップ → ログイン選択画面
   showState('external');
   return;
  }
