@@ -1421,12 +1421,26 @@ async function initLiff() {
 
 /* ---- LINE OAuth ウェブログイン (外部ブラウザ用) ---- */
 function liffLineLogin() {
+ var btn = document.getElementById('lineLoginBtn');
+ if (btn) { btn.disabled = true; btn.textContent = 'LINE に接続中...'; }
+
  if (_liffReady && typeof liff !== 'undefined') {
  liff.login({ redirectUri: window.location.href });
- } else {
- // LIFF 未初期化 → 直接 LINE 友だち追加ページ
- window.location.href = 'https://line.me/R/ti/p/@706sgiuq';
+ return;
  }
+ // LIFF 未初期化 → 初期化を待ってからログイン
+ var retries = 0;
+ var waitInit = setInterval(function() {
+ retries++;
+ if (_liffReady && typeof liff !== 'undefined') {
+  clearInterval(waitInit);
+  liff.login({ redirectUri: window.location.href });
+ } else if (retries > 30) {
+  // 3秒待っても初期化できない → LIFF URL で直接ログイン
+  clearInterval(waitInit);
+  window.location.href = 'https://liff.line.me/' + (LIFF_ID || '1657458587-mz1dR9e6');
+ }
+ }, 100);
 }
 
 /* ---- セッション復元 ---- */
