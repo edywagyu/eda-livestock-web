@@ -1287,11 +1287,8 @@ function lineLinkAccount(body) {
   if (!body.email)    throw new Error('email required');
 
   try {
+    // 注文履歴を検索（なくても連携は成功させる）
     const orders = getOrdersByEmail(body.email);
-    if (!orders.length) {
-      // 該当 email の注文が無い → 連携不可
-      return jsonResponse({ ok:true, customer:null, error:'no orders found for this email' });
-    }
 
     // customers シートに upsert
     const sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
@@ -1319,7 +1316,8 @@ function lineLinkAccount(body) {
       if (data[i][emailIdx] === body.email) { foundRow = i + 1; break; }
     }
 
-    const customer_name = (orders[0] && orders[0].customer_name) || body.email.split('@')[0];
+    // 名前: 注文履歴から取得 → LINE 表示名 → メール先頭
+    const customer_name = (orders[0] && orders[0].customer_name) || body.display_name || body.email.split('@')[0];
     const total_spent = orders.reduce((s, o) => s + (Number(o.total) || 0), 0);
 
     if (foundRow > 0) {
@@ -1328,7 +1326,7 @@ function lineLinkAccount(body) {
       sh.getRange(foundRow, nameIdx + 1).setValue(body.display_name || '');
       sh.getRange(foundRow, linkedAtIdx + 1).setValue(new Date());
     } else {
-      // 新規 row 追加
+      // 新規 row 追加（注文がなくても会員登録する）
       const row = new Array(headers.length).fill('');
       row[headers.indexOf('customer_id')] = Utilities.getUuid();
       row[emailIdx] = body.email;
@@ -1347,7 +1345,8 @@ function lineLinkAccount(body) {
       total_orders: orders.length,
       total_spent: total_spent,
       line_uid: body.line_uid,
-      line_name: body.display_name || ''
+      line_name: body.display_name || '',
+      is_new: orders.length === 0
     };
 
     // LINE プッシュ通知: 連携完了 + 配送状況リンク

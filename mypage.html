@@ -1110,8 +1110,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
  <h2 class="login-card-title" id="liffWelcomeName">LINE 認証完了</h2>
  <p class="login-card-sub" style="margin-bottom:20px;">
- 過去にメールアドレスでご注文いただいた方は、<br>
- <strong>下記からアカウント連携</strong>すると注文履歴がご確認できます。
+ メールアドレスを登録すると、<strong>注文履歴・配送状況・クーポン</strong>を<br>
+ マイページでいつでもご確認いただけます。
  </p>
 
  <form id="linkForm" onsubmit="return false;">
@@ -1122,20 +1122,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <path d="M22 4L12 13 2 4"/>
  </svg>
  </span>
- <input type="email" class="login-input" id="linkEmailInput" placeholder="ご注文時のメールアドレス" aria-label="ご注文時のメールアドレス" autocomplete="email" required>
+ <input type="email" class="login-input" id="linkEmailInput" placeholder="メールアドレス" aria-label="メールアドレス" autocomplete="email" required>
  </div>
  <button type="submit" class="login-btn" id="linkBtn">
- アカウントを連携する
+ 登録してマイページへ
  </button>
  <div class="login-error" id="linkError"></div>
  </form>
 
- <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
- <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
- <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
- <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
- <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
- </div>
+ <div style="margin-top:16px;text-align:center;">
+ <button onclick="skipLinkAndEnter()" style="background:none;border:none;color:var(--color-ink-muted);font-size:12px;cursor:pointer;padding:8px 16px;text-decoration:underline;">
+ メール登録をスキップして利用する
+ </button>
  </div>
  </div>
 
@@ -1547,7 +1545,15 @@ document.getElementById('linkForm')?.addEventListener('submit', async () => {
  email: email
  });
  if (!result.ok) throw new Error(result.error || '連携に失敗しました');
- if (!result.customer) throw new Error('該当するご注文が見つかりませんでした。メールアドレスをご確認ください。');
+ // customer が返ってこない場合もフォールバックで連携成功扱い
+ const cust = result.customer || {
+ email: email,
+ name: currentLineProfile.displayName || email.split('@')[0],
+ total_orders: 0,
+ total_spent: 0,
+ line_uid: currentLineProfile.userId,
+ is_new: true
+ };
 
  currentSession = {
  line_uid: currentLineProfile.userId,
@@ -1556,12 +1562,42 @@ document.getElementById('linkForm')?.addEventListener('submit', async () => {
  issued: Date.now()
  };
  localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
- renderDashboard(result.customer, result.orders || []);
+ renderDashboard(cust, result.orders || []);
  } catch (err) {
  showError(errEl, err.message || '連携に失敗しました');
- btn.disabled = false; btn.textContent = 'アカウントを連携する';
+ btn.disabled = false; btn.textContent = '登録してマイページへ';
  }
 });
+
+/* メール登録スキップ: LINE プロフィールだけでマイページ表示 */
+function skipLinkAndEnter() {
+ if (!currentLineProfile) return;
+ const lineCustomer = {
+ name: currentLineProfile.displayName || 'ゲスト',
+ email: '',
+ total_orders: 0,
+ total_spent: 0,
+ line_uid: currentLineProfile.userId,
+ is_new: true
+ };
+ currentSession = {
+ line_uid: currentLineProfile.userId,
+ display_name: currentLineProfile.displayName,
+ issued: Date.now()
+ };
+ localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+
+ // GAS にも LINE のみで登録（バックグラウンド）
+ if (window.EDA_API) {
+ window.EDA_API.post('line_register', {
+  line_uid: currentLineProfile.userId,
+  display_name: currentLineProfile.displayName,
+  name: currentLineProfile.displayName || ''
+ }).catch(function(){});
+ }
+
+ renderDashboard(lineCustomer, []);
+}
 
 function showError(el, msg) {
  if (!el) return;
