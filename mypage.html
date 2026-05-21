@@ -1740,16 +1740,20 @@ async function initLiff() {
  showState('external');
  return;
  }
+
+ // モバイル＋外部ブラウザ → LINE アプリで直接開く
+ const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+ const isLiffBrowser = /LIFF|Line/i.test(navigator.userAgent) ||
+  new URLSearchParams(location.search).has('liff.state');
+ if (isMobile && !isLiffBrowser) {
+ window.location.href = 'https://liff.line.me/' + LIFF_ID;
+ return;
+ }
+
  try {
  await liff.init({ liffId: LIFF_ID });
  _liffReady = true;
  if (!liff.isInClient() && !liff.isLoggedIn()) {
-  // モバイル → 自動で LINE OAuth に遷移（ボタン押し不要）
-  if (/iPhone|iPad|Android/i.test(navigator.userAgent)) {
-  liff.login({ redirectUri: window.location.href });
-  return;
-  }
-  // デスクトップ → ログイン選択画面
   showState('external');
   return;
  }
