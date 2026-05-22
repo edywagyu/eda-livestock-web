@@ -1486,18 +1486,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  overflow: hidden;
  background: var(--color-bone);
 }
-/* Google Maps iframe — リアル感 (Tom指示) */
 .restaurant-card-map iframe {
  position: absolute;
  inset: 0;
  width: 100%;
  height: 100%;
  border: 0;
- filter: saturate(1.05) contrast(1.02);
- pointer-events: none; /* スクロール誤動作防止 */
+ pointer-events: none;
 }
 .restaurant-card:hover .restaurant-card-map iframe { pointer-events: auto; }
-/* 国名フラッグ (上から重ね) */
 .restaurant-card-map .restaurant-flag {
  position: absolute;
  top: 12px; left: 12px;
@@ -1511,6 +1508,99 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  pointer-events: none;
  border: 1px solid rgba(212,169,59,0.5);
  border-radius: 4px;
+}
+
+/* ===== PREMIUM RESTAURANT CARD ===== */
+.restaurant-card-hero {
+ aspect-ratio: 5/3;
+ position: relative;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 36px 28px;
+ background: linear-gradient(155deg, #080808 0%, #141414 50%, #0f3d2e 100%);
+}
+.restaurant-card-hero::before {
+ content: '';
+ position: absolute;
+ inset: 0;
+ background: radial-gradient(ellipse at 30% 40%, rgba(212,169,59,0.06) 0%, transparent 65%);
+ pointer-events: none;
+}
+.restaurant-card-hero::after {
+ content: '';
+ position: absolute;
+ bottom: 0; left: 10%; right: 10%;
+ height: 1px;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.5), transparent);
+}
+.restaurant-card:hover .restaurant-card-hero {
+ background: linear-gradient(155deg, #0c0c0c 0%, #1a1a1a 50%, #143d2b 100%);
+}
+.restaurant-city-badge {
+ position: absolute;
+ top: 16px; left: 16px;
+ font-family: var(--font-display);
+ font-size: 9.5px;
+ letter-spacing: 0.3em;
+ text-transform: uppercase;
+ color: var(--color-gold);
+ border: 1px solid rgba(212,169,59,0.25);
+ padding: 5px 14px;
+ z-index: 2;
+}
+.restaurant-brand-logo {
+ text-align: center;
+ position: relative;
+ z-index: 1;
+}
+.restaurant-brand-logo .brand-main {
+ display: block;
+ font-family: var(--font-display);
+ font-size: clamp(17px, 1.8vw, 24px);
+ font-weight: 300;
+ color: white;
+ letter-spacing: 0.22em;
+ text-transform: uppercase;
+ line-height: 1.25;
+}
+.restaurant-brand-logo .brand-sub {
+ display: block;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.35em;
+ text-transform: uppercase;
+ color: var(--color-gold);
+ margin-top: 10px;
+}
+.restaurant-brand-logo .brand-icon {
+ display: block;
+ font-size: 20px;
+ margin-bottom: 12px;
+ opacity: 0.7;
+}
+.restaurant-desc {
+ font-size: 12.5px;
+ line-height: 1.8;
+ color: var(--color-ink-muted);
+ margin: 0 0 14px;
+ display: -webkit-box;
+ -webkit-line-clamp: 3;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
+}
+.restaurant-card-body .restaurant-meta {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 10px;
+}
+.restaurant-stars {
+ font-size: 10px;
+ letter-spacing: 2px;
+ color: var(--color-gold);
 }
 .restaurant-card-img::after {
  content: attr(data-label);
@@ -3102,7 +3192,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .restaurant-card-body { padding: 16px; }
  .restaurant-name { font-size: 16px; }
  .restaurant-loc { font-size: 12px; margin-bottom: 14px; }
- .restaurant-card-img, .restaurant-card-map { aspect-ratio: 3/2; }
+ .restaurant-card-img, .restaurant-card-map, .restaurant-card-hero { aspect-ratio: 3/2; }
+ .restaurant-card-hero { padding: 24px 16px; }
+ .restaurant-brand-logo .brand-main { font-size: 15px !important; }
+ .restaurant-brand-logo .brand-sub { font-size: 9px; }
+ .restaurant-desc { font-size: 11.5px; -webkit-line-clamp: 2; }
  .restaurant-actions { padding-top: 14px; }
  .restaurant-action { font-size: 10px; padding: 10px 0; }
 
@@ -3673,249 +3767,404 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <button class="tab">OVERSEAS — 6 venues</button>
  </div>
 
- <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); margin: 0 0 32px; color: var(--color-forest);" class="reveal">— Japan —</h2>
+ <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); margin: 0 0 40px; color: var(--color-forest);" class="reveal">— Japan —</h2>
 
  <div class="restaurant-list reveal">
+
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=33.5879,130.3988&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
+ <div class="restaurant-card-hero">
+ <span class="restaurant-city-badge">FUKUOKA</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-icon">&#9830;</span>
+  <span class="brand-main">The Ritz-Carlton</span>
+  <span class="brand-sub">Fukuoka</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel · Teppanyaki</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Teppanyaki</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">The Ritz-Carlton, Fukuoka</h3>
- <p class="restaurant-loc">「幻珠」 江田和牛エクスペリエンス · 福岡市中央区</p>
+ <p class="restaurant-desc">九州のフラッグシップ、鉄板焼「幻珠」にて江田和牛を主役にしたスペシャルコースを展開。目の前で焼き上げる至高の和牛体験。</p>
+ <p class="restaurant-loc">鉄板焼「幻珠」 · 福岡市中央区</p>
  <div class="restaurant-actions">
- <a href="https://www.ritzcarlton.com/jp/hotels/fukuoka" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=The+Ritz-Carlton+Fukuoka" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.ritzcarlton.com/jp/hotels/fukuoka" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=33.5860,130.3970&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1c1c1c 50%, #2a1f10 100%);">
+ <span class="restaurant-city-badge">FUKUOKA</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main">With The Style</span>
+  <span class="brand-sub">Fukuoka</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel · Boutique</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Boutique</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">WITH THE STYLE FUKUOKA</h3>
- <p class="restaurant-loc">レストラン TOOTH TOOTH · 博多駅前 · 福岡市博多区</p>
+ <p class="restaurant-desc">博多駅前の大人の隠れ家。レストラン TOOTH TOOTH にて、洗練された空間で江田和牛のフルコースをご堪能いただけます。</p>
+ <p class="restaurant-loc">TOOTH TOOTH · 博多駅前 · 福岡市博多区</p>
  <div class="restaurant-actions">
- <a href="https://www.withthestyle.com/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=WITH+THE+STYLE+FUKUOKA" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.withthestyle.com/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6655,139.7267&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-icon">&#9830;</span>
+  <span class="brand-main">The Ritz-Carlton</span>
+  <span class="brand-sub">Tokyo · Roppongi</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Teppanyaki</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">The Ritz-Carlton, Tokyo</h3>
- <p class="restaurant-loc">鉄板焼 ひのきざか / タワーズ · 六本木 · 港区</p>
+ <p class="restaurant-desc">ミッドタウン45階、東京を一望する鉄板焼「ひのきざか」。フレンチレストラン「タワーズ」でも江田和牛を使用。</p>
+ <p class="restaurant-loc">ひのきざか / タワーズ · 六本木 · 港区</p>
  <div class="restaurant-actions">
- <a href="https://www.ritzcarlton.com/jp/hotels/tokyo" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=The+Ritz-Carlton+Tokyo" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.ritzcarlton.com/jp/hotels/tokyo" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6867,139.7634&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #050510 0%, #0d1b2a 50%, #1b3a4b 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main">Four Seasons</span>
+  <span class="brand-sub">Hotel Tokyo at Otemachi</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · French / Italian</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Four Seasons Hotel, Tokyo</h3>
+ <p class="restaurant-desc">皇居を望む大手町39階。ミシュラン二つ星「est」、イタリアン「PIGNETO」にて江田和牛の真髄を体験。</p>
  <p class="restaurant-loc">est / PIGNETO · 大手町 · 千代田区</p>
  <div class="restaurant-actions">
- <a href="https://www.fourseasons.com/otemachi/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Four+Seasons+Hotel+Tokyo+at+Otemachi" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.fourseasons.com/otemachi/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
-
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6520,139.7526&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main">The Fairmont</span>
+  <span class="brand-sub">Tokyo</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Fine Dining</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">The Fairmont Tokyo</h3>
+ <p class="restaurant-desc">東京湾を臨む Bellustar Tokyo。最上階レストランにて、夜景とともに江田和牛の特別ディナーを提供。</p>
  <p class="restaurant-loc">Bellustar Tokyo · 芝浦 · 港区</p>
  <div class="restaurant-actions">
- <a href="https://www.fairmont.com/tokyo/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Fairmont+Tokyo" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.fairmont.com/tokyo/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6712,139.7671&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 40%, #3d2e0f 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-weight: 600; letter-spacing: 0.35em;">EDITION</span>
+  <span class="brand-sub">Tokyo Ginza</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Bar & Grill</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Tokyo EDITION Ginza</h3>
+ <p class="restaurant-desc">マリオット最高峰ブランド。The Lobby Bar と Gold Bar にて、アート空間の中で江田和牛を堪能。銀座の新ランドマーク。</p>
  <p class="restaurant-loc">The Lobby Bar / Gold Bar · 銀座 · 中央区</p>
  <div class="restaurant-actions">
- <a href="https://www.editionhotels.com/tokyo-ginza/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Tokyo+EDITION+Ginza" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.editionhotels.com/tokyo-ginza/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6812,139.7671&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #1a0a0a 0%, #2d1810 50%, #0f3d2e 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(15px, 1.5vw, 20px);">Tokyo Station Hotel</span>
+  <span class="brand-sub">Since 1915</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel · French</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · French</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Tokyo Station Hotel</h3>
+ <p class="restaurant-desc">重要文化財・丸の内駅舎内の歴史的ホテル。フレンチレストラン「ブラン ルージュ」にて、クラシカルな空間で江田和牛を。</p>
  <p class="restaurant-loc">Blanc Rouge · 東京駅丸の内駅舎内 · 千代田区</p>
  <div class="restaurant-actions">
- <a href="https://www.tokyostationhotel.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Tokyo+Station+Hotel" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.tokyostationhotel.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6267,139.8846&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 CHIBA</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a1a 0%, #0d1f3d 50%, #1a0a2e 100%);">
+ <span class="restaurant-city-badge">CHIBA</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-icon">&#10022;</span>
+  <span class="brand-main" style="font-size: clamp(15px, 1.5vw, 20px);">Tokyo DisneySea</span>
+  <span class="brand-sub">Fantasy Springs Hotel</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Theme Park · Restaurants</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Theme Park · Fine Dining</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Tokyo DisneySea</h3>
+ <p class="restaurant-desc">夢と魔法の王国、最高級レストラン「マゼランズ」にて江田和牛を採用。特別な日のディナーに。</p>
  <p class="restaurant-loc">マゼランズ / リストランテ · 浦安市 · 千葉県</p>
  <div class="restaurant-actions">
- <a href="https://www.tokyodisneyresort.jp/tds/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Tokyo+DisneySea" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.tokyodisneyresort.jp/tds/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6714,139.7690&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #2e1a0f 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(20px, 2.2vw, 28px);">MITSUKOSHI</span>
+  <span class="brand-sub">Ginza</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Department Store</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Department Store · Butcher</span>
+ </div>
  <h3 class="restaurant-name">Mitsukoshi Ginza</h3>
+ <p class="restaurant-desc">銀座三越 本館地下3階の厳選精肉売場にて、江田和牛の各部位をお買い求めいただけます。贈答用にも。</p>
  <p class="restaurant-loc">本館地下3F 精肉売場 · 銀座 · 中央区</p>
  <div class="restaurant-actions">
- <a href="https://www.mitsukoshi.mistore.jp/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=三越+銀座" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.mitsukoshi.mistore.jp/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Store Info</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6868,139.7730&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #2e1a0f 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(20px, 2.2vw, 28px);">MITSUKOSHI</span>
+  <span class="brand-sub">Nihonbashi · Since 1673</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Department Store</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Department Store · Butcher</span>
+ </div>
  <h3 class="restaurant-name">Mitsukoshi Nihonbashi</h3>
+ <p class="restaurant-desc">日本橋三越本店。350年の歴史を誇る老舗百貨店の精肉売場にて、江田和牛を常設販売。</p>
  <p class="restaurant-loc">本館地下1F 精肉売場 · 日本橋室町 · 中央区</p>
  <div class="restaurant-actions">
- <a href="https://www.mitsukoshi.mistore.jp/nihombashi.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=三越+日本橋" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.mitsukoshi.mistore.jp/nihombashi.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Store Info</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=35.6903,139.7003&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #1a2e0f 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(20px, 2.2vw, 28px);">KEIO</span>
+  <span class="brand-sub">Department Store · Shinjuku</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Department Store</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Department Store · Butcher</span>
+ </div>
  <h3 class="restaurant-name">Keio Department Store</h3>
+ <p class="restaurant-desc">新宿ターミナルの京王百貨店。中地階の精肉売場にて、厳選された江田和牛をお取り扱い。</p>
  <p class="restaurant-loc">中地階 精肉売場 · 新宿 · 渋谷区</p>
  <div class="restaurant-actions">
- <a href="https://www.keio-dept.co.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=京王百貨店+新宿" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.keio-dept.co.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Store Info</a>
  </div>
  </div>
  </article>
  </div>
 
- <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); margin: 96px 0 32px; color: var(--color-forest);" class="reveal">— Overseas —</h2>
+ <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); margin: 96px 0 40px; color: var(--color-forest);" class="reveal">— Overseas —</h2>
 
  <div class="restaurant-list reveal">
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=22.3030,114.1604&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇭🇰 HONG KONG</span></div>
+ <div class="restaurant-card-hero">
+ <span class="restaurant-city-badge">HONG KONG</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-icon">&#9830;</span>
+  <span class="brand-main">The Ritz-Carlton</span>
+  <span class="brand-sub">Hong Kong · ICC 102F</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Fine Dining</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">The Ritz-Carlton, Hong Kong</h3>
- <p class="restaurant-loc">West Kowloon · 香港</p>
+ <p class="restaurant-desc">世界最高層ホテル、ICC 102階。ヴィクトリア・ハーバーを見下ろすダイニングで江田和牛を提供。</p>
+ <p class="restaurant-loc">West Kowloon · Hong Kong</p>
  <div class="restaurant-actions">
- <a href="https://www.ritzcarlton.com/en/hotels/hong-kong" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=The+Ritz-Carlton+Hong+Kong" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.ritzcarlton.com/en/hotels/hong-kong" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Inquire</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=40.7648,-73.9790&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇺🇸 NEW YORK</span></div>
+ <div class="restaurant-card-hero">
+ <span class="restaurant-city-badge">NEW YORK</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-icon">&#9830;</span>
+  <span class="brand-main">The Ritz-Carlton</span>
+  <span class="brand-sub">New York, Central Park</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · American</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">The Ritz-Carlton, New York</h3>
+ <p class="restaurant-desc">セントラルパークを望むマンハッタンの象徴的ホテル。和牛の最高峰を、世界の中心で。</p>
  <p class="restaurant-loc">Central Park South · Manhattan</p>
  <div class="restaurant-actions">
- <a href="https://www.ritzcarlton.com/en/hotels/new-york-central-park" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=The+Ritz-Carlton+New+York+Central+Park" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://www.ritzcarlton.com/en/hotels/new-york-central-park" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Inquire</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=25.0330,121.5654&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇹🇼 TAIWAN</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #3d2e0f 100%);">
+ <span class="restaurant-city-badge">TAIWAN</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(14px, 1.5vw, 19px);">Premium Wagyu</span>
+  <span class="brand-sub">Taipei · Select Restaurants</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Restaurant Group</span>
- <h3 class="restaurant-name">Taipei Premium Wagyu Venues</h3>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Restaurant Group</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
+ <h3 class="restaurant-name">Taipei Wagyu Venues</h3>
+ <p class="restaurant-desc">台北市内の厳選レストラングループにて、江田和牛の各部位を使用したコースを展開。</p>
  <p class="restaurant-loc">Taipei · Taiwan</p>
  <div class="restaurant-actions">
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">店舗情報</a>
- <a href="https://maps.google.com/?q=Taipei+Taiwan" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">Details</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Inquire</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=1.2897,103.8198&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇸🇬 SINGAPORE</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #050510 0%, #0d1b2a 50%, #1b3a4b 100%);">
+ <span class="restaurant-city-badge">SINGAPORE</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(14px, 1.5vw, 19px);">Premium Hotel</span>
+  <span class="brand-sub">Singapore</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Fine Dining</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Premium Hotel Singapore</h3>
+ <p class="restaurant-desc">シンガポールの高級ホテルダイニングにて、東南アジアの美食家に向けた江田和牛コースを展開。</p>
  <p class="restaurant-loc">Singapore</p>
  <div class="restaurant-actions">
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">店舗情報</a>
- <a href="https://maps.google.com/?q=Singapore" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">Details</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Inquire</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=52.5200,13.4050&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇩🇪 GERMANY</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #2e2e0f 100%);">
+ <span class="restaurant-city-badge">GERMANY</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(14px, 1.5vw, 19px);">Berlin Fine Dining</span>
+  <span class="brand-sub">Germany</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Restaurant</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Restaurant</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Berlin Fine Dining</h3>
+ <p class="restaurant-desc">ベルリンのファインダイニングシーンに、江田和牛を供給。ヨーロッパの食通に支持される味わい。</p>
  <p class="restaurant-loc">Berlin · Germany</p>
  <div class="restaurant-actions">
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">店舗情報</a>
- <a href="https://maps.google.com/?q=Berlin+Germany" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">Details</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Inquire</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://maps.google.com/maps?q=13.7563,100.5018&z=16&output=embed" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇹🇭 THAILAND</span></div>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #3d0f2e 100%);">
+ <span class="restaurant-city-badge">THAILAND</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(14px, 1.5vw, 19px);">Bangkok Premium</span>
+  <span class="brand-sub">Thailand</span>
+ </div>
+ </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel</span>
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Hotel · Fine Dining</span>
+  <span class="restaurant-stars">&#9733;&#9733;&#9733;&#9733;</span>
+ </div>
  <h3 class="restaurant-name">Bangkok Premium Hotel</h3>
+ <p class="restaurant-desc">バンコクのラグジュアリーホテルにて、タイの美食シーンに江田和牛を紹介。アジア屈指のダイニング体験。</p>
  <p class="restaurant-loc">Bangkok · Thailand</p>
  <div class="restaurant-actions">
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">店舗情報</a>
- <a href="https://maps.google.com/?q=Bangkok+Thailand" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">お問合せ</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action">Details</a>
+  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Inquire</a>
  </div>
  </div>
  </article>
