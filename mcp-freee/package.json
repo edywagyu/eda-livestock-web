@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "node src/index.mjs",
-    "auth": "node src/oauth.mjs"
+    "auth": "node src/oauth.mjs",
+    "check": "node src/check.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4"

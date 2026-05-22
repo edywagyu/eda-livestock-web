@@ -59,6 +59,9 @@ cp .env.example .env
 > **Note**: `FREEE_REDIRECT_URI` は freee アプリ設定で登録した値と完全一致が必要です。
 > CLI ベースで完結させたい場合は `urn:ietf:wg:oauth:2.0:oob` を使い、freee アプリ側にも同じ URI を登録しておくと、
 > 認可画面でコードがブラウザに直接表示されてコピペで済みます。
+>
+> `http://localhost:PORT/...` 形式の URI を指定した場合は、`npm run auth` がそのポートで一時 HTTP サーバを立て、
+> ブラウザのリダイレクトから `code` を自動で受信します（コピペ不要）。
 
 ### 3. リフレッシュトークンを取得
 
@@ -70,7 +73,16 @@ npm run auth
 `mcp-freee/.freee-tokens.json`（gitignored, mode 0600）にトークンが保存されます。
 以降は自動でリフレッシュされるため再ログインは不要です。
 
-### 4.（任意）既定の事業所 ID を設定
+### 4. 接続確認
+
+```sh
+npm run check
+```
+
+`GET /api/1/companies` を叩いて、認証情報・リフレッシュトークン・通信経路に問題が無いことを検証します。
+事業所が 1 件しか無い場合は `FREEE_COMPANY_ID` の設定値も提案してくれます。
+
+### 5.（任意）既定の事業所 ID を設定
 
 Claude Code から毎回 `company_id` を渡したくない場合は、`.env` に次を追加します。
 
@@ -118,5 +130,6 @@ mcp-freee/
    ├─ tools.mjs        # ツール定義
    ├─ freeeClient.mjs  # トークン更新・403 ハンドリング込みの HTTP クライアント
    ├─ tokenStore.mjs   # .freee-tokens.json の読み書き
-   └─ oauth.mjs        # 初回認可コード → トークンのヘルパー CLI
+   ├─ oauth.mjs        # 初回認可コード → トークンのヘルパー CLI（oob / localhost 自動）
+   └─ check.mjs        # `npm run check` 接続スモークテスト
 ```

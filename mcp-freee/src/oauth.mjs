@@ -3,18 +3,19 @@
 //
 // 使い方:
 //   1. mcp-freee/.env に FREEE_CLIENT_ID / FREEE_CLIENT_SECRET / FREEE_REDIRECT_URI を入れる
-//   2. このスクリプトを起動: `npm run auth`
+//   2. `npm run auth` を起動
 //   3. 表示された URL をブラウザで開き、freee にログイン → アプリ連携を許可
-//   4. リダイレクト先に表示される `code=...` の値を貼り付ける
-//   5. .freee-tokens.json が生成される
 //
-// redirect_uri に urn:ietf:wg:oauth:2.0:oob を使うと、code がブラウザ上に直接表示されます。
+// FREEE_REDIRECT_URI に応じて以下の 2 モードを自動で切り替えます:
+//   - urn:ietf:wg:oauth:2.0:oob → ブラウザ上に表示された code を CLI に貼り付ける
+//   - http://localhost:PORT/... → そのポートで一時 HTTP サーバを立て、code を自動受信
 
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createServer } from "node:http";
 import { saveTokens, tokenFilePath } from "./tokenStore.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -43,12 +44,11 @@ console.log("以下の URL をブラウザで開いて、アプリ連携を許�
 console.log(authorizeUrl.toString());
 console.log("");
 
-const rl = createInterface({ input: stdin, output: stdout });
-const code = (await rl.question("リダイレクト先に表示された認可コード(code): ")).trim();
-rl.close();
+const localCallback = parseLocalCallback(redirectUri);
+const code = localCallback ? await waitForLocalCode(localCallback) : await askCodeFromStdin();
 
 if (!code) {
-  console.error("認可コードが空でした。中断します。");
+  console.error("認可コードが取得できませんでした。中断します。");
   process.exit(1);
 }
 
@@ -75,6 +75,64 @@ if (!res.ok) {
 const saved = await saveTokens({ ...json, obtained_at: Math.floor(Date.now() / 1000) });
 console.log("\nOK. 保存先:", tokenFilePath());
 console.log("有効期限(秒):", saved.expires_in, "/ scope:", saved.scope ?? "(none)");
+console.log("動作確認: `npm run check` で freee API への接続を試せます。");
+
+async function askCodeFromStdin() {
+  const rl = createInterface({ input: stdin, output: stdout });
+  const answer = (await rl.question("リダイレクト先に表示された認可コード(code): ")).trim();
+  rl.close();
+  return answer;
+}
+
+function parseLocalCallback(uri) {
+  try {
+    const u = new URL(uri);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+    const host = u.hostname;
+    if (host !== "localhost" && host !== "127.0.0.1") return null;
+    const port = Number(u.port || (u.protocol === "https:" ? 443 : 80));
+    if (!Number.isFinite(port) || port <= 0) return null;
+    return { host, port, pathname: u.pathname || "/" };
+  } catch {
+    return null;
+  }
+}
+
+async function waitForLocalCode({ host, port, pathname }) {
+  console.log(`http://${host}:${port}${pathname} で認可コードを待機します...`);
+  return await new Promise((resolveCode, rejectCode) => {
+    const server = createServer((req, res) => {
+      const url = new URL(req.url, `http://${req.headers.host}`);
+      if (url.pathname !== pathname) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not found");
+        return;
+      }
+      const code = url.searchParams.get("code");
+      const error = url.searchParams.get("error");
+      if (error) {
+        res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+        res.end(`freee 認可エラー: ${error}`);
+        server.close();
+        rejectCode(new Error(`freee authorize error: ${error}`));
+        return;
+      }
+      if (!code) {
+        res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+        res.end("code パラメータがありません");
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      res.end(
+        "<html><body><h2>OK</h2><p>認可コードを受信しました。CLI に戻ってください。</p></body></html>",
+      );
+      server.close();
+      resolveCode(code);
+    });
+    server.on("error", rejectCode);
+    server.listen(port, host);
+  });
+}
 
 function loadDotenv(path) {
   if (!existsSync(path)) return;
