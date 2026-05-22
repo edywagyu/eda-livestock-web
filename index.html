@@ -1498,20 +1498,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .map-pin {
  position: absolute;
  transform: translate(-50%, -50%);
- width: 8px;
- height: 8px;
+ width: 5px !important;
+ height: 5px !important;
+ min-width: 0 !important;
+ min-height: 0 !important;
  border-radius: 50%;
- border: 1.5px solid #fff;
+ border: 0.75px solid rgba(255,255,255,0.7);
  background: var(--color-gold);
  cursor: pointer;
  padding: 0;
- box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0.5);
+ margin: 0;
+ box-shadow: 0 0 1px rgba(0,0,0,0.3);
  transition: transform 0.2s, box-shadow 0.2s;
  z-index: 2;
- animation: pinRipple 3s ease-out infinite;
+ animation: none;
+ -webkit-tap-highlight-color: transparent;
 }
 .map-pin:hover {
- transform: translate(-50%, -50%) scale(1.6);
+ transform: translate(-50%, -50%) scale(2.2);
  z-index: 10;
 }
 .map-pin.pin-y1 { background: #FFE594; }
@@ -1519,8 +1523,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .map-pin.pin-y3 { background: var(--color-gold-soft); }
 /* 本拠地: 星形 */
 .map-pin.map-pin-home {
- width: 16px;
- height: 16px;
+ width: 10px;
+ height: 10px;
  background: transparent;
  border: 0;
  box-shadow: none;
@@ -1529,20 +1533,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .pin-home-star {
  display: block;
- font-size: 28px;
+ font-size: 12px;
  color: #FFE594;
- filter: drop-shadow(0 0 8px rgba(212,169,59,0.9));
+ filter: drop-shadow(0 0 4px rgba(212,169,59,0.8));
  animation: pinHomeGlow 2.6s ease-in-out infinite;
  line-height: 1;
 }
 @keyframes pinRipple {
- 0% { box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0.5); }
- 70% { box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 6px rgba(212,169,59,0); }
- 100% { box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 0 rgba(212,169,59,0); }
+ 0% { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 0 rgba(212,169,59,0.4); }
+ 70% { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 3px rgba(212,169,59,0); }
+ 100% { box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 0 rgba(212,169,59,0); }
 }
 @keyframes pinHomeGlow {
- 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(212,169,59,0.9)); }
- 50% { transform: scale(1.12); filter: drop-shadow(0 0 16px rgba(212,169,59,1)); }
+ 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(212,169,59,0.9)); }
+ 50% { transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(212,169,59,1)); }
 }
 /* ツールチップ */
 .pin-tooltip {
@@ -1579,10 +1583,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .legend-item { display: inline-flex; align-items: center; gap: 6px; }
 .legend-dot {
  display: inline-block;
- width: 10px; height: 10px;
+ width: 6px; height: 6px;
  border-radius: 50%;
 }
-.legend-dot.legend-home { background: transparent; color: #FFE594; font-size: 14px; line-height: 1; }
+.legend-dot.legend-home { background: transparent; color: #FFE594; font-size: 10px; line-height: 1; }
 .legend-dot.legend-y1 { background: #FFE594; }
 .legend-dot.legend-y2 { background: var(--color-gold); }
 .legend-dot.legend-y3 { background: var(--color-gold-soft); }
@@ -3336,12 +3340,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 12px 10px 10px;
  aspect-ratio: 950/620;
  }
- .map-pin { width: 6px; height: 6px; border-width: 1px; }
- .map-pin.map-pin-home { width: 12px; height: 12px; }
- .pin-home-star { font-size: 22px; }
+ .map-pin { width: 5px !important; height: 5px !important; min-width: 0 !important; min-height: 0 !important; border-width: 0.75px; }
+ .map-pin.map-pin-home { width: 10px !important; height: 10px !important; min-width: 0 !important; min-height: 0 !important; }
+ .pin-home-star { font-size: 12px; }
  .pin-tooltip { font-size: 10px; padding: 4px 8px; }
  .world-map-legend { font-size: 10px; gap: 10px; padding-top: 6px; }
- .legend-dot { width: 8px; height: 8px; }
+ .legend-dot { width: 4px; height: 4px; }
  .global-countries { grid-template-columns: 1fr; gap: 0; }
  .global-countries li { padding: 8px 0; font-size: 12px; }
 
