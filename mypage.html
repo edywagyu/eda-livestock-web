@@ -164,88 +164,85 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ MY PAGE SPECIFIC ================ */
 
-/* Login Section — Full redesign */
+/* Login Section — Full-width hero split */
 .mypage-login-section {
- padding: 120px 0 80px;
+ padding: 0;
 }
 .login-layout {
- max-width: 880px;
- margin: 0 auto;
  display: grid;
  grid-template-columns: 1fr 1fr;
- gap: 0;
- background: white;
- border-radius: 20px;
- overflow: hidden;
- box-shadow: 0 8px 40px rgba(15, 61, 46, 0.08), 0 1px 3px rgba(15, 61, 46, 0.04);
- border: 1px solid rgba(15, 61, 46, 0.06);
+ min-height: calc(100vh - 80px);
 }
 @media (max-width: 700px) {
- .login-layout { grid-template-columns: 1fr; }
+ .login-layout { grid-template-columns: 1fr; min-height: auto; }
 }
 /* Left: Benefits */
 .login-benefits {
  background: linear-gradient(160deg, var(--color-forest) 0%, #164D38 60%, #1A5A42 100%);
  color: white;
- padding: 48px 36px;
+ padding: 120px clamp(40px, 6vw, 80px) 80px;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
  position: relative;
  overflow: hidden;
 }
 .login-benefits::before {
  content: '';
  position: absolute;
- top: -80px; right: -60px;
- width: 280px; height: 280px;
- background: radial-gradient(circle, rgba(212, 169, 59, 0.12), transparent 65%);
+ top: -120px; right: -80px;
+ width: 400px; height: 400px;
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.1), transparent 65%);
  border-radius: 50%;
  pointer-events: none;
 }
 .login-benefits::after {
  content: '';
  position: absolute;
- bottom: -40px; left: -20px;
- width: 160px; height: 160px;
- background: radial-gradient(circle, rgba(212, 169, 59, 0.08), transparent 65%);
+ bottom: -60px; left: -40px;
+ width: 240px; height: 240px;
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.06), transparent 65%);
  border-radius: 50%;
  pointer-events: none;
 }
 .login-benefits-eyebrow {
  font-family: var(--font-display);
- font-size: 11px;
+ font-size: 12px;
  letter-spacing: var(--tracking-widest);
  color: var(--color-gold);
- margin-bottom: 16px;
+ margin-bottom: 20px;
  position: relative;
 }
 .login-benefits-title {
  font-family: var(--font-display);
- font-size: 32px;
- line-height: 1.1;
- margin: 0 0 8px;
+ font-size: clamp(32px, 4vw, 48px);
+ line-height: 1.15;
+ margin: 0 0 12px;
  position: relative;
 }
 .login-benefits-sub {
  font-family: var(--font-jp-serif);
- font-size: 13px;
+ font-size: 14px;
  opacity: 0.75;
- line-height: 1.7;
- margin: 0 0 32px;
+ line-height: 1.8;
+ margin: 0 0 40px;
+ max-width: 360px;
  position: relative;
 }
 .benefit-list {
  display: flex;
  flex-direction: column;
- gap: 20px;
+ gap: 28px;
  position: relative;
 }
 .benefit-item {
  display: flex;
  align-items: flex-start;
- gap: 14px;
+ gap: 16px;
 }
 .benefit-icon {
- width: 40px; height: 40px;
- border-radius: 10px;
+ width: 44px; height: 44px;
+ border-radius: 12px;
  background: rgba(212, 169, 59, 0.15);
  display: flex; align-items: center; justify-content: center;
  flex-shrink: 0;
@@ -253,22 +250,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .benefit-text h4 {
  font-family: var(--font-jp);
- font-size: 14px;
+ font-size: 15px;
  font-weight: 600;
- margin: 0 0 2px;
+ margin: 0 0 4px;
 }
 .benefit-text p {
- font-size: 12px;
- opacity: 0.65;
+ font-size: 13px;
+ opacity: 0.6;
  margin: 0;
- line-height: 1.5;
+ line-height: 1.6;
 }
 /* Right: Form */
 .login-form-side {
- padding: 48px 36px;
+ padding: 120px clamp(36px, 5vw, 72px) 80px;
  display: flex;
  flex-direction: column;
  justify-content: center;
+ background: var(--color-cream);
 }
 .login-card {
  max-width: 480px;
@@ -1417,10 +1415,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <!-- ========= LIFF AUTH SECTION ========= -->
 <section class="mypage-login-section" id="loginSection">
- <div class="container-narrow" style="max-width:920px;">
 
  <!-- 初期状態: LIFF 読込中 -->
- <div id="liffLoading" style="text-align:center;padding:80px 32px;">
+ <div id="liffLoading" style="text-align:center;padding:160px 32px 120px;">
  <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(15,61,46,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
  <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">認証を確認中...</p>
  </div>
@@ -1514,13 +1511,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 
  <!-- ② LIFF 内: LINE 認証ログイン中 -->
- <div class="login-card-standalone" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;">
+ <div class="login-card-standalone" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;margin:120px auto 80px;">
  <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(6,199,85,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
  <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE で認証中...</p>
  </div>
 
  <!-- ③ LIFF 内 認証成功 + 新規 (line_uid 未連携) → アカウント連携フォーム -->
- <div class="login-card-standalone" id="liffLinkAccount" style="display:none;">
+ <div class="login-card-standalone" id="liffLinkAccount" style="display:none;margin:120px auto 80px;">
  <div class="login-icon">
  <div class="login-icon-circle">
  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1558,7 +1555,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
  </div>
 
- </div>
 </section>
 
 <!-- ========= LOADING ========= -->
