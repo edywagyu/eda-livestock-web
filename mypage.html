@@ -173,9 +173,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  grid-template-columns: 1fr 1fr;
  min-height: calc(100vh - 80px);
 }
-@media (max-width: 700px) {
- .login-layout { grid-template-columns: 1fr; min-height: auto; }
-}
 /* Left: Benefits */
 .login-benefits {
  background: linear-gradient(160deg, var(--color-forest) 0%, #164D38 60%, #1A5A42 100%);
@@ -267,6 +264,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  flex-direction: column;
  justify-content: center;
  background: var(--color-cream);
+}
+/* Mobile: form first, benefits compact */
+@media (max-width: 700px) {
+ .login-layout { grid-template-columns: 1fr; min-height: auto; }
+ .login-form-side { order: -1; padding: 100px 24px 40px; }
+ .login-benefits { padding: 40px 24px 48px; }
+ .login-benefits-title { font-size: 26px; }
+ .login-benefits-sub { margin-bottom: 24px; }
+ .benefit-list { gap: 18px; }
 }
 .login-card {
  max-width: 480px;
