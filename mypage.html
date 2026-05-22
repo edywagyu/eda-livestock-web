@@ -1404,13 +1404,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 </header>
 
-<!-- ========= PAGE HEADER ========= -->
-<section class="page-header" id="pageHeader">
+<!-- ========= PAGE HEADER (login時は非表示、dashboard時に切替) ========= -->
+<section class="page-header" id="pageHeader" style="display:none;">
  <div class="container">
  <div class="page-header-content">
- <p class="page-eyebrow">MEMBERSHIP</p>
- <h1 class="page-title">MY PAGE</h1>
- <p class="page-subtitle">会員登録・ログインで、限定商品のご注文や<br>特典をお楽しみいただけます。</p>
+ <p class="page-eyebrow">MY PAGE</p>
+ <h1 class="page-title">MYPAGE</h1>
+ <p class="page-subtitle">注文履歴の確認、配送状況の追跡、定期便の管理を<br>まとめてご確認いただけます。</p>
  </div>
  </div>
 </section>
@@ -2253,7 +2253,7 @@ function renderDashboard(customer, orders) {
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
  var _pgH = document.getElementById('pageHeader');
- if (_pgH) { _pgH.querySelector('.page-eyebrow').textContent = 'MY PAGE'; _pgH.querySelector('.page-title').textContent = 'MYPAGE'; _pgH.querySelector('.page-subtitle').innerHTML = '注文履歴の確認、配送状況の追跡、定期便の管理を<br>まとめてご確認いただけます。'; }
+ if (_pgH) _pgH.style.display = '';
  dashboard.classList.add('show');
 
  var orderCount = customer.total_orders || orders.length || 0;
