@@ -2491,7 +2491,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ JOURNAL ================ */
 .journal-section { background: var(--color-paper); }
-.journal-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 32px; }
+.journal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 .journal-card { position: relative; transition: transform 0.5s var(--ease-out-expo); display: block; }
 .journal-card:hover { transform: translateY(-4px); }
 .journal-card-img {
@@ -2501,7 +2501,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  position: relative;
  overflow: hidden;
 }
-.journal-card.featured .journal-card-img { aspect-ratio: 4/5; }
+.journal-card.featured .journal-card-img { aspect-ratio: 16/10; }
 .journal-card-img::after {
  content: attr(data-label);
  position: absolute;
@@ -2527,8 +2527,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin-bottom: 12px;
 }
 .journal-card.featured .journal-title {
- font-size: clamp(24px, 2.4vw, 36px);
- line-height: 1.3;
+ font-size: 19px;
+ line-height: 1.5;
 }
 .journal-title {
  font-family: var(--font-jp-serif);
@@ -4293,62 +4293,51 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 
  <div class="tab-row reveal">
- <button class="tab active">JAPAN (11)</button>
- <button class="tab">OVERSEAS (10)</button>
+ <button class="tab active">JAPAN</button>
+ <button class="tab">OVERSEAS</button>
  </div>
 
  <div class="restaurant-list reveal">
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=130.3968%2C33.5859%2C130.4008%2C33.5899&layer=mapnik&marker=33.5879%2C130.3988" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 FUKUOKA</span></div>
+ <div class="restaurant-card-img" data-label="🇯🇵 FUKUOKA" style="background: linear-gradient(135deg, #0f3d2e, #1a5c42); display:flex; align-items:center; justify-content:center;">
+ <span class="restaurant-flag" style="position:static; background:none; font-size:13px; letter-spacing:0.15em;">🇯🇵 FUKUOKA</span>
+ </div>
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Hotel · Teppanyaki</span>
  <h3 class="restaurant-name">The Ritz-Carlton, Fukuoka</h3>
  <p class="restaurant-loc">「幻珠」 江田和牛エクスペリエンス · 福岡市中央区</p>
  <div class="restaurant-actions">
  <a href="https://www.ritzcarlton.com/en/hotels/japan/fukuoka" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=The+Ritz-Carlton+Fukuoka" target="_blank" rel="noopener" class="restaurant-action">Map</a>
  <a href="https://www.ritzcarlton.com/en/hotels/japan/fukuoka/dining" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7247%2C35.6635%2C139.7287%2C35.6675&layer=mapnik&marker=35.6655%2C139.7267" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
+ <div class="restaurant-card-img" data-label="🇯🇵 TOKYO" style="background: linear-gradient(135deg, #0f3d2e, #1a5c42); display:flex; align-items:center; justify-content:center;">
+ <span class="restaurant-flag" style="position:static; background:none; font-size:13px; letter-spacing:0.15em;">🇯🇵 TOKYO</span>
+ </div>
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Hotel · French</span>
  <h3 class="restaurant-name">Tokyo Station Hotel</h3>
  <p class="restaurant-loc">「ブラン ルージュ」「カメリア」 · 東京駅丸の内駅舎内</p>
  <div class="restaurant-actions">
  <a href="https://www.tokyostationhotel.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Tokyo+Station+Hotel" target="_blank" rel="noopener" class="restaurant-action">Map</a>
  <a href="https://www.tokyostationhotel.jp/restaurants/" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=114.1560%2C22.2835%2C114.1600%2C22.2875&layer=mapnik&marker=22.2855%2C114.1580" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇭🇰 HONG KONG</span></div>
+ <div class="restaurant-card-img" data-label="🇭🇰 HONG KONG" style="background: linear-gradient(135deg, #0f3d2e, #1a5c42); display:flex; align-items:center; justify-content:center;">
+ <span class="restaurant-flag" style="position:static; background:none; font-size:13px; letter-spacing:0.15em;">🇭🇰 HONG KONG</span>
+ </div>
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Premium Supermarket</span>
  <h3 class="restaurant-name">city'super</h3>
  <p class="restaurant-loc">香港全店展開 · IFC, Times Square 他</p>
  <div class="restaurant-actions">
  <a href="https://www.citysuper.com.hk/en/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=city'super+IFC+Hong+Kong" target="_blank" rel="noopener" class="restaurant-action">Map</a>
- <a href="restaurants.html" class="restaurant-action primary">取扱店一覧</a>
- </div>
- </div>
- </article>
-
- <article class="restaurant-card">
- <div class="restaurant-card-map"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=139.7670%2C35.6694%2C139.7710%2C35.6734&layer=mapnik&marker=35.6714%2C139.7690" width="100%" height="100%" style="border:0;" loading="lazy"></iframe><span class="restaurant-flag">🇯🇵 TOKYO</span></div>
- <div class="restaurant-card-body">
- <span class="restaurant-tag">Department Store</span>
- <h3 class="restaurant-name">Mitsukoshi · Keio</h3>
- <p class="restaurant-loc">三越銀座・日本橋／京王新宿 — 60周年記念商品選定</p>
- <div class="restaurant-actions">
- <a href="https://www.mitsukoshi.mistore.jp/store/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://maps.google.com/?q=Mitsukoshi+Ginza" target="_blank" rel="noopener" class="restaurant-action">Map</a>
  <a href="restaurants.html" class="restaurant-action primary">取扱店一覧</a>
  </div>
  </div>
