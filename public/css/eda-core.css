@@ -53,8 +53,8 @@ html {
 body {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.75;
+  font-size: 17px;
+  line-height: 1.8;
   color: var(--color-ink);
   background: var(--color-cream);
   -webkit-text-size-adjust: 100%;

@@ -34,3 +34,42 @@ h1, h2, h3, h4, .hero-title, .page-title, .section-title,
 .date, .phone, .email, time, a[href^="tel:"], a[href^="mailto:"] {
   white-space: nowrap;
 }
+
+/* ============================================================
+   日本語テキスト最小サイズ保証
+   CJK 文字は Latin より画数が多く、小さいと潰れる。
+   body text 系は 14px 以上、description 系は 15px 以上に。
+   ============================================================ */
+
+/* 段落・説明文: 最低 15px */
+p, .desc, .lead, .product-desc,
+.restaurant-desc, .faq-a, .news-body p,
+.article-body p, .philosophy-text,
+[class*="-desc"], [class*="-text"]:not(input):not(textarea) {
+  font-size: max(15px, inherit);
+  line-height: max(1.8, inherit);
+}
+
+/* カード内テキスト: 最低 14px */
+[class*="-card"] p,
+[class*="-block"] p,
+.science-card p, .kit-card p,
+.data-card p, .recipe-card p,
+.cert-block p, .partner-block p,
+.why-card p {
+  font-size: max(14px, inherit);
+  line-height: max(1.75, inherit);
+}
+
+/* メタ情報・タグ: 最低 12px（英語ラベル系は小さくてOK） */
+[class*="-tag"], [class*="-meta"],
+[class*="-loc"], [class*="-badge"],
+.eyebrow {
+  font-size: max(12px, inherit);
+}
+
+/* ボタン: 最低 14px */
+.btn, [class*="-action"], [class*="-cta"],
+button[type="submit"] {
+  font-size: max(14px, inherit);
+}

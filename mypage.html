@@ -60,8 +60,8 @@ body {
  margin: 0;
  font-family: var(--font-body);
  font-weight: 400;
- font-size: 16px;
- line-height: 1.6;
+ font-size: 17px;
+ line-height: 1.8;
  color: var(--color-ink);
  background: var(--color-cream);
  overflow-x: hidden;
@@ -1200,10 +1200,94 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .logout-btn:hover { color: var(--color-red); }
 
-/* Animations */
-.fade-in {
- animation: fadeInUp 0.6s var(--ease-out-expo) both;
+/* ================ PREMIUM MEMBER EXPERIENCE ================ */
+.member-tier {
+ display: inline-flex; align-items: center; gap: 6px;
+ padding: 5px 14px 5px 10px; border-radius: 20px;
+ font-family: var(--font-display); font-size: 11px;
+ letter-spacing: var(--tracking-wider); font-weight: 600;
+ text-transform: uppercase; white-space: nowrap;
 }
+.member-tier.standard {
+ background: linear-gradient(135deg, rgba(212,169,59,0.15), rgba(212,169,59,0.06));
+ color: var(--color-gold); border: 1px solid rgba(212,169,59,0.25);
+}
+.member-tier.gold {
+ background: linear-gradient(135deg, rgba(212,169,59,0.22), rgba(229,181,71,0.10));
+ color: #B8932F; border: 1px solid rgba(212,169,59,0.45);
+ box-shadow: 0 2px 8px rgba(212,169,59,0.12);
+}
+.member-tier.platinum {
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: var(--color-gold); border: 1px solid rgba(212,169,59,0.4);
+ box-shadow: 0 2px 12px rgba(15,61,46,0.2);
+}
+.member-tier svg { width: 14px; height: 14px; flex-shrink: 0; }
+.page-header-greeting {
+ font-family: var(--font-jp); font-size: 13px; opacity: 0.65;
+ margin: 0 0 6px; letter-spacing: 0.02em;
+}
+.page-header .page-title {
+ display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.welcome-card::before {
+ content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+ background: linear-gradient(90deg, var(--color-gold), var(--color-gold-bright), var(--color-gold));
+ border-radius: 20px 20px 0 0; z-index: 1;
+}
+.welcome-card-bottom.has-3-stats {
+ display: grid; grid-template-columns: repeat(3, 1fr);
+}
+.welcome-card-bottom.has-3-stats .welcome-stat + .welcome-stat {
+ border-left: 1px solid rgba(15, 61, 46, 0.06);
+}
+.welcome-member-since {
+ font-family: var(--font-display); font-size: 10px;
+ letter-spacing: var(--tracking-wider); color: rgba(255,255,255,0.45);
+ margin: 10px 0 0; position: relative;
+}
+.member-perks-strip {
+ background: linear-gradient(135deg, rgba(212,169,59,0.07), rgba(212,169,59,0.02));
+ border: 1px solid rgba(212,169,59,0.15); border-radius: 14px;
+ padding: 16px 20px; margin-bottom: 20px;
+ display: flex; align-items: center; gap: 14px;
+ cursor: pointer; transition: all 0.3s;
+}
+.member-perks-strip:hover {
+ border-color: rgba(212,169,59,0.3); box-shadow: 0 4px 16px rgba(212,169,59,0.06);
+}
+.member-perks-icon {
+ width: 36px; height: 36px; border-radius: 10px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.15), rgba(212,169,59,0.08));
+ display: flex; align-items: center; justify-content: center;
+ color: var(--color-gold); flex-shrink: 0;
+}
+.member-perks-text {
+ font-family: var(--font-jp); font-size: 13px; color: var(--color-forest);
+ flex: 1; line-height: 1.6;
+}
+.member-perks-text strong { color: var(--color-gold-soft); font-weight: 600; }
+.member-perks-arrow {
+ color: var(--color-gold-soft); opacity: 0.4; transition: all 0.3s; flex-shrink: 0;
+}
+.member-perks-strip:hover .member-perks-arrow { opacity: 1; transform: translateX(2px); }
+
+/* Accessibility */
+.dash-tab:focus-visible, .login-btn:focus-visible, .shop-link:focus-visible,
+.mp-product:focus-visible, .mp-shop-cta:focus-visible, .logout-btn:focus-visible,
+.sub-action-btn:focus-visible, .tracking-link:focus-visible,
+button:focus-visible, a:focus-visible {
+ outline: 2px solid var(--color-gold); outline-offset: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+.skip-link {
+ position: absolute; top: -40px; left: 0; background: var(--color-forest);
+ color: white; padding: 8px 16px; z-index: 200; font-size: 14px; transition: top 0.3s;
+}
+.skip-link:focus { top: 0; }
+
+/* Animations */
+.fade-in { animation: fadeInUp 0.6s var(--ease-out-expo) both; }
 .fade-in-d1 { animation-delay: 0.1s; }
 .fade-in-d2 { animation-delay: 0.2s; }
 .fade-in-d3 { animation-delay: 0.3s; }
@@ -1255,6 +1339,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .rj-step-dot { width: 28px; height: 28px; font-size: 11px; }
  .coupon-card { padding: 14px 14px !important; }
  .home-next-reward { padding: 16px; gap: 12px; }
+ .member-perks-strip { padding: 12px 16px; gap: 10px; }
+ .member-perks-icon { width: 32px; height: 32px; }
+ .member-perks-text { font-size: 12px; }
+ .member-tier { font-size: 10px; padding: 4px 10px 4px 8px; }
+ .page-header .page-title { font-size: 28px; gap: 10px; }
+ .welcome-card-bottom.has-3-stats .welcome-stat { padding: 14px 8px; }
+ .welcome-card-bottom.has-3-stats .welcome-stat-num { font-size: 18px; }
 }
 
 /* ==== Subscription Action Buttons ==== */
@@ -1425,11 +1516,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </header>
 
 <!-- ========= PAGE HEADER (login時は非表示、dashboard時に切替) ========= -->
-<section class="page-header" id="pageHeader" style="display:none;">
+<section class="page-header" id="pageHeader" style="display:none;" role="banner">
  <div class="container">
  <div class="page-header-content">
- <p class="page-eyebrow">MY PAGE</p>
- <h1 class="page-title">MYPAGE</h1>
+ <p class="page-eyebrow" aria-live="polite">MY PAGE</p>
+ <h1 class="page-title" style="font-size:clamp(28px,4vw,40px);">MYPAGE</h1>
  <p class="page-subtitle">注文履歴の確認、配送状況の追跡、定期便の管理を<br>まとめてご確認いただけます。</p>
  </div>
  </div>
@@ -1594,18 +1685,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="container-narrow">
 
  <!-- Welcome Card -->
- <div class="welcome-card fade-in" id="welcomeCard">
+ <div class="welcome-card fade-in" id="welcomeCard" role="banner" aria-label="会員情報">
  <div class="welcome-card-top">
  <div id="subBadgeArea"></div>
  <div class="welcome-name-row">
-  <div class="welcome-avatar" id="welcomeAvatar"></div>
+  <div class="welcome-avatar" id="welcomeAvatar" aria-hidden="true"></div>
   <div>
   <h2 class="welcome-name" id="customerName"></h2>
   <p class="welcome-label" id="welcomeLabel">いつもご利用ありがとうございます</p>
   </div>
  </div>
+ <p class="welcome-member-since" id="memberSince"></p>
  </div>
- <div class="welcome-card-bottom">
+ <div class="welcome-card-bottom has-3-stats">
  <div class="welcome-stat">
   <span class="welcome-stat-num" id="totalOrders">0</span>
   <span class="welcome-stat-label">ご注文回数</span>
@@ -1614,29 +1706,44 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <span class="welcome-stat-num" id="totalSpent">-</span>
   <span class="welcome-stat-label">累計お買い上げ</span>
  </div>
+ <div class="welcome-stat">
+  <span class="welcome-stat-num" id="availableCoupons">-</span>
+  <span class="welcome-stat-label">利用可能クーポン</span>
+ </div>
  </div>
  </div>
 
+ <!-- Member Perks Strip -->
+ <div class="member-perks-strip fade-in fade-in-d1" id="memberPerksStrip" onclick="switchTab('rewards')" role="button" tabindex="0" aria-label="会員特典を見る">
+ <div class="member-perks-icon" aria-hidden="true">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+ </div>
+ <div class="member-perks-text" id="memberPerksText">
+  <strong>会員限定</strong>: あと <strong id="perksNextCount">1回</strong> のご注文で次のランクへ
+ </div>
+ <svg class="member-perks-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+ </div>
+
  <!-- Tab Navigation -->
- <nav class="dash-tabs fade-in" id="dashTabs">
- <button class="dash-tab active" data-tab="home">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+ <nav class="dash-tabs fade-in fade-in-d2" id="dashTabs" role="tablist" aria-label="マイページナビゲーション">
+ <button class="dash-tab active" data-tab="home" role="tab" aria-selected="true" aria-controls="panel-home">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
  ホーム
  </button>
- <button class="dash-tab" data-tab="orders">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+ <button class="dash-tab" data-tab="orders" role="tab" aria-selected="false" aria-controls="panel-orders">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
  注文履歴
  </button>
- <button class="dash-tab" data-tab="subscription">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ <button class="dash-tab" data-tab="subscription" role="tab" aria-selected="false" aria-controls="panel-subscription">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
  定期便
  </button>
- <button class="dash-tab" data-tab="shop">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+ <button class="dash-tab" data-tab="shop" role="tab" aria-selected="false" aria-controls="panel-shop">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
  お買い物
  </button>
- <button class="dash-tab" data-tab="rewards">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12V8H6a2 2 0 010-4h12V2H6a4 4 0 000 8h14v4"/><path d="M4 12v8a2 2 0 002 2h14v-4"/><path d="M18 12a2 2 0 100 4 2 2 0 000-4z"/></svg>
+ <button class="dash-tab" data-tab="rewards" role="tab" aria-selected="false" aria-controls="panel-rewards">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 12V8H6a2 2 0 010-4h12V2H6a4 4 0 000 8h14v4"/><path d="M4 12v8a2 2 0 002 2h14v-4"/><path d="M18 12a2 2 0 100 4 2 2 0 000-4z"/></svg>
  特典
  </button>
  </nav>
@@ -2275,9 +2382,13 @@ document.getElementById('dashTabs').addEventListener('click', function(e) {
  var btn = e.target.closest('.dash-tab');
  if (!btn) return;
  var tabId = btn.dataset.tab;
- document.querySelectorAll('.dash-tab').forEach(function(t) { t.classList.remove('active'); });
+ document.querySelectorAll('.dash-tab').forEach(function(t) {
+  t.classList.remove('active');
+  t.setAttribute('aria-selected', 'false');
+ });
  document.querySelectorAll('.dash-tab-panel').forEach(function(p) { p.classList.remove('active'); });
  btn.classList.add('active');
+ btn.setAttribute('aria-selected', 'true');
  var panel = document.getElementById('panel-' + tabId);
  if (panel) panel.classList.add('active');
 });
@@ -2287,14 +2398,35 @@ function switchTab(tabId) {
 }
 
 /* ---- Render Dashboard ---- */
+/* ---- Premium Helper Functions ---- */
+function getTimeGreeting() {
+ var h = new Date().getHours();
+ if (h < 5)  return 'こんばんは';
+ if (h < 11) return 'おはようございます';
+ if (h < 17) return 'こんにちは';
+ return 'こんばんは';
+}
+function getMemberTier(orderCount) {
+ if (orderCount >= 10) return { tier: 'platinum', label: 'Platinum', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
+ if (orderCount >= 5)  return { tier: 'gold', label: 'Gold', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
+ return { tier: 'standard', label: 'Standard', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' };
+}
+function getPerksMessage(orderCount, tierInfo) {
+ if (tierInfo.tier === 'platinum') return '<strong>Platinum 会員</strong>: 全商品 <strong>送料無料</strong> + 限定商品アクセス';
+ if (tierInfo.tier === 'gold') return '<strong>Gold 会員</strong>: あと <strong>' + (10 - orderCount) + '回</strong> のご注文で Platinum へ';
+ var toGold = 5 - orderCount;
+ if (toGold <= 0) toGold = 1;
+ return '<strong>会員限定</strong>: あと <strong>' + toGold + '回</strong> のご注文で Gold Member へ';
+}
+
 function renderDashboard(customer, orders) {
- // ★ LIFF 認証完了後のルーティング: ?page=shop → shop.html へリダイレクト
+ // ★ 認証完了後のルーティング
  var _rp = new URLSearchParams(location.search);
  var _targetPage = _rp.get('page') || '';
- if (_targetPage === 'shop') {
- window.location.replace('shop.html');
- return;
- }
+ var _redirect = _rp.get('redirect') || '';
+ if (_targetPage === 'shop') { window.location.replace('shop.html'); return; }
+ if (_redirect === 'organic') { window.location.replace('organic.html'); return; }
+ if (_redirect) { window.location.replace(_redirect + '.html'); return; }
 
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
@@ -2303,6 +2435,18 @@ function renderDashboard(customer, orders) {
  dashboard.classList.add('show');
 
  var orderCount = customer.total_orders || orders.length || 0;
+
+ /* ★ Premium: Time greeting + Member tier in page header */
+ var _pgEyebrow = _pgH ? _pgH.querySelector('.page-eyebrow') : null;
+ var _pgTitle = _pgH ? _pgH.querySelector('.page-title') : null;
+ var _pgSub = _pgH ? _pgH.querySelector('.page-subtitle') : null;
+ var tierInfo = getMemberTier(orderCount);
+ if (_pgEyebrow) _pgEyebrow.textContent = getTimeGreeting();
+ if (_pgTitle) {
+  var custNameShort = (customer.name || 'お客') + ' 様';
+  _pgTitle.innerHTML = custNameShort + ' <span class="member-tier ' + tierInfo.tier + '">' + tierInfo.icon + ' ' + tierInfo.label + ' Member</span>';
+ }
+ if (_pgSub) _pgSub.textContent = '会員専用ページ — ご注文・特典・クーポンをまとめて管理';
 
  /* Welcome card */
  var custName = customer.name || 'お客';
@@ -2313,6 +2457,29 @@ function renderDashboard(customer, orders) {
 
  var spent = customer.total_spent || 0;
  document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
+
+ /* ★ Premium: Member since date */
+ var sinceEl = document.getElementById('memberSince');
+ if (sinceEl) {
+  var linkedAt = '';
+  try { linkedAt = localStorage.getItem('eda-member-linked-at') || ''; } catch(e) {}
+  if (linkedAt) {
+   var d = new Date(linkedAt);
+   sinceEl.textContent = 'MEMBER SINCE ' + d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0');
+  } else {
+   sinceEl.textContent = 'MEMBER SINCE ' + new Date().getFullYear() + '.' + String(new Date().getMonth() + 1).padStart(2, '0');
+  }
+ }
+
+ /* ★ Premium: Available coupons count */
+ var coupons = customer.coupons || generateDemoCoupons(orderCount);
+ var activeCoupons = coupons.filter(function(c) { return !c.used; });
+ var couponEl = document.getElementById('availableCoupons');
+ if (couponEl) couponEl.textContent = activeCoupons.length > 0 ? activeCoupons.length : '-';
+
+ /* ★ Premium: Perks strip message */
+ var perksText = document.getElementById('memberPerksText');
+ if (perksText) perksText.innerHTML = getPerksMessage(orderCount, tierInfo);
 
  /* Subscription badge */
  var badgeArea = document.getElementById('subBadgeArea');
@@ -2329,7 +2496,7 @@ function renderDashboard(customer, orders) {
 
  /* Rewards tab — journey + coupons */
  renderRewardJourney(orderCount);
- renderCoupons(customer.coupons || generateDemoCoupons(orderCount));
+ renderCoupons(coupons);
 
  /* Orders tab */
  renderOrders(orders);
