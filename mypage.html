@@ -1249,11 +1249,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
 <!-- モバイル外部ブラウザ → 江田畜産 公式LINE に飛ばす（SDK 不要・最速） -->
+<!-- ※ LIFF 経由 (?page=shop 等) の場合はスキップ → 認証後にルーティング -->
 <script>
 (function(){
  if (!/iPhone|iPad|Android/i.test(navigator.userAgent)) return;
  if (/LIFF|Line\//i.test(navigator.userAgent)) return;
- if (new URLSearchParams(location.search).has('liff.state')) return;
+ var p = new URLSearchParams(location.search);
+ if (p.has('liff.state') || p.has('page')) return;
  try { if (localStorage.getItem('eda-mypage-session')) return; } catch(e){}
  window.location.replace('https://line.me/R/ti/p/@706sgiuq');
 })();
@@ -2074,6 +2076,14 @@ function switchTab(tabId) {
 
 /* ---- Render Dashboard ---- */
 function renderDashboard(customer, orders) {
+ // ★ LIFF 認証完了後のルーティング: ?page=shop → shop.html へリダイレクト
+ var _rp = new URLSearchParams(location.search);
+ var _targetPage = _rp.get('page') || '';
+ if (_targetPage === 'shop') {
+ window.location.replace('shop.html');
+ return;
+ }
+
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
  dashboard.classList.add('show');
