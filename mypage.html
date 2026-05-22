@@ -1248,14 +1248,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<!-- モバイル外部ブラウザ → LINE アプリ即リダイレクト（SDK 不要・最速） -->
+<!-- モバイル外部ブラウザ → 江田畜産 公式LINE に飛ばす（SDK 不要・最速） -->
 <script>
 (function(){
  if (!/iPhone|iPad|Android/i.test(navigator.userAgent)) return;
  if (/LIFF|Line\//i.test(navigator.userAgent)) return;
  if (new URLSearchParams(location.search).has('liff.state')) return;
  try { if (localStorage.getItem('eda-mypage-session')) return; } catch(e){}
- window.location.replace('https://liff.line.me/1657458587-mz1dR9e6');
+ window.location.replace('https://line.me/R/ti/p/@706sgiuq');
 })();
 </script>
 <!-- LIFF SDK (LINE Front-end Framework) -->
@@ -1794,12 +1794,12 @@ async function initLiff() {
  return;
  }
 
- // モバイル＋外部ブラウザ → LINE アプリで直接開く（head の即時スクリプトと二重保険）
+ // モバイル＋外部ブラウザ → 公式 LINE に飛ばす（head の即時スクリプトと二重保険）
  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
  const isLiffBrowser = /LIFF|Line\//i.test(navigator.userAgent) ||
   new URLSearchParams(location.search).has('liff.state');
  if (isMobile && !isLiffBrowser) {
- window.location.replace('https://liff.line.me/' + LIFF_ID);
+ window.location.replace('https://line.me/R/ti/p/@706sgiuq');
  return;
  }
 
