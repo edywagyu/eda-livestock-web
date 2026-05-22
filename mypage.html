@@ -1248,6 +1248,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
+<!-- モバイル外部ブラウザ → LINE アプリ即リダイレクト（SDK 不要・最速） -->
+<script>
+(function(){
+ if (!/iPhone|iPad|Android/i.test(navigator.userAgent)) return;
+ if (/LIFF|Line\//i.test(navigator.userAgent)) return;
+ if (new URLSearchParams(location.search).has('liff.state')) return;
+ try { if (localStorage.getItem('eda-mypage-session')) return; } catch(e){}
+ window.location.replace('https://liff.line.me/1657458587-mz1dR9e6');
+})();
+</script>
 <!-- LIFF SDK (LINE Front-end Framework) -->
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }</style>
@@ -1784,12 +1794,12 @@ async function initLiff() {
  return;
  }
 
- // モバイル＋外部ブラウザ → LINE アプリで直接開く
+ // モバイル＋外部ブラウザ → LINE アプリで直接開く（head の即時スクリプトと二重保険）
  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
- const isLiffBrowser = /LIFF|Line/i.test(navigator.userAgent) ||
+ const isLiffBrowser = /LIFF|Line\//i.test(navigator.userAgent) ||
   new URLSearchParams(location.search).has('liff.state');
  if (isMobile && !isLiffBrowser) {
- window.location.href = 'https://liff.line.me/' + LIFF_ID;
+ window.location.replace('https://liff.line.me/' + LIFF_ID);
  return;
  }
 
