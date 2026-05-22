@@ -265,14 +265,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  justify-content: center;
  background: var(--color-cream);
 }
-/* Mobile: form first, benefits compact */
+/* Mobile: form first, benefits as compact strip */
 @media (max-width: 700px) {
  .login-layout { grid-template-columns: 1fr; min-height: auto; }
  .login-form-side { order: -1; padding: 100px 24px 40px; }
- .login-benefits { padding: 40px 24px 48px; }
- .login-benefits-title { font-size: 26px; }
- .login-benefits-sub { margin-bottom: 24px; }
- .benefit-list { gap: 18px; }
+ .login-benefits { padding: 32px 24px; }
+ .login-benefits-eyebrow,
+ .login-benefits-title,
+ .login-benefits-sub { display: none; }
+ .benefit-list { flex-direction: row; gap: 12px; justify-content: center; }
+ .benefit-item { flex-direction: column; align-items: center; text-align: center; gap: 6px; flex: 1; max-width: 100px; }
+ .benefit-icon { width: 36px; height: 36px; border-radius: 10px; }
+ .benefit-icon svg { width: 18px; height: 18px; }
+ .benefit-text h4 { font-size: 11px; line-height: 1.4; }
+ .benefit-text p { display: none; }
 }
 .login-card {
  max-width: 480px;
@@ -1926,6 +1932,35 @@ try {
 /* ---- LIFF 初期化 ---- */
 let _liffReady = false;
 async function initLiff() {
+ // モバイル＋外部ブラウザ → 公式 LINE に飛ばす（head の即時スクリプトと二重保険）
+ const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+ const _qs = new URLSearchParams(location.search);
+ const isLiffBrowser = /LIFF|Line\//i.test(navigator.userAgent) || _qs.has('liff.state');
+ if (isMobile && !isLiffBrowser) {
+ window.location.replace('https://line.me/R/ti/p/@706sgiuq');
+ return;
+ }
+
+ // ★ LIFF リダイレクトコールバック検知（LINE OAuth 後に戻ってきた場合）
+ // URL に liff.state / code / access_token があれば LIFF init を最優先
+ var isLiffCallback = _qs.has('liff.state') || _qs.has('code') || _qs.has('liff_oauth');
+ if (isLiffCallback && LIFF_ID) {
+ try {
+  await liff.init({ liffId: LIFF_ID });
+  _liffReady = true;
+  if (liff.isLoggedIn()) {
+  showState('authenticating');
+  var profile = await liff.getProfile();
+  currentLineProfile = profile;
+  await tryLineLogin(profile);
+  return;
+  }
+ } catch (err) {
+  console.warn('[LIFF callback init error]', err);
+ }
+ // LIFF callback だがログインできなかった → セッション確認 or ログイン画面
+ }
+
  // ★ セッション復元: 30日以内の既存セッションがあればダッシュボード復元
  if (currentSession) {
  const ts = currentSession.issued || currentSession.ts || 0;
@@ -1933,7 +1968,6 @@ async function initLiff() {
   await restoreSession(currentSession);
   return;
  }
- // 期限切れ → クリア
  localStorage.removeItem('eda-mypage-session');
  currentSession = null;
  }
@@ -1943,34 +1977,26 @@ async function initLiff() {
  return;
  }
 
- // モバイル＋外部ブラウザ → 公式 LINE に飛ばす（head の即時スクリプトと二重保険）
- const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
- const isLiffBrowser = /LIFF|Line\//i.test(navigator.userAgent) ||
-  new URLSearchParams(location.search).has('liff.state');
- if (isMobile && !isLiffBrowser) {
- window.location.replace('https://line.me/R/ti/p/@706sgiuq');
- return;
- }
-
+ // ★ 通常の LIFF init（非コールバック時）
  try {
- await liff.init({ liffId: LIFF_ID });
- _liffReady = true;
+ if (!_liffReady) {
+  await liff.init({ liffId: LIFF_ID });
+  _liffReady = true;
+ }
  if (!liff.isInClient() && !liff.isLoggedIn()) {
   showState('external');
   return;
  }
  if (!liff.isLoggedIn()) {
-  liff.login({ redirectUri: location.href });
+  liff.login({ redirectUri: location.origin + location.pathname });
   return;
  }
- // ログイン済み → プロフィール取得
  showState('authenticating');
  const profile = await liff.getProfile();
  currentLineProfile = profile;
  await tryLineLogin(profile);
  } catch (err) {
  console.error('[LIFF init error]', err);
- // LINE ブラウザ内で LIFF init が失敗 → ログイン画面ではなくダッシュボード表示
  if (/Line\//i.test(navigator.userAgent)) {
   var lineName = 'お客';
   try { lineName = decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)line_name\s*=\s*([^;]*).*$)|^.*$/, '$1')) || 'お客'; } catch(_){}
@@ -1986,8 +2012,13 @@ function liffLineLogin() {
  var btn = document.getElementById('lineLoginBtn');
  if (btn) { btn.disabled = true; btn.textContent = 'LINE に接続中...'; }
 
+ // ?page=shop があれば維持、それ以外はクリーンURL
+ var _redirUrl = location.origin + location.pathname;
+ var _p = new URLSearchParams(location.search);
+ if (_p.get('page')) _redirUrl += '?page=' + _p.get('page');
+
  if (_liffReady && typeof liff !== 'undefined') {
- liff.login({ redirectUri: window.location.href });
+ liff.login({ redirectUri: _redirUrl });
  return;
  }
  // LIFF 未初期化 → 初期化を待ってからログイン
@@ -1996,9 +2027,8 @@ function liffLineLogin() {
  retries++;
  if (_liffReady && typeof liff !== 'undefined') {
   clearInterval(waitInit);
-  liff.login({ redirectUri: window.location.href });
+  liff.login({ redirectUri: _redirUrl });
  } else if (retries > 30) {
-  // 3秒待っても初期化できない → LIFF URL で直接ログイン
   clearInterval(waitInit);
   window.location.href = 'https://liff.line.me/' + (LIFF_ID || '1657458587-mz1dR9e6');
  }
