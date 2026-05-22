@@ -181,8 +181,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  flex-direction: column;
  justify-content: center;
+ align-items: flex-end;
  position: relative;
  overflow: hidden;
+}
+.login-benefits-inner {
+ width: 100%;
+ max-width: 400px;
 }
 .login-benefits::before {
  content: '';
@@ -263,7 +268,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  flex-direction: column;
  justify-content: center;
+ align-items: center;
  background: var(--color-cream);
+}
+.login-form-inner {
+ width: 100%;
+ max-width: 400px;
 }
 /* Mobile: form first, benefits as compact strip */
 @media (max-width: 700px) {
@@ -1439,6 +1449,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <!-- 左: 特典紹介 -->
  <div class="login-benefits">
+  <div class="login-benefits-inner">
   <p class="login-benefits-eyebrow">MEMBER BENEFITS</p>
   <h2 class="login-benefits-title">会員だけの<br>特別な体験を。</h2>
   <p class="login-benefits-sub">無料の会員登録で、限定商品や特典を<br>お楽しみいただけます。</p>
@@ -1473,9 +1484,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
   </div>
  </div>
+ </div>
 
  <!-- 右: ログイン / 登録フォーム -->
  <div class="login-form-side">
+  <div class="login-form-inner">
   <p style="font-family:var(--font-display);font-size:11px;letter-spacing:var(--tracking-widest);color:var(--color-gold-soft);margin:0 0 12px;text-align:center;">MEMBERSHIP</p>
   <h3 style="font-family:var(--font-jp-serif);font-size:20px;color:var(--color-forest);margin:0 0 6px;text-align:center;">無料会員登録</h3>
   <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 28px;line-height:1.6;">LINEで30秒で登録完了</p>
@@ -1518,6 +1531,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:10px;">届かない場合は迷惑メールをご確認ください</p>
   </div>
   <div class="login-error" id="otpError"></div>
+  </div>
  </div>
 
  </div>
