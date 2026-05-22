@@ -1314,57 +1314,96 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <!-- ① LIFF 外アクセス: ログイン方法選択 -->
  <div class="login-card" id="liffExternal" style="display:none;">
- <div class="login-icon">
- <div class="login-icon-circle">
- <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
- </div>
- </div>
- <h2 class="login-card-title">マイページにログイン</h2>
- <p class="login-card-sub" style="margin-bottom:24px;">
- ご注文履歴・定期便・配送状況を確認できます。
+ <h2 class="login-card-title" style="font-size:22px;margin-bottom:4px;">会員ページにログイン</h2>
+ <p class="login-card-sub" style="margin-bottom:28px;">
+ 注文履歴・限定商品・クーポン特典をご利用いただけます。
  </p>
- <!-- LINE でログイン（OAuth ウェブフロー） -->
- <button class="login-btn" id="lineLoginBtn" onclick="liffLineLogin()" style="background:#06C755;color:white;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;font-weight:700;">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
- LINE でログイン
+
+ <!-- ===== LINE ログイン（メイン推奨） ===== -->
+ <div style="background:linear-gradient(135deg,#06C755 0%,#05B54E 100%);border-radius:16px;padding:24px 20px;margin-bottom:20px;">
+ <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+  <div>
+  <p style="color:white;font-size:16px;font-weight:700;margin:0;font-family:var(--font-jp);">LINE でログイン</p>
+  <p style="color:rgba(255,255,255,0.75);font-size:11px;margin:2px 0 0;">おすすめ — 次回から自動ログイン</p>
+  </div>
+ </div>
+ <button class="login-btn" id="lineLoginBtn" onclick="liffLineLogin()" style="background:white;color:#06C755;font-weight:700;font-size:15px;box-shadow:0 2px 12px rgba(0,0,0,0.15);">
+  LINE アカウントで続ける
  </button>
- <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:10px;line-height:1.5;">
- LINE アカウントで認証して自動ログインします
- </p>
- <!-- メールでログイン（LINE外のブラウザ向け） -->
- <div style="margin-top:24px;border-top:1px solid rgba(15,61,46,0.1);padding-top:20px;">
- <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 12px;">メールアドレスでログイン</p>
+ <div style="display:flex;gap:16px;margin-top:14px;justify-content:center;">
+  <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.8);">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+  限定商品が見られる
+  </span>
+  <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.8);">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+  クーポン自動配信
+  </span>
+  <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.8);">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+  配送通知
+  </span>
+ </div>
+ </div>
+
+ <!-- スマホ誘導（PC のみ表示） -->
+ <div id="qrLineGuide" style="display:none;padding:16px;background:rgba(6,199,85,0.06);border:1px solid rgba(6,199,85,0.15);border-radius:12px;text-align:center;margin-bottom:20px;">
+ <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 6px;">スマートフォンなら公式 LINE から簡単アクセス</p>
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener"
+  style="display:inline-flex;align-items:center;gap:6px;padding:8px 20px;background:#06C755;color:white;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+  江田畜産 公式 LINE を友だち追加
+ </a>
+ </div>
+ <script>
+ // PC でのみ LINE 友だち追加ガイドを表示
+ if (!/iPhone|iPad|Android/i.test(navigator.userAgent)) {
+ var g = document.getElementById('qrLineGuide');
+ if (g) g.style.display = '';
+ }
+ </script>
+
+ <!-- ===== 区切り ===== -->
+ <div style="display:flex;align-items:center;gap:12px;margin:4px 0 20px;">
+ <div style="flex:1;height:1px;background:rgba(15,61,46,0.1);"></div>
+ <span style="font-size:11px;color:var(--color-ink-muted);white-space:nowrap;">または</span>
+ <div style="flex:1;height:1px;background:rgba(15,61,46,0.1);"></div>
+ </div>
+
+ <!-- ===== メール OTP ログイン ===== -->
  <div id="otpStep1">
+ <p style="font-size:13px;color:var(--color-ink);text-align:center;margin:0 0 12px;font-weight:600;">メールアドレスでログイン</p>
  <div class="login-input-wrap">
- <span class="login-input-icon">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
- </span>
- <input type="email" class="login-input" id="otpEmailInput" placeholder="ご注文時のメールアドレス" autocomplete="email">
+  <span class="login-input-icon">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+  </span>
+  <input type="email" class="login-input" id="otpEmailInput" placeholder="ご注文時のメールアドレス" autocomplete="email">
  </div>
  <button class="login-btn" style="background:var(--color-forest);color:#fff;margin-top:8px;" onclick="sendOtp()">
- 認証コードを送信
+  認証コードを送信
  </button>
  </div>
  <div id="otpStep2" style="display:none;">
  <p style="font-size:13px;color:var(--color-ink);text-align:center;margin:0 0 12px;font-weight:600;">6桁の認証コードを入力</p>
  <div class="login-input-wrap">
- <span class="login-input-icon" style="font-size:16px;">🔑</span>
- <input type="text" class="login-input" id="otpCodeInput" placeholder="123456" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="letter-spacing:0.3em;text-align:center;font-size:20px;font-weight:700;">
+  <span class="login-input-icon" style="font-size:16px;">🔑</span>
+  <input type="text" class="login-input" id="otpCodeInput" placeholder="123456" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="letter-spacing:0.3em;text-align:center;font-size:20px;font-weight:700;">
  </div>
  <button class="login-btn" style="background:var(--color-forest);color:#fff;margin-top:8px;" onclick="verifyOtp()">
- ログイン
+  ログイン
  </button>
  <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:8px;">メールが届かない場合は迷惑メールフォルダをご確認ください</p>
  </div>
  <div class="login-error" id="otpError"></div>
- </div>
 
- <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.04);border-radius:12px;text-align:center;">
- <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">まだご注文がない方</p>
- <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
- <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:var(--color-forest);color:#fff;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">🛒 Shop</a>
- <a href="subscription.html" style="display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest);border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;">📅 定期便</a>
- </div>
+ <!-- 未注文の方向け -->
+ <div style="margin-top:24px;padding:16px;background:rgba(15,61,46,0.03);border-radius:12px;text-align:center;">
+ <p style="font-size:12px;color:var(--color-ink-muted);margin:0 0 10px;">はじめての方</p>
+ <a href="shop.html" style="display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:var(--color-forest);color:#fff;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;">
+  お買い物をはじめる
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+ </a>
  </div>
  </div>
 
