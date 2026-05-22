@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .page-header {
  background: var(--color-forest);
  color: white;
- padding: 140px 0 64px;
+ padding: 120px 0 48px;
  position: relative;
  overflow: hidden;
 }
@@ -149,9 +149,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .page-eyebrow { color: var(--color-gold); font-family: var(--font-display); font-size: 13px; letter-spacing: var(--tracking-widest); }
 .page-title {
  font-family: var(--font-display);
- font-size: clamp(48px, 8vw, 100px);
+ font-size: clamp(40px, 6vw, 72px);
  line-height: 0.92;
- margin: 16px 0 16px;
+ margin: 12px 0 12px;
 }
 .page-subtitle {
  font-family: var(--font-jp-serif);
@@ -164,18 +164,120 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ MY PAGE SPECIFIC ================ */
 
-/* Login Section */
+/* Login Section — Full redesign */
 .mypage-login-section {
- padding: 48px 0 64px;
+ padding: 48px 0 80px;
+}
+.login-layout {
+ max-width: 880px;
+ margin: 0 auto;
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 0;
+ background: white;
+ border-radius: 20px;
+ overflow: hidden;
+ box-shadow: 0 8px 40px rgba(15, 61, 46, 0.08), 0 1px 3px rgba(15, 61, 46, 0.04);
+ border: 1px solid rgba(15, 61, 46, 0.06);
+}
+@media (max-width: 700px) {
+ .login-layout { grid-template-columns: 1fr; }
+}
+/* Left: Benefits */
+.login-benefits {
+ background: linear-gradient(160deg, var(--color-forest) 0%, #164D38 60%, #1A5A42 100%);
+ color: white;
+ padding: 48px 36px;
+ position: relative;
+ overflow: hidden;
+}
+.login-benefits::before {
+ content: '';
+ position: absolute;
+ top: -80px; right: -60px;
+ width: 280px; height: 280px;
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.12), transparent 65%);
+ border-radius: 50%;
+ pointer-events: none;
+}
+.login-benefits::after {
+ content: '';
+ position: absolute;
+ bottom: -40px; left: -20px;
+ width: 160px; height: 160px;
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.08), transparent 65%);
+ border-radius: 50%;
+ pointer-events: none;
+}
+.login-benefits-eyebrow {
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: var(--tracking-widest);
+ color: var(--color-gold);
+ margin-bottom: 16px;
+ position: relative;
+}
+.login-benefits-title {
+ font-family: var(--font-display);
+ font-size: 32px;
+ line-height: 1.1;
+ margin: 0 0 8px;
+ position: relative;
+}
+.login-benefits-sub {
+ font-family: var(--font-jp-serif);
+ font-size: 13px;
+ opacity: 0.75;
+ line-height: 1.7;
+ margin: 0 0 32px;
+ position: relative;
+}
+.benefit-list {
+ display: flex;
+ flex-direction: column;
+ gap: 20px;
+ position: relative;
+}
+.benefit-item {
+ display: flex;
+ align-items: flex-start;
+ gap: 14px;
+}
+.benefit-icon {
+ width: 40px; height: 40px;
+ border-radius: 10px;
+ background: rgba(212, 169, 59, 0.15);
+ display: flex; align-items: center; justify-content: center;
+ flex-shrink: 0;
+ color: var(--color-gold);
+}
+.benefit-text h4 {
+ font-family: var(--font-jp);
+ font-size: 14px;
+ font-weight: 600;
+ margin: 0 0 2px;
+}
+.benefit-text p {
+ font-size: 12px;
+ opacity: 0.65;
+ margin: 0;
+ line-height: 1.5;
+}
+/* Right: Form */
+.login-form-side {
+ padding: 48px 36px;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
 }
 .login-card {
  max-width: 480px;
  margin: 0 auto;
  background: white;
  border-radius: 12px;
- padding: 40px 32px;
- box-shadow: 0 4px 24px rgba(15, 61, 46, 0.06);
- border: 1px solid var(--color-bone);
+ padding: 0;
+ box-shadow: none;
+ border: none;
 }
 .login-card-title {
  font-family: var(--font-jp-serif);
@@ -202,6 +304,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-light));
  display: flex; align-items: center; justify-content: center;
  color: var(--color-gold);
+}
+/* standalone login-card (linkAccount etc) */
+.login-card-standalone {
+ max-width: 480px;
+ margin: 0 auto;
+ background: white;
+ border-radius: 12px;
+ padding: 40px 32px;
+ box-shadow: 0 4px 24px rgba(15, 61, 46, 0.06);
+ border: 1px solid var(--color-bone);
 }
 .login-tabs {
  display: flex;
@@ -1293,76 +1405,122 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </header>
 
 <!-- ========= PAGE HEADER ========= -->
-<section class="page-header">
+<section class="page-header" id="pageHeader">
  <div class="container">
  <div class="page-header-content">
- <p class="page-eyebrow">MY PAGE</p>
- <h1 class="page-title">MYPAGE</h1>
- <p class="page-subtitle">注文履歴の確認、配送状況の追跡、定期便の管理をまとめてご確認いただけます。</p>
+ <p class="page-eyebrow">MEMBERSHIP</p>
+ <h1 class="page-title">MY PAGE</h1>
+ <p class="page-subtitle">会員登録・ログインで、限定商品のご注文や<br>特典をお楽しみいただけます。</p>
  </div>
  </div>
 </section>
 
 <!-- ========= LIFF AUTH SECTION ========= -->
 <section class="mypage-login-section" id="loginSection">
- <div class="container-narrow">
+ <div class="container-narrow" style="max-width:920px;">
+
  <!-- 初期状態: LIFF 読込中 -->
- <div class="login-card" id="liffLoading" style="text-align:center;padding:48px 32px;">
+ <div id="liffLoading" style="text-align:center;padding:80px 32px;">
  <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(15,61,46,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
- <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE 認証を確認中...</p>
+ <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">認証を確認中...</p>
  </div>
 
- <!-- ① LIFF 外アクセス: ログイン -->
- <div class="login-card" id="liffExternal" style="display:none;max-width:420px;">
+ <!-- ① LIFF 外アクセス: 2カラム ログイン / 登録 -->
+ <div class="login-layout" id="liffExternal" style="display:none;">
 
- <!-- LINE ボタン（メイン） -->
- <button id="lineLoginBtn" onclick="liffLineLogin()"
-  style="width:100%;padding:16px;background:#06C755;color:white;border-radius:12px;font-family:var(--font-jp);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;border:none;transition:opacity .2s;">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
- LINE でログイン
- </button>
+ <!-- 左: 特典紹介 -->
+ <div class="login-benefits">
+  <p class="login-benefits-eyebrow">MEMBER BENEFITS</p>
+  <h2 class="login-benefits-title">会員だけの<br>特別な体験を。</h2>
+  <p class="login-benefits-sub">無料の会員登録で、限定商品や特典を<br>お楽しみいただけます。</p>
 
- <!-- 区切り -->
- <div style="display:flex;align-items:center;gap:12px;margin:24px 0;">
- <div style="flex:1;height:1px;background:var(--color-bone);"></div>
- <span style="font-size:11px;color:#B0A894;letter-spacing:0.08em;">or</span>
- <div style="flex:1;height:1px;background:var(--color-bone);"></div>
+  <div class="benefit-list">
+  <div class="benefit-item">
+   <div class="benefit-icon">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+   </div>
+   <div class="benefit-text">
+   <h4>有機和牛の限定注文</h4>
+   <p>会員限定のオーガニック和牛を<br>お取り寄せいただけます</p>
+   </div>
+  </div>
+  <div class="benefit-item">
+   <div class="benefit-icon">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+   </div>
+   <div class="benefit-text">
+   <h4>注文履歴・配送追跡</h4>
+   <p>過去のご注文や配送状況を<br>いつでも確認できます</p>
+   </div>
+  </div>
+  <div class="benefit-item">
+   <div class="benefit-icon">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+   </div>
+   <div class="benefit-text">
+   <h4>会員限定クーポン</h4>
+   <p>特別なクーポンや先行販売の<br>ご案内をお届けします</p>
+   </div>
+  </div>
+  </div>
  </div>
 
- <!-- メール OTP -->
- <div id="otpStep1">
- <div class="login-input-wrap" style="margin-bottom:12px;">
-  <span class="login-input-icon">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
-  </span>
-  <input type="email" class="login-input" id="otpEmailInput" placeholder="メールアドレス" autocomplete="email">
+ <!-- 右: ログイン / 登録フォーム -->
+ <div class="login-form-side">
+  <p style="font-family:var(--font-display);font-size:11px;letter-spacing:var(--tracking-widest);color:var(--color-gold-soft);margin:0 0 12px;text-align:center;">MEMBERSHIP</p>
+  <h3 style="font-family:var(--font-jp-serif);font-size:20px;color:var(--color-forest);margin:0 0 6px;text-align:center;">無料会員登録</h3>
+  <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 28px;line-height:1.6;">LINEで30秒で登録完了</p>
+
+  <!-- LINE ボタン（メイン） -->
+  <button id="lineLoginBtn" onclick="liffLineLogin()"
+  style="width:100%;padding:16px;background:#06C755;color:white;border-radius:12px;font-family:var(--font-jp);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;border:none;transition:all .2s;box-shadow:0 2px 12px rgba(6,199,85,0.25);">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+  LINE で会員登録 / ログイン
+  </button>
+  <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin:8px 0 0;line-height:1.5;">はじめての方はLINEで簡単に登録できます</p>
+
+  <!-- 区切り -->
+  <div style="display:flex;align-items:center;gap:12px;margin:28px 0 20px;">
+  <div style="flex:1;height:1px;background:var(--color-bone);"></div>
+  <span style="font-size:10px;color:#B0A894;letter-spacing:0.08em;">既に会員の方</span>
+  <div style="flex:1;height:1px;background:var(--color-bone);"></div>
+  </div>
+
+  <!-- メール OTP -->
+  <div id="otpStep1">
+  <div class="login-input-wrap" style="margin-bottom:12px;">
+   <span class="login-input-icon">
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+   </span>
+   <input type="email" class="login-input" id="otpEmailInput" placeholder="登録済みメールアドレス" autocomplete="email">
+  </div>
+  <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="sendOtp()">
+   メールでログイン
+  </button>
+  </div>
+  <div id="otpStep2" style="display:none;">
+  <p style="font-size:14px;color:var(--color-ink);text-align:center;margin:0 0 14px;font-weight:600;">認証コードを入力</p>
+  <div class="login-input-wrap" style="margin-bottom:12px;">
+   <input type="text" class="login-input" id="otpCodeInput" placeholder="6桁のコード" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="letter-spacing:0.3em;text-align:center;font-size:22px;font-weight:700;padding-left:16px;">
+  </div>
+  <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="verifyOtp()">
+   ログイン
+  </button>
+  <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:10px;">届かない場合は迷惑メールをご確認ください</p>
+  </div>
+  <div class="login-error" id="otpError"></div>
  </div>
- <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="sendOtp()">
-  メールでログイン
- </button>
- </div>
- <div id="otpStep2" style="display:none;">
- <p style="font-size:14px;color:var(--color-ink);text-align:center;margin:0 0 14px;font-weight:600;">認証コードを入力</p>
- <div class="login-input-wrap" style="margin-bottom:12px;">
-  <input type="text" class="login-input" id="otpCodeInput" placeholder="6桁のコード" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="letter-spacing:0.3em;text-align:center;font-size:22px;font-weight:700;padding-left:16px;">
- </div>
- <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="verifyOtp()">
-  ログイン
- </button>
- <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:10px;">届かない場合は迷惑メールをご確認ください</p>
- </div>
- <div class="login-error" id="otpError"></div>
 
  </div>
 
  <!-- ② LIFF 内: LINE 認証ログイン中 -->
- <div class="login-card" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;">
+ <div class="login-card-standalone" id="liffAuthenticating" style="display:none;text-align:center;padding:48px 32px;">
  <div style="display:inline-block;width:48px;height:48px;border:3px solid rgba(6,199,85,0.15);border-top-color:#06C755;border-radius:50%;animation:spin 0.9s linear infinite;"></div>
  <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">LINE で認証中...</p>
  </div>
 
  <!-- ③ LIFF 内 認証成功 + 新規 (line_uid 未連携) → アカウント連携フォーム -->
- <div class="login-card" id="liffLinkAccount" style="display:none;">
+ <div class="login-card-standalone" id="liffLinkAccount" style="display:none;">
  <div class="login-icon">
  <div class="login-icon-circle">
  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1387,7 +1545,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </span>
  <input type="email" class="login-input" id="linkEmailInput" placeholder="メールアドレス" aria-label="メールアドレス" autocomplete="email" required>
  </div>
- <button type="submit" class="login-btn" id="linkBtn">
+ <button type="submit" class="login-btn" id="linkBtn" style="background:var(--color-forest);color:#fff;">
  登録してマイページへ
  </button>
  <div class="login-error" id="linkError"></div>
@@ -1894,18 +2052,12 @@ async function restoreSession(session) {
 
 /* line_uid で GAS にログイン照会 */
 async function tryLineLogin(profile) {
- // LINE プロフィールを使ってダッシュボードを表示（GAS 照合は補助）
  var lineSession = {
  line_uid: profile.userId,
  display_name: profile.displayName,
  picture_url: profile.pictureUrl || '',
  issued: Date.now()
  };
-
- // 会員ゲート解錠
- if (typeof window.unlockMember === 'function') {
- window.unlockMember({ line_uid: profile.userId, name: profile.displayName });
- }
 
  try {
  var result = await window.EDA_API.post('line_login', {
@@ -1914,19 +2066,23 @@ async function tryLineLogin(profile) {
  picture_url: profile.pictureUrl || ''
  });
  if (result.ok && result.matched && result.customer) {
- // 既存顧客 → フルデータでダッシュボード
+ // ✅ 登録済み顧客 → 会員ゲート解錠 → ダッシュボード or shop へ直行
+ if (typeof window.unlockMember === 'function') {
+  window.unlockMember({ line_uid: profile.userId, name: profile.displayName, email: result.customer.email });
+ }
  lineSession.email = result.customer.email || '';
  localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
  renderDashboard(result.customer, result.orders || []);
  return;
  }
  } catch (err) {
- console.warn('[line_login API error — fallback to LINE profile]', err);
+ console.warn('[line_login API error]', err);
  }
 
- // GAS 未登録 or API エラー → LINE プロフィールだけでダッシュボード表示
- localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
- renderDashboard({ name: profile.displayName, total_orders: 0, total_spent: 0 }, []);
+ // 🆕 未登録 LINE ユーザー → 会員登録フォームを表示
+ var welcomeEl = document.getElementById('liffWelcomeName');
+ if (welcomeEl) welcomeEl.textContent = (profile.displayName || '') + ' さん、ようこそ！';
+ showState('linkAccount');
 }
 
 /* 状態切替 */
@@ -1934,7 +2090,7 @@ function showState(state) {
  [liffLoading, liffExternal, liffAuthenticating, liffLinkAccount].forEach(el => {
  if (el) el.style.display = 'none';
  });
- if (state === 'external') liffExternal.style.display = '';
+ if (state === 'external') liffExternal.style.display = 'grid';
  else if (state === 'authenticating') liffAuthenticating.style.display = '';
  else if (state === 'linkAccount') liffLinkAccount.style.display = '';
 }
@@ -1972,6 +2128,18 @@ document.getElementById('linkForm')?.addEventListener('submit', async () => {
  issued: Date.now()
  };
  localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
+
+ // 会員ゲート解錠
+ if (typeof window.unlockMember === 'function') {
+ window.unlockMember({ line_uid: currentLineProfile.userId, name: currentLineProfile.displayName, email: email });
+ }
+
+ // ?page=shop なら shop.html へ直行
+ var _linkRp = new URLSearchParams(location.search);
+ if (_linkRp.get('page') === 'shop') {
+ window.location.replace('shop.html');
+ return;
+ }
  renderDashboard(cust, result.orders || []);
  } catch (err) {
  showError(errEl, err.message || '連携に失敗しました');
@@ -1997,6 +2165,11 @@ function skipLinkAndEnter() {
  };
  localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
 
+ // 会員ゲート解錠
+ if (typeof window.unlockMember === 'function') {
+ window.unlockMember({ line_uid: currentLineProfile.userId, name: currentLineProfile.displayName });
+ }
+
  // GAS にも LINE のみで登録（バックグラウンド）
  if (window.EDA_API) {
  window.EDA_API.post('line_register', {
@@ -2006,6 +2179,12 @@ function skipLinkAndEnter() {
  }).catch(function(){});
  }
 
+ // ?page=shop なら shop.html へ直行
+ var _skipRp = new URLSearchParams(location.search);
+ if (_skipRp.get('page') === 'shop') {
+ window.location.replace('shop.html');
+ return;
+ }
  renderDashboard(lineCustomer, []);
 }
 
@@ -2073,6 +2252,8 @@ function renderDashboard(customer, orders) {
 
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
+ var _pgH = document.getElementById('pageHeader');
+ if (_pgH) { _pgH.querySelector('.page-eyebrow').textContent = 'MY PAGE'; _pgH.querySelector('.page-title').textContent = 'MYPAGE'; _pgH.querySelector('.page-subtitle').innerHTML = '注文履歴の確認、配送状況の追跡、定期便の管理を<br>まとめてご確認いただけます。'; }
  dashboard.classList.add('show');
 
  var orderCount = customer.total_orders || orders.length || 0;
