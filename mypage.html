@@ -1821,6 +1821,13 @@ async function initLiff() {
  await tryLineLogin(profile);
  } catch (err) {
  console.error('[LIFF init error]', err);
+ // LINE ブラウザ内で LIFF init が失敗 → ログイン画面ではなくダッシュボード表示
+ if (/Line\//i.test(navigator.userAgent)) {
+  var lineName = 'お客';
+  try { lineName = decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)line_name\s*=\s*([^;]*).*$)|^.*$/, '$1')) || 'お客'; } catch(_){}
+  renderDashboard({ name: lineName, total_orders: 0, total_spent: 0 }, []);
+  return;
+ }
  showState('external');
  }
 }
@@ -1898,48 +1905,39 @@ async function restoreSession(session) {
 
 /* line_uid で GAS にログイン照会 */
 async function tryLineLogin(profile) {
+ // LINE プロフィールを使ってダッシュボードを表示（GAS 照合は補助）
+ var lineSession = {
+ line_uid: profile.userId,
+ display_name: profile.displayName,
+ picture_url: profile.pictureUrl || '',
+ issued: Date.now()
+ };
+
+ // 会員ゲート解錠
+ if (typeof window.unlockMember === 'function') {
+ window.unlockMember({ line_uid: profile.userId, name: profile.displayName });
+ }
+
  try {
- const result = await window.EDA_API.post('line_login', {
+ var result = await window.EDA_API.post('line_login', {
  line_uid: profile.userId,
  display_name: profile.displayName,
  picture_url: profile.pictureUrl || ''
  });
  if (result.ok && result.matched && result.customer) {
- // 既存顧客 → ダッシュボード
- currentSession = {
- line_uid: profile.userId,
- display_name: profile.displayName,
- email: result.customer.email || '',
- issued: Date.now()
- };
- localStorage.setItem('eda-mypage-session', JSON.stringify(currentSession));
- // ★ 会員ゲート解錠 (shop.html の有機JAS ロック解除)
- if (typeof window.unlockMember === 'function') {
- window.unlockMember({
- line_uid: profile.userId,
- name: profile.displayName,
- email: result.customer.email || ''
- });
- }
+ // 既存顧客 → フルデータでダッシュボード
+ lineSession.email = result.customer.email || '';
+ localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
  renderDashboard(result.customer, result.orders || []);
- } else {
- // line_uid 未連携 → アカウント連携フォーム
- // LINE ログインだけでも会員扱いにする (line_uid あれば識別できる)
- if (typeof window.unlockMember === 'function') {
- window.unlockMember({
- line_uid: profile.userId,
- name: profile.displayName
- });
- }
- showState('linkAccount');
- document.getElementById('liffWelcomeName').textContent =
- (profile.displayName || 'ご利用ありがとうございます') + ' 様';
+ return;
  }
  } catch (err) {
- console.error('[line_login error]', err);
- showError(document.getElementById('linkError'), 'LINE ログインに失敗しました');
- showState('linkAccount');
+ console.warn('[line_login API error — fallback to LINE profile]', err);
  }
+
+ // GAS 未登録 or API エラー → LINE プロフィールだけでダッシュボード表示
+ localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
+ renderDashboard({ name: profile.displayName, total_orders: 0, total_spent: 0 }, []);
 }
 
 /* 状態切替 */
