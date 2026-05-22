@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "freee": {
+      "command": "node",
+      "args": ["./mcp-freee/src/index.mjs"]
+    }
+  }
+}

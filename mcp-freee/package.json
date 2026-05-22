@@ -1,0 +1,20 @@
+{
+  "name": "mcp-freee",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Claude Code MCP server for freee 会計 API (eda-livestock-web)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "mcp-freee": "src/index.mjs"
+  },
+  "scripts": {
+    "start": "node src/index.mjs",
+    "auth": "node src/oauth.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  }
+}

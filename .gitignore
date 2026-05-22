@@ -5,6 +5,8 @@ node_modules/
 .env
 .env*
 *.env
+!.env.example
+!**/.env.example
 
 # 大容量バイナリ資料 (ローカル保持のみ)
 会社資料/

@@ -1,0 +1,5 @@
+node_modules/
+.freee-tokens.json
+.env
+.env.local
+*.log
