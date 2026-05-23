@@ -133,30 +133,40 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .lang-toggle { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.24em; color: white; cursor: pointer; }
 .lang-toggle .active { color: var(--color-gold); }
 
-/* ================ HERO ================ */
+/* ================ HERO (コンパクト版 — 下のプランがメイン) ================ */
 .sub-hero {
  position: relative;
- min-height: 60vh;
  background:
- radial-gradient(circle at 80% 30%, rgba(212,169,59,0.12), transparent 50%),
- linear-gradient(135deg, #0F3D2E 0%, #0A2D21 60%, #061a12 100%);
+ radial-gradient(circle at 85% 40%, rgba(212,169,59,0.10), transparent 55%),
+ linear-gradient(135deg, #0F3D2E 0%, #0A2D21 100%);
  color: white;
- padding: 140px 0 80px;
+ padding: 120px 0 56px;
  overflow: hidden;
+ border-bottom: 1px solid rgba(212,169,59,0.18);
 }
-/* ▼ Tom: 写真差し替えスロット — sub-hero-photo の src を差し替え。空のままならグラデのみ表示 */
-.sub-hero-photo {
+/* 装飾的アクセント (微かなゴールドの円) */
+.sub-hero::before {
+ content: '';
  position: absolute;
- inset: 0;
- width: 100%;
- height: 100%;
- object-fit: cover;
- z-index: 0;
- opacity: 0.32;
- mix-blend-mode: luminosity;
+ top: 50%; right: -160px;
+ width: 480px; height: 480px;
+ border: 1px solid rgba(212,169,59,0.10);
+ border-radius: 50%;
+ transform: translateY(-50%);
+ pointer-events: none;
 }
-.sub-hero-photo:not([src]),
-.sub-hero-photo[src=""] { display: none; }
+.sub-hero::after {
+ content: '';
+ position: absolute;
+ top: 50%; right: -80px;
+ width: 320px; height: 320px;
+ border: 1px solid rgba(212,169,59,0.06);
+ border-radius: 50%;
+ transform: translateY(-50%);
+ pointer-events: none;
+}
+/* 旧 sub-hero-photo は表示しない (背景画像は使わずグラデのみ) */
+.sub-hero-photo { display: none !important; }
 .sub-hero-content { position: relative; z-index: 1; max-width: 760px; }
 .sub-hero-eyebrow {
  display: inline-flex; align-items: center; gap: 8px;
@@ -180,18 +190,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .sub-hero-title {
  font-family: var(--font-jp-serif);
- font-size: clamp(32px, 5.4vw, 60px);
- line-height: 1.2;
+ font-size: clamp(28px, 4.2vw, 44px);
+ line-height: 1.3;
  font-weight: 700;
- margin-bottom: 22px;
- letter-spacing: -0.005em;
+ margin-bottom: 16px;
+ letter-spacing: 0.005em;
+ word-break: keep-all;
 }
 .sub-hero-title .accent { color: var(--color-gold); }
 .sub-hero-sub {
- font-size: clamp(14px, 1.4vw, 17px);
- line-height: 1.9;
+ font-size: clamp(13.5px, 1.2vw, 15.5px);
+ line-height: 1.85;
  color: rgba(255,255,255,0.85);
- margin-bottom: 32px;
+ margin-bottom: 24px;
 }
 .sub-hero-promo {
  display: inline-flex;
@@ -251,7 +262,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .btn-ghost:hover { background: rgba(212,169,59,0.12); }
 
 .sub-hero-trust {
- display: flex; gap: 24px; margin-top: 40px; padding-top: 32px;
+ display: flex; gap: 16px; margin-top: 24px; padding-top: 20px;
  border-top: 1px solid rgba(212,169,59,0.18);
  flex-wrap: wrap;
 }
