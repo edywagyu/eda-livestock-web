@@ -438,6 +438,146 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  margin-top: 2px;
 }
 
+/* ====== Per-item gift toggle (Amazon/Rakuten inspired) ====== */
+.order-card {
+ border-radius: 14px;
+ border: 1.5px solid rgba(15,61,46,0.12);
+ background: white;
+ overflow: hidden;
+ transition: border-color 0.3s var(--ease-out-expo), background 0.3s var(--ease-out-expo), box-shadow 0.3s var(--ease-out-expo);
+}
+.order-card--gift {
+ border-color: rgba(212,169,59,0.5);
+ background: linear-gradient(180deg, #FFFCF0 0%, #FFFFFF 100%);
+ box-shadow: 0 4px 16px rgba(212,169,59,0.1);
+}
+.order-card .order-item {
+ border-bottom: 0;
+ padding: 14px 18px 8px;
+}
+.order-card .order-item:last-child { padding-bottom: 8px; }
+.item-dest-control {
+ display: flex;
+ margin: 0 14px 4px;
+ border: 1.5px solid var(--color-bone);
+ border-radius: 10px;
+ overflow: hidden;
+ background: var(--color-paper);
+}
+.item-dest-btn {
+ flex: 1;
+ padding: 10px 14px;
+ font-size: 12.5px;
+ font-weight: 700;
+ font-family: var(--font-jp);
+ border: none;
+ background: transparent;
+ color: var(--color-ink-muted);
+ cursor: pointer;
+ transition: all 0.25s var(--ease-out-expo);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 6px;
+ line-height: 1;
+}
+.item-dest-btn:first-child {
+ border-right: 1.5px solid var(--color-bone);
+}
+.item-dest-btn.active-self {
+ background: rgba(15,61,46,0.08);
+ color: var(--color-forest);
+}
+.item-dest-btn.active-gift {
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.08));
+ color: #9F6B00;
+}
+.item-dest-btn:not(.active-self):not(.active-gift):hover {
+ background: rgba(212,169,59,0.06);
+ color: var(--color-ink);
+}
+.item-gift-expand {
+ margin: 4px 14px 14px;
+ padding: 14px 16px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.08), rgba(212,169,59,0.03));
+ border: 1px dashed rgba(212,169,59,0.4);
+ border-radius: 10px;
+ animation: giftExpandIn 0.3s var(--ease-out-expo);
+}
+@keyframes giftExpandIn {
+ from { opacity: 0; transform: translateY(-6px); }
+ to { opacity: 1; transform: translateY(0); }
+}
+.item-gift-row {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ margin-bottom: 8px;
+}
+.item-gift-label {
+ font-size: 12px;
+ font-weight: 700;
+ color: var(--color-forest);
+ font-family: var(--font-jp);
+ white-space: nowrap;
+}
+.item-gift-select {
+ flex: 1;
+ padding: 8px 12px;
+ border: 1px solid var(--color-bone);
+ border-radius: 8px;
+ font-size: 13px;
+ font-family: var(--font-jp);
+ background: white;
+ color: var(--color-ink);
+}
+.item-gift-select:focus {
+ outline: none;
+ border-color: var(--color-gold);
+}
+.item-gift-note {
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ margin: 0;
+ line-height: 1.5;
+}
+/* Destination item preview chips */
+.dest-assigned-items {
+ margin-top: 12px;
+ padding: 10px 14px;
+ background: rgba(212,169,59,0.06);
+ border: 1px solid rgba(212,169,59,0.2);
+ border-radius: 8px;
+}
+.dest-assigned-label {
+ font-family: var(--font-jp);
+ font-size: 11px;
+ font-weight: 700;
+ color: var(--color-forest);
+ margin-bottom: 8px;
+}
+.dest-assigned-chip {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 8px;
+ padding: 4px 10px 4px 4px;
+ font-size: 11.5px;
+ color: var(--color-ink);
+ font-weight: 600;
+ margin: 0 4px 4px 0;
+}
+.dest-assigned-chip-img {
+ width: 24px;
+ height: 24px;
+ border-radius: 4px;
+ background-size: cover;
+ background-position: center;
+ flex-shrink: 0;
+}
+
 /* ============ DESTINATION GROUPS ============ */
 .dest-group {
  background: var(--color-paper);
@@ -1035,6 +1175,11 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .order-item-info span { font-size: 10.5px; }
  .order-item-price { font-size: 14px; }
  .gift-noshi-row { grid-template-columns: 1fr; }
+ .order-card .order-item { padding: 12px 14px 6px; }
+ .item-dest-control { margin: 0 10px 4px; }
+ .item-dest-btn { padding: 8px 10px; font-size: 11.5px; }
+ .item-gift-expand { margin: 4px 10px 12px; padding: 12px 14px; }
+ .item-gift-row { flex-direction: column; align-items: stretch; gap: 6px; }
  .payment-option { padding: 12px 14px; }
  .summary-card { padding: 18px 18px; }
  .summary-row.total { font-size: 14px; }
@@ -1378,10 +1523,6 @@ function init() {
  subscription = { plan: params.get('plan') };
  localStorage.setItem(SUB_KEY, JSON.stringify(subscription));
  }
- if (params.get('mode') === 'gift') {
- cartItems.forEach(i => { i.gift = true; });
- }
-
  // ★ subscription.html で入力済の顧客情報を読み込んでプリフィル
  try {
  const c = JSON.parse(localStorage.getItem('eda-customer') || 'null');
@@ -1395,16 +1536,27 @@ function init() {
  }
  } catch (e) {}
 
- // すべての単品を最初は self に紐付け
+ // mode=gift: 全商品をギフト送り先に割当
+ if (params.get('mode') === 'gift' && cartItems.length > 0) {
+ const giftDest = {
+  id: 'gift-' + Date.now(), type: 'gift',
+  name: '', tel: '', zip: '', pref: '', address: '',
+  noshi: 'none', fromName: '', message: '',
+  itemIds: cartItems.map((_, i) => i)
+ };
+ destinations.push(giftDest);
+ destinations[0].itemIds = [];
+ } else if (params.get('mode') === 'multi' && cartItems.length > 0) {
+ // mode=multi: 自宅に全商品 + 空のギフト送り先を追加
  destinations[0].itemIds = cartItems.map((_, i) => i);
-
- // mode=multi で来た場合: ギフト送付先を自動追加 (空のまま2件目を表示)
- if (params.get('mode') === 'multi') {
  destinations.push({
- id: 'gift-' + Date.now(),
- type: 'gift', name: '', tel: '', zip: '', pref: '', address: '',
- noshi: 'none', fromName: '', message: '', itemIds: []
+  id: 'gift-' + Date.now(), type: 'gift',
+  name: '', tel: '', zip: '', pref: '', address: '',
+  noshi: 'none', fromName: '', message: '', itemIds: []
  });
+ } else {
+ // デフォルト: 全商品を自宅に紐付け
+ destinations[0].itemIds = cartItems.map((_, i) => i);
  }
 
  // LINE 会員なら contactMethod を自動プリセット
@@ -1435,7 +1587,7 @@ function init() {
  if (banner) {
  const note = document.createElement('div');
  note.className = 'prefill-note';
- note.innerHTML = '🎁 複数の方へ贈るモード — 「+ 別の配送先を追加」で最大 5 件まで送り先を分けられます。各アイテムを送り先にドラッグまたはチェックで割当て。';
+ note.innerHTML = '🎁 複数の方へ贈るモード — 各商品の「🎁 贈り物として送る」をタップして送り先を選択してください。「+ 別の配送先を追加」で最大5件まで分けられます。';
  banner.appendChild(note);
  }
  }, 100);
@@ -1446,12 +1598,11 @@ function init() {
 function getMode() {
  const hasSub = !!subscription;
  const hasItems = cartItems.length > 0;
- const hasGift = cartItems.some(i => i.gift);
- const hasMultiDest = destinations.length > 1;
- if (hasMultiDest) return 'multi';
+ const giftDestsWithItems = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0);
+ if (giftDestsWithItems.length > 1) return 'multi';
  if (hasSub && hasItems) return 'subandadd';
  if (hasSub) return 'subscription';
- if (hasGift) return 'gift';
+ if (giftDestsWithItems.length === 1) return 'gift';
  return 'single';
 }
 function renderModeBanner() {
@@ -1473,98 +1624,84 @@ function renderModeBanner() {
  `;
 }
 
-/* ---- 注文リスト（自分用 / 贈答用 を2セクションに分離） ---- */
+/* ---- 注文リスト（アイテム別ギフト切替 — Amazon/楽天スタイル） ---- */
 function renderOrderList() {
  renderModeBanner();
  const list = document.getElementById('orderList');
-
- // 1. 定期便（あれば常に自分用セクションへ）
- const subHtml = (subscription && PLANS[subscription.plan]) ? (() => {
- const p = PLANS[subscription.plan];
- return `
- <div class="order-item order-item--sub" data-id="sub">
- <div class="order-item-img" style="background-image: image-set(url('public/images/products/drive/premium-slice.webp') type('image/webp'), url('public/images/products/drive/premium-slice.jpg'))"></div>
- <div class="order-item-info">
- <strong>⭐ ${p.name}</strong>
- <span>毎月お届け · 初月50%OFF適用</span>
- </div>
- <div class="order-item-price">
- ¥${p.half.toLocaleString()}
- <small>通常 ¥${p.regular.toLocaleString()}/月</small>
- </div>
- </div>
- `;
- })() : '';
-
- // 2. 単品アイテムを「自分用」「贈答用」に分類
- const selfItems = [];
- const giftBuckets = new Map(); // dest index → { dest, items[] }
-
- cartItems.forEach((item, i) => {
- const dest = findItemDestination(i);
- if (dest && dest.type === 'gift') {
- const key = destinations.indexOf(dest);
- if (!giftBuckets.has(key)) giftBuckets.set(key, { dest, items: [] });
- giftBuckets.get(key).items.push({ item, i });
- } else {
- selfItems.push({ item, i });
- }
- });
-
- function renderItemRow({ item, i }) {
- return `
- <div class="order-item" data-id="${i}">
- <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
- <div class="order-item-info">
- <strong>${item.title}</strong>
- <span>${item.variant} × ${item.qty}</span>
- </div>
- <div class="order-item-price">
- ¥${(item.price * item.qty).toLocaleString()}
- <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
- </div>
- </div>
- `;
- }
-
  let html = '';
 
- // --- 自分用セクション（定期便 + 自分用 単品） ---
- if (subHtml || selfItems.length > 0) {
- const selfCount = (subHtml ? 1 : 0) + selfItems.length;
+ // 1. 定期便カード（常に自宅用 — 切替不可）
+ if (subscription && PLANS[subscription.plan]) {
+ const p = PLANS[subscription.plan];
  html += `
- <section class="order-section order-section--self">
- <header class="order-section-head">
- <span class="order-section-icon">📦</span>
- <div class="order-section-text">
- <strong>ご自分用</strong>
- <small>ご自宅へお届け · ${selfCount} 点</small>
+ <div class="order-card">
+  <div class="order-item order-item--sub" data-id="sub">
+  <div class="order-item-img" style="background-image: image-set(url('public/images/products/drive/premium-slice.webp') type('image/webp'), url('public/images/products/drive/premium-slice.jpg'))"></div>
+  <div class="order-item-info">
+  <strong>⭐ ${p.name}</strong>
+  <span>毎月お届け · 初月50%OFF適用</span>
+  </div>
+  <div class="order-item-price">
+  ¥${p.half.toLocaleString()}
+  <small>通常 ¥${p.regular.toLocaleString()}/月</small>
+  </div>
+  </div>
+  <div class="item-dest-control" style="margin-bottom:14px;">
+  <button type="button" class="item-dest-btn active-self" style="cursor:default;border-right:0;" disabled>🏠 ご自宅にお届け（定期便）</button>
+  </div>
  </div>
- </header>
- ${subHtml}
- ${selfItems.map(renderItemRow).join('')}
- </section>
  `;
  }
 
- // --- 贈答用セクション（複数の送り先ごとに分けて表示） ---
- giftBuckets.forEach(({ dest, items }, key) => {
- const giftCount = items.length;
- const recipientLabel = dest.name
- ? `${dest.name} 様 へ`
- : `ギフト受取人 #${[...giftBuckets.keys()].indexOf(key) + 1}`;
+ // 2. 各商品カード（個別ギフト切替トグル付き）
+ cartItems.forEach((item, i) => {
+ const dest = findItemDestination(i);
+ const isGift = dest && dest.type === 'gift';
+ const destIdx = isGift ? destinations.indexOf(dest) : 0;
+
+ // ギフト展開パネル（送り先セレクタ + 備考）
+ let giftExpandHtml = '';
+ if (isGift) {
+  const giftDests = destinations.filter(d => d.type === 'gift');
+  const optionsHtml = giftDests.map(d => {
+  const idx = destinations.indexOf(d);
+  const gNum = giftDests.indexOf(d) + 1;
+  const label = d.name ? d.name + ' 様' : 'ギフト受取人 #' + gNum;
+  return '<option value="' + idx + '"' + (destIdx === idx ? ' selected' : '') + '>' + label + '</option>';
+  }).join('');
+  giftExpandHtml = `
+  <div class="item-gift-expand">
+  <div class="item-gift-row">
+   <span class="item-gift-label">📍 送り先</span>
+   <select class="item-gift-select" onchange="setItemDestination(${i}, parseInt(this.value))">
+   ${optionsHtml}
+   <option value="-1">＋ 新しい送り先を追加</option>
+   </select>
+  </div>
+  <p class="item-gift-note">📦 化粧箱入り · のし対応 · 価格の記載なし</p>
+  </div>
+  `;
+ }
+
  html += `
- <section class="order-section order-section--gift">
- <header class="order-section-head">
- <span class="order-section-icon">🎁</span>
- <div class="order-section-text">
- <strong>贈り物</strong>
- <small>${recipientLabel} · ${giftCount} 点</small>
+ <div class="order-card ${isGift ? 'order-card--gift' : ''}">
+  <div class="order-item" data-id="${i}">
+  <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
+  <div class="order-item-info">
+  <strong>${item.title}</strong>
+  <span>${item.variant} × ${item.qty}</span>
+  </div>
+  <div class="order-item-price">
+  ¥${(item.price * item.qty).toLocaleString()}
+  <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
+  </div>
+  </div>
+  <div class="item-dest-control">
+  <button type="button" class="item-dest-btn ${!isGift ? 'active-self' : ''}" onclick="toggleItemGift(${i}, false)">🏠 自宅にお届け</button>
+  <button type="button" class="item-dest-btn ${isGift ? 'active-gift' : ''}" onclick="toggleItemGift(${i}, true)">🎁 贈り物として送る</button>
+  </div>
+  ${giftExpandHtml}
  </div>
- <span class="order-section-badge">のし・化粧箱 無料</span>
- </header>
- ${items.map(renderItemRow).join('')}
- </section>
  `;
  });
 
@@ -1572,6 +1709,66 @@ function renderOrderList() {
  html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
  }
  list.innerHTML = html;
+}
+
+/* ---- アイテム別ギフト切替 ---- */
+function toggleItemGift(itemIdx, makeGift) {
+ // 現在の割当を解除
+ destinations.forEach(d => {
+ d.itemIds = d.itemIds.filter(id => id !== itemIdx);
+ });
+
+ if (makeGift) {
+ // 既存のギフト送り先があればそこへ、なければ新規作成
+ let giftDest = destinations.find(d => d.type === 'gift');
+ if (!giftDest) {
+  giftDest = {
+  id: 'gift-' + Date.now(), type: 'gift',
+  name: '', tel: '', zip: '', pref: '', address: '',
+  noshi: 'none', fromName: '', message: '', itemIds: []
+  };
+  destinations.push(giftDest);
+ }
+ giftDest.itemIds.push(itemIdx);
+ } else {
+ // 自宅に戻す
+ destinations[0].itemIds.push(itemIdx);
+ // 空になったギフト送り先を削除
+ destinations = destinations.filter((d, i) => i === 0 || d.itemIds.length > 0);
+ }
+
+ renderOrderList();
+ renderDestinations();
+ renderSummary();
+}
+
+function setItemDestination(itemIdx, newDestIdx) {
+ if (newDestIdx === -1) {
+ // 新規ギフト送り先を作成
+ const newDest = {
+  id: 'gift-' + Date.now(), type: 'gift',
+  name: '', tel: '', zip: '', pref: '', address: '',
+  noshi: 'none', fromName: '', message: '', itemIds: []
+ };
+ destinations.push(newDest);
+ newDestIdx = destinations.length - 1;
+ }
+
+ // 現在の割当を解除
+ destinations.forEach(d => {
+ d.itemIds = d.itemIds.filter(id => id !== itemIdx);
+ });
+ // 新しい送り先に割当
+ if (destinations[newDestIdx]) {
+ destinations[newDestIdx].itemIds.push(itemIdx);
+ }
+
+ // 空のギフト送り先を削除（移動先以外）
+ destinations = destinations.filter((d, i) => i === 0 || d.itemIds.length > 0);
+
+ renderOrderList();
+ renderDestinations();
+ renderSummary();
 }
 
 /* ---- 配送先グループ ---- */
@@ -1588,6 +1785,17 @@ function renderDestinations() {
  ? `🎁 ギフト送付先 ${dIdx > 0 ? `${dIdx}` : ''}`
  : '📦 ご自宅にお届け';
  const removable = dIdx > 0;
+ // 割当済みアイテムのプレビューチップ
+ const _aItems = (dest.itemIds || []).map(id => cartItems[id]).filter(Boolean);
+ let _aChips = '';
+ if (_aItems.length > 0) {
+ _aChips = '<div class="dest-assigned-items">'
+  + '<div class="dest-assigned-label">' + (isGift ? '🎁' : '📦') + ' この送り先のアイテム（' + _aItems.length + '点）</div>'
+  + _aItems.map(it => '<span class="dest-assigned-chip"><span class="dest-assigned-chip-img" style="background-image:url(\'' + (it.img || 'public/images/products/drive/sirloin.jpg') + '\')"></span>' + it.title + '</span>').join('')
+  + '</div>';
+ } else if (isGift) {
+ _aChips = '<div style="padding:10px 14px;background:rgba(200,16,46,0.06);border:1px dashed rgba(200,16,46,0.25);border-radius:8px;font-size:12px;color:var(--color-ink-muted);text-align:center;margin-top:8px;">⬆ 注文内容で「🎁 贈り物として送る」を選択するとこの送り先に商品が割り当てられます</div>';
+ }
  html += `
  <div class="dest-group">
  <div class="dest-group-head">
@@ -1597,6 +1805,7 @@ function renderDestinations() {
  </span>
  ${removable ? `<button class="dest-group-actions" onclick="removeDestination(${dIdx})">削除</button>` : ''}
  </div>
+ ${_aChips}
  <div class="dest-group-form">
  ${ subscription && dIdx === 0 && !isGift ? '' : '' /* 定期便登録者の自宅は別途トップで取得 */ }
  <div class="dest-form-row cols2">
