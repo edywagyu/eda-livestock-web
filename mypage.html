@@ -38,8 +38,8 @@
  --color-paper: #F5EFE3;
  --color-bone: #EFE8D7;
  --color-ink: #1A1A1A;
- --color-ink-muted: #5C5C5C;
- --color-ink-placeholder: #8A8070;
+ --color-ink-muted: #3D3D3D;
+ --color-ink-placeholder: #6B5F50;
  --color-gold-text: #7A6018;
  --color-red: #C8102E;
  --color-line: rgba(212, 169, 59, 0.18);
@@ -512,7 +512,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .dashboard-section > .container-narrow {
  position: relative;
  z-index: 1;
- padding-top: 108px;
+ padding-top: 140px;
 }
 
 /* Welcome Card — World-Class Floating Design */
@@ -529,7 +529,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  z-index: 2;
 }
 .welcome-card-top {
- background: linear-gradient(145deg, #071E14 0%, #0D3022 25%, #143D2B 50%, #185840 80%, #14503A 100%);
+ background: linear-gradient(145deg, #2C0D10 0%, #3F1419 25%, #5C2025 50%, #6B2429 80%, #4A1A1E 100%);
  color: white;
  padding: 36px 40px 32px;
  position: relative;
@@ -540,7 +540,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  position: absolute;
  top: -100px; right: -50px;
  width: 340px; height: 340px;
- background: radial-gradient(circle, rgba(212, 169, 59, 0.18), transparent 60%);
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.22), transparent 60%);
  border-radius: 50%;
  animation: goldPulse 6s ease-in-out infinite;
 }
@@ -799,11 +799,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .home-member-info { flex: 1; min-width: 0; }
 .home-member-name {
  font-family: var(--font-jp-serif); font-size: 18px;
- color: var(--color-ink); font-weight: 600; margin: 0 0 2px;
+ color: var(--color-ink); font-weight: 600; margin: 0 0 4px;
 }
 .home-member-id {
- font-family: var(--font-mono, monospace); font-size: 11px;
+ font-family: 'SF Mono', Menlo, monospace; font-size: 12px;
  color: var(--color-ink-muted); letter-spacing: 0.05em; margin: 0;
+ font-weight: 500;
 }
 .home-member-tier { margin-left: auto; }
 /* Quick info grid — 2x2 */
@@ -834,11 +835,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  line-height: 1.2; letter-spacing: -0.01em;
 }
 .home-info-value small {
- font-size: 12px; font-weight: 500; color: var(--color-ink-muted);
+ font-size: 13px; font-weight: 600; color: var(--color-ink-muted);
  margin-left: 2px;
 }
 .home-info-sub {
- font-size: 11px; color: var(--color-ink-muted); margin: 4px 0 0;
+ font-size: 12px; color: var(--color-ink-muted); margin: 6px 0 0; font-weight: 500;
 }
 /* Survey coupon card */
 .home-survey-card {
@@ -864,11 +865,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  box-shadow: 0 3px 10px rgba(184,115,51,0.3);
 }
 .home-survey-title {
- font-family: var(--font-jp-serif); font-size: 15px;
- color: var(--color-forest); font-weight: 600; margin: 0;
+ font-family: var(--font-jp-serif); font-size: 16px;
+ color: var(--color-forest); font-weight: 700; margin: 0;
 }
 .home-survey-sub {
- font-size: 12px; color: var(--color-ink-muted); margin: 2px 0 0;
+ font-size: 13px; color: var(--color-ink-muted); margin: 4px 0 0; font-weight: 500;
 }
 .home-survey-reward {
  display: flex; align-items: center; gap: 10px;
@@ -881,10 +882,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  flex-shrink: 0;
 }
 .home-survey-reward-text {
- font-size: 13px; color: var(--color-ink); font-weight: 600;
+ font-size: 14px; color: var(--color-ink); font-weight: 700;
 }
 .home-survey-reward-text small {
- display: block; font-size: 11px; color: var(--color-ink-muted); font-weight: 400;
+ display: block; font-size: 12px; color: var(--color-ink-muted); font-weight: 500; margin-top: 2px;
 }
 .home-survey-progress {
  height: 4px; background: var(--color-bone); border-radius: 4px;
@@ -1319,11 +1320,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* Empty orders — Aspirational */
 .empty-orders {
- background: linear-gradient(160deg, #071B12 0%, #0A2A1E 40%, #133D2C 100%);
+ background: linear-gradient(160deg, #2C0D10 0%, #4A1A1E 40%, #6B2429 100%);
  border-radius: 20px;
- border: 1px solid rgba(212,169,59,0.12);
- box-shadow: 0 16px 56px rgba(15, 61, 46, 0.2), 0 0 0 1px rgba(212,169,59,0.05);
- padding: 0;
+ border: 1px solid rgba(212,169,59,0.2);
+ box-shadow: 0 16px 56px rgba(74, 26, 30, 0.25), 0 0 0 1px rgba(212,169,59,0.1);
+ padding: 32px 20px;
  text-align: center;
  overflow: hidden;
  position: relative;
@@ -1336,30 +1337,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .empty-orders::before {
  content: '';
  position: absolute; inset: 0;
- background: radial-gradient(circle at 70% 30%, rgba(212,169,59,0.12), transparent 60%);
+ background:
+  radial-gradient(circle at 70% 30%, rgba(212,169,59,0.15), transparent 55%),
+  radial-gradient(circle at 20% 70%, rgba(184,115,51,0.1), transparent 55%);
  pointer-events: none;
 }
 .empty-orders-eyebrow {
  font-family: var(--font-display);
- font-size: 11px;
+ font-size: 12px;
  letter-spacing: var(--tracking-widest);
- color: var(--color-gold-bright);
- margin: 0 0 10px;
+ color: #F5D898;
+ margin: 0 0 14px;
  position: relative;
  text-transform: uppercase;
- z-index: 1;
+ z-index: 2;
+ font-weight: 700;
+ text-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 .empty-orders-text {
  font-family: var(--font-jp-serif);
- font-size: 18px;
- color: white;
- margin: 0 0 22px;
+ font-size: 20px;
+ color: #FFFFFF;
+ margin: 0 0 24px;
  position: relative;
  line-height: 1.7;
  padding: 0 24px;
- font-weight: 600;
- text-shadow: 0 2px 8px rgba(0,0,0,0.3);
- z-index: 1;
+ font-weight: 700;
+ text-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.6);
+ z-index: 2;
 }
 .shop-link {
  display: inline-flex;
@@ -1974,9 +1979,7 @@ button:focus-visible, a:focus-visible {
  .member-tier { font-size: 10px; padding: 4px 10px 4px 8px; }
  .welcome-tier-badge { font-size: 10px; padding: 4px 10px 4px 8px; }
  .welcome-card { margin-top: 0; }
- .dashboard-section > .container-narrow { padding-top: 88px; }
- .dashboard-section::before { height: 420px; }
- .dashboard-section::after { top: 320px; }
+ .dashboard-section > .container-narrow { padding-top: 110px; }
  .welcome-card-bottom.has-3-stats .welcome-stat { padding: 18px 8px; }
  .welcome-card-bottom.has-3-stats .welcome-stat-num { font-size: 22px; }
  /* Shop: mobile touch targets */
