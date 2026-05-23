@@ -655,7 +655,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  scrollbar-width: none;
  margin-bottom: 16px;
  box-shadow: 0 2px 16px rgba(15, 61, 46, 0.04);
+ position: relative;
 }
+/* Scroll fade indicator — right edge */
+.dash-tabs-wrap {
+ position: relative;
+}
+.dash-tabs-wrap::after {
+ content: '';
+ position: absolute; top: 0; right: 0; bottom: 0; width: 40px;
+ background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95));
+ pointer-events: none; border-radius: 0 14px 14px 0;
+ opacity: 1; transition: opacity 0.3s;
+}
+.dash-tabs-wrap.scrolled-end::after { opacity: 0; }
 .dash-tabs::-webkit-scrollbar { display: none; }
 .dash-tab {
  flex: 1;
@@ -693,6 +706,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .dash-tab:hover:not(.active) svg { opacity: 0.4; }
 .dash-tab-panel { display: none; }
 .dash-tab-panel.active { display: block; animation: fadeInUp 0.4s var(--ease-out-expo) both; }
+/* Staggered cascade for child elements */
+.dash-tab-panel.active > *:nth-child(1) { animation: fadeInUp 0.4s var(--ease-out-expo) both; animation-delay: 0s; }
+.dash-tab-panel.active > *:nth-child(2) { animation: fadeInUp 0.4s var(--ease-out-expo) both; animation-delay: 0.06s; }
+.dash-tab-panel.active > *:nth-child(3) { animation: fadeInUp 0.4s var(--ease-out-expo) both; animation-delay: 0.12s; }
+.dash-tab-panel.active > *:nth-child(4) { animation: fadeInUp 0.4s var(--ease-out-expo) both; animation-delay: 0.18s; }
+.dash-tab-panel.active > *:nth-child(5) { animation: fadeInUp 0.4s var(--ease-out-expo) both; animation-delay: 0.24s; }
+.dash-tab-panel.active > *:nth-child(n+6) { animation: fadeInUp 0.4s var(--ease-out-expo) both; animation-delay: 0.3s; }
 
 /* Home tab — 2-column grid on desktop */
 #panel-home {
@@ -1388,6 +1408,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: white; border-radius: 14px; padding: 0;
  border: 1px solid rgba(15,61,46,0.06); margin-bottom: 16px;
  box-shadow: 0 1px 4px rgba(15,61,46,0.03); overflow: hidden;
+ transition: all 0.4s var(--ease-out-expo);
+}
+.settings-card:hover {
+ border-color: rgba(212, 169, 59, 0.25);
+ box-shadow: 0 4px 16px rgba(15,61,46,0.06);
+ transform: translateY(-2px);
 }
 .settings-card-header {
  display: flex; align-items: center; gap: 12px;
@@ -1518,6 +1544,70 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .payment-card-visual { margin: 12px 16px; padding: 20px; }
  .payment-card-number { font-size: 15px; }
 }
+
+/* ================ CUSTOM MODAL ================ */
+.eda-modal-overlay {
+ position: fixed; inset: 0; z-index: 9999;
+ background: rgba(10,30,20,0.6);
+ backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+ display: flex; align-items: center; justify-content: center;
+ padding: 24px;
+ opacity: 0; transition: opacity 0.3s;
+}
+.eda-modal-overlay.show { opacity: 1; }
+.eda-modal {
+ background: white; border-radius: 20px;
+ padding: 36px 32px 28px; max-width: 420px; width: 100%;
+ box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+ border-top: 3px solid var(--color-gold);
+ transform: translateY(20px) scale(0.97);
+ transition: transform 0.4s var(--ease-out-expo);
+}
+.eda-modal-overlay.show .eda-modal { transform: translateY(0) scale(1); }
+.eda-modal-title {
+ font-family: var(--font-jp-serif); font-size: 20px;
+ color: var(--color-forest); margin: 0 0 10px; text-align: center;
+ font-weight: 600;
+}
+.eda-modal-body {
+ font-family: var(--font-jp); font-size: 14px;
+ color: var(--color-ink-muted); line-height: 1.8; text-align: center;
+ margin: 0 0 28px; white-space: pre-line;
+}
+.eda-modal-actions {
+ display: flex; gap: 10px; justify-content: center;
+}
+.eda-modal-btn {
+ flex: 1; padding: 14px 20px; border-radius: 12px;
+ font-family: var(--font-jp); font-size: 14px; font-weight: 600;
+ cursor: pointer; transition: all 0.2s; border: none;
+ max-width: 200px;
+}
+.eda-modal-btn.primary {
+ background: var(--color-forest); color: white;
+}
+.eda-modal-btn.primary:hover { background: var(--color-forest-deep); transform: translateY(-1px); }
+.eda-modal-btn.secondary {
+ background: var(--color-cream); color: var(--color-ink);
+ border: 1px solid var(--color-bone);
+}
+.eda-modal-btn.secondary:hover { background: var(--color-bone); }
+.eda-modal-btn.danger {
+ background: var(--color-error-bg); color: var(--color-red);
+ border: 1px solid var(--color-error-border);
+}
+.eda-modal-btn.danger:hover { background: #FEE2E2; }
+/* Inline form field errors */
+.settings-field.has-error input,
+.settings-field.has-error select {
+ border-color: var(--color-red);
+ box-shadow: 0 0 0 3px rgba(200,16,46,0.08);
+}
+.settings-field-error {
+ font-family: var(--font-jp); font-size: 11px;
+ color: var(--color-red); margin-top: 4px; display: none;
+}
+.settings-field.has-error .settings-field-error { display: block; }
 
 /* ================ PREMIUM MEMBER EXPERIENCE ================ */
 .member-tier {
@@ -2059,7 +2149,8 @@ button:focus-visible, a:focus-visible {
  <hr class="dash-section-divider fade-in fade-in-d2">
 
  <!-- Tab Navigation -->
- <nav class="dash-tabs fade-in fade-in-d2" id="dashTabs" role="tablist" aria-label="マイページナビゲーション">
+ <div class="dash-tabs-wrap fade-in fade-in-d2">
+ <nav class="dash-tabs" id="dashTabs" role="tablist" aria-label="マイページナビゲーション">
  <button class="dash-tab active" data-tab="home" role="tab" aria-selected="true" aria-controls="panel-home">
  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
  ホーム
@@ -2085,6 +2176,7 @@ button:focus-visible, a:focus-visible {
  設定
  </button>
  </nav>
+ </div>
 
  <!-- ====== TAB: HOME ====== -->
  <div class="dash-tab-panel active" id="panel-home">
@@ -2795,6 +2887,19 @@ function switchTab(tabId) {
  if (btn) btn.click();
 }
 
+/* ---- Tab bar scroll indicator ---- */
+(function() {
+ var tabs = document.getElementById('dashTabs');
+ var wrap = tabs && tabs.closest('.dash-tabs-wrap');
+ if (!tabs || !wrap) return;
+ function checkScroll() {
+  var atEnd = tabs.scrollLeft + tabs.clientWidth >= tabs.scrollWidth - 4;
+  wrap.classList.toggle('scrolled-end', atEnd);
+ }
+ tabs.addEventListener('scroll', checkScroll, { passive: true });
+ checkScroll();
+})();
+
 /* ---- Render Dashboard ---- */
 /* ---- Premium Helper Functions ---- */
 function getTimeGreeting() {
@@ -3136,10 +3241,17 @@ function saveShipping() {
  var city = document.getElementById('shipCity').value.trim();
  var addr = document.getElementById('shipAddr').value.trim();
  var phone = document.getElementById('shipPhone').value.trim();
- if (!name || !postal || !pref || !city || !phone) {
-  alert('必須項目を入力してください');
-  return;
- }
+ /* Inline validation */
+ var hasErr = false;
+ ['shipName','shipPostal','shipPref','shipCity','shipPhone'].forEach(function(id) {
+  var f = document.getElementById(id); if (!f) return;
+  var wrap = f.closest('.settings-field');
+  if (wrap) wrap.classList.remove('has-error');
+ });
+ [['shipName',name],['shipPostal',postal],['shipPref',pref],['shipCity',city],['shipPhone',phone]].forEach(function(pair) {
+  if (!pair[1]) { var f = document.getElementById(pair[0]); if(f){var w=f.closest('.settings-field');if(w)w.classList.add('has-error');} hasErr=true; }
+ });
+ if (hasErr) return;
  var ship = { name: name, postal: postal, pref: pref, city: city, addr: addr, phone: phone, updated: new Date().toISOString() };
  try { localStorage.setItem(SHIP_KEY, JSON.stringify(ship)); } catch(e){}
  /* Also save to GAS backend */
@@ -3172,8 +3284,9 @@ function autoFillAddress(postal) {
 }
 
 /* カード情報を削除 */
-function removeCard() {
- if (!confirm('保存されたカード情報を削除しますか？\n次回のご注文時に再度入力が必要になります。')) return;
+async function removeCard() {
+ var ok = await edaConfirm('カード情報の削除', '保存されたカード情報を削除しますか？\n次回のご注文時に再度入力が必要になります。', { ok: '削除する', danger: true });
+ if (!ok) return;
  try { localStorage.removeItem(CARD_KEY); } catch(e){}
  if (window.EDA_API) {
   var uid = '';
@@ -3183,6 +3296,7 @@ function removeCard() {
   window.EDA_API.post('update_payment', { line_uid: uid, email: em, card: null }).catch(function(){});
  }
  renderSettings({});
+ toast('カード情報を削除しました', 'success');
 }
 
 /* Checkout 完了時にカード情報を保存 (checkout.html から呼ばれる) */
@@ -3410,44 +3524,48 @@ function generateDemoCoupons(orderCount) {
 
 /* ---- Subscription Actions (GAS 連携版) ---- */
 async function subSkip() {
- if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
- if (!confirm('次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\n※スタッフがLINE/メールで詳細をご連絡いたします')) return;
+ if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+ var ok = await edaConfirm('配送スキップ', '次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\nスタッフがLINE/メールで詳細をご連絡いたします', { ok: 'スキップする' });
+ if (!ok) return;
  try {
  const result = await window.EDA_API.post('skip_subscription', {
  email: currentSession.email,
  reason: 'mypage_user_action'
  });
  if (result.ok) {
- toast('スキップ申請を受け付けました。担当者からご連絡します');
+ toast('スキップ申請を受け付けました', 'success');
  } else {
- toast('申請に失敗しました: ' + (result.error || ''));
+ toast('申請に失敗しました: ' + (result.error || ''), 'error');
  }
  } catch (err) {
- toast('通信エラーが発生しました');
+ toast('通信エラーが発生しました', 'error');
  }
 }
-function subChange() {
- if (!confirm('プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）')) return;
+async function subChange() {
+ var ok = await edaConfirm('プラン変更', 'プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）', { ok: 'LINEを開く' });
+ if (!ok) return;
  window.open('https://line.me/R/ti/p/@706sgiuq', '_blank');
 }
 async function subPause() {
- if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
- if (!confirm('定期便を一時停止しますか？\nいつでも再開できます\n\n※スタッフから停止期間の確認連絡をいたします')) return;
+ if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+ var ok = await edaConfirm('定期便の一時停止', '定期便を一時停止しますか？\nいつでも再開できます\n\nスタッフから停止期間の確認連絡をいたします', { ok: '一時停止する' });
+ if (!ok) return;
  try {
  const result = await window.EDA_API.post('skip_subscription', {
  email: currentSession.email,
  reason: 'mypage_user_pause_request'
  });
- if (result.ok) toast('一時停止リクエストを受け付けました');
- else toast('申請に失敗しました');
+ if (result.ok) toast('一時停止リクエストを受け付けました', 'success');
+ else toast('申請に失敗しました', 'error');
  } catch (err) {
- toast('通信エラーが発生しました');
+ toast('通信エラーが発生しました', 'error');
  }
 }
 async function subCancel() {
- if (!currentSession || !currentSession.email) { alert('再度ログインしてください'); return; }
- if (!confirm('本当に定期便を解約しますか？\n\n・継続利用で得られる年間特典が失効します\n・3ヶ月未満の場合は事務手数料3,300円が発生します\n・スタッフから最終確認のご連絡をいたします')) return;
- const reason = prompt('差し支えなければ解約理由をお聞かせください（任意）');
+ if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+ var ok = await edaConfirm('定期便の解約', '本当に定期便を解約しますか？\n\n・継続利用で得られる年間特典が失効します\n・3ヶ月未満の場合は事務手数料3,300円が発生します\n・スタッフから最終確認のご連絡をいたします', { ok: '解約申請する', danger: true });
+ if (!ok) return;
+ const reason = '';
  try {
  const result = await window.EDA_API.post('cancel_subscription', {
  email: currentSession.email,
@@ -3459,12 +3577,51 @@ async function subCancel() {
  toast('通信エラーが発生しました');
  }
 }
-function toast(msg) {
+/* ---- Custom Modal (replaces native alert/confirm) ---- */
+function edaModal(title, body, buttons) {
+ return new Promise(resolve => {
+  const overlay = document.createElement('div');
+  overlay.className = 'eda-modal-overlay';
+  const btnHtml = buttons.map((b, i) =>
+   '<button class="eda-modal-btn ' + (b.class || 'primary') + '" data-idx="' + i + '">' + escapeHtml(b.label) + '</button>'
+  ).join('');
+  overlay.innerHTML = '<div class="eda-modal">' +
+   '<h3 class="eda-modal-title">' + escapeHtml(title) + '</h3>' +
+   '<p class="eda-modal-body">' + escapeHtml(body) + '</p>' +
+   '<div class="eda-modal-actions">' + btnHtml + '</div></div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('show')));
+  function close(val) {
+   overlay.classList.remove('show');
+   setTimeout(() => overlay.remove(), 300);
+   resolve(val);
+  }
+  overlay.addEventListener('click', e => {
+   if (e.target === overlay) close(null);
+   const btn = e.target.closest('.eda-modal-btn');
+   if (btn) close(buttons[+btn.dataset.idx]?.value ?? +btn.dataset.idx);
+  });
+ });
+}
+function edaAlert(title, body) {
+ return edaModal(title, body, [{ label: 'OK', class: 'primary', value: true }]);
+}
+function edaConfirm(title, body, opts) {
+ return edaModal(title, body, [
+  { label: (opts && opts.cancel) || 'キャンセル', class: 'secondary', value: false },
+  { label: (opts && opts.ok) || '確認', class: (opts && opts.danger) ? 'danger' : 'primary', value: true }
+ ]);
+}
+
+function toast(msg, icon) {
  const t = document.createElement('div');
- t.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#0F3D2E;color:#fff;padding:14px 24px;border-radius:24px;font-size:13px;font-weight:600;z-index:1000;box-shadow:0 4px 16px rgba(0,0,0,0.2);max-width:90%;text-align:center';
- t.textContent = msg;
+ const iconHtml = icon === 'success' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg> ' :
+  icon === 'error' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg> ' : '';
+ t.style.cssText = 'position:fixed;bottom:calc(32px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:#0F3D2E;color:#fff;padding:14px 24px;border-radius:24px;font-size:13px;font-weight:600;z-index:10000;box-shadow:0 4px 16px rgba(0,0,0,0.2);max-width:90%;text-align:center;display:flex;align-items:center;gap:8px;border:1px solid rgba(212,169,59,0.2);opacity:0;transition:all .3s var(--ease-out-expo)';
+ t.innerHTML = iconHtml + escapeHtml(msg);
  document.body.appendChild(t);
- setTimeout(() => t.remove(), 3000);
+ requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
+ setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(10px)'; setTimeout(() => t.remove(), 300); }, 3000);
 }
 
 /* ---- Render Subscription ---- */
