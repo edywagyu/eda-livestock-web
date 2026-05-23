@@ -2003,7 +2003,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <strong>💳 クレジットカード</strong>
  <small>VISA · Master · JCB · AMEX</small>
  </label>
- <label class="checkout-radio">
+ <label class="checkout-radio" id="paymentApplePayOption" style="display:none;">
  <input type="radio" name="payment" value="apple">
  <strong>🍎 Apple Pay</strong>
  <small>かんたん決済</small>
@@ -2812,6 +2812,19 @@ selectPlan(currentPlan);
  hint.textContent = '';
  }
  });
+})();
+
+/* ===== Apple Pay 利用可能性チェック (Safari/iOS のみ表示) ===== */
+(function() {
+ const applePayEl = document.getElementById('paymentApplePayOption');
+ if (!applePayEl) return;
+ try {
+   if (window.ApplePaySession && typeof ApplePaySession.canMakePayments === 'function' && ApplePaySession.canMakePayments()) {
+     applePayEl.style.display = '';
+   }
+ } catch (e) {
+   /* canMakePayments() がエラーになる環境はサポート外として非表示のまま */
+ }
 })();
 </script>
 
