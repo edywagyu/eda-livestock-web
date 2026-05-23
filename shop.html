@@ -5846,7 +5846,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap > #science { order: 50; } /* 透明な育て方 */
 .shop-main-wrap > #reviews { order: 60; } /* お客様の声 */
 .shop-main-wrap > #hajimete { order: 70; } /* はじめての方へ */
-.shop-main-wrap > #dynProducts { order: 75; } /* 動的商品 */
+/* #dynProducts removed */
 .shop-main-wrap > #guide { order: 80; } /* 保存ガイド */
 .shop-main-wrap > #faq { order: 85; } /* FAQ */
 .shop-main-wrap > .shop-how { order: 90; } /* HOW IT WORKS */
@@ -9235,113 +9235,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .sub-cycle-loop small { font-size: 9px; }
 }
 
-/* ============================================================
- Dynamic Products Section (Sheet-driven)
- ============================================================ */
-.dyn-products { background: var(--color-cream); padding: 60px 0 40px; }
-.dyn-products[hidden] { display: none; }
-.dyn-products-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; }
-.dyn-products-head h2 {
- font-family: var(--font-display);
- font-size: clamp(28px, 4vw, 44px);
- color: var(--color-forest);
- margin: 0;
-}
-.dyn-products-head .dyn-pill {
- display: inline-block; background: var(--color-gold); color: var(--color-forest-deep);
- font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 4px 12px; border-radius: 20px;
-}
-.dyn-products-grid {
- display: grid; gap: 20px;
- grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-}
-.dyn-card {
- background: #fff; border-radius: 12px; overflow: hidden;
- box-shadow: 0 1px 6px rgba(0,0,0,0.04);
- transition: transform .25s var(--ease-out-expo), box-shadow .25s;
- display: flex; flex-direction: column;
-}
-.dyn-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
-.dyn-card-img {
- position: relative; padding-top: 75%;
- background: #f5f0e5 center / cover no-repeat; cursor: pointer;
-}
-.dyn-card-img-count {
- position: absolute; top: 10px; right: 10px;
- background: rgba(0,0,0,0.55); color: #fff; font-size: 11px;
-}
-.dyn-card-img-placeholder {
- position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
- font-size: 32px; color: rgba(15,61,46,0.25);
-}
-.dyn-card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-.dyn-card-cat {
- font-size: 10px; letter-spacing: .08em; color: var(--color-ink-muted); text-transform: uppercase;
-}
-.dyn-card-name { font-size: 15px; font-weight: 700; color: var(--color-forest); line-height: 1.3; }
-.dyn-card-desc {
- font-size: 12px; color: var(--color-ink-muted); line-height: 1.55;
- display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
- overflow: hidden; min-height: 56px;
-}
-.dyn-card-foot {
- display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px;
-}
-.dyn-card-price { font-size: 17px; font-weight: 700; color: var(--color-forest); font-variant-numeric: tabular-nums; }
-.dyn-card-add {
- background: var(--color-forest); color: #fff; border: none; border-radius: 8px;
- padding: 8px 14px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background .2s;
-}
-.dyn-card-add:hover { background: var(--color-gold); color: var(--color-forest-deep); }
-.dyn-card-add.added { background: #2ecc71; }
-
-/* ---- Image gallery lightbox ---- */
-.dyn-gallery {
- position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999;
- display: none; align-items: center; justify-content: center; padding: 20px;
-}
-.dyn-gallery.open { display: flex; }
-.dyn-gallery-frame {
- position: relative; max-width: min(900px, 100%); max-height: 100%;
- display: flex; flex-direction: column; align-items: center;
-}
-.dyn-gallery-img {
- max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 6px;
- user-select: none; -webkit-user-select: none;
-}
-.dyn-gallery-close {
- position: absolute; top: -50px; right: 0; background: rgba(255,255,255,0.1);
- color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%;
- font-size: 22px; cursor: pointer; transition: background .2s;
-}
-.dyn-gallery-close:hover { background: rgba(255,255,255,0.25); }
-.dyn-gallery-nav {
- position: absolute; top: 50%; transform: translateY(-50%);
- background: rgba(255,255,255,0.12); border: none; color: #fff; width: 44px; height: 44px;
- border-radius: 50%; font-size: 22px; cursor: pointer; transition: background .2s;
- display: flex; align-items: center; justify-content: center;
-}
-.dyn-gallery-nav:hover { background: rgba(255,255,255,0.3); }
-.dyn-gallery-nav.prev { left: 12px; }
-.dyn-gallery-nav.next { right: 12px; }
-.dyn-gallery-thumbs {
- display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center;
-}
-.dyn-gallery-thumbs img {
- width: 56px; height: 56px; object-fit: cover; border-radius: 4px;
- cursor: pointer; opacity: 0.5; transition: opacity .2s, transform .15s;
-}
-.dyn-gallery-thumbs img.active,
-.dyn-gallery-thumbs img:hover { opacity: 1; transform: scale(1.05); }
-
-@media (max-width: 600px) {
- .dyn-products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
- .dyn-card-body { padding: 10px 12px 12px; }
- .dyn-card-name { font-size: 13px; }
- .dyn-card-desc { font-size: 11px; min-height: 44px; -webkit-line-clamp: 2; }
- .dyn-card-add { padding: 6px 10px; font-size: 11px; }
- .dyn-gallery-thumbs img { width: 44px; height: 44px; }
-}
+/* Dynamic Products Section — removed (新着商品グリッド削除) */
 
 /* === Performance: reduce motion / save battery === */
 @media (prefers-reduced-motion: reduce) {
@@ -9727,27 +9621,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 </section>
 
-<!-- ========= DYNAMIC PRODUCTS (Sheet-driven via GAS) ========= -->
-<section class="dyn-products" id="dynProducts" hidden>
- <div class="container">
- <div class="dyn-products-head reveal">
- <h2>新着商品</h2>
- <span class="dyn-pill">JUST IN</span>
- </div>
- <div class="dyn-products-grid reveal" id="dynProductsGrid"></div>
- </div>
-</section>
-
-<!-- Lightbox for dynamic-product image gallery -->
-<div class="dyn-gallery" id="dynGallery" onclick="if(event.target===this)dynGalleryClose()">
- <div class="dyn-gallery-frame">
- <button class="dyn-gallery-close" onclick="dynGalleryClose()" aria-label="閉じる">×</button>
- <button class="dyn-gallery-nav prev" onclick="dynGalleryStep(-1)" aria-label="前へ">‹</button>
- <img class="dyn-gallery-img" id="dynGalleryImg" alt="">
- <button class="dyn-gallery-nav next" onclick="dynGalleryStep(1)" aria-label="次へ">›</button>
- <div class="dyn-gallery-thumbs" id="dynGalleryThumbs"></div>
- </div>
-</div>
+<!-- 新着商品セクション削除 -->
 
 <!-- ========= CATEGORY TABS ========= -->
 <section class="shop-snippet section" id="products">
@@ -10027,100 +9901,100 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
- <!-- 平飼い鶏 標準ライン（3品） -->
- <div class="product-card" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ","p":1280},{"id":50830250508586,"t":"2つセット【5%オフ】","p":2452},{"id":50830250541354,"t":"3つセット【10%オフ】","p":3456}]'>
+ <!-- 平飼い鶏 標準ライン（3品）— 250g パック -->
+ <div class="product-card" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ (250g)","p":640},{"id":50830250508586,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830250541354,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
  <div class="product-card-img" data-label="CHICKEN BREAST"></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Breast</span><span class="product-price">¥1,280〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Breast</span><span class="product-price">¥640〜</span></div>
  <p class="product-name">平飼い鶏 ムネ</p>
  <p class="product-desc">高タンパク・低脂肪のムネ肉。無投薬の平飼い鶏は身が締まって旨みが濃い。低温調理でサラダチキン、バンバンジーに。</p>
  <div class="product-stats">
- <div class="product-stat-item"><strong>3〜4人前</strong></div>
+ <div class="product-stat-item"><strong>1〜2人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥320</strong></div>
  <div class="product-stat-item">100g <strong>¥256</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 500g</strong></div>
- <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
+ <div class="product-stat-item">真空 <strong>1袋 250g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ","p":1280},{"id":50830293205290,"t":"2つセット【5%オフ】","p":2432},{"id":50830293238058,"t":"3つセット【10%オフ】","p":3456}]'>
+ <div class="product-card" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ (250g)","p":640},{"id":50830293205290,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830293238058,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
  <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge" style="background:var(--color-red);color:#fff">万能</span></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥1,280〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥640〜</span></div>
  <p class="product-name">平飼い鶏 モモ</p>
  <p class="product-desc">大分県産 平飼い・無投薬。<strong>照り焼き・唐揚げ・煮込み</strong>まで何にでも使える万能部位。週末の唐揚げ、平日のグリルに。</p>
  <div class="product-stats">
- <div class="product-stat-item"><strong>3〜4人前</strong></div>
+ <div class="product-stat-item"><strong>1〜2人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥320</strong></div>
  <div class="product-stat-item">100g <strong>¥256</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 500g</strong></div>
- <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
+ <div class="product-stat-item">真空 <strong>1袋 250g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ","p":1000},{"id":50830210826538,"t":"2つセット【5%オフ】","p":1900},{"id":50830210859306,"t":"3つセット【10%オフ】","p":2700}]'>
+ <div class="product-card" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ (250g)","p":500},{"id":50830210826538,"t":"2つセット (500g)【5%オフ】","p":950},{"id":50830210859306,"t":"3つセット (750g)【10%オフ】","p":1350}]'>
  <div class="product-card-img" data-label="CHICKEN MINCED"></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Minced</span><span class="product-price">¥1,000〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Minced</span><span class="product-price">¥500〜</span></div>
  <p class="product-name">平飼い鶏 ミンチ</p>
  <p class="product-desc">つくね、そぼろ、鶏団子鍋、キーマカレーに。無投薬で、お子さまの離乳食にも安心。</p>
  <div class="product-stats">
- <div class="product-stat-item"><strong>3〜4人前</strong></div>
+ <div class="product-stat-item"><strong>1〜2人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥250</strong></div>
- <div class="product-stat-item">100g <strong>¥333</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 300g</strong></div>
- <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
+ <div class="product-stat-item">100g <strong>¥200</strong></div>
+ <div class="product-stat-item">真空 <strong>1袋 250g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
- <!-- オーガニックライン（プレミアム / 価格3倍） -->
- <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ","p":3840},{"id":"organic-chicken-breast-2","t":"2つセット【5%オフ】","p":7296}]'>
+ <!-- オーガニックライン（プレミアム）— 250g パック -->
+ <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ (250g)","p":1920},{"id":"organic-chicken-breast-2","t":"2つセット (500g)【5%オフ】","p":3648}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN BREAST" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-breast.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥3,840〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥1,920〜</span></div>
  <p class="product-name">オーガニックチキン ムネ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ、上等の一品。</p>
  <div class="product-stats">
- <div class="product-stat-item"><strong>3〜4人前</strong></div>
+ <div class="product-stat-item"><strong>1〜2人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥960</strong></div>
  <div class="product-stat-item">100g <strong>¥768</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 500g</strong></div>
- <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
+ <div class="product-stat-item">真空 <strong>1袋 250g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-thigh","t":"1つ","p":3840},{"id":"organic-chicken-thigh-2","t":"2つセット【5%オフ】","p":7296}]'>
+ <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-thigh","t":"1つ (250g)","p":1920},{"id":"organic-chicken-thigh-2","t":"2つセット (500g)【5%オフ】","p":3648}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN THIGH" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-thigh.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥3,840〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥1,920〜</span></div>
  <p class="product-name">オーガニックチキン モモ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。週末の特別な照り焼きに。</p>
  <div class="product-stats">
- <div class="product-stat-item"><strong>3〜4人前</strong></div>
+ <div class="product-stat-item"><strong>1〜2人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥960</strong></div>
  <div class="product-stat-item">100g <strong>¥768</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 500g</strong></div>
- <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
+ <div class="product-stat-item">真空 <strong>1袋 250g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-minced","t":"1つ","p":3000},{"id":"organic-chicken-minced-2","t":"2つセット【5%オフ】","p":5700}]'>
+ <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-minced","t":"1つ (250g)","p":1500},{"id":"organic-chicken-minced-2","t":"2つセット (500g)【5%オフ】","p":2850}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN MINCED" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-minced.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥3,000〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥1,500〜</span></div>
  <p class="product-name">オーガニックチキン ミンチ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。上質のオーガニック鶏ミンチ。離乳食やつくねの主役に。</p>
  <div class="product-stats">
- <div class="product-stat-item"><strong>3〜4人前</strong></div>
+ <div class="product-stat-item"><strong>1〜2人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥750</strong></div>
- <div class="product-stat-item">100g <strong>¥1,000</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 300g</strong></div>
- <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
+ <div class="product-stat-item">100g <strong>¥600</strong></div>
+ <div class="product-stat-item">真空 <strong>1袋 250g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -11508,9 +11382,9 @@ body.has-sticky-cart .floating-phone-btn {
  --- */
  (function migrateCart() {
  const VARIANT_TO_TITLE = {
- '50830293172522': { title: '平飼い鶏 モモ', price: 1280 },
- '50830250475818': { title: '平飼い鶏 ムネ', price: 1280 },
- '50830210793770': { title: '平飼い鶏 ミンチ', price: 1000 },
+ '50830293172522': { title: '平飼い鶏 モモ', price: 640 },
+ '50830250475818': { title: '平飼い鶏 ムネ', price: 640 },
+ '50830210793770': { title: '平飼い鶏 ミンチ', price: 500 },
  '50830136082730': { title: 'サーロインステーキ', price: 3400 },
  '50830191427882': { title: 'ハンバーグ', price: 760 },
  '50830187200810': { title: '赤身スライス', price: 2600 },
@@ -11519,9 +11393,9 @@ body.has-sticky-cart .floating-phone-btn {
  '50830132314410': { title: 'サイコロステーキ', price: 1000 },
  '50982670532906': { title: 'ローストビーフ',price: 3000 },
  '50831001234567': { title: 'ミンチ', price: 1350 },
- 'organic-chicken-thigh': { title: 'オーガニックチキン モモ', price: 3840 },
- 'organic-chicken-breast': { title: 'オーガニックチキン ムネ', price: 3840 },
- 'organic-chicken-minced': { title: 'オーガニックチキン ミンチ', price: 3000 }
+ 'organic-chicken-thigh': { title: 'オーガニックチキン モモ', price: 1920 },
+ 'organic-chicken-breast': { title: 'オーガニックチキン ムネ', price: 1920 },
+ 'organic-chicken-minced': { title: 'オーガニックチキン ミンチ', price: 1500 }
  };
  let changed = false;
  items = items.map(item => {
@@ -11710,12 +11584,12 @@ body.has-sticky-cart .floating-phone-btn {
  'ハンバーグ:1つ': 'price_1TW74qGSkhU1UEciphBYGBDO',
  'ローストビーフ:1つ (100g)': 'price_1TW74qGSkhU1UEciK9LE14vR',
  '生ハム:1つ': 'price_1TW74rGSkhU1UEcidTIwRPd5',
- '平飼い鶏 ムネ:1つ': 'price_1TW74sGSkhU1UEcij8xFudVT',
- '平飼い鶏 モモ:1つ': 'price_1TW74tGSkhU1UEcilbKbPhGv',
- '平飼い鶏 ミンチ:1つ': 'price_1TW74uGSkhU1UEciOv09JHuD',
- 'オーガニックチキン ムネ:1つ': 'price_1TW74uGSkhU1UEciG30csXKD',
- 'オーガニックチキン モモ:1つ': 'price_1TW74vGSkhU1UEci6e5u6hec',
- 'オーガニックチキン ミンチ:1つ': 'price_1TW74wGSkhU1UEciMfeKnO9W',
+ '平飼い鶏 ムネ:1つ (250g)': 'price_1TW74sGSkhU1UEcij8xFudVT',
+ '平飼い鶏 モモ:1つ (250g)': 'price_1TW74tGSkhU1UEcilbKbPhGv',
+ '平飼い鶏 ミンチ:1つ (250g)': 'price_1TW74uGSkhU1UEciOv09JHuD',
+ 'オーガニックチキン ムネ:1つ (250g)': 'price_1TW74uGSkhU1UEciG30csXKD',
+ 'オーガニックチキン モモ:1つ (250g)': 'price_1TW74vGSkhU1UEci6e5u6hec',
+ 'オーガニックチキン ミンチ:1つ (250g)': 'price_1TW74wGSkhU1UEciMfeKnO9W',
  // ギフト商品 (orderGift から)
  'ヒレステーキ ギフト【松】 450g': 'price_1TW74xGSkhU1UEcibF0y54Yd',
  '赤身ステーキ ギフト【竹】 750g': 'price_1TW74xGSkhU1UEciDCqXHlsi',
@@ -12523,9 +12397,9 @@ body.has-sticky-cart .floating-phone-btn {
  'ROAST BEEF': { meals: '3〜4人前', perMeal: '¥750', per100g: '¥3,000', portions: '真空 100g', thaw: '冷蔵庫で約4時間', tag: 'パーティー前菜' },
  'OFFAL': { meals: '2〜3人前', perMeal: '¥280', per100g: '¥560', portions: '真空 1袋 150g', thaw: '冷蔵庫で約3時間', tag: '焼肉・もつ鍋に' },
  'WAGYU MINCED': { meals: '2〜3人前', perMeal: '¥450', per100g: '¥675', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'ハンバーグ・ボロネーゼ' },
- 'CHICKEN BREAST': { meals: '3〜4人前', perMeal: '¥320', per100g: '¥256', portions: '真空 1袋 500g', thaw: '流水で約20分', tag: '高たんぱく・無投薬' },
- 'CHICKEN THIGH': { meals: '3〜4人前', perMeal: '¥320', per100g: '¥256', portions: '真空 1袋 500g', thaw: '流水で約20分', tag: '子ども人気・万能' },
- 'CHICKEN MINCED': { meals: '3〜4人前', perMeal: '¥250', per100g: '¥333', portions: '真空 1袋 300g', thaw: '流水で約20分', tag: 'そぼろ丼・離乳食' },
+ 'CHICKEN BREAST': { meals: '1〜2人前', perMeal: '¥320', per100g: '¥256', portions: '真空 1袋 250g', thaw: '流水で約15分', tag: '高たんぱく・無投薬' },
+ 'CHICKEN THIGH': { meals: '1〜2人前', perMeal: '¥320', per100g: '¥256', portions: '真空 1袋 250g', thaw: '流水で約15分', tag: '子ども人気・万能' },
+ 'CHICKEN MINCED': { meals: '1〜2人前', perMeal: '¥250', per100g: '¥200', portions: '真空 1袋 250g', thaw: '流水で約15分', tag: 'そぼろ丼・離乳食' },
  'FILLET': { meals: '1〜2人前', perMeal: '¥1,750', per100g: '¥1,750', portions: '真空 1枚 200g', thaw: '冷蔵庫で約6時間', tag: '希少部位・上質' }
  };
 
@@ -12561,18 +12435,18 @@ body.has-sticky-cart .floating-phone-btn {
  const RECIPE_PRODUCTS = {
  'サーロインステーキ': { id: 50830136082730, price: 3400, title: 'サーロインステーキ', img: 'public/images/products/drive/sirloin.jpg' },
  '和牛の牛丼': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
- '平飼い鶏の唐揚げ': { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ '平飼い鶏の唐揚げ': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  'ハンバーグ': { id: 50830191427882, price: 760, title: 'ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
  '和牛のすき焼き': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
- '鶏ももの照り焼き': { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ '鶏ももの照り焼き': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のしゃぶしゃぶ': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
  '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: 'ローストビーフ', img: 'public/images/products/drive/hamburg.jpg' },
- '無投薬チキンカレー': { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
- '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 1280, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
+ '無投薬チキンカレー': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 640, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
  '和牛の肉じゃが': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
  '焼肉プレート': { id: 50830137655594, price: 1900, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
- '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 1000, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
- 'ローストチキン': { id: 50830293172522, price: 1280, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 500, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
+ 'ローストチキン': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のサイコロステーキ': { id: 50830132314410, price: 1000, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
  };
 
@@ -13003,7 +12877,7 @@ body.has-sticky-cart .floating-phone-btn {
  addons.push({ name: 'ハンバーグ 4個', price: 2400, reason: '子ども人気の定番' });
  }
  if (meat === 'meat_chicken' || (use === 'use_healthy' && planKey === 'starter')) {
- addons.push({ name: '平飼い鶏もも 1kg', price: 1280, reason: '高頻度の鶏肉ユーザー向け' });
+ addons.push({ name: '平飼い鶏もも 250g×4', price: 2432, reason: '高頻度の鶏肉ユーザー向け' });
  }
  if (use === 'use_weekend' && planKey === 'starter') {
  addons.push({ name: 'サーロインステーキ ×2', price: 6460, reason: '週末ステーキ用' });
