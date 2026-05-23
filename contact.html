@@ -4130,48 +4130,174 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Direct Contact</span>
  <h2 style="margin-top: 24px;">直通連絡先</h2>
 
- <div class="contact-cards-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 56px; text-align: left;">
+ <div class="contact-channels">
 
- <div style="background: white; padding: 36px 28px; border-top: 3px solid var(--color-gold);">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 16px;">— Phone —</div>
- <p style="margin: 0 0 12px; font-size: 13px; color: var(--color-ink-muted);">お電話でお問い合わせ</p>
- <a href="tel:09047241063" style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest); display: block; margin-bottom: 8px; font-weight: 700;">090-4724-1063</a>
- <p style="margin: 8px 0 0; font-size: 12px; color: var(--color-ink-muted);">平日 9:00 〜 18:00<br/>不在の際は折り返します</p>
+ <!-- Phone -->
+ <a href="tel:09047241063" class="ch-card">
+ <div class="ch-icon ch-icon-gold" aria-hidden="true">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
  </div>
-
- <div style="background: white; padding: 36px 28px; border-top: 3px solid #06C755;">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: #06C755; margin-bottom: 16px;">— LINE 公式 —</div>
- <p style="margin: 0 0 12px; font-size: 13px; color: var(--color-ink-muted);">お気軽なご質問・10%OFFクーポン</p>
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;font-family: var(--font-jp); font-size: 14px; color: white; background:#06C755; padding:10px 16px; border-radius:24px; font-weight:700; text-decoration:none; margin: 8px 0;">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
- LINE 友だち追加
+ <p class="ch-label">お電話</p>
+ <p class="ch-primary">090-4724-1063</p>
+ <p class="ch-meta">平日 9:00 〜 18:00<br>不在の際は折り返しいたします</p>
  </a>
- <p style="margin: 12px 0 0; font-size: 12px; color: var(--color-ink-muted);">@706sgiuq · 平日返信</p>
- </div>
 
- <div style="background: white; padding: 36px 28px; border-top: 3px solid var(--color-gold);">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 16px;">— Email —</div>
- <p style="margin: 0 0 12px; font-size: 13px; color: var(--color-ink-muted);">メールでのお問い合わせ</p>
- <a href="mailto:backoffice@eda-livestock.com" style="font-family: var(--font-display); font-size: 14px; color: var(--color-forest); display: block; margin-bottom: 8px;">backoffice@eda-livestock.com</a>
- <p style="margin: 8px 0 0; font-size: 12px; color: var(--color-ink-muted);">2 営業日以内にご返信</p>
+ <!-- LINE -->
+ <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="ch-card ch-card-line">
+ <div class="ch-icon ch-icon-line" aria-hidden="true">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
  </div>
+ <p class="ch-label">LINE 公式アカウント</p>
+ <p class="ch-primary">LINE で気軽にご相談</p>
+ <span class="ch-line-btn">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+ 友だち追加 / 10%OFF クーポン
+ </span>
+ <p class="ch-meta">@706sgiuq · 平日返信</p>
+ </a>
 
- <div style="background: white; padding: 36px 28px; border-top: 3px solid var(--color-gold);">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 16px;">— Social —</div>
- <p style="margin: 0 0 12px; font-size: 13px; color: var(--color-ink-muted);">Instagram</p>
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 16px; color: var(--color-forest); display: block; margin-bottom: 16px;">@eda_livestock</a>
- <p style="margin: 0 0 12px; font-size: 13px; color: var(--color-ink-muted);">Online Shop</p>
- <a href="shop.html" style="font-family: var(--font-display); font-size: 14px; color: var(--color-forest);">江田畜産オンラインショップ</a>
+ <!-- Email -->
+ <a href="mailto:backoffice@eda-livestock.com" class="ch-card">
+ <div class="ch-icon ch-icon-gold" aria-hidden="true">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+ </div>
+ <p class="ch-label">メール</p>
+ <p class="ch-primary ch-primary-email">backoffice@eda-livestock.com</p>
+ <p class="ch-meta">2 営業日以内にご返信いたします</p>
+ </a>
+
+ <!-- Social -->
+ <div class="ch-card ch-card-social">
+ <div class="ch-icon ch-icon-gold" aria-hidden="true">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+ </div>
+ <p class="ch-label">SNS / オンラインショップ</p>
+ <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" class="ch-social-link">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/></svg>
+ Instagram @eda_livestock
+ </a>
+ <a href="shop.html" class="ch-social-link">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+ 江田畜産オンラインショップ
+ </a>
  </div>
 
  </div>
 
  <style>
- @media (max-width: 920px) {
- .contact-cards-4 { grid-template-columns: repeat(2, 1fr) !important; }
+ .contact-channels {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+ gap: 20px;
+ margin-top: 56px;
+ text-align: left;
+ max-width: 1080px;
+ margin-left: auto;
+ margin-right: auto;
  }
- @media (max-width: 560px) {
- .contact-cards-4 { grid-template-columns: 1fr !important; }
+ .ch-card {
+ background: white;
+ padding: 32px 26px 28px;
+ border-radius: 16px;
+ border-top: 3px solid var(--color-gold);
+ box-shadow: 0 4px 18px rgba(15, 61, 46, 0.06);
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+ text-decoration: none;
+ color: inherit;
+ display: flex; flex-direction: column;
+ min-height: 220px;
+ }
+ .ch-card:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 12px 32px rgba(15, 61, 46, 0.1);
+ }
+ .ch-card-line { border-top-color: #06C755; }
+ .ch-icon {
+ width: 48px; height: 48px;
+ border-radius: 14px;
+ display: flex; align-items: center; justify-content: center;
+ margin-bottom: 18px;
+ flex-shrink: 0;
+ }
+ .ch-icon-gold {
+ background: rgba(212, 169, 59, 0.1);
+ color: var(--color-gold-soft);
+ }
+ .ch-icon-line {
+ background: rgba(6, 199, 85, 0.1);
+ color: #06C755;
+ }
+ .ch-label {
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: var(--tracking-widest);
+ color: var(--color-gold-soft);
+ text-transform: uppercase;
+ margin: 0 0 8px;
+ font-weight: 600;
+ }
+ .ch-card-line .ch-label { color: #06C755; }
+ .ch-primary {
+ font-family: var(--font-display);
+ font-size: 20px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin: 0 0 14px;
+ line-height: 1.3;
+ letter-spacing: -0.01em;
+ }
+ .ch-primary-email {
+ font-size: 15px;
+ word-break: break-all;
+ letter-spacing: 0;
+ }
+ .ch-meta {
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ line-height: 1.7;
+ margin: auto 0 0;
+ padding-top: 12px;
+ font-family: var(--font-jp);
+ }
+ .ch-line-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ padding: 11px 18px;
+ background: #06C755;
+ color: white;
+ border-radius: 28px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 700;
+ margin: 0 0 14px;
+ align-self: flex-start;
+ box-shadow: 0 4px 14px rgba(6, 199, 85, 0.3);
+ transition: transform 0.2s;
+ }
+ .ch-card-line:hover .ch-line-btn {
+ transform: translateY(-1px);
+ box-shadow: 0 6px 18px rgba(6, 199, 85, 0.4);
+ }
+ .ch-social-link {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ color: var(--color-forest);
+ font-weight: 600;
+ text-decoration: none;
+ padding: 8px 0;
+ transition: color 0.2s;
+ }
+ .ch-social-link:hover { color: var(--color-gold-soft); }
+ .ch-social-link svg { color: var(--color-gold-soft); flex-shrink: 0; }
+ .ch-card-social .ch-meta { display: none; }
+ @media (max-width: 700px) {
+ .contact-channels { gap: 16px; }
+ .ch-card { padding: 26px 22px 22px; min-height: 0; }
+ .ch-primary { font-size: 18px; }
  }
  </style>
 
