@@ -1454,6 +1454,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  line-height: 1.7;
 }
 .rj-next-banner strong { color: var(--color-gold-text); }
+.rj-conditions {
+ display: flex; align-items: flex-start; gap: 12px;
+ background: rgba(107,36,41,0.04);
+ border-top: 1px solid var(--color-bone);
+ padding: 18px 24px;
+ font-family: var(--font-jp); font-size: 13px;
+ color: var(--color-ink); line-height: 1.8;
+}
+.rj-conditions-icon {
+ width: 28px; height: 28px; flex-shrink: 0;
+ border-radius: 50%;
+ background: var(--color-burgundy);
+ color: white;
+ display: flex; align-items: center; justify-content: center;
+ margin-top: 1px;
+}
+.rj-conditions strong {
+ color: var(--color-burgundy);
+ font-weight: 700;
+}
 
 /* ================ HOME TAB — Luxury Cards ================ */
 .home-next-reward {
@@ -1508,6 +1528,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-weight: 700;
  color: var(--color-forest);
  margin: 6px 0 0;
+}
+.hnr-sub {
+ font-family: var(--font-jp);
+ font-size: 11px;
+ color: var(--color-burgundy);
+ margin: 4px 0 0;
+ font-weight: 500;
+ line-height: 1.5;
 }
 .hnr-arrow {
  color: var(--color-gold-text);
@@ -2161,6 +2189,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-size: 12px; color: var(--color-ink-muted);
  margin: 0; font-weight: 500;
 }
+.survey-complete-conditions {
+ background: rgba(107,36,41,0.06);
+ border-left: 3px solid var(--color-burgundy);
+ padding: 12px 14px;
+ border-radius: 8px;
+ font-family: var(--font-jp); font-size: 12px;
+ color: var(--color-burgundy-deep); line-height: 1.7;
+ margin-bottom: 22px;
+ text-align: left;
+ font-weight: 500;
+ position: relative; z-index: 1;
+}
+.survey-complete-conditions strong {
+ color: var(--color-burgundy); font-weight: 700;
+}
 .survey-complete-btn {
  width: 100%; padding: 16px 24px; border-radius: 14px;
  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
@@ -2444,9 +2487,21 @@ button:focus-visible, a:focus-visible {
  margin: 4px 0 6px;
 }
 .coupon-meta {
- font-size: 11px;
+ font-size: 12px;
  color: var(--color-ink-muted);
+ line-height: 1.7;
+ font-weight: 500;
+}
+.coupon-conditions {
+ margin-top: 10px;
+ padding: 8px 12px;
+ background: rgba(107,36,41,0.05);
+ border-left: 3px solid var(--color-burgundy);
+ border-radius: 6px;
+ font-size: 12px;
+ color: var(--color-burgundy-deep);
  line-height: 1.6;
+ font-weight: 500;
 }
 .coupon-code-row {
  display: flex;
@@ -2845,7 +2900,7 @@ button:focus-visible, a:focus-visible {
  <div class="dash-tab-panel" id="panel-rewards">
  <div id="rewardJourneySection"></div>
  <div id="couponsSection" style="display:none;margin-top:24px">
- <h3 class="dash-section-title">YOUR COUPONS</h3>
+ <h3 class="dash-section-title">お持ちのクーポン</h3>
  <div id="couponsList"></div>
  </div>
  </div>
@@ -3688,13 +3743,16 @@ function renderOrders(orders) {
 /* ---- Reward Stages Definition ---- */
 var REWARD_STAGES = [
  { num: 1, label: '1回目のご注文', reward: '初回 20%OFF', desc: '初回ご注文の感謝として全品20%OFF', code: 'WELCOME20', icon: '1' },
- { num: 2, label: '2回目のご注文', reward: '鶏モモ 500g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
+ { num: 2, label: '2回目のご注文', reward: '鶏モモ 250g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
  { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '150g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
  { num: 4, label: '4回目のご注文', reward: '牛焼肉 250g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
  { num: 5, label: '5回目のご注文', reward: '？？？', desc: '5回目以降の特典はお楽しみに', code: '', icon: '5', locked: true },
  { num: 6, label: '6回目のご注文', reward: '？？？', desc: '', code: '', icon: '6', locked: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true }
 ];
+
+/* Common reward/coupon conditions text */
+var REWARD_CONDITIONS = '※ 全特典・クーポンは 5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可';
 
 /* ---- Render Reward Journey (特典タブ) ---- */
 function renderRewardJourney(count) {
@@ -3745,6 +3803,14 @@ function renderRewardJourney(count) {
  '</div>' +
  '<div class="rj-steps">' + stepsHtml + '</div>' +
  bannerHtml +
+ '<div class="rj-conditions">' +
+  '<div class="rj-conditions-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
+  '<div><strong>ご利用条件</strong><br>' +
+   '・ <strong>5,000円（税込）以上</strong>のご注文で利用可能<br>' +
+   '・ 他のクーポンとの<strong>併用不可</strong><br>' +
+   '・ ご注文1回につき1点まで' +
+  '</div>' +
+ '</div>' +
  '</div>';
 }
 
@@ -3999,7 +4065,7 @@ function renderHomeTab(orderCount, orders, customer) {
    var c = active2[0];
    cpEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
     '<div class="hnr-icon" style="font-size:16px;background:rgba(15,61,46,0.06)">&#x1F3AB;</div>' +
-    '<div class="hnr-body"><p class="hnr-label">ご利用いただけるクーポン' + (active2.length > 1 ? '（他 ' + (active2.length - 1) + ' 枚）' : '') + '</p><p class="hnr-value">' + escapeHtml(c.value) + '  ' + escapeHtml(c.name) + '</p></div>' +
+    '<div class="hnr-body"><p class="hnr-label">ご利用いただけるクーポン' + (active2.length > 1 ? '（他 ' + (active2.length - 1) + ' 枚）' : '') + '</p><p class="hnr-value">' + escapeHtml(c.value) + '  ' + escapeHtml(c.name) + '</p><p class="hnr-sub">5,000円以上のご注文・他クーポン併用不可</p></div>' +
     '<div class="hnr-arrow">' + arrowSvg + '</div></div>';
   } else { cpEl.innerHTML = ''; }
  }
@@ -4016,7 +4082,7 @@ function renderHomeTab(orderCount, orders, customer) {
     '<div class="home-survey-header"><div class="home-survey-icon">&#x1F381;</div>' +
     '<div><p class="home-survey-title">アンケートにご回答で特典プレゼント</p><p class="home-survey-sub">残り ' + (totalQ - answered) + ' 問のご回答で平飼い鶏ミンチ200gクーポンを獲得</p></div></div>' +
     '<div class="home-survey-reward"><div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
-    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>ご注文時にクーポンとしてご利用いただけます</small></div></div>' +
+    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>クーポンとして発行（5,000円以上のご注文・他クーポン併用不可）</small></div></div>' +
     '<div class="home-survey-progress"><div class="home-survey-progress-bar" style="width:' + pct + '%"></div></div></div>';
   } else {
    svEl.innerHTML = '<div class="home-survey-card home-survey-done" style="cursor:default">' +
@@ -4025,7 +4091,7 @@ function renderHomeTab(orderCount, orders, customer) {
     '<div><p class="home-survey-title" style="color:var(--color-burgundy)">クーポン獲得済み</p><p class="home-survey-sub">アンケートのご回答ありがとうございました</p></div></div>' +
     '<div class="home-survey-reward" style="background:white;border:1px solid var(--color-gold);">' +
     '<div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg);border:2px solid var(--color-gold)"></div>' +
-    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>ご注文時にクーポンとしてご利用いただけます</small></div></div></div>';
+    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>クーポン発行済 — 5,000円以上のご注文で利用可能・他クーポン併用不可</small></div></div></div>';
   }
  }
 
@@ -4203,8 +4269,11 @@ function showSurveyComplete() {
    '<div class="survey-complete-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
    '<div class="survey-complete-reward-info">' +
     '<p class="survey-complete-reward-name">平飼い鶏ミンチ 200g</p>' +
-    '<p class="survey-complete-reward-note">次回ご注文時に自動追加されます</p>' +
+    '<p class="survey-complete-reward-note">クーポンとして発行されました</p>' +
    '</div>' +
+  '</div>' +
+  '<div class="survey-complete-conditions">' +
+   '<strong>ご利用条件</strong>　5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可' +
   '</div>' +
   '<button class="survey-complete-btn">ありがとうございます</button>' +
  '</div>';
@@ -4314,6 +4383,8 @@ function renderCoupons(coupons) {
  const stCls = status;
  const stLabel = { active: '有効', expiring: '期限間近', used: '使用済', expired: '失効' }[status] || '有効';
  const cardCls = (status === 'expired' || status === 'used') ? 'coupon-card expired' : 'coupon-card';
+ const conditionsHtml = (c.conditions && (status === 'active' || status === 'expiring')) ?
+  `<div class="coupon-conditions">${escapeHtml(c.conditions)}</div>` : '';
  return `
  <div class="${cardCls}">
  <div class="coupon-head">
@@ -4324,6 +4395,7 @@ function renderCoupons(coupons) {
  <span class="coupon-status ${stCls}">${stLabel}</span>
  </div>
  <div class="coupon-meta">${escapeHtml(c.description || '')}<br>${escapeHtml(c.expires || '')}</div>
+ ${conditionsHtml}
  ${(status === 'active' || status === 'expiring') ? `
  <div class="coupon-code-row">
  <span class="coupon-code-text" id="cpn-${escapeHtml(c.code)}">${escapeHtml(c.code)}</span>
@@ -4348,17 +4420,24 @@ function copyCoupon(code, btn) {
 
 function generateDemoCoupons(orderCount) {
  var all = [];
+ var conditions = '※ 5,000円（税込）以上のご注文で利用可能・他クーポン併用不可';
  if (orderCount === 0) {
- all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', expires: '2026/05/24まで', status: 'expiring' });
+ all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', conditions: conditions, expires: '2026/05/24まで', status: 'expiring', minPurchase: 5000 });
  }
  if (orderCount >= 1 && orderCount < 2) {
- all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 250g', description: '2回目ご注文特典（平飼い鶏）', expires: '2026/06/10まで', status: 'active' });
+ all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 250g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 2 && orderCount < 3) {
- all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(300g)', description: '3回目購入特典', expires: '2026/06/10まで', status: 'active' });
+ all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(300g)', description: '3回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 3 && orderCount < 4) {
- all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 250g', description: '4回目購入特典（江田和牛）', expires: '2026/06/10まで', status: 'active' });
+ all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 250g', description: '4回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ }
+ /* Survey reward coupon */
+ var surveyDone = false;
+ try { surveyDone = JSON.parse(localStorage.getItem('eda_survey_progress') || '0') >= 8; } catch(e){}
+ if (surveyDone) {
+ all.push({ code: 'SURVEY-MINCE', value: '無料', name: '平飼い鶏ミンチ 200g', description: 'アンケートご回答特典', conditions: conditions, expires: '2026/12/31まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 1) {
  all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
