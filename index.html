@@ -1315,6 +1315,152 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  from { transform: scale(1); }
  to { transform: scale(1.05); }
 }
+
+/* 🍱 Brand box showcase — 専用木箱を中央配置で堂々と見せる */
+.brand-showcase {
+ background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
+ padding: clamp(80px, 12vw, 140px) 0;
+ position: relative;
+ overflow: hidden;
+}
+.brand-showcase-grid {
+ display: grid;
+ grid-template-columns: 1fr 1.1fr;
+ gap: clamp(40px, 6vw, 96px);
+ align-items: center;
+}
+.brand-showcase-text { max-width: 480px; }
+.brand-showcase-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(36px, 5.5vw, 72px);
+ line-height: 1.1;
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 28px 0 28px;
+ letter-spacing: -0.005em;
+}
+.brand-showcase-title em {
+ font-style: normal;
+ color: var(--color-gold-soft);
+ font-family: var(--font-display);
+ font-style: italic;
+}
+.brand-showcase-desc {
+ font-size: 15.5px;
+ line-height: 2;
+ color: var(--color-ink-muted);
+ margin-bottom: 36px;
+}
+.brand-showcase-points { display: flex; flex-direction: column; gap: 14px; }
+.bs-point {
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ padding: 14px 18px;
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-left: 3px solid var(--color-gold);
+ border-radius: 8px;
+ font-size: 13.5px;
+ color: var(--color-forest);
+ font-weight: 600;
+ transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+}
+.bs-point:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(15,61,46,0.08); }
+.bs-num {
+ font-family: var(--font-display);
+ font-size: 16px;
+ font-weight: 700;
+ color: var(--color-gold);
+ flex-shrink: 0;
+ letter-spacing: 0.04em;
+}
+.brand-showcase-photo {
+ position: relative;
+ aspect-ratio: 4 / 3;
+ border-radius: 14px;
+ overflow: hidden;
+ box-shadow: 0 30px 80px rgba(15,61,46,0.18), 0 8px 24px rgba(15,61,46,0.10);
+ transform: translateY(0);
+ animation: brandBoxFloat 6s ease-in-out infinite alternate;
+}
+.brand-showcase-photo img {
+ width: 100%; height: 100%;
+ object-fit: cover; object-position: center;
+ display: block;
+ filter: contrast(1.04) saturate(1.08);
+ transition: transform 0.8s var(--ease-out-expo);
+}
+.brand-showcase-photo:hover img { transform: scale(1.04); }
+.brand-showcase-glow {
+ position: absolute;
+ inset: 0;
+ pointer-events: none;
+ background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,169,59,0.18), transparent 70%);
+ mix-blend-mode: screen;
+}
+@keyframes brandBoxFloat {
+ from { transform: translateY(0); }
+ to { transform: translateY(-12px); }
+}
+@media (max-width: 960px) {
+ .brand-showcase-grid { grid-template-columns: 1fr; gap: 40px; }
+ .brand-showcase-text { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .brand-showcase-photo { animation: none; }
+}
+
+/* 🥩 Hero 和牛キューブアクセント — 黒バック写真を mix-blend で暗緑に馴染ませる */
+.hero-meat-accent {
+ position: absolute;
+ top: 50%; right: -8%;
+ width: 64%; max-width: 920px;
+ aspect-ratio: 4 / 3;
+ transform: translateY(-46%);
+ z-index: 1;
+ pointer-events: none;
+ /* 画像の周囲を放射状フェードで暗緑に溶け込ませる */
+ -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 55%, black 35%, transparent 85%);
+         mask-image: radial-gradient(ellipse 70% 70% at 50% 55%, black 35%, transparent 85%);
+ animation: heroMeatFloat 8s ease-in-out infinite alternate;
+ opacity: 0;
+ animation: heroMeatFadeIn 1.6s 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards,
+            heroMeatFloat 9s 2s ease-in-out infinite alternate;
+}
+.hero-meat-accent img {
+ width: 100%; height: 100%;
+ object-fit: cover; object-position: center;
+ filter: brightness(1.05) contrast(1.08) saturate(1.15);
+ mix-blend-mode: lighten;
+ display: block;
+}
+@keyframes heroMeatFadeIn {
+ from { opacity: 0; transform: translateY(-40%) scale(0.96); }
+ to { opacity: 1; transform: translateY(-46%) scale(1); }
+}
+@keyframes heroMeatFloat {
+ from { transform: translateY(-46%) scale(1); }
+ to { transform: translateY(-50%) scale(1.04); }
+}
+@media (max-width: 960px) {
+ .hero-meat-accent {
+  /* モバイル: 下に配置、小さく、より溶け込ませる */
+  top: auto; bottom: -8%; right: -20%;
+  width: 100%; transform: none;
+  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 25%, transparent 75%);
+          mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 25%, transparent 75%);
+  animation: heroMeatFadeIn 1.4s 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  opacity: 0;
+ }
+ .hero-meat-accent img { filter: brightness(0.95) contrast(1.05) saturate(1.1); }
+}
+@media (max-width: 640px) {
+ .hero-meat-accent { bottom: -12%; right: -30%; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .hero-meat-accent { animation: heroMeatFadeIn 0.5s ease forwards; }
+}
 .hero-content { position: relative; z-index: 2; width: 100%; padding-top: 120px; padding-bottom: 80px; }
 .hero-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
 .hero-meta-line { width: 80px; height: 1px; background: var(--color-gold); }
@@ -4026,6 +4172,11 @@ section.featured {
  <img class="hero-photo" src="" alt="" loading="eager" fetchpriority="high" style="display:none;"/>
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
 
+ <!-- 🥩 Hero accent: 黒バック和牛キューブ (mix-blend-mode で暗緑に馴染ませる) -->
+ <div class="hero-meat-accent" aria-hidden="true">
+  <img src="public/images/hero/wagyu-cube-dark.jpg" alt="" loading="eager" decoding="async"/>
+ </div>
+
  <div class="container hero-content">
  <div class="hero-meta">
  <span class="hero-meta-line"></span>
@@ -4431,6 +4582,32 @@ section.featured {
 </section>
 
 <!-- ========= SHOP ========= -->
+<!-- ========= BRAND BOX SHOWCASE ========= -->
+<section class="brand-showcase">
+ <div class="container">
+  <div class="brand-showcase-grid reveal">
+   <div class="brand-showcase-text">
+    <span class="eyebrow text-gold has-dash">Our Signature Box</span>
+    <h2 class="brand-showcase-title">届くのは、<em>四代目</em>の<br/>誇り。</h2>
+    <p class="brand-showcase-desc">
+     一頭一頭、丁寧に肥育した宮崎和牛を、部位ごとに真空パック。「四代目 江田畜産」の刻印が入った専用木箱に、藁を敷いて丁寧にお届けします。
+    </p>
+    <div class="brand-showcase-points">
+     <div class="bs-point"><span class="bs-num">01</span><span>真空パック · 急速冷凍で鮮度を保持</span></div>
+     <div class="bs-point"><span class="bs-num">02</span><span>部位ごとに個別包装 · ラベル付き</span></div>
+     <div class="bs-point"><span class="bs-num">03</span><span>江田畜産 専用木箱 · ギフトにも</span></div>
+    </div>
+   </div>
+   <div class="brand-showcase-photo">
+    <picture>
+     <img src="public/images/showcase/brand-box.jpg" alt="四代目 江田畜産 専用木箱" loading="lazy" decoding="async"/>
+    </picture>
+    <div class="brand-showcase-glow" aria-hidden="true"></div>
+   </div>
+  </div>
+ </div>
+</section>
+
 <section class="shop-snippet section" id="shop">
  <div class="container">
  <div class="section-head-row reveal">
