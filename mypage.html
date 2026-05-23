@@ -1996,6 +1996,65 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: rgba(107,36,41,0.04);
  transform: translateX(4px);
 }
+/* ★ Multi-select modal */
+.ms-options {
+ display: flex; flex-direction: column; gap: 8px;
+ max-height: 45vh; overflow-y: auto;
+ padding: 4px 2px;
+ margin: 0 -2px;
+}
+.ms-opt {
+ display: flex; align-items: center; gap: 12px;
+ padding: 14px 16px; border-radius: 12px;
+ border: 1.5px solid var(--color-bone);
+ background: white; cursor: pointer;
+ text-align: left; transition: all 0.2s;
+ font-family: var(--font-jp); font-size: 15px;
+ color: var(--color-ink); font-weight: 500;
+ width: 100%;
+}
+.ms-opt:hover {
+ border-color: var(--color-burgundy);
+ background: rgba(107,36,41,0.04);
+}
+.ms-opt.selected {
+ border-color: var(--color-burgundy);
+ background: rgba(107,36,41,0.06);
+ font-weight: 600;
+}
+.ms-check {
+ width: 24px; height: 24px;
+ border: 2px solid var(--color-bone);
+ border-radius: 7px;
+ position: relative;
+ flex-shrink: 0;
+ transition: all 0.2s;
+ background: white;
+}
+.ms-opt.selected .ms-check {
+ border-color: var(--color-burgundy);
+ background: var(--color-burgundy);
+}
+.ms-opt.selected .ms-check::after {
+ content: '';
+ position: absolute;
+ left: 6px; top: 1px;
+ width: 7px; height: 13px;
+ border-right: 2.5px solid white;
+ border-bottom: 2.5px solid white;
+ transform: rotate(45deg);
+}
+.ms-label { flex: 1; line-height: 1.4; }
+.eda-modal-btn.primary:disabled {
+ background: var(--color-bone) !important;
+ color: var(--color-ink-muted) !important;
+ cursor: not-allowed !important;
+ transform: none !important;
+}
+.eda-modal-btn.primary:disabled:hover {
+ background: var(--color-bone) !important;
+ transform: none !important;
+}
 .eda-modal-btn.primary {
  background: var(--color-forest); color: white;
 }
@@ -4085,8 +4144,9 @@ var SURVEY_QUESTIONS = [
   opts: ['週に1回以上', '月に2〜3回', '月に1回程度', '数ヶ月に1回', '特別な機会のみ']
  },
  {
-  q: '特にご興味のある商品カテゴリ',
-  opts: ['ステーキ用厚切り', 'すき焼き・しゃぶしゃぶ用', '焼肉用各部位', 'ハンバーグ・加工品', 'ギフトセット・お中元お歳暮']
+  q: '普段ご自宅でよくお使いになるお肉（複数選択可）',
+  multi: true,
+  opts: ['牛ステーキ・厚切り肉', '牛焼肉・薄切り', 'すき焼き・しゃぶしゃぶ用', '切り落とし・ひき肉', 'ハンバーグ', '鶏もも肉', '鶏むね肉・ささみ', '鶏ひき肉', '豚肉', 'ソーセージ・ハム等加工品']
  },
  {
   q: '江田和牛を知ったきっかけ',
@@ -4100,8 +4160,13 @@ async function openSurvey() {
  if (answered >= SURVEY_QUESTIONS.length) { showSurveyComplete(); return; }
  for (var i = answered; i < SURVEY_QUESTIONS.length; i++) {
   var sq = SURVEY_QUESTIONS[i];
-  var buttons = sq.opts.map(function(o) { return { label: o, class: 'survey-opt', value: o }; });
-  var result = await edaModal('Q' + (i+1) + '. ' + sq.q, '(' + (i+1) + '/' + SURVEY_QUESTIONS.length + ')', buttons, { vertical: true });
+  var result;
+  if (sq.multi) {
+   result = await edaMultiSelect('Q' + (i+1) + '. ' + sq.q, '(' + (i+1) + '/' + SURVEY_QUESTIONS.length + ')', sq.opts);
+  } else {
+   var buttons = sq.opts.map(function(o) { return { label: o, class: 'survey-opt', value: o }; });
+   result = await edaModal('Q' + (i+1) + '. ' + sq.q, '(' + (i+1) + '/' + SURVEY_QUESTIONS.length + ')', buttons, { vertical: true });
+  }
   if (result === null) break;
   try {
    var answers = JSON.parse(localStorage.getItem('eda_survey_answers') || '{}');
@@ -4387,6 +4452,55 @@ function edaModal(title, body, buttons, opts) {
 }
 function edaAlert(title, body) {
  return edaModal(title, body, [{ label: 'OK', class: 'primary', value: true }]);
+}
+
+/* Multi-select modal — returns array of selected values, or null if cancelled */
+function edaMultiSelect(title, body, options) {
+ return new Promise(resolve => {
+  var selected = [];
+  var overlay = document.createElement('div');
+  overlay.className = 'eda-modal-overlay';
+  var optsHtml = options.map(function(o, idx) {
+   return '<button class="ms-opt" data-val="' + escapeHtml(o) + '" data-idx="' + idx + '" type="button">' +
+    '<span class="ms-check" aria-hidden="true"></span>' +
+    '<span class="ms-label">' + escapeHtml(o) + '</span>' +
+    '</button>';
+  }).join('');
+  overlay.innerHTML = '<div class="eda-modal" style="max-width:480px">' +
+   '<h3 class="eda-modal-title">' + escapeHtml(title) + '</h3>' +
+   '<p class="eda-modal-body">' + escapeHtml(body) + '<br><span style="font-size:12px;color:var(--color-ink-muted);font-weight:500">該当するものを全てお選びください</span></p>' +
+   '<div class="ms-options">' + optsHtml + '</div>' +
+   '<div class="eda-modal-actions" style="margin-top:20px">' +
+    '<button class="eda-modal-btn secondary" data-act="cancel">キャンセル</button>' +
+    '<button class="eda-modal-btn primary" data-act="submit" id="msSubmit" disabled>次へ進む（<span id="msCount">0</span>件）</button>' +
+   '</div>' +
+   '</div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('show')));
+  function close(val) {
+   overlay.classList.remove('show');
+   setTimeout(() => overlay.remove(), 300);
+   resolve(val);
+  }
+  overlay.addEventListener('click', function(e) {
+   if (e.target === overlay) { close(null); return; }
+   var opt = e.target.closest('.ms-opt');
+   if (opt) {
+    opt.classList.toggle('selected');
+    var val = opt.dataset.val;
+    var pos = selected.indexOf(val);
+    if (pos >= 0) selected.splice(pos, 1); else selected.push(val);
+    var sb = document.getElementById('msSubmit');
+    document.getElementById('msCount').textContent = selected.length;
+    if (selected.length > 0) sb.removeAttribute('disabled'); else sb.setAttribute('disabled', 'true');
+    return;
+   }
+   var act = e.target.closest('[data-act]');
+   if (!act) return;
+   if (act.dataset.act === 'cancel') { close(null); return; }
+   if (act.dataset.act === 'submit' && selected.length > 0) { close(selected.slice()); }
+  });
+ });
 }
 function edaConfirm(title, body, opts) {
  return edaModal(title, body, [
