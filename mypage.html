@@ -38,7 +38,7 @@
  --color-paper: #F5EFE3;
  --color-bone: #EFE8D7;
  --color-ink: #1A1A1A;
- --color-ink-muted: #444444;
+ --color-ink-muted: #5C5C5C;
  --color-red: #C8102E;
  --color-line: rgba(212, 169, 59, 0.18);
  --font-display: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
@@ -164,131 +164,121 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* ================ MY PAGE SPECIFIC ================ */
 
-/* Login Section — Full-width hero split */
+/* Login Section — Immersive Full-Screen */
 .mypage-login-section {
  padding: 0;
 }
 .login-layout {
- display: grid;
- grid-template-columns: 1fr 1fr;
- min-height: calc(100vh - 80px);
-}
-/* Left: Benefits */
-.login-benefits {
- background: linear-gradient(160deg, var(--color-forest) 0%, #164D38 60%, #1A5A42 100%);
- color: white;
- padding: 120px clamp(40px, 6vw, 80px) 80px;
  display: flex;
- flex-direction: column;
+ align-items: center;
  justify-content: center;
- align-items: flex-end;
+ min-height: 100vh;
+ background:
+  linear-gradient(160deg, rgba(10,30,20,0.92) 0%, rgba(15,61,46,0.88) 40%, rgba(20,77,56,0.85) 100%),
+  url('public/images/products/drive/sirloin.jpg') center/cover no-repeat;
  position: relative;
  overflow: hidden;
+ padding: 100px 24px 60px;
 }
-.login-benefits-inner {
- width: 100%;
- max-width: 400px;
-}
-.login-benefits::before {
+.login-layout::before {
  content: '';
- position: absolute;
- top: -120px; right: -80px;
- width: 400px; height: 400px;
- background: radial-gradient(circle, rgba(212, 169, 59, 0.1), transparent 65%);
- border-radius: 50%;
+ position: absolute; inset: 0;
+ background:
+  radial-gradient(ellipse at 20% 20%, rgba(212,169,59,0.12), transparent 50%),
+  radial-gradient(ellipse at 80% 80%, rgba(212,169,59,0.08), transparent 50%);
  pointer-events: none;
 }
-.login-benefits::after {
+.login-layout::after {
  content: '';
- position: absolute;
- bottom: -60px; left: -40px;
- width: 240px; height: 240px;
- background: radial-gradient(circle, rgba(212, 169, 59, 0.06), transparent 65%);
- border-radius: 50%;
+ position: absolute; inset: 0;
+ background: repeating-linear-gradient(
+  -45deg, transparent, transparent 40px,
+  rgba(212,169,59,0.015) 40px, rgba(212,169,59,0.015) 41px
+ );
  pointer-events: none;
 }
-.login-benefits-eyebrow {
- font-family: var(--font-display);
- font-size: 12px;
- letter-spacing: var(--tracking-widest);
- color: var(--color-gold);
- margin-bottom: 20px;
- position: relative;
+/* Center container */
+.login-center-wrap {
+ position: relative; z-index: 1;
+ width: 100%; max-width: 480px;
+ display: flex; flex-direction: column; align-items: center;
 }
-.login-benefits-title {
- font-family: var(--font-display);
- font-size: clamp(32px, 4vw, 48px);
- line-height: 1.15;
- margin: 0 0 12px;
- position: relative;
+/* Hero headline above card */
+.login-hero-text {
+ text-align: center; color: white; margin-bottom: 40px;
 }
-.login-benefits-sub {
+.login-hero-eyebrow {
+ font-family: var(--font-display); font-size: 11px;
+ letter-spacing: var(--tracking-widest); color: var(--color-gold);
+ margin: 0 0 16px; text-transform: uppercase;
+}
+.login-hero-title {
  font-family: var(--font-jp-serif);
- font-size: 14px;
- color: rgba(255,255,255,0.9);
- line-height: 1.8;
- margin: 0 0 40px;
- max-width: 360px;
- position: relative;
+ font-size: clamp(28px, 5vw, 40px);
+ line-height: 1.4; margin: 0 0 14px; font-weight: 500;
+ letter-spacing: 0.06em;
 }
-.benefit-list {
- display: flex;
- flex-direction: column;
- gap: 28px;
- position: relative;
+.login-hero-sub {
+ font-family: var(--font-jp); font-size: 15px;
+ color: rgba(255,255,255,0.85); line-height: 1.8; margin: 0;
 }
-.benefit-item {
- display: flex;
- align-items: flex-start;
- gap: 16px;
-}
-.benefit-icon {
- width: 44px; height: 44px;
- border-radius: 12px;
- background: rgba(212, 169, 59, 0.15);
- display: flex; align-items: center; justify-content: center;
- flex-shrink: 0;
- color: var(--color-gold);
-}
-.benefit-text h4 {
- font-family: var(--font-jp);
- font-size: 15px;
- font-weight: 600;
- margin: 0 0 4px;
-}
-.benefit-text p {
- font-size: 13px;
- color: rgba(255,255,255,0.85);
- margin: 0;
- line-height: 1.6;
-}
-/* Right: Form */
-.login-form-side {
- padding: 120px clamp(36px, 5vw, 72px) 80px;
- display: flex;
- flex-direction: column;
- justify-content: center;
- align-items: center;
- background: var(--color-cream);
-}
-.login-form-inner {
+/* Floating login card */
+.login-card-float {
  width: 100%;
- max-width: 400px;
+ background: rgba(255,255,255,0.97);
+ backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+ border-radius: 20px;
+ padding: 44px 36px 36px;
+ box-shadow: 0 24px 80px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.1);
+ border: 1px solid rgba(255,255,255,0.15);
+ border-top: 3px solid var(--color-gold);
+ position: relative;
 }
-/* Mobile: form first, benefits as compact strip */
+.login-card-float-title {
+ font-family: var(--font-jp-serif); font-size: 22px;
+ color: var(--color-forest); margin: 0 0 6px; text-align: center;
+ font-weight: 600;
+}
+.login-card-float-sub {
+ font-size: 13px; color: var(--color-ink-muted);
+ text-align: center; margin: 0 0 28px; line-height: 1.6;
+}
+/* Benefits strip below card */
+.login-benefits-strip {
+ display: flex; gap: 24px; margin-top: 32px;
+ justify-content: center; color: white;
+}
+.login-benefit-chip {
+ display: flex; align-items: center; gap: 8px;
+ font-family: var(--font-jp); font-size: 13px;
+ color: rgba(255,255,255,0.9); letter-spacing: 0.03em;
+}
+.login-benefit-chip svg {
+ width: 18px; height: 18px; color: var(--color-gold);
+ flex-shrink: 0;
+}
+/* LINE button hover glow */
+#lineLoginBtn:hover {
+ box-shadow: 0 6px 28px rgba(6,199,85,0.45);
+ transform: translateY(-1px);
+}
+/* Gold shimmer on card */
+.login-card-float::before {
+ content: '';
+ position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+ width: 60px; height: 3px;
+ background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+ border-radius: 0 0 4px 4px;
+ opacity: 0;
+}
+/* Hide old classes */
+.login-benefits, .login-form-side { display: none; }
 @media (max-width: 700px) {
- .login-layout { grid-template-columns: 1fr; min-height: auto; }
- .login-form-side { order: -1; padding: 100px 24px 40px; }
- .login-benefits { padding: 32px 24px; }
- .login-benefits-eyebrow,
- .login-benefits-title,
- .login-benefits-sub { display: none; }
- .benefit-list { flex-direction: row; gap: 12px; justify-content: center; }
- .benefit-item { flex-direction: column; align-items: center; text-align: center; gap: 6px; flex: 1; max-width: 100px; }
- .benefit-icon { width: 36px; height: 36px; border-radius: 10px; }
- .benefit-icon svg { width: 18px; height: 18px; }
- .benefit-text h4 { font-size: 11px; line-height: 1.4; }
- .benefit-text p { display: none; }
+ .login-layout { padding: 90px 16px 40px; }
+ .login-card-float { padding: 32px 24px 28px; border-radius: 16px; }
+ .login-hero-text { margin-bottom: 28px; }
+ .login-hero-title { font-size: 26px; }
+ .login-benefits-strip { flex-direction: column; gap: 10px; align-items: center; }
 }
 .login-card {
  max-width: 480px;
@@ -392,14 +382,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .login-btn {
  width: 100%;
- padding: 15px;
+ padding: 16px;
  background: var(--color-forest);
  color: white;
- font-family: var(--font-display);
+ font-family: var(--font-jp);
  font-size: 15px;
- letter-spacing: var(--tracking-wider);
+ font-weight: 600;
+ letter-spacing: 0.04em;
  border: none;
- border-radius: 8px;
+ border-radius: 12px;
  cursor: pointer;
  transition: all 0.3s cubic-bezier(0.5, 0, 0, 1);
  position: relative;
@@ -1864,93 +1855,76 @@ button:focus-visible, a:focus-visible {
  <p style="margin-top:20px;font-size:13px;color:var(--color-ink-muted);">認証を確認中...</p>
  </div>
 
- <!-- ① LIFF 外アクセス: 2カラム ログイン / 登録 -->
+ <!-- ① LIFF 外アクセス: フルスクリーン没入型ログイン -->
  <div class="login-layout" id="liffExternal" style="display:none;">
 
- <!-- 左: 特典紹介 -->
- <div class="login-benefits">
-  <div class="login-benefits-inner">
-  <p class="login-benefits-eyebrow">MEMBER BENEFITS</p>
-  <h2 class="login-benefits-title">会員だけの<br>特別な体験を。</h2>
-  <p class="login-benefits-sub">無料の会員登録で、限定商品や特典を<br>お楽しみいただけます。</p>
+ <div class="login-center-wrap">
+  <!-- ヒーローテキスト -->
+  <div class="login-hero-text">
+  <p class="login-hero-eyebrow">EDA LIVESTOCK MEMBERSHIP</p>
+  <h2 class="login-hero-title">会員だけの<br>特別な体験を。</h2>
+  <p class="login-hero-sub">宮崎から届く、最上級の和牛。<br>無料会員登録で限定商品や特典をお届けします。</p>
+  </div>
 
-  <div class="benefit-list">
-  <div class="benefit-item">
-   <div class="benefit-icon">
-   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-   </div>
-   <div class="benefit-text">
-   <h4>有機和牛の限定注文</h4>
-   <p>会員限定のオーガニック和牛を<br>お取り寄せいただけます</p>
-   </div>
-  </div>
-  <div class="benefit-item">
-   <div class="benefit-icon">
-   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
-   </div>
-   <div class="benefit-text">
-   <h4>注文履歴・配送追跡</h4>
-   <p>過去のご注文や配送状況を<br>いつでも確認できます</p>
-   </div>
-  </div>
-  <div class="benefit-item">
-   <div class="benefit-icon">
-   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-   </div>
-   <div class="benefit-text">
-   <h4>会員限定クーポン</h4>
-   <p>特別なクーポンや先行販売の<br>ご案内をお届けします</p>
-   </div>
-  </div>
-  </div>
- </div>
- </div>
+  <!-- フローティング ログインカード -->
+  <div class="login-card-float">
+  <h3 class="login-card-float-title">無料会員登録</h3>
+  <p class="login-card-float-sub">LINEで30秒で登録完了</p>
 
- <!-- 右: ログイン / 登録フォーム -->
- <div class="login-form-side">
-  <div class="login-form-inner">
-  <p style="font-family:var(--font-display);font-size:11px;letter-spacing:var(--tracking-widest);color:var(--color-gold-soft);margin:0 0 12px;text-align:center;">MEMBERSHIP</p>
-  <h3 style="font-family:var(--font-jp-serif);font-size:20px;color:var(--color-forest);margin:0 0 6px;text-align:center;">無料会員登録</h3>
-  <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:0 0 28px;line-height:1.6;">LINEで30秒で登録完了</p>
-
-  <!-- LINE ボタン（メイン） -->
+  <!-- LINE ボタン -->
   <button id="lineLoginBtn" onclick="liffLineLogin()"
-  style="width:100%;padding:16px;background:#06C755;color:white;border-radius:12px;font-family:var(--font-jp);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;border:none;transition:all .2s;box-shadow:0 2px 12px rgba(6,199,85,0.25);">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
-  LINE で会員登録 / ログイン
+   style="width:100%;padding:16px 20px;background:#06C755;color:white;border-radius:12px;font-family:var(--font-jp);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;border:none;transition:all .2s;box-shadow:0 4px 20px rgba(6,199,85,0.3);">
+   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
+   LINE で会員登録 / ログイン
   </button>
-  <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin:8px 0 0;line-height:1.5;">はじめての方はLINEで簡単に登録できます</p>
+  <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin:10px 0 0;line-height:1.5;">はじめての方はLINEで簡単に登録できます</p>
 
   <!-- 区切り -->
   <div style="display:flex;align-items:center;gap:12px;margin:28px 0 20px;">
-  <div style="flex:1;height:1px;background:var(--color-bone);"></div>
-  <span style="font-size:10px;color:#B0A894;letter-spacing:0.08em;">既に会員の方</span>
-  <div style="flex:1;height:1px;background:var(--color-bone);"></div>
+   <div style="flex:1;height:1px;background:var(--color-bone);"></div>
+   <span style="font-size:11px;color:#B0A894;letter-spacing:0.08em;">既に会員の方</span>
+   <div style="flex:1;height:1px;background:var(--color-bone);"></div>
   </div>
 
   <!-- メール OTP -->
   <div id="otpStep1">
-  <div class="login-input-wrap" style="margin-bottom:12px;">
+   <div class="login-input-wrap" style="margin-bottom:12px;">
    <span class="login-input-icon">
-   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
    </span>
    <input type="email" class="login-input" id="otpEmailInput" placeholder="登録済みメールアドレス" autocomplete="email">
-  </div>
-  <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="sendOtp()">
+   </div>
+   <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="sendOtp()">
    メールでログイン
-  </button>
+   </button>
   </div>
   <div id="otpStep2" style="display:none;">
-  <p style="font-size:14px;color:var(--color-ink);text-align:center;margin:0 0 14px;font-weight:600;">認証コードを入力</p>
-  <div class="login-input-wrap" style="margin-bottom:12px;">
+   <p style="font-size:14px;color:var(--color-ink);text-align:center;margin:0 0 14px;font-weight:600;">認証コードを入力</p>
+   <div class="login-input-wrap" style="margin-bottom:12px;">
    <input type="text" class="login-input" id="otpCodeInput" placeholder="6桁のコード" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="letter-spacing:0.3em;text-align:center;font-size:22px;font-weight:700;padding-left:16px;">
-  </div>
-  <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="verifyOtp()">
+   </div>
+   <button class="login-btn" style="background:var(--color-forest);color:#fff;" onclick="verifyOtp()">
    ログイン
-  </button>
-  <p style="font-size:11px;color:var(--color-ink-muted);text-align:center;margin-top:10px;">届かない場合は迷惑メールをご確認ください</p>
+   </button>
+   <p style="font-size:12px;color:var(--color-ink-muted);text-align:center;margin-top:10px;">届かない場合は迷惑メールをご確認ください</p>
   </div>
   <div class="login-error" id="otpError"></div>
+  </div>
+
+  <!-- 特典チップ -->
+  <div class="login-benefits-strip">
+  <div class="login-benefit-chip">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+   限定クーポン
+  </div>
+  <div class="login-benefit-chip">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+   会員限定商品
+  </div>
+  <div class="login-benefit-chip">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+   配送追跡
+  </div>
   </div>
  </div>
 
@@ -2641,7 +2615,7 @@ function showState(state) {
  [liffLoading, liffExternal, liffAuthenticating, liffLinkAccount].forEach(el => {
  if (el) el.style.display = 'none';
  });
- if (state === 'external') liffExternal.style.display = 'grid';
+ if (state === 'external') liffExternal.style.display = 'flex';
  else if (state === 'authenticating') liffAuthenticating.style.display = '';
  else if (state === 'linkAccount') liffLinkAccount.style.display = '';
 }
