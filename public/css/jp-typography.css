@@ -1,10 +1,17 @@
 /* ============================================================
    江田畜産 — 日本語タイポグラフィ 共通ルール
    ------------------------------------------------------------
-   全ページ共通: 見出しと本文の禁則処理 (孤立文字・不自然改行 防止)
+   全ページ共通: 可読性・禁則処理・最小サイズ・コントラスト
+
+   DESIGN RATIONALE:
+   CJK 文字は Latin より画数が多く、同じ px でも視覚的に小さい。
+   英語 13px で読めるテキストも日本語だと潰れる。
+   --color-ink-muted (#444) は cream (#FAF7F0) 上で 7.2:1 (WCAG AAA)。
    ============================================================ */
 
-/* 見出し: 助詞・読点で切らない (CJK文字グループは強制纏まり) */
+/* ── 禁則処理 ── */
+
+/* 見出し: 助詞・読点で切らない */
 h1, h2, h3, h4, .hero-title, .page-title, .section-title,
 .shop-hero-title, .sub-hero-title, .org-hero-title,
 .wagyu-guide-title, .article-body h2, .article-body h3 {
@@ -15,7 +22,7 @@ h1, h2, h3, h4, .hero-title, .page-title, .section-title,
   hyphens: none;
 }
 
-/* 本文 jp: 助詞ぶら下がり許容 / 句読点孤立防止 */
+/* 本文: 助詞ぶら下がり許容 / 句読点孤立防止 */
 .jp-text, p.jp, .news-body p, .article-body p,
 .faq-a, .product-desc {
   word-break: normal;
@@ -35,41 +42,73 @@ h1, h2, h3, h4, .hero-title, .page-title, .section-title,
   white-space: nowrap;
 }
 
-/* ============================================================
-   日本語テキスト最小サイズ保証
-   CJK 文字は Latin より画数が多く、小さいと潰れる。
-   body text 系は 14px 以上、description 系は 15px 以上に。
-   ============================================================ */
+/* ── 日本語テキスト可読性強化 ── */
 
-/* 段落・説明文: 最低 15px */
+/* 段落・説明文: 最低 15px, 濃い色, ゆったり行間 */
 p, .desc, .lead, .product-desc,
 .restaurant-desc, .faq-a, .news-body p,
 .article-body p, .philosophy-text,
-[class*="-desc"], [class*="-text"]:not(input):not(textarea) {
-  font-size: max(15px, inherit);
-  line-height: max(1.8, inherit);
+[class*="-desc"], [class*="-text"]:not(input):not(textarea):not(button) {
+  font-size: max(15px, inherit) !important;
+  line-height: 1.9 !important;
+  color: var(--color-ink-muted);
 }
 
-/* カード内テキスト: 最低 14px */
+/* カード内テキスト: 最低 15px（14pxは日本語で潰れる） */
 [class*="-card"] p,
 [class*="-block"] p,
 .science-card p, .kit-card p,
 .data-card p, .recipe-card p,
 .cert-block p, .partner-block p,
-.why-card p {
-  font-size: max(14px, inherit);
-  line-height: max(1.75, inherit);
+.why-card p, .plan-feature-list li,
+.footer-column p {
+  font-size: 15px !important;
+  line-height: 1.85 !important;
 }
 
-/* メタ情報・タグ: 最低 12px（英語ラベル系は小さくてOK） */
+/* 白背景上の薄いテキスト (opacity: 0.7 等) を濃くする */
+[class*="-block"] p[style*="opacity"],
+.partner-block p,
+.cert-block p {
+  opacity: 0.85 !important;
+}
+
+/* メタ情報・タグ: 最低 12px, 英語ラベル系OK */
 [class*="-tag"], [class*="-meta"],
 [class*="-loc"], [class*="-badge"],
 .eyebrow {
   font-size: max(12px, inherit);
 }
 
-/* ボタン: 最低 14px */
+/* ボタン・リンク: 最低 14px */
 .btn, [class*="-action"], [class*="-cta"],
-button[type="submit"] {
+button[type="submit"],
+a[class*="-link"] {
   font-size: max(14px, inherit);
+}
+
+/* フッター内テキスト */
+.site-footer, .site-footer a,
+.site-footer p, .footer-column li {
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+}
+
+/* ── 日本語フォントウェイト補正 ──
+   日本語ゴシック体の weight:400 は英語 Inter の 400 より視覚的に細い。
+   本文テキストは 450-500 相当にして潰れを防ぐ。 */
+p, li, td, dd, .desc, .lead,
+[class*="-desc"], [class*="-text"]:not(input):not(textarea):not(button),
+[class*="-card"] p, [class*="-block"] p {
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── ダーク背景上のテキスト ──
+   森緑・黒背景では白文字も細く見えるため font-weight を上げる */
+[style*="background"][style*="#0"] p,
+[style*="background"][style*="forest"] p,
+.dark-section p, .hero-section p {
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
 }
