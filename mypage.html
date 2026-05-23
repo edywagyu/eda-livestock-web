@@ -73,7 +73,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .eyebrow { font-family: var(--font-display); font-size: 13px; letter-spacing: var(--tracking-widest); text-transform: uppercase; }
 .container { width: 100%; max-width: 1440px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
-.container-narrow { width: 100%; max-width: 920px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+.container-narrow { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
 
 /* ================ HEADER ================ */
 .site-header {
@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .page-header {
  background: var(--color-forest);
  color: white;
- padding: 120px 0 48px;
+ padding: 72px 0 0;
  position: relative;
  overflow: hidden;
 }
@@ -145,7 +145,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  position: absolute; inset: 0;
  background: radial-gradient(circle at 80% 30%, rgba(212, 169, 59, 0.1) 0%, transparent 50%);
 }
-.page-header-content { position: relative; z-index: 1; }
+.page-header-content { position: relative; z-index: 1; display: none; }
 .page-eyebrow { color: var(--color-gold); font-family: var(--font-display); font-size: 13px; letter-spacing: var(--tracking-widest); }
 .page-title {
  font-family: var(--font-display);
@@ -459,24 +459,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* Dashboard */
 .dashboard-section {
  display: none;
- padding: 0 0 64px;
+ padding: 0 0 48px;
 }
 .dashboard-section.show { display: block; }
 
-/* Welcome Card — Premium Separated Design */
+/* Welcome Card — Premium Floating Design */
 .welcome-card {
  background: white;
  color: var(--color-ink);
  border-radius: 20px;
  padding: 0;
- margin-bottom: 20px;
+ margin: -28px 0 16px;
  position: relative;
  overflow: hidden;
- box-shadow: 0 4px 32px rgba(15, 61, 46, 0.08), 0 1px 3px rgba(15, 61, 46, 0.04);
- border: 1px solid rgba(15, 61, 46, 0.06);
+ box-shadow: 0 8px 40px rgba(15, 61, 46, 0.12), 0 2px 6px rgba(15, 61, 46, 0.06);
+ border: 1px solid rgba(255, 255, 255, 0.15);
+ z-index: 2;
 }
 .welcome-card-top {
- background: linear-gradient(135deg, var(--color-forest) 0%, #164D38 60%, #1A5A42 100%);
+ background: linear-gradient(135deg, var(--color-forest) 0%, #164D38 50%, #1A5A42 100%);
  color: white;
  padding: 28px 32px 24px;
  position: relative;
@@ -485,17 +486,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .welcome-card-top::before {
  content: '';
  position: absolute;
- top: -60px; right: -30px;
- width: 220px; height: 220px;
- background: radial-gradient(circle, rgba(212, 169, 59, 0.12), transparent 65%);
+ top: -80px; right: -40px;
+ width: 280px; height: 280px;
+ background: radial-gradient(circle, rgba(212, 169, 59, 0.15), transparent 65%);
  border-radius: 50%;
 }
 .welcome-card-top::after {
  content: '';
  position: absolute;
- bottom: -40px; left: 30%;
- width: 160px; height: 160px;
- background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 60%);
+ bottom: -50px; left: 20%;
+ width: 200px; height: 200px;
+ background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
  border-radius: 50%;
 }
 .welcome-name-row {
@@ -513,7 +514,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-size: 22px;
  color: white;
  flex-shrink: 0;
- box-shadow: 0 2px 12px rgba(212, 169, 59, 0.3);
+ box-shadow: 0 3px 16px rgba(212, 169, 59, 0.35);
+ border: 2px solid rgba(255, 255, 255, 0.2);
 }
 .welcome-name {
  font-family: var(--font-jp-serif);
@@ -531,6 +533,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin: 2px 0 0;
  position: relative;
 }
+/* Tier badge inside welcome card */
+.welcome-tier-row {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ margin-top: 14px;
+ position: relative;
+}
+.welcome-tier-badge {
+ display: inline-flex; align-items: center; gap: 6px;
+ padding: 5px 14px 5px 10px; border-radius: 20px;
+ font-family: var(--font-display); font-size: 11px;
+ letter-spacing: var(--tracking-wider); font-weight: 600;
+ text-transform: uppercase; white-space: nowrap;
+ background: rgba(212,169,59,0.18); color: var(--color-gold-bright);
+ border: 1px solid rgba(212,169,59,0.35);
+}
+.welcome-tier-badge svg { width: 14px; height: 14px; flex-shrink: 0; }
 .welcome-card-bottom {
  display: flex;
  padding: 0;
@@ -601,7 +621,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  overflow-y: hidden;
  -webkit-overflow-scrolling: touch;
  scrollbar-width: none;
- margin-bottom: 28px;
+ margin-bottom: 14px;
  box-shadow: 0 4px 24px rgba(15, 61, 46, 0.04);
 }
 .dash-tabs::-webkit-scrollbar { display: none; }
@@ -640,6 +660,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .dash-tab:hover:not(.active) svg { opacity: 0.5; }
 .dash-tab-panel { display: none; }
 .dash-tab-panel.active { display: block; animation: fadeInUp 0.4s var(--ease-out-expo) both; }
+
+/* Home tab — 2-column grid on desktop */
+#panel-home {
+ display: none;
+}
+#panel-home.active {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 14px;
+ animation: fadeInUp 0.4s var(--ease-out-expo) both;
+}
+#panel-home > div:first-child {
+ grid-column: 1 / -1;
+}
+@media (max-width: 768px) {
+ #panel-home.active { grid-template-columns: 1fr; }
+}
+
+/* Section divider — gold accent */
+.dash-section-divider {
+ height: 1px;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.2), transparent);
+ margin: 2px 0 10px;
+ border: none;
+}
 
 /* ================ SHOP TAB — Product Grid ================ */
 .mp-products {
@@ -906,7 +951,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HOME TAB — Premium Cards ================ */
 .home-next-reward {
  background: white;
- border-radius: 14px;
+ border-radius: 16px;
  border: 1px solid rgba(15, 61, 46, 0.06);
  padding: 20px 24px;
  margin-bottom: 12px;
@@ -954,6 +999,42 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  transition: opacity 0.3s, transform 0.3s;
 }
 .home-next-reward:hover .hnr-arrow { opacity: 1; transform: translateX(2px); }
+
+/* Empty orders — Premium */
+.empty-orders {
+ background: white;
+ border-radius: 14px;
+ border: 1px solid rgba(15, 61, 46, 0.06);
+ box-shadow: 0 1px 4px rgba(15, 61, 46, 0.03);
+ padding: 40px 24px;
+ text-align: center;
+}
+.empty-orders-text {
+ font-family: var(--font-jp);
+ font-size: 14px;
+ color: var(--color-ink-muted);
+ margin: 0 0 16px;
+}
+.shop-link {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 12px 28px;
+ background: var(--color-forest);
+ color: white;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 600;
+ border-radius: 10px;
+ text-decoration: none;
+ transition: all 0.3s;
+ border: none;
+}
+.shop-link:hover {
+ background: var(--color-forest-deep);
+ transform: translateY(-2px);
+ box-shadow: 0 4px 16px rgba(15, 61, 46, 0.15);
+}
 
 /* Order Cards — Premium */
 .order-card {
@@ -1364,8 +1445,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin: 0 0 6px; letter-spacing: 0.02em;
 }
 .page-header .page-title {
- display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+ display: none;
 }
+.page-header .page-subtitle { display: none; }
 .welcome-card::before {
  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
  background: linear-gradient(90deg, var(--color-gold), var(--color-gold-bright), var(--color-gold));
@@ -1385,7 +1467,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .member-perks-strip {
  background: linear-gradient(135deg, rgba(212,169,59,0.07), rgba(212,169,59,0.02));
  border: 1px solid rgba(212,169,59,0.15); border-radius: 14px;
- padding: 16px 20px; margin-bottom: 20px;
+ padding: 14px 20px; margin-bottom: 14px;
  display: flex; align-items: center; gap: 14px;
  cursor: pointer; transition: all 0.3s;
 }
@@ -1445,7 +1527,7 @@ button:focus-visible, a:focus-visible {
  .container { padding: 0 16px; }
  .container-narrow { padding: 0 16px; }
  .brand-mark-img { height: 36px; }
- .page-header { padding: 100px 0 40px; }
+ .page-header { padding: 64px 0 0; }
  .page-title { font-size: 42px; margin: 12px 0 12px; }
  .page-subtitle { font-size: 13px; }
  .login-card { padding: 28px 20px; }
@@ -1479,7 +1561,8 @@ button:focus-visible, a:focus-visible {
  .member-perks-icon { width: 32px; height: 32px; }
  .member-perks-text { font-size: 12px; }
  .member-tier { font-size: 10px; padding: 4px 10px 4px 8px; }
- .page-header .page-title { font-size: 28px; gap: 10px; }
+ .welcome-tier-badge { font-size: 10px; padding: 4px 10px 4px 8px; }
+ .welcome-card { margin-top: -20px; }
  .welcome-card-bottom.has-3-stats .welcome-stat { padding: 14px 8px; }
  .welcome-card-bottom.has-3-stats .welcome-stat-num { font-size: 18px; }
 }
@@ -1827,10 +1910,11 @@ button:focus-visible, a:focus-visible {
  <div class="welcome-name-row">
   <div class="welcome-avatar" id="welcomeAvatar" aria-hidden="true"></div>
   <div>
+  <p class="welcome-label" id="welcomeGreeting" style="margin:0 0 2px;"></p>
   <h2 class="welcome-name" id="customerName"></h2>
-  <p class="welcome-label" id="welcomeLabel">いつもご利用ありがとうございます</p>
   </div>
  </div>
+ <div class="welcome-tier-row" id="welcomeTierRow"></div>
  <p class="welcome-member-since" id="memberSince"></p>
  </div>
  <div class="welcome-card-bottom has-3-stats">
@@ -1859,6 +1943,9 @@ button:focus-visible, a:focus-visible {
  </div>
  <svg class="member-perks-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
  </div>
+
+ <!-- Gold divider -->
+ <hr class="dash-section-divider fade-in fade-in-d2">
 
  <!-- Tab Navigation -->
  <nav class="dash-tabs fade-in fade-in-d2" id="dashTabs" role="tablist" aria-label="マイページナビゲーション">
@@ -1891,7 +1978,7 @@ button:focus-visible, a:focus-visible {
  <!-- ====== TAB: HOME ====== -->
  <div class="dash-tab-panel active" id="panel-home">
  <div id="homeNextReward"></div>
- <div id="homeRecentOrder" style="margin-bottom:16px"></div>
+ <div id="homeRecentOrder"></div>
  <div id="homeCouponsPreview"></div>
  </div>
 
@@ -2708,24 +2795,23 @@ function renderDashboard(customer, orders) {
 
  var orderCount = customer.total_orders || orders.length || 0;
 
- /* ★ Premium: Time greeting + Member tier in page header */
- var _pgEyebrow = _pgH ? _pgH.querySelector('.page-eyebrow') : null;
- var _pgTitle = _pgH ? _pgH.querySelector('.page-title') : null;
- var _pgSub = _pgH ? _pgH.querySelector('.page-subtitle') : null;
+ /* ★ Premium: Tier info */
  var tierInfo = getMemberTier(orderCount);
- if (_pgEyebrow) _pgEyebrow.textContent = getTimeGreeting();
- if (_pgTitle) {
-  var custNameShort = (customer.name || 'お客') + ' 様';
-  _pgTitle.innerHTML = custNameShort + ' <span class="member-tier ' + tierInfo.tier + '">' + tierInfo.icon + ' ' + tierInfo.label + ' Member</span>';
- }
- if (_pgSub) _pgSub.textContent = '会員専用ページ — ご注文・特典・クーポンをまとめて管理';
 
- /* Welcome card */
+ /* Welcome card — greeting + name + tier all here */
  var custName = customer.name || 'お客';
+ var greetEl = document.getElementById('welcomeGreeting');
+ if (greetEl) greetEl.textContent = getTimeGreeting();
  document.getElementById('customerName').textContent = custName + ' 様';
  document.getElementById('totalOrders').textContent = orderCount;
  var avatarEl = document.getElementById('welcomeAvatar');
  if (avatarEl) avatarEl.textContent = custName.charAt(0);
+
+ /* Tier badge inside welcome card */
+ var tierRow = document.getElementById('welcomeTierRow');
+ if (tierRow) {
+  tierRow.innerHTML = '<span class="welcome-tier-badge">' + tierInfo.icon + ' ' + tierInfo.label + ' Member</span>';
+ }
 
  var spent = customer.total_spent || 0;
  document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
@@ -3097,9 +3183,9 @@ function renderHomeTab(orderCount, orders, customer) {
   '</div>' +
   '</div>';
  } else if (roEl) {
- roEl.innerHTML = '<div class="empty-orders" style="padding:32px 20px">' +
-  '<p class="empty-orders-text" style="margin-bottom:12px">まだご注文がありません</p>' +
-  '<a href="shop.html" class="shop-link">ショップを見る</a></div>';
+ roEl.innerHTML = '<div class="empty-orders">' +
+  '<p class="empty-orders-text">まだご注文がありません</p>' +
+  '<a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> ショップを見る</a></div>';
  }
 
  /* Coupons preview (active only, max 1) */
