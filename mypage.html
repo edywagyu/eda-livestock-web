@@ -41,6 +41,19 @@
  --color-ink-muted: #5C5C5C;
  --color-red: #C8102E;
  --color-line: rgba(212, 169, 59, 0.18);
+ /* Semantic status tokens */
+ --color-success-bg: #D1FAE5;
+ --color-success-fg: #065F46;
+ --color-warning-bg: #FEF3C7;
+ --color-warning-fg: #92400E;
+ --color-info-bg: #DBEAFE;
+ --color-info-fg: #1E40AF;
+ --color-muted-bg: #F3F4F6;
+ --color-muted-fg: #6B7280;
+ --color-error-bg: #FEF2F2;
+ --color-error-fg: #991B1B;
+ --color-error-border: #FECACA;
+ --color-line-green: #06C755;
  --font-display: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
  --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
@@ -111,13 +124,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .footer-brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; color: white; }
 .footer-brand-img { height: 56px; width: auto; }
 .footer-brand { font-family: var(--font-display); font-size: 24px; letter-spacing: var(--tracking-wider); }
-.footer-brand-jp { display: block; font-family: var(--font-jp); font-size: 11px; letter-spacing: 0.16em; opacity: 0.7; margin-top: 2px; }
-.footer-tagline { font-size: 14px; opacity: 0.7; line-height: 1.7; max-width: 280px; margin: 0 0 24px; }
-.footer-meta { font-size: 12px; opacity: 0.5; line-height: 1.7; }
+.footer-brand-jp { display: block; font-family: var(--font-jp); font-size: 13px; letter-spacing: 0.16em; opacity: 0.85; margin-top: 2px; }
+.footer-tagline { font-size: 14px; opacity: 0.85; line-height: 1.7; max-width: 280px; margin: 0 0 24px; }
+.footer-meta { font-size: 12px; opacity: 0.75; line-height: 1.7; }
 .footer-meta p { margin: 0 0 4px; }
 .footer-col h4 { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin: 0 0 24px; }
 .footer-col li { margin-bottom: 12px; }
-.footer-col a { font-size: 13px; opacity: 0.8; transition: opacity 0.3s; }
+.footer-col a { font-size: 13px; opacity: 0.9; transition: opacity 0.3s; }
 .footer-col a:hover { opacity: 1; color: var(--color-gold); }
 .footer-bottom {
  display: flex; justify-content: space-between; align-items: center;
@@ -410,10 +423,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .login-error {
  display: none;
  padding: 12px 16px;
- background: #FEF2F2;
- border: 1px solid #FECACA;
+ background: var(--color-error-bg);
+ border: 1px solid var(--color-error-border);
  border-radius: 8px;
- color: #991B1B;
+ color: var(--color-error-fg);
  font-size: 13px;
  margin-bottom: 20px;
  line-height: 1.6;
@@ -441,6 +454,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
 .spinner-text {
  font-family: var(--font-jp);
  font-size: 14px;
@@ -820,7 +834,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 /* Cart floating badge */
 .cart-float {
- position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+ position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%);
  background: var(--color-forest-deep); color: white;
  padding: 14px 28px; border-radius: 28px;
  font-family: var(--font-display); font-size: 13px;
@@ -1012,8 +1026,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: inline-flex;
  align-items: center;
  gap: 3px;
- background: #D1FAE5;
- color: #065F46;
+ background: var(--color-success-bg);
+ color: var(--color-success-fg);
  font-size: 10px;
  font-weight: 700;
  padding: 2px 8px;
@@ -1204,20 +1218,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  white-space: nowrap;
 }
 .status-badge.pending {
- background: #FEF3C7;
- color: #92400E;
+ background: var(--color-warning-bg);
+ color: var(--color-warning-fg);
 }
 .status-badge.preparing {
- background: #DBEAFE;
- color: #1E40AF;
+ background: var(--color-info-bg);
+ color: var(--color-info-fg);
 }
 .status-badge.shipped {
- background: #D1FAE5;
- color: #065F46;
+ background: var(--color-success-bg);
+ color: var(--color-success-fg);
 }
 .status-badge.delivered {
- background: #F3F4F6;
- color: #6B7280;
+ background: var(--color-muted-bg);
+ color: var(--color-muted-fg);
 }
 .status-badge-dot {
  width: 5px; height: 5px;
@@ -1666,6 +1680,19 @@ button:focus-visible, a:focus-visible {
  .welcome-card { margin-top: -64px; }
  .welcome-card-bottom.has-3-stats .welcome-stat { padding: 14px 8px; }
  .welcome-card-bottom.has-3-stats .welcome-stat-num { font-size: 18px; }
+ /* Shop: mobile touch targets */
+ .mp-qty-btn { width: 38px; height: 38px; font-size: 18px; }
+ .mp-add-cart { min-height: 40px; font-size: 11px; }
+}
+/* Narrow phones: single-column products */
+@media (max-width: 420px) {
+ .mp-products { grid-template-columns: 1fr; gap: 14px; }
+ .mp-product-img { aspect-ratio: 16/9; }
+ .mp-add-cart { min-height: 44px; font-size: 12px; }
+}
+/* Desktop: 3-column products */
+@media (min-width: 900px) {
+ .mp-products { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ==== Subscription Action Buttons ==== */
@@ -1685,8 +1712,8 @@ button:focus-visible, a:focus-visible {
  transition: all 0.2s;
 }
 .sub-action-btn:hover { border-color: var(--color-gold); transform: translateY(-1px); }
-.sub-action-btn.cancel { color: #C8102E; margin-left: auto; border-color: #FECACA; }
-.sub-action-btn.cancel:hover { border-color: #C8102E; background: #FEF2F2; }
+.sub-action-btn.cancel { color: var(--color-red); margin-left: auto; border-color: var(--color-error-border); }
+.sub-action-btn.cancel:hover { border-color: var(--color-red); background: var(--color-error-bg); }
 
 /* (old reward-prog styles removed — replaced by .rj-* journey styles above) */
 
@@ -1721,10 +1748,10 @@ button:focus-visible, a:focus-visible {
  padding: 3px 10px;
  border-radius: 10px;
 }
-.coupon-status.active { background: #D1FAE5; color: #065F46; }
-.coupon-status.expiring { background: #FEF3C7; color: #92400E; animation: pulse 2s infinite; }
-.coupon-status.used { background: #F3F4F6; color: #6B7280; }
-.coupon-status.expired { background: #FEE2E2; color: #991B1B; }
+.coupon-status.active { background: var(--color-success-bg); color: var(--color-success-fg); }
+.coupon-status.expiring { background: var(--color-warning-bg); color: var(--color-warning-fg); animation: pulse 2s infinite; }
+.coupon-status.used { background: var(--color-muted-bg); color: var(--color-muted-fg); }
+.coupon-status.expired { background: #FEE2E2; color: var(--color-error-fg); }
 .coupon-name {
  font-family: var(--font-jp);
  font-size: 13px;
@@ -1768,7 +1795,7 @@ button:focus-visible, a:focus-visible {
  border-radius: 6px;
  cursor: pointer;
 }
-.coupon-copy-btn.copied { background: #06C755; }
+.coupon-copy-btn.copied { background: var(--color-line-green); }
 
 @media (max-width: 640px) {
  .reward-prog-step-label { font-size: 10.5px; line-height: 1.3; }
@@ -1805,7 +1832,6 @@ button:focus-visible, a:focus-visible {
 </script>
 <!-- LIFF SDK (LINE Front-end Framework) -->
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<style>@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }</style>
 <link rel="stylesheet" href="public/css/eda-core.css">
 <link rel="stylesheet" href="public/css/jp-typography.css">
 <link rel="stylesheet" href="public/css/a11y.css">
