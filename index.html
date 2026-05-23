@@ -1316,99 +1316,146 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  to { transform: scale(1.05); }
 }
 
-/* 🍱 Brand box showcase — 専用木箱を中央配置で堂々と見せる */
-.brand-showcase {
+/* 🎁 Gift CTA — クリック可能なカードでギフトページへ誘導 */
+.gift-cta-section {
  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
- padding: clamp(80px, 12vw, 140px) 0;
+ padding: clamp(60px, 9vw, 100px) 0;
  position: relative;
  overflow: hidden;
 }
-.brand-showcase-grid {
+.gift-cta-card {
  display: grid;
- grid-template-columns: 1fr 1.1fr;
- gap: clamp(40px, 6vw, 96px);
- align-items: center;
-}
-.brand-showcase-text { max-width: 480px; }
-.brand-showcase-title {
- font-family: var(--font-jp-serif);
- font-size: clamp(36px, 5.5vw, 72px);
- line-height: 1.1;
- font-weight: 500;
- color: var(--color-forest);
- margin: 28px 0 28px;
- letter-spacing: -0.005em;
-}
-.brand-showcase-title em {
- font-style: normal;
- color: var(--color-gold-soft);
- font-family: var(--font-display);
- font-style: italic;
-}
-.brand-showcase-desc {
- font-size: 15.5px;
- line-height: 2;
- color: var(--color-ink-muted);
- margin-bottom: 36px;
-}
-.brand-showcase-points { display: flex; flex-direction: column; gap: 14px; }
-.bs-point {
- display: flex;
- align-items: center;
- gap: 16px;
- padding: 14px 18px;
+ grid-template-columns: 1.1fr 1fr;
+ gap: 0;
+ align-items: stretch;
  background: white;
- border: 1px solid var(--color-bone);
- border-left: 3px solid var(--color-gold);
- border-radius: 8px;
- font-size: 13.5px;
- color: var(--color-forest);
- font-weight: 600;
- transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+ border-radius: 18px;
+ overflow: hidden;
+ box-shadow: 0 24px 60px rgba(15,61,46,0.10), 0 4px 16px rgba(15,61,46,0.06);
+ text-decoration: none;
+ color: inherit;
+ transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo);
+ cursor: pointer;
+ max-width: 1180px;
+ margin: 0 auto;
 }
-.bs-point:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(15,61,46,0.08); }
-.bs-num {
- font-family: var(--font-display);
- font-size: 16px;
- font-weight: 700;
- color: var(--color-gold);
- flex-shrink: 0;
- letter-spacing: 0.04em;
+.gift-cta-card:hover {
+ transform: translateY(-6px);
+ box-shadow: 0 36px 80px rgba(15,61,46,0.16), 0 8px 24px rgba(212,169,59,0.12);
 }
-.brand-showcase-photo {
+.gift-cta-photo {
  position: relative;
  aspect-ratio: 4 / 3;
- border-radius: 14px;
  overflow: hidden;
- box-shadow: 0 30px 80px rgba(15,61,46,0.18), 0 8px 24px rgba(15,61,46,0.10);
- transform: translateY(0);
- animation: brandBoxFloat 6s ease-in-out infinite alternate;
+ background: #0A0A0A;
 }
-.brand-showcase-photo img {
+.gift-cta-photo img {
  width: 100%; height: 100%;
  object-fit: cover; object-position: center;
  display: block;
  filter: contrast(1.04) saturate(1.08);
  transition: transform 0.8s var(--ease-out-expo);
 }
-.brand-showcase-photo:hover img { transform: scale(1.04); }
-.brand-showcase-glow {
+.gift-cta-card:hover .gift-cta-photo img { transform: scale(1.06); }
+.gift-cta-glow {
  position: absolute;
  inset: 0;
  pointer-events: none;
- background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,169,59,0.18), transparent 70%);
+ background:
+  radial-gradient(ellipse 80% 60% at 50% 100%, rgba(212,169,59,0.18), transparent 70%),
+  linear-gradient(135deg, transparent 60%, rgba(212,169,59,0.10) 100%);
  mix-blend-mode: screen;
 }
-@keyframes brandBoxFloat {
- from { transform: translateY(0); }
- to { transform: translateY(-12px); }
+.gift-cta-text {
+ padding: clamp(32px, 5vw, 56px);
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
 }
-@media (max-width: 960px) {
- .brand-showcase-grid { grid-template-columns: 1fr; gap: 40px; }
- .brand-showcase-text { max-width: 100%; }
+.gift-cta-eyebrow {
+ font-family: var(--font-display);
+ font-size: 11.5px;
+ letter-spacing: 0.18em;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ margin-bottom: 18px;
+ display: block;
+}
+.gift-cta-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(28px, 4vw, 44px);
+ line-height: 1.3;
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 0 0 18px;
+ letter-spacing: 0.005em;
+}
+.gift-cta-title em {
+ font-style: italic;
+ color: var(--color-gold-soft);
+ font-family: var(--font-display);
+ font-weight: 600;
+}
+.gift-cta-desc {
+ font-size: 14.5px;
+ line-height: 1.9;
+ color: var(--color-ink-muted);
+ margin: 0 0 22px;
+}
+.gift-cta-tags {
+ list-style: none;
+ padding: 0;
+ margin: 0 0 28px;
+ display: flex;
+ flex-wrap: wrap;
+ gap: 8px;
+}
+.gift-cta-tags li {
+ font-size: 12px;
+ padding: 6px 12px;
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.25);
+ border-radius: 16px;
+ color: var(--color-forest);
+ font-weight: 600;
+ white-space: nowrap;
+}
+.gift-cta-button {
+ display: inline-flex;
+ align-items: center;
+ gap: 12px;
+ padding: 14px 24px;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: white;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ font-weight: 700;
+ letter-spacing: 0.04em;
+ border-radius: 999px;
+ width: fit-content;
+ transition: all 0.3s var(--ease-out-expo);
+ box-shadow: 0 6px 18px rgba(15,61,46,0.20);
+}
+.gift-cta-card:hover .gift-cta-button {
+ background: linear-gradient(135deg, var(--color-gold-soft), var(--color-gold));
+ color: var(--color-forest-deep);
+ box-shadow: 0 8px 24px rgba(212,169,59,0.35);
+}
+.gift-cta-arrow {
+ transition: transform 0.3s var(--ease-out-expo);
+ font-size: 16px;
+}
+.gift-cta-card:hover .gift-cta-arrow { transform: translateX(4px); }
+
+@media (max-width: 860px) {
+ .gift-cta-card { grid-template-columns: 1fr; }
+ .gift-cta-photo { aspect-ratio: 16 / 10; }
+ .gift-cta-text { padding: 28px 24px 32px; }
+ .gift-cta-tags { gap: 6px; }
+ .gift-cta-tags li { font-size: 11.5px; padding: 5px 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
- .brand-showcase-photo { animation: none; }
+ .gift-cta-card, .gift-cta-photo img, .gift-cta-arrow, .gift-cta-button { transition: none; }
 }
 
 /* 🥩 Hero 和牛キューブアクセント — 黒バック写真を mix-blend で暗緑に馴染ませる */
@@ -4581,30 +4628,31 @@ section.featured {
  </div>
 </section>
 
-<!-- ========= SHOP ========= -->
-<!-- ========= BRAND BOX SHOWCASE ========= -->
-<section class="brand-showcase">
+<!-- ========= GIFT CTA ========= -->
+<section class="gift-cta-section">
  <div class="container">
-  <div class="brand-showcase-grid reveal">
-   <div class="brand-showcase-text">
-    <span class="eyebrow text-gold has-dash">Our Signature Box</span>
-    <h2 class="brand-showcase-title">届くのは、<em>四代目</em>の<br/>誇り。</h2>
-    <p class="brand-showcase-desc">
-     一頭一頭、丁寧に肥育した宮崎和牛を、部位ごとに真空パック。「四代目 江田畜産」の刻印が入った専用木箱に、藁を敷いて丁寧にお届けします。
+  <a href="shop.html#gift-highlight" class="gift-cta-card reveal" aria-label="ギフト商品を見る">
+   <div class="gift-cta-photo">
+    <img src="public/images/showcase/brand-box.jpg" alt="四代目 江田畜産 専用木箱（ギフト）" loading="lazy" decoding="async"/>
+    <div class="gift-cta-glow" aria-hidden="true"></div>
+   </div>
+   <div class="gift-cta-text">
+    <span class="gift-cta-eyebrow">— FOR SPECIAL OCCASIONS —</span>
+    <h2 class="gift-cta-title">大切な方への、<em>贈り物</em>として。</h2>
+    <p class="gift-cta-desc">
+     のし対応・化粧箱入り。御歳暮・御中元・内祝・お祝いに、宮崎和牛を専用木箱でお届けします。
     </p>
-    <div class="brand-showcase-points">
-     <div class="bs-point"><span class="bs-num">01</span><span>真空パック · 急速冷凍で鮮度を保持</span></div>
-     <div class="bs-point"><span class="bs-num">02</span><span>部位ごとに個別包装 · ラベル付き</span></div>
-     <div class="bs-point"><span class="bs-num">03</span><span>江田畜産 専用木箱 · ギフトにも</span></div>
-    </div>
+    <ul class="gift-cta-tags">
+     <li>🎀 のし対応</li>
+     <li>📦 化粧箱入り</li>
+     <li>💌 価格非表示</li>
+     <li>🚚 個別配送可</li>
+    </ul>
+    <span class="gift-cta-button">
+     ギフト商品を見る <span class="gift-cta-arrow">→</span>
+    </span>
    </div>
-   <div class="brand-showcase-photo">
-    <picture>
-     <img src="public/images/showcase/brand-box.jpg" alt="四代目 江田畜産 専用木箱" loading="lazy" decoding="async"/>
-    </picture>
-    <div class="brand-showcase-glow" aria-hidden="true"></div>
-   </div>
-  </div>
+  </a>
  </div>
 </section>
 
