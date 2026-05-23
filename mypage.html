@@ -476,30 +476,61 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-ink-muted);
 }
 
-/* Dashboard */
+/* Dashboard — Premium Membership Experience */
 .dashboard-section {
  display: none;
- padding: 0 0 48px;
+ padding: 0 0 64px;
+ position: relative;
+ overflow: hidden;
+ background: radial-gradient(ellipse at 50% 60%, rgba(212,169,59,0.015), transparent 60%), var(--color-cream);
 }
 .dashboard-section.show { display: block; }
+/* ★ Hero zone — seamless green from fixed header into dashboard */
+.dashboard-section::before {
+ content: '';
+ position: absolute;
+ top: 0; left: 0; right: 0;
+ height: 480px;
+ background:
+  repeating-linear-gradient(-45deg, transparent, transparent 28px, rgba(212,169,59,0.012) 28px, rgba(212,169,59,0.012) 29px),
+  radial-gradient(ellipse at 75% 25%, rgba(212,169,59,0.14), transparent 50%),
+  radial-gradient(ellipse at 15% 70%, rgba(255,255,255,0.04), transparent 50%),
+  linear-gradient(175deg, var(--color-forest-deep) 0%, #0E3526 35%, #16503B 100%);
+ pointer-events: none;
+ z-index: 0;
+}
+.dashboard-section::after {
+ content: '';
+ position: absolute;
+ top: 380px; left: 0; right: 0;
+ height: 140px;
+ background: linear-gradient(180deg, transparent, var(--color-cream));
+ pointer-events: none;
+ z-index: 0;
+}
+.dashboard-section > .container-narrow {
+ position: relative;
+ z-index: 1;
+ padding-top: 108px;
+}
 
 /* Welcome Card — World-Class Floating Design */
 .welcome-card {
  background: white;
  color: var(--color-ink);
- border-radius: 20px;
+ border-radius: 24px;
  padding: 0;
- margin: -80px 0 16px;
+ margin: 0 0 24px;
  position: relative;
  overflow: hidden;
- box-shadow: 0 12px 48px rgba(15, 61, 46, 0.14), 0 2px 8px rgba(15, 61, 46, 0.06);
- border: none;
+ box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22), 0 8px 24px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(212,169,59,0.08);
+ border: 1px solid rgba(212, 169, 59, 0.12);
  z-index: 2;
 }
 .welcome-card-top {
- background: linear-gradient(145deg, #0B2E1F 0%, #143D2B 35%, #1A5A42 70%, #164D38 100%);
+ background: linear-gradient(145deg, #071E14 0%, #0D3022 25%, #143D2B 50%, #185840 80%, #14503A 100%);
  color: white;
- padding: 32px 36px 28px;
+ padding: 36px 40px 32px;
  position: relative;
  overflow: hidden;
 }
@@ -543,25 +574,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  position: relative;
 }
 .welcome-avatar {
- width: 56px; height: 56px;
+ width: 62px; height: 62px;
  border-radius: 50%;
  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-bright) 50%, #C69830 100%);
  display: flex; align-items: center; justify-content: center;
  font-family: var(--font-jp-serif);
- font-size: 24px;
+ font-size: 26px;
  color: white;
  flex-shrink: 0;
- box-shadow: 0 4px 20px rgba(212, 169, 59, 0.4), inset 0 1px 0 rgba(255,255,255,0.3);
- border: 2.5px solid rgba(255, 255, 255, 0.25);
+ box-shadow: 0 6px 24px rgba(212, 169, 59, 0.45), inset 0 1px 0 rgba(255,255,255,0.35);
+ border: 3px solid rgba(255, 255, 255, 0.3);
 }
 .welcome-name {
  font-family: var(--font-jp-serif);
- font-size: 24px;
+ font-size: 26px;
  margin: 0;
  position: relative;
  letter-spacing: 0.06em;
  line-height: 1.3;
- text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+ font-weight: 600;
+ text-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 .welcome-label {
  font-family: var(--font-display);
@@ -603,31 +635,32 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  flex-direction: column;
  align-items: center;
- gap: 6px;
- padding: 22px 16px;
+ gap: 8px;
+ padding: 26px 16px;
  position: relative;
 }
 .welcome-stat + .welcome-stat::before {
  content: '';
  position: absolute;
- left: 0; top: 20%; bottom: 20%;
+ left: 0; top: 15%; bottom: 15%;
  width: 1px;
- background: linear-gradient(180deg, transparent, rgba(212,169,59,0.2), transparent);
+ background: linear-gradient(180deg, transparent, rgba(212,169,59,0.25), transparent);
 }
 .welcome-stat-num {
  font-family: var(--font-display);
- font-size: 30px;
+ font-size: 34px;
  color: var(--color-forest);
  line-height: 1;
  letter-spacing: -0.02em;
- font-weight: 600;
+ font-weight: 700;
 }
 .welcome-stat-label {
  font-family: var(--font-jp);
  font-size: 10px;
  color: var(--color-ink-muted);
- letter-spacing: 0.06em;
+ letter-spacing: 0.08em;
  text-transform: uppercase;
+ font-weight: 500;
 }
 
 /* Subscription Badge */
@@ -662,14 +695,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .dash-tabs {
  display: flex;
  background: white;
- border-radius: 14px;
+ border-radius: 16px;
  border: 1px solid rgba(15, 61, 46, 0.06);
  overflow-x: auto;
  overflow-y: hidden;
  -webkit-overflow-scrolling: touch;
  scrollbar-width: none;
- margin-bottom: 16px;
- box-shadow: 0 2px 16px rgba(15, 61, 46, 0.04);
+ margin-bottom: 24px;
+ box-shadow: 0 6px 28px rgba(15, 61, 46, 0.06), 0 1px 4px rgba(15, 61, 46, 0.03);
  position: relative;
 }
 /* Scroll fade indicator — right edge */
@@ -743,10 +776,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 /* Member profile card (top of home) */
 .home-member-card {
- background: white; border-radius: 16px; padding: 24px;
+ background: white; border-radius: 18px; padding: 24px;
  border: 1px solid rgba(15,61,46,0.06);
  display: flex; align-items: center; gap: 20px;
- box-shadow: 0 1px 4px rgba(15,61,46,0.03);
+ box-shadow: 0 3px 12px rgba(15,61,46,0.05);
+ transition: all 0.4s var(--ease-out-expo);
+}
+.home-member-card:hover {
+ box-shadow: 0 8px 28px rgba(15,61,46,0.07);
+ transform: translateY(-2px);
 }
 .home-member-avatar {
  width: 56px; height: 56px; border-radius: 50%;
@@ -771,10 +809,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
 }
 .home-info-item {
- background: white; border-radius: 14px; padding: 18px 16px;
+ background: white; border-radius: 16px; padding: 20px 16px;
  border: 1px solid rgba(15,61,46,0.06);
  text-align: center;
- box-shadow: 0 1px 4px rgba(15,61,46,0.03);
+ box-shadow: 0 2px 8px rgba(15,61,46,0.04);
+ transition: all 0.4s var(--ease-out-expo);
+}
+.home-info-item:hover {
+ box-shadow: 0 8px 24px rgba(15,61,46,0.06);
+ transform: translateY(-2px);
+ border-color: rgba(212,169,59,0.15);
 }
 .home-info-label {
  font-family: var(--font-display); font-size: 10px;
@@ -782,9 +826,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  text-transform: uppercase; margin: 0 0 6px;
 }
 .home-info-value {
- font-family: var(--font-numeric, var(--font-body)); font-size: 22px;
+ font-family: var(--font-display); font-size: 24px;
  font-weight: 700; color: var(--color-forest); margin: 0;
- line-height: 1.2;
+ line-height: 1.2; letter-spacing: -0.01em;
 }
 .home-info-value small {
  font-size: 12px; font-weight: 500; color: var(--color-ink-muted);
@@ -796,14 +840,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* Survey coupon card */
 .home-survey-card {
  background: linear-gradient(135deg, rgba(15,61,46,0.04), rgba(212,169,59,0.06));
- border: 1px solid rgba(212,169,59,0.15);
- border-radius: 16px; padding: 24px;
+ border: 1px solid rgba(212,169,59,0.18);
+ border-radius: 18px; padding: 24px;
  cursor: pointer; transition: all 0.4s var(--ease-out-expo);
+ box-shadow: 0 2px 8px rgba(212,169,59,0.04);
 }
 .home-survey-card:hover {
  border-color: var(--color-gold);
- box-shadow: 0 4px 16px rgba(212,169,59,0.1);
- transform: translateY(-2px);
+ box-shadow: 0 8px 28px rgba(212,169,59,0.12);
+ transform: translateY(-3px);
 }
 .home-survey-header {
  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
@@ -1045,10 +1090,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-size: 14px;
  letter-spacing: var(--tracking-widest);
  color: var(--color-gold-text);
- margin: 0 0 16px;
+ margin: 0 0 20px;
  display: flex;
  align-items: center;
- gap: 12px;
+ gap: 14px;
+ text-transform: uppercase;
 }
 .dash-section-title::after {
  content: '';
@@ -1060,9 +1106,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ REWARD JOURNEY (特典タブ) ================ */
 .rj-card {
  background: white;
- border-radius: 12px;
- border: 1px solid var(--color-bone);
+ border-radius: 18px;
+ border: 1px solid rgba(15,61,46,0.06);
  overflow: hidden;
+ box-shadow: 0 3px 12px rgba(15,61,46,0.05);
 }
 .rj-header {
  background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
@@ -1206,15 +1253,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* ================ HOME TAB — Luxury Cards ================ */
 .home-next-reward {
  background: white;
- border-radius: 16px;
- border: 1px solid rgba(212, 169, 59, 0.1);
- padding: 20px 24px;
+ border-radius: 18px;
+ border: 1px solid rgba(212, 169, 59, 0.12);
+ padding: 22px 24px;
  display: flex;
  align-items: center;
  gap: 16px;
  cursor: pointer;
  transition: all 0.4s var(--ease-out-expo);
- box-shadow: 0 2px 12px rgba(15, 61, 46, 0.04);
+ box-shadow: 0 3px 12px rgba(15, 61, 46, 0.05);
  position: relative;
  overflow: hidden;
 }
@@ -1265,15 +1312,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* Empty orders — Aspirational */
 .empty-orders {
- background: linear-gradient(160deg, #0F3D2E 0%, #1A5A42 100%);
- border-radius: 16px;
- border: none;
- box-shadow: 0 8px 32px rgba(15, 61, 46, 0.15);
+ background: linear-gradient(160deg, #0A2518 0%, #0F3D2E 40%, #1A5A42 100%);
+ border-radius: 20px;
+ border: 1px solid rgba(212,169,59,0.1);
+ box-shadow: 0 16px 56px rgba(15, 61, 46, 0.2), 0 0 0 1px rgba(212,169,59,0.05);
  padding: 0;
  text-align: center;
  overflow: hidden;
  position: relative;
- min-height: 200px;
+ min-height: 220px;
  display: flex;
  flex-direction: column;
  justify-content: center;
@@ -1296,12 +1343,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .empty-orders-text {
  font-family: var(--font-jp-serif);
- font-size: 16px;
- color: rgba(255,255,255,0.9);
- margin: 0 0 20px;
+ font-size: 17px;
+ color: white;
+ margin: 0 0 22px;
  position: relative;
  line-height: 1.7;
  padding: 0 24px;
+ font-weight: 500;
+ text-shadow: 0 1px 4px rgba(0,0,0,0.15);
 }
 .shop-link {
  display: inline-flex;
@@ -1331,17 +1380,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* Order Cards — Premium */
 .order-card {
  background: white;
- border-radius: 14px;
+ border-radius: 16px;
  padding: 24px;
- margin-bottom: 14px;
+ margin-bottom: 16px;
  border: 1px solid rgba(15, 61, 46, 0.06);
- box-shadow: 0 1px 4px rgba(15, 61, 46, 0.03);
+ box-shadow: 0 2px 10px rgba(15, 61, 46, 0.04);
  transition: all 0.4s var(--ease-out-expo);
 }
 .order-card:hover {
  border-color: rgba(212, 169, 59, 0.3);
- box-shadow: 0 8px 32px rgba(15, 61, 46, 0.06);
- transform: translateY(-2px);
+ box-shadow: 0 12px 40px rgba(15, 61, 46, 0.08), 0 0 0 1px rgba(212,169,59,0.08);
+ transform: translateY(-3px);
 }
 .order-card-head {
  display: flex;
@@ -1784,7 +1833,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  );
  background-size: 200% 100%;
  animation: goldShimmer 4s ease-in-out infinite;
- border-radius: 20px 20px 0 0; z-index: 1;
+ border-radius: 24px 24px 0 0; z-index: 1;
 }
 @keyframes goldShimmer {
  0% { background-position: 100% 0; }
@@ -1802,11 +1851,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin: 10px 0 0; position: relative;
 }
 .member-perks-strip {
- background: linear-gradient(135deg, rgba(212,169,59,0.07), rgba(212,169,59,0.02));
- border: 1px solid rgba(212,169,59,0.15); border-radius: 14px;
- padding: 14px 20px; margin-bottom: 14px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.09), rgba(212,169,59,0.03));
+ border: 1px solid rgba(212,169,59,0.2); border-radius: 16px;
+ padding: 16px 22px; margin-bottom: 20px;
  display: flex; align-items: center; gap: 14px;
  cursor: pointer; transition: all 0.3s;
+ box-shadow: 0 2px 12px rgba(212,169,59,0.05);
 }
 .member-perks-strip:hover {
  border-color: rgba(212,169,59,0.3); box-shadow: 0 4px 16px rgba(212,169,59,0.06);
@@ -1868,10 +1918,10 @@ button:focus-visible, a:focus-visible {
  .page-title { font-size: 42px; margin: 12px 0 12px; }
  .page-subtitle { font-size: 13px; }
  .login-card { padding: 28px 20px; }
- .welcome-card { border-radius: 16px; }
- .welcome-card-top { padding: 24px 20px 22px; }
- .welcome-avatar { width: 48px; height: 48px; font-size: 20px; }
- .welcome-name { font-size: 20px; }
+ .welcome-card { border-radius: 20px; }
+ .welcome-card-top { padding: 28px 22px 24px; }
+ .welcome-avatar { width: 52px; height: 52px; font-size: 22px; }
+ .welcome-name { font-size: 22px; }
  .welcome-name-row { gap: 14px; }
  .welcome-stat-num { font-size: 24px; }
  .welcome-stat { padding: 16px 12px; }
@@ -1900,9 +1950,12 @@ button:focus-visible, a:focus-visible {
  .member-perks-text { font-size: 12px; }
  .member-tier { font-size: 10px; padding: 4px 10px 4px 8px; }
  .welcome-tier-badge { font-size: 10px; padding: 4px 10px 4px 8px; }
- .welcome-card { margin-top: -64px; }
- .welcome-card-bottom.has-3-stats .welcome-stat { padding: 14px 8px; }
- .welcome-card-bottom.has-3-stats .welcome-stat-num { font-size: 18px; }
+ .welcome-card { margin-top: 0; }
+ .dashboard-section > .container-narrow { padding-top: 88px; }
+ .dashboard-section::before { height: 420px; }
+ .dashboard-section::after { top: 320px; }
+ .welcome-card-bottom.has-3-stats .welcome-stat { padding: 18px 8px; }
+ .welcome-card-bottom.has-3-stats .welcome-stat-num { font-size: 22px; }
  /* Shop: mobile touch targets */
  .mp-qty-btn { width: 38px; height: 38px; font-size: 18px; }
  .mp-add-cart { min-height: 40px; font-size: 11px; }
@@ -3071,7 +3124,7 @@ function renderDashboard(customer, orders) {
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
  var _pgH = document.getElementById('pageHeader');
- if (_pgH) _pgH.style.display = '';
+ if (_pgH) _pgH.style.display = 'none';
  dashboard.classList.add('show');
 
  var orderCount = customer.total_orders || orders.length || 0;
