@@ -1458,56 +1458,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .gift-cta-card, .gift-cta-photo img, .gift-cta-arrow, .gift-cta-button { transition: none; }
 }
 
-/* 🥩 Hero 和牛キューブアクセント — 黒バック写真を mix-blend で暗緑に馴染ませる */
-.hero-meat-accent {
- position: absolute;
- top: 50%; right: -8%;
- width: 64%; max-width: 920px;
- aspect-ratio: 4 / 3;
- transform: translateY(-46%);
- z-index: 1;
- pointer-events: none;
- /* 画像の周囲を放射状フェードで暗緑に溶け込ませる */
- -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 55%, black 35%, transparent 85%);
-         mask-image: radial-gradient(ellipse 70% 70% at 50% 55%, black 35%, transparent 85%);
- animation: heroMeatFloat 8s ease-in-out infinite alternate;
- opacity: 0;
- animation: heroMeatFadeIn 1.6s 0.4s cubic-bezier(0.19, 1, 0.22, 1) forwards,
-            heroMeatFloat 9s 2s ease-in-out infinite alternate;
-}
-.hero-meat-accent img {
- width: 100%; height: 100%;
- object-fit: cover; object-position: center;
- filter: brightness(1.05) contrast(1.08) saturate(1.15);
- mix-blend-mode: lighten;
- display: block;
-}
-@keyframes heroMeatFadeIn {
- from { opacity: 0; transform: translateY(-40%) scale(0.96); }
- to { opacity: 1; transform: translateY(-46%) scale(1); }
-}
-@keyframes heroMeatFloat {
- from { transform: translateY(-46%) scale(1); }
- to { transform: translateY(-50%) scale(1.04); }
-}
-@media (max-width: 960px) {
- .hero-meat-accent {
-  /* モバイル: 下に配置、小さく、より溶け込ませる */
-  top: auto; bottom: -8%; right: -20%;
-  width: 100%; transform: none;
-  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 25%, transparent 75%);
-          mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 25%, transparent 75%);
-  animation: heroMeatFadeIn 1.4s 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  opacity: 0;
- }
- .hero-meat-accent img { filter: brightness(0.95) contrast(1.05) saturate(1.1); }
-}
-@media (max-width: 640px) {
- .hero-meat-accent { bottom: -12%; right: -30%; }
-}
-@media (prefers-reduced-motion: reduce) {
- .hero-meat-accent { animation: heroMeatFadeIn 0.5s ease forwards; }
-}
 .hero-content { position: relative; z-index: 2; width: 100%; padding-top: 120px; padding-bottom: 80px; }
 .hero-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
 .hero-meta-line { width: 80px; height: 1px; background: var(--color-gold); }
@@ -4218,11 +4168,6 @@ section.featured {
  <!-- hero-photo: 現在はグラデーションのみ表示。写真を戻す場合は src に画像パスを入れる -->
  <img class="hero-photo" src="" alt="" loading="eager" fetchpriority="high" style="display:none;"/>
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
-
- <!-- 🥩 Hero accent: 黒バック和牛キューブ (mix-blend-mode で暗緑に馴染ませる) -->
- <div class="hero-meat-accent" aria-hidden="true">
-  <img src="public/images/hero/wagyu-cube-dark.jpg" alt="" loading="eager" decoding="async"/>
- </div>
 
  <div class="container hero-content">
  <div class="hero-meta">
