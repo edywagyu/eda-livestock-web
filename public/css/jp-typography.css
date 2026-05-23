@@ -44,14 +44,52 @@ h1, h2, h3, h4, .hero-title, .page-title, .section-title,
 
 /* ── 日本語テキスト可読性強化 ── */
 
-/* 段落・説明文: 最低 15px, 濃い色, ゆったり行間 */
+/* 段落・説明文: 最低 15px, ゆったり行間 (レイアウトのみ !important) */
 p, .desc, .lead, .product-desc,
 .restaurant-desc, .faq-a, .news-body p,
 .article-body p, .philosophy-text,
 [class*="-desc"], [class*="-text"]:not(input):not(textarea):not(button) {
   font-size: max(15px, inherit) !important;
   line-height: 1.9 !important;
-  color: var(--color-ink-muted);
+}
+
+/* 色は specificity 0 で指定 → ローカル CSS の color: white 等が容易に上書き可能 */
+:where(p, .desc, .lead, .product-desc,
+  .restaurant-desc, .faq-a, .news-body p,
+  .article-body p, .philosophy-text,
+  [class*="-desc"], [class*="-text"]:not(input):not(textarea):not(button)) {
+  color: var(--body-text-color, var(--color-ink-muted));
+}
+
+/* 🔴 ダーク背景セクション: 本文色を白に上書き
+   --body-text-color 変数が継承され、子の <p> 等が自動的に白系に */
+.hero, .page-header, .page-hero,
+.philosophy, .members, .cta-block,
+.site-footer, footer.site-footer,
+.legal-footer, .legal-header,
+[class*="-hero"][class*="--dark"], [class*="-section--dark"],
+.bg-forest, .bg-forest-deep,
+.dark-bg, [class*="dark-bg"],
+.subscription-hero, .shop-hero, .org-hero, .sub-hero,
+.philosophy-hero, .about-hero, .journey-hero,
+.investors-hero, .press-hero, .awards-hero,
+.contact-hero, .restaurants-hero, .global-hero,
+.product-hero, .checkout-hero,
+.mypage-hero, .login-hero, .mp-hero,
+.kit-hero, .quiz-hero, .order-complete-hero,
+.terms-header, .privacy-header, .tokushoho-header {
+  --body-text-color: rgba(255, 255, 255, 0.92);
+}
+
+/* 個別の暗背景テキストクラスも明示的に白へ
+   (色を直接指定している既存スタイルを上書き) */
+.hero-subtitle, .hero-sub, .hero-desc, .hero-tagline,
+.page-subtitle, .page-header .page-subtitle,
+.pillar-text, .member-role, .member-bio,
+.cta-text, .cta-desc, .cta-sub,
+.footer-meta, .footer-tagline, .cert-block p,
+.legal-footer span, .legal-footer p {
+  color: var(--body-text-color, inherit) !important;
 }
 
 /* カード内テキスト: 最低 15px（14pxは日本語で潰れる） */
