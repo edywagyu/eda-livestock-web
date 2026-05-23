@@ -819,26 +819,26 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
     <!-- ============ LINE セグメント ============ -->
     <div class="card" id="segmentCard" style="margin-top: 32px;">
       <h2 class="card-title">📱 LINE セグメント別配信</h2>
-      <p style="font-size: 13px; color: #5C5C5C; margin: 0 0 20px;">
+      <p style="font-size: 13px; color: #444444; margin: 0 0 20px;">
         顧客を 5 セグメントに分け、LINE Official Manager オーディエンス用 CSV をダウンロードできます。
         ダウンロードした CSV を <a href="https://manager.line.biz/" target="_blank" rel="noopener" style="color:#0F3D2E;">LINE Manager のオーディエンス</a> でアップロードしてください。
       </p>
 
       <div id="segmentStatsBox" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px;">
         <div class="stat-card" style="background: #F5EFE3; padding: 16px; border-radius: 8px;">
-          <div style="font-size: 11px; color: #5C5C5C; letter-spacing: 0.05em;">合計顧客数</div>
+          <div style="font-size: 11px; color: #444444; letter-spacing: 0.05em;">合計顧客数</div>
           <div id="segStatAll" style="font-size: 28px; font-weight: 700; color: #0F3D2E;">—</div>
         </div>
         <div class="stat-card" style="background: #F5EFE3; padding: 16px; border-radius: 8px;">
-          <div style="font-size: 11px; color: #5C5C5C; letter-spacing: 0.05em;">LINE 連携率</div>
+          <div style="font-size: 11px; color: #444444; letter-spacing: 0.05em;">LINE 連携率</div>
           <div id="segStatLineRate" style="font-size: 28px; font-weight: 700; color: #0F3D2E;">—%</div>
         </div>
         <div class="stat-card" style="background: #F5EFE3; padding: 16px; border-radius: 8px;">
-          <div style="font-size: 11px; color: #5C5C5C; letter-spacing: 0.05em;">VIP (3万円+)</div>
+          <div style="font-size: 11px; color: #444444; letter-spacing: 0.05em;">VIP (3万円+)</div>
           <div id="segStatVip" style="font-size: 28px; font-weight: 700; color: #D4A93B;">—</div>
         </div>
         <div class="stat-card" style="background: #F5EFE3; padding: 16px; border-radius: 8px;">
-          <div style="font-size: 11px; color: #5C5C5C; letter-spacing: 0.05em;">休眠リスク (30日+)</div>
+          <div style="font-size: 11px; color: #444444; letter-spacing: 0.05em;">休眠リスク (30日+)</div>
           <div id="segStatChurn" style="font-size: 28px; font-weight: 700; color: #C8102E;">—</div>
         </div>
       </div>
@@ -847,7 +847,7 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
         <div class="seg-row" style="display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; padding: 14px 16px; background: white; border: 1px solid #EFE8D7; border-radius: 8px;">
           <div>
             <div style="font-weight: 700; color: #0F3D2E;">📣 LINE 友だち + 購入済</div>
-            <div style="font-size: 12px; color: #5C5C5C;">リピート訴求・VIP 案内に</div>
+            <div style="font-size: 12px; color: #444444;">リピート訴求・VIP 案内に</div>
           </div>
           <div id="segCount_line_purchased" style="font-weight: 600; color: #0F3D2E; min-width: 60px; text-align: right;">—</div>
           <button class="btn" onclick="downloadSegmentCsv('line_purchased', 'line_audience')" style="padding: 8px 14px; font-size: 12px;">LINE 用</button>
@@ -857,7 +857,7 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
         <div class="seg-row" style="display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; padding: 14px 16px; background: white; border: 1px solid #EFE8D7; border-radius: 8px;">
           <div>
             <div style="font-weight: 700; color: #0F3D2E;">🆕 LINE のみ・未購入</div>
-            <div style="font-size: 12px; color: #5C5C5C;">初回 50%OFF クーポン誘導</div>
+            <div style="font-size: 12px; color: #444444;">初回 50%OFF クーポン誘導</div>
           </div>
           <div id="segCount_line_only" style="font-weight: 600; color: #0F3D2E; min-width: 60px; text-align: right;">—</div>
           <button class="btn" onclick="downloadSegmentCsv('line_only', 'line_audience')" style="padding: 8px 14px; font-size: 12px;">LINE 用</button>
@@ -867,7 +867,7 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
         <div class="seg-row" style="display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; padding: 14px 16px; background: white; border: 1px solid #EFE8D7; border-radius: 8px;">
           <div>
             <div style="font-weight: 700; color: #0F3D2E;">📧 購入済・LINE 未連携</div>
-            <div style="font-size: 12px; color: #5C5C5C;">「LINE 連携で 5%OFF」メール誘導</div>
+            <div style="font-size: 12px; color: #444444;">「LINE 連携で 5%OFF」メール誘導</div>
           </div>
           <div id="segCount_purchased_only" style="font-weight: 600; color: #0F3D2E; min-width: 60px; text-align: right;">—</div>
           <button class="btn" disabled style="padding: 8px 14px; font-size: 12px; opacity: 0.4;">LINE 用</button>
@@ -877,7 +877,7 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
         <div class="seg-row" style="display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; padding: 14px 16px; background: white; border: 1px solid #EFE8D7; border-radius: 8px;">
           <div>
             <div style="font-weight: 700; color: #C8102E;">⚠ 休眠リスク</div>
-            <div style="font-size: 12px; color: #5C5C5C;">最終注文から 30 日以上 → カムバッククーポン</div>
+            <div style="font-size: 12px; color: #444444;">最終注文から 30 日以上 → カムバッククーポン</div>
           </div>
           <div id="segCount_churn_risk" style="font-weight: 600; color: #C8102E; min-width: 60px; text-align: right;">—</div>
           <button class="btn" onclick="downloadSegmentCsv('churn_risk', 'line_audience')" style="padding: 8px 14px; font-size: 12px;">LINE 用</button>
@@ -887,7 +887,7 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
         <div class="seg-row" style="display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; padding: 14px 16px; background: #FEF3C7; border: 1px solid #D4A93B; border-radius: 8px;">
           <div>
             <div style="font-weight: 700; color: #D4A93B;">👑 VIP (累計 ¥30,000+)</div>
-            <div style="font-size: 12px; color: #5C5C5C;">有機JAS 解禁優先案内・特別ご招待に</div>
+            <div style="font-size: 12px; color: #444444;">有機JAS 解禁優先案内・特別ご招待に</div>
           </div>
           <div id="segCount_vip" style="font-weight: 700; color: #D4A93B; min-width: 60px; text-align: right;">—</div>
           <button class="btn" onclick="downloadSegmentCsv('vip', 'line_audience')" style="padding: 8px 14px; font-size: 12px;">LINE 用</button>
