@@ -807,10 +807,195 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-weight: 500;
 }
 .home-member-tier { margin-left: auto; }
+/* ★ Next Delivery Card — prominent */
+.home-delivery-card {
+ background: white;
+ border-radius: 20px;
+ padding: 26px 28px;
+ border: 1px solid rgba(15,61,46,0.08);
+ box-shadow: 0 6px 24px rgba(15,61,46,0.08);
+ position: relative;
+ overflow: hidden;
+}
+.home-delivery-card::before {
+ content: '';
+ position: absolute; top: 0; left: 0; right: 0; height: 4px;
+ background: linear-gradient(90deg, var(--color-burgundy), var(--color-gold), var(--color-burgundy));
+}
+.home-delivery-head {
+ display: flex; justify-content: space-between; align-items: center;
+ margin-bottom: 12px;
+}
+.home-delivery-eyebrow {
+ font-family: var(--font-jp); font-size: 13px;
+ color: var(--color-copper); letter-spacing: 0.06em;
+ font-weight: 700; margin: 0;
+}
+.home-delivery-date {
+ font-family: var(--font-jp-serif);
+ font-size: 28px; font-weight: 700;
+ color: var(--color-forest); margin: 0 0 18px;
+ letter-spacing: 0.02em; line-height: 1.3;
+}
+.home-delivery-items {
+ list-style: none; padding: 14px 0;
+ margin: 0 0 14px;
+ border-top: 1px solid var(--color-bone);
+ border-bottom: 1px solid var(--color-bone);
+}
+.home-delivery-items li {
+ display: flex; justify-content: space-between;
+ padding: 6px 0; font-family: var(--font-jp);
+}
+.home-delivery-item-name {
+ font-size: 15px; color: var(--color-ink);
+ font-weight: 500;
+}
+.home-delivery-item-qty {
+ font-size: 14px; color: var(--color-ink-muted);
+ font-family: var(--font-display); font-weight: 600;
+}
+.home-delivery-tracking {
+ display: flex; align-items: center; gap: 10px;
+ padding: 14px 18px; border-radius: 12px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.08), rgba(184,115,51,0.04));
+ border: 1px solid rgba(212,169,59,0.2);
+ color: var(--color-forest); text-decoration: none;
+ font-family: var(--font-jp); font-size: 14px;
+ font-weight: 600;
+ transition: all 0.3s var(--ease-out-expo);
+}
+.home-delivery-tracking:hover {
+ background: linear-gradient(135deg, rgba(212,169,59,0.14), rgba(184,115,51,0.08));
+ border-color: var(--color-gold);
+ transform: translateX(2px);
+}
+.home-delivery-tracking > svg:first-child { color: var(--color-copper); flex-shrink: 0; }
+.home-delivery-tracking > svg:last-child { margin-left: auto; opacity: 0.6; flex-shrink: 0; }
+.home-delivery-tracking span { flex: 1; }
+.home-delivery-tracking strong {
+ font-family: 'SF Mono', Menlo, monospace;
+ font-size: 13px; color: var(--color-burgundy);
+ letter-spacing: 0.04em;
+}
+.home-delivery-empty {
+ text-align: center; padding: 36px 28px;
+}
+.home-delivery-empty-icon {
+ width: 64px; height: 64px; margin: 0 auto 16px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, rgba(212,169,59,0.1), rgba(184,115,51,0.05));
+ display: flex; align-items: center; justify-content: center;
+ color: var(--color-copper);
+}
+.home-delivery-empty-title {
+ font-family: var(--font-jp-serif); font-size: 18px;
+ color: var(--color-forest); font-weight: 700;
+ margin: 0 0 8px;
+}
+.home-delivery-empty-sub {
+ font-family: var(--font-jp); font-size: 13px;
+ color: var(--color-ink-muted); margin: 0 0 20px;
+ line-height: 1.7; font-weight: 500;
+}
+.home-delivery-empty-cta {
+ display: inline-flex; align-items: center; gap: 8px;
+ padding: 12px 28px;
+ background: linear-gradient(135deg, var(--color-gold), var(--color-gold-bright));
+ color: var(--color-forest-deep);
+ font-family: var(--font-jp); font-size: 14px;
+ font-weight: 700; text-decoration: none;
+ border-radius: 12px;
+ box-shadow: 0 4px 14px rgba(212,169,59,0.3);
+ transition: all 0.3s;
+}
+.home-delivery-empty-cta:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 8px 20px rgba(212,169,59,0.4);
+}
+
+/* ★ Farm Tour Booking Card */
+.home-farmtour-card {
+ background: white;
+ border-radius: 18px;
+ overflow: hidden;
+ border: 1px solid rgba(15,61,46,0.08);
+ box-shadow: 0 4px 18px rgba(15,61,46,0.06);
+ cursor: pointer;
+ transition: all 0.4s var(--ease-out-expo);
+ display: flex; align-items: stretch;
+ min-height: 160px;
+}
+.home-farmtour-card:hover {
+ box-shadow: 0 12px 36px rgba(15,61,46,0.1);
+ transform: translateY(-2px);
+ border-color: var(--color-gold);
+}
+.home-farmtour-img {
+ width: 200px; flex-shrink: 0;
+ background-size: cover; background-position: center;
+ position: relative;
+}
+.home-farmtour-img::after {
+ content: '';
+ position: absolute; inset: 0;
+ background: linear-gradient(90deg, transparent 60%, white);
+}
+.home-farmtour-body {
+ flex: 1; padding: 22px 26px;
+ display: flex; flex-direction: column; justify-content: center;
+}
+.home-farmtour-eyebrow {
+ font-family: var(--font-jp); font-size: 12px;
+ color: var(--color-burgundy); font-weight: 700;
+ letter-spacing: 0.08em; margin: 0 0 6px;
+}
+.home-farmtour-title {
+ font-family: var(--font-jp-serif); font-size: 20px;
+ color: var(--color-forest); font-weight: 700;
+ margin: 0 0 8px;
+}
+.home-farmtour-desc {
+ font-family: var(--font-jp); font-size: 13px;
+ color: var(--color-ink-muted); line-height: 1.7;
+ margin: 0 0 14px; font-weight: 500;
+}
+.home-farmtour-cta {
+ display: inline-flex; align-items: center; gap: 8px;
+ font-family: var(--font-jp); font-size: 14px;
+ color: var(--color-burgundy); font-weight: 700;
+}
+@media (max-width: 600px) {
+ .home-farmtour-card { flex-direction: column; }
+ .home-farmtour-img { width: 100%; height: 140px; }
+ .home-farmtour-img::after { background: linear-gradient(180deg, transparent 60%, white); }
+}
+
+/* Farm tour form */
+.ft-form { display: flex; flex-direction: column; gap: 14px; }
+.ft-field { display: flex; flex-direction: column; gap: 6px; }
+.ft-field label {
+ font-family: var(--font-jp); font-size: 13px;
+ color: var(--color-ink); font-weight: 600;
+}
+.ft-field input, .ft-field select, .ft-field textarea {
+ padding: 12px 14px; border-radius: 10px;
+ border: 1.5px solid var(--color-bone);
+ font-family: var(--font-jp); font-size: 14px;
+ color: var(--color-ink); background: white;
+ transition: border-color 0.2s;
+ outline: none; resize: vertical;
+}
+.ft-field input:focus, .ft-field select:focus, .ft-field textarea:focus {
+ border-color: var(--color-burgundy);
+ box-shadow: 0 0 0 3px rgba(107,36,41,0.08);
+}
+
 /* Quick info grid — 2x2 */
 .home-info-grid {
  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
 }
+.home-info-grid.two-cols { grid-template-columns: 1fr 1fr; }
 .home-info-item {
  background: white; border-radius: 16px; padding: 20px 16px;
  border: 1px solid rgba(15,61,46,0.06);
@@ -1998,9 +2183,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  border-left: 1px solid rgba(15, 61, 46, 0.06);
 }
 .welcome-member-since {
- font-family: var(--font-display); font-size: 10px;
- letter-spacing: var(--tracking-wider); color: rgba(255,255,255,0.8);
- margin: 10px 0 0; position: relative;
+ font-family: var(--font-jp); font-size: 12px;
+ letter-spacing: 0.06em; color: rgba(255,255,255,0.85);
+ margin: 12px 0 0; position: relative; font-weight: 500;
 }
 .member-perks-strip {
  background: linear-gradient(135deg, var(--color-burgundy-soft), rgba(212,169,59,0.05));
@@ -2532,16 +2717,17 @@ button:focus-visible, a:focus-visible {
  <!-- ====== TAB: HOME ====== -->
  <div class="dash-tab-panel active" id="panel-home">
  <div id="homeMemberCard" class="home-full"></div>
+ <div id="homeDelivery" class="home-full"></div>
  <div id="homeInfoGrid" class="home-full"></div>
- <div id="homeNextReward"></div>
- <div id="homeCouponsPreview"></div>
+ <div id="homeCouponsPreview" class="home-full"></div>
  <div id="homeSurvey" class="home-full"></div>
+ <div id="homeFarmTour" class="home-full"></div>
  <div id="homeRecentOrder" class="home-full"></div>
  </div>
 
  <!-- ====== TAB: ORDERS ====== -->
  <div class="dash-tab-panel" id="panel-orders">
- <h3 class="dash-section-title">ORDER HISTORY</h3>
+ <h3 class="dash-section-title">ご注文履歴</h3>
  <div id="ordersContainer"></div>
  </div>
 
@@ -2609,7 +2795,7 @@ button:focus-visible, a:focus-visible {
  <div class="dash-tab-panel" id="panel-settings" role="tabpanel">
 
  <!-- 配送先情報 -->
- <h3 class="dash-section-title">SHIPPING ADDRESS</h3>
+ <h3 class="dash-section-title">お届け先住所</h3>
  <div class="settings-card" id="shippingCard">
   <div class="settings-card-header">
   <div class="settings-card-icon" aria-hidden="true">
@@ -2683,7 +2869,7 @@ button:focus-visible, a:focus-visible {
  </div>
 
  <!-- お支払い方法 -->
- <h3 class="dash-section-title" style="margin-top:32px;">PAYMENT METHOD</h3>
+ <h3 class="dash-section-title" style="margin-top:32px;">お支払い方法</h3>
  <div class="settings-card" id="paymentCard">
   <div class="settings-card-header">
   <div class="settings-card-icon" aria-hidden="true">
@@ -2704,9 +2890,13 @@ button:focus-visible, a:focus-visible {
    <div class="payment-card-visual">
    <div class="payment-card-brand" id="dispCardBrand"></div>
    <div class="payment-card-number" id="dispCardNumber">•••• •••• •••• <span id="dispCardLast4"></span></div>
-   <div class="payment-card-expiry">有効期限: <span id="dispCardExpiry"></span></div>
+   <div class="payment-card-expiry">有効期限  <span id="dispCardExpiry"></span></div>
    </div>
-   <div class="settings-form-actions" style="justify-content:flex-end;">
+   <div class="settings-form-actions" style="justify-content:space-between;gap:10px;">
+   <button class="settings-save-btn" onclick="changeCard()" aria-label="カード情報を変更" style="flex:1;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    カード情報を変更
+   </button>
    <button class="settings-cancel-btn" onclick="removeCard()" aria-label="カード情報を削除">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
     削除する
@@ -2721,7 +2911,7 @@ button:focus-visible, a:focus-visible {
  </div>
 
  <!-- アカウント情報 -->
- <h3 class="dash-section-title" style="margin-top:32px;">ACCOUNT</h3>
+ <h3 class="dash-section-title" style="margin-top:32px;">アカウント情報</h3>
  <div class="settings-card">
   <div class="settings-card-header">
   <div class="settings-card-icon" aria-hidden="true">
@@ -3264,16 +3454,16 @@ function getTimeGreeting() {
  return 'こんばんは';
 }
 function getMemberTier(orderCount) {
- if (orderCount >= 10) return { tier: 'platinum', label: 'Platinum', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
- if (orderCount >= 5)  return { tier: 'gold', label: 'Gold', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
- return { tier: 'standard', label: 'Standard', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' };
+ if (orderCount >= 10) return { tier: 'platinum', label: 'プラチナ', suffix: '会員', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
+ if (orderCount >= 5)  return { tier: 'gold', label: 'ゴールド', suffix: '会員', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
+ return { tier: 'standard', label: 'スタンダード', suffix: '会員', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' };
 }
 function getPerksMessage(orderCount, tierInfo) {
- if (tierInfo.tier === 'platinum') return '<strong>Platinum 会員</strong>: 全商品 <strong>送料無料</strong> + 限定商品アクセス';
- if (tierInfo.tier === 'gold') return '<strong>Gold 会員</strong>: あと <strong>' + (10 - orderCount) + '回</strong> のご注文で Platinum へ';
+ if (tierInfo.tier === 'platinum') return '<strong>プラチナ会員特典</strong>: 全商品 <strong>送料無料</strong> + 限定商品アクセス';
+ if (tierInfo.tier === 'gold') return '<strong>ゴールド会員</strong>: あと <strong>' + (10 - orderCount) + '回</strong> のご注文でプラチナ会員へ';
  var toGold = 5 - orderCount;
  if (toGold <= 0) toGold = 1;
- return '<strong>会員限定</strong>: あと <strong>' + toGold + '回</strong> のご注文で Gold Member へ';
+ return '<strong>会員様限定</strong>: あと <strong>' + toGold + '回</strong> のご注文でゴールド会員へ';
 }
 
 function renderDashboard(customer, orders) {
@@ -3308,7 +3498,7 @@ function renderDashboard(customer, orders) {
  /* Tier badge inside welcome card */
  var tierRow = document.getElementById('welcomeTierRow');
  if (tierRow) {
-  tierRow.innerHTML = '<span class="welcome-tier-badge">' + tierInfo.icon + ' ' + tierInfo.label + ' Member</span>';
+  tierRow.innerHTML = '<span class="welcome-tier-badge">' + tierInfo.icon + ' ' + tierInfo.label + tierInfo.suffix + '</span>';
  }
 
  var spent = customer.total_spent || 0;
@@ -3321,9 +3511,9 @@ function renderDashboard(customer, orders) {
   try { linkedAt = localStorage.getItem('eda-member-linked-at') || ''; } catch(e) {}
   if (linkedAt) {
    var d = new Date(linkedAt);
-   sinceEl.textContent = 'MEMBER SINCE ' + d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0');
+   sinceEl.textContent = 'ご入会  ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月';
   } else {
-   sinceEl.textContent = 'MEMBER SINCE ' + new Date().getFullYear() + '.' + String(new Date().getMonth() + 1).padStart(2, '0');
+   sinceEl.textContent = 'ご入会  ' + new Date().getFullYear() + '年' + (new Date().getMonth() + 1) + '月';
   }
  }
 
@@ -3376,7 +3566,7 @@ function renderOrders(orders) {
 
  if (!orders || orders.length === 0) {
  container.innerHTML = '<div class="empty-orders">' +
- '<p class="empty-orders-eyebrow">Order History</p>' +
+ '<p class="empty-orders-eyebrow">ご注文履歴</p>' +
  '<p class="empty-orders-text">ご注文履歴はまだありません</p>' +
  '<a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> Shop Now</a>' +
  '</div>';
@@ -3420,13 +3610,13 @@ function renderOrders(orders) {
 
  html += '<div class="order-card">' +
  '<div class="order-card-head">' +
- '<div><div class="order-number">ORDER #' + escapeHtml(order.order_number || order.id || '-') + '</div>' +
+ '<div><div class="order-number">ご注文番号 ' + escapeHtml(order.order_number || order.id || '-') + '</div>' +
  '<div class="order-date">' + orderDate + '</div></div>' +
  '<span class="status-badge ' + st.class + '"><span class="status-badge-dot"></span>' + st.label + '</span>' +
  '</div>' +
  '<div class="order-items">' + itemsHtml + '</div>' +
  '<div class="order-total-row">' +
- '<span class="order-total-label">TOTAL</span>' +
+ '<span class="order-total-label">合計</span>' +
  '<span class="order-total-price">' + formatYen(order.total || 0) + '</span>' +
  '</div>' +
  trackingHtml +
@@ -3438,13 +3628,13 @@ function renderOrders(orders) {
 
 /* ---- Reward Stages Definition ---- */
 var REWARD_STAGES = [
- { num: 1, label: '1ST ORDER', reward: '初回 20%OFF', desc: '初回ご注文の感謝として全品20%OFF', code: 'WELCOME20', icon: '1' },
- { num: 2, label: '2ND ORDER', reward: '鶏モモ 500g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
- { num: 3, label: '3RD ORDER', reward: '無添加ハンバーグ 2個', desc: '150g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
- { num: 4, label: '4TH ORDER', reward: '牛焼肉 250g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
- { num: 5, label: '5TH ORDER', reward: '???', desc: '5回目以降の特典はお楽しみに', code: '', icon: '5', locked: true },
- { num: 6, label: '6TH ORDER', reward: '???', desc: '', code: '', icon: '6', locked: true },
- { num: 7, label: '7TH ORDER', reward: '???', desc: '', code: '', icon: '7', locked: true }
+ { num: 1, label: '1回目のご注文', reward: '初回 20%OFF', desc: '初回ご注文の感謝として全品20%OFF', code: 'WELCOME20', icon: '1' },
+ { num: 2, label: '2回目のご注文', reward: '鶏モモ 500g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
+ { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '150g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
+ { num: 4, label: '4回目のご注文', reward: '牛焼肉 250g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
+ { num: 5, label: '5回目のご注文', reward: '？？？', desc: '5回目以降の特典はお楽しみに', code: '', icon: '5', locked: true },
+ { num: 6, label: '6回目のご注文', reward: '？？？', desc: '', code: '', icon: '6', locked: true },
+ { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true }
 ];
 
 /* ---- Render Reward Journey (特典タブ) ---- */
@@ -3467,7 +3657,7 @@ function renderRewardJourney(count) {
   dotContent = s.icon;
  }
  var descContent = isDone
-  ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> GET</span>'
+  ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 獲得済み</span>'
   : (isLocked ? '' : escapeHtml(s.desc));
 
  stepsHtml += '<div class="rj-step ' + cls + '">' +
@@ -3490,8 +3680,8 @@ function renderRewardJourney(count) {
 
  sec.innerHTML = '<div class="rj-card">' +
  '<div class="rj-header">' +
-  '<p class="rj-eyebrow">REWARD JOURNEY</p>' +
-  '<h3 class="rj-title">お買い物特典</h3>' +
+  '<p class="rj-eyebrow">特典のあゆみ</p>' +
+  '<h3 class="rj-title">ご注文回数で広がる特典</h3>' +
   '<p class="rj-count">これまでのご注文: <strong>' + count + '回</strong></p>' +
  '</div>' +
  '<div class="rj-steps">' + stepsHtml + '</div>' +
@@ -3659,11 +3849,16 @@ window.saveCardFromCheckout = function(cardData) {
  try { localStorage.setItem(CARD_KEY, JSON.stringify(cardData)); } catch(e){}
 };
 
+/* カード情報を変更 — Stripe Setup Intent flow or redirect to checkout */
+async function changeCard() {
+ var ok = await edaConfirm('カード情報の変更', 'お買い物画面で新しいカード情報をご登録いただけます。\n\n「お買い物へ進む」を押すとSHOPへ移動します。チェックアウト時に新しいカードをご登録ください。', { ok: 'お買い物へ進む', cancel: 'キャンセル' });
+ if (!ok) return;
+ window.location.href = 'shop.html?action=update_card';
+}
+
 /* ---- Render Home Tab ---- */
 function renderHomeTab(orderCount, orders, customer) {
  var arrowSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
- var next = REWARD_STAGES[Math.min(orderCount, 6)];
- var remaining = Math.max(next.num - orderCount, 0);
 
  /* Member profile card */
  var mcEl = document.getElementById('homeMemberCard');
@@ -3676,33 +3871,64 @@ function renderHomeTab(orderCount, orders, customer) {
    '<div class="home-member-avatar">' + escapeHtml(initial) + '</div>' +
    '<div class="home-member-info">' +
     '<p class="home-member-name">' + escapeHtml(cName || 'ゲスト') + ' 様</p>' +
-    '<p class="home-member-id">会員番号: ' + escapeHtml(memberId) + '</p>' +
+    '<p class="home-member-id">会員番号  ' + escapeHtml(memberId) + '</p>' +
    '</div>' +
-   '<div class="home-member-tier"><span class="member-tier ' + tierInfo.tier + '">' + tierInfo.icon + ' ' + tierInfo.label + '</span></div>' +
+   '<div class="home-member-tier"><span class="member-tier ' + tierInfo.tier + '">' + tierInfo.icon + ' ' + tierInfo.label + tierInfo.suffix + '</span></div>' +
    '</div>';
  }
 
- /* Info grid — 4 tiles */
+ /* ★ Next Delivery Card — prominent display */
+ var dvEl = document.getElementById('homeDelivery');
+ if (dvEl) {
+  var activeOrder = (orders || []).find(function(o) { return o.status === 'pending' || o.status === 'preparing' || o.status === 'shipped'; });
+  var delivStatusMap = { 'pending': { label: '発送準備中', cls: 'pending' }, 'preparing': { label: '発送準備中', cls: 'preparing' }, 'shipped': { label: '発送済', cls: 'shipped' }, 'delivered': { label: '配達完了', cls: 'delivered' } };
+  if (activeOrder) {
+   var dst = delivStatusMap[activeOrder.status] || delivStatusMap['pending'];
+   var delivDate = activeOrder.delivery_date || customer.next_delivery || '';
+   var dateDisplay = delivDate ? formatDateLong(delivDate) : '日程調整中';
+   var trkHtml = '';
+   if (activeOrder.tracking_number) {
+    var yUrl = 'https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number=' + encodeURIComponent(activeOrder.tracking_number);
+    trkHtml = '<a class="home-delivery-tracking" href="' + yUrl + '" target="_blank" rel="noopener">' +
+     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
+     '<span>配送状況を確認  <strong>' + escapeHtml(activeOrder.tracking_number) + '</strong></span>' +
+     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
+   }
+   var itemsHtml = '';
+   if (activeOrder.items && activeOrder.items.length) {
+    itemsHtml = '<ul class="home-delivery-items">' + activeOrder.items.map(function(it) {
+     return '<li><span class="home-delivery-item-name">' + escapeHtml(it.title || it.name) + '</span><span class="home-delivery-item-qty">×' + (it.qty || 1) + '</span></li>';
+    }).join('') + '</ul>';
+   }
+   dvEl.innerHTML = '<div class="home-delivery-card">' +
+    '<div class="home-delivery-head">' +
+     '<p class="home-delivery-eyebrow">次回お届け予定</p>' +
+     '<span class="status-badge ' + dst.cls + '"><span class="status-badge-dot"></span>' + dst.label + '</span>' +
+    '</div>' +
+    '<p class="home-delivery-date">' + escapeHtml(dateDisplay) + '</p>' +
+    itemsHtml + trkHtml +
+    '</div>';
+  } else {
+   dvEl.innerHTML = '<div class="home-delivery-card home-delivery-empty">' +
+    '<div class="home-delivery-empty-icon">' +
+     '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
+    '</div>' +
+    '<p class="home-delivery-empty-title">現在お届け予定はありません</p>' +
+    '<p class="home-delivery-empty-sub">ご注文いただくとこちらに<br>お届け日や追跡番号、商品が表示されます</p>' +
+    '<a href="shop.html" class="home-delivery-empty-cta">商品を見る</a>' +
+    '</div>';
+  }
+ }
+
+ /* Info grid — 2 tiles (ご注文回数 + クーポン) */
  var igEl = document.getElementById('homeInfoGrid');
  if (igEl) {
-  var deliveryStr = customer.next_delivery ? formatDate(customer.next_delivery) : '未定';
   var coupons = customer.coupons || generateDemoCoupons(orderCount);
   var activeCoupons = coupons.filter(function(c) { return c.status === 'active' || c.status === 'expiring'; });
-  igEl.innerHTML = '<div class="home-info-grid">' +
-   '<div class="home-info-item"><p class="home-info-label">Orders</p><p class="home-info-value">' + orderCount + '<small>回</small></p></div>' +
-   '<div class="home-info-item"><p class="home-info-label">Next Delivery</p><p class="home-info-value" style="font-size:' + (customer.next_delivery ? '16' : '14') + 'px">' + escapeHtml(deliveryStr) + '</p></div>' +
-   '<div class="home-info-item"><p class="home-info-label">Next Reward</p><p class="home-info-value">' + (remaining > 0 ? 'あと' + remaining + '<small>回</small>' : '<span style="font-size:14px">達成!</span>') + '</p>' + (remaining > 0 ? '<p class="home-info-sub">' + escapeHtml(next.reward) + '</p>' : '') + '</div>' +
-   '<div class="home-info-item"><p class="home-info-label">Coupons</p><p class="home-info-value">' + activeCoupons.length + '<small>枚</small></p></div>' +
+  igEl.innerHTML = '<div class="home-info-grid two-cols">' +
+   '<div class="home-info-item"><p class="home-info-label">ご注文回数</p><p class="home-info-value">' + orderCount + '<small>回</small></p></div>' +
+   '<div class="home-info-item"><p class="home-info-label">クーポン</p><p class="home-info-value">' + activeCoupons.length + '<small>枚</small></p></div>' +
    '</div>';
- }
-
- /* Next reward */
- var nrEl = document.getElementById('homeNextReward');
- if (nrEl) {
-  nrEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
-   '<div class="hnr-icon">' + (orderCount >= 4 ? '&#x1F512;' : '&#x1F381;') + '</div>' +
-   '<div class="hnr-body"><p class="hnr-label">' + (orderCount >= 4 ? 'NEXT REWARD' : 'あと ' + remaining + ' 回で次の特典') + '</p><p class="hnr-value">' + (orderCount >= 4 ? '5回目以降の特典はお楽しみに' : escapeHtml(next.reward)) + '</p></div>' +
-   '<div class="hnr-arrow">' + arrowSvg + '</div></div>';
  }
 
  /* Coupons preview */
@@ -3714,7 +3940,7 @@ function renderHomeTab(orderCount, orders, customer) {
    var c = active2[0];
    cpEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
     '<div class="hnr-icon" style="font-size:16px;background:rgba(15,61,46,0.06)">&#x1F3AB;</div>' +
-    '<div class="hnr-body"><p class="hnr-label">利用可能なクーポン' + (active2.length > 1 ? ' (+' + (active2.length - 1) + ')' : '') + '</p><p class="hnr-value">' + escapeHtml(c.value) + ' ' + escapeHtml(c.name) + '</p></div>' +
+    '<div class="hnr-body"><p class="hnr-label">ご利用いただけるクーポン' + (active2.length > 1 ? '（他 ' + (active2.length - 1) + ' 枚）' : '') + '</p><p class="hnr-value">' + escapeHtml(c.value) + '  ' + escapeHtml(c.name) + '</p></div>' +
     '<div class="hnr-arrow">' + arrowSvg + '</div></div>';
   } else { cpEl.innerHTML = ''; }
  }
@@ -3729,18 +3955,18 @@ function renderHomeTab(orderCount, orders, customer) {
    var pct = Math.round((answered / totalQ) * 100);
    svEl.innerHTML = '<div class="home-survey-card" onclick="openSurvey()">' +
     '<div class="home-survey-header"><div class="home-survey-icon">&#x1F381;</div>' +
-    '<div><p class="home-survey-title">アンケートに答えて特典GET</p><p class="home-survey-sub">' + (totalQ - answered) + '問回答で鶏ミンチ200gプレゼント</p></div></div>' +
+    '<div><p class="home-survey-title">アンケートにご回答で特典プレゼント</p><p class="home-survey-sub">' + (totalQ - answered) + '問のご回答で鶏ミンチ200gのクーポンを獲得</p></div></div>' +
     '<div class="home-survey-reward"><div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
-    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>アンケート完了特典（次回注文に自動追加）</small></div></div>' +
+    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>ご注文時にクーポンとしてご利用いただけます</small></div></div>' +
     '<div class="home-survey-progress"><div class="home-survey-progress-bar" style="width:' + pct + '%"></div></div></div>';
   } else {
    svEl.innerHTML = '<div class="home-survey-card home-survey-done" style="cursor:default">' +
     '<div class="home-survey-done-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' +
     '<div class="home-survey-header"><div class="home-survey-icon" style="background:linear-gradient(135deg,var(--color-gold),var(--color-gold-bright));box-shadow:0 4px 12px rgba(212,169,59,0.35);">&#x2728;</div>' +
-    '<div><p class="home-survey-title" style="color:var(--color-burgundy)">特典獲得済み</p><p class="home-survey-sub">アンケートご回答ありがとうございました</p></div></div>' +
+    '<div><p class="home-survey-title" style="color:var(--color-burgundy)">クーポン獲得済み</p><p class="home-survey-sub">アンケートのご回答ありがとうございました</p></div></div>' +
     '<div class="home-survey-reward" style="background:white;border:1px solid var(--color-gold);">' +
     '<div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg);border:2px solid var(--color-gold)"></div>' +
-    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>次回ご注文時に自動追加されます</small></div></div></div>';
+    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>ご注文時にクーポンとしてご利用いただけます</small></div></div></div>';
   }
  }
 
@@ -3750,10 +3976,83 @@ function renderHomeTab(orderCount, orders, customer) {
   var latest = orders[0];
   var statusMap = { 'pending': { label: '未発送', cls: 'pending' }, 'preparing': { label: '発送準備中', cls: 'preparing' }, 'shipped': { label: '発送済', cls: 'shipped' }, 'delivered': { label: '配達完了', cls: 'delivered' } };
   var st = statusMap[latest.status] || statusMap['pending'];
-  roEl.innerHTML = '<div class="order-card" onclick="switchTab(\'orders\')" style="cursor:pointer"><div class="order-card-head"><div><div class="order-number">ORDER #' + escapeHtml(latest.order_number || latest.id || '-') + '</div><div class="order-date">' + (latest.date ? formatDate(latest.date) : '') + '</div></div><span class="status-badge ' + st.cls + '"><span class="status-badge-dot"></span>' + st.label + '</span></div><div class="order-total-row"><span class="order-total-label">TOTAL</span><span class="order-total-price">' + formatYen(latest.total || 0) + '</span></div></div>';
+  roEl.innerHTML = '<div class="order-card" onclick="switchTab(\'orders\')" style="cursor:pointer"><div class="order-card-head"><div><div class="order-number">ご注文番号 ' + escapeHtml(latest.order_number || latest.id || '-') + '</div><div class="order-date">' + (latest.date ? formatDate(latest.date) : '') + '</div></div><span class="status-badge ' + st.cls + '"><span class="status-badge-dot"></span>' + st.label + '</span></div><div class="order-total-row"><span class="order-total-label">合計</span><span class="order-total-price">' + formatYen(latest.total || 0) + '</span></div></div>';
  } else if (roEl) {
-  roEl.innerHTML = '<div class="empty-orders"><p class="empty-orders-eyebrow">First Order</p><p class="empty-orders-text">厳選された江田和牛を<br>ご自宅の食卓へ</p><a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> Shop Now</a></div>';
+  roEl.innerHTML = '<div class="empty-orders"><p class="empty-orders-eyebrow">初めてのご注文</p><p class="empty-orders-text">厳選された江田和牛を<br>ご自宅の食卓へ</p><a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>ご注文する</a></div>';
  }
+
+ /* Farm tour booking card */
+ var ftEl = document.getElementById('homeFarmTour');
+ if (ftEl) {
+  ftEl.innerHTML = '<div class="home-farmtour-card" onclick="openFarmTourBooking()">' +
+   '<div class="home-farmtour-img" style="background-image:url(public/images/cuts/hero-0.webp)"></div>' +
+   '<div class="home-farmtour-body">' +
+    '<p class="home-farmtour-eyebrow">会員様限定</p>' +
+    '<h3 class="home-farmtour-title">農場見学のご予約</h3>' +
+    '<p class="home-farmtour-desc">宮崎の自社牧場で、和牛が育つ現場をご覧いただけます。<br>ご家族・ご友人とのご来場も歓迎です。</p>' +
+    '<span class="home-farmtour-cta">ご予約フォームを開く  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>' +
+   '</div>' +
+   '</div>';
+ }
+}
+
+/* Format date in Japanese long form e.g. "2026年5月15日（金）" */
+function formatDateLong(d) {
+ try {
+  var dt = (d instanceof Date) ? d : new Date(d);
+  if (isNaN(dt.getTime())) return String(d);
+  var days = ['日','月','火','水','木','金','土'];
+  return dt.getFullYear() + '年' + (dt.getMonth()+1) + '月' + dt.getDate() + '日（' + days[dt.getDay()] + '）';
+ } catch(e) { return String(d); }
+}
+
+/* ---- Farm Tour Booking Modal ---- */
+function openFarmTourBooking() {
+ var overlay = document.createElement('div');
+ overlay.className = 'eda-modal-overlay';
+ overlay.innerHTML = '<div class="eda-modal" style="max-width:480px">' +
+  '<h3 class="eda-modal-title">農場見学のご予約</h3>' +
+  '<p class="eda-modal-body" style="margin-bottom:20px">宮崎の自社牧場にご案内いたします。ご希望日と人数をご記入いただきましたら、担当者よりご連絡いたします。</p>' +
+  '<div class="ft-form">' +
+   '<div class="ft-field"><label>ご希望日（第1希望）</label><input type="date" id="ftDate1"></div>' +
+   '<div class="ft-field"><label>ご希望日（第2希望）</label><input type="date" id="ftDate2"></div>' +
+   '<div class="ft-field"><label>ご参加人数</label>' +
+    '<select id="ftPeople"><option value="1">1名</option><option value="2" selected>2名</option><option value="3">3名</option><option value="4">4名</option><option value="5">5名</option><option value="6+">6名以上</option></select>' +
+   '</div>' +
+   '<div class="ft-field"><label>ご連絡先（電話番号）</label><input type="tel" id="ftPhone" placeholder="090-1234-5678"></div>' +
+   '<div class="ft-field"><label>ご質問・ご要望（任意）</label><textarea id="ftNote" rows="3" placeholder="お子様連れ、アレルギー等ございましたらご記入ください"></textarea></div>' +
+  '</div>' +
+  '<div class="eda-modal-actions" style="margin-top:24px">' +
+   '<button class="eda-modal-btn secondary" data-act="cancel">キャンセル</button>' +
+   '<button class="eda-modal-btn primary" data-act="submit">この内容で送信</button>' +
+  '</div></div>';
+ document.body.appendChild(overlay);
+ requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('show')));
+ function closeFt() {
+  overlay.classList.remove('show');
+  setTimeout(() => overlay.remove(), 300);
+ }
+ overlay.addEventListener('click', function(e) {
+  if (e.target === overlay) { closeFt(); return; }
+  var act = e.target.closest('[data-act]');
+  if (!act) return;
+  if (act.dataset.act === 'cancel') { closeFt(); return; }
+  if (act.dataset.act === 'submit') {
+   var d1 = document.getElementById('ftDate1').value;
+   var d2 = document.getElementById('ftDate2').value;
+   var p  = document.getElementById('ftPeople').value;
+   var ph = document.getElementById('ftPhone').value;
+   var nt = document.getElementById('ftNote').value;
+   if (!d1 || !ph) { toast('ご希望日と連絡先をご入力ください', 'error'); return; }
+   var booking = { date1: d1, date2: d2, people: p, phone: ph, note: nt, requested_at: new Date().toISOString() };
+   try { localStorage.setItem('eda_farm_tour_request', JSON.stringify(booking)); } catch(e){}
+   if (window.EDA_API && currentSession) {
+    window.EDA_API.post('farm_tour_request', Object.assign({ email: currentSession.email || '', line_uid: currentSession.line_uid || '' }, booking)).catch(function(){});
+   }
+   closeFt();
+   toast('ご予約リクエストを承りました。担当者よりご連絡いたします', 'success');
+  }
+ });
 }
 
 /* Hash utility for member ID */
