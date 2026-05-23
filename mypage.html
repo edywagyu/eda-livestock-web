@@ -3955,7 +3955,7 @@ function renderHomeTab(orderCount, orders, customer) {
    var pct = Math.round((answered / totalQ) * 100);
    svEl.innerHTML = '<div class="home-survey-card" onclick="openSurvey()">' +
     '<div class="home-survey-header"><div class="home-survey-icon">&#x1F381;</div>' +
-    '<div><p class="home-survey-title">アンケートにご回答で特典プレゼント</p><p class="home-survey-sub">' + (totalQ - answered) + '問のご回答で鶏ミンチ200gのクーポンを獲得</p></div></div>' +
+    '<div><p class="home-survey-title">アンケートにご回答で特典プレゼント</p><p class="home-survey-sub">残り ' + (totalQ - answered) + ' 問のご回答で平飼い鶏ミンチ200gクーポンを獲得</p></div></div>' +
     '<div class="home-survey-reward"><div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
     '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>ご注文時にクーポンとしてご利用いただけます</small></div></div>' +
     '<div class="home-survey-progress"><div class="home-survey-progress-bar" style="width:' + pct + '%"></div></div></div>';
@@ -4058,13 +4058,40 @@ function openFarmTourBooking() {
 /* Hash utility for member ID */
 function hashStr(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; } return h; }
 
-/* Survey Questions & Logic */
+/* Survey Questions & Logic — マーケティング実用設計 */
 var SURVEY_QUESTIONS = [
- { q: 'ご家族は何人ですか？', opts: ['1人暮らし', '2人', '3〜4人', '5人以上'] },
- { q: 'お肉を食べる頻度は？', opts: ['毎日', '週3〜4回', '週1〜2回', '月に数回'] },
- { q: 'お好みの部位は？', opts: ['サーロイン・リブ', 'ヒレ・赤身', '切り落とし・スライス', '特にこだわりなし'] },
- { q: 'お肉の使い方は？', opts: ['ステーキ', '焼肉・BBQ', 'すき焼き・しゃぶしゃぶ', '煮込み・カレー'] },
- { q: '江田畜産を知ったきっかけは？', opts: ['Instagram', 'LINE', '知人の紹介', 'その他'] }
+ {
+  q: 'ご家族構成を教えてください',
+  opts: ['お一人様', 'ご夫婦のみ', 'お子様あり（未就学）', 'お子様あり（就学中・成人）', '三世代同居・大家族']
+ },
+ {
+  q: '1ヶ月の食材費（ご家庭全体）はどのくらいですか',
+  opts: ['〜5万円', '5〜10万円', '10〜20万円', '20〜30万円', '30万円以上']
+ },
+ {
+  q: '普段の食材ご購入先（最も多くご利用のもの）',
+  opts: ['百貨店食料品売場', '高級スーパー（成城石井・紀ノ国屋等）', '一般スーパー', '産直・専門店', 'ネット通販中心']
+ },
+ {
+  q: '世帯年収を教えてください（任意）',
+  opts: ['〜600万円', '600〜1,000万円', '1,000〜1,500万円', '1,500万円以上', 'お答えしない']
+ },
+ {
+  q: '江田和牛をご注文される主な場面',
+  opts: ['ご家族との特別な日', 'ご自分へのご褒美', 'ギフト・贈答用', 'お客様のおもてなし', '日常のお食事として']
+ },
+ {
+  q: 'これまでにご購入された和牛ブランド',
+  opts: ['松阪牛・神戸牛など他ブランド', '百貨店の和牛コーナー', '専門店・通販で別ブランド', '飲食店でのみ', '江田和牛が初めて']
+ },
+ {
+  q: '特にご興味のある商品カテゴリ',
+  opts: ['ステーキ用厚切り', 'すき焼き・しゃぶしゃぶ用', '焼肉用各部位', 'ハンバーグ・加工品', 'ギフトセット・お中元お歳暮']
+ },
+ {
+  q: '江田和牛を知ったきっかけ',
+  opts: ['Instagram', 'LINE', 'ご友人・知人のご紹介', '雑誌・メディア', 'Web検索・その他']
+ }
 ];
 
 async function openSurvey() {
