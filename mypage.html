@@ -3444,71 +3444,135 @@ window.saveCardFromCheckout = function(cardData) {
 
 /* ---- Render Home Tab ---- */
 function renderHomeTab(orderCount, orders, customer) {
- /* Next reward mini card */
+ var arrowSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+ var next = REWARD_STAGES[Math.min(orderCount, 6)];
+ var remaining = Math.max(next.num - orderCount, 0);
+
+ /* Member profile card */
+ var mcEl = document.getElementById('homeMemberCard');
+ if (mcEl) {
+  var cName = customer.name || customer.display_name || '';
+  var initial = cName ? cName.charAt(0) : '?';
+  var memberId = customer.member_id || ('EDA-' + String(Math.abs(hashStr(customer.email || 'guest'))).slice(0, 6));
+  var tierInfo = getMemberTier(orderCount);
+  mcEl.innerHTML = '<div class="home-member-card">' +
+   '<div class="home-member-avatar">' + escapeHtml(initial) + '</div>' +
+   '<div class="home-member-info">' +
+    '<p class="home-member-name">' + escapeHtml(cName || 'ゲスト') + ' 様</p>' +
+    '<p class="home-member-id">会員番号: ' + escapeHtml(memberId) + '</p>' +
+   '</div>' +
+   '<div class="home-member-tier"><span class="member-tier ' + tierInfo.tier + '">' + tierInfo.icon + ' ' + tierInfo.label + '</span></div>' +
+   '</div>';
+ }
+
+ /* Info grid — 4 tiles */
+ var igEl = document.getElementById('homeInfoGrid');
+ if (igEl) {
+  var deliveryStr = customer.next_delivery ? formatDate(customer.next_delivery) : '未定';
+  var coupons = customer.coupons || generateDemoCoupons(orderCount);
+  var activeCoupons = coupons.filter(function(c) { return c.status === 'active' || c.status === 'expiring'; });
+  igEl.innerHTML = '<div class="home-info-grid">' +
+   '<div class="home-info-item"><p class="home-info-label">Orders</p><p class="home-info-value">' + orderCount + '<small>回</small></p></div>' +
+   '<div class="home-info-item"><p class="home-info-label">Next Delivery</p><p class="home-info-value" style="font-size:' + (customer.next_delivery ? '16' : '14') + 'px">' + escapeHtml(deliveryStr) + '</p></div>' +
+   '<div class="home-info-item"><p class="home-info-label">Next Reward</p><p class="home-info-value">' + (remaining > 0 ? 'あと' + remaining + '<small>回</small>' : '<span style="font-size:14px">達成!</span>') + '</p>' + (remaining > 0 ? '<p class="home-info-sub">' + escapeHtml(next.reward) + '</p>' : '') + '</div>' +
+   '<div class="home-info-item"><p class="home-info-label">Coupons</p><p class="home-info-value">' + activeCoupons.length + '<small>枚</small></p></div>' +
+   '</div>';
+ }
+
+ /* Next reward */
  var nrEl = document.getElementById('homeNextReward');
  if (nrEl) {
- if (orderCount >= 4) {
   nrEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
-   '<div class="hnr-icon">&#x1F512;</div>' +
-   '<div class="hnr-body"><p class="hnr-label">NEXT REWARD</p><p class="hnr-value">5回目以降の特典はお楽しみに</p></div>' +
-   '<div class="hnr-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
-   '</div>';
- } else {
-  var next = REWARD_STAGES[Math.min(orderCount, 6)];
-  var remaining = next.num - orderCount;
-  nrEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
-   '<div class="hnr-icon">&#x1F381;</div>' +
-   '<div class="hnr-body"><p class="hnr-label">あと ' + remaining + ' 回で次の特典</p><p class="hnr-value">' + escapeHtml(next.reward) + '</p></div>' +
-   '<div class="hnr-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
-   '</div>';
- }
+   '<div class="hnr-icon">' + (orderCount >= 4 ? '&#x1F512;' : '&#x1F381;') + '</div>' +
+   '<div class="hnr-body"><p class="hnr-label">' + (orderCount >= 4 ? 'NEXT REWARD' : 'あと ' + remaining + ' 回で次の特典') + '</p><p class="hnr-value">' + (orderCount >= 4 ? '5回目以降の特典はお楽しみに' : escapeHtml(next.reward)) + '</p></div>' +
+   '<div class="hnr-arrow">' + arrowSvg + '</div></div>';
  }
 
- /* Recent order */
- var roEl = document.getElementById('homeRecentOrder');
- if (roEl && orders && orders.length > 0) {
- var latest = orders[0];
- var statusMap = {
-  'pending': { label: '未発送', cls: 'pending' },
-  'preparing': { label: '発送準備中', cls: 'preparing' },
-  'shipped': { label: '発送済', cls: 'shipped' },
-  'delivered': { label: '配達完了', cls: 'delivered' }
- };
- var st = statusMap[latest.status] || statusMap['pending'];
- roEl.innerHTML = '<div class="order-card" onclick="switchTab(\'orders\')" style="cursor:pointer">' +
-  '<div class="order-card-head">' +
-   '<div><div class="order-number">ORDER #' + escapeHtml(latest.order_number || latest.id || '-') + '</div>' +
-   '<div class="order-date">' + (latest.date ? formatDate(latest.date) : '') + '</div></div>' +
-   '<span class="status-badge ' + st.cls + '"><span class="status-badge-dot"></span>' + st.label + '</span>' +
-  '</div>' +
-  '<div class="order-total-row">' +
-   '<span class="order-total-label">TOTAL</span>' +
-   '<span class="order-total-price">' + formatYen(latest.total || 0) + '</span>' +
-  '</div>' +
-  '</div>';
- } else if (roEl) {
- roEl.innerHTML = '<div class="empty-orders">' +
-  '<p class="empty-orders-eyebrow">First Order</p>' +
-  '<p class="empty-orders-text">厳選されたA5江田和牛を<br>ご自宅の食卓へ</p>' +
-  '<a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> Shop Now</a></div>';
- }
-
- /* Coupons preview (active only, max 1) */
+ /* Coupons preview */
  var cpEl = document.getElementById('homeCouponsPreview');
  if (cpEl) {
- var coupons = customer.coupons || generateDemoCoupons(orderCount);
- var active = coupons.filter(function(c) { return c.status === 'active' || c.status === 'expiring'; });
- if (active.length > 0) {
-  var c = active[0];
-  cpEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
-   '<div class="hnr-icon" style="font-size:16px;background:rgba(15,61,46,0.06)">&#x1F3AB;</div>' +
-   '<div class="hnr-body"><p class="hnr-label">利用可能なクーポン' + (active.length > 1 ? ' (+' + (active.length - 1) + ')' : '') + '</p><p class="hnr-value">' + escapeHtml(c.value) + ' ' + escapeHtml(c.name) + '</p></div>' +
-   '<div class="hnr-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
-   '</div>';
- } else {
-  cpEl.innerHTML = '';
+  var coupons2 = customer.coupons || generateDemoCoupons(orderCount);
+  var active2 = coupons2.filter(function(c) { return c.status === 'active' || c.status === 'expiring'; });
+  if (active2.length > 0) {
+   var c = active2[0];
+   cpEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
+    '<div class="hnr-icon" style="font-size:16px;background:rgba(15,61,46,0.06)">&#x1F3AB;</div>' +
+    '<div class="hnr-body"><p class="hnr-label">利用可能なクーポン' + (active2.length > 1 ? ' (+' + (active2.length - 1) + ')' : '') + '</p><p class="hnr-value">' + escapeHtml(c.value) + ' ' + escapeHtml(c.name) + '</p></div>' +
+    '<div class="hnr-arrow">' + arrowSvg + '</div></div>';
+  } else { cpEl.innerHTML = ''; }
  }
+
+ /* Survey coupon card */
+ var svEl = document.getElementById('homeSurvey');
+ if (svEl) {
+  var answered = 0;
+  try { answered = JSON.parse(localStorage.getItem('eda_survey_progress') || '0'); } catch(e){}
+  var totalQ = SURVEY_QUESTIONS.length;
+  if (answered < totalQ) {
+   var pct = Math.round((answered / totalQ) * 100);
+   svEl.innerHTML = '<div class="home-survey-card" onclick="openSurvey()">' +
+    '<div class="home-survey-header"><div class="home-survey-icon">&#x1F381;</div>' +
+    '<div><p class="home-survey-title">アンケートに答えて特典GET</p><p class="home-survey-sub">' + (totalQ - answered) + '問回答で鶏ミンチ200gプレゼント</p></div></div>' +
+    '<div class="home-survey-reward"><div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
+    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>アンケート完了特典（次回注文に自動追加）</small></div></div>' +
+    '<div class="home-survey-progress"><div class="home-survey-progress-bar" style="width:' + pct + '%"></div></div></div>';
+  } else {
+   svEl.innerHTML = '<div class="home-survey-card" style="cursor:default">' +
+    '<div class="home-survey-header"><div class="home-survey-icon" style="background:var(--color-success-fg)">&#x2713;</div>' +
+    '<div><p class="home-survey-title">アンケート完了済み</p><p class="home-survey-sub">鶏ミンチ200gが次回注文に追加されます</p></div></div></div>';
+  }
  }
+
+ /* Recent order / first order CTA */
+ var roEl = document.getElementById('homeRecentOrder');
+ if (roEl && orders && orders.length > 0) {
+  var latest = orders[0];
+  var statusMap = { 'pending': { label: '未発送', cls: 'pending' }, 'preparing': { label: '発送準備中', cls: 'preparing' }, 'shipped': { label: '発送済', cls: 'shipped' }, 'delivered': { label: '配達完了', cls: 'delivered' } };
+  var st = statusMap[latest.status] || statusMap['pending'];
+  roEl.innerHTML = '<div class="order-card" onclick="switchTab(\'orders\')" style="cursor:pointer"><div class="order-card-head"><div><div class="order-number">ORDER #' + escapeHtml(latest.order_number || latest.id || '-') + '</div><div class="order-date">' + (latest.date ? formatDate(latest.date) : '') + '</div></div><span class="status-badge ' + st.cls + '"><span class="status-badge-dot"></span>' + st.label + '</span></div><div class="order-total-row"><span class="order-total-label">TOTAL</span><span class="order-total-price">' + formatYen(latest.total || 0) + '</span></div></div>';
+ } else if (roEl) {
+  roEl.innerHTML = '<div class="empty-orders"><p class="empty-orders-eyebrow">First Order</p><p class="empty-orders-text">厳選されたA5江田和牛を<br>ご自宅の食卓へ</p><a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> Shop Now</a></div>';
+ }
+}
+
+/* Hash utility for member ID */
+function hashStr(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; } return h; }
+
+/* Survey Questions & Logic */
+var SURVEY_QUESTIONS = [
+ { q: 'ご家族は何人ですか？', opts: ['1人暮らし', '2人', '3〜4人', '5人以上'] },
+ { q: 'お肉を食べる頻度は？', opts: ['毎日', '週3〜4回', '週1〜2回', '月に数回'] },
+ { q: 'お好みの部位は？', opts: ['サーロイン・リブ', 'ヒレ・赤身', '切り落とし・スライス', '特にこだわりなし'] },
+ { q: 'お肉の使い方は？', opts: ['ステーキ', '焼肉・BBQ', 'すき焼き・しゃぶしゃぶ', '煮込み・カレー'] },
+ { q: '江田畜産を知ったきっかけは？', opts: ['Instagram', 'LINE', '知人の紹介', 'その他'] }
+];
+
+async function openSurvey() {
+ var answered = 0;
+ try { answered = JSON.parse(localStorage.getItem('eda_survey_progress') || '0'); } catch(e){}
+ if (answered >= SURVEY_QUESTIONS.length) { toast('アンケートは完了済みです', 'success'); return; }
+ for (var i = answered; i < SURVEY_QUESTIONS.length; i++) {
+  var sq = SURVEY_QUESTIONS[i];
+  var buttons = sq.opts.map(function(o, idx) { return { label: o, class: idx === 0 ? 'primary' : 'secondary', value: o }; });
+  var result = await edaModal('Q' + (i+1) + '. ' + sq.q, '(' + (i+1) + '/' + SURVEY_QUESTIONS.length + ')', buttons);
+  if (result === null) break;
+  try {
+   var answers = JSON.parse(localStorage.getItem('eda_survey_answers') || '{}');
+   answers['q' + i] = result;
+   localStorage.setItem('eda_survey_answers', JSON.stringify(answers));
+   localStorage.setItem('eda_survey_progress', JSON.stringify(i + 1));
+  } catch(e){}
+ }
+ var finalP = 0;
+ try { finalP = JSON.parse(localStorage.getItem('eda_survey_progress') || '0'); } catch(e){}
+ if (finalP >= SURVEY_QUESTIONS.length) {
+  toast('アンケート完了！鶏ミンチ200gが次回注文に追加されます', 'success');
+  if (window.EDA_API && currentSession) {
+   var ans = {}; try { ans = JSON.parse(localStorage.getItem('eda_survey_answers') || '{}'); } catch(e){}
+   window.EDA_API.post('survey_complete', { email: currentSession.email || '', line_uid: currentSession.line_uid || '', answers: ans }).catch(function(){});
+  }
+ }
+ if (currentSession) renderHomeTab(currentSession.total_orders || 0, currentSession._orders || [], currentSession);
 }
 
 /* ---- Quick Cart (Shop Tab) ---- */
