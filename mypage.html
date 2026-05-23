@@ -186,33 +186,46 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  align-items: center;
  justify-content: center;
  min-height: 100vh;
- background:
-  linear-gradient(160deg, rgba(10,30,20,0.92) 0%, rgba(15,61,46,0.88) 40%, rgba(20,77,56,0.85) 100%),
-  url('public/images/products/drive/sirloin.jpg') center/cover no-repeat;
+ background: var(--color-forest-deep);
  position: relative;
  overflow: hidden;
  padding: 100px 24px 60px;
 }
+/* Background hero image — atmospheric searing scene */
+.login-bg-img {
+ position: absolute; inset: -20px; /* bleed to avoid edge gaps on scale */
+ width: calc(100% + 40px); height: calc(100% + 40px);
+ object-fit: cover; object-position: left 30%;
+ opacity: 0.4;
+ filter: blur(0.5px) saturate(0.8);
+ pointer-events: none;
+ animation: loginBgDrift 30s ease-in-out infinite alternate;
+}
+@keyframes loginBgDrift {
+ 0%   { transform: scale(1.05) translate(0, 0); }
+ 100% { transform: scale(1.10) translate(-1%, -1%); }
+}
+/* Gradient veil over image — forest green tint */
 .login-layout::before {
  content: '';
- position: absolute; inset: 0;
+ position: absolute; inset: 0; z-index: 1;
  background:
-  radial-gradient(ellipse at 20% 20%, rgba(212,169,59,0.12), transparent 50%),
-  radial-gradient(ellipse at 80% 80%, rgba(212,169,59,0.08), transparent 50%);
+  linear-gradient(160deg, rgba(10,30,20,0.7) 0%, rgba(15,61,46,0.55) 40%, rgba(10,20,15,0.75) 100%),
+  radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(10,30,20,0.4) 100%);
  pointer-events: none;
 }
+/* Gold accent glow — subtle warmth */
 .login-layout::after {
  content: '';
- position: absolute; inset: 0;
- background: repeating-linear-gradient(
-  -45deg, transparent, transparent 40px,
-  rgba(212,169,59,0.015) 40px, rgba(212,169,59,0.015) 41px
- );
+ position: absolute; inset: 0; z-index: 1;
+ background:
+  radial-gradient(ellipse at 25% 30%, rgba(212,169,59,0.08), transparent 50%),
+  radial-gradient(ellipse at 75% 70%, rgba(212,169,59,0.05), transparent 50%);
  pointer-events: none;
 }
 /* Center container */
 .login-center-wrap {
- position: relative; z-index: 1;
+ position: relative; z-index: 2;
  width: 100%; max-width: 480px;
  display: flex; flex-direction: column; align-items: center;
 }
@@ -1973,6 +1986,7 @@ button:focus-visible, a:focus-visible {
 
  <!-- ① LIFF 外アクセス: フルスクリーン没入型ログイン -->
  <div class="login-layout" id="liffExternal" style="display:none;">
+ <img src="public/images/cuts/hero-0.webp" alt="" class="login-bg-img" loading="eager" fetchpriority="high">
 
  <div class="login-center-wrap">
   <!-- ヒーローテキスト -->
