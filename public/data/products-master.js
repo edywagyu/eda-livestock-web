@@ -127,61 +127,61 @@
       images: ['public/images/products/drive/minced.jpg']
     },
 
-    /* ===== 鶏肉 平飼い（標準） ===== */
+    /* ===== 鶏肉 平飼い（標準）— 250g パック ===== */
     {
-      productId: 'P011', variantId: 'CHK-BREAST', sku: 'EDA-CHK-BREAST-500',
+      productId: 'P011', variantId: 'CHK-BREAST', sku: 'EDA-CHK-BREAST-250',
       stripePriceId: 'price_1TW74sGSkhU1UEcij8xFudVT',
-      name: '平飼い鶏 ムネ', variant: '1袋 500g',
-      price: 1280, weight: 500, stock: 20, temp: '冷凍',
+      name: '平飼い鶏 ムネ', variant: '1袋 250g',
+      price: 640, weight: 250, stock: 20, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Breast',
       description: '大分県・無投薬の平飼い農家のもの。低脂肪・高タンパク。サラダチキン、バンバンジーに。',
       images: ['public/images/products/drive/chicken-breast.jpg']
     },
     {
-      productId: 'P012', variantId: 'CHK-THIGH', sku: 'EDA-CHK-THIGH-500',
+      productId: 'P012', variantId: 'CHK-THIGH', sku: 'EDA-CHK-THIGH-250',
       stripePriceId: 'price_1TW74tGSkhU1UEcilbKbPhGv',
-      name: '平飼い鶏 モモ', variant: '1袋 500g',
-      price: 1280, weight: 500, stock: 24, temp: '冷凍',
+      name: '平飼い鶏 モモ', variant: '1袋 250g',
+      price: 640, weight: 250, stock: 24, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Thigh',
       description: '大分県・無投薬の平飼い農家のもの。照り焼き、唐揚げ、煮込みまで。',
       images: ['public/images/products/drive/chicken-thigh.jpg']
     },
     {
-      productId: 'P013', variantId: 'CHK-MINCED', sku: 'EDA-CHK-MINCED-300',
+      productId: 'P013', variantId: 'CHK-MINCED', sku: 'EDA-CHK-MINCED-250',
       stripePriceId: 'price_1TW74uGSkhU1UEciOv09JHuD',
-      name: '平飼い鶏 ミンチ', variant: '1袋 300g',
-      price: 1000, weight: 300, stock: 16, temp: '冷凍',
+      name: '平飼い鶏 ミンチ', variant: '1袋 250g',
+      price: 500, weight: 250, stock: 16, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Minced',
       description: '大分県・無投薬の平飼い農家のもの。つくね、そぼろ、鶏団子鍋に。',
       images: ['public/images/products/drive/chicken-minced.jpg']
     },
 
-    /* ===== 鶏肉 オーガニック（3倍価格） ===== */
+    /* ===== 鶏肉 オーガニック（プレミアム）— 250g パック ===== */
     {
-      productId: 'P014', variantId: 'ORG-CHK-BREAST', sku: 'EDA-ORG-CHK-BREAST-500',
+      productId: 'P014', variantId: 'ORG-CHK-BREAST', sku: 'EDA-ORG-CHK-BREAST-250',
       stripePriceId: 'price_1TW74uGSkhU1UEciG30csXKD',
-      name: 'オーガニックチキン ムネ', variant: '1袋 500g',
-      price: 3840, weight: 500, stock: 6, temp: '冷凍',
+      name: 'オーガニックチキン ムネ', variant: '1袋 250g',
+      price: 1920, weight: 250, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Breast',
       isOrganic: true,
       description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
       images: ['public/images/products/drive/chicken-breast.jpg']
     },
     {
-      productId: 'P015', variantId: 'ORG-CHK-THIGH', sku: 'EDA-ORG-CHK-THIGH-500',
+      productId: 'P015', variantId: 'ORG-CHK-THIGH', sku: 'EDA-ORG-CHK-THIGH-250',
       stripePriceId: 'price_1TW74vGSkhU1UEci6e5u6hec',
-      name: 'オーガニックチキン モモ', variant: '1袋 500g',
-      price: 3840, weight: 500, stock: 6, temp: '冷凍',
+      name: 'オーガニックチキン モモ', variant: '1袋 250g',
+      price: 1920, weight: 250, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Thigh',
       isOrganic: true,
       description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
       images: ['public/images/products/drive/chicken-thigh.jpg']
     },
     {
-      productId: 'P016', variantId: 'ORG-CHK-MINCED', sku: 'EDA-ORG-CHK-MINCED-300',
+      productId: 'P016', variantId: 'ORG-CHK-MINCED', sku: 'EDA-ORG-CHK-MINCED-250',
       stripePriceId: 'price_1TW74wGSkhU1UEciMfeKnO9W',
-      name: 'オーガニックチキン ミンチ', variant: '1袋 300g',
-      price: 3000, weight: 300, stock: 5, temp: '冷凍',
+      name: 'オーガニックチキン ミンチ', variant: '1袋 250g',
+      price: 1500, weight: 250, stock: 5, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Minced',
       isOrganic: true,
       description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。離乳食、つくねに。',
