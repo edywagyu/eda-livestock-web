@@ -737,6 +737,44 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  background: rgba(15,61,46,0.04);
 }
 
+/* カード番号入力場所の案内 */
+.payment-next-info {
+ display: flex;
+ gap: 12px;
+ align-items: flex-start;
+ margin-top: 14px;
+ padding: 14px 16px;
+ background: linear-gradient(135deg, rgba(15,61,46,0.05), rgba(212,169,59,0.05));
+ border: 1px solid rgba(15,61,46,0.18);
+ border-radius: 10px;
+}
+.payment-next-info-icon {
+ width: 38px; height: 38px;
+ border-radius: 50%;
+ background: var(--color-forest);
+ color: var(--color-gold);
+ display: flex; align-items: center; justify-content: center;
+ flex-shrink: 0;
+}
+.payment-next-info-body strong {
+ display: block;
+ font-family: var(--font-jp);
+ font-size: 13.5px;
+ color: var(--color-forest);
+ font-weight: 700;
+ margin-bottom: 4px;
+}
+.payment-next-info-body p {
+ margin: 0;
+ font-size: 12px;
+ line-height: 1.6;
+ color: var(--color-ink-muted);
+}
+.payment-next-info-body b {
+ color: var(--color-forest);
+ font-weight: 700;
+}
+
 /* ============ CONTACT METHOD CHOICE ============ */
 .contact-choice-section {
  margin-top: 4px;
@@ -1358,6 +1396,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
  </label>
  </div>
+ <!-- カード入力の場所案内 (Stripe 仕様: カード番号は次画面で入力) -->
+ <div class="payment-next-info" id="paymentNextInfo">
+  <div class="payment-next-info-icon">
+   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/>
+    <path d="M7 11V7 a5 5 0 0 1 10 0v4"/>
+   </svg>
+  </div>
+  <div class="payment-next-info-body">
+   <strong>カード番号は次の安全な決済画面で入力します</strong>
+   <p>「お支払いへ進む」ボタンを押すと <b>Stripe</b>（世界中で利用される最高水準の決済システム）の安全な画面に移り、そこでカード情報をご入力いただきます。<br>このページにはカード情報は保存されません。</p>
+  </div>
+ </div>
  </div>
 
  </div>
@@ -1393,7 +1444,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </label>
 
  <button class="btn-place-order" id="btnPlaceOrder" onclick="placeOrder()">
- ご注文を確定する →
+ お支払いへ進む（カード情報入力）→
  </button>
 
  <div class="summary-trust">
@@ -1567,6 +1618,7 @@ function init() {
  renderSummary();
  buildDeliveryDateOptions();
  lockPaymentMethodForSubscription();
+ updatePaymentUI();
 
  // subscription 経由の場合、プリフィル済の通知
  if (params.get('from') === 'subscription' && destinations[0].name) {
@@ -2185,10 +2237,35 @@ function buildDeliveryDateOptions() {
 }
 
 /* ---- 支払いラジオ ---- */
+function updatePaymentUI() {
+ const checked = document.querySelector('input[name="payment"]:checked');
+ const val = checked ? checked.value : 'card';
+ const btn = document.getElementById('btnPlaceOrder');
+ const info = document.getElementById('paymentNextInfo');
+ const infoStrong = info ? info.querySelector('strong') : null;
+ const infoP = info ? info.querySelector('p') : null;
+ if (val === 'card') {
+   if (btn) btn.textContent = 'お支払いへ進む（カード情報入力）→';
+   if (info) info.style.display = '';
+   if (infoStrong) infoStrong.textContent = 'カード番号は次の安全な決済画面で入力します';
+   if (infoP) infoP.innerHTML = '「お支払いへ進む」ボタンを押すと <b>Stripe</b>（世界中で利用される最高水準の決済システム）の安全な画面に移り、そこでカード情報をご入力いただきます。<br>このページにはカード情報は保存されません。';
+ } else if (val === 'apple') {
+   if (btn) btn.textContent = 'Apple Pay でお支払い →';
+   if (info) info.style.display = '';
+   if (infoStrong) infoStrong.textContent = '次の画面で Apple Pay 認証（Face ID / Touch ID）';
+   if (infoP) infoP.innerHTML = '「お支払い」ボタンを押すと <b>Stripe</b> の決済画面に移り、Apple Pay で簡単・安全に支払えます。';
+ } else if (val === 'bank') {
+   if (btn) btn.textContent = '注文を確定して振込先を受け取る →';
+   if (info) info.style.display = '';
+   if (infoStrong) infoStrong.textContent = '振込先はご注文確認メールでお知らせします';
+   if (infoP) infoP.innerHTML = '注文確定後、ご登録のメールに <b>振込先口座</b>と<b>振込金額</b>を記載してお送りします。<br>ご入金確認後の発送となります。';
+ }
+}
 document.querySelectorAll('.payment-option input').forEach(input => {
  input.addEventListener('change', () => {
  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
  input.closest('.payment-option').classList.add('selected');
+ updatePaymentUI();
  });
 });
 
@@ -2319,7 +2396,7 @@ async function placeOrder() {
  window.location.href = result.url;
 
  } catch (err) {
- if (btn) { btn.disabled = false; btn.textContent = 'ご注文を確定する →'; }
+ if (btn) { btn.disabled = false; updatePaymentUI(); }
  alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
  console.error('[placeOrder]', err);
  }
