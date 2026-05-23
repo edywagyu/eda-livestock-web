@@ -43,6 +43,15 @@
  --color-gold-text: #7A6018;
  --color-red: #C8102E;
  --color-line: rgba(212, 169, 59, 0.18);
+ /* ★ Accent colors — wagyu inspired (差し色) */
+ --color-burgundy: #6B2429;
+ --color-burgundy-deep: #4A1A1E;
+ --color-burgundy-soft: rgba(107, 36, 41, 0.08);
+ --color-copper: #B87333;
+ --color-copper-soft: rgba(184, 115, 51, 0.08);
+ --color-terracotta: #A85220;
+ --color-sage: #C8C8A8;
+ --color-ivory: #F8F1E0;
  /* Semantic status tokens */
  --color-success-bg: #D1FAE5;
  --color-success-fg: #065F46;
@@ -482,29 +491,21 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 0 0 64px;
  position: relative;
  overflow: hidden;
- background: radial-gradient(ellipse at 50% 60%, rgba(212,169,59,0.015), transparent 60%), var(--color-cream);
+ background: var(--color-cream);
 }
 .dashboard-section.show { display: block; }
-/* ★ Hero zone — seamless green from fixed header into dashboard */
+/* ★ Warm wagyu-marbling backdrop — cream + copper + gold (NO green to avoid header blob) */
 .dashboard-section::before {
  content: '';
  position: absolute;
- top: 0; left: 0; right: 0;
- height: 480px;
+ top: 0; left: 0; right: 0; bottom: 0;
  background:
-  repeating-linear-gradient(-45deg, transparent, transparent 28px, rgba(212,169,59,0.012) 28px, rgba(212,169,59,0.012) 29px),
-  radial-gradient(ellipse at 75% 25%, rgba(212,169,59,0.14), transparent 50%),
-  radial-gradient(ellipse at 15% 70%, rgba(255,255,255,0.04), transparent 50%),
-  linear-gradient(175deg, var(--color-forest-deep) 0%, #0E3526 35%, #16503B 100%);
- pointer-events: none;
- z-index: 0;
-}
-.dashboard-section::after {
- content: '';
- position: absolute;
- top: 380px; left: 0; right: 0;
- height: 140px;
- background: linear-gradient(180deg, transparent, var(--color-cream));
+  radial-gradient(ellipse 320px 140px at 12% 18%, rgba(184,115,51,0.06), transparent 65%),
+  radial-gradient(ellipse 280px 120px at 85% 12%, rgba(212,169,59,0.10), transparent 65%),
+  radial-gradient(ellipse 240px 100px at 70% 38%, rgba(107,36,41,0.04), transparent 70%),
+  radial-gradient(ellipse 360px 160px at 25% 55%, rgba(184,115,51,0.04), transparent 70%),
+  radial-gradient(ellipse 280px 120px at 88% 70%, rgba(212,169,59,0.05), transparent 65%),
+  linear-gradient(180deg, var(--color-ivory) 0%, var(--color-cream) 100%);
  pointer-events: none;
  z-index: 0;
 }
@@ -618,10 +619,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-family: var(--font-display); font-size: 11px;
  letter-spacing: var(--tracking-wider); font-weight: 600;
  text-transform: uppercase; white-space: nowrap;
- background: linear-gradient(135deg, rgba(212,169,59,0.22), rgba(212,169,59,0.12));
- color: var(--color-gold-bright);
- border: 1px solid rgba(212,169,59,0.4);
+ background: linear-gradient(135deg, rgba(184,115,51,0.28), rgba(212,169,59,0.18));
+ color: #F5D898;
+ border: 1px solid rgba(184,115,51,0.5);
  backdrop-filter: blur(4px);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 .welcome-tier-badge svg { width: 14px; height: 14px; flex-shrink: 0; }
 .welcome-card-bottom {
@@ -822,8 +824,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .home-info-label {
  font-family: var(--font-display); font-size: 10px;
- letter-spacing: var(--tracking-widest); color: var(--color-gold-text);
+ letter-spacing: var(--tracking-widest); color: var(--color-copper);
  text-transform: uppercase; margin: 0 0 6px;
+ font-weight: 600;
 }
 .home-info-value {
  font-family: var(--font-display); font-size: 24px;
@@ -855,9 +858,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .home-survey-icon {
  width: 40px; height: 40px; border-radius: 12px;
- background: linear-gradient(135deg, var(--color-gold), #D4A93B);
+ background: linear-gradient(135deg, var(--color-copper), var(--color-terracotta));
  display: flex; align-items: center; justify-content: center;
  font-size: 18px; flex-shrink: 0;
+ box-shadow: 0 3px 10px rgba(184,115,51,0.3);
 }
 .home-survey-title {
  font-family: var(--font-jp-serif); font-size: 15px;
@@ -913,7 +917,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* Section divider — gold accent */
 .dash-section-divider {
  height: 1px;
- background: linear-gradient(90deg, transparent, rgba(212,169,59,0.2), transparent);
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.25), rgba(184,115,51,0.2), rgba(212,169,59,0.25), transparent);
  margin: 2px 0 10px;
  border: none;
 }
@@ -1089,18 +1093,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-family: var(--font-display);
  font-size: 14px;
  letter-spacing: var(--tracking-widest);
- color: var(--color-gold-text);
+ color: var(--color-copper);
  margin: 0 0 20px;
  display: flex;
  align-items: center;
  gap: 14px;
  text-transform: uppercase;
+ font-weight: 600;
 }
 .dash-section-title::after {
  content: '';
  flex: 1;
  height: 1px;
- background: var(--color-bone);
+ background: linear-gradient(90deg, rgba(184,115,51,0.3), transparent);
 }
 
 /* ================ REWARD JOURNEY (特典タブ) ================ */
@@ -1279,21 +1284,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .hnr-icon {
  width: 46px; height: 46px;
  border-radius: 14px;
- background: linear-gradient(135deg, rgba(212, 169, 59, 0.12), rgba(15, 61, 46, 0.06));
+ background: linear-gradient(135deg, rgba(184,115,51,0.15), rgba(212,169,59,0.10));
  display: flex;
  align-items: center;
  justify-content: center;
  font-size: 20px;
  flex-shrink: 0;
+ border: 1px solid rgba(184,115,51,0.15);
 }
 .hnr-body { flex: 1; min-width: 0; }
 .hnr-label {
  font-family: var(--font-display);
  font-size: 10px;
  letter-spacing: var(--tracking-wider);
- color: var(--color-gold-text);
+ color: var(--color-copper);
  margin: 0;
  text-transform: uppercase;
+ font-weight: 600;
 }
 .hnr-value {
  font-family: var(--font-jp-serif);
@@ -1853,29 +1860,43 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin: 10px 0 0; position: relative;
 }
 .member-perks-strip {
- background: linear-gradient(135deg, rgba(212,169,59,0.09), rgba(212,169,59,0.03));
- border: 1px solid rgba(212,169,59,0.2); border-radius: 16px;
+ background: linear-gradient(135deg, var(--color-burgundy-soft), rgba(212,169,59,0.05));
+ border: 1px solid rgba(107,36,41,0.18); border-radius: 16px;
  padding: 16px 22px; margin-bottom: 20px;
  display: flex; align-items: center; gap: 14px;
  cursor: pointer; transition: all 0.3s;
- box-shadow: 0 2px 12px rgba(212,169,59,0.05);
+ box-shadow: 0 2px 12px rgba(107,36,41,0.06);
+ position: relative;
+ overflow: hidden;
+}
+.member-perks-strip::before {
+ content: '';
+ position: absolute;
+ top: 0; left: 0; bottom: 0;
+ width: 4px;
+ background: linear-gradient(180deg, var(--color-burgundy), var(--color-copper));
+}
+.member-perks-strip:hover {
+ border-color: var(--color-burgundy);
+ box-shadow: 0 4px 20px rgba(107,36,41,0.12);
 }
 .member-perks-strip:hover {
  border-color: rgba(212,169,59,0.3); box-shadow: 0 4px 16px rgba(212,169,59,0.06);
 }
 .member-perks-icon {
  width: 36px; height: 36px; border-radius: 10px;
- background: linear-gradient(135deg, rgba(212,169,59,0.15), rgba(212,169,59,0.08));
+ background: linear-gradient(135deg, var(--color-burgundy), var(--color-burgundy-deep));
  display: flex; align-items: center; justify-content: center;
  color: var(--color-gold); flex-shrink: 0;
+ box-shadow: 0 2px 8px rgba(107,36,41,0.25);
 }
 .member-perks-text {
  font-family: var(--font-jp); font-size: 13px; color: var(--color-forest);
  flex: 1; line-height: 1.6;
 }
-.member-perks-text strong { color: var(--color-gold-text); font-weight: 600; }
+.member-perks-text strong { color: var(--color-burgundy); font-weight: 700; }
 .member-perks-arrow {
- color: var(--color-gold-text); opacity: 0.65; transition: all 0.3s; flex-shrink: 0;
+ color: var(--color-burgundy); opacity: 0.75; transition: all 0.3s; flex-shrink: 0;
 }
 .member-perks-strip:hover .member-perks-arrow { opacity: 1; transform: translateX(2px); }
 
