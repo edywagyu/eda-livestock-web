@@ -2488,7 +2488,542 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  opacity: 0.88;
 }
 
-/* ================ ARTICLE ================ */
+/* ================================================================
+ * ABOUT 2026 — Clean Redesign (構成整理 + 改行最適化)
+ * ================================================================ */
+:root { --about-section-pad: clamp(72px, 10vw, 120px); }
+
+/* ── AT A GLANCE ── */
+.about-glance {
+ background: var(--color-cream);
+ padding: var(--about-section-pad) 0;
+ border-bottom: 1px solid var(--color-bone);
+}
+.glance-grid {
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: 28px;
+}
+.glance-cell {
+ padding: 28px 24px;
+ background: white;
+ border-radius: 14px;
+ border-top: 3px solid var(--color-gold);
+ box-shadow: 0 4px 16px rgba(15,61,46,0.05);
+ transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s var(--ease-out-expo);
+}
+.glance-cell:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,61,46,0.10); }
+.glance-num {
+ font-family: var(--font-display);
+ font-size: clamp(40px, 5vw, 56px);
+ font-weight: 700;
+ color: var(--color-forest);
+ line-height: 1;
+ letter-spacing: -0.02em;
+ margin-bottom: 6px;
+ font-variant-numeric: tabular-nums;
+}
+.glance-num-unit {
+ font-size: 0.4em;
+ letter-spacing: 0.04em;
+ color: var(--color-gold-soft);
+ margin-left: 4px;
+ font-weight: 600;
+}
+.glance-label {
+ font-family: var(--font-jp);
+ font-size: 13px;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ letter-spacing: 0.06em;
+ margin-bottom: 16px;
+}
+.glance-desc { font-size: 13px; line-height: 1.8; color: var(--color-ink-muted); margin: 0; }
+
+/* ── OUR STORY ── */
+.about-story {
+ background: var(--color-paper);
+ padding: var(--about-section-pad) 0;
+}
+.story-head { max-width: 760px; margin-bottom: 64px; }
+.story-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(32px, 4.6vw, 56px);
+ line-height: 1.45;
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 20px 0 28px;
+ word-break: keep-all;
+ overflow-wrap: break-word;
+}
+.story-title em {
+ font-style: italic;
+ color: var(--color-gold-soft);
+ font-family: var(--font-display);
+ font-weight: 600;
+}
+.story-lead {
+ font-size: 16px;
+ line-height: 2;
+ color: var(--color-ink);
+ margin: 0;
+}
+.story-lead strong { color: var(--color-forest); font-weight: 700; }
+.story-chapters {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 24px;
+}
+.story-chapter {
+ padding: 32px 28px;
+ background: white;
+ border-radius: 14px;
+ border-left: 3px solid var(--color-gold);
+ box-shadow: 0 6px 20px rgba(15,61,46,0.06);
+ transition: transform 0.4s var(--ease-out-expo);
+}
+.story-chapter:hover { transform: translateY(-4px); }
+.story-chapter-num {
+ font-family: var(--font-display);
+ font-size: 14px;
+ font-weight: 700;
+ color: var(--color-gold);
+ letter-spacing: 0.1em;
+ margin-bottom: 16px;
+}
+.story-chapter-title {
+ font-family: var(--font-jp);
+ font-size: 17px;
+ line-height: 1.6;
+ font-weight: 700;
+ color: var(--color-forest);
+ margin: 0 0 16px;
+ word-break: keep-all;
+}
+.story-chapter p {
+ font-size: 14px;
+ line-height: 1.95;
+ color: var(--color-ink-muted);
+ margin: 0;
+}
+.story-chapter p strong { color: var(--color-forest); font-weight: 700; }
+
+/* ── SANPO-YOSHI ── */
+.about-sanpo {
+ background: linear-gradient(180deg, var(--color-forest) 0%, var(--color-forest-deep) 100%);
+ color: white;
+ padding: var(--about-section-pad) 0;
+ position: relative;
+}
+.sanpo-head { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+.sanpo-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(32px, 4.6vw, 52px);
+ line-height: 1.4;
+ font-weight: 500;
+ color: white;
+ margin: 18px 0 20px;
+ word-break: keep-all;
+}
+.sanpo-lead { font-size: 15px; line-height: 1.95; color: rgba(255,255,255,0.85); margin: 0; }
+.sanpo-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 24px;
+}
+.sanpo-card {
+ padding: 40px 32px;
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(212,169,59,0.25);
+ border-radius: 14px;
+ text-align: center;
+ transition: all 0.4s var(--ease-out-expo);
+}
+.sanpo-card:hover {
+ background: rgba(212,169,59,0.08);
+ border-color: rgba(212,169,59,0.5);
+ transform: translateY(-4px);
+}
+.sanpo-card-num {
+ font-family: var(--font-display);
+ font-size: 16px;
+ font-weight: 700;
+ color: var(--color-gold);
+ letter-spacing: 0.1em;
+ margin-bottom: 8px;
+}
+.sanpo-card-label {
+ font-family: var(--font-display);
+ font-size: 11.5px;
+ letter-spacing: 0.18em;
+ color: rgba(255,255,255,0.7);
+ margin-bottom: 24px;
+}
+.sanpo-card-title {
+ font-family: var(--font-jp-serif);
+ font-size: 32px;
+ font-weight: 500;
+ color: var(--color-gold);
+ margin: 0 0 16px;
+}
+.sanpo-card p {
+ font-size: 14px;
+ line-height: 1.95;
+ color: rgba(255,255,255,0.88);
+ margin: 0;
+}
+
+/* ── 3 APPROACHES ── */
+.about-approach {
+ background: var(--color-cream);
+ padding: var(--about-section-pad) 0;
+}
+.approach-head { max-width: 720px; margin-bottom: 56px; }
+.approach-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(30px, 4vw, 48px);
+ line-height: 1.3;
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 18px 0 0;
+}
+.approach-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 24px;
+ margin-bottom: 72px;
+}
+.approach-card {
+ padding: 36px 28px;
+ background: white;
+ border-radius: 14px;
+ border-top: 3px solid var(--color-forest);
+ box-shadow: 0 6px 20px rgba(15,61,46,0.06);
+ transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+}
+.approach-card:hover {
+ transform: translateY(-4px);
+ box-shadow: 0 12px 32px rgba(15,61,46,0.10);
+ border-top-color: var(--color-gold);
+}
+.approach-card-num {
+ font-family: var(--font-display);
+ font-size: 32px;
+ font-weight: 700;
+ color: var(--color-gold);
+ margin-bottom: 14px;
+ letter-spacing: -0.02em;
+}
+.approach-card-title {
+ font-family: var(--font-jp);
+ font-size: 17px;
+ font-weight: 700;
+ color: var(--color-forest);
+ margin: 0 0 16px;
+ line-height: 1.5;
+ word-break: keep-all;
+}
+.approach-card p {
+ font-size: 13.5px;
+ line-height: 1.95;
+ color: var(--color-ink-muted);
+ margin: 0;
+}
+.approach-card p strong { color: var(--color-forest); font-weight: 700; }
+.approach-flow {
+ background: white;
+ border-radius: 14px;
+ padding: 36px 32px;
+ text-align: center;
+ border: 1px solid var(--color-bone);
+}
+.approach-flow-label {
+ font-family: var(--font-display);
+ font-size: 12px;
+ letter-spacing: 0.16em;
+ color: var(--color-gold-soft);
+ margin-bottom: 24px;
+ font-weight: 700;
+}
+.approach-flow-steps {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-wrap: wrap;
+ gap: 12px;
+ margin-bottom: 18px;
+}
+.approach-flow-step {
+ padding: 10px 22px;
+ background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
+ color: white;
+ border-radius: 24px;
+ font-size: 14px;
+ font-weight: 700;
+ font-family: var(--font-jp);
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+}
+.approach-flow-step small {
+ font-size: 11px;
+ font-weight: 500;
+ color: var(--color-gold);
+ letter-spacing: 0.02em;
+}
+.approach-flow-arrow {
+ font-size: 18px;
+ color: var(--color-gold);
+ font-weight: 700;
+}
+.approach-flow-desc {
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ margin: 0;
+ line-height: 1.7;
+}
+
+/* ── REINVESTMENT (dark) ── */
+.about-reinvest {
+ background: linear-gradient(135deg, var(--color-forest-deep) 0%, #07241B 100%);
+ color: white;
+ padding: var(--about-section-pad) 0;
+}
+.reinvest-head { max-width: 720px; margin: 0 auto 56px; text-align: center; }
+.reinvest-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(30px, 4.4vw, 52px);
+ line-height: 1.35;
+ font-weight: 500;
+ color: white;
+ margin: 18px 0 20px;
+ word-break: keep-all;
+}
+.reinvest-title em {
+ font-style: italic;
+ color: var(--color-gold);
+ font-family: var(--font-display);
+ font-weight: 600;
+}
+.reinvest-lead {
+ font-size: 15px;
+ line-height: 1.95;
+ color: rgba(255,255,255,0.88);
+ margin: 0;
+}
+.reinvest-lead strong { color: var(--color-gold); font-weight: 700; }
+.reinvest-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 24px;
+}
+.reinvest-card {
+ padding: 32px 28px;
+ background: rgba(255,255,255,0.03);
+ border: 1px solid rgba(212,169,59,0.25);
+ border-radius: 14px;
+ border-top: 3px solid var(--color-gold);
+ transition: all 0.4s var(--ease-out-expo);
+}
+.reinvest-card:hover {
+ background: rgba(212,169,59,0.06);
+ transform: translateY(-4px);
+}
+.reinvest-card-num {
+ font-family: var(--font-display);
+ font-size: 11.5px;
+ letter-spacing: 0.16em;
+ color: var(--color-gold);
+ margin-bottom: 14px;
+ font-weight: 700;
+}
+.reinvest-card h3 {
+ font-family: var(--font-jp);
+ font-size: 20px;
+ font-weight: 700;
+ color: white;
+ margin: 0 0 16px;
+}
+.reinvest-card p {
+ font-size: 13.5px;
+ line-height: 1.95;
+ color: rgba(255,255,255,0.85);
+ margin: 0;
+}
+
+/* ── FOUNDER ── */
+.about-founder {
+ background: var(--color-paper);
+ padding: var(--about-section-pad) 0;
+}
+.founder-card {
+ display: grid;
+ grid-template-columns: 1fr 1.2fr;
+ gap: 56px;
+ align-items: center;
+ max-width: 1080px;
+ margin: 0 auto;
+}
+.founder-photo {
+ position: relative;
+ aspect-ratio: 4/5;
+ border-radius: 20px;
+ overflow: hidden;
+ box-shadow: 0 24px 60px rgba(15,61,46,0.20);
+}
+.founder-photo img {
+ width: 100%; height: 100%;
+ object-fit: cover; object-position: center;
+ display: block;
+ filter: contrast(1.04) saturate(1.05);
+}
+.founder-photo-overlay {
+ position: absolute; inset: 0;
+ background: linear-gradient(180deg, transparent 50%, rgba(10,45,33,0.5) 100%);
+ pointer-events: none;
+}
+.founder-text { padding: 0; }
+.founder-eyebrow {
+ font-family: var(--font-display);
+ font-size: 12px;
+ letter-spacing: 0.18em;
+ color: var(--color-gold-soft);
+ font-weight: 700;
+ display: block;
+ margin-bottom: 16px;
+}
+.founder-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(32px, 4.4vw, 48px);
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 0 0 28px;
+ display: flex;
+ align-items: baseline;
+ gap: 16px;
+ flex-wrap: wrap;
+}
+.founder-title small {
+ font-family: var(--font-display);
+ font-size: 14px;
+ font-weight: 400;
+ letter-spacing: 0.08em;
+ color: var(--color-gold-soft);
+ font-style: italic;
+}
+.founder-quote {
+ font-family: var(--font-jp);
+ font-size: 16px;
+ line-height: 2;
+ color: var(--color-ink);
+ margin: 0 0 24px;
+ padding: 0 0 0 24px;
+ border-left: 3px solid var(--color-gold);
+ font-style: normal;
+ quotes: none;
+}
+.founder-meta {
+ font-size: 13px;
+ color: var(--color-ink-muted);
+ letter-spacing: 0.04em;
+ font-weight: 600;
+}
+
+/* ── COMPANY INFO ── */
+.about-info {
+ background: var(--color-cream);
+ padding: var(--about-section-pad) 0;
+}
+.info-head { max-width: 720px; margin-bottom: 48px; }
+.info-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(28px, 3.6vw, 40px);
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 14px 0 0;
+}
+.info-table {
+ background: white;
+ border-radius: 14px;
+ padding: 0;
+ max-width: 880px;
+ margin: 0 auto;
+ box-shadow: 0 6px 20px rgba(15,61,46,0.06);
+ overflow: hidden;
+}
+.info-row {
+ display: grid;
+ grid-template-columns: 180px 1fr;
+ padding: 22px 28px;
+ border-bottom: 1px solid var(--color-bone);
+ gap: 24px;
+ align-items: start;
+}
+.info-row:last-child { border-bottom: 0; }
+.info-row dt {
+ font-family: var(--font-jp);
+ font-size: 12px;
+ font-weight: 700;
+ color: var(--color-gold-soft);
+ letter-spacing: 0.08em;
+ padding-top: 2px;
+}
+.info-row dd {
+ font-family: var(--font-jp);
+ font-size: 14.5px;
+ line-height: 1.8;
+ color: var(--color-ink);
+ margin: 0;
+}
+.info-row dd a { color: var(--color-gold-soft); text-decoration: underline; }
+.info-row dd a:hover { color: var(--color-forest); }
+
+/* ── CTA ── */
+.about-cta {
+ background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
+ padding: var(--about-section-pad) 0 calc(var(--about-section-pad) + 20px);
+ text-align: center;
+}
+.about-cta-inner { max-width: 720px; margin: 0 auto; }
+.about-cta-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(28px, 3.6vw, 40px);
+ font-weight: 500;
+ color: var(--color-forest);
+ margin: 0 0 14px;
+}
+.about-cta-desc {
+ font-size: 14.5px;
+ color: var(--color-ink-muted);
+ line-height: 1.85;
+ margin: 0 0 36px;
+}
+.about-cta-buttons {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 12px;
+ justify-content: center;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+ .glance-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+ .story-chapters, .sanpo-grid, .approach-grid, .reinvest-grid { grid-template-columns: 1fr; }
+ .founder-card { grid-template-columns: 1fr; gap: 32px; max-width: 540px; }
+ .founder-photo { aspect-ratio: 4/3; }
+ .info-row { grid-template-columns: 1fr; gap: 4px; padding: 18px 22px; }
+ .approach-flow-steps { gap: 8px; }
+ .approach-flow-step { padding: 8px 16px; font-size: 13px; }
+}
+@media (max-width: 640px) {
+ .glance-grid { grid-template-columns: 1fr; }
+ .glance-num { font-size: 36px; }
+ .story-title, .sanpo-title, .reinvest-title { font-size: 26px; line-height: 1.5; }
+ .story-lead, .sanpo-lead, .reinvest-lead { font-size: 14px; }
+ .info-row dt { font-size: 11px; margin-bottom: 4px; }
+}
+
+/* ================ LEGACY ARTICLE (互換用) ================ */
 .article-body { background: var(--color-cream); padding: clamp(64px, 10vw, 120px) 0; }
 .article-body p { font-size: 17px; line-height: 1.95; margin: 0 0 32px; color: var(--color-ink); }
 .article-body h2 {
@@ -3638,274 +4173,256 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  Livestock for<span class="accent">The Next 100 Years.</span>
  </h1>
  <p class="page-subtitle">
- 江田畜産株式会社は、2023年4月、宮崎県西諸県郡高原町で創業した畜産スタートアップです。<br/>
- 「美味しい × 健康」を哲学に、持続可能な畜産文化を世界へ届けています。
+ 2023年、宮崎で創業した畜産スタートアップ。<br/>
+ 「美味しい × 健康」を哲学に、和牛と平飼い鶏を世界へ届けています。
  </p>
+ </div>
+</section>
+
+<!-- ========= AT A GLANCE ========= -->
+<section class="about-glance">
+ <div class="container">
+  <div class="glance-grid reveal">
+   <div class="glance-cell">
+    <div class="glance-num">2023</div>
+    <div class="glance-label">創業</div>
+    <p class="glance-desc">宮崎県高原町。20代主導の畜産スタートアップとして始動。</p>
+   </div>
+   <div class="glance-cell">
+    <div class="glance-num">30<span class="glance-num-unit">ヶ月</span></div>
+    <div class="glance-label">長期肥育</div>
+    <p class="glance-desc">繁殖から肥育まで一貫経営。深いコクと芳醇な和牛香を引き出す。</p>
+   </div>
+   <div class="glance-cell">
+    <div class="glance-num">13<span class="glance-num-unit">カ国</span></div>
+    <div class="glance-label">輸出実績</div>
+    <p class="glance-desc">4大陸の高級ホテル・百貨店・レストランへ商社を介さず直接輸出。</p>
+   </div>
+   <div class="glance-cell">
+    <div class="glance-num">1<span class="glance-num-unit">/世界初</span></div>
+    <div class="glance-label">有機JAS 和牛</div>
+    <p class="glance-desc">2026年、世界初のオーガニック認証黒毛和牛をローンチ。EU Leaf 同等性承認。</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ========= OUR STORY (3 chapters) ========= -->
+<section class="about-story">
+ <div class="container">
+  <div class="story-head reveal">
+   <span class="eyebrow text-gold has-dash">Our Story</span>
+   <h2 class="story-title">
+    日本の和牛文化を、<br/><em>次の100年</em>へ。
+   </h2>
+   <p class="story-lead">
+    後継者不足、輸入飼料の高騰、円安。日本の畜産業は構造的な転換点に差しかかっています。<br/>
+    私たちはこの転換点を「課題」ではなく、<strong>新しい未来を設計する機会</strong>と捉えました。
+   </p>
+  </div>
+
+  <div class="story-chapters reveal">
+   <article class="story-chapter">
+    <div class="story-chapter-num">01</div>
+    <h3 class="story-chapter-title">出発点 — 業界の転換点を、機会に変える</h3>
+    <p>
+     "Wagyu" は世界中の高級レストランで通じる時代になり、需要は拡大し続けています。
+     一方で、生産者の平均年齢は70歳超え。輸入飼料コストは過去5年で約2倍。
+     既存モデルでは続かない構造を、私たちの世代で書き換えます。
+    </p>
+   </article>
+   <article class="story-chapter">
+    <div class="story-chapter-num">02</div>
+    <h3 class="story-chapter-title">哲学 — 三方よしを、和牛で。</h3>
+    <p>
+     近江商人の哲学「売り手よし・買い手よし・世間よし」を、現代の和牛生産にあてはめ直す。
+     <strong>牛 · 生産者 · 消費者</strong>の三者すべてが満足する仕組みでなければ、
+     サステナブルな畜産は実現しません。
+    </p>
+   </article>
+   <article class="story-chapter">
+    <div class="story-chapter-num">03</div>
+    <h3 class="story-chapter-title">モデル — 国産飼料 × 海外輸出</h3>
+    <p>
+     自社堆肥を起点とした循環農業で飼料を国内生産し、世界13カ国・4大陸へ直接輸出。
+     円安が進めば進むほど、このモデルは強くなります。
+     <strong>DOMESTIC FEED → GLOBAL EXPORT</strong> ── 既存モデルの逆方向です。
+    </p>
+   </article>
+  </div>
+ </div>
+</section>
+
+<!-- ========= SANPO-YOSHI (三方よし) ========= -->
+<section class="about-sanpo">
+ <div class="container">
+  <div class="sanpo-head reveal">
+   <span class="eyebrow text-gold has-dash">Sanpo-Yoshi</span>
+   <h2 class="sanpo-title">三方よしを、設計する。</h2>
+   <p class="sanpo-lead">
+    関わるすべての人が幸せでなければ、商売は続かない。<br/>
+    Eda Wagyu の根幹にある、シンプルな哲学です。
+   </p>
+  </div>
+
+  <div class="sanpo-grid reveal">
+   <article class="sanpo-card">
+    <div class="sanpo-card-num">01</div>
+    <div class="sanpo-card-label">— Cattle —</div>
+    <h3 class="sanpo-card-title">牛</h3>
+    <p>化学物質に頼らず、十分な空間と長い時間で、穏やかに育つ環境を。</p>
+   </article>
+   <article class="sanpo-card">
+    <div class="sanpo-card-num">02</div>
+    <div class="sanpo-card-label">— Producer —</div>
+    <h3 class="sanpo-card-title">生産者</h3>
+    <p>直接輸出と適正価格で、生産者がきちんと利益を得られる仕組みを。</p>
+   </article>
+   <article class="sanpo-card">
+    <div class="sanpo-card-num">03</div>
+    <div class="sanpo-card-label">— Consumer —</div>
+    <h3 class="sanpo-card-title">消費者</h3>
+    <p>安全で、味わい深く、透明性のある肉を、世界の食卓に。</p>
+   </article>
+  </div>
+ </div>
+</section>
+
+<!-- ========= 3 APPROACHES (取り組み) ========= -->
+<section class="about-approach">
+ <div class="container">
+  <div class="approach-head reveal">
+   <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Our Approach</span>
+   <h2 class="approach-title">3つの取り組み。</h2>
+  </div>
+
+  <div class="approach-grid reveal">
+   <article class="approach-card">
+    <div class="approach-card-num">01</div>
+    <h3 class="approach-card-title">美味しいと健康への挑戦</h3>
+    <p>
+     飼育方法・餌・餌づくりまで一貫してこだわった「Eda Wagyu」を生産・販売。
+     <strong>2026年2月、世界初のオーガニック認証黒毛和牛「Premium EdaWagyu」</strong>をローンチ。EU Leaf 同等性も承認されています。
+    </p>
+   </article>
+   <article class="approach-card">
+    <div class="approach-card-num">02</div>
+    <h3 class="approach-card-title">次世代の農業へ</h3>
+    <p>
+     ソフトバンク・TOYOTAグループ（TTDC）と共同で<strong>AI画像解析・IoTセンシングによるスマート畜産</strong>の実証実験を実施。給餌量・出荷時期の最適化、温室効果ガス低減を通じて後継者問題の根本解決を目指します。
+    </p>
+   </article>
+   <article class="approach-card">
+    <div class="approach-card-num">03</div>
+    <h3 class="approach-card-title">徹底的な品質担保</h3>
+    <p>
+     <strong>繁殖と肥育の両方</strong>を経営する一貫農業を実践。仔牛の段階から餌の配分や成育環境を管理し、トレーサビリティを完全に担保します。信頼するパートナー農家からも直接仕入れ・直接販売。
+    </p>
+   </article>
+  </div>
+
+  <div class="approach-flow reveal">
+   <div class="approach-flow-label">一貫農業のフロー</div>
+   <div class="approach-flow-steps">
+    <span class="approach-flow-step">分娩</span>
+    <span class="approach-flow-arrow">→</span>
+    <span class="approach-flow-step">繁殖<small>10ヶ月前後</small></span>
+    <span class="approach-flow-arrow">→</span>
+    <span class="approach-flow-step">肥育<small>20ヶ月以上</small></span>
+    <span class="approach-flow-arrow">→</span>
+    <span class="approach-flow-step">出荷</span>
+   </div>
+   <p class="approach-flow-desc">合計 30ヶ月以上の長期肥育。深いコクと芳醇な和牛香を引き出します。</p>
+  </div>
+ </div>
+</section>
+
+<!-- ========= REINVESTMENT (将来) ========= -->
+<section class="about-reinvest">
+ <div class="container">
+  <div class="reinvest-head reveal">
+   <span class="eyebrow text-gold has-dash">Next 100 Years</span>
+   <h2 class="reinvest-title">輸出で得た利益を、<br/><em>未来</em>に再投資する。</h2>
+   <p class="reinvest-lead">
+    環境のためでも流行のためでもありません。<br/>
+    <strong>事業として続けられる仕組み</strong>を作るために、私たちは「サステナブル」を選んでいます。
+   </p>
+  </div>
+
+  <div class="reinvest-grid reveal">
+   <article class="reinvest-card">
+    <div class="reinvest-card-num">— Reinvest 01 —</div>
+    <h3>国内飼料生産</h3>
+    <p>循環農業のスケールアップ。北海道・九州の有機認証農家との連携、自社飼料畑の拡大。輸入依存からの脱却。</p>
+   </article>
+   <article class="reinvest-card">
+    <div class="reinvest-card-num">— Reinvest 02 —</div>
+    <h3>国際認証取得</h3>
+    <p>有機JAS、USDA Organic、EU Leaf、HALAL。世界市場で通用する認証群を順次取得し、信頼性をデータで証明。</p>
+   </article>
+   <article class="reinvest-card">
+    <div class="reinvest-card-num">— Reinvest 03 —</div>
+    <h3>海外販路拡大</h3>
+    <p>商社を介さない直接輸出ネットワーク。香港・NY・EU・東南アジア。各国の現地パートナーとの関係性を、自分たちの手で築く。</p>
+   </article>
+  </div>
+ </div>
+</section>
+
+<!-- ========= FOUNDER ========= -->
+<section class="about-founder">
+ <div class="container">
+  <div class="founder-card reveal">
+   <div class="founder-photo">
+    <img src="public/images/farm/tom-cattle.jpg" alt="代表 江田 友輝" loading="lazy" decoding="async"/>
+    <div class="founder-photo-overlay" aria-hidden="true"></div>
+   </div>
+   <div class="founder-text">
+    <span class="founder-eyebrow">— Founder · CEO —</span>
+    <h2 class="founder-title">江田 友輝<small>Tomoki Eda</small></h2>
+    <blockquote class="founder-quote">
+     私たちの世代だからこそ、できる方法で、和牛文化を未来へつなぎたい。家業から学んだ知恵と、新しい世代のテクノロジー・グローバルな視野を組み合わせる。
+     100年先の畜産は、いま私たちが何を選ぶかにかかっています。
+    </blockquote>
+    <div class="founder-meta">代表取締役 · 1998年生まれ · 宮崎県高原町</div>
+   </div>
+  </div>
  </div>
 </section>
 
 <!-- ========= COMPANY OVERVIEW ========= -->
-<section class="article-body">
- <div class="container-narrow reveal">
- <h2 style="margin-top: 0;">会社概要</h2>
- <table style="width: 100%; border-collapse: collapse; margin: 32px 0;">
- <tbody>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; width: 200px; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">COMPANY</td><td style="padding: 16px 0;">江田畜産株式会社 / Eda Livestock Co., Ltd.</td></tr>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">REPRESENTATIVE</td><td style="padding: 16px 0;">代表取締役 江田 友輝（Tomoki Eda）</td></tr>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">FOUNDED</td><td style="padding: 16px 0;">2023年4月</td></tr>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">BUSINESS</td><td style="padding: 16px 0;">黒毛和牛繁殖・肥育・小売・輸出・スマート畜産</td></tr>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">FARMS</td><td style="padding: 16px 0;">宮崎（自社）+ パートナー農場：鹿児島／北海道／青森</td></tr>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">HQ</td><td style="padding: 16px 0;">〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</td></tr>
- <tr style="border-bottom: 1px solid var(--color-bone);"><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">BRANDS</td><td style="padding: 16px 0;">Eda Wagyu（江田和牛）/ Premium EdaWagyu（特選江田和牛 · 世界初有機認証 · EU Leaf 同等）</td></tr>
- <tr><td style="padding: 16px 0; font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft);">CONTACT</td><td style="padding: 16px 0;"><a href="mailto:backoffice@eda-livestock.com" style="color: var(--color-gold-soft); text-decoration: underline;">backoffice@eda-livestock.com</a> / IG: <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" style="color: var(--color-gold-soft); text-decoration: underline;">@eda_livestock</a></td></tr>
- </tbody>
- </table>
-
- <h2>3つの取り組み</h2>
-
- <h3>01. 美味しいと健康への挑戦</h3>
- <p>
- 飼育方法、餌、餌づくりまで一貫してこだわった「Eda Wagyu（江田和牛）」の生産・販売。さらに、2026年2月には世界初のオーガニック認証黒毛和牛「Premium EdaWagyu（特選江田和牛）」をローンチ。EU Leaf 同等性も承認されています。
- </p>
-
- <h3>02. 次世代の農業へ</h3>
- <p>
- ソフトバンク・TOYOTAグループ（TTDC）と共同で、AI画像解析・IoTセンシングによる「スマート畜産」の実証実験を実施。給餌量・出荷時期の最適化、温室効果ガス低減、和牛生産方式の体系化を通じて、後継者問題の根本的な解決を目指します。<br/><br/>
- 自社の堆肥を起点とした循環農業を実践。天然水と組み合わせ、ロスを出さないサステナブルな和牛生産を実現します。
- </p>
-
- <h3>03. 徹底的な品質担保</h3>
- <p>
- 江田畜産は<strong style="color: var(--color-forest);">繁殖と肥育の両方</strong>を経営する一貫農業を行っています。仔牛の段階から餌の配分や成育環境を管理することで、トレーサビリティを完全に担保します。<br/><br/>
- また、信頼するパートナー農家からも直接仕入れ・直接販売することで、商社を介さない品質と価格の安定を実現しています。
- </p>
-
- <h2>一貫農業のフロー</h2>
- <p>
- <strong>分娩</strong>　→　<strong>繁殖（10ヶ月前後）</strong>　→　<strong>肥育（20ヶ月以上）</strong>　→　<strong>出荷</strong><br/>
- 合計30ヶ月以上の長期肥育で、深いコクと芳醇な和牛香を引き出します。
- </p>
-
- <div style="text-align: center; margin: 64px 0 0;">
- <a href="about.html" class="btn btn-dark" style="margin-right: 12px;">Members <span class="btn-arrow"></span></a>
- <a href="journey.html" class="btn btn-dark">Our Journey <span class="btn-arrow"></span></a>
- </div>
+<section class="about-info">
+ <div class="container">
+  <div class="info-head reveal">
+   <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Company</span>
+   <h2 class="info-title">会社概要</h2>
+  </div>
+  <dl class="info-table reveal">
+   <div class="info-row"><dt>商号</dt><dd>江田畜産株式会社 / Eda Livestock Co., Ltd.</dd></div>
+   <div class="info-row"><dt>代表者</dt><dd>代表取締役 江田 友輝（Tomoki Eda）</dd></div>
+   <div class="info-row"><dt>設立</dt><dd>2023年4月</dd></div>
+   <div class="info-row"><dt>事業内容</dt><dd>黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</dd></div>
+   <div class="info-row"><dt>農場</dt><dd>宮崎（自社）+ パートナー農場：鹿児島／北海道／青森</dd></div>
+   <div class="info-row"><dt>本社</dt><dd>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</dd></div>
+   <div class="info-row"><dt>ブランド</dt><dd>Eda Wagyu（江田和牛）<br/>Premium EdaWagyu（特選江田和牛 · 世界初有機認証 · EU Leaf 同等）</dd></div>
+   <div class="info-row"><dt>連絡先</dt><dd><a href="mailto:backoffice@eda-livestock.com">backoffice@eda-livestock.com</a><br/>Instagram: <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">@eda_livestock</a></dd></div>
+  </dl>
  </div>
 </section>
 
-<!-- ========= PHILOSOPHY MOVED TO END ========= -->
-
-<!-- ========= MANIFESTO 01 — STARTING POINT ========= -->
-<section class="manifesto">
- <div class="manifesto-inner reveal">
- <div class="manifesto-eyebrow">— OUR MANIFESTO / CHAPTER 01 —</div>
- <h2>
- 日本の和牛文化を、<em>次の100年</em>へ。
- </h2>
- <p>
- 和牛は、日本の食文化を象徴する存在です。<strong>Wagyu</strong> という言葉が世界中の高級レストランで通じる時代になり、需要は拡大し続けています。<br/>
- 一方で、それを生産する日本の畜産業は、<strong>後継者不足</strong>という大きな課題を抱えています。平均年齢は70歳を超え、輸入飼料の高騰、円安の進行 ―― 構造的な転換点に差しかかっています。
- </p>
- <p>
- 私たち江田畜産は、この転換点を「業界の課題」ではなく、<strong>新しい未来を設計する機会</strong>と捉えました。<br/>
- 日本の和牛を、次の100年も持続可能な形で残すためには、何が必要か。それを問い続けることが、私たちの仕事の出発点です。
- </p>
- </div>
-</section>
-
-<!-- ========= MANIFESTO 02 — SANPOYOSHI ========= -->
-<section class="manifesto" style="background: var(--color-forest-deep);">
- <div class="manifesto-inner reveal">
- <div class="manifesto-eyebrow">30 ヶ月という答え</div>
- <h2>
- 牛・生産者・消費者、<em>三方よし</em>を、和牛で。
- </h2>
- <p>
- 近江商人が古くから受け継いできた哲学に、<strong>「三方よし」</strong>という考え方があります。<br/>
- ―― 売り手よし、買い手よし、世間よし。関わるすべての人が幸せでなければ、商売は続かない。
- </p>
- <p>
- 私たちはこれを、和牛の生産にあてはめ直します。<br/>
- <strong>牛・生産者・消費者</strong>、この三者のすべてが満足できる仕組みでなければ、サステナブルな畜産は実現しません。
- </p>
-
- <div class="three-good">
- <div class="three-good-cell">
- <div class="three-good-num">01</div>
- <div class="three-good-label">— Cattle —</div>
- <p class="three-good-jp">
- 化学物質に頼らず、<br/>
- 十分な空間と長い時間で<br/>
- 穏やかに育つ環境。
- </p>
- </div>
- <div class="three-good-cell">
- <div class="three-good-num">02</div>
- <div class="three-good-label">— Producer —</div>
- <p class="three-good-jp">
- 直接輸出と適正価格で、<br/>
- 生産者がきちんと<br/>
- 利益を得られる仕組み。
- </p>
- </div>
- <div class="three-good-cell">
- <div class="three-good-num">03</div>
- <div class="three-good-label">— Consumer —</div>
- <p class="three-good-jp">
- 安全で、味わい深く、<br/>
- 透明性のある肉を、<br/>
- 世界の食卓に。
- </p>
- </div>
- </div>
-
- <p>
- この三者のうち、誰か一人でも我慢を強いられる構造は、長くは続きません。<br/>
- <strong>三方すべてが満足できる状態を作ること。</strong>これが、Eda Wagyu の根幹にある哲学です。
- </p>
- </div>
-</section>
-
-<!-- ========= MANIFESTO 03 — OUR CHOICE ========= -->
-<section class="manifesto">
- <div class="manifesto-inner reveal">
- <div class="manifesto-eyebrow">飼料は、自分たちで</div>
- <h2>
- もう一つの選択肢を、<em>消費者に</em>。
- </h2>
- <p>
- 日本の和牛は、これまで <strong>「A5」「BMS」「産地名」</strong> という指標で語られてきました。市場の評価軸として、これらは確かな成果を生んできました。多くの先輩農家が、長年の経験と工夫で築き上げた仕組みです。
- </p>
- <p>
- 一方で、世界の食市場では、もう一つの軸が広がっています。<strong>透明性、サステナビリティ、健康。</strong>USDA Organic、EU Leaf、HALAL ―― 各国で「どう育てたか」を問う認証制度が定着し、消費者の選択肢になっています。
- </p>
- <p>
- 私たち江田畜産は、この新しい軸を、和牛にも持ち込みたい。<br/>
- <strong>既存のスタンダードを置き換えるのではなく、新しい選択肢を増やす。</strong>これが、私たちの立ち位置です。
- </p>
- <blockquote>
- A5かどうかではなく、<br/>
- 自分の価値観で和牛を選べる時代を。
- </blockquote>
- <p>
- 無投薬・循環農業・有機認証 ―― これらは、健康志向のお客様にとって、もう一つの選択肢になります。<br/>
- 私たちはその選択肢を、世界13カ国・4大陸の食卓へ届けています。
- </p>
- </div>
-</section>
-
-<!-- ========= MANIFESTO 04 — STRUCTURAL CHANGE ========= -->
-<section class="manifesto" style="background: var(--color-forest-deep);">
- <div class="manifesto-inner reveal">
- <div class="manifesto-eyebrow">一頭一頭の記録</div>
- <h2>
- 国産飼料の比率を高め、<em>海外へ</em>出荷する。
- </h2>
- <p>
- 日本の畜産は、長年「海外から飼料を輸入し、国内市場で売る」モデルで発展してきました。円高時代には経済合理性のあるモデルでした。
- </p>
- <p>
- しかし、円安が進む現在、輸入飼料のコストは過去5年で約2倍に上昇しています。<br/>
- 私たちはここで、<strong>逆方向のモデル</strong>を提示します。
- </p>
-
- <div class="manifesto-divider"><span>EDA-LIVESTOCK MODEL</span></div>
-
- <p style="font-family: var(--font-display); font-size: clamp(20px, 2vw, 28px); letter-spacing: var(--tracking-wide); text-align: center; color: var(--color-gold);">
- DOMESTIC FEED → GLOBAL EXPORT
- </p>
-
- <p>
- 自社の堆肥を起点とした循環農業で飼料を国内生産し、世界13カ国・4大陸の高級ホテル・レストラン・百貨店に直接輸出する。<br/>
- 円安が進めば進むほど、このモデルは強くなります。日本産の品質を、世界の通貨で評価される構造です。
- </p>
- <p>
- ハイエンドの世界市場は、サステナブル・オーガニック・ストーリーのある食材を、適正な対価で求めています。日本の和牛は、その期待に応えるポテンシャルを持っています。
- </p>
- </div>
-</section>
-
-<!-- ========= MANIFESTO 05 — RESOURCE CYCLE ========= -->
-<section class="manifesto">
- <div class="manifesto-inner reveal">
- <div class="manifesto-eyebrow">次の 100 年への投資</div>
- <h2>
- 全ては<em>未来に繋がる畜産</em>の為に。
- </h2>
- <p>
- 私たち江田畜産は、ここからスタートしました。<br/>
- Eda Wagyu の輸出で得た利益を、すべて以下の3つに再投資する仕組みを作っています。
- </p>
-
- <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin: 64px 0;">
- <div style="border-top: 3px solid var(--color-gold); padding: 32px 24px 0;">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin-bottom: 16px;">— Reinvest 01 —</div>
- <h4 style="font-family: var(--font-display); font-size: 24px; color: white; margin: 0 0 16px;">国内飼料生産</h4>
- <p style="font-size: 13px; line-height: 1.85; opacity: 0.85; margin: 0;">
- 循環農業のスケールアップ。北海道・九州の有機認証農家との連携、自社飼料畑の拡大。輸入依存からの脱却。
- </p>
- </div>
- <div style="border-top: 3px solid var(--color-gold); padding: 32px 24px 0;">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin-bottom: 16px;">— Reinvest 02 —</div>
- <h4 style="font-family: var(--font-display); font-size: 24px; color: white; margin: 0 0 16px;">国際認証取得</h4>
- <p style="font-size: 13px; line-height: 1.85; opacity: 0.85; margin: 0;">
- 有機JAS、USDA Organic、EU Leaf、HALAL。世界市場で通用する認証群を順次取得し、信頼性をデータで証明していく。
- </p>
- </div>
- <div style="border-top: 3px solid var(--color-gold); padding: 32px 24px 0;">
- <div style="font-family: var(--font-display); font-size: 12px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin-bottom: 16px;">— Reinvest 03 —</div>
- <h4 style="font-family: var(--font-display); font-size: 24px; color: white; margin: 0 0 16px;">海外販路拡大</h4>
- <p style="font-size: 13px; line-height: 1.85; opacity: 0.85; margin: 0;">
- 商社を介さない直接輸出ネットワークの構築。香港・NY・EU・東南アジア。各国の現地パートナーとの関係性を、自分たちの手で築く。
- </p>
- </div>
- </div>
-
- <p>
- このサイクルが回ることで、はじめて持続可能性が成立します。<br/>
- <strong>生産者は収入を得て、牛は穏やかに育ち、消費者は安心して食卓に並べられる。</strong><br/>
- そして、私たち日本の畜産業は、次の100年も続いていける。
- </p>
- <p>
- 環境のためでも、流行のためでもありません。<strong>事業として続けられる仕組みを作るため</strong>に、私たちは「サステナブル」を選んでいます。<br/>
- そしてそれは結果として、牛にも、地球にも、優しい仕組みになります。
- </p>
- </div>
-</section>
-
-<!-- ========= CEO QUOTE ========= -->
-<section class="ceo-quote">
- <div class="ceo-quote-inner reveal">
- <div class="ceo-quote-img" style="display:flex;align-items:center;justify-content:center;background:var(--color-forest);">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" style="width:60%;height:auto;"/></picture>
- </div>
- <div class="ceo-quote-text">
- <div class="ceo-quote-mark">"</div>
- <blockquote>
- 私たちの世代だからこそ、できる方法で、和牛文化を未来へつないでいきたい。<br/><br/>
- 家業から学んだ知恵と、新しい世代のテクノロジー・グローバルな視野を組み合わせる。<br/>
- 牛・生産者・消費者の三方が幸せになる仕組みを、これからの時代に合わせて設計する。<br/><br/>
- 100年先の畜産は、いま私たちが何を選ぶかにかかっています。
- </blockquote>
- <cite>— TOMOKI EDA, FOUNDER · CEO</cite>
- </div>
- </div>
-</section>
-
-<!-- ========= CONTACT ========= -->
-<section class="article-body">
- <div class="container-narrow reveal" style="text-align: center;">
- <h2 style="margin-top: 0;">お問い合わせ</h2>
- <p>
- ご質問・ご商談・取材依頼などは、以下までお気軽にご連絡ください。<br/><br/>
- <strong>本社</strong>: <a href="mailto:backoffice@eda-livestock.com" style="color: var(--color-gold-soft); text-decoration: underline;">backoffice@eda-livestock.com</a><br/>
- Instagram: <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" style="color: var(--color-gold-soft); text-decoration: underline;">@eda_livestock</a>
- </p>
-
- <div style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 16px;">
- <a href="contact.html" class="btn btn-dark">お問い合わせフォーム <span class="btn-arrow"></span></a>
- <a href="organic.html" class="btn btn-dark">世界初のオーガニック和牛 <span class="btn-arrow"></span></a>
- </div>
+<!-- ========= CTA ========= -->
+<section class="about-cta">
+ <div class="container">
+  <div class="about-cta-inner reveal">
+   <h2 class="about-cta-title">続きを、知る。</h2>
+   <p class="about-cta-desc">私たちの哲学・取り組み・商品を、それぞれのページで詳しくご覧いただけます。</p>
+   <div class="about-cta-buttons">
+    <a href="philosophy.html" class="btn btn-primary">私たちの哲学 <span class="btn-arrow"></span></a>
+    <a href="organic.html" class="btn btn-ghost">世界初オーガニック和牛 <span class="btn-arrow"></span></a>
+    <a href="shop.html" class="btn btn-ghost">オンラインショップ <span class="btn-arrow"></span></a>
+    <a href="contact.html" class="btn btn-ghost">お問い合わせ <span class="btn-arrow"></span></a>
+   </div>
+  </div>
  </div>
 </section>
 
