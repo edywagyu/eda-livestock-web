@@ -790,6 +790,74 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-ink-muted);
  margin-left: 2px;
 }
+/* Quick Cart Controls */
+.mp-cart-row {
+ display: flex; align-items: center; gap: 8px;
+ margin-top: 10px; padding-top: 10px;
+ border-top: 1px solid rgba(15,61,46,0.06);
+}
+.mp-qty-wrap {
+ display: flex; align-items: center; gap: 0;
+ border: 1px solid var(--color-bone); border-radius: 8px;
+ overflow: hidden;
+}
+.mp-qty-btn {
+ width: 30px; height: 30px;
+ background: transparent; border: none;
+ font-size: 16px; color: var(--color-ink-muted);
+ cursor: pointer; display: flex; align-items: center; justify-content: center;
+ transition: background 0.2s;
+}
+.mp-qty-btn:hover { background: rgba(15,61,46,0.05); }
+.mp-qty-num {
+ width: 28px; text-align: center;
+ font-family: var(--font-display); font-size: 13px;
+ color: var(--color-ink); font-weight: 600;
+}
+.mp-add-cart {
+ flex: 1; height: 30px;
+ background: var(--color-forest); color: white;
+ border: none; border-radius: 8px;
+ font-family: var(--font-display); font-size: 10px;
+ letter-spacing: var(--tracking-wider); text-transform: uppercase;
+ cursor: pointer; transition: all 0.3s;
+ display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.mp-add-cart:hover { background: var(--color-forest-deep); }
+.mp-add-cart.added {
+ background: var(--color-gold); color: var(--color-forest-deep);
+}
+/* Cart floating badge */
+.cart-float {
+ position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+ background: var(--color-forest-deep); color: white;
+ padding: 14px 28px; border-radius: 28px;
+ font-family: var(--font-display); font-size: 13px;
+ letter-spacing: var(--tracking-wider);
+ box-shadow: 0 8px 32px rgba(15,61,46,0.3);
+ display: none; align-items: center; gap: 10px;
+ z-index: 100; cursor: pointer; transition: all 0.3s;
+ text-decoration: none;
+}
+.cart-float.show { display: flex; animation: fadeInUp 0.4s var(--ease-out-expo) both; }
+.cart-float:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 12px 40px rgba(15,61,46,0.4); }
+.cart-float-count {
+ background: var(--color-gold); color: var(--color-forest-deep);
+ width: 22px; height: 22px; border-radius: 50%;
+ display: flex; align-items: center; justify-content: center;
+ font-size: 11px; font-weight: 700;
+}
+/* Locked reward step */
+.rj-step.locked .rj-step-dot {
+ background: rgba(15,61,46,0.04); border-color: var(--color-bone);
+ color: var(--color-bone);
+}
+.rj-step.locked .rj-step-content { opacity: 0.45; }
+.rj-step.locked .rj-step-reward { filter: blur(3px); user-select: none; }
+.rj-lock-overlay {
+ font-size: 14px; position: absolute; top: 50%; left: 50%;
+ transform: translate(-50%, -50%);
+}
 .mp-shop-cta {
  display: flex;
  align-items: center;
@@ -2066,93 +2134,21 @@ button:focus-visible, a:focus-visible {
  <!-- ====== TAB: SHOP ====== -->
  <div class="dash-tab-panel" id="panel-shop">
  <h3 class="dash-section-title">QUICK ORDER</h3>
- <div class="mp-products">
-  <a class="mp-product" href="shop.html#sirloin">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/sirloin.jpg')">
-   <span class="mp-product-tag">STEAK</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">サーロインステーキ</p>
-   <p class="mp-product-sub">約200g / 冷凍パック</p>
-   <span class="mp-product-price">¥3,400<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#red-meat">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/red-meat.jpg')">
-   <span class="mp-product-tag">STEAK</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">赤身ステーキ</p>
-   <p class="mp-product-sub">約200g / 冷凍パック</p>
-   <span class="mp-product-price">¥2,800<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#hamburg">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/hamburg.jpg')">
-   <span class="mp-product-tag">PROCESSED</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">無添加ハンバーグ</p>
-   <p class="mp-product-sub">150g×2個 / 冷凍</p>
-   <span class="mp-product-price">¥1,800<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#kiriotoshi">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/kiriotoshi.jpg')">
-   <span class="mp-product-tag">SLICE</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">切り落とし</p>
-   <p class="mp-product-sub">300g / 冷凍パック</p>
-   <span class="mp-product-price">¥2,200<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#wagyu-slice">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/wagyu-slice.jpg')">
-   <span class="mp-product-tag">SLICE</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">赤身スライス</p>
-   <p class="mp-product-sub">すき焼き・しゃぶしゃぶに</p>
-   <span class="mp-product-price">¥3,200<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#yakiniku">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/yakiniku-brisket.jpg')">
-   <span class="mp-product-tag">YAKINIKU</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">バラ焼肉</p>
-   <p class="mp-product-sub">300g / 冷凍パック</p>
-   <span class="mp-product-price">¥2,600<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#chicken-breast">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/chicken-breast.jpg')">
-   <span class="mp-product-tag">CHICKEN</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">平飼い鶏 ムネ</p>
-   <p class="mp-product-sub">250g / 冷凍パック</p>
-   <span class="mp-product-price">¥980<small>〜</small></span>
-  </div>
-  </a>
-  <a class="mp-product" href="shop.html#chicken-thigh">
-  <div class="mp-product-img" style="background-image:url('public/images/products/drive/chicken-thigh.jpg')">
-   <span class="mp-product-tag">CHICKEN</span>
-  </div>
-  <div class="mp-product-body">
-   <p class="mp-product-name">平飼い鶏 モモ</p>
-   <p class="mp-product-sub">250g / 冷凍パック</p>
-   <span class="mp-product-price">¥1,080<small>〜</small></span>
-  </div>
-  </a>
+ <div id="shopSubNote" style="display:none;margin:-8px 0 16px;padding:14px 18px;background:linear-gradient(135deg,rgba(212,169,59,0.08),rgba(212,169,59,0.02));border:1px solid rgba(212,169,59,0.15);border-radius:12px;font-size:13px;color:var(--color-ink);">
+  <strong style="color:var(--color-gold-soft)">定期便ご利用中</strong> — 次回配送に追加する商品を選べます
  </div>
+ <div class="mp-products" id="shopProductsGrid"></div>
  <a href="shop.html" class="mp-shop-cta">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   全商品を見る
  </a>
  </div>
+ <!-- Cart floating button -->
+ <a class="cart-float" id="cartFloat" href="shop.html?cart=1">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+  <span id="cartFloatText">カートを見る</span>
+  <span class="cart-float-count" id="cartFloatCount">0</span>
+ </a>
 
  <!-- ====== TAB: REWARDS ====== -->
  <div class="dash-tab-panel" id="panel-rewards">
@@ -2908,6 +2904,9 @@ function renderDashboard(customer, orders) {
  /* Settings tab — shipping, payment, account */
  renderSettings(customer);
 
+ /* Shop tab — quick cart */
+ renderShopProducts(customer);
+
  /* Scroll to dashboard smoothly */
  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -2980,10 +2979,13 @@ function renderOrders(orders) {
 
 /* ---- Reward Stages Definition ---- */
 var REWARD_STAGES = [
- { num: 1, label: '1ST ORDER', reward: '全品 20%OFF', desc: '初回ご注文の感謝として', code: 'WELCOME20', icon: '1' },
- { num: 2, label: '2ND ORDER', reward: '鶏ムネ 250g プレゼント', desc: '自社牧場育ちの銘柄鶏をお届け', code: 'CHK-FREE', icon: '2' },
- { num: 3, label: '3RD ORDER', reward: '無添加ハンバーグ 2個', desc: '自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
- { num: 4, label: '4TH ORDER', reward: '年間 10%OFF 会員', desc: '全商品がいつでも10%OFF', code: 'ANNUAL10', icon: '4' }
+ { num: 1, label: '1ST ORDER', reward: '初回 20%OFF', desc: '初回ご注文の感謝として全品20%OFF', code: 'WELCOME20', icon: '1' },
+ { num: 2, label: '2ND ORDER', reward: '鶏モモ 500g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
+ { num: 3, label: '3RD ORDER', reward: '無添加ハンバーグ 2個', desc: '150g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
+ { num: 4, label: '4TH ORDER', reward: '牛焼肉 250g プレゼント', desc: 'A5江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
+ { num: 5, label: '5TH ORDER', reward: '???', desc: '5回目以降の特典はお楽しみに', code: '', icon: '5', locked: true },
+ { num: 6, label: '6TH ORDER', reward: '???', desc: '', code: '', icon: '6', locked: true },
+ { num: 7, label: '7TH ORDER', reward: '???', desc: '', code: '', icon: '7', locked: true }
 ];
 
 /* ---- Render Reward Journey (特典タブ) ---- */
@@ -2994,28 +2996,36 @@ function renderRewardJourney(count) {
  var stepsHtml = '';
  REWARD_STAGES.forEach(function(s) {
  var isDone = count >= s.num;
- var isCurrent = !isDone && (s.num === Math.min(count + 1, 4));
- var cls = isDone ? 'done' : (isCurrent ? 'current' : '');
- var dotContent = isDone ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : s.icon;
+ var isCurrent = !isDone && !s.locked && (s.num === count + 1);
+ var isLocked = s.locked && !isDone;
+ var cls = isDone ? 'done' : (isCurrent ? 'current' : (isLocked ? 'locked' : ''));
+ var dotContent;
+ if (isDone) {
+  dotContent = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+ } else if (isLocked) {
+  dotContent = '<span class="rj-lock-overlay">&#x1F512;</span>';
+ } else {
+  dotContent = s.icon;
+ }
  var descContent = isDone
   ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> GET</span>'
-  : escapeHtml(s.desc);
+  : (isLocked ? '' : escapeHtml(s.desc));
 
  stepsHtml += '<div class="rj-step ' + cls + '">' +
   '<div class="rj-step-rail"><div class="rj-step-dot">' + dotContent + '</div><div class="rj-step-line"></div></div>' +
   '<div class="rj-step-content">' +
    '<p class="rj-step-label">' + s.label + '</p>' +
    '<p class="rj-step-reward">' + escapeHtml(s.reward) + '</p>' +
-   '<p class="rj-step-desc">' + descContent + '</p>' +
+   (descContent ? '<p class="rj-step-desc">' + descContent + '</p>' : '') +
   '</div></div>';
  });
 
  var bannerHtml = '';
  if (count >= 4) {
- bannerHtml = '<div class="rj-next-banner"><p>全ステップ達成 &#8212; <strong>ANNUAL10</strong> で全品いつでも <strong>10%OFF</strong></p></div>';
+ bannerHtml = '<div class="rj-next-banner"><p>4ステップ達成 &#x1F389; &#8212; 5回目以降の特典は <strong>お楽しみに</strong></p></div>';
  } else {
- var remaining = 4 - count;
  var next = REWARD_STAGES[Math.min(count, 3)];
+ var remaining = next.num - count;
  bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong></p></div>';
  }
 
@@ -3188,12 +3198,12 @@ function renderHomeTab(orderCount, orders, customer) {
  if (nrEl) {
  if (orderCount >= 4) {
   nrEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
-   '<div class="hnr-icon">&#x1F451;</div>' +
-   '<div class="hnr-body"><p class="hnr-label">ANNUAL MEMBER</p><p class="hnr-value">年間10%OFF 適用中</p></div>' +
+   '<div class="hnr-icon">&#x1F512;</div>' +
+   '<div class="hnr-body"><p class="hnr-label">NEXT REWARD</p><p class="hnr-value">5回目以降の特典はお楽しみに</p></div>' +
    '<div class="hnr-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>' +
    '</div>';
  } else {
-  var next = REWARD_STAGES[Math.min(orderCount, 3)];
+  var next = REWARD_STAGES[Math.min(orderCount, 6)];
   var remaining = next.num - orderCount;
   nrEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
    '<div class="hnr-icon">&#x1F381;</div>' +
@@ -3250,6 +3260,87 @@ function renderHomeTab(orderCount, orders, customer) {
  }
 }
 
+/* ---- Quick Cart (Shop Tab) ---- */
+var SHOP_PRODUCTS = [
+ { id:'sirloin', name:'サーロインステーキ', sub:'約200g / 冷凍パック', price:3400, tag:'STEAK', img:'public/images/products/drive/sirloin.jpg' },
+ { id:'red-meat', name:'赤身ステーキ', sub:'約200g / 冷凍パック', price:2800, tag:'STEAK', img:'public/images/products/drive/red-meat.jpg' },
+ { id:'hamburg', name:'無添加ハンバーグ', sub:'150g×2個 / 冷凍', price:1800, tag:'PROCESSED', img:'public/images/products/drive/hamburg.jpg' },
+ { id:'kiriotoshi', name:'切り落とし', sub:'300g / 冷凍パック', price:2200, tag:'SLICE', img:'public/images/products/drive/kiriotoshi.jpg' },
+ { id:'wagyu-slice', name:'赤身スライス', sub:'すき焼き・しゃぶしゃぶに', price:3200, tag:'SLICE', img:'public/images/products/drive/wagyu-slice.jpg' },
+ { id:'yakiniku', name:'バラ焼肉', sub:'300g / 冷凍パック', price:2600, tag:'YAKINIKU', img:'public/images/products/drive/yakiniku-brisket.jpg' },
+ { id:'chicken-breast', name:'平飼い鶏 ムネ', sub:'250g / 冷凍パック', price:980, tag:'CHICKEN', img:'public/images/products/drive/chicken-breast.jpg' },
+ { id:'chicken-thigh', name:'平飼い鶏 モモ', sub:'250g / 冷凍パック', price:1080, tag:'CHICKEN', img:'public/images/products/drive/chicken-thigh.jpg' }
+];
+var _cart = {};
+function renderShopProducts(customer) {
+ var grid = document.getElementById('shopProductsGrid');
+ if (!grid) return;
+ var hasSub = customer && customer.subscription && customer.subscription.active;
+ var noteEl = document.getElementById('shopSubNote');
+ if (noteEl && hasSub) noteEl.style.display = '';
+ var html = '';
+ SHOP_PRODUCTS.forEach(function(p) {
+  html += '<div class="mp-product" data-pid="' + p.id + '">' +
+   '<div class="mp-product-img" style="background-image:url(\'' + p.img + '\')" onclick="window.open(\'shop.html#' + p.id + '\',\'_blank\')">' +
+    '<span class="mp-product-tag">' + p.tag + '</span>' +
+   '</div>' +
+   '<div class="mp-product-body">' +
+    '<p class="mp-product-name">' + escapeHtml(p.name) + '</p>' +
+    '<p class="mp-product-sub">' + escapeHtml(p.sub) + '</p>' +
+    '<span class="mp-product-price">' + formatYen(p.price) + '<small>〜</small></span>' +
+    '<div class="mp-cart-row">' +
+     '<div class="mp-qty-wrap">' +
+      '<button class="mp-qty-btn" onclick="cartQty(\'' + p.id + '\',-1)">−</button>' +
+      '<span class="mp-qty-num" id="qty-' + p.id + '">1</span>' +
+      '<button class="mp-qty-btn" onclick="cartQty(\'' + p.id + '\',1)">+</button>' +
+     '</div>' +
+     '<button class="mp-add-cart" id="btn-' + p.id + '" onclick="addToCart(\'' + p.id + '\')">&#x1F6D2; カートに追加</button>' +
+    '</div>' +
+   '</div>' +
+  '</div>';
+ });
+ grid.innerHTML = html;
+}
+function cartQty(pid, delta) {
+ var el = document.getElementById('qty-' + pid);
+ if (!el) return;
+ var v = parseInt(el.textContent) + delta;
+ if (v < 1) v = 1; if (v > 10) v = 10;
+ el.textContent = v;
+}
+function addToCart(pid) {
+ var qtyEl = document.getElementById('qty-' + pid);
+ var qty = qtyEl ? parseInt(qtyEl.textContent) : 1;
+ _cart[pid] = (_cart[pid] || 0) + qty;
+ var btn = document.getElementById('btn-' + pid);
+ if (btn) {
+  btn.classList.add('added');
+  btn.innerHTML = '&#x2713; 追加済み';
+  setTimeout(function() { btn.classList.remove('added'); btn.innerHTML = '&#x1F6D2; カートに追加'; }, 1500);
+ }
+ updateCartFloat();
+ try { localStorage.setItem('eda-cart', JSON.stringify(_cart)); } catch(e){}
+}
+function updateCartFloat() {
+ var fl = document.getElementById('cartFloat');
+ var cnt = document.getElementById('cartFloatCount');
+ var txt = document.getElementById('cartFloatText');
+ if (!fl) return;
+ var total = 0; var totalYen = 0;
+ Object.keys(_cart).forEach(function(k) {
+  total += _cart[k];
+  var p = SHOP_PRODUCTS.find(function(x) { return x.id === k; });
+  if (p) totalYen += p.price * _cart[k];
+ });
+ if (total > 0) {
+  fl.classList.add('show');
+  cnt.textContent = total;
+  txt.textContent = formatYen(totalYen) + ' — 注文へ進む';
+ } else {
+  fl.classList.remove('show');
+ }
+}
+
 /* ---- Render Coupons ---- */
 function renderCoupons(coupons) {
  const sec = document.getElementById('couponsSection');
@@ -3303,13 +3394,13 @@ function generateDemoCoupons(orderCount) {
  all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', expires: '2026/05/24まで', status: 'expiring' });
  }
  if (orderCount >= 1 && orderCount < 2) {
- all.push({ code: 'CHK-FREE', value: '無料', name: '鶏ムネ 250g', description: '2回目ご注文特典（自社牧場育ち銘柄鶏）', expires: '2026/06/10まで', status: 'active' });
+ all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 500g', description: '2回目ご注文特典（平飼い鶏）', expires: '2026/06/10まで', status: 'active' });
  }
  if (orderCount >= 2 && orderCount < 3) {
- all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個', description: '3回目購入特典', expires: '2026/06/10まで', status: 'active' });
+ all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(300g)', description: '3回目購入特典', expires: '2026/06/10まで', status: 'active' });
  }
- if (orderCount >= 3) {
- all.push({ code: 'ANNUAL10', value: '10%OFF', name: '年間10%OFF 会員', description: '30日以内にご利用で1年間有効 / 併用不可', expires: '2026/06/10まで', status: 'expiring' });
+ if (orderCount >= 3 && orderCount < 4) {
+ all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 250g', description: '4回目購入特典（A5江田和牛）', expires: '2026/06/10まで', status: 'active' });
  }
  if (orderCount >= 1) {
  all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
