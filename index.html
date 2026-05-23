@@ -129,7 +129,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .nav-icon:hover { color: var(--color-gold); }
 .footer-brand-jp { display: block; font-family: var(--font-jp); font-size: 11px; letter-spacing: 0.16em; opacity: 0.7; margin-top: 2px; }
 .testimonial-card {
- background: rgba(255,255,255,0.04);
+ background: rgba(255,255,255,0.08);
  border-left: 2px solid var(--color-gold);
  padding: 32px;
  position: relative;
@@ -144,7 +144,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  opacity: 0.3;
  line-height: 1;
 }
-.testimonial-quote { font-family: var(--font-jp-serif); font-size: 17px; line-height: 1.85; margin: 0 0 16px; }
+.testimonial-quote { font-family: var(--font-jp-serif); font-size: 17px; line-height: 1.85; margin: 0 0 16px; color: rgba(255,255,255,0.92); font-weight: 500; }
 .testimonial-author { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin-top: 16px; }
 .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .brand-pyramid { max-width: 880px; margin: 0 auto; }
@@ -1693,6 +1693,71 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  opacity: 0.5;
  text-align: center;
  padding: 0 16px;
+}
+/* ---- ヒーローカードデザイン（restaurants.html と同一スタイル） ---- */
+.restaurant-card-hero {
+ aspect-ratio: 5/3;
+ position: relative;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 36px 28px;
+ background: linear-gradient(155deg, #080808 0%, #141414 50%, #0f3d2e 100%);
+}
+.restaurant-card-hero::before {
+ content: '';
+ position: absolute;
+ inset: 0;
+ background: radial-gradient(ellipse at 30% 40%, rgba(212,169,59,0.06) 0%, transparent 65%);
+ pointer-events: none;
+}
+.restaurant-card-hero::after {
+ content: '';
+ position: absolute;
+ bottom: 0; left: 10%; right: 10%;
+ height: 1px;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.5), transparent);
+}
+.restaurant-card:hover .restaurant-card-hero {
+ background: linear-gradient(155deg, #0c0c0c 0%, #1a1a1a 50%, #143d2b 100%);
+}
+.restaurant-city-badge {
+ position: absolute;
+ top: 16px; left: 16px;
+ font-family: var(--font-display);
+ font-size: 9.5px;
+ letter-spacing: 0.3em;
+ text-transform: uppercase;
+ color: var(--color-gold);
+ border: 1px solid rgba(212,169,59,0.25);
+ padding: 5px 14px;
+ z-index: 2;
+}
+.restaurant-brand-logo {
+ text-align: center;
+ position: relative;
+ z-index: 1;
+}
+.restaurant-brand-logo .brand-main {
+ display: block;
+ font-family: var(--font-display);
+ font-size: clamp(17px, 1.8vw, 24px);
+ font-weight: 300;
+ color: white;
+ letter-spacing: 0.22em;
+ text-transform: uppercase;
+ line-height: 1.25;
+}
+.restaurant-brand-logo .brand-sub {
+ display: block;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.35em;
+ text-transform: uppercase;
+ color: var(--color-gold);
+ margin-top: 10px;
 }
 .restaurant-flag {
  position: absolute;
@@ -3393,7 +3458,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .restaurant-card-body { padding: 16px; }
  .restaurant-name { font-size: 16px; }
  .restaurant-loc { font-size: 12px; margin-bottom: 14px; }
- .restaurant-card-img, .restaurant-card-map { aspect-ratio: 3/2; }
+ .restaurant-card-img, .restaurant-card-map, .restaurant-card-hero { aspect-ratio: 3/2; }
+ .restaurant-card-hero { padding: 24px 16px; }
+ .restaurant-brand-logo .brand-main { font-size: 15px !important; }
+ .restaurant-brand-logo .brand-sub { font-size: 9px; }
  .restaurant-actions { padding-top: 14px; }
  .restaurant-action { font-size: 10px; padding: 10px 0; }
 
@@ -4299,23 +4367,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <div class="restaurant-list reveal">
  <article class="restaurant-card">
- <div class="restaurant-card-img" data-label="🇯🇵 FUKUOKA" style="background: linear-gradient(135deg, #0f3d2e, #1a5c42); display:flex; align-items:center; justify-content:center;">
- <span class="restaurant-flag" style="position:static; background:none; font-size:13px; letter-spacing:0.15em;">🇯🇵 FUKUOKA</span>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #1a0a0a 0%, #2d1810 50%, #0f3d2e 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(15px, 1.5vw, 20px);">Tokyo Station Hotel</span>
+  <span class="brand-sub">Since 1915</span>
  </div>
- <div class="restaurant-card-body">
- <span class="restaurant-tag">Hotel · Teppanyaki</span>
- <h3 class="restaurant-name">The Ritz-Carlton, Fukuoka</h3>
- <p class="restaurant-loc">「幻珠」 江田和牛エクスペリエンス · 福岡市中央区</p>
- <div class="restaurant-actions">
- <a href="https://www.ritzcarlton.com/en/hotels/japan/fukuoka" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="https://www.ritzcarlton.com/en/hotels/japan/fukuoka/dining" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
- </div>
- </div>
- </article>
-
- <article class="restaurant-card">
- <div class="restaurant-card-img" data-label="🇯🇵 TOKYO" style="background: linear-gradient(135deg, #0f3d2e, #1a5c42); display:flex; align-items:center; justify-content:center;">
- <span class="restaurant-flag" style="position:static; background:none; font-size:13px; letter-spacing:0.15em;">🇯🇵 TOKYO</span>
  </div>
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Hotel · French</span>
@@ -4329,15 +4386,38 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </article>
 
  <article class="restaurant-card">
- <div class="restaurant-card-img" data-label="🇭🇰 HONG KONG" style="background: linear-gradient(135deg, #0f3d2e, #1a5c42); display:flex; align-items:center; justify-content:center;">
- <span class="restaurant-flag" style="position:static; background:none; font-size:13px; letter-spacing:0.15em;">🇭🇰 HONG KONG</span>
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #050510 0%, #0d1b2a 50%, #1b3a4b 100%);">
+ <span class="restaurant-city-badge">CHIBA</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(15px, 1.5vw, 20px);">Tokyo DisneySea</span>
+  <span class="brand-sub">Fantasy Springs Hotel</span>
+ </div>
  </div>
  <div class="restaurant-card-body">
- <span class="restaurant-tag">Premium Supermarket</span>
- <h3 class="restaurant-name">city'super</h3>
- <p class="restaurant-loc">香港全店展開 · IFC, Times Square 他</p>
+ <span class="restaurant-tag">Theme Park · Hotel</span>
+ <h3 class="restaurant-name">Tokyo DisneySea</h3>
+ <p class="restaurant-loc">Fantasy Springs Hotel · 千葉県浦安市</p>
  <div class="restaurant-actions">
- <a href="https://www.citysuper.com.hk/en/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+ <a href="https://www.tokyodisneyresort.jp/tds/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+ <a href="restaurants.html" class="restaurant-action primary">取扱店一覧</a>
+ </div>
+ </div>
+ </article>
+
+ <article class="restaurant-card">
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(20px, 2.2vw, 28px); letter-spacing: 0.35em;">MITSUKOSHI</span>
+  <span class="brand-sub">Ginza</span>
+ </div>
+ </div>
+ <div class="restaurant-card-body">
+ <span class="restaurant-tag">Department Store</span>
+ <h3 class="restaurant-name">三越 銀座</h3>
+ <p class="restaurant-loc">銀座三越 地下催事 · 中央区銀座</p>
+ <div class="restaurant-actions">
+ <a href="https://www.mistore.jp/store/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
  <a href="restaurants.html" class="restaurant-action primary">取扱店一覧</a>
  </div>
  </div>
@@ -4436,7 +4516,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <div class="journal-grid reveal">
  <a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E3%83%AA%E3%83%83%E3%83%84%E3%83%BB%E3%82%AB%E3%83%BC%E3%83%AB%E3%83%88%E3%83%B3%E7%A6%8F%E5%B2%A1" target="_blank" rel="noopener" class="journal-card featured">
- <div class="journal-card-img has-img" data-label="RITZ-CARLTON FUKUOKA"><picture><source type="image/webp" srcset="public/images/products/sirloin-steak.webp"><img loading="lazy" decoding="async" src="public/images/products/sirloin-steak.jpg" alt="リッツ・カールトン福岡"/></picture></div>
+ <div class="journal-card-img" data-label="RITZ-CARLTON FUKUOKA"></div>
  <div class="journal-meta">
  <span>HOTEL</span>
  <span>2025.05.09</span>
@@ -4446,7 +4526,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </a>
 
  <a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E5%A4%A7%E4%B8%B8%E6%9D%B1%E4%BA%AC-%E5%9C%B0%E4%B8%8B%E5%82%AC%E4%BA%8B%E3%81%AB%E3%81%A6%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B%E8%B2%A9%E5%A3%B2%E4%BC%9A%E3%82%92%E5%AE%9F%E6%96%BD%EF%BC%81" target="_blank" rel="noopener" class="journal-card">
- <div class="journal-card-img has-img" data-label="DAIMARU"><picture><source type="image/webp" srcset="public/images/products/marbled-yakiniku.webp"><img loading="lazy" decoding="async" src="public/images/products/marbled-yakiniku.jpg" alt="大丸東京"/></picture></div>
+ <div class="journal-card-img" data-label="DAIMARU"></div>
  <div class="journal-meta">
  <span>EVENT</span>
  <span>2025.05.21</span>
@@ -4456,7 +4536,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </a>
 
  <a href="https://www.eda-livestock.com/news/%E3%80%90%E8%B2%A9%E5%A3%B2%E9%96%8B%E5%A7%8B%E3%80%91%E3%82%A4%E3%82%AA%E3%83%B3%E4%B9%9D%E5%B7%9E" target="_blank" rel="noopener" class="journal-card">
- <div class="journal-card-img has-img" data-label="AEON BIORAL"><picture><source type="image/webp" srcset="public/images/products/red-meat-steak.webp"><img loading="lazy" decoding="async" src="public/images/products/red-meat-steak.jpg" alt="イオン九州 ビオララ"/></picture></div>
+ <div class="journal-card-img" data-label="AEON BIORAL"></div>
  <div class="journal-meta">
  <span>RETAIL</span>
  <span>2025.04.24</span>

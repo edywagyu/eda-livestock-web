@@ -126,7 +126,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .nav-icon:hover { color: var(--color-gold); }
 .footer-brand-jp { display: block; font-family: var(--font-jp); font-size: 11px; letter-spacing: 0.16em; opacity: 0.7; margin-top: 2px; }
 .testimonial-card {
- background: rgba(255,255,255,0.04);
+ background: rgba(255,255,255,0.08);
  border-left: 2px solid var(--color-gold);
  padding: 32px;
  position: relative;
@@ -141,7 +141,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  opacity: 0.3;
  line-height: 1;
 }
-.testimonial-quote { font-family: var(--font-jp-serif); font-size: 17px; line-height: 1.85; margin: 0 0 16px; }
+.testimonial-quote { font-family: var(--font-jp-serif); font-size: 17px; line-height: 1.85; margin: 0 0 16px; color: rgba(255,255,255,0.92); font-weight: 500; }
 .testimonial-author { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin-top: 16px; }
 .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .brand-pyramid { max-width: 880px; margin: 0 auto; }
@@ -3130,53 +3130,63 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  }
 }
 
-/* ================ DIAGNOSTIC QUIZ — ラボ/精密計測の特殊な雰囲気 ================ */
+/* ================ DIAGNOSTIC QUIZ — ネオン×虹色の特殊演出 ================ */
 .quiz-section {
- /* 暗緑+黒のグラデで研究施設・暗室の雰囲気 */
- background:
- radial-gradient(ellipse at 20% 20%, rgba(212,169,59,0.10), transparent 45%),
- radial-gradient(ellipse at 80% 80%, rgba(15,61,46,0.6), transparent 50%),
- linear-gradient(135deg, #0A1F18 0%, #0F2A20 50%, #0A1812 100%);
+ background: #030504;
  padding: 80px 0;
  position: relative;
  overflow: hidden;
 }
+/* 虹色ネオングロー（4隅から放射） */
 .quiz-section::before {
- /* 精密計測の方眼グリッド（蛍光金色） */
  content: '';
  position: absolute;
  inset: 0;
- background-image:
- /* 太罫（150px = 主格子） */
- linear-gradient(rgba(212,169,59,0.10) 1px, transparent 1px),
- linear-gradient(90deg, rgba(212,169,59,0.10) 1px, transparent 1px),
- /* 細罫（30px = 小格子） */
- linear-gradient(rgba(212,169,59,0.035) 1px, transparent 1px),
- linear-gradient(90deg, rgba(212,169,59,0.035) 1px, transparent 1px);
- background-size: 150px 150px, 150px 150px, 30px 30px, 30px 30px;
+ background:
+ /* 四隅からのネオン放射 */
+ radial-gradient(ellipse at 0% 0%, rgba(0,255,180,0.40), transparent 55%),
+ radial-gradient(ellipse at 100% 0%, rgba(120,60,255,0.35), transparent 55%),
+ radial-gradient(ellipse at 100% 100%, rgba(255,50,120,0.30), transparent 55%),
+ radial-gradient(ellipse at 0% 100%, rgba(0,160,255,0.32), transparent 55%),
+ /* 中央にやわらかいゴールド */
+ radial-gradient(ellipse at 50% 50%, rgba(255,200,50,0.10), transparent 45%),
+ /* グリッド線 */
+ linear-gradient(rgba(0,255,200,0.10) 1px, transparent 1px),
+ linear-gradient(90deg, rgba(140,80,255,0.10) 1px, transparent 1px),
+ linear-gradient(rgba(0,255,180,0.035) 1px, transparent 1px),
+ linear-gradient(90deg, rgba(140,80,255,0.035) 1px, transparent 1px);
+ background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 150px 150px, 150px 150px, 30px 30px, 30px 30px;
  pointer-events: none;
  z-index: 0;
+ animation: neonBreath 6s ease-in-out infinite;
+}
+@keyframes neonBreath {
+ 0%, 100% { opacity: 0.85; }
+ 50% { opacity: 1; }
 }
 .quiz-section::after {
- /* オシロスコープ風 波形（中央の薄い水平線） */
+ /* 虹色スキャンライン */
  content: '';
  position: absolute;
  top: 50%; left: 0; right: 0;
- height: 2px;
+ height: 3px;
  background: linear-gradient(90deg,
  transparent 0%,
- rgba(212,169,59,0.35) 30%,
- rgba(212,169,59,0.7) 50%,
- rgba(212,169,59,0.35) 70%,
+ rgba(0,255,200,0.7) 15%,
+ rgba(0,180,255,0.9) 30%,
+ rgba(140,80,255,1) 45%,
+ rgba(255,60,150,1) 60%,
+ rgba(255,180,50,0.8) 75%,
+ rgba(0,255,180,0.6) 90%,
  transparent 100%);
- filter: blur(0.5px);
+ filter: blur(1.5px);
  pointer-events: none;
  z-index: 0;
- animation: quizScanline 6s ease-in-out infinite;
+ animation: quizScanline 5s ease-in-out infinite;
 }
 @keyframes quizScanline {
- 0%, 100% { opacity: 0.4; transform: translateY(-50%); }
- 50% { opacity: 0.9; transform: translateY(-50%); }
+ 0%, 100% { opacity: 0.3; transform: translateY(-50%); }
+ 50% { opacity: 1; transform: translateY(-50%); }
 }
 
 /* 四隅のL字マーカー＋数値ラベル（精密機器の照準クロスヘア風） */
@@ -3189,7 +3199,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  content: '';
  position: absolute;
  width: 40px; height: 40px;
- border: 2px solid rgba(212,169,59,0.5);
+ border: 2px solid rgba(0,255,200,0.4);
  pointer-events: none;
  z-index: 0;
 }
@@ -3209,7 +3219,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-family: var(--font-display);
  font-size: 9.5px;
  letter-spacing: 0.22em;
- color: rgba(212,169,59,0.75);
+ color: rgba(0,255,200,0.7);
  font-weight: 700;
  display: inline-flex;
  align-items: center;
@@ -3219,8 +3229,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  content: '';
  width: 6px; height: 6px;
  border-radius: 50%;
- background: var(--color-gold);
- box-shadow: 0 0 8px var(--color-gold);
+ background: #00FFB4;
+ box-shadow: 0 0 8px rgba(0,255,180,0.8);
  animation: quizStampBlink 1.4s ease-in-out infinite;
 }
 @keyframes quizStampBlink {
@@ -3639,10 +3649,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: white;
  border-radius: 16px;
  padding: 0;
- box-shadow: var(--shadow-lg);
+ box-shadow:
+ 0 0 30px rgba(0,255,180,0.12),
+ 0 0 60px rgba(140,80,255,0.08),
+ var(--shadow-lg);
  position: relative;
  z-index: 1;
- border: 1px solid var(--color-bone);
+ border: 1px solid rgba(0,255,180,0.15);
  overflow: hidden;
 }
 /* 診断シートのヘッダー（緑） */
@@ -7184,10 +7197,50 @@ body.is-member .product-card--organic .org-chk-lock {
  display: none !important;
 }
 
-/* COMING SOON オーバーレイは有機JAS のみ */
+/* COMING SOON オーバーレイは有機JAS のみ — 🔒ロック演出 */
 .product-card--organic-wagyu .organic-wagyu-overlay {
- background: rgba(0,0,0,0.6);
+ background: rgba(0,0,0,0.72);
  color: var(--color-gold);
+ flex-direction: column;
+ gap: 8px;
+ backdrop-filter: blur(3px);
+ -webkit-backdrop-filter: blur(3px);
+}
+/* ロックアイコン円 */
+.organic-wagyu-lock-circle {
+ width: 60px; height: 60px;
+ border-radius: 50%;
+ border: 2px solid rgba(212,169,59,0.5);
+ background: radial-gradient(circle, rgba(212,169,59,0.12) 0%, transparent 70%);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 26px;
+ filter: drop-shadow(0 0 16px rgba(212,169,59,0.4));
+ animation: lockPulse 2.4s ease-in-out infinite;
+}
+@keyframes lockPulse {
+ 0%, 100% { box-shadow: 0 0 0 0 rgba(212,169,59,0.25), 0 0 12px rgba(212,169,59,0.1); }
+ 50% { box-shadow: 0 0 24px 8px rgba(212,169,59,0.2), 0 0 40px rgba(212,169,59,0.15); }
+}
+/* COMING SOON テキスト */
+.organic-wagyu-overlay-text {
+ font-family: var(--font-display);
+ font-size: 12px;
+ letter-spacing: 0.35em;
+ text-transform: uppercase;
+ color: rgba(212,169,59,0.8);
+}
+/* 商品説明エリアにミステリアスなぼかし */
+.product-card--organic-wagyu .product-desc {
+ filter: blur(2.5px);
+ opacity: 0.5;
+ user-select: none;
+ transition: filter 0.3s, opacity 0.3s;
+}
+.product-card--organic-wagyu:hover .product-desc {
+ filter: blur(1.5px);
+ opacity: 0.7;
 }
 
 /* ============================================================
@@ -7290,29 +7343,35 @@ body.is-member .product-card--organic .org-chk-lock {
  align-items: center;
  justify-content: center;
  gap: 6px;
- padding: 11px 28px;
- background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
- color: var(--color-forest-deep) !important;
+ padding: 13px 28px;
+ background: linear-gradient(135deg, #06C755 0%, #04B84C 50%, #039E42 100%);
+ color: white !important;
  border-radius: 24px;
  text-align: center;
  font-family: var(--font-jp);
- font-size: 12.5px;
+ font-size: 13px;
  font-weight: 700;
  letter-spacing: 0.04em;
  text-decoration: none;
- border: 1px solid rgba(255,229,148,0.6);
+ border: 1px solid rgba(6,199,85,0.5);
  box-shadow:
- 0 6px 18px rgba(212,169,59,0.32),
- inset 0 1px 2px rgba(255,255,255,0.35);
+ 0 6px 18px rgba(6,199,85,0.35),
+ inset 0 1px 2px rgba(255,255,255,0.2);
  transition: all 0.25s var(--ease-out-expo);
  white-space: nowrap;
+ animation: ctaGlow 2s ease-in-out infinite;
+}
+@keyframes ctaGlow {
+ 0%, 100% { box-shadow: 0 6px 18px rgba(6,199,85,0.35), inset 0 1px 2px rgba(255,255,255,0.2); }
+ 50% { box-shadow: 0 6px 28px rgba(6,199,85,0.55), 0 0 12px rgba(6,199,85,0.25), inset 0 1px 2px rgba(255,255,255,0.2); }
 }
 .organic-wagyu-cta:hover {
- transform: translateY(-1px);
- background: linear-gradient(135deg, #FFEFB0, #FFE594, var(--color-gold));
+ transform: translateY(-2px);
+ background: linear-gradient(135deg, #08D45F 0%, #06C755 50%, #04B84C 100%);
  box-shadow:
- 0 10px 28px rgba(212,169,59,0.5),
- inset 0 1px 2px rgba(255,255,255,0.4);
+ 0 10px 28px rgba(6,199,85,0.55),
+ inset 0 1px 2px rgba(255,255,255,0.3);
+ animation: none;
 }
 .product-tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .product-tag { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); }
@@ -9918,13 +9977,13 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC SIRLOIN">
  <span class="badge badge-organic">有機JAS</span>
- <div class="organic-wagyu-overlay">COMING SOON</div>
+ <div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div>
  </div>
  <div class="product-tag-row"><span class="product-tag">Organic · Sirloin</span><span class="product-price organic-wagyu-price">¥— —</span></div>
  <p class="product-name">有機JAS サーロイン</p>
  <p class="product-desc"><strong>世界初の有機JAS認証</strong>黒毛和牛サーロイン。発売前優先案内。</p>
  <div class="organic-wagyu-cta-wrap">
- <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+ <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="organic-wagyu-cta">🔓 LINE登録で解放 →</a>
  </div>
  </article>
 
@@ -9934,13 +9993,13 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC RIBEYE">
  <span class="badge badge-organic">有機JAS</span>
- <div class="organic-wagyu-overlay">COMING SOON</div>
+ <div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div>
  </div>
  <div class="product-tag-row"><span class="product-tag">Organic · Ribeye</span><span class="product-price organic-wagyu-price">¥— —</span></div>
  <p class="product-name">有機JAS リブアイ</p>
  <p class="product-desc">霜降りと赤身の完璧なバランス。希少な有機リブアイ。発売前優先案内。</p>
  <div class="organic-wagyu-cta-wrap">
- <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+ <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="organic-wagyu-cta">🔓 LINE登録で解放 →</a>
  </div>
  </article>
 
@@ -9950,13 +10009,13 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card-img organic-wagyu-img" data-label="ORGANIC FILLET">
  <span class="badge badge-organic">有機JAS</span>
- <div class="organic-wagyu-overlay">COMING SOON</div>
+ <div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div>
  </div>
  <div class="product-tag-row"><span class="product-tag">Organic · Fillet</span><span class="product-price organic-wagyu-price">¥— —</span></div>
  <p class="product-name">有機JAS ヒレ</p>
  <p class="product-desc">希少部位のヒレ、有機JAS認証。上等の一品。発売前優先案内。</p>
  <div class="organic-wagyu-cta-wrap">
- <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="organic-wagyu-cta">優先案内に登録 →</a>
+ <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="organic-wagyu-cta">🔓 LINE登録で解放 →</a>
  </div>
  </article>
  </div>
