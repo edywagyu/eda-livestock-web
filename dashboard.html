@@ -920,12 +920,17 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
 <script>
 /* ============================================================
    Dashboard 制御スクリプト
-   - GAS_URL は localStorage('eda-gas-url') から読込
-   - GAS が無い / 未設定の場合はデモデータを表示
+   - GAS_URL は localStorage('eda-gas-url') → 既定本番URL の順で解決
+   - 接続成功で実データ、失敗時のみデモにフォールバック
    - 各タブは描画関数を持ち、データ受信後に呼ばれる
    ============================================================ */
 
-const GAS_URL = () => localStorage.getItem('eda-gas-url') || '';
+/* ★ 本番 GAS Web App URL (staff/dashboard 共通・OPERATIONS.md と整合)
+   localStorage('eda-gas-url') で個別端末ごとに上書き可能 */
+const GAS_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
+const GAS_URL = () => localStorage.getItem('eda-gas-url') || GAS_URL_DEFAULT;
+/* GAS 接続失敗時のフォールバック制御 (実運用ではデフォルト false = 実データのみ) */
+let _gasOnline = true;
 let cache = {}; // action名 → response data
 
 /* ====== タブ切替 ====== */
@@ -963,33 +968,50 @@ async function gasGet(action, params = {}) {
   try {
     const qs = Object.entries(params).map(([k, v]) => `&${k}=${encodeURIComponent(v)}`).join('');
     const res = await fetch(url + '?action=' + action + qs);
+    if (!res.ok) throw new Error('http ' + res.status);
     const data = await res.json();
+    // GAS が { ok: false, error: ... } を返した場合もエラー扱い
+    if (data && data.ok === false) {
+      console.warn('GAS endpoint error:', action, data.error);
+      return null;
+    }
     cache[action] = data;
     return data;
   } catch (e) {
     console.error('GAS error:', action, e);
+    _gasOnline = false;
+    updateSyncBadge(false, e.message);
     return null;
   }
 }
 
 /* ====== 同期ステータス ====== */
-async function checkSync() {
+function updateSyncBadge(online, msg) {
   const dot = document.getElementById('syncDot');
   const label = document.getElementById('syncLabel');
-  if (!GAS_URL()) {
-    dot.className = 'sync-dot warn';
-    label.textContent = 'GAS 未設定 — デモデータ表示中';
+  if (!dot || !label) return;
+  if (online) {
+    dot.className = 'sync-dot';
+    label.textContent = 'GAS 接続OK · ' + new Date().toLocaleTimeString('ja-JP');
+  } else {
+    dot.className = 'sync-dot error';
+    label.textContent = 'GAS 接続失敗' + (msg ? ' (' + msg + ')' : '') + ' — 接続復旧までデモ表示';
+  }
+}
+async function checkSync() {
+  const url = GAS_URL();
+  if (!url) {
+    updateSyncBadge(false, 'URL未設定');
     return;
   }
   try {
-    const res = await fetch(GAS_URL() + '?action=ping');
-    if (res.ok) {
-      dot.className = 'sync-dot';
-      label.textContent = 'GAS 接続OK · ' + new Date().toLocaleTimeString('ja-JP');
-    } else throw new Error('http ' + res.status);
+    const res = await fetch(url + '?action=ping');
+    if (!res.ok) throw new Error('http ' + res.status);
+    _gasOnline = true;
+    updateSyncBadge(true);
   } catch (e) {
-    dot.className = 'sync-dot error';
-    label.textContent = 'GAS 接続失敗';
+    _gasOnline = false;
+    updateSyncBadge(false, e.message);
   }
 }
 
