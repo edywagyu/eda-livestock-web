@@ -46,11 +46,26 @@
 .eda-floating-phone-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: #D4A93B; }
 .eda-floating-phone-text .num { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; margin-top: 2px; font-family: 'Inter', sans-serif; }
 @media (max-width: 720px) {
-  .eda-floating-phone { right: 14px; bottom: 14px; padding: 0; width: 52px; height: 52px; border-radius: 50%; justify-content: center; gap: 0; }
-  .eda-floating-phone-icon { width: 52px; height: 52px; background: transparent; color: #D4A93B; }
-  .eda-floating-phone-icon svg { width: 26px; height: 26px; }
+  .eda-floating-phone { right: 14px; bottom: 14px; padding: 0; width: 48px; height: 48px; border-radius: 50%; justify-content: center; gap: 0; }
+  .eda-floating-phone-icon { width: 48px; height: 48px; background: transparent; color: #D4A93B; }
+  .eda-floating-phone-icon svg { width: 22px; height: 22px; }
   .eda-floating-phone-text { display: none; }
-  body.has-sticky-cart .eda-floating-phone { bottom: 84px; }
+  /* スティッキーカートバー表示時は左下に逃がす (カートボタンと重ならないように) */
+  body.has-sticky-cart .eda-floating-phone {
+    right: auto; left: 14px; bottom: 86px;
+    width: 44px; height: 44px;
+    background: rgba(15,61,46,0.92);
+    border-color: rgba(212,169,59,0.4);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  }
+  body.has-sticky-cart .eda-floating-phone-icon { width: 44px; height: 44px; }
+  body.has-sticky-cart .eda-floating-phone-icon svg { width: 20px; height: 20px; }
+  /* カート表示時は LINE チャットバナー類を隠す (ごちゃごちゃ防止) */
+  body.has-sticky-cart .live-chat-button,
+  body.has-sticky-cart [class*="chat-button"],
+  body.has-sticky-cart [class*="liveagent"],
+  body.has-sticky-cart [id*="line-chat"],
+  body.has-sticky-cart .line-it-button { display: none !important; }
 }`;
     const style = document.createElement('style');
     style.textContent = css;
