@@ -1168,14 +1168,18 @@ function renderSurveyBars(obj, _label) {
   }).join('');
 }
 
-/* ====== タブ別ロード ====== */
+/* ====== タブ別ロード ======
+   ※ アクション名は GAS Code.gs と整合させる。
+     既存実装: staff_orders / staff_inventory / staff_dashboard / segment_stats
+     未実装(GAS追加待ち): subscriptions / customers / survey_responses / quiz_responses / shipments
+   ====== */
 async function loadTabData(tab) {
-  // GAS が無いなら DEMO データで埋める
   if (tab === 'overview') {
     const data = await gasGet('dashboard');
     renderOverview(data);
   } else if (tab === 'orders') {
-    const data = await gasGet('orders');
+    // GAS 既存の staff_orders を使用 (orders は未実装のため alias)
+    const data = await gasGet('staff_orders');
     const list = data && data.orders ? data.orders : DEMO.orders;
     document.getElementById('ordersCountLabel').textContent = list.length + ' 件';
     document.querySelector('#ordersTable tbody').innerHTML = list.map(r => `

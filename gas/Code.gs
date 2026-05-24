@@ -141,6 +141,13 @@ function doGet(e) {
       case 'staff_orders':      return staffOrders();
       case 'staff_analytics':   return staffAnalytics(e.parameter);
       case 'b2_csv':            return b2CsvExport();
+      /* ===== 経営ダッシュボード追加アクション (Code_v2_Additions.gs に実装) ===== */
+      case 'orders':            return ordersOverview(e.parameter);
+      case 'subscriptions':     return subscriptionsOverview(e.parameter);
+      case 'customers':         return customersOverview(e.parameter);
+      case 'survey_responses':  return surveyResponsesOverview(e.parameter);
+      case 'quiz_responses':    return quizResponsesOverview(e.parameter);
+      case 'shipments':         return shipmentsOverview(e.parameter);
       default:                  return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
   } catch (err) {
