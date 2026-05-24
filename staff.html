@@ -1175,7 +1175,16 @@ ul { list-style: none; padding: 0; margin: 0; }
 <!-- APP -->
 <div class="app" id="app" style="display:none">
 
-  <!-- DEMO BANNER -->
+  <!-- LIVE / DEMO STATUS BAR (Tom が現状一目で把握できる) -->
+  <div id="liveStatusBar" style="display:none;padding:8px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid">
+    <span id="liveStatusText"></span>
+    <button id="testGasBtn" type="button"
+            style="margin-left:10px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:2px 8px;font-size:10px;cursor:pointer;font-weight:600;color:inherit;">
+      接続テスト
+    </button>
+  </div>
+
+  <!-- DEMO BANNER (旧・保留) -->
   <div id="demoBanner" style="display:none;background:#fff3cd;color:#664d03;padding:8px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid #ffd166">
     🎭 デモモード — 表示はサンプル / 保存は無効
   </div>
@@ -1753,10 +1762,59 @@ function showPinError(msg) {
   }, 1200);
 }
 
+/* ライブ/デモ ステータスを描画 + 接続テストボタンを束ねる */
+function renderLiveStatus(state, extra) {
+  const bar = document.getElementById('liveStatusBar');
+  const txt = document.getElementById('liveStatusText');
+  if (!bar || !txt) return;
+  bar.style.display = 'block';
+  if (state === 'live') {
+    bar.style.background = '#D1FAE5';
+    bar.style.color = '#065F46';
+    bar.style.borderColor = '#6EE7B7';
+    txt.innerHTML = '🟢 <strong>ライブ運用中</strong> — GAS 接続OK · 実データ表示中' + (extra ? ' · ' + extra : '');
+  } else if (state === 'demo') {
+    bar.style.background = '#fff3cd';
+    bar.style.color = '#664d03';
+    bar.style.borderColor = '#ffd166';
+    txt.innerHTML = '🟡 <strong>デモモード</strong> — ' + (extra || 'サンプルデータ表示中 / 保存は無効');
+  } else {
+    bar.style.background = '#FEE2E2';
+    bar.style.color = '#991B1B';
+    bar.style.borderColor = '#FCA5A5';
+    txt.innerHTML = '🔴 <strong>GAS 接続失敗</strong> · ' + (extra || '接続復旧までデモにフォールバック');
+  }
+}
+
+async function testGasConnection() {
+  if (!GAS_URL) { renderLiveStatus('error', 'GAS URL 未設定'); return; }
+  renderLiveStatus('demo', '接続テスト中…');
+  try {
+    const res = await fetch(GAS_URL + '?action=ping&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json().catch(() => ({}));
+    if (data && data.ok !== false) {
+      sessionStorage.removeItem('eda-staff-demo');
+      renderLiveStatus('live', '最終確認 ' + new Date().toLocaleTimeString('ja-JP'));
+      // 接続が戻ったので各タブを再ロード
+      if (typeof loadDashboard === 'function') loadDashboard();
+      toast('GAS 接続OK — 実データに切替', 'success');
+    } else {
+      renderLiveStatus('error', (data && data.error) || '不明なレスポンス');
+    }
+  } catch (e) {
+    renderLiveStatus('error', e.message);
+  }
+}
+
 function enterApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = '';
-  document.getElementById('demoBanner').style.display = isDemoMode() ? 'block' : 'none';
+  // 旧 demoBanner は使わず、新 liveStatusBar に集約
+  document.getElementById('demoBanner').style.display = 'none';
+  renderLiveStatus(isDemoMode() ? 'demo' : 'live');
+  const btn = document.getElementById('testGasBtn');
+  if (btn && !btn._bound) { btn.addEventListener('click', testGasConnection); btn._bound = true; }
 
   // 商品マスター同期ステータス表示
   const syncBadge = document.getElementById('masterSyncBadge');
@@ -2208,6 +2266,7 @@ function saveGasUrl() {
 
 /* ================ DASHBOARD ================ */
 async function loadDashboard() {
+  /* デモモード明示中はサンプル表示 */
   if (isDemoMode()) {
     document.getElementById('todayOrders').textContent = '5';
     document.getElementById('todayShip').textContent = '2';
@@ -2218,17 +2277,29 @@ async function loadDashboard() {
     loadAnalytics();
     return;
   }
+  /* ライブ運用: GAS から実データ取得 */
   try {
-    const res = await fetch(GAS_URL + '?action=staff_dashboard');
+    const res = await fetch(GAS_URL + '?action=staff_dashboard&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
+    if (data && data.ok === false) throw new Error(data.error || 'GAS returned ok:false');
     document.getElementById('todayOrders').textContent = data.todayOrders || 0;
     document.getElementById('todayShip').textContent = data.todayShip || 0;
     document.getElementById('tomorrowShip').textContent = data.tomorrowShip || 0;
     document.getElementById('pendingShip').textContent = data.pendingShip || 0;
     document.getElementById('todayRevenue').textContent = '¥' + Math.round((data.todayRevenue || 0) / 1000) + 'k';
     document.getElementById('lowStock').textContent = data.lowStock || 0;
+    renderLiveStatus('live', '最終更新 ' + new Date().toLocaleTimeString('ja-JP'));
   } catch (e) {
-    console.error(e);
+    console.error('[staff_dashboard] GAS error:', e);
+    /* 失敗時: ダッシュは見せたまま、上部に赤バナーで通知 */
+    document.getElementById('todayOrders').textContent = '—';
+    document.getElementById('todayShip').textContent = '—';
+    document.getElementById('tomorrowShip').textContent = '—';
+    document.getElementById('pendingShip').textContent = '—';
+    document.getElementById('todayRevenue').textContent = '—';
+    document.getElementById('lowStock').textContent = '—';
+    renderLiveStatus('error', e.message + ' — staff_dashboard アクションを GAS で実装してください');
   }
   loadAnalytics();
 }
