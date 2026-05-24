@@ -22,7 +22,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>江田畜産 — 無投薬 30ヶ月育成の和牛・平飼い鶏 | 宮崎</title>
-<meta name="description" content="黒毛和牛・平飼い鶏を、ご家庭の食卓へ。30ヶ月以上 無投薬で育てた江田畜産の直送便。¥11,000以上送料無料・3-7日でお届け。">
+<meta name="description" content="黒毛和牛・平飼い鶏を、ご家庭の食卓へ。30ヶ月以上 無投薬で育てた江田畜産の直送便。¥11,000以上 送料無料（北海道のみ +¥500）・3-7日でお届け。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="江田畜産オンラインショップ | 100年続く畜産を、創造する。">
 <meta property="og:description" content="無投薬・オーガニック専門の黒毛和牛 直販。冷凍便で全国へ毎日発送中。">
@@ -2838,7 +2838,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .member-role { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin-bottom: 6px; }
 .member-name { font-family: var(--font-display); font-size: 22px; text-transform: uppercase; margin: 0 0 4px; }
-.member-name-jp { font-size: 13px; opacity: 0.6; font-weight: 400; }
+.member-name-jp { font-size: 13px; opacity: 0.9; font-weight: 400; }
 .member-meta-row {
  display: flex;
  justify-content: space-between;
@@ -2895,7 +2895,7 @@ section.featured {
  font-size: 14px;
  letter-spacing: var(--tracking-wider);
  color: var(--color-forest);
- opacity: 0.55;
+ opacity: 0.9;
  transition: opacity 0.3s;
  white-space: nowrap;
  flex-shrink: 0;
@@ -3284,10 +3284,12 @@ section.featured {
  color: var(--color-forest); letter-spacing: 0.04em;
 }
 .cart-shipping-note {
- font-size: 11px; color: var(--color-ink-muted);
+ font-size: 14px; font-weight: 600; color: var(--color-forest);
  margin-bottom: 16px; line-height: 1.6;
+ padding: 10px 14px; background: rgba(212,169,59,0.08);
+ border-radius: 8px; text-align: center;
 }
-.cart-shipping-note strong { color: var(--color-gold-soft); }
+.cart-shipping-note strong { color: var(--color-gold-soft); font-size: 15px; }
 .btn-checkout {
  display: block; width: 100%; padding: 16px;
  background: var(--color-forest); color: white;
@@ -4165,8 +4167,11 @@ section.featured {
    3. 推奨サイズ: 2560×1440px 以上、横長、JPEG 高品質
    4. 暗めの写真（牧場・牛・畜舎の夕景など）が forest×gold パレットと馴染みます
  -->
- <!-- hero-photo: 現在はグラデーションのみ表示。写真を戻す場合は src に画像パスを入れる -->
- <img class="hero-photo" src="" alt="" loading="eager" fetchpriority="high" style="display:none;"/>
+ <!-- hero-photo: 牧場の牛・夕景。forest×gold パレットに馴染む暗めの写真 -->
+ <picture>
+   <source type="image/webp" srcset="public/images/farm/cattle-02.webp">
+   <img class="hero-photo" src="public/images/farm/cattle-02.jpg" alt="宮崎・江田畜産の牧場で育つ和牛" loading="eager" fetchpriority="high"/>
+ </picture>
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
 
  <div class="container hero-content">
@@ -4211,7 +4216,7 @@ section.featured {
  <h3>For Home</h3>
  <div class="jp">ご家庭で</div>
  <p>
- 無投薬で育てた和牛と、大分県の平飼い農家から仕入れた鶏。ご家庭の食卓へ、最短 3 日でお届けします。¥11,000 以上で送料無料。
+ 無投薬で育てた和牛と、大分県の平飼い農家から仕入れた鶏。ご家庭の食卓へ、最短 3 日でお届けします。¥11,000 以上で送料無料（北海道のみ +¥500）。
  </p>
  <div class="links">
  <a href="shop.html">Collection</a>
@@ -4570,34 +4575,6 @@ section.featured {
  <div style="text-align: center; margin-top: 64px;" class="reveal">
  <a href="restaurants.html" class="btn btn-dark">取り扱い 21店舗を見る <span class="btn-arrow"></span></a>
  </div>
- </div>
-</section>
-
-<!-- ========= GIFT CTA ========= -->
-<section class="gift-cta-section">
- <div class="container">
-  <a href="shop.html#gift-highlight" class="gift-cta-card reveal" aria-label="ギフト商品を見る">
-   <div class="gift-cta-photo">
-    <img src="public/images/products/drive/gift-box.jpg" alt="有機太郎 御歳暮 熨斗付きギフトボックス" loading="lazy" decoding="async"/>
-    <div class="gift-cta-glow" aria-hidden="true"></div>
-   </div>
-   <div class="gift-cta-text">
-    <span class="gift-cta-eyebrow">— FOR SPECIAL OCCASIONS —</span>
-    <h2 class="gift-cta-title">大切な方への、<em>贈り物</em>として。</h2>
-    <p class="gift-cta-desc">
-     のし対応・化粧箱入り。御歳暮・御中元・内祝・お祝いに、宮崎和牛を専用木箱でお届けします。
-    </p>
-    <ul class="gift-cta-tags">
-     <li>🎀 のし対応</li>
-     <li>📦 化粧箱入り</li>
-     <li>💌 価格非表示</li>
-     <li>🚚 個別配送可</li>
-    </ul>
-    <span class="gift-cta-button">
-     ギフト商品を見る <span class="gift-cta-arrow">→</span>
-    </span>
-   </div>
-  </a>
  </div>
 </section>
 
@@ -5027,44 +5004,31 @@ section.featured {
  </div>
  </div>
  <div class="footer-col">
- <h4>Brand</h4>
- <ul>
- <li><a href="about.html">江田畜産について</a></li>
- <li><a href="philosophy.html">Philosophy / 4つの定義</a></li>
- <li><a href="organic.html">3 Brands</a></li>
- <li><a href="global.html">Global Export</a></li>
- <li><a href="journey.html">Our Journey</a></li>
- </ul>
- </div>
- <div class="footer-col">
- <h4>Buy & Find</h4>
+ <h4>Shop</h4>
  <ul>
  <li><a href="shop.html">Online Shop</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a href="subscription.html">Subscription</a></li>
- <li><a href="shop.html#gift">Gift</a></li>
+ <li><a href="subscription.html">月の定期便</a></li>
+ <li><a href="restaurants.html">取扱店一覧</a></li>
  </ul>
  </div>
  <div class="footer-col">
- <h4>Connect</h4>
+ <h4>Company</h4>
  <ul>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="press.html">Press & Media</a></li>
- <li><a href="press-kit.html">Press Kit</a></li>
- <li><a href="awards.html">Awards</a></li>
+ <li><a href="about.html">江田畜産について</a></li>
+ <li><a href="contact.html">お問い合わせ</a></li>
+ </ul>
+ </div>
+ <div class="footer-col">
+ <h4>Legal</h4>
+ <ul>
  <li><a href="terms.html">利用規約</a></li>
  <li><a href="privacy.html">プライバシーポリシー</a></li>
  <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
- <li><a href="contact.html">Contact</a></li>
- <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINE 公式アカウント</a></li>
- <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
- <li><a href="tel:09047241063">090-4724-1063</a></li>
  </ul>
  </div>
  </div>
  <div class="footer-bottom">
  <span>© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
- <span>Confidential — All Rights Reserved</span>
  </div>
  </div>
 </footer>
@@ -5495,5 +5459,6 @@ section.featured {
 
 <script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
+<script src="public/js/mobile-menu.js" defer></script>
 </body>
 </html>

@@ -8,20 +8,30 @@
   'use strict';
 
   // ↓↓↓ 本番 GAS Web App URL (2026-05-12 デプロイ) ↓↓↓
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
+  const GAS_URL_PROD = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
+  // ↓↓↓ テスト用 GAS Web App URL (未設定なら本番と同じ URL に test_mode=1 を付与) ↓↓↓
+  const GAS_URL_TEST = ''; // ステージング GAS をデプロイしたらここに記入
   // ↑↑↑ ここまで ↑↑↑
+
+  // 環境判定: localhost / 127.0.0.1 / *.local / ?test=1 はテスト扱い
+  const host = location.hostname;
+  const isLocalHost = host === 'localhost' || host === '127.0.0.1' || /\.local$/.test(host) || host === '';
+  const hasTestFlag = /[?&]test=1\b/.test(location.search);
+  const IS_TEST_MODE = isLocalHost || hasTestFlag;
 
   // localStorage で上書き可能 (ステージング/ローカルで別URL試す用)
   const overridden = (function(){ try { return localStorage.getItem('eda-gas-url') || ''; } catch(e) { return ''; } })();
-  const FINAL_URL = overridden || GAS_URL;
+  const FINAL_URL = overridden || (IS_TEST_MODE && GAS_URL_TEST) || GAS_URL_PROD;
 
   global.EDA_CONFIG = {
     GAS_URL: FINAL_URL,
-    // テスター告知用
-    isProduction: !FINAL_URL.includes('REPLACE_WITH'),
-    // フロント側で Stripe Checkout を直接呼ぶことはない (GAS 経由)
-    // ただし Stripe.js を読み込んで Apple Pay などのトークン化に使う場合は publishable key を入れる
-    STRIPE_PUBLISHABLE_KEY: 'pk_live_51PNNcrGSkhU1UEciCMf2g2dI6aO2x4uQYqIOqm772au6vGfsS4E2t6sQNsTqK2nqwA6JFznKqMkp2xM06UFvr9rB00l0i8uN3T',
+    // 環境フラグ — checkout.html などで判定に使う
+    IS_TEST_MODE: IS_TEST_MODE,
+    isProduction: !IS_TEST_MODE && !FINAL_URL.includes('REPLACE_WITH'),
+    // Stripe Publishable Key — テストモードでは test キー、本番では live キー
+    STRIPE_PUBLISHABLE_KEY: IS_TEST_MODE
+      ? 'pk_test_TESTKEY_REPLACE_ME' // Tom が Stripe ダッシュボードで test キーを発行して置換
+      : 'pk_live_51PNNcrGSkhU1UEciCMf2g2dI6aO2x4uQYqIOqm772au6vGfsS4E2t6sQNsTqK2nqwA6JFznKqMkp2xM06UFvr9rB00l0i8uN3T',
     // LINE 公式 ID
     LINE_AT_ID: '@706sgiuq',
     // LIFF ID (LINE Front-end Framework) ← Tom が LINE Developers Console で発行後ここに記入
@@ -31,6 +41,11 @@
     PHONE: '09047241063',
     EMAIL: 'backoffice@eda-livestock.com'
   };
+
+  // テストモード時はコンソールに目立つ警告
+  if (IS_TEST_MODE) {
+    console.warn('%c⚠️ EDA TEST MODE — Stripe は test キー / 実購入は発生しません', 'background:#ffd166;color:#664d03;padding:4px 8px;font-weight:bold;border-radius:4px');
+  }
 
   // ヘルパー: GAS への fetch を統一
   global.EDA_API = {

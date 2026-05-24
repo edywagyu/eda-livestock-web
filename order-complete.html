@@ -1052,7 +1052,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="ltb-icon">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06C755" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>
  </span>
- <span>初回10%OFFクーポンを発行</span>
+ <span>初回20%OFFクーポンを発行</span>
  </div>
  </div>
 
@@ -1208,49 +1208,33 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
  </div>
  </div>
- <div class="footer-col">
- <h4>Brand</h4>
- <ul>
- <li><a href="about.html">江田畜産について</a></li>
- <li><a href="philosophy.html">Philosophy / 4つの定義</a></li>
- <li><a href="organic.html">3 Brands</a></li>
- <li><a href="global.html">Global Export</a></li>
- <li><a href="journey.html">Our Journey</a></li>
-
-
- </ul>
- </div>
- <div class="footer-col">
- <h4>Buy & Find</h4>
+  <div class="footer-col">
+ <h4>Shop</h4>
  <ul>
  <li><a href="shop.html">Online Shop</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
-
- <li><a href="subscription.html">Subscription</a></li>
- <li><a href="shop.html#gift">Gift</a></li>
+ <li><a href="subscription.html">月の定期便</a></li>
+ <li><a href="restaurants.html">取扱店一覧</a></li>
  </ul>
  </div>
  <div class="footer-col">
- <h4>Connect</h4>
+ <h4>Company</h4>
  <ul>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="press.html">Press &amp; Media</a></li>
- <li><a href="press-kit.html">Press Kit</a></li>
- <li><a href="awards.html">Awards</a></li>
+ <li><a href="about.html">江田畜産について</a></li>
+ <li><a href="contact.html">お問い合わせ</a></li>
+ </ul>
+ </div>
+ <div class="footer-col">
+ <h4>Legal</h4>
+ <ul>
  <li><a href="terms.html">利用規約</a></li>
  <li><a href="privacy.html">プライバシーポリシー</a></li>
  <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
- <li><a href="contact.html">Contact</a></li>
- <li><a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINE 公式アカウント</a></li>
- <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
- <li><a href="tel:09047241063">090-4724-1063</a></li>
  </ul>
  </div>
  </div>
  <div class="footer-bottom">
  <span>&copy; 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
- <span>Confidential &mdash; All Rights Reserved</span>
- </div>
+</div>
  </div>
 </footer>
 
@@ -1292,6 +1276,40 @@ if (header) {
  } catch(e) {}
  }
 
+ // 共通ヘルパー: localStorage の eda-last-order を完全な order オブジェクトに変換
+ function lastOrderToOrder(last, fallbackNum) {
+   if (!last) last = {};
+   // total: 明示値があればそれを、なければ items から再計算
+   let computedTotal = last.total || 0;
+   let computedSubtotal = 0;
+   const items = Array.isArray(last.items) ? last.items.map(i => ({
+     title: i.title || i.name || '',
+     name: i.name || i.title || '',
+     qty: i.qty || 1,
+     price: Number(i.price || 0)
+   })) : [];
+   items.forEach(it => { computedSubtotal += it.price * it.qty; });
+   if (!computedTotal && computedSubtotal) {
+     // 簡易: 送料 ¥1,100 (¥11,000 以下時) + 8% 軽減税率
+     const shipping = computedSubtotal >= 11000 ? 0 : 1100;
+     computedTotal = computedSubtotal + shipping;
+   }
+   const shippingAmount = last.shipping !== undefined
+     ? Number(last.shipping)
+     : (computedSubtotal >= 11000 ? 0 : 1100);
+   return {
+     order_number: (last.num || fallbackNum || '').replace('#',''),
+     mode: last.mode,
+     total: computedTotal,
+     subtotal: computedSubtotal + shippingAmount,
+     shipping: shippingAmount,
+     date: last.date,
+     customer_email: last.email || '',
+     items: items,
+     test_mode: !!last.test_mode
+   };
+ }
+
  // パラメータどちらも無い場合: localStorage の eda-last-order を使う（モックフロー）
  if (!sessionId && !orderParam) {
  try {
@@ -1299,14 +1317,7 @@ if (header) {
  if (last && last.num) {
  loading.style.display = 'none';
  success.style.display = '';
- renderOrder({
- order_number: last.num.replace('#', ''),
- mode: last.mode,
- total: last.total,
- date: last.date,
- customer_email: last.email || '',
- items: []
- });
+ renderOrder(lastOrderToOrder(last));
  clearLocalCart();
  return;
  }
@@ -1350,20 +1361,21 @@ if (header) {
  try { last = JSON.parse(localStorage.getItem('eda-last-order') || 'null'); } catch(e) {}
  loading.style.display = 'none';
  success.style.display = '';
- renderOrder({
- order_number: orderParam.replace('#', ''),
- mode: last && last.mode,
- total: last && last.total,
- date: last && last.date,
- customer_email: (last && last.email) || '',
- items: []
- });
+ renderOrder(lastOrderToOrder(last, orderParam));
  clearLocalCart();
  }
 })();
 
 /* ---- Render Order ---- */
 function renderOrder(order) {
+ /* Test mode banner */
+ if (order.test_mode) {
+   const banner = document.createElement('div');
+   banner.style.cssText = 'background:#ffd166;color:#664d03;padding:10px 16px;font-size:13px;font-weight:700;text-align:center;border-radius:8px;margin:16px;border:2px solid #d4a93b';
+   banner.textContent = '🧪 テスト注文 — 実際の決済は発生していません';
+   const success = document.getElementById('success');
+   if (success && success.firstChild) success.insertBefore(banner, success.firstChild);
+ }
  /* Order number */
  const orderNum = order.order_number || order.id || '----';
  document.getElementById('orderNumber').textContent = '#' + orderNum;
@@ -1512,5 +1524,6 @@ function submitSurvey() {
 }
 
 </script>
+<script src="public/js/mobile-menu.js" defer></script>
 </body>
 </html>

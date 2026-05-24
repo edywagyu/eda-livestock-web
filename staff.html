@@ -1904,7 +1904,7 @@ const DEMO_FLOWS = [
   {
     id: 'FLOW001', trigger: 'line_friend_added', triggerLabel: 'LINE友だち追加', icon: '🎉', active: true, friendsCount: 1062,
     steps: [
-      { delay: '即時', name: 'ようこそメッセージ + クーポン', message: 'ご登録ありがとうございます！初回10%OFFクーポンをプレゼント🐂', coupon: 'WELCOME10', delivered: 1062 },
+      { delay: '即時', name: 'ようこそメッセージ + クーポン', message: 'ご登録ありがとうございます！初回20%OFFクーポンをプレゼント🐂', coupon: 'WELCOME20', delivered: 1062 },
       { delay: '7日後', name: '初回購入促進・期限付き20%OFF', message: '友だち追加から1週間 — 期間限定20%OFFクーポンをプレゼント！', coupon: 'NEWBIE20', delivered: 387 },
       { delay: '30日後', name: '食の好みアンケート', message: 'よろしければお食事の好みを教えてください', coupon: null, delivered: 142 }
     ]
@@ -2118,13 +2118,13 @@ const DEMO_SUBS = [
 
 const DEMO_CAMPAIGNS = [
   { id: 'CAM001', name: '母の日特集 2026', period: '2026/05/01 〜 2026/05/12', desc: 'ギフトセット全品 15%OFF + 送料無料', status: 'active', orders: 47, revenue: 1234500, target: 'ギフトセット全品' },
-  { id: 'CAM002', name: '初回限定LINE登録10%OFF', period: '通年（自動配信）', desc: 'LINE友だち追加で10%OFFクーポン自動発行', status: 'active', orders: 156, revenue: 1890000, target: '新規LINE友だち' },
+  { id: 'CAM002', name: '初回限定LINE登録20%OFF', period: '通年（自動配信）', desc: 'LINE友だち追加で20%OFFクーポン自動発行', status: 'active', orders: 156, revenue: 1890000, target: '新規LINE友だち' },
   { id: 'CAM003', name: 'BBQシーズン到来！', period: '2026/05/20 〜 2026/06/30', desc: '焼肉セット 20%OFF / リピート割', status: 'scheduled', orders: 0, revenue: 0, target: '焼肉セット' },
   { id: 'CAM004', name: 'お正月福袋 2026', period: '2025/12/26 〜 2026/01/05', desc: '通常¥30,000 → ¥19,800 福袋限定販売', status: 'ended', orders: 89, revenue: 1762200, target: '福袋限定商品' }
 ];
 
 const DEMO_COUPONS = [
-  { id: 'CP001', code: 'WELCOME10', desc: '初回購入10%OFF', type: 'percent', value: 10, minPurchase: 5000, used: 47, limit: null, expires: 'なし', status: 'active' },
+  { id: 'CP001', code: 'WELCOME20', desc: '初回購入20%OFF', type: 'percent', value: 20, minPurchase: 5000, used: 47, limit: null, expires: 'なし', status: 'active' },
   { id: 'CP002', code: 'MOTHER2026', desc: '母の日キャンペーン¥1,000OFF', type: 'fixed', value: 1000, minPurchase: 8000, used: 23, limit: 100, expires: '2026/05/12', status: 'active' },
   { id: 'CP003', code: 'BIRTHDAY15', desc: '誕生日月15%OFF', type: 'percent', value: 15, minPurchase: 0, used: 12, limit: null, expires: 'なし', status: 'active' },
   { id: 'CP004', code: 'COMEBACK20', desc: '休眠顧客復活20%OFF', type: 'percent', value: 20, minPurchase: 5000, used: 4, limit: 50, expires: '2026/06/30', status: 'active' },
@@ -3596,8 +3596,8 @@ function openForm(type) {
         <select><option>表示する（バナー）</option><option>非表示（クーポンのみ）</option></select>
       </div>`,
     coupon: `
-      <div class="form-field"><label>クーポンコード</label><input type="text" placeholder="例: WELCOME10" style="text-transform:uppercase"></div>
-      <div class="form-field"><label>説明</label><input type="text" placeholder="例: 初回購入10%OFF"></div>
+      <div class="form-field"><label>クーポンコード</label><input type="text" placeholder="例: WELCOME20" style="text-transform:uppercase"></div>
+      <div class="form-field"><label>説明</label><input type="text" placeholder="例: 初回購入20%OFF"></div>
       <div class="form-row">
         <div class="form-field"><label>割引タイプ</label><select><option>10%OFF</option><option>15%OFF</option><option>20%OFF</option><option>¥1,000 OFF</option><option>¥3,000 OFF</option></select></div>
         <div class="form-field"><label>最低購入額</label><input type="number" placeholder="5000"></div>
@@ -3698,7 +3698,7 @@ function openForm(type) {
         <div class="form-field"><label>クーポン添付</label>
           <select>
             <option value="">なし</option>
-            <option value="WELCOME10">WELCOME10 (10%OFF)</option>
+            <option value="WELCOME20">WELCOME20 (初回20%OFF)</option>
             <option value="NEWBIE20">NEWBIE20 (20%OFF・新規)</option>
             <option value="REPEAT10">REPEAT10 (10%OFF・リピート)</option>
             <option value="REVIVE20">REVIVE20 (20%OFF・復活)</option>
@@ -3894,7 +3894,7 @@ function renderGiftList() {
   }
   list.innerHTML = giftsCache.map(g => `
     <div class="inv-card" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:10px;margin-bottom:8px;border:1px solid var(--paper);cursor:pointer" onclick="openGiftForm(${JSON.stringify(g).replace(/"/g,'&quot;')})">
-      <div style="width:56px;height:56px;background:#000 ${g.image ? 'url(\\''+g.image+'\\') center/cover' : ''};border-radius:6px;flex-shrink:0"></div>
+      <div style="width:56px;height:56px;background:#000 ${g.image ? `url('${g.image}') center/cover` : ''};border-radius:6px;flex-shrink:0"></div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:700;font-size:14px;color:var(--ink);margin-bottom:2px">${g.badgeText ? '【'+g.badgeText+'】' : ''}${g.name || ''}</div>
         <div style="font-size:11.5px;color:var(--muted)">¥${Number(g.price||0).toLocaleString()} · ${g.weight || ''}g · ${g.published ? '✅ 公開中' : '⛔ 下書き'}</div>
