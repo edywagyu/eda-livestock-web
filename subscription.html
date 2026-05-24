@@ -56,7 +56,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html {
+ scroll-behavior: smooth; -webkit-font-smoothing: antialiased;
+ scroll-padding-top: 80px;
+}
+@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
 body {
  margin: 0;
  font-family: var(--font-body);
@@ -64,6 +68,16 @@ body {
  line-height: 1.8;
  color: var(--color-ink);
  background: var(--color-cream);
+ overflow-x: hidden;
+ overscroll-behavior-y: contain;
+ -webkit-overflow-scrolling: touch;
+}
+a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
+@media (max-width: 1024px) {
+ [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
+}
+@supports (content-visibility: auto) {
+ section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -559,18 +573,30 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  margin-top: 6px;
 }
 .sub-plan-select-btn {
- display: block; width: 100%;
- padding: 12px 18px;
+ display: flex; align-items: center; justify-content: center; gap: 6px;
+ width: 100%;
+ padding: 14px 18px;
  background: var(--color-forest); color: white;
- border-radius: 8px;
+ border-radius: 10px;
  font-family: var(--font-jp); font-size: 13px;
  font-weight: 700; letter-spacing: 0.04em;
  text-align: center;
- transition: all 0.3s var(--ease-out-expo);
+ transition: background 0.25s var(--ease-out-expo), color 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
+ cursor: pointer;
+ -webkit-tap-highlight-color: transparent;
 }
-.sub-plan-card:hover .sub-plan-select-btn { background: var(--color-forest-deep); }
+.sub-plan-card:hover .sub-plan-select-btn { background: var(--color-forest-deep); transform: translateY(-1px); }
 .sub-plan-card.featured .sub-plan-select-btn { background: var(--color-gold); color: var(--color-forest-deep); }
-.sub-plan-card.selected .sub-plan-select-btn { background: var(--color-forest-deep); }
+.sub-plan-card.featured:hover .sub-plan-select-btn { background: #C99A2D; color: var(--color-forest-deep); }
+/* 選択中状態: 必ずテキストが視認できるよう color: white を明示 + チェックアイコン */
+.sub-plan-card.selected .sub-plan-select-btn,
+.sub-plan-card.featured.selected .sub-plan-select-btn {
+ background: var(--color-forest-deep);
+ color: #FFE594;
+ box-shadow: inset 0 0 0 2px var(--color-gold);
+}
+.sub-plan-card.selected .sub-plan-select-btn::before { content: "✓ "; font-weight: 800; }
+.sub-plan-card.selected .sub-plan-select-btn .btn-label { font-weight: 700; }
 
 /* ================ 詳細セクション (選択中プランの内容物・サイクル) ================ */
 .sub-detail {
@@ -1062,6 +1088,65 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .sub-addons-grid::-webkit-scrollbar { display: none; }
  .sub-addon-card { flex: 0 0 60vw; scroll-snap-align: start; }
  .sub-addons-cart { padding: 18px 16px; }
+}
+
+/* ================ スティッキー注文CTAバー（モバイルで特に重要） ================ */
+.sub-sticky-cta {
+ position: fixed;
+ bottom: 0; left: 0; right: 0;
+ background: rgba(15, 61, 46, 0.96);
+ backdrop-filter: saturate(180%) blur(14px);
+ -webkit-backdrop-filter: saturate(180%) blur(14px);
+ color: white;
+ padding: 12px max(16px, env(safe-area-inset-left)) calc(12px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-right));
+ z-index: 90;
+ transform: translateY(110%);
+ transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+ box-shadow: 0 -8px 28px rgba(0,0,0,0.18);
+ border-top: 1px solid rgba(212,169,59,0.32);
+}
+.sub-sticky-cta.is-visible { transform: translateY(0); }
+.sub-sticky-cta-inner {
+ max-width: 1200px; margin: 0 auto;
+ display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.sub-sticky-cta-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sub-sticky-cta-plan {
+ font-family: var(--font-display);
+ font-size: 11px; letter-spacing: 0.18em;
+ color: var(--color-gold-soft);
+ text-transform: uppercase;
+ white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sub-sticky-cta-price {
+ font-family: var(--font-display);
+ font-size: 22px; font-weight: 600;
+ color: white;
+ line-height: 1.1;
+}
+.sub-sticky-cta-price small { font-size: 11px; opacity: 0.7; margin-left: 4px; font-weight: 400; }
+.sub-sticky-cta-btn {
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ border: none;
+ padding: 14px 22px;
+ border-radius: 10px;
+ font-family: var(--font-jp);
+ font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+ cursor: pointer;
+ white-space: nowrap;
+ transition: transform 0.2s var(--ease-out-expo), background 0.2s;
+ -webkit-tap-highlight-color: transparent;
+ flex-shrink: 0;
+}
+.sub-sticky-cta-btn:hover { background: #FFE594; transform: translateY(-1px); }
+.sub-sticky-cta-btn:active { transform: translateY(0); }
+@media (max-width: 600px) {
+ .sub-sticky-cta { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)) 14px; }
+ .sub-sticky-cta-plan { font-size: 10px; letter-spacing: 0.14em; }
+ .sub-sticky-cta-price { font-size: 18px; }
+ .sub-sticky-cta-price small { font-size: 10px; }
+ .sub-sticky-cta-btn { padding: 12px 16px; font-size: 13px; }
 }
 
 /* ================ チェックアウトフォーム ================ */
@@ -1715,7 +1800,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
  </div>
  </div>
- <div class="sub-plan-select-btn">このプランを選ぶ →</div>
+ <div class="sub-plan-select-btn"><span class="btn-label">このプランを選ぶ →</span></div>
  </article>
 
  <article class="sub-plan-card featured" data-plan="regular">
@@ -1749,7 +1834,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
  </div>
  </div>
- <div class="sub-plan-select-btn">このプランを選ぶ →</div>
+ <div class="sub-plan-select-btn"><span class="btn-label">このプランを選ぶ →</span></div>
  </article>
 
  <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
@@ -1790,11 +1875,24 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
  </div>
  </div>
- <div class="sub-plan-select-btn">このプランを選ぶ →</div>
+ <div class="sub-plan-select-btn"><span class="btn-label">このプランを選ぶ →</span></div>
  </article>
  </div>
  </div>
 </section>
+
+<!-- ========= スティッキー注文CTAバー ========= -->
+<div class="sub-sticky-cta" id="stickyCta" role="region" aria-label="現在選択中のプラン">
+ <div class="sub-sticky-cta-inner">
+  <div class="sub-sticky-cta-info">
+   <span class="sub-sticky-cta-plan" id="stickyCtaPlan">プロプラン · 選択中</span>
+   <span class="sub-sticky-cta-price"><span id="stickyCtaPrice">¥6,400</span><small id="stickyCtaSuffix">/初月</small></span>
+  </div>
+  <button type="button" class="sub-sticky-cta-btn" id="stickyCtaBtn" aria-label="申込フォームへ進む">
+   申込フォームへ →
+  </button>
+ </div>
+</div>
 
 <!-- ========= 選択中プランの詳細 ========= -->
 <section class="sub-detail" id="detail">
@@ -2016,9 +2114,9 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span id="summaryPlanName">プロプラン定期便</span>
  <strong id="summaryRegular">¥12,800/月</strong>
  </div>
- <div class="checkout-summary-row discount">
- <span>5月入会 50%OFF</span>
- <strong id="summaryDiscount">−¥6,400</strong>
+ <div class="checkout-summary-row discount" style="background:rgba(212,169,59,0.08);border-radius:8px;padding:8px 10px;">
+ <span><span id="summaryDiscountLabel">✓ 5月入会 50%OFF 適用済み</span><small style="display:block;font-size:10px;color:var(--color-ink-muted);margin-top:2px;">初月お支払い額に反映済</small></span>
+ <strong id="summaryDiscount" style="color:#C8102E;">節約 ¥6,400</strong>
  </div>
  <div class="checkout-summary-row addon-row" id="summaryAddonRow" style="display:none">
  <span>🛒 今月だけ追加 <small id="summaryAddonCount">(0品)</small></span>
@@ -2416,9 +2514,12 @@ function selectPlan(planKey) {
  if (!PLANS[planKey]) return;
  currentPlan = planKey;
 
- // カードのアクティブ表示
+ // カードのアクティブ表示 + ボタンテキスト切り替え
  document.querySelectorAll('.sub-plan-card').forEach(c => {
- c.classList.toggle('selected', c.dataset.plan === planKey);
+ const isSelected = c.dataset.plan === planKey;
+ c.classList.toggle('selected', isSelected);
+ const label = c.querySelector('.sub-plan-select-btn .btn-label');
+ if (label) label.textContent = isSelected ? '選択中' : 'このプランを選ぶ →';
  });
 
  const plan = PLANS[planKey];
@@ -2444,10 +2545,44 @@ function selectPlan(planKey) {
  // チェックアウトサマリー
  document.getElementById('summaryPlanName').textContent = plan.name + '定期便';
  document.getElementById('summaryRegular').textContent = '¥' + plan.regular.toLocaleString() + '/月';
- document.getElementById('summaryDiscount').textContent = '−¥' + plan.half.toLocaleString();
+ document.getElementById('summaryDiscount').textContent = '節約 ¥' + plan.half.toLocaleString();
+ // スティッキーCTAの内容を更新
+ const stickyPlan = document.getElementById('stickyCtaPlan');
+ const stickyPrice = document.getElementById('stickyCtaPrice');
+ if (stickyPlan) stickyPlan.textContent = plan.name + ' · 選択中';
+ if (stickyPrice) stickyPrice.textContent = '¥' + plan.half.toLocaleString();
  // アドオンを含めた最終金額に更新
  if (typeof updateCheckoutSummary === 'function') updateCheckoutSummary();
 }
+
+/* ============ スティッキーCTA: スクロール位置で表示制御 ============ */
+(function initStickyCta() {
+ const sticky = document.getElementById('stickyCta');
+ const btn = document.getElementById('stickyCtaBtn');
+ const checkout = document.getElementById('checkout');
+ const plansSection = document.querySelector('.sub-plan-grid') || document.getElementById('plans');
+ if (!sticky || !btn || !checkout || !plansSection) return;
+
+ btn.addEventListener('click', () => {
+  checkout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+ });
+
+ let ticking = false;
+ function update() {
+  ticking = false;
+  const plansBottom = plansSection.getBoundingClientRect().bottom;
+  const checkoutTop = checkout.getBoundingClientRect().top;
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  // プラン一覧を通り過ぎてから、チェックアウトが画面に入るまでだけ表示
+  const show = plansBottom < vh * 0.6 && checkoutTop > vh * 0.4;
+  sticky.classList.toggle('is-visible', show);
+ }
+ window.addEventListener('scroll', () => {
+  if (!ticking) { requestAnimationFrame(update); ticking = true; }
+ }, { passive: true });
+ window.addEventListener('resize', update, { passive: true });
+ update();
+})();
 
 /* ============ プランカード クリック ============ */
 document.querySelectorAll('.sub-plan-card').forEach(card => {

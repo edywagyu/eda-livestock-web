@@ -42,7 +42,8 @@
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
+@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -51,7 +52,18 @@ body {
   color: var(--color-ink);
   background: var(--color-cream);
   -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
+/* mobile-scroll-patch: touch & perf */
+a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
+@media (max-width: 1024px) {
+  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
+}
+@supports (content-visibility: auto) {
+  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+}
+
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: transparent; cursor: pointer; font: inherit; color: inherit; }

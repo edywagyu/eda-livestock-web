@@ -166,6 +166,13 @@
     burger.addEventListener('click', open);
     root.querySelectorAll('[data-mm-close]').forEach(el => el.addEventListener('click', close));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    // ドロワー内の遷移リンクをクリックしたら、ページ遷移する前にドロワーを閉じる
+    // → 次ページに body.overflow:hidden が残らない & 次ページのレンダリングがクリーン
+    root.querySelectorAll('a[href]').forEach(a => {
+      a.addEventListener('click', () => { close(); });
+    });
+    // 念のため: bfcache 復帰時にも body overflow をクリア
+    window.addEventListener('pageshow', () => { document.body.style.overflow = ''; });
 
     return { burger, root };
   }

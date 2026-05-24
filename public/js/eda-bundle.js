@@ -289,6 +289,9 @@
     burger.addEventListener('click', open);
     root.querySelectorAll('[data-mm-close]').forEach(el => el.addEventListener('click', close));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    // 遷移リンク クリック時はドロワーを即閉じ（次ページに body.overflow:hidden 残留防止）
+    root.querySelectorAll('a[href]').forEach(a => { a.addEventListener('click', () => { close(); }); });
+    window.addEventListener('pageshow', () => { document.body.style.overflow = ''; });
 
     return { burger, root };
   }
