@@ -8,7 +8,7 @@
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>商品詳細｜江田畜産 オンラインショップ</title>
+<title id="metaTitle">商品詳細｜江田畜産 オンラインショップ</title>
 <meta name="description" id="metaDesc" content="江田畜産オンラインショップ — 商品の詳細をご確認いただけます。">
 <meta property="og:type" content="product">
 <meta property="og:title" content="商品詳細 | 江田畜産">
@@ -551,7 +551,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <div class="pdp-variant-label" id="pdpVariant">1枚 200g</div>
 
       <div class="pdp-price" id="pdpPrice">¥3,400</div>
-      <p class="pdp-price-note">送料込み・税込</p>
+      <p class="pdp-price-note">税込価格 / ¥11,000 以上のご注文で送料無料</p>
 
       <p class="pdp-description" id="pdpDescription">
         ロース芯から切り出した一枚。塩のみで、フライパンに 90 秒。日曜の昼食に。
@@ -617,7 +617,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M22 4L12 13 2 4"/>
           </svg>
-          <span>¥11,000 (税込) 以上で全国送料無料</span>
+          <span>¥11,000 (税込) 以上で送料無料（北海道のみ +¥500）</span>
         </div>
         <div class="pdp-meta-row">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -656,8 +656,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <summary class="pdp-detail-summary">配送について</summary>
       <div class="pdp-detail-body">
         <p>ヤマト運輸クール宅急便 (冷凍便) でお届けします。<br>
-        最短 3 営業日。お届け日時のご指定も可能です。<br>
-        ¥11,000 (税込) 以上のご注文で全国送料無料 (北海道・沖縄含む)。</p>
+        最短 3 日でお届け。お届け日時のご指定も可能です。<br>
+        ¥11,000 (税込) 以上のご注文で送料無料。北海道のみ追加 ¥500 を頂戴します。</p>
       </div>
     </details>
     <details class="pdp-detail-item">
@@ -951,5 +951,6 @@ window.addEventListener('load', () => {
   if (window.edaAnalytics && p) window.edaAnalytics.viewItem(pid, p.price);
 });
 </script>
+<script src="public/js/mobile-menu.js" defer></script>
 </body>
 </html>

@@ -1517,8 +1517,10 @@ let destinations = [
  { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
 ];
 
-/* ---- 配送状況 連絡方法 (LINE or メール) ---- */
-let contactMethod = ''; // 'line' | 'email' | ''
+/* ---- 配送状況 連絡方法 ----
+   メールを primary に固定 (購入を妨げないため LINE 強制をやめる)
+   LINE 連携済みなら placeOrder 時に 'line+email' に切替 */
+let contactMethod = 'email';
 
 function getLineUid() {
  try {
@@ -1610,8 +1612,8 @@ function init() {
  destinations[0].itemIds = cartItems.map((_, i) => i);
  }
 
- // LINE 会員なら contactMethod を自動プリセット
- if (getLineUid()) contactMethod = 'line';
+ // LINE 連携済みなら自動で併用通知 (購入は妨げない)
+ if (getLineUid()) contactMethod = 'line+email';
 
  renderOrderList();
  renderDestinations();
@@ -1898,47 +1900,17 @@ function renderDestinations() {
  </div>
  ${ dIdx === 0 ? `
  <div class="contact-choice-section">
- <div class="contact-choice-head">📱 配送状況の受け取り方法<span class="required">*</span></div>
- <p class="contact-choice-sub">ご注文の配送状況をお届けするため、いずれかをお選びください。</p>
- <div class="contact-choice-grid">
-   <label class="contact-choice-option ${contactMethod === 'line' ? 'selected' : ''}" data-method="line" onclick="setContactMethod('line')">
-     <input type="radio" name="contact_method" value="line" ${contactMethod === 'line' ? 'checked' : ''}>
-     <span class="contact-choice-option-icon">💬</span>
-     <div class="contact-choice-option-body">
-       <div class="contact-choice-option-name">LINE で受け取る</div>
-       <div class="contact-choice-option-desc">LINEで配送状況をお知らせ</div>
-     </div>
-   </label>
-   <label class="contact-choice-option ${contactMethod === 'email' ? 'selected' : ''}" data-method="email" onclick="setContactMethod('email')">
-     <input type="radio" name="contact_method" value="email" ${contactMethod === 'email' ? 'checked' : ''}>
-     <span class="contact-choice-option-icon">✉️</span>
-     <div class="contact-choice-option-body">
-       <div class="contact-choice-option-name">メールで受け取る</div>
-       <div class="contact-choice-option-desc">メールで配送状況をお知らせ</div>
-     </div>
-   </label>
- </div>
- <div id="contactDetailLine" style="display:${contactMethod === 'line' ? 'block' : 'none'}">
-   <div class="contact-choice-detail">
-     <div id="contactLineStatus" class="contact-line-status ${getLineUid() ? 'linked' : 'not-linked'}">
-       ${getLineUid() ? '✅ LINE連携済み — 配送状況をLINEでお届けします' : 'LINE友だち追加が必要です'}
-     </div>
-     <a id="contactLineBtn" href="https://liff.line.me/1657458587-mz1dR9e6" target="_blank" class="contact-line-btn"
-        style="display:${getLineUid() ? 'none' : 'flex'}">
-       LINE 友だち追加する
-     </a>
-   </div>
- </div>
- <div id="contactDetailEmail" style="display:${contactMethod === 'email' ? 'block' : 'none'}">
    <div class="contact-choice-detail">
      <div class="dest-field">
        <label>メールアドレス<span class="required">*</span></label>
        <input type="email" value="${dest.email || ''}" placeholder="example@example.com" aria-label="example@example.com"
          inputmode="email" autocomplete="email"
          oninput="updateDestField(${dIdx}, 'email', this.value)" required>
+       <small style="display:block;margin-top:6px;color:var(--color-ink-muted);font-size:12px">
+         ご注文確認・配送状況をこちらにお送りします。${getLineUid() ? '<br>✅ LINE連携済み — LINEでも通知します。' : '<br>※ ご注文完了後にLINE連携いただくと、配送追跡もLINEで受け取れます。'}
+       </small>
      </div>
    </div>
- </div>
  </div>
  ` : '' }
 
@@ -1993,6 +1965,10 @@ function updateDestField(idx, key, value) {
  destinations[idx][key] = value;
  if (key === 'noshi') {
  renderDestinations(); // ラジオの selected 表示再描画
+ }
+ // 都道府県の変更は送料 (北海道+¥500) に影響するのでサマリー再計算
+ if (key === 'pref') {
+   renderSummary();
  }
 }
 
@@ -2075,10 +2051,14 @@ function renderSummary() {
  }
  lineItems.innerHTML = itemsHtml;
 
- // 送料 (10%税込) — 11,000円(税込)以上で本州送料無料 / 定期便はプランに送料込
- const shipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
- // ギフト追加配送 (1,100円 税込/件)
- const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0).length * 1100;
+ // 送料 (10%税込) — 11,000円(税込)以上で送料無料（北海道のみ +¥500） / 北海道のみ +¥500 / 定期便はプランに送料込
+ const baseShipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
+ // 北海道追加送料 (¥500) — 主送り先の都道府県で判定
+ const hokkaidoSurcharge = destinations[0] && destinations[0].pref === '北海道' ? 500 : 0;
+ const shipping = baseShipping + hokkaidoSurcharge;
+ // ギフト追加配送 (1,100円 税込/件) — 各ギフト送り先も北海道なら +¥500
+ const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0)
+   .reduce((sum, d) => sum + 1100 + (d.pref === '北海道' ? 500 : 0), 0);
  // 50% off if subscription only
  const subSavings = subscription && PLANS[subscription.plan]
  ? (PLANS[subscription.plan].regular - PLANS[subscription.plan].half) : 0;
@@ -2131,11 +2111,11 @@ function renderSummary() {
  <strong>¥${total.toLocaleString()}</strong>
  </div>
  `;
- // 本州送料無料まであと
+ // 送料無料まであと (¥11,000以上で送料無料 / 北海道のみ +¥500)
  if (!subscription && shipping > 0 && subTotal > 0) {
  const remain = 11000 - subTotal;
- if (remain > 0 && remain <= 5000) {
- rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.10);padding:8px 10px;border-radius:8px;font-size:11px;color:var(--color-forest);"><span>あと¥${remain.toLocaleString()}で送料無料</span><strong style="font-size:11px;">▸</strong></div>`;
+ if (remain > 0) {
+ rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.12);padding:12px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--color-forest);margin-top:8px;"><span>あと <strong style="color:var(--color-gold-soft);font-size:15px;">¥${remain.toLocaleString()}</strong> で送料無料</span></div>`;
  }
  }
  rows.innerHTML = rowsHtml;
@@ -2279,18 +2259,13 @@ async function placeOrder() {
  return;
  }
  if (d === destinations[0]) {
-   if (!contactMethod) {
-     alert('配送状況の受け取り方法（LINEまたはメール）を選択してください。');
+   // メール必須 (注文確認・配送通知の primary 経路)
+   if (!d.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) {
+     alert('メールアドレスをご入力ください。ご注文確認をこちらにお送りします。');
      return;
    }
-   if (contactMethod === 'line' && !getLineUid()) {
-     alert('LINE友だち追加を完了してください。ボタンからLINE連携できます。');
-     return;
-   }
-   if (contactMethod === 'email' && !d.email) {
-     alert('メールアドレスを入力してください。');
-     return;
-   }
+   // LINE 連携済みなら自動で LINE 通知も併用 (任意・購入を妨げない)
+   contactMethod = getLineUid() ? 'line+email' : 'email';
  }
  }
  // 規約同意チェック
@@ -2368,6 +2343,27 @@ async function placeOrder() {
  // UI: ローディング
  const btn = document.getElementById('btnPlaceOrder');
  if (btn) { btn.disabled = true; btn.textContent = '決済画面へ移動中…'; }
+
+ // 🛡 テストモード保護: localhost / ?test=1 のときは Stripe LIVE への接続をブロック
+ if (window.EDA_CONFIG && window.EDA_CONFIG.IS_TEST_MODE) {
+   const mockOrderNumber = 'EDA-TEST-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' +
+     Math.random().toString(36).substr(2,5).toUpperCase();
+   const totalAmount = calcTotalAmount();
+   localStorage.setItem('eda-last-order', JSON.stringify({
+     num: mockOrderNumber,
+     session_id: 'cs_test_mock_' + Date.now(),
+     mode: mode,
+     date: new Date().toISOString(),
+     email: destinations[0].email || '',
+     total: totalAmount,
+     items: cartItems,
+     destinations: destinations,
+     test_mode: true
+   }));
+   alert('🧪 テストモード: 実際の決済はスキップされ、注文完了画面に直接遷移します。');
+   window.location.href = 'order-complete.html?order=' + encodeURIComponent(mockOrderNumber) + '&test=1';
+   return;
+ }
 
  try {
  const action = (subscription && PLANS[subscription.plan]) ? 'create_subscription_checkout' : 'create_checkout';
@@ -2463,5 +2459,6 @@ init();
 
 <script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
+<script src="public/js/mobile-menu.js" defer></script>
 </body>
 </html>
