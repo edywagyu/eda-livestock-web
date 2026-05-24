@@ -10751,7 +10751,7 @@ function toggleUnboxingSound() {
  <div class="stat-band-item">
  <div class="stat-band-num" data-count="800" data-line-count><small>人</small></div>
  <div class="stat-band-label">公式LINE 友だち</div>
- <div class="stat-band-sub">最新情報を毎週お届け<br/><span class="stat-band-live">● ライブ更新中</span></div>
+ <div class="stat-band-sub">最新情報を毎週お届け<br/><span class="stat-band-live" data-line-live style="display:none">● ライブ更新中</span><span data-line-asof style="opacity:0.7;font-size:11px"></span></div>
  </div>
  <div class="stat-band-item">
  <div class="stat-band-num" data-count="120"><small>世帯</small></div>
@@ -13133,20 +13133,21 @@ body.has-sticky-cart .floating-phone-btn {
 (function lineCountInit() {
  const lineEl = document.querySelector('[data-line-count]');
  if (!lineEl) return;
+ const liveEl = document.querySelector('[data-line-live]');
+ const asofEl = document.querySelector('[data-line-asof]');
 
- // --- 決定論的シミュレーション値 ---
+ // --- 決定論的シミュレーション値 (API 取得失敗時のフォールバック) ---
  function simulatedCount() {
  const BASE = 800;
  const BASE_DATE = new Date(2026, 4, 11); // 2026-05-11 = 800人
  const now = new Date();
  const daysDiff = Math.floor((now - BASE_DATE) / 86400000);
- if (daysDiff < 0) return BASE; // 過去日付なら基準値
- // 日次の擬似乱数（0〜2人増）— 日付シードで決定論的
+ if (daysDiff < 0) return BASE;
  let n = BASE;
  for (let i = 0; i < daysDiff; i++) {
  const seed = (BASE_DATE.getTime() + i * 86400000) / 86400000;
- const r = Math.abs(Math.sin(seed * 9.81)) ; // 0..1
- n += Math.floor(r * 3); // 0〜2人/日
+ const r = Math.abs(Math.sin(seed * 9.81)) ;
+ n += Math.floor(r * 3);
  }
  return n;
  }
@@ -13160,10 +13161,24 @@ body.has-sticky-cart .floating-phone-btn {
  }
  }
 
- // まずシミュレーション値で即時反映
- applyCount(simulatedCount());
+ function setLiveBadge(isLive, dateStr) {
+ if (liveEl) liveEl.style.display = isLive ? '' : 'none';
+ if (asofEl) {
+   if (isLive && dateStr) {
+     // YYYYMMDD -> YYYY/MM/DD
+     const formatted = dateStr.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1/$2/$3');
+     asofEl.textContent = formatted + ' 時点';
+   } else {
+     asofEl.textContent = '';
+   }
+ }
+ }
 
- // GAS が設定されていれば 値で上書き
+ // フォールバックでシミュレーション値を即時反映 (ライブバッジは非表示)
+ applyCount(simulatedCount());
+ setLiveBadge(false);
+
+ // GAS が設定 + LINE_CHANNEL_TOKEN 設定済なら本物の数値で上書き
  function getGasUrl() {
  if (window.PUBLIC_GAS_URL) return window.PUBLIC_GAS_URL;
  const stored = localStorage.getItem('eda-staff-gas-url');
@@ -13177,9 +13192,13 @@ body.has-sticky-cart .floating-phone-btn {
  .then(r => r.json())
  .then(data => {
  const n = parseInt((data && (data.count || data.friends || data.n)), 10);
- if (Number.isFinite(n) && n > 0) applyCount(n);
+ // ok:true かつ count > 0 のみライブ判定 (token 未設定や API エラーは fallback のまま)
+ if (data && data.ok && Number.isFinite(n) && n > 0) {
+   applyCount(n);
+   setLiveBadge(true, data.date);
+ }
  })
- .catch(() => {/* シミュレーション値のまま */});
+ .catch(() => {/* シミュレーション値・バッジ非表示のまま */});
  }
 })();
 </script>

@@ -983,9 +983,68 @@ function dashboardSummary(params) {
   });
 }
 
+/* ============================================================
+   LINE 友だち数 — Messaging API Insight 連携
+   ============================================================
+   Endpoint:
+     GET https://api.line.me/v2/bot/insight/followers?date=YYYYMMDD
+   Returns:
+     { status: 'ready'|'unready', followers, targetedReaches, blocks }
+   注:
+     - 当日データは提供されない (前日までの集計値)
+     - data.status === 'ready' の時のみ有効
+     - 1時間 CacheService で API レート対策
+   ============================================================ */
 function lineFriends() {
-  // LINE Messaging API 連携時に実装
-  return jsonResponse({ ok:true, friends: 0 });
+  var cache = CacheService.getScriptCache();
+  var cached = cache.get('line_friends_count');
+  if (cached) {
+    var c = JSON.parse(cached);
+    return jsonResponse({ ok: true, count: c.count, friends: c.count, date: c.date, cached: true });
+  }
+  var token = cfg('LINE_CHANNEL_TOKEN');
+  if (!token) {
+    return jsonResponse({ ok: false, count: 0, friends: 0, error: 'LINE_CHANNEL_TOKEN not set' });
+  }
+  try {
+    // 当日データは提供されないので 1〜2 日前まで遡って 'ready' なものを使う
+    var dateStr = null;
+    var data = null;
+    for (var back = 1; back <= 3; back++) {
+      var d = new Date();
+      d.setDate(d.getDate() - back);
+      var yyyy = d.getFullYear();
+      var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+      var dd = ('0' + d.getDate()).slice(-2);
+      var ds = yyyy + mm + dd;
+      var res = UrlFetchApp.fetch(
+        'https://api.line.me/v2/bot/insight/followers?date=' + ds,
+        {
+          method: 'get',
+          headers: { 'Authorization': 'Bearer ' + token },
+          muteHttpExceptions: true
+        }
+      );
+      if (res.getResponseCode() !== 200) continue;
+      var body = JSON.parse(res.getContentText() || '{}');
+      if (body && body.status === 'ready') {
+        data = body;
+        dateStr = ds;
+        break;
+      }
+    }
+    if (!data) {
+      return jsonResponse({ ok: false, count: 0, friends: 0, error: 'LINE insight data not ready' });
+    }
+    // targetedReaches = ブロック除外の有効フォロワー (公式に「友だち」と呼ばれる数)
+    // followers = 累計 (ブロック含む)
+    var count = (typeof data.targetedReaches === 'number') ? data.targetedReaches : (data.followers || 0);
+    // 1 時間キャッシュ
+    cache.put('line_friends_count', JSON.stringify({ count: count, date: dateStr }), 3600);
+    return jsonResponse({ ok: true, count: count, friends: count, date: dateStr });
+  } catch (e) {
+    return jsonResponse({ ok: false, count: 0, friends: 0, error: e.message });
+  }
 }
 
 /* ============================================================
