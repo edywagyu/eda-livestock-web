@@ -61,7 +61,15 @@
  --shadow-xl: 0 28px 72px rgba(15, 61, 46, 0.20), 0 6px 18px rgba(0,0,0,0.08);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html {
+ scroll-behavior: smooth;
+ -webkit-font-smoothing: antialiased;
+ /* スティッキーヘッダー分のオフセット（アンカージャンプ時に見切れない） */
+ scroll-padding-top: 80px;
+}
+@media (max-width: 720px) {
+ html { scroll-padding-top: 60px; }
+}
 body {
  margin: 0;
  font-family: var(--font-body);
@@ -71,6 +79,21 @@ body {
  color: var(--color-ink);
  background: var(--color-cream);
  overflow-x: hidden;
+ /* iOS: 上下端でブラウザのナビ履歴に飛ばない */
+ overscroll-behavior-y: contain;
+ /* iOS: 慣性スクロールを滑らかに */
+ -webkit-overflow-scrolling: touch;
+}
+/* 操作要素のタップ遅延を消す（モバイルで反応が良くなる） */
+a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
+/* スクロール時にバックグラウンド固定 = モバイル超重い → 無効化 */
+@media (max-width: 1024px) {
+ [style*="background-attachment: fixed"],
+ .bg-fixed { background-attachment: scroll !important; }
+}
+/* 画面外の重いセクションを描画スキップ (Chrome/Edge/Safari17+) */
+@supports (content-visibility: auto) {
+ section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -3128,6 +3151,52 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-size: 9px;
  padding: 5px 10px;
  }
+}
+
+/* 商品一覧へジャンプするCTA（冷凍庫バンドの最下部） */
+.freezer-band-jump {
+ grid-column: 1 / -1;
+ display: flex; flex-direction: column; align-items: center; gap: 12px;
+ margin-top: 40px;
+ padding-top: 32px;
+ border-top: 1px solid rgba(15,61,46,0.10);
+}
+.freezer-band-jump-btn {
+ display: inline-flex; align-items: center; gap: 14px;
+ padding: 18px 36px;
+ background: var(--color-forest);
+ color: white;
+ border-radius: 999px;
+ font-family: var(--font-jp);
+ font-size: 16px; font-weight: 700; letter-spacing: 0.04em;
+ text-decoration: none;
+ box-shadow: 0 8px 22px rgba(15,61,46,0.18);
+ transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s, background 0.3s;
+ -webkit-tap-highlight-color: transparent;
+}
+.freezer-band-jump-btn:hover {
+ background: var(--color-forest-deep);
+ transform: translateY(-2px);
+ box-shadow: 0 14px 32px rgba(15,61,46,0.26);
+}
+.freezer-band-jump-arrow {
+ display: inline-flex; align-items: center; justify-content: center;
+ width: 28px; height: 28px;
+ border-radius: 50%;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ font-weight: 800;
+ transition: transform 0.3s var(--ease-out-expo);
+}
+.freezer-band-jump-btn:hover .freezer-band-jump-arrow { transform: translateX(4px); }
+.freezer-band-jump-sub {
+ font-family: var(--font-jp); font-size: 12px;
+ color: rgba(15,61,46,0.65);
+ letter-spacing: 0.04em;
+}
+@media (max-width: 720px) {
+ .freezer-band-jump { margin-top: 28px; padding-top: 24px; }
+ .freezer-band-jump-btn { padding: 16px 28px; font-size: 15px; width: min(100%, 320px); justify-content: center; }
 }
 
 /* ================ DIAGNOSTIC QUIZ — ネオン×虹色の特殊演出 ================ */
@@ -9627,6 +9696,14 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="freezer-band-photo-caption">EDA · FROZEN STOCK</div>
  </div>
  </div>
+ <!-- 商品一覧への明示的な誘導CTA -->
+ <div class="freezer-band-jump reveal">
+ <a href="#products" class="freezer-band-jump-btn">
+ <span class="freezer-band-jump-label">全商品を見る</span>
+ <span class="freezer-band-jump-arrow" aria-hidden="true">→</span>
+ </a>
+ <span class="freezer-band-jump-sub">和牛・平飼い鶏 全23品 · ¥840〜</span>
+ </div>
 </section>
 
 <!-- 新着商品セクション削除 -->
@@ -13622,5 +13699,66 @@ function copyPopCoupon() {
 <script src="public/js/eda-bundle.js?v=005" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js" defer></script>
+
+<!-- フローティング「商品一覧へ」ショートカット: ヒーローを通過してから、商品セクション到達まで表示 -->
+<style>
+ .shop-products-jump-fab {
+ position: fixed;
+ right: max(20px, env(safe-area-inset-right));
+ bottom: calc(96px + env(safe-area-inset-bottom));
+ z-index: 70;
+ display: inline-flex; align-items: center; gap: 10px;
+ padding: 14px 20px;
+ background: var(--color-forest-deep);
+ color: white;
+ border-radius: 999px;
+ font-family: var(--font-jp); font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+ text-decoration: none;
+ box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+ opacity: 0; pointer-events: none; transform: translateY(12px);
+ transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo), background 0.25s;
+ -webkit-tap-highlight-color: transparent;
+ border: 1px solid rgba(212,169,59,0.32);
+ }
+ .shop-products-jump-fab.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+ .shop-products-jump-fab:hover { background: var(--color-forest); }
+ .shop-products-jump-fab-icon {
+ display: inline-flex; align-items: center; justify-content: center;
+ width: 22px; height: 22px;
+ border-radius: 50%;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ font-weight: 800; font-size: 12px;
+ }
+ @media (max-width: 600px) {
+ .shop-products-jump-fab { right: 14px; bottom: calc(82px + env(safe-area-inset-bottom)); padding: 12px 16px; font-size: 12px; }
+ }
+</style>
+<a href="#products" class="shop-products-jump-fab" id="shopProductsJumpFab" aria-label="商品一覧へジャンプ">
+ <span class="shop-products-jump-fab-icon" aria-hidden="true">↓</span>
+ <span>商品一覧へ</span>
+</a>
+<script>
+(function() {
+ const fab = document.getElementById('shopProductsJumpFab');
+ const products = document.getElementById('products');
+ const hero = document.querySelector('.shop-hero');
+ if (!fab || !products || !hero) return;
+ let ticking = false;
+ function update() {
+ ticking = false;
+ const heroBottom = hero.getBoundingClientRect().bottom;
+ const productsTop = products.getBoundingClientRect().top;
+ const vh = window.innerHeight || document.documentElement.clientHeight;
+ // ヒーローを通り過ぎてから、商品セクションが画面に十分入るまで表示
+ fab.classList.toggle('is-visible', heroBottom < 0 && productsTop > vh * 0.4);
+ }
+ window.addEventListener('scroll', () => {
+ if (!ticking) { requestAnimationFrame(update); ticking = true; }
+ }, { passive: true });
+ window.addEventListener('resize', update, { passive: true });
+ update();
+})();
+</script>
 </body>
 </html>
