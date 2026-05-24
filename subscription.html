@@ -2299,6 +2299,35 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 </footer>
 
 <script>
+/* ============ URL ?plan=xxx で該当プラン詳細セクションへスクロール ============ */
+(function scrollToPlanFromQuery() {
+  var params = new URLSearchParams(location.search);
+  var planKey = params.get('plan');
+  if (!planKey) return;
+  function go() {
+    var detail = document.getElementById('detail');
+    if (!detail) return;
+    var headerOffset = 80;
+    var top = detail.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+    // 他スクリプトのスクロールリセットに勝つため、scroll-behavior を一時的に auto に固定
+    var prev = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, top);
+    setTimeout(function() {
+      document.documentElement.style.scrollBehavior = prev;
+    }, 100);
+  }
+  // 複数タイミングで強引にスクロール (他スクリプトのリセット対策)
+  function schedule() {
+    [200, 500, 1000, 1500].forEach(function(ms) { setTimeout(go, ms); });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedule);
+  } else {
+    schedule();
+  }
+})();
+
 /* ============ プラン定義 ============ */
 const PLANS = {
  starter: {

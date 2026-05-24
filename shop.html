@@ -5725,16 +5725,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  }
  .gift-products-grid::-webkit-scrollbar { display: none; }
  .gift-product-card {
- border-radius: 14px;
- flex: 0 0 78%;
- max-width: 280px;
+ border-radius: 12px;
+ flex: 0 0 70%;
+ max-width: 250px;
  scroll-snap-align: start;
  }
- .gift-product-img { flex: 0 0 180px; height: 180px; }
- .gift-product-body { padding: 16px 16px 18px; }
- .gift-product-body h3 { font-size: 14px; line-height: 1.4; }
- .gift-product-body p { font-size: 11.5px; line-height: 1.65; -webkit-line-clamp: 4; }
- .gift-product-meta { gap: 4px; }
+ /* 画像: アスペクト比 1:1 で正方形にしてスタイリッシュに (180px固定→aspect-ratio 1) */
+ .gift-product-img { flex: 0 0 auto; aspect-ratio: 1 / 1; height: auto; }
+ /* 本体: パディング詰めて情報を密に */
+ .gift-product-body { padding: 14px 14px 14px; gap: 6px; }
+ .gift-product-body h3 { font-size: 13.5px; line-height: 1.35; margin: 0 0 4px; }
+ .gift-product-body p { font-size: 11.5px; line-height: 1.55; -webkit-line-clamp: 2; margin: 0 0 8px; flex: 0 0 auto; }
+ .gift-product-meta { gap: 2px; margin-bottom: 10px; padding-bottom: 10px; }
+ .gift-product-vol { font-size: 11px; }
+ .gift-product-price { font-size: 18px; flex-direction: row; align-items: baseline; gap: 6px; }
+ .gift-product-price small { font-size: 9.5px; }
+ .gift-product-cta { font-size: 12px; padding: 8px 0; min-height: 36px; }
  .gift-product-vol { font-size: 11px; }
  .gift-product-price { font-size: 18px; }
  .gift-product-cta { font-size: 12px; }
@@ -10670,10 +10676,10 @@ function toggleUnboxingSound() {
  <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
  <h2 class="quiz-title">
    <span class="quiz-only-desktop">お肉事情診断<strong>あなたに最適なプラン</strong>を5問でご提案</span>
-   <span class="quiz-only-mobile">あなたに合うお肉は？<br/><strong>60秒で、ぴったりの定期便を。</strong></span>
+   <span class="quiz-only-mobile">あなたに合うお肉は？<br/><strong>10秒で、ぴったりの定期便を。</strong></span>
  </h2>
  <p class="quiz-sub">
-   <span class="quiz-only-desktop">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約60秒・回答は記録されません。</span>
+   <span class="quiz-only-desktop">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約10秒・回答は記録されません。</span>
    <span class="quiz-only-mobile">5問だけ。ご家族にぴったりのプランをご提案します。</span>
  </p>
 
@@ -11158,21 +11164,22 @@ body.has-sticky-cart .floating-phone-btn {
  .floating-phone-btn {
  right: 14px; bottom: 14px;
  padding: 0;
- width: 52px; height: 52px;
+ width: 48px; height: 48px;
  border-radius: 50%;
  justify-content: center;
  gap: 0;
  }
  .floating-phone-icon {
- width: 52px; height: 52px;
+ width: 48px; height: 48px;
  background: transparent;
  box-shadow: none;
  color: #fff;
  }
  .floating-phone-btn--line .floating-phone-icon { background: transparent; color: #fff; }
- .floating-phone-icon svg { width: 26px; height: 26px; }
+ .floating-phone-icon svg { width: 22px; height: 22px; }
  .floating-phone-text { display: none; }
- body.has-sticky-cart .floating-phone-btn { bottom: 78px; }
+ /* スティッキーカート表示時: LINE質問ボタンは非表示 (カート/電話と重なるごちゃつき防止) */
+ body.has-sticky-cart .floating-phone-btn--line { display: none !important; }
  body.has-sticky-cart .shop-main-wrap { padding-bottom: 90px; }
  body.has-sticky-cart footer.site-footer { padding-bottom: 90px; }
 }
@@ -13365,7 +13372,8 @@ body.has-sticky-cart .floating-phone-btn {
  const firstTimeEl = document.getElementById('subCycleFirstTime');
  const firstLabelEl = document.getElementById('subCycleFirstLabel');
  const nextEl = document.getElementById('subCycleNext');
- if (!todayEl || !firstEl || !nextEl) return;
+ // nextEl は HTML に無いケースがあるため必須から外す
+ if (!todayEl || !firstEl) return;
 
  function fmt(d) { return (d.getMonth() + 1) + '/' + d.getDate(); }
 
@@ -13393,7 +13401,7 @@ body.has-sticky-cart .floating-phone-btn {
  todayEl.textContent = fmt(now);
  firstEl.textContent = fmt(firstDelivery);
  if (firstTimeEl) firstTimeEl.textContent = '18:00-20:00';
- nextEl.textContent = fmt(nextDelivery);
+ if (nextEl) nextEl.textContent = fmt(nextDelivery);
  }
 
  update();
