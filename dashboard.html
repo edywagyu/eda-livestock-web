@@ -1054,88 +1054,52 @@ async function testConnection() {
   }
 }
 
-/* ====== デモデータ ====== */
-const DEMO = {
-  overview: {
-    revenue: 1842000,
-    revenueDelta: 12,
-    orders: 87,
-    avg: 21172,
-    activeSub: 47,
-    subDelta: 6,
-    mrr: 601600,
-    line: 1062,
-    lineDelta: 38,
-    lineConvRate: 22,
-    quiz: 234,
-    quizDelta: 18,
-    quizRate: 68
-  },
-  recentOrders: [
-    { num: '#1023', customer: '田中 太郎', total: 15400, status: 'pending' },
-    { num: '#1022', customer: '佐藤 花子', total: 12800, status: 'pending' },
-    { num: '#1021', customer: '鈴木 一郎', total: 9800,  status: 'shipped' },
-    { num: '#1020', customer: '山田 美香', total: 4800,  status: 'delivered' },
-    { num: '#1019', customer: '中村 健',   total: 11500, status: 'delivered' }
-  ],
-  survey: {
-    organic: { YES: 47, NO: 18, MAYBE: 22 },
-    source:  { Instagram: 38, '友人紹介': 22, '検索': 18, 'LINE広告': 12, 'その他': 6 },
-    meats:   { '牛サーロイン': 52, '牛もも': 41, '鶏もも': 38, 'ヒレ': 22, '手羽先': 16, 'ホルモン': 8 }
-  },
-  quiz: {
-    fam:    { '1-2人': 28, '3-4人': 92, '5人以上': 24 },
-    freq:   { '週1〜': 64, '月2-3回': 48, '月1回以下': 22 },
-    budget: { '〜¥5,000': 18, '¥5,000-¥10,000': 78, '¥10,000以上': 38 }
-  },
-  orders: [
-    { num: '#1023', date: '2026-05-12 11:42', customer: '田中 太郎', items: '和牛切り落とし×2', total: 15400, payment: 'Visa', shipping: 'pending', mode: 'single' },
-    { num: '#1022', date: '2026-05-12 10:08', customer: '佐藤 花子', items: 'プロプラン定期便', total: 12800, payment: 'Apple Pay', shipping: 'pending', mode: 'subscription' },
-    { num: '#1021', date: '2026-05-11 22:15', customer: '鈴木 一郎', items: '和牛ハンバーグ×4', total: 9800,  payment: 'JCB', shipping: 'shipped', mode: 'single' }
-  ],
-  subs: [
-    { name: '田中 太郎', plan: 'プロプラン', start: '2025-12-01', next: '2026-06-01', total: '6回', status: 'active' },
-    { name: '佐藤 花子', plan: 'VIPプラン',  start: '2026-02-01', next: '2026-06-01', total: '4回', status: 'active' },
-    { name: '木村 結衣', plan: 'ミニプラン',  start: '2026-04-01', next: '2026-06-01', total: '2回', status: 'active' }
-  ],
-  customers: [
-    { name: '田中 太郎', email: 'tanaka@ex.com', phone: '090-1234-5678', total: 412000, last: '2026-05-09', segment: 'vip',     line: true,  survey: 'YES' },
-    { name: '佐藤 花子', email: 'sato@ex.com',  phone: '080-9876-5432',  total: 287000, last: '2026-05-08', segment: 'vip',     line: true,  survey: 'YES' },
-    { name: '鈴木 一郎', email: 'suzuki@ex.com',phone: '070-1112-2233',  total: 78000,  last: '2026-05-07', segment: 'repeater',line: true,  survey: 'NO' },
-    { name: '山田 美香', email: 'yamada@ex.com',phone: '080-5556-6677',  total: 32000,  last: '2026-05-04', segment: 'repeater',line: false, survey: 'YES' },
-    { name: '中村 健',   email: 'nakamura@ex.com',phone: '090-3334-4455',total: 11500,  last: '2026-05-10', segment: 'new',     line: true,  survey: '' }
-  ]
-};
+/* ====== DEMO 定数は撤去 (2026-05-24) ======
+   従来 DEMO データを fallback として使っていたが、本番運用開始のため削除。
+   GAS から空配列/null が返った時は "まだデータがありません" と素直に表示。
+   ====== */
 
-/* ====== オーバービュー描画 ====== */
+/* ====== オーバービュー描画 ======
+   実データのみ。GAS から null/空が返っても DEMO は使わず "0" を表示。
+   ====== */
 function renderOverview(data) {
-  const d = data && data.overview ? data.overview : DEMO.overview;
-  const o = data && data.recentOrders ? data.recentOrders : DEMO.recentOrders;
-  document.getElementById('kpiRevenue').textContent = '¥' + d.revenue.toLocaleString();
-  document.getElementById('kpiRevenueDelta').textContent = '+' + d.revenueDelta + '% vs 先月';
-  document.getElementById('kpiRevenueSub').textContent = '注文 ' + d.orders + '件 / 平均 ¥' + d.avg.toLocaleString();
-  document.getElementById('kpiActiveSub').textContent = d.activeSub;
-  document.getElementById('kpiSubDelta').textContent = '+' + d.subDelta + ' 今月';
-  document.getElementById('kpiSubSub').textContent = 'MRR ¥' + d.mrr.toLocaleString();
-  document.getElementById('kpiLine').textContent = d.line.toLocaleString();
-  document.getElementById('kpiLineDelta').textContent = '+' + d.lineDelta + ' 今週';
-  document.getElementById('kpiLineSub').textContent = '友だち→顧客 転換率 ' + d.lineConvRate + '%';
-  document.getElementById('kpiQuiz').textContent = d.quiz;
-  document.getElementById('kpiQuizDelta').textContent = '+' + d.quizDelta + ' 今週';
-  document.getElementById('kpiQuizSub').textContent = '完了率 ' + d.quizRate + '%';
+  const d = (data && data.overview) || {};
+  const o = (data && data.recentOrders) || [];
+  // 数値は欠損時に 0 を表示（DEMO に逃げない）
+  document.getElementById('kpiRevenue').textContent = '¥' + (d.revenue || 0).toLocaleString();
+  document.getElementById('kpiRevenueDelta').textContent = (d.revenueDelta != null ? (d.revenueDelta >= 0 ? '+' : '') + d.revenueDelta + '% vs 先月' : '— vs 先月');
+  document.getElementById('kpiRevenueSub').textContent = '注文 ' + (d.orders || 0) + '件 / 平均 ¥' + (d.avg || 0).toLocaleString();
+  document.getElementById('kpiActiveSub').textContent = d.activeSub || 0;
+  document.getElementById('kpiSubDelta').textContent = (d.subDelta != null ? (d.subDelta >= 0 ? '+' : '') + d.subDelta + ' 今月' : '— 今月');
+  document.getElementById('kpiSubSub').textContent = 'MRR ¥' + (d.mrr || 0).toLocaleString();
+  document.getElementById('kpiLine').textContent = (d.line || 0).toLocaleString();
+  document.getElementById('kpiLineDelta').textContent = (d.lineDelta != null ? '+' + d.lineDelta + ' 今週' : '— 今週');
+  document.getElementById('kpiLineSub').textContent = '友だち→顧客 転換率 ' + (d.lineConvRate || 0) + '%';
+  document.getElementById('kpiQuiz').textContent = d.quiz || 0;
+  document.getElementById('kpiQuizDelta').textContent = (d.quizDelta != null ? '+' + d.quizDelta + ' 今週' : '— 今週');
+  document.getElementById('kpiQuizSub').textContent = '完了率 ' + (d.quizRate || 0) + '%';
 
-  // recent orders
+  // recent orders — 空配列の時は "まだ注文がありません" 表示
   const tbody = document.querySelector('#overviewOrdersTable tbody');
-  tbody.innerHTML = o.map(r => `
-    <tr><td><strong>${r.num}</strong></td><td>${r.customer}</td><td class="num">¥${r.total.toLocaleString()}</td><td>${statusChip(r.status)}</td></tr>
-  `).join('');
+  if (o.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-dim);">まだ注文がありません</td></tr>';
+  } else {
+    tbody.innerHTML = o.map(r => `
+      <tr><td><strong>${r.num}</strong></td><td>${r.customer}</td><td class="num">¥${r.total.toLocaleString()}</td><td>${statusChip(r.status)}</td></tr>
+    `).join('');
+  }
 
-  // survey summary
-  const s = data && data.survey ? data.survey : DEMO.survey;
-  document.getElementById('overviewSurveyBox').innerHTML =
-    renderSurveyBars(s.organic, 'オーガニック関心') +
-    renderSurveyBars(s.source,  '流入チャネル') +
-    renderSurveyBars(s.meats,   'よく食べる肉');
+  // survey summary — 空オブジェクトの時は "アンケート未収集" 表示
+  const s = (data && data.survey) || { organic: {}, source: {}, meats: {} };
+  const isEmpty = !Object.keys(s.organic || {}).length && !Object.keys(s.source || {}).length && !Object.keys(s.meats || {}).length;
+  if (isEmpty) {
+    document.getElementById('overviewSurveyBox').innerHTML = '<p style="text-align:center;padding:32px;color:var(--text-dim);">まだアンケート回答がありません</p>';
+  } else {
+    document.getElementById('overviewSurveyBox').innerHTML =
+      (Object.keys(s.organic || {}).length ? renderSurveyBars(s.organic, 'オーガニック関心') : '') +
+      (Object.keys(s.source  || {}).length ? renderSurveyBars(s.source,  '流入チャネル')      : '') +
+      (Object.keys(s.meats   || {}).length ? renderSurveyBars(s.meats,   'よく食べる肉')       : '');
+  }
 }
 function statusChip(status) {
   const map = {
@@ -1180,61 +1144,85 @@ async function loadTabData(tab) {
   } else if (tab === 'orders') {
     // GAS 既存の staff_orders を使用 (orders は未実装のため alias)
     const data = await gasGet('staff_orders');
-    const list = data && data.orders ? data.orders : DEMO.orders;
+    const list = (data && data.orders) || [];
     document.getElementById('ordersCountLabel').textContent = list.length + ' 件';
-    document.querySelector('#ordersTable tbody').innerHTML = list.map(r => `
-      <tr>
-        <td><strong>${r.num}</strong></td>
-        <td>${r.date}</td>
-        <td>${r.customer}</td>
-        <td>${r.items}</td>
-        <td class="num">¥${r.total.toLocaleString()}</td>
-        <td>${r.payment}</td>
-        <td>${statusChip(r.shipping)}</td>
-        <td><span class="chip chip-new">${r.mode}</span></td>
-      </tr>
-    `).join('');
+    const tbody = document.querySelector('#ordersTable tbody');
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:48px;color:var(--text-dim);">まだ注文がありません<br/><small style="opacity:0.6">Stripe決済 or 定期便申込で自動的にここに表示されます</small></td></tr>';
+    } else {
+      tbody.innerHTML = list.map(r => `
+        <tr>
+          <td><strong>${r.num}</strong></td>
+          <td>${r.date}</td>
+          <td>${r.customer}</td>
+          <td>${r.items}</td>
+          <td class="num">¥${r.total.toLocaleString()}</td>
+          <td>${r.payment}</td>
+          <td>${statusChip(r.shipping)}</td>
+          <td><span class="chip chip-new">${r.mode}</span></td>
+        </tr>
+      `).join('');
+    }
   } else if (tab === 'subscriptions') {
-    const list = (await gasGet('subscriptions') || {}).subs || DEMO.subs;
+    const data = await gasGet('subscriptions');
+    const list = (data && data.subs) || [];
     document.getElementById('subActive').textContent = list.length;
-    document.getElementById('subMRR').textContent = '¥601,600';
-    document.getElementById('subRetention').textContent = '94';
-    document.getElementById('subChurn').textContent = '3';
-    document.getElementById('subChurnSub').textContent = '今月解約 3世帯';
-    document.querySelector('#subsTable tbody').innerHTML = list.map(s => `
-      <tr><td>${s.name}</td><td>${s.plan}</td><td>${s.start}</td><td>${s.next}</td><td>${s.total}</td><td>${statusChip(s.status === 'active' ? 'delivered' : s.status)}</td></tr>
-    `).join('');
+    // MRR は実際の plan 価格から計算
+    const planPrices = { 'ミニプラン': 6980, 'プロプラン': 12800, 'VIPプラン': 27400, 'スタータープラン': 11980, 'レギュラープラン': 19980 };
+    const mrr = list.filter(s => s.status === 'active').reduce((sum, s) => sum + (planPrices[s.plan] || 0), 0);
+    document.getElementById('subMRR').textContent = '¥' + mrr.toLocaleString();
+    document.getElementById('subRetention').textContent = list.length > 0 ? '—' : '0';
+    document.getElementById('subChurn').textContent = list.filter(s => s.status === 'churned').length;
+    document.getElementById('subChurnSub').textContent = '今月解約 ' + list.filter(s => s.status === 'churned').length + '世帯';
+    const tbody = document.querySelector('#subsTable tbody');
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text-dim);">まだ定期便メンバーがいません<br/><small style="opacity:0.6">subscription.html から申込が入ると自動で表示</small></td></tr>';
+    } else {
+      tbody.innerHTML = list.map(s => `
+        <tr><td>${s.name}</td><td>${s.plan}</td><td>${s.start}</td><td>${s.next}</td><td>${s.total}</td><td>${statusChip(s.status === 'active' ? 'delivered' : s.status)}</td></tr>
+      `).join('');
+    }
   } else if (tab === 'customers') {
-    const list = (await gasGet('customers') || {}).customers || DEMO.customers;
+    const data = await gasGet('customers');
+    const list = (data && data.customers) || [];
     document.getElementById('custVIP').textContent = list.filter(c => c.segment === 'vip').length;
     document.getElementById('custRep').textContent = list.filter(c => c.segment === 'repeater').length;
     document.getElementById('custNew').textContent = list.filter(c => c.segment === 'new').length;
     document.getElementById('custDormant').textContent = list.filter(c => c.segment === 'dormant').length;
-    document.querySelector('#custTable tbody').innerHTML = list.map(c => `
-      <tr>
-        <td><strong>${c.name}</strong></td>
-        <td><div>${c.email}</div><small style="color:var(--text-dim)">${c.phone}</small></td>
-        <td class="num">¥${c.total.toLocaleString()}</td>
-        <td>${c.last}</td>
-        <td>${segmentChip(c.segment)}</td>
-        <td>${c.line ? '💬 ✓' : '—'}</td>
-        <td>${c.survey === 'YES' ? '✓ 関心あり' : c.survey === 'NO' ? '関心なし' : '—'}</td>
-      </tr>
-    `).join('');
+    const tbody = document.querySelector('#custTable tbody');
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text-dim);">まだ顧客データがありません<br/><small style="opacity:0.6">LINE連携・購入で顧客マスターが自動構築されます</small></td></tr>';
+    } else {
+      tbody.innerHTML = list.map(c => `
+        <tr>
+          <td><strong>${c.name}</strong></td>
+          <td><div>${c.email}</div><small style="color:var(--text-dim)">${c.phone || '—'}</small></td>
+          <td class="num">¥${(c.total || 0).toLocaleString()}</td>
+          <td>${c.last || '—'}</td>
+          <td>${segmentChip(c.segment)}</td>
+          <td>${c.line ? '💬 ✓' : '—'}</td>
+          <td>${c.survey === 'YES' ? '✓ 関心あり' : c.survey === 'NO' ? '関心なし' : '—'}</td>
+        </tr>
+      `).join('');
+    }
   } else if (tab === 'survey') {
-    const data = (await gasGet('survey_responses')) || { survey: DEMO.survey, count: 87 };
-    const s = data.survey || DEMO.survey;
-    document.getElementById('surveyCountLabel').textContent = '回答数 ' + (data.count || 87) + ' 件';
-    document.getElementById('surveyOrganicBars').innerHTML = renderSurveyBars(s.organic);
-    document.getElementById('surveySourceBars').innerHTML = renderSurveyBars(s.source);
-    document.getElementById('surveyMeatsBars').innerHTML = renderSurveyBars(s.meats);
+    const data = await gasGet('survey_responses');
+    const s = (data && data.survey) || { organic: {}, source: {}, meats: {} };
+    const count = (data && data.count) || 0;
+    document.getElementById('surveyCountLabel').textContent = '回答数 ' + count + ' 件';
+    const empty = '<p style="text-align:center;padding:32px;color:var(--text-dim);">回答待ち</p>';
+    document.getElementById('surveyOrganicBars').innerHTML = Object.keys(s.organic || {}).length ? renderSurveyBars(s.organic) : empty;
+    document.getElementById('surveySourceBars').innerHTML  = Object.keys(s.source  || {}).length ? renderSurveyBars(s.source)  : empty;
+    document.getElementById('surveyMeatsBars').innerHTML   = Object.keys(s.meats   || {}).length ? renderSurveyBars(s.meats)   : empty;
   } else if (tab === 'quiz') {
-    const data = (await gasGet('quiz_responses')) || { quiz: DEMO.quiz, count: 234 };
-    const q = data.quiz || DEMO.quiz;
-    document.getElementById('quizCountLabel').textContent = '完了 ' + (data.count || 234) + ' 件';
-    document.getElementById('quizFamBars').innerHTML = renderSurveyBars(q.fam);
-    document.getElementById('quizFreqBars').innerHTML = renderSurveyBars(q.freq);
-    document.getElementById('quizBudgetBars').innerHTML = renderSurveyBars(q.budget);
+    const data = await gasGet('quiz_responses');
+    const q = (data && data.quiz) || { fam: {}, freq: {}, budget: {} };
+    const count = (data && data.count) || 0;
+    document.getElementById('quizCountLabel').textContent = '完了 ' + count + ' 件';
+    const empty = '<p style="text-align:center;padding:32px;color:var(--text-dim);">回答待ち</p>';
+    document.getElementById('quizFamBars').innerHTML    = Object.keys(q.fam    || {}).length ? renderSurveyBars(q.fam)    : empty;
+    document.getElementById('quizFreqBars').innerHTML   = Object.keys(q.freq   || {}).length ? renderSurveyBars(q.freq)   : empty;
+    document.getElementById('quizBudgetBars').innerHTML = Object.keys(q.budget || {}).length ? renderSurveyBars(q.budget) : empty;
   } else if (tab === 'line') {
     document.getElementById('lineTotal').textContent = '1,062';
     document.getElementById('lineBlock').textContent = '4';
@@ -1300,5 +1288,6 @@ function downloadSegmentCsv(type, format) {
 })();
 </script>
 
+<div style="position:fixed;bottom:8px;right:12px;font-size:10px;color:rgba(244,241,230,0.32);font-family:Inter,sans-serif;letter-spacing:0.04em;pointer-events:none;z-index:5;">build 2026-05-25 10:58 JST</div>
 </body>
 </html>
