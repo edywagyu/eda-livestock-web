@@ -38,29 +38,17 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-weight: 400;
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -1244,6 +1232,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   align-items: center;
   overflow: hidden;
   isolation: isolate;
+}
+/* hero-photo: 背景の実写差し替えスロット — src を差し替えるだけで反映 */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.42;
+  mix-blend-mode: luminosity;
+  animation: heroPhotoZoom 28s ease-in-out infinite alternate;
+}
+.hero-photo:not([src]),
+.hero-photo[src=""],
+.hero-photo[src*="placeholder"] { display: none; }
+@keyframes heroPhotoZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
 }
 .hero::before {
   content: '';
@@ -3705,24 +3712,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       Miyazaki, Japan / 2026.04.20
     </p>
 
- <!-- 記事末尾の予約導線 (PR記事を読んだ取材・卸関係者向け) -->
- <div style="background:linear-gradient(135deg,rgba(15,61,46,0.05) 0%, rgba(212,169,59,0.08) 100%);border:1px solid rgba(212,169,59,0.32);border-radius:16px;padding:36px 32px;margin-top:64px;text-align:center;">
-  <span style="font-family:var(--font-display);font-size:11px;letter-spacing:0.22em;color:var(--color-gold-soft);">— Let's Talk —</span>
-  <h3 style="font-family:var(--font-display);font-size:clamp(22px,3vw,28px);color:var(--color-forest);margin:14px 0 12px;font-weight:500;">この記事に共感されたら、直接お話しませんか</h3>
-  <p style="font-size:14px;color:var(--color-ink-muted);line-height:1.8;margin:0 0 24px;">
-   メディア取材・卸/小売パートナーシップ・投資のご相談など、30分のオンライン面談で対応いたします。
-  </p>
-  <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener"
-     style="display:inline-flex;align-items:center;gap:10px;padding:16px 28px;background:var(--color-forest);color:white;text-decoration:none;border-radius:999px;font-weight:700;font-size:14px;letter-spacing:0.04em;box-shadow:0 12px 28px rgba(15,61,46,0.22);transition:transform 0.25s, background 0.25s;">
-   📅 30分話す予約をする
-   <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--color-gold);color:var(--color-forest-deep);font-weight:800;font-size:11px;">→</span>
-  </a>
- </div>
-
- <div style="text-align: center; margin-top: 48px;">
- <a href="journal.html" class="btn btn-dark">Back to Journal <span class="btn-arrow"></span></a>
- </div>
- </div>
+    <div style="text-align: center; margin-top: 64px;">
+      <a href="journal.html" class="btn btn-dark">Back to Journal <span class="btn-arrow"></span></a>
+    </div>
+  </div>
 </section>
 
 <footer class="site-footer">
@@ -4297,7 +4290,5 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>

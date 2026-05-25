@@ -38,29 +38,17 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-weight: 400;
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -1244,6 +1232,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   align-items: center;
   overflow: hidden;
   isolation: isolate;
+}
+/* hero-photo: 背景の実写差し替えスロット — src を差し替えるだけで反映 */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.42;
+  mix-blend-mode: luminosity;
+  animation: heroPhotoZoom 28s ease-in-out infinite alternate;
+}
+.hero-photo:not([src]),
+.hero-photo[src=""],
+.hero-photo[src*="placeholder"] { display: none; }
+@keyframes heroPhotoZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
 }
 .hero::before {
   content: '';
@@ -3585,139 +3592,53 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .variant-select { width: 100%; }
 }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css">
-<link rel="stylesheet" href="public/css/jp-typography.css">
-<link rel="stylesheet" href="public/css/a11y.css">
-<link rel="stylesheet" href="public/css/mobile-modern.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "江田畜産",
-  "alternateName": ["EDA Livestock", "Eda Wagyu", "EDA-LIVESTOCK CO., LTD."],
-  "legalName": "江田畜産株式会社",
-  "url": "https://edywagyu.github.io/eda-livestock-web/",
-  "logo": "https://edywagyu.github.io/eda-livestock-web/public/images/logo/eda-livestock-logo-transparent.png",
-  "image": "https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg",
-  "description": "黒毛和牛・平飼い鶏の生産から販売・輸出まで自社一貫。商社を介さず世界13カ国へ直接輸出。30ヶ月無投薬肥育の和牛と循環型農業を実践。",
-  "foundingDate": "2023",
-  "founder": {
-    "@type": "Person",
-    "name": "江田 友輝",
-    "alternateName": "Tomoki Eda",
-    "jobTitle": "代表取締役 CEO"
-  },
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "大字広原 2025-2",
-    "addressLocality": "高原町",
-    "addressRegion": "宮崎県",
-    "postalCode": "889-4411",
-    "addressCountry": "JP"
-  },
-  "contactPoint": [
-    {
-      "@type": "ContactPoint",
-      "telephone": "+81-90-4724-1063",
-      "contactType": "sales",
-      "availableLanguage": ["Japanese", "English"],
-      "areaServed": "JP"
-    },
-    {
-      "@type": "ContactPoint",
-      "telephone": "+81-80-5793-0708",
-      "contactType": "customer support",
-      "availableLanguage": ["English", "Italian", "Spanish"],
-      "areaServed": ["EU", "US", "Asia"]
-    }
-  ],
-  "email": "backoffice@eda-livestock.com",
-  "sameAs": [
-    "https://www.instagram.com/eda_livestock/"
-  ],
-  "knowsAbout": ["Wagyu Beef", "Organic Livestock", "Free-Range Chicken", "Halal Wagyu", "EU Leaf Certified Wagyu", "USDA Organic"],
-  "potentialAction": {
-    "@type": "ReserveAction",
-    "name": "Book a 30-min Call with Tomoki Eda",
-    "target": "https://calendar.app.google/DjKHsVDhJHesaPM27"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://edywagyu.github.io/eda-livestock-web/#business",
-  "name": "EDA Livestock 江田畜産",
-  "image": "https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "大字広原 2025-2",
-    "addressLocality": "高原町",
-    "addressRegion": "宮崎県",
-    "postalCode": "889-4411",
-    "addressCountry": "JP"
-  },
-  "telephone": "+81-90-4724-1063",
-  "url": "https://edywagyu.github.io/eda-livestock-web/",
-  "priceRange": "¥¥¥",
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-      "opens": "06:00",
-      "closes": "24:00"
-    }
-  ]
-}
-</script>
 </head>
 <body>
 <header class="site-header" id="siteHeader">
- <div class="container nav">
- <a href="index.html" class="brand-mark">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
- </a>
- <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">Book</a></li>
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- <li><a href="mypage.html" class="nav-mypage-link">マイページ</a></li>
- </ul>
- </nav>
- <div class="nav-utils">
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
- <rect x="3" y="3" width="18" height="18" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
- </svg>
- </a>
- <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
- <path d="M3 6h2l3 12h11l3-9H6" />
- <circle cx="9" cy="20" r="1.4" fill="currentColor" />
- <circle cx="18" cy="20" r="1.4" fill="currentColor" />
- </svg>
- <span class="cart-badge" id="cartBadge">0</span>
- </button>
- </div>
- </div>
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a href="restaurants.html">Restaurants</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="press.html">Press</a></li>
+        <li><a href="about.html#members">Members</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle">
+        <span class="active">JA</span> / <span>EN</span>
+      </div>
+      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+        </svg>
+      </a>
+      <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6" />
+          <circle cx="9" cy="20" r="1.4" fill="currentColor" />
+          <circle cx="18" cy="20" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- ========= HERO ========= -->
 <section class="hero">
+  <!-- hero-photo: tom-cattle.jpg (Tom右側・左下が暗い牛と藁) — 白文字の視認性最大化 -->
+  <img class="hero-photo" src="public/images/farm/tom-cattle.jpg" alt="宮崎・江田畜産 — 代表 江田友輝が手作業で育てる和牛" loading="eager" fetchpriority="high"/>
   <img class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/>
 
   <div class="container hero-content">
@@ -3793,57 +3714,47 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         </a>
       </article>
 
- <article class="audience-card" style="border-top-color: var(--color-forest);">
- <div class="num">— FOR RESTAURANTS —</div>
- <h3>For Restaurants</h3>
- <div class="jp">レストラン・ホテル・百貨店</div>
- <p>
- ホテル・レストラン・百貨店様への卸売を承っております。三ツ星ホテル多数で採用実績あり。サンプル提供、カスタムカット対応いたします。
- </p>
- <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" data-b2b-cta="index-restaurants"
-    style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;background:var(--color-forest);color:white;text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;letter-spacing:0.04em;margin:18px 0 14px;box-shadow:0 6px 16px rgba(15,61,46,0.16);transition:transform 0.2s, background 0.2s;">
-  📅 取扱いご相談 30分予約
-  <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--color-gold);color:var(--color-forest-deep);font-weight:800;font-size:11px;">→</span>
- </a>
- <div class="links">
- <a href="contact.html?type=wholesale">お取引のお問い合わせ</a>
- <a href="restaurants.html">取扱店一覧</a>
- <a href="awards.html">Awards & Certifications</a>
- <a href="press-kit.html">Press Kit</a>
- </div>
- <a href="tel:09047241063" class="audience-phone" data-person="domestic">
- <div class="audience-phone-label">— Direct Line —</div>
- <div class="audience-phone-name">お取引窓口</div>
- <div class="audience-phone-num">090-4724-1063</div>
- </a>
- </article>
+      <article class="audience-card" style="border-top-color: var(--color-forest);">
+        <div class="num">— FOR DOMESTIC BUYERS —</div>
+        <h3>Wholesale</h3>
+        <div class="jp">ホテル・レストラン・百貨店・小売 様</div>
+        <p>
+          国内のホテル・レストラン・百貨店・高級スーパー様向けに、卸売を承っております。三ツ星ホテル多数で採用実績あり。サンプル提供・カスタムカット対応可能です。
+        </p>
+        <div class="links">
+          <a href="contact.html?type=wholesale">お取引のお問い合わせ</a>
+          <a href="restaurants.html">取扱店一覧</a>
+          <a href="awards.html">Awards & Certifications</a>
+          <a href="press-kit.html">Press Kit</a>
+        </div>
+        <a href="tel:" class="audience-phone" data-person="domestic">
+          <div class="audience-phone-label">— Direct Line —</div>
+          <div class="audience-phone-name">国内営業担当 野々</div>
+          <div class="audience-phone-num">📞 お電話でのお問い合わせ</div>
+        </a>
+      </article>
 
- <article class="audience-card" style="border-top-color: var(--color-gold-bright);">
- <div class="num">— FOR INTERNATIONAL —</div>
- <h3>For International Partners</h3>
- <div class="jp">海外のパートナー</div>
- <p>
- 世界 13 カ国・4 大陸へ直接輸出しています。HALAL / USDA / EU Leaf 同等性に対応。2026 年、有機 JAS Wagyu の取り扱い予定。
- </p>
- <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" data-b2b-cta="index-international"
-    style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;background:var(--color-gold);color:var(--color-forest-deep);text-decoration:none;border-radius:10px;font-weight:700;font-size:13px;letter-spacing:0.04em;margin:18px 0 14px;box-shadow:0 6px 16px rgba(212,169,59,0.24);transition:transform 0.2s, background 0.2s;">
-  📅 Book a 30-min Call
-  <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--color-forest-deep);color:var(--color-gold);font-weight:800;font-size:11px;">→</span>
- </a>
- <div class="links">
- <a href="global.html">Global Presence</a>
- <a href="organic.html">World's First Organic</a>
- <a href="contact.html?type=export">Export Inquiry</a>
- <a href="awards.html">Certifications</a>
- </div>
- <a href="tel:+818057930708" class="audience-phone" data-person="export">
- <div class="audience-phone-label">— Direct Line —</div>
- <div class="audience-phone-name">Export Desk</div>
- <div class="audience-phone-num">+81 80-5793-0708</div>
- </a>
- </article>
- </div>
- </div>
+      <article class="audience-card" style="border-top-color: var(--color-gold-bright);">
+        <div class="num">— FOR EXPORT BUYERS —</div>
+        <h3>Global Inquiry</h3>
+        <div class="jp">海外バイヤー・代理店 様</div>
+        <p>
+          世界13カ国・4大陸に直接輸出。HALAL / USDA / EU Leaf 同等性 対応。2026年2月、世界初有機JAS認証 Premium EdaWagyu ローンチ。
+        </p>
+        <div class="links">
+          <a href="global.html">Global Presence</a>
+          <a href="organic.html">World's First Organic</a>
+          <a href="contact.html?type=export">Export Inquiry</a>
+          <a href="awards.html">Certifications</a>
+        </div>
+        <a href="tel:" class="audience-phone" data-person="export">
+          <div class="audience-phone-label">— Direct Line —</div>
+          <div class="audience-phone-name">代表 江田 / Tomoki Eda (CEO)</div>
+          <div class="audience-phone-num">📞 Call for Export Inquiries</div>
+        </a>
+      </article>
+    </div>
+  </div>
 </section>
 
 <!-- ========= ABOUT ========= -->
