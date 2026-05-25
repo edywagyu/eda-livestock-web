@@ -1581,17 +1581,6 @@ body {
     お問い合わせ・ご商談・サンプルリクエストは、以下までお気軽にご連絡ください。
   </p>
 
-  <!-- 大型予約ボタン (営業資料の最終アクションを明確に) -->
-  <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" data-b2b-cta="sales-deck-final"
-     style="display:inline-flex;align-items:center;gap:14px;background:var(--gold);color:#0A2D21;padding:20px 36px;border-radius:999px;text-decoration:none;font-weight:700;font-size:18px;letter-spacing:0.04em;box-shadow:0 16px 40px rgba(212,169,59,0.36);margin:20px 0;transition:transform 0.25s, background 0.25s;">
-    <span style="font-size:22px;" aria-hidden="true">📅</span>
-    <span>30分商談を予約する</span>
-    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#0F3D2E;color:var(--gold);font-weight:800;font-size:14px;">→</span>
-  </a>
-  <p style="color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:0.08em;margin:0 0 24px;">
-    JST 6:00 – 24:00 · Google カレンダー直結 · 24時間以内に確認メール送信
-  </p>
-
   <div class="contact-grid">
     <div class="contact-col">
       <h4>HEADQUARTERS</h4>
@@ -1620,62 +1609,5 @@ body {
   </div>
 </div>
 
-
-<!-- B2B Deck Booking FAB -->
-<style>
- .deck-book-fab {
-  position: fixed;
-  right: max(20px, env(safe-area-inset-right));
-  bottom: max(20px, env(safe-area-inset-bottom));
-  z-index: 9000;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 22px;
-  background: linear-gradient(135deg, #D4A93B 0%, #B8932F 100%);
-  color: #0A2D21;
-  text-decoration: none;
-  border-radius: 999px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans JP', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.02em;
-  box-shadow: 0 14px 32px rgba(212,169,59,0.38), 0 2px 8px rgba(0,0,0,0.18);
-  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
-  -webkit-tap-highlight-color: transparent;
-  border: 1.5px solid rgba(10,45,33,0.18);
- }
- .deck-book-fab:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 22px 44px rgba(212,169,59,0.48), 0 4px 12px rgba(0,0,0,0.22);
-  background: linear-gradient(135deg, #FFE594 0%, #D4A93B 100%);
- }
- .deck-book-fab-icon {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 50%;
-  background: #0F3D2E; color: #FFE594;
-  font-size: 14px;
- }
- .deck-book-fab-text { display: flex; flex-direction: column; line-height: 1.2; }
- .deck-book-fab-text strong { font-size: 13px; }
- .deck-book-fab-text small { font-size: 10px; font-weight: 500; opacity: 0.78; }
- @media (max-width: 600px) {
-  .deck-book-fab { padding: 12px 18px; bottom: 14px; right: 14px; }
-  .deck-book-fab-icon { width: 24px; height: 24px; font-size: 12px; }
-  .deck-book-fab-text strong { font-size: 12px; }
-  .deck-book-fab-text small { font-size: 9px; }
- }
- /* プリント時は非表示 */
- @media print { .deck-book-fab { display: none !important; } }
-</style>
-<a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="deck-book-fab" aria-label="30分商談予約">
- <span class="deck-book-fab-icon" aria-hidden="true">📅</span>
- <span class="deck-book-fab-text">
-  <strong>30分商談予約</strong>
-  <small>Tomoki Eda と直接 · JST 6-24時</small>
- </span>
-</a>
-
-<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
