@@ -171,6 +171,120 @@ function quizResponsesOverview(params) {
 }
 function emptyQuiz() { return { fam: {}, freq: {}, budget: {} }; }
 
+/* ====== お問い合わせフォーム受信 (contact.html → POST submit_inquiry) ======
+   - Inquiries シートに行追加 (なければ自動作成)
+   - Tom にメール通知
+   - 予約への誘導テキストを返信に含めるよう設定
+   ====== */
+function submitInquiry(body) {
+  if (!body || !body.name || !body.email) {
+    return jsonResponse({ ok: false, error: 'name と email は必須です' });
+  }
+  // 1. Inquiries シートに行追加 (なければ作成)
+  try {
+    var sheet = getSheet('Inquiries') || getSheet('inquiries');
+    if (!sheet) {
+      // 自動作成
+      var ssId = (typeof PROPS !== 'undefined' && PROPS.getProperty)
+                   ? PROPS.getProperty('SPREADSHEET_ID') : null;
+      if (ssId) {
+        var ss = SpreadsheetApp.openById(ssId);
+        sheet = ss.insertSheet('Inquiries');
+        sheet.appendRow([
+          'timestamp','inquiry_type','name','company','title','email','phone',
+          'country','city','message','source','referrer','status'
+        ]);
+      }
+    }
+    if (sheet) {
+      sheet.appendRow([
+        new Date(), body.inquiry_type || 'general',
+        body.name, body.company || '', body.title || '',
+        body.email, body.phone || '', body.country || '', body.city || '',
+        body.message || '', location.pathname || 'contact.html',
+        body.page_referrer || '', 'new'
+      ]);
+    }
+  } catch (sheetErr) {
+    log('submit_inquiry_sheet_error', { error: sheetErr.message });
+  }
+
+  // 2. Tom にメール通知
+  try {
+    var typeLabel = {
+      general: '一般', wholesale: '卸売(B2B)', export: '海外バイヤー',
+      press: 'プレス/取材', investor: '投資家',
+      career: '採用', organic: 'Organic Wagyu', partnership: 'パートナーシップ'
+    }[body.inquiry_type] || body.inquiry_type || '一般';
+
+    var subject = '【お問い合わせ】' + typeLabel + ' / ' + (body.company || body.name) + ' — ' + body.name;
+
+    var html = [
+      '<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">',
+      '<div style="background:#0F3D2E;color:#D4A93B;padding:24px 32px;">',
+      '<h2 style="margin:0;font-size:18px;">新規お問い合わせ</h2>',
+      '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,229,148,0.7);">[' + typeLabel + ']</p>',
+      '</div>',
+      '<div style="padding:28px 32px;background:#FAF7F0;">',
+      '<table style="width:100%;border-collapse:collapse;font-size:14px;">',
+      tableRow('お名前', body.name),
+      tableRow('会社', body.company),
+      tableRow('役職', body.title),
+      tableRow('Email', '<a href="mailto:' + body.email + '">' + body.email + '</a>'),
+      tableRow('Phone', body.phone),
+      tableRow('国/都市', (body.country || '') + ' ' + (body.city || '')),
+      '</table>',
+      body.message ? '<div style="margin-top:24px;padding:16px;background:white;border-left:3px solid #D4A93B;"><strong>Message:</strong><br/>' + String(body.message).replace(/\n/g,'<br/>') + '</div>' : '',
+      '<div style="margin-top:24px;padding:16px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:12px;color:#5C4A1F;">',
+      '💡 <strong>Action:</strong> 24時間以内に返信。卸売/海外バイヤーは Calendar で 30分商談を提案してください。<br/>',
+      '<a href="https://calendar.app.google/DjKHsVDhJHesaPM27" style="color:#0F3D2E;">予約ページ</a>',
+      '</div>',
+      '</div></div>'
+    ].join('');
+    MailApp.sendEmail({
+      to: 'tomoki@eda-livestock.com',
+      subject: subject,
+      htmlBody: html,
+      replyTo: body.email
+    });
+  } catch (mailErr) {
+    log('submit_inquiry_mail_error', { error: mailErr.message });
+  }
+
+  // 3. 顧客に自動返信
+  try {
+    var isJP = !body.country || /Japan|日本|JP/i.test(body.country || '');
+    var replySubject = isJP
+      ? '【江田畜産】お問い合わせを受け付けました'
+      : 'Eda Livestock — We received your inquiry';
+    var replyHtml = isJP
+      ? '<p>' + body.name + ' 様</p><p>お問い合わせありがとうございます。24〜48時間以内にご返信いたします。</p>'
+        + '<p>お急ぎの場合、Tomoki Eda と直接 30 分のオンライン商談予約も可能です:<br/>'
+        + '<a href="https://calendar.app.google/DjKHsVDhJHesaPM27">https://calendar.app.google/DjKHsVDhJHesaPM27</a></p>'
+        + '<p>江田畜産株式会社<br/>backoffice@eda-livestock.com</p>'
+      : '<p>Dear ' + body.name + ',</p><p>Thank you for your inquiry. We will get back to you within 24–48 hours.</p>'
+        + '<p>For urgent matters, you can book a direct 30-min call with Tomoki Eda:<br/>'
+        + '<a href="https://calendar.app.google/DjKHsVDhJHesaPM27">https://calendar.app.google/DjKHsVDhJHesaPM27</a></p>'
+        + '<p>Eda Livestock Co., Ltd.<br/>backoffice@eda-livestock.com</p>';
+    MailApp.sendEmail({
+      to: body.email,
+      subject: replySubject,
+      htmlBody: replyHtml,
+      name: '江田畜産 / Eda Livestock',
+      replyTo: 'backoffice@eda-livestock.com'
+    });
+  } catch (replyErr) {
+    log('submit_inquiry_autoreply_error', { error: replyErr.message });
+  }
+
+  return jsonResponse({ ok: true });
+}
+function tableRow(label, value) {
+  if (!value && value !== 0) value = '—';
+  return '<tr><td style="padding:8px 12px;font-weight:bold;width:120px;border-bottom:1px solid #EFE8D7;">'
+       + label + '</td><td style="padding:8px 12px;border-bottom:1px solid #EFE8D7;">' + value + '</td></tr>';
+}
+
 /* ====== 配送ステータス (dashboard.html の 配送ステータスタブ) ====== */
 function shipmentsOverview(params) {
   // Orders シートから shipping ステータス別に集計
