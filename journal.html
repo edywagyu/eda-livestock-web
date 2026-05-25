@@ -38,29 +38,17 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-weight: 400;
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -1244,6 +1232,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   align-items: center;
   overflow: hidden;
   isolation: isolate;
+}
+/* hero-photo: 背景の実写差し替えスロット — src を差し替えるだけで反映 */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.42;
+  mix-blend-mode: luminosity;
+  animation: heroPhotoZoom 28s ease-in-out infinite alternate;
+}
+.hero-photo:not([src]),
+.hero-photo[src=""],
+.hero-photo[src*="placeholder"] { display: none; }
+@keyframes heroPhotoZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
 }
 .hero::before {
   content: '';
@@ -3588,41 +3595,44 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </head>
 <body>
 <header class="site-header" id="siteHeader">
- <div class="container nav">
- <a href="index.html" class="brand-mark">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
- </a>
- <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">Book</a></li>
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a class="current" href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- </ul>
- </nav>
- <div class="nav-utils">
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
- <rect x="3" y="3" width="18" height="18" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
- </svg>
- </a>
- <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
- <path d="M3 6h2l3 12h11l3-9H6" />
- <circle cx="9" cy="20" r="1.4" fill="currentColor" />
- <circle cx="18" cy="20" r="1.4" fill="currentColor" />
- </svg>
- <span class="cart-badge" id="cartBadge">0</span>
- </button>
- </div>
- </div>
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a href="restaurants.html">Restaurants</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a class="current" href="journal.html">Journal</a></li>
+        <li><a href="press.html">Press</a></li>
+        <li><a href="about.html#members">Members</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle">
+        <span class="active">JA</span> / <span>EN</span>
+      </div>
+      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+        </svg>
+      </a>
+      <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6" />
+          <circle cx="9" cy="20" r="1.4" fill="currentColor" />
+          <circle cx="18" cy="20" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- ========= PAGE HEADER ========= -->
@@ -4369,8 +4379,5 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
-<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
