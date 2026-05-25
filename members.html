@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Journal | 江田畜産の記録 | EDA-LIVESTOCK</title>
-<meta name="description" content="創業ストーリー、農場の四季、シェフとの対話。江田畜産が発信するオウンドメディア。">
+<title>Members | チーム | EDA-LIVESTOCK</title>
+<meta name="description" content="20代の経営チームが、平均年齢70歳超の畜産業界に新しい風を吹き込みます。">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
@@ -38,29 +38,17 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-weight: 400;
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -3588,212 +3576,198 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </head>
 <body>
 <header class="site-header" id="siteHeader">
- <div class="container nav">
- <a href="index.html" class="brand-mark">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
- </a>
- <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">Book</a></li>
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a class="current" href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- </ul>
- </nav>
- <div class="nav-utils">
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
- <rect x="3" y="3" width="18" height="18" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
- </svg>
- </a>
- <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
- <path d="M3 6h2l3 12h11l3-9H6" />
- <circle cx="9" cy="20" r="1.4" fill="currentColor" />
- <circle cx="18" cy="20" r="1.4" fill="currentColor" />
- </svg>
- <span class="cart-badge" id="cartBadge">0</span>
- </button>
- </div>
- </div>
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a href="restaurants.html">Restaurants</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="press.html">Press</a></li>
+        <li><a href="about.html#members">Members</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle">
+        <span class="active">JA</span> / <span>EN</span>
+      </div>
+      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+        </svg>
+      </a>
+      <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6" />
+          <circle cx="9" cy="20" r="1.4" fill="currentColor" />
+          <circle cx="18" cy="20" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- ========= PAGE HEADER ========= -->
 <section class="page-header">
   <div class="container page-header-content">
-    <span class="eyebrow page-eyebrow">— Journal —</span>
+    <span class="eyebrow page-eyebrow">— Our Team —</span>
     <h1 class="page-title">
-      Company<br/>
-      <span class="accent">Journal.</span>
+      A New Generation,<br/>
+      <span class="accent">In Their 20s.</span>
     </h1>
     <p class="page-subtitle">
-      江田畜産の自社記事・お知らせ・イベントレポート。<br/>
-      各記事は公式サイト（eda-livestock.com）の詳細ページへリンクしています。
+      平均年齢70歳超の畜産業界に、20代のチームで挑む。<br/>
+      役員・メンバー・アドバイザー、それぞれが100年先を見据えて働いています。
     </p>
   </div>
 </section>
 
-<!-- ========= ARTICLE LIST ========= -->
-<section class="article-body">
+<!-- ========= EXECUTIVES ========= -->
+<section class="members section">
   <div class="container">
-    <div class="reveal" style="max-width: 920px; margin: 0 auto;">
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2026.05</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">HOTEL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">ザ・リッツ・カールトン福岡「幻珠」 江田和牛限定フェア 開催中</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">ザ・リッツ・カールトン福岡 鉄板焼「幻珠」にて、江田和牛を主役にした限定フェアを開催中。九州のフラッグシップホテルで味わうプレミアム和牛体験。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E3%83%AA%E3%83%83%E3%83%84%E3%83%BB%E3%82%AB%E3%83%BC%E3%83%AB%E3%83%88%E3%83%B3%E7%A6%8F%E5%B2%A1" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.05</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EVENT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">大丸東京 地下催事にて江田和牛販売会を実施</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">大丸東京店の地下催事「旬鮮探訪」にて、江田和牛の販売会を実施しました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E5%A4%A7%E4%B8%B8%E6%9D%B1%E4%BA%AC-%E5%9C%B0%E4%B8%8B%E5%82%AC%E4%BA%8B%E3%81%AB%E3%81%A6%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B%E8%B2%A9%E5%A3%B2%E4%BC%9A%E3%82%92%E5%AE%9F%E6%96%BD%EF%BC%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.04</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">RETAIL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">イオン九州「BIORAL」にて江田和牛販売スタート</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">イオン九州が展開する自然派食品ブランド「BIORAL（ビオラル）」での販売がスタートしました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%B2%A9%E5%A3%B2%E9%96%8B%E5%A7%8B%E3%80%91%E3%82%A4%E3%82%AA%E3%83%B3%E4%B9%9D%E5%B7%9E" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.04</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EVENT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">三越銀座・三越日本橋にて江田和牛フェア開催</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">老舗百貨店・三越での合同フェア。3週間で1,200名以上の方にお越しいただきました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E5%87%BA%E5%BA%97%E3%80%91%E4%B8%89%E8%B6%8A%E9%8A%80%E5%BA%A7" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.04</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">GLOBAL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">中国・海南省「国際消費品博覧会（Hainan Expo）」に出展</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">アジアの巨大市場に、宮崎発の和牛ブランドとして出展。海南国際消費品博覧会での4日間。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91%E4%B8%AD%E5%9B%BD%E3%83%BB%E6%B5%B7%E5%8D%97%E7%9C%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.01</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">SCHEDULE</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">2025年 江田畜産 出演予定のイベントスケジュール</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">2025年の出演・出展予定のイベント情報をまとめました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E6%B1%9F%E7%94%B0%E7%95%9C%E7%94%A3%E3%81%8C%E5%87%BA%E6%BC%94%E4%BA%88%E5%AE%9A" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.12</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">PRODUCT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">オーガニック卵、はじめました</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">江田畜産の新商品ラインとして、オーガニック飼育の鶏卵販売を開始しました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E3%82%AA%E3%83%BC%E3%82%AC%E3%83%8B%E3%83%83%E3%82%AF%E5%8D%B5%E3%80%81%E3%81%AF%E3%81%98%E3%82%81%E3%81%BE%E3%81%97%E3%81%9F%EF%BC%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.11</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EXPO</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">"日本の食品"輸出 EXPO 初出展</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">幕張メッセで開催された「日本の食品 輸出EXPO」に初出展。世界のバイヤーとの出会い。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91%22%E6%97%A5%E6%9C%AC%E3%81%AE%E9%A3%9F%E5%93%81%22%E8%BC%B8%E5%87%BA-EXPO-%E5%88%9D%E5%87%BA%E5%B1%95%EF%BC%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.11</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">GLOBAL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">フィリピン視察 — 和牛市場拡大への挑戦</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">フィリピンでの和牛市場の現状と、今後の展開可能性についての視察レポート。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91%E3%83%95%E3%82%A3%E3%83%AA%E3%83%94%E3%83%B3%E8%A6%96%E5%AF%9F%E3%81%AB%E3%81%A6%E5%92%8C%E7%89%9B%E5%B8%82%E5%A0%B4%E6%8B%A1%E5%A4%A7%E3%81%B8%E3%81%AE%E6%8C%91%E6%88%A6" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.10</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EVENT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">SKS JAPAN — フードテック国際カンファレンス登壇</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">日本のフードテック国際カンファレンスでの登壇・展示を終えて。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91sks%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%82%92%E7%B5%82%E3%81%88%E3%81%A6" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.09</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">RETAIL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">京王百貨店 新宿店 ECサイト出店</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">60周年記念商品にも選定された京王百貨店、ECサイトでの取り扱いがスタート。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E4%BA%AC%E7%8E%8B%E7%99%BE%E8%B2%A8%E5%BA%97%E6%96%B0%E5%AE%BF%E5%BA%97ec%E5%87%BA%E5%BA%97" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0;">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.09</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">HOTEL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">ザ・リッツ・カールトン福岡にてスペシャルディナー開催</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">9月12〜14日の3日間、ザ・リッツ・カールトン福岡 鉄板焼「幻珠」にて「江田和牛スペシャルディナー」を開催。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91ritz-carlton%E3%81%AB%E3%81%A6%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E9%96%8B%E5%82%AC" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
+    <div class="reveal" style="text-align: center; margin-bottom: 80px;">
+      <span class="eyebrow text-gold has-dash">Executive</span>
+      <h2 style="font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); margin: 24px 0 0;">— Founders —</h2>
     </div>
 
-    <p style="text-align: center; margin-top: 64px; color: var(--color-ink-muted); font-size: 14px;" class="reveal">
-      全ニュース一覧は <a href="https://www.eda-livestock.com/news-2" target="_blank" rel="noopener" style="color: var(--color-gold-soft); text-decoration: underline;">eda-livestock.com</a> にて掲載しています。
-    </p>
+    <div class="member-grid reveal" style="grid-template-columns: repeat(2, 1fr); max-width: 800px; margin: 0 auto;">
+      <article class="member-card">
+        <div class="member-photo has-img" data-initials="TE"><img src="public/images/members/eda-tomoki.jpg" alt="Tomoki Eda"/><span class="corner">01 / Founder · CEO</span></div>
+        <div class="member-role">Founder · CEO</div>
+        <h3 class="member-name">Tomoki Eda</h3>
+        <div class="member-name-jp">江田 友輝</div>
+        <p style="font-size: 13px; line-height: 1.85; opacity: 0.82; margin: 16px 0 0;">
+          宮崎県小林市出身。日本大学商学部在籍中にニュージーランド・アメリカへ留学。21歳で独立し、映像制作・フィットネス事業の営業マーケティングに従事。<br/><br/>
+          27歳の時、家業である畜産の構造的課題に直面し、2023年4月、江田畜産株式会社を創業。「Livestock For The Next Century.」を掲げ、20代の世代が主導するサステナブルな畜産モデルを構築している。
+        </p>
+        <div class="member-meta-row">
+          <span>Miyazaki, Japan</span>
+          <span>2023— CEO</span>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo has-img" data-initials="RT"><img src="public/images/members/tanaka.png" alt="Rei Tanaka"/><span class="corner">02 / COO</span></div>
+        <div class="member-role">COO</div>
+        <h3 class="member-name">Rei Tanaka</h3>
+        <div class="member-name-jp">田中 伶</div>
+        <p style="font-size: 13px; line-height: 1.85; opacity: 0.82; margin: 16px 0 0;">
+          早稲田大学教育学部卒業。新卒でベイカレント・コンサルティングに入社し、戦略・DXコンサルティング及び経営コンサルタントとして活動。<br/><br/>
+          国内外大手企業の事業戦略・ブランディング戦略立案PJ等に従事した後、2023年に江田畜産共同創業。経営戦略・財務・オペレーション設計を統括し、畜産DXの実装を牽引している。
+        </p>
+        <div class="member-meta-row">
+          <span>Tokyo, Japan</span>
+          <span>2023— COO</span>
+        </div>
+      </article>
+    </div>
+
+    <!-- ========= MEMBERS ========= -->
+    <div class="reveal" style="text-align: center; margin: clamp(96px, 14vw, 160px) 0 80px;">
+      <span class="eyebrow text-gold has-dash">Members</span>
+      <h2 style="font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); margin: 24px 0 0;">— Team —</h2>
+    </div>
+
+    <div class="member-grid reveal cols-3">
+      <article class="member-card">
+        <div class="member-photo has-img" data-initials="VQ"><img src="public/images/members/val.jpg" alt="Valjon Qejvani"/><span class="corner">03 / International Sales</span></div>
+        <div class="member-role">International Sales</div>
+        <h3 class="member-name">Valjon Qejvani</h3>
+        <div class="member-name-jp">バルヨン・ケジヴァニ</div>
+        <p style="font-size: 13px; line-height: 1.85; opacity: 0.82; margin: 16px 0 0;">
+          ウェスタンミシガン大学にて機械工学・エンジニアリング領域を研究。2022年にアメリカ大手マーケティング会社へ就職した後、2023年夏に海外セールスとして江田畜産にジョイン。<br/><br/>
+          香港・ニューヨーク・EU圏のホテル・高級スーパー開拓を担当。
+        </p>
+        <div class="member-meta-row">
+          <span>Global</span>
+          <span>2023—</span>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo has-img" data-initials="KN"><img src="public/images/members/nono.jpg" alt="Keigo Nono"/><span class="corner">04 / Domestic · JAS</span></div>
+        <div class="member-role">Domestic Sales · JAS Project Lead</div>
+        <h3 class="member-name">Keigo Nono</h3>
+        <div class="member-name-jp">野々 圭吾</div>
+        <p style="font-size: 13px; line-height: 1.85; opacity: 0.82; margin: 16px 0 0;">
+          専修大学卒。国内営業を担当しつつ、有機JAS認証取得プロジェクトのリーダーを務める。<br/><br/>
+          2026年1月に取得した世界初オーガニック認証「Premium EdaWagyu」（特選江田和牛）の実装を牽引。
+        </p>
+        <div class="member-meta-row">
+          <span>Tokyo, Japan</span>
+          <span>JAS Lead</span>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo" data-initials="TS"><span class="corner">05 / Member</span></div>
+        <div class="member-role">Member</div>
+        <h3 class="member-name">Tasaki</h3>
+        <div class="member-name-jp">田崎</div>
+        <p style="font-size: 13px; line-height: 1.85; opacity: 0.82; margin: 16px 0 0;">
+          プロフィール準備中。<br/>
+          プロフィール写真と詳細は近日公開予定です。
+        </p>
+        <div class="member-meta-row">
+          <span>—</span>
+          <span>Coming Soon</span>
+        </div>
+      </article>
+
+      <article class="member-card">
+        <div class="member-photo" data-initials="LN"><span class="corner">06 / Member</span></div>
+        <div class="member-role">Member</div>
+        <h3 class="member-name">Lane</h3>
+        <div class="member-name-jp">レーン</div>
+        <p style="font-size: 13px; line-height: 1.85; opacity: 0.82; margin: 16px 0 0;">
+          プロフィール準備中。<br/>
+          プロフィール写真と詳細は近日公開予定です。
+        </p>
+        <div class="member-meta-row">
+          <span>—</span>
+          <span>Coming Soon</span>
+        </div>
+      </article>
+    </div>
+
+    <!-- ========= ADVISOR ========= -->
+    <div class="reveal" style="text-align: center; margin: clamp(96px, 14vw, 160px) 0 80px;">
+      <span class="eyebrow text-gold has-dash">Project Director</span>
+      <h2 style="font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); margin: 24px 0 0;">— Chef Advisor —</h2>
+    </div>
+
+    <div class="member-grid reveal" style="grid-template-columns: 1fr; max-width: 720px; margin: 0 auto;">
+      <article class="member-card" style="display: grid; grid-template-columns: 280px 1fr; gap: 48px; align-items: start;">
+        <div class="member-photo" data-initials="HS" style="margin-bottom: 0;"><span class="corner">07 / Advisor</span></div>
+        <div>
+          <div class="member-role">Project Director · Chef</div>
+          <h3 class="member-name">Hitoshi Sugiura</h3>
+          <div class="member-name-jp">杉浦 仁志</div>
+          <p style="font-size: 14px; line-height: 1.85; opacity: 0.85; margin: 16px 0 0;">
+            内閣府クールジャパンプロデューサー就任。海外国賓関係者へのレセプションパーティーで代表料理人を務める。<br/><br/>
+            "Social Food Gastronomy" を提唱し、より多角的な食の視野からイノベーションを展開。2050年に向けた次世代のシェフモデルとして国内外で活躍中。江田畜産にはプロジェクトディレクターとして参画し、味と食文化の方向性を共に描いています。
+          </p>
+          <div class="member-meta-row">
+            <span>Tokyo · Global</span>
+            <span>Cool Japan PD</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div style="text-align: center; margin-top: clamp(80px, 12vw, 120px);" class="reveal">
+      <p style="opacity: 0.7; margin-bottom: 32px;">江田畜産では、共に100年先の畜産を創るメンバーを募集しています。</p>
+      <a href="contact.html" class="btn btn-gold">Join Our Team <span class="btn-arrow"></span></a>
+    </div>
   </div>
 </section>
 
@@ -4369,8 +4343,5 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
-<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
