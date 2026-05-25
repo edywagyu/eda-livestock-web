@@ -25,6 +25,10 @@ staff-manifest.json
 research/
 test-checkout.html
 
+# 経費精算データ（財務情報のためローカル保持のみ）
+keihi/**/raw_emails.txt
+keihi/**/*.csv
+
 # Python/Node ツール
 .venv/
 venv/
