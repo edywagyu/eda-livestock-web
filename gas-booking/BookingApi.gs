@@ -19,8 +19,23 @@
  */
 
 const PROPS = PropertiesService.getScriptProperties();
-const CALENDAR_ID = PROPS.getProperty('CALENDAR_ID') || 'primary';
+const CALENDAR_ID = PROPS.getProperty('CALENDAR_ID') || '';
 const NOTIFICATION_EMAIL = PROPS.getProperty('NOTIFICATION_EMAIL') || 'tomoki@eda-livestock.com';
+
+// 最小リードタイム：3 日（72 時間）後以降のみ予約可
+const MIN_LEAD_TIME_HOURS = 72;
+
+/**
+ * Tom のカレンダーを取得。Script Property に CALENDAR_ID があれば優先。
+ * なければ getDefaultCalendar()（= 実行ユーザー tomoki@eda-livestock.com の primary）。
+ */
+function getTomCalendar_() {
+  if (CALENDAR_ID) {
+    var cal = CalendarApp.getCalendarById(CALENDAR_ID);
+    if (cal) return cal;
+  }
+  return CalendarApp.getDefaultCalendar();
+}
 
 function doGet(e) {
   const action = (e.parameter.action || '').trim();
@@ -79,22 +94,15 @@ function getAvailableSlots(params) {
     return { error: 'date parameter required (YYYY-MM-DD)' };
   }
 
-  const jstOffset = 9 * 60;
-
-  var startHourJST, endHourJST;
-  if (buyerType === 'domestic') {
-    startHourJST = 10;
-    endHourJST = 18;
-  } else {
-    startHourJST = 6;
-    endHourJST = 24;
-  }
+  // Tom 指定 (2026-05-24): 国内/海外問わず JST 6:00 – 24:00 を開放
+  // 国内バイヤーも早朝/深夜にコールイン可、海外バイヤーは時差を気にせず予約可能
+  var startHourJST = 6;
+  var endHourJST = 24;
 
   var dayStart = new Date(dateStr + 'T00:00:00+09:00');
   var dayEnd = new Date(dateStr + 'T23:59:59+09:00');
 
-  var cal = CalendarApp.getCalendarById(CALENDAR_ID);
-  if (!cal) cal = CalendarApp.getDefaultCalendar();
+  var cal = getTomCalendar_();
 
   var events = cal.getEvents(dayStart, dayEnd);
   var busyRanges = events.map(function(ev) {
@@ -104,23 +112,32 @@ function getAvailableSlots(params) {
     };
   });
 
+  var minBookingTime = Date.now() + MIN_LEAD_TIME_HOURS * 60 * 60 * 1000;
+
   var slots = [];
   for (var h = startHourJST; h < endHourJST; h++) {
     var slotStartJST = new Date(dateStr + 'T' + pad_(h) + ':00:00+09:00');
     var slotEndJST = new Date(slotStartJST.getTime() + 60 * 60 * 1000);
 
-    if (slotStartJST.getTime() < Date.now() + 2 * 60 * 60 * 1000) continue;
+    // 3日後以降のみ予約可
+    if (slotStartJST.getTime() < minBookingTime) continue;
 
     var conflict = busyRanges.some(function(b) {
       return slotStartJST.getTime() < b.end && slotEndJST.getTime() > b.start;
     });
     if (conflict) continue;
 
+    // 訪問者ローカル時刻のラベル生成（NY/LA/Madrid 等）
+    var localLabel = formatInTz_(slotStartJST, visitorTz) + ' – ' +
+                     formatInTz_(slotEndJST, visitorTz);
+
     slots.push({
       start_utc: slotStartJST.toISOString(),
       end_utc: slotEndJST.toISOString(),
       hour_jst: h,
-      label_jst: pad_(h) + ':00 – ' + pad_(h + 1) + ':00 JST'
+      label_jst: pad_(h) + ':00 – ' + pad_(h + 1) + ':00 JST',
+      label_local: localLabel,
+      tz_local: visitorTz
     });
   }
 
@@ -128,8 +145,20 @@ function getAvailableSlots(params) {
     date: dateStr,
     buyer_type: buyerType,
     visitor_tz: visitorTz,
+    calendar_email: cal.getId(),
     slots: slots
   };
+}
+
+/**
+ * 指定タイムゾーンで時刻を HH:mm 形式に整形（NY なら "21:00"）。
+ */
+function formatInTz_(date, tz) {
+  try {
+    return Utilities.formatDate(date, tz, 'HH:mm');
+  } catch (err) {
+    return Utilities.formatDate(date, 'Asia/Tokyo', 'HH:mm');
+  }
 }
 
 function pad_(n) {
@@ -151,12 +180,12 @@ function createBooking(body) {
   var startTime = new Date(body.start_utc);
   var endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
 
-  if (startTime.getTime() < Date.now()) {
-    return { error: 'Cannot book a past time slot' };
+  var minBookingTime = Date.now() + MIN_LEAD_TIME_HOURS * 60 * 60 * 1000;
+  if (startTime.getTime() < minBookingTime) {
+    return { error: 'Bookings must be at least 3 days in advance / 予約は3日後以降の日時のみ受け付けています' };
   }
 
-  var cal = CalendarApp.getCalendarById(CALENDAR_ID);
-  if (!cal) cal = CalendarApp.getDefaultCalendar();
+  var cal = getTomCalendar_();
 
   var existing = cal.getEvents(startTime, endTime);
   if (existing.length > 0) {

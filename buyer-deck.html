@@ -881,13 +881,20 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
     Request a price list or schedule a call with our export team.
   </p>
 
-  <!-- Prominent CTA: Request Quote -->
-  <a href="mailto:international.sales@eda-livestock.com?subject=Eda%20Wagyu%20%E2%80%94%20Quote%20Request&body=Dear%20Eda%20Livestock%20Team%2C%0A%0AWe%20would%20like%20to%20request%20a%20quote%20for%20Eda%20Wagyu.%0A%0A--%20Company%20Name%3A%20%0A--%20Country%2FCity%3A%20%0A--%20Cuts%20%26%20Volume%3A%20%0A--%20Chilled%20or%20Frozen%3A%20%0A--%20Desired%20Delivery%20Date%3A%20%0A%0AThank%20you." style="display:inline-block; margin-top:24px; padding:16px 36px; background:var(--gold); color:var(--forest); font-family:'Bebas Neue'; font-size:18px; letter-spacing:0.15em; text-decoration:none; border:1px solid var(--gold); box-shadow:0 4px 20px rgba(212,169,59,0.25);">
-    📩 REQUEST A QUOTE
+  <!-- Primary CTA: Book a 30-min Call (preferred - face-to-face conversion) -->
+  <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" data-b2b-cta="buyer-deck-en-final"
+     style="display:inline-flex;align-items:center;gap:14px;margin-top:24px;padding:18px 36px;background:var(--gold);color:var(--forest);font-family:'Bebas Neue';font-size:20px;letter-spacing:0.15em;text-decoration:none;border:1px solid var(--gold);box-shadow:0 8px 28px rgba(212,169,59,0.36);transition:transform 0.25s;">
+    📅 BOOK A 30-MIN CALL
+    <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--forest);color:var(--gold);font-size:14px;">→</span>
   </a>
-  <div style="font-family:'Bebas Neue'; font-size:10px; letter-spacing:0.15em; color:rgba(255,255,255,0.4); margin-top:8px;">
-    タップして見積依頼メールを送信 · OPENS YOUR EMAIL APP
+  <div style="font-family:'Bebas Neue'; font-size:10px; letter-spacing:0.15em; color:rgba(255,255,255,0.5); margin-top:8px;">
+    DIRECT WITH TOMOKI EDA · JST 6-24h · GOOGLE CALENDAR
   </div>
+
+  <!-- Secondary CTA: Email Quote Request -->
+  <a href="mailto:international.sales@eda-livestock.com?subject=Eda%20Wagyu%20%E2%80%94%20Quote%20Request&body=Dear%20Eda%20Livestock%20Team%2C%0A%0AWe%20would%20like%20to%20request%20a%20quote%20for%20Eda%20Wagyu.%0A%0A--%20Company%20Name%3A%20%0A--%20Country%2FCity%3A%20%0A--%20Cuts%20%26%20Volume%3A%20%0A--%20Chilled%20or%20Frozen%3A%20%0A--%20Desired%20Delivery%20Date%3A%20%0A%0AThank%20you." style="display:inline-block; margin-top:16px; padding:12px 28px; color:rgba(255,255,255,0.85); font-family:'Bebas Neue'; font-size:13px; letter-spacing:0.15em; text-decoration:none; border:1px solid rgba(212,169,59,0.32); border-radius:999px;">
+    📩 OR Email a Quote Request
+  </a>
 
   <div class="contact-cols">
     <div class="contact-col">
@@ -917,5 +924,62 @@ body { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; colo
   </div>
 </div>
 
+
+<!-- B2B Deck Booking FAB -->
+<style>
+ .deck-book-fab {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 9000;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  background: linear-gradient(135deg, #D4A93B 0%, #B8932F 100%);
+  color: #0A2D21;
+  text-decoration: none;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 14px 32px rgba(212,169,59,0.38), 0 2px 8px rgba(0,0,0,0.18);
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+  -webkit-tap-highlight-color: transparent;
+  border: 1.5px solid rgba(10,45,33,0.18);
+ }
+ .deck-book-fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px rgba(212,169,59,0.48), 0 4px 12px rgba(0,0,0,0.22);
+  background: linear-gradient(135deg, #FFE594 0%, #D4A93B 100%);
+ }
+ .deck-book-fab-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #0F3D2E; color: #FFE594;
+  font-size: 14px;
+ }
+ .deck-book-fab-text { display: flex; flex-direction: column; line-height: 1.2; }
+ .deck-book-fab-text strong { font-size: 13px; }
+ .deck-book-fab-text small { font-size: 10px; font-weight: 500; opacity: 0.78; }
+ @media (max-width: 600px) {
+  .deck-book-fab { padding: 12px 18px; bottom: 14px; right: 14px; }
+  .deck-book-fab-icon { width: 24px; height: 24px; font-size: 12px; }
+  .deck-book-fab-text strong { font-size: 12px; }
+  .deck-book-fab-text small { font-size: 9px; }
+ }
+ /* プリント時は非表示 */
+ @media print { .deck-book-fab { display: none !important; } }
+</style>
+<a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="deck-book-fab" aria-label="Book a 30-min Call">
+ <span class="deck-book-fab-icon" aria-hidden="true">📅</span>
+ <span class="deck-book-fab-text">
+  <strong>Book a 30-min Call</strong>
+  <small>Direct with Tomoki Eda · JST 6-24h</small>
+ </span>
+</a>
+
+<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
