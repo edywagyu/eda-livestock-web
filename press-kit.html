@@ -38,17 +38,29 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
+@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
 body {
-  margin: 0;
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-ink);
-  background: var(--color-cream);
-  overflow-x: hidden;
+ margin: 0;
+ font-family: var(--font-body);
+ font-weight: 400;
+ font-size: 17px;
+ line-height: 1.8;
+ color: var(--color-ink);
+ background: var(--color-cream);
+ overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
+/* mobile-scroll-patch: touch & perf */
+a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
+@media (max-width: 1024px) {
+  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
+}
+@supports (content-visibility: auto) {
+  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+}
+
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -3618,17 +3630,29 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <!-- ========= PAGE HEADER ========= -->
 <section class="page-header">
-  <div class="container page-header-content">
-    <span class="eyebrow page-eyebrow">— Press Kit —</span>
-    <h1 class="page-title">
-      Brand<br/>
-      <span class="accent">Assets.</span>
-    </h1>
-    <p class="page-subtitle">
-      取材・記事掲載・パートナーシップ向けの素材集です。<br/>
-      ロゴ、メンバー写真、商品画像、会社プロフィールPDFをダウンロード頂けます。
-    </p>
-  </div>
+ <div class="container page-header-content">
+ <span class="eyebrow page-eyebrow">— Press Kit —</span>
+ <h1 class="page-title">
+ Brand<br/>
+ <span class="accent">Assets.</span>
+ </h1>
+ <p class="page-subtitle">
+ 取材・記事掲載・パートナーシップ向けの素材集です。<br/>
+ ロゴ、メンバー写真、商品画像、会社プロフィールPDFをダウンロード頂けます。
+ </p>
+ <!-- 取材依頼の直接予約 -->
+ <div style="display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:28px;">
+ <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" data-b2b-cta="press-kit-hero"
+    style="display:inline-flex;align-items:center;gap:10px;padding:14px 26px;background:var(--color-gold);color:var(--color-forest-deep);text-decoration:none;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:0.04em;box-shadow:0 10px 24px rgba(212,169,59,0.32);">
+  📅 取材・登壇依頼 30分予約
+  <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--color-forest-deep);color:var(--color-gold);font-weight:800;font-size:11px;">→</span>
+ </a>
+ <a href="mailto:backoffice@eda-livestock.com?subject=%E5%8F%96%E6%9D%90%E4%BE%9D%E9%A0%BC&body=取材媒体名：%0A連絡先：%0A取材内容：%0A希望日程："
+    style="display:inline-flex;align-items:center;gap:8px;padding:14px 26px;color:rgba(255,255,255,0.85);text-decoration:none;border:1px solid rgba(255,255,255,0.16);border-radius:999px;font-size:13px;font-weight:600;">
+  📧 メールで取材依頼
+ </a>
+ </div>
+ </div>
 </section>
 
 <!-- ========= LOGOS ========= -->
@@ -4345,5 +4369,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
+<script src="public/js/eda-bundle.js?v=005" defer></script>
+<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
