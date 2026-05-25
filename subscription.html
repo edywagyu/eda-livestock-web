@@ -10,29 +10,44 @@
  * EDA-LIVESTOCK Design System
  * ================================================================ */
 
-* { box-sizing: border-box; }
-html {
- scroll-behavior: smooth; -webkit-font-smoothing: antialiased;
- scroll-padding-top: 80px;
+:root {
+  --color-forest: #0F3D2E;
+  --color-forest-deep: #0A2D21;
+  --color-forest-light: #143D2B;
+  --color-gold: #D4A93B;
+  --color-gold-bright: #E5B547;
+  --color-gold-soft: #B8932F;
+  --color-cream: #FAF7F0;
+  --color-paper: #F5EFE3;
+  --color-bone: #EFE8D7;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #5C5C5C;
+  --color-red: #C8102E;
+  --color-line: rgba(212, 169, 59, 0.18);
+  --font-display: 'Bebas Neue', 'Oswald', 'Noto Sans JP', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+  --font-jp: 'Noto Sans JP', -apple-system, sans-serif;
+  --font-jp-serif: 'Noto Serif JP', serif;
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.12em;
+  --tracking-widest: 0.24em;
+  --space-section: clamp(80px, 12vw, 160px);
+  --space-section-sm: clamp(48px, 8vw, 96px);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
- overscroll-behavior-y: contain;
- -webkit-overflow-scrolling: touch;
-}
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
- [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
- section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
@@ -1218,6 +1233,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   overflow: hidden;
   isolation: isolate;
 }
+/* hero-photo: 背景の実写差し替えスロット — src を差し替えるだけで反映 */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.42;
+  mix-blend-mode: luminosity;
+  animation: heroPhotoZoom 28s ease-in-out infinite alternate;
+}
+.hero-photo:not([src]),
+.hero-photo[src=""],
+.hero-photo[src*="placeholder"] { display: none; }
+@keyframes heroPhotoZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
+}
 .hero::before {
   content: '';
   position: absolute;
@@ -1639,141 +1673,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   color: rgba(255,255,255,0.7);
   white-space: nowrap;
 }
-.sub-plan-vip-perk-row {
- display: flex;
- align-items: center;
- gap: 10px;
- padding: 12px 14px;
- background:
- radial-gradient(circle at 0% 50%, rgba(212,169,59,0.15), transparent 70%),
- linear-gradient(135deg, #0F3D2E, #143D2B);
- color: white;
- border-radius: 10px;
- margin: 0 0 14px;
- border: 1px solid rgba(212,169,59,0.45);
-}
-.sub-plan-vip-perk-row > span {
- font-size: 22px;
- flex-shrink: 0;
- filter: drop-shadow(0 0 4px rgba(212,169,59,0.5));
-}
-.sub-plan-vip-perk-row > div {
- display: flex;
- flex-direction: column;
- gap: 2px;
- line-height: 1.3;
-}
-.sub-plan-vip-perk-row strong {
- font-size: 12px;
- color: var(--color-gold);
- letter-spacing: 0.02em;
- font-weight: 700;
-}
-.sub-plan-vip-perk-row small {
- font-size: 10.5px;
- color: rgba(255,255,255,0.75);
-}
-.sub-plan-pricing { margin-bottom: 16px; }
-.sub-plan-old-price {
- font-family: var(--font-display);
- font-size: 14px;
- color: var(--color-ink-muted);
- text-decoration: line-through;
- text-decoration-color: var(--color-red);
-}
-.sub-plan-price {
- font-family: var(--font-display);
- font-size: 36px;
- color: var(--color-forest);
- font-weight: 700;
- font-variant-numeric: tabular-nums;
- letter-spacing: -0.02em;
- line-height: 1;
-}
-.sub-plan-price small {
- font-family: var(--font-jp);
- font-size: 12px;
- color: var(--color-ink-muted);
- margin-left: 4px;
- font-weight: 600;
-}
-.sub-plan-savings {
- display: inline-block;
- background: rgba(212,169,59,0.18);
- color: var(--color-gold-soft);
- font-size: 11px; font-weight: 700;
- padding: 3px 10px; border-radius: 10px;
- margin-top: 6px;
-}
-.sub-plan-select-btn {
- display: flex; align-items: center; justify-content: center; gap: 6px;
- width: 100%;
- padding: 14px 18px;
- background: var(--color-forest); color: white;
- border-radius: 10px;
- font-family: var(--font-jp); font-size: 13px;
- font-weight: 700; letter-spacing: 0.04em;
- text-align: center;
- transition: background 0.25s var(--ease-out-expo), color 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
- cursor: pointer;
- -webkit-tap-highlight-color: transparent;
-}
-.sub-plan-card:hover .sub-plan-select-btn { background: var(--color-forest-deep); transform: translateY(-1px); }
-.sub-plan-card.featured .sub-plan-select-btn { background: var(--color-gold); color: var(--color-forest-deep); }
-.sub-plan-card.featured:hover .sub-plan-select-btn { background: #C99A2D; color: var(--color-forest-deep); }
-/* 選択中状態: 必ずテキストが視認できるよう color: white を明示 + チェックアイコン */
-.sub-plan-card.selected .sub-plan-select-btn,
-.sub-plan-card.featured.selected .sub-plan-select-btn {
- background: var(--color-forest-deep);
- color: #FFE594;
- box-shadow: inset 0 0 0 2px var(--color-gold);
-}
-.sub-plan-card.selected .sub-plan-select-btn::before { content: "✓ "; font-weight: 800; }
-.sub-plan-card.selected .sub-plan-select-btn .btn-label { font-weight: 700; }
-
-/* ================ 詳細セクション (選択中プランの内容物・サイクル) ================ */
-.sub-detail {
- background: white;
- padding: 96px 0;
- position: relative;
- border-top: 1px solid var(--color-bone);
- border-bottom: 1px solid var(--color-bone);
-}
-.sub-detail-head { text-align: center; margin-bottom: 56px; }
-.sub-detail-eyebrow {
- display: inline-block;
- font-family: var(--font-display);
- font-size: 10.5px;
- letter-spacing: 0.22em;
- color: var(--color-gold);
- font-weight: 700;
- margin-bottom: 14px;
-}
-.sub-detail-title {
- font-family: var(--font-jp-serif);
- font-size: clamp(24px, 3.6vw, 36px);
- color: var(--color-forest);
- margin-bottom: 12px;
- font-weight: 700;
-}
-.sub-detail-plan-name {
- display: inline-block;
- font-family: var(--font-jp); /* 日本語見やすく */
- font-size: 13.5px;
- letter-spacing: 0.06em;
- background: var(--color-forest);
- color: white; /* gold→white でコントラストUP */
- padding: 8px 22px;
- border-radius: 16px;
- font-weight: 700;
-}
-.sub-detail-plan-name strong,
-.sub-detail-plan-name b {
- color: var(--color-gold);
- font-family: var(--font-numeric);
- font-weight: 800;
- letter-spacing: -0.01em;
- margin: 0 2px;
+.shop-trust-item strong {
+  color: var(--color-gold);
 }
 
 /* ================ LINE BANNER ================ */
@@ -2057,69 +1958,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   opacity: 1;
 }
 
-/* ================ スティッキー注文CTAバー（モバイルで特に重要） ================ */
-.sub-sticky-cta {
- position: fixed;
- bottom: 0; left: 0; right: 0;
- background: rgba(15, 61, 46, 0.96);
- backdrop-filter: saturate(180%) blur(14px);
- -webkit-backdrop-filter: saturate(180%) blur(14px);
- color: white;
- padding: 12px max(16px, env(safe-area-inset-left)) calc(12px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-right));
- z-index: 90;
- transform: translateY(110%);
- transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
- box-shadow: 0 -8px 28px rgba(0,0,0,0.18);
- border-top: 1px solid rgba(212,169,59,0.32);
-}
-.sub-sticky-cta.is-visible { transform: translateY(0); }
-.sub-sticky-cta-inner {
- max-width: 1200px; margin: 0 auto;
- display: flex; align-items: center; justify-content: space-between; gap: 16px;
-}
-.sub-sticky-cta-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.sub-sticky-cta-plan {
- font-family: var(--font-display);
- font-size: 11px; letter-spacing: 0.18em;
- color: var(--color-gold-soft);
- text-transform: uppercase;
- white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.sub-sticky-cta-price {
- font-family: var(--font-display);
- font-size: 22px; font-weight: 600;
- color: white;
- line-height: 1.1;
-}
-.sub-sticky-cta-price small { font-size: 11px; opacity: 0.7; margin-left: 4px; font-weight: 400; }
-.sub-sticky-cta-btn {
- background: var(--color-gold);
- color: var(--color-forest-deep);
- border: none;
- padding: 14px 22px;
- border-radius: 10px;
- font-family: var(--font-jp);
- font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
- cursor: pointer;
- white-space: nowrap;
- transition: transform 0.2s var(--ease-out-expo), background 0.2s;
- -webkit-tap-highlight-color: transparent;
- flex-shrink: 0;
-}
-.sub-sticky-cta-btn:hover { background: #FFE594; transform: translateY(-1px); }
-.sub-sticky-cta-btn:active { transform: translateY(0); }
-@media (max-width: 600px) {
- .sub-sticky-cta { padding: 10px 14px calc(10px + env(safe-area-inset-bottom)) 14px; }
- .sub-sticky-cta-plan { font-size: 10px; letter-spacing: 0.14em; }
- .sub-sticky-cta-price { font-size: 18px; }
- .sub-sticky-cta-price small { font-size: 10px; }
- .sub-sticky-cta-btn { padding: 12px 16px; font-size: 13px; }
-}
-
-/* ================ チェックアウトフォーム ================ */
-.sub-checkout {
- background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
- padding: 96px 0;
+/* ================ MICRO-INTERACTIONS ================ */
+.btn-add-cart {
+  transition: all 0.3s var(--ease-out-expo);
 }
 .btn-add-cart:hover {
   transform: translateY(-1px) scale(1.02);
@@ -3754,40 +3595,44 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </head>
 <body>
 <header class="site-header" id="siteHeader">
- <div class="container nav">
- <a href="index.html" class="brand-mark">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
- </a>
- <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">Book</a></li>
- <li><a href="shop.html">Shop</a></li>
- <li><a class="current" href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- </ul>
- </nav>
- <div class="nav-utils">
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
- <rect x="3" y="3" width="18" height="18" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
- </svg>
- </a>
- <a href="shop.html" aria-label="Shop" class="nav-icon" title="ショップへ">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
- <path d="M3 6h2l3 12h11l3-9H6"/>
- <circle cx="9" cy="20" r="1.4" fill="currentColor"/>
- <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
- </svg>
- </a>
- </div>
- </div>
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a href="restaurants.html">Restaurants</a></li>
+        <li><a class="current" href="shop.html">Shop</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="press.html">Press</a></li>
+        <li><a href="about.html#members">Members</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle">
+        <span class="active">JA</span> / <span>EN</span>
+      </div>
+      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+        </svg>
+      </a>
+      <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6" />
+          <circle cx="9" cy="20" r="1.4" fill="currentColor" />
+          <circle cx="18" cy="20" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- ========= HERO ========= -->
@@ -3839,193 +3684,47 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   </div>
 </div>
 
- <div class="sub-plans-grid">
- <article class="sub-plan-card" data-plan="starter">
- <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
- <div class="sub-plan-name">ミニプラン</div>
- <div class="sub-plan-target">1-2人家族 / 約1.6kg / 全 8品</div>
- <ul class="sub-plan-spec">
- <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
- <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
- <li><b>加工場所</b><span>宮崎</span></li>
- <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
- <li><b>保管方法</b><span>冷凍</span></li>
- </ul>
- <div class="sub-plan-items">
- <b>お届け例:</b><br/>
- 赤身スライス 200g<br/>
- 赤身焼肉 200g<br/>
- サイコロステーキ 200g<br/>
- ミンチ 200g<br/>
- 鶏モモ 200g<br/>
- 鶏ムネ 200g×2<br/>
- 鶏ミンチ 200g
- </div>
- <div class="sub-plan-pricing">
- <div class="sub-plan-old-price">通常 ¥6,980</div>
- <div class="sub-plan-price">¥3,490<small>/初月</small></div>
- <div class="sub-plan-savings">初月 ¥3,490 OFF / 個別 ¥8,200 より約15%お得</div>
- <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
- <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
- </div>
- </div>
- <div class="sub-plan-select-btn"><span class="btn-label">このプランを選ぶ →</span></div>
- </article>
-
- <article class="sub-plan-card featured" data-plan="regular">
- <span class="sub-plan-tag">人気 No.1</span>
- <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
- <div class="sub-plan-name">プロプラン</div>
- <div class="sub-plan-target">3-4人家族 / 約3.2kg / 全 16品</div>
- <ul class="sub-plan-spec">
- <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
- <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
- <li><b>加工場所</b><span>宮崎</span></li>
- <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
- <li><b>保管方法</b><span>冷凍</span></li>
- </ul>
- <div class="sub-plan-items">
- <b>お届け例:</b><br/>
- 赤身スライス 200g×2<br/>
- 赤身焼肉 200g×2<br/>
- サイコロステーキ 200g×2<br/>
- ミンチ 200g<br/>
- 鶏モモ 200g×3<br/>
- 鶏ムネ 200g×3<br/>
- 鶏ミンチ 200g×3
- </div>
- <div class="sub-plan-pricing">
- <div class="sub-plan-old-price">通常 ¥12,800</div>
- <div class="sub-plan-price">¥6,400<small>/初月</small></div>
- <div class="sub-plan-savings">初月 ¥6,400 OFF / 個別 ¥15,000 より約15%お得</div>
- <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
- <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
- </div>
- </div>
- <div class="sub-plan-select-btn"><span class="btn-label">このプランを選ぶ →</span></div>
- </article>
-
- <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
- <span class="sub-plan-tag sub-plan-tag--vip">👑 VIP</span>
- <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
- <div class="sub-plan-name">VIPプラン</div>
- <div class="sub-plan-target">5人以上 / 約4.4kg / 全 22品</div>
- <ul class="sub-plan-spec">
- <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
- <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
- <li><b>加工場所</b><span>宮崎</span></li>
- <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
- <li><b>保管方法</b><span>冷凍</span></li>
- </ul>
- <div class="sub-plan-items">
- <b>お届け例:</b><br/>
- ヒレステーキ 200g<br/>
- 赤身ステーキ 200g×2<br/>
- サーロインステーキ 200g×2<br/>
- ミンチ 200g×2<br/>
- 鶏モモ 200g×5<br/>
- 鶏ムネ 200g×5<br/>
- 鶏ミンチ 200g×5
- </div>
- <div class="sub-plan-vip-perk-row">
- <span>🌿</span>
- <div>
- <strong>有機JAS 黒毛和牛 優先案内</strong>
- <small>2026年夏 解禁・月20頭限定の優先購入権</small>
- </div>
- </div>
- <div class="sub-plan-pricing">
- <div class="sub-plan-old-price">通常 ¥27,400</div>
- <div class="sub-plan-price">¥13,700<small>/初月</small></div>
- <div class="sub-plan-savings">初月 ¥13,700 OFF / 個別 ¥32,200 より約15%お得</div>
- <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
- <strong>2ヶ月目以降:</strong> ¥27,400/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
- </div>
- </div>
- <div class="sub-plan-select-btn"><span class="btn-label">このプランを選ぶ →</span></div>
- </article>
- </div>
- </div>
+<!-- ========= OUR APPROACH ========= -->
+<section class="mega-num-block">
+  <div class="mega-num-bg">0%</div>
+  <div class="container mega-num-content reveal">
+    <div class="mega-num-eyebrow">— OUR APPROACH —</div>
+    <h2 class="mega-num-headline">
+      化学物質、<br/>
+      <span class="accent">完全ゼロ。</span>
+    </h2>
+    <p class="mega-num-text">
+      抗生物質・成長促進剤・ホルモン剤、いずれも全肥育期間で不使用。<br/>
+      これは創業時から私たちが選んできた、健康志向の消費者向けの飼育方針です。<br/>
+      <strong style="color: var(--color-gold);">江田畜産の定期便で、毎月、安心の食卓を。</strong>
+    </p>
+  </div>
 </section>
 
-<!-- ========= スティッキー注文CTAバー ========= -->
-<div class="sub-sticky-cta" id="stickyCta" role="region" aria-label="現在選択中のプラン">
- <div class="sub-sticky-cta-inner">
-  <div class="sub-sticky-cta-info">
-   <span class="sub-sticky-cta-plan" id="stickyCtaPlan">プロプラン · 選択中</span>
-   <span class="sub-sticky-cta-price"><span id="stickyCtaPrice">¥6,400</span><small id="stickyCtaSuffix">/初月</small></span>
+<!-- ========= COUNTER ROW ========= -->
+<section style="background: var(--color-forest-deep); color: white;">
+  <div class="counter-row">
+    <div class="counter-cell">
+      <div class="counter-num">30<small>+</small></div>
+      <div class="counter-label">Months Aging</div>
+      <div class="counter-sub">長期肥育で<br/>濃いコク</div>
+    </div>
+    <div class="counter-cell">
+      <div class="counter-num">0<small>%</small></div>
+      <div class="counter-label">Chemical Additives</div>
+      <div class="counter-sub">完全無添加<br/>飼育</div>
+    </div>
+    <div class="counter-cell">
+      <div class="counter-num">100<small>%</small></div>
+      <div class="counter-label">Direct from Farm</div>
+      <div class="counter-sub">商社を介さない<br/>直送</div>
+    </div>
+    <div class="counter-cell">
+      <div class="counter-num">2<small>days</small></div>
+      <div class="counter-label">Door-to-Door</div>
+      <div class="counter-sub">最短2日で<br/>お届け</div>
+    </div>
   </div>
-  <button type="button" class="sub-sticky-cta-btn" id="stickyCtaBtn" aria-label="申込フォームへ進む">
-   申込フォームへ →
-  </button>
- </div>
-</div>
-
-<!-- ========= 選択中プランの詳細 ========= -->
-<section class="sub-detail" id="detail">
- <div class="container">
- <div class="sub-detail-head">
- <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
- <h2 class="sub-detail-title" id="detailPlanTitle">プロプラン定期便の内容</h2>
- <span class="sub-detail-plan-name" id="detailPlanLabel">3-4人家族向け · 月額 ¥12,800</span>
- </div>
-
- <div class="sub-detail-grid">
- <div class="sub-detail-items" id="detailItemsList">
- <h3>毎月お届けの内容</h3>
- <!-- 中身は JS で動的に切替 -->
- </div>
-
- <div class="sub-detail-side">
- <div class="sub-detail-card">
- <div class="sub-detail-card-head">
- <span class="sub-detail-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
- <rect x="3" y="4" width="18" height="18" rx="2"/>
- <line x1="16" y1="2" x2="16" y2="6"/>
- <line x1="8" y1="2" x2="8" y2="6"/>
- <line x1="3" y1="10" x2="21" y2="10"/>
- </svg>
- </span>
- <span class="sub-detail-card-title">次回お届け</span>
- </div>
- <div class="delivery-date-large" id="detailNextDeliveryDate">6/1</div>
- <div class="delivery-time">18:00 - 20:00 帯</div>
- <p style="margin-top: 8px;">以降、毎月1日に自動でお届け。配送日・時間は変更可能です。</p>
- </div>
-
- <div class="sub-detail-card">
- <div class="sub-detail-card-head">
- <span class="sub-detail-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
- <path d="M12 2 L4 6 V12 C4 17 7 21 12 22 C17 21 20 17 20 12 V6 Z"/>
- <path d="M9 12 L11 14 L15 10"/>
- </svg>
- </span>
- <span class="sub-detail-card-title">いつでも変更可能</span>
- </div>
- <p>スキップ・プラン変更はLINEまたはマイページから1タップで完了。<strong style="color: var(--color-forest);">解約は3ヶ月継続後よりOK</strong>、月途中スキップは初月から自由です。</p>
- </div>
-
- <div class="sub-detail-card">
- <div class="sub-detail-card-head">
- <span class="sub-detail-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
- <path d="M3 7 L12 2 L21 7 L12 12 Z"/>
- <path d="M3 7 V17 L12 22 V12"/>
- <path d="M21 7 V17 L12 22"/>
- </svg>
- </span>
- <span class="sub-detail-card-title">小分け真空パック</span>
- </div>
- <p>すべて1回分ずつ真空パック・冷凍。賞味期限6ヶ月、必要な分だけ解凍できます。</p>
- </div>
- </div>
- </div>
- </div>
 </section>
 
 <!-- ========= STICKY SPLIT (Why) ========= -->
@@ -4084,129 +3783,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <h2 style="margin-top: 24px;">届くのは、こんな食卓。</h2>
     </div>
 
- <form class="checkout-form" id="checkoutForm" onsubmit="return handleSubmit(event)">
-
- <div class="checkout-section">
- <h3>お届け先 情報</h3>
- <div class="checkout-row cols2">
- <div class="checkout-field">
- <label>お名前<span class="required">*</span></label>
- <input type="text" name="name" placeholder="江田 友輝" autocomplete="name" required>
- </div>
- <div class="checkout-field">
- <label>電話番号<span class="required">*</span></label>
- <input type="tel" name="tel" placeholder="090-1234-5678" inputmode="tel" autocomplete="tel" required>
- </div>
- </div>
- <div class="checkout-row">
- <div class="checkout-field">
- <label>メールアドレス<span class="required">*</span></label>
- <input type="email" name="email" placeholder="example@example.com" inputmode="email" autocomplete="email" required>
- </div>
- </div>
- <div class="checkout-row cols2">
- <div class="checkout-field">
- <label>郵便番号<span class="required">*</span></label>
- <input type="text" name="zip" placeholder="123-4567" inputmode="numeric" autocomplete="postal-code" maxlength="8" required>
- </div>
- <div class="checkout-field">
- <label>都道府県<span class="required">*</span></label>
- <select name="pref" autocomplete="address-level1" required>
- <option value="">選択してください</option>
- <option>北海道</option><option>青森県</option><option>岩手県</option>
- <option>宮城県</option><option>秋田県</option><option>山形県</option>
- <option>福島県</option><option>茨城県</option><option>栃木県</option>
- <option>群馬県</option><option>埼玉県</option><option>千葉県</option>
- <option>東京都</option><option>神奈川県</option><option>新潟県</option>
- <option>富山県</option><option>石川県</option><option>福井県</option>
- <option>山梨県</option><option>長野県</option><option>岐阜県</option>
- <option>静岡県</option><option>愛知県</option><option>三重県</option>
- <option>滋賀県</option><option>京都府</option><option>大阪府</option>
- <option>兵庫県</option><option>奈良県</option><option>和歌山県</option>
- <option>鳥取県</option><option>島根県</option><option>岡山県</option>
- <option>広島県</option><option>山口県</option><option>徳島県</option>
- <option>香川県</option><option>愛媛県</option><option>高知県</option>
- <option>福岡県</option><option>佐賀県</option><option>長崎県</option>
- <option>熊本県</option><option>大分県</option><option>宮崎県</option>
- <option>鹿児島県</option><option>沖縄県</option>
- </select>
- </div>
- </div>
- <div class="checkout-row">
- <div class="checkout-field">
- <label>市区町村・番地・建物名<span class="required">*</span></label>
- <input type="text" name="address" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="street-address" required>
- </div>
- </div>
- </div>
-
- <div class="checkout-section">
- <h3>お届け時間帯</h3>
- <p class="checkout-section-fine">お届け日は <strong>毎月1日</strong> に固定（変更不可）。お受け取りいただける時間帯のみご指定ください。</p>
- <div class="checkout-row" style="margin-top: 12px;">
- <div class="checkout-field">
- <label>お届け時間帯</label>
- <select name="time_slot">
- <option>午前中（〜12:00）</option>
- <option>14:00 - 16:00</option>
- <option>16:00 - 18:00</option>
- <option selected>18:00 - 20:00（推奨）</option>
- <option>19:00 - 21:00</option>
- </select>
- </div>
- </div>
- <input type="hidden" name="delivery_slot" value="day1">
- </div>
-
- <div class="checkout-section">
- <h3>お支払い方法</h3>
- <div class="checkout-radio-group">
- <label class="checkout-radio selected">
- <input type="radio" name="payment" value="card" checked>
- <strong>💳 クレジットカード</strong>
- <small>VISA · Master · JCB · AMEX</small>
- </label>
- <label class="checkout-radio" id="paymentApplePayOption" style="display:none;">
- <input type="radio" name="payment" value="apple">
- <strong>🍎 Apple Pay</strong>
- <small>かんたん決済</small>
- </label>
- </div>
- </div>
-
- <div class="checkout-summary" id="checkoutSummary">
- <div class="checkout-summary-row">
- <span id="summaryPlanName">プロプラン定期便</span>
- <strong id="summaryRegular">¥12,800/月</strong>
- </div>
- <div class="checkout-summary-row discount" style="background:rgba(212,169,59,0.08);border-radius:8px;padding:8px 10px;">
- <span><span id="summaryDiscountLabel">✓ 5月入会 50%OFF 適用済み</span><small style="display:block;font-size:10px;color:var(--color-ink-muted);margin-top:2px;">初月お支払い額に反映済</small></span>
- <strong id="summaryDiscount" style="color:#C8102E;">節約 ¥6,400</strong>
- </div>
- <div class="checkout-summary-row addon-row" id="summaryAddonRow" style="display:none">
- <span>🛒 今月だけ追加 <small id="summaryAddonCount">(0品)</small></span>
- <strong id="summaryAddon">+¥0</strong>
- </div>
- <div class="checkout-summary-row total">
- <span>初月お支払い額</span>
- <strong id="summaryTotal">¥6,400</strong>
- </div>
- <p class="checkout-fine">
- 送料無料 · 2回目以降は通常価格でお届け · いつでもスキップ・解約OK
- </p>
- </div>
-
- <button type="submit" class="checkout-submit">
- 📝 定期便を申し込む · ¥<span id="submitAmount">6,400</span>
- </button>
-
- <div class="checkout-trust">
- <span class="checkout-trust-item">🔒 SSL暗号化通信</span>
- <span class="checkout-trust-item">✓ 利用規約・プライバシーポリシーに同意</span>
- </div>
- </form>
- </div>
- </div>
+    <div class="collage reveal">
+      <div class="collage-item collage-1"><img src="public/images/products/roubo-01.jpg" alt="江田和牛"/></div>
+      <div class="collage-item collage-2"><img src="public/images/products/sirloin-steak.jpg" alt="サーロインステーキ"/></div>
+      <div class="collage-item collage-3"><img src="public/images/products/fillet.jpg" alt="ヒレステーキ"/></div>
+      <div class="collage-item collage-4"><img src="public/images/products/red-yakiniku.jpg" alt="赤身焼肉"/></div>
+      <div class="collage-item collage-5"><img src="public/images/products/chateaubriand.jpg" alt="シャトーブリアン"/></div>
+      <div class="collage-item collage-6"><img src="public/images/products/marbled-yakiniku.jpg" alt="霜降焼肉"/></div>
+      <div class="collage-item collage-7"><img src="public/images/products/hamburg.jpg" alt="無添加ハンバーグ"/></div>
+    </div>
+  </div>
 </section>
 
 <!-- ========= 3 PLANS ========= -->
@@ -4475,32 +4061,65 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </section>
 
 <footer class="site-footer">
- <div class="container">
- <div class="footer-grid">
- <div>
- <div class="footer-brand-name">EDA LIVESTOCK</div>
- <span class="footer-brand-jp">江田畜産株式会社</span>
- </div>
- <div class="footer-list">
- <h4>SHOP</h4>
- <a href="shop.html">オンラインショップ</a>
- 
-          <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">商談予約</a><a href="subscription.html">定期便</a>
- <a href="mypage.html">マイページ</a>
- </div>
- <div class="footer-list">
- <h4>COMPANY</h4>
- <a href="about.html">About</a>
- <a href="philosophy.html">Philosophy</a>
- <a href="organic.html">Organic</a>
- <a href="contact.html">Contact</a>
- </div>
- </div>
- <div class="footer-bottom">
- <span>© 2026 Eda Livestock Co., Ltd. All rights reserved.</span>
- <span>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</span>
- </div>
- </div>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="footer-brand-row">
+          <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/>
+          <span>
+            <span class="footer-brand">EDA-LIVESTOCK</span>
+            <span class="footer-brand-jp">江田畜産株式会社</span>
+          </span>
+        </a>
+        <p class="footer-tagline">
+          日本の「美味しく」「健康」な食文化を未来へ。<br/>
+          Sustainable Japanese Wagyu — Livestock for the Next Century.
+        </p>
+        <div class="footer-meta">
+          <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
+          <p>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</p>
+          <p>事業内容：黒毛和牛繁殖・肥育・小売・輸出・スマート畜産</p>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Brand</h4>
+        <ul>
+          <li><a href="about.html">江田畜産について</a></li>
+          <li><a href="philosophy.html">Philosophy / 4つの定義</a></li>
+          <li><a href="organic.html">3 Brands</a></li>
+          <li><a href="global.html">Global Export</a></li>
+          <li><a href="journey.html">Our Journey</a></li>
+          <li><a href="about.html#members">Members</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Buy & Find</h4>
+        <ul>
+          <li><a href="shop.html">Online Shop</a></li>
+          <li><a href="restaurants.html">Restaurants</a></li>
+          <li><a href="recipes.html">Recipes</a></li>
+          <li><a href="subscription.html">Subscription</a></li>
+          <li><a href="shop.html#gift">Gift</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="journal.html">Journal</a></li>
+          <li><a href="press.html">Press & Media</a></li>
+          <li><a href="press-kit.html">Press Kit</a></li>
+          <li><a href="awards.html">Awards</a></li>
+          <li><a href="investors.html">Investors</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">Instagram @eda_livestock</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
+</div>
+  </div>
 </footer>
 
 <!-- ========= CART DRAWER ========= -->
@@ -4697,13 +4316,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     const CART_KEY = 'eda-cart';
     const FREE_SHIP = 11000;
 
- // カードのアクティブ表示 + ボタンテキスト切り替え
- document.querySelectorAll('.sub-plan-card').forEach(c => {
- const isSelected = c.dataset.plan === planKey;
- c.classList.toggle('selected', isSelected);
- const label = c.querySelector('.sub-plan-select-btn .btn-label');
- if (label) label.textContent = isSelected ? '選択中' : 'このプランを選ぶ →';
- });
+    /* --- State --- */
+    let items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 
     /* --- DOM refs --- */
     const drawer    = document.getElementById('cartDrawer');
@@ -4724,57 +4338,29 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     function openCart()  { drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
     function closeCart() { drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
 
- // チェックアウトサマリー
- document.getElementById('summaryPlanName').textContent = plan.name + '定期便';
- document.getElementById('summaryRegular').textContent = '¥' + plan.regular.toLocaleString() + '/月';
- document.getElementById('summaryDiscount').textContent = '節約 ¥' + plan.half.toLocaleString();
- // スティッキーCTAの内容を更新
- const stickyPlan = document.getElementById('stickyCtaPlan');
- const stickyPrice = document.getElementById('stickyCtaPrice');
- if (stickyPlan) stickyPlan.textContent = plan.name + ' · 選択中';
- if (stickyPrice) stickyPrice.textContent = '¥' + plan.half.toLocaleString();
- // アドオンを含めた最終金額に更新
- if (typeof updateCheckoutSummary === 'function') updateCheckoutSummary();
-}
+    if (toggleBtn) toggleBtn.addEventListener('click', openCart);
+    if (closeBtn)  closeBtn.addEventListener('click', closeCart);
+    if (overlay)   overlay.addEventListener('click', closeCart);
+    if (contBtn)   contBtn.addEventListener('click', closeCart);
 
-/* ============ スティッキーCTA: スクロール位置で表示制御 ============ */
-(function initStickyCta() {
- const sticky = document.getElementById('stickyCta');
- const btn = document.getElementById('stickyCtaBtn');
- const checkout = document.getElementById('checkout');
- const plansSection = document.querySelector('.sub-plan-grid') || document.getElementById('plans');
- if (!sticky || !btn || !checkout || !plansSection) return;
-
- btn.addEventListener('click', () => {
-  checkout.scrollIntoView({ behavior: 'smooth', block: 'start' });
- });
-
- let ticking = false;
- function update() {
-  ticking = false;
-  const plansBottom = plansSection.getBoundingClientRect().bottom;
-  const checkoutTop = checkout.getBoundingClientRect().top;
-  const vh = window.innerHeight || document.documentElement.clientHeight;
-  // プラン一覧を通り過ぎてから、チェックアウトが画面に入るまでだけ表示
-  const show = plansBottom < vh * 0.6 && checkoutTop > vh * 0.4;
-  sticky.classList.toggle('is-visible', show);
- }
- window.addEventListener('scroll', () => {
-  if (!ticking) { requestAnimationFrame(update); ticking = true; }
- }, { passive: true });
- window.addEventListener('resize', update, { passive: true });
- update();
-})();
-
-/* ============ プランカード クリック ============ */
-document.querySelectorAll('.sub-plan-card').forEach(card => {
- card.addEventListener('click', () => {
- const p = card.dataset.plan;
- selectPlan(p);
- // 詳細セクションへスクロール
- document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
- });
-});
+    /* --- 配送日プルダウン生成（最短〜14日後） --- */
+    (function populateDeliveryDates() {
+      const sel = document.getElementById('deliveryDate');
+      if (!sel) return;
+      const days = ['日','月','火','水','木','金','土'];
+      const now = new Date();
+      const cutoffHour = 13;
+      // 最短発送日（13時前なら今日、それ以降は翌営業日）
+      let firstShip = new Date(now);
+      const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+      if (now.getHours() >= cutoffHour || isWeekend(firstShip)) {
+        do {
+          firstShip.setDate(firstShip.getDate() + 1);
+        } while (isWeekend(firstShip));
+      }
+      // 最短お届け = 発送翌日
+      const earliest = new Date(firstShip);
+      earliest.setDate(earliest.getDate() + 1);
 
       // 14日先までを選択肢に
       for (let i = 0; i < 14; i++) {
