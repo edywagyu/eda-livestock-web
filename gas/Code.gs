@@ -141,6 +141,13 @@ function doGet(e) {
       case 'staff_orders':      return staffOrders();
       case 'staff_analytics':   return staffAnalytics(e.parameter);
       case 'b2_csv':            return b2CsvExport();
+      /* ===== 経営ダッシュボード追加アクション (Code_v2_Additions.gs に実装) ===== */
+      case 'orders':            return ordersOverview(e.parameter);
+      case 'subscriptions':     return subscriptionsOverview(e.parameter);
+      case 'customers':         return customersOverview(e.parameter);
+      case 'survey_responses':  return surveyResponsesOverview(e.parameter);
+      case 'quiz_responses':    return quizResponsesOverview(e.parameter);
+      case 'shipments':         return shipmentsOverview(e.parameter);
       default:                  return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
   } catch (err) {
@@ -212,6 +219,8 @@ function doPost(e) {
       case 'log_subscription_application': return logSubscriptionApplication(body);
       case 'request_otp':                  return requestOtp(body);
       case 'verify_otp':                   return verifyOtp(body);
+      /* ===== お問い合わせフォーム (Code_v2_Additions.gs に実装) ===== */
+      case 'submit_inquiry':               return submitInquiry(body);
       case 'skip_subscription':            return skipSubscription(body);
       case 'cancel_subscription':          return cancelSubscription(body);
       case 'client_error':                 return logClientError(body);

@@ -90,6 +90,25 @@
         window.edaAnalytics.lineClick();
       }
     }, true);
+
+    /* 予約リンク (calendar.app.google) クリック計測
+       data-b2b-cta 属性 or href マッチで自動検出 → どのページ/位置から流入したか分かる */
+    document.addEventListener('click', function(e) {
+      const a = e.target && e.target.closest && e.target.closest('a[href*="calendar.app.google"]');
+      if (!a) return;
+      const source = a.dataset.b2bCta || a.getAttribute('aria-label') || a.textContent.trim().slice(0, 50) || 'unknown';
+      send('booking_click', {
+        source: source,
+        page: location.pathname,
+        referrer: document.referrer || ''
+      });
+    }, true);
+
+    /* WhatsApp リンクも計測 */
+    document.addEventListener('click', function(e) {
+      const a = e.target && e.target.closest && e.target.closest('a[href*="wa.me"]');
+      if (a) { send('whatsapp_click', { page: location.pathname }); }
+    }, true);
   }
 
   if (document.readyState === 'loading') {

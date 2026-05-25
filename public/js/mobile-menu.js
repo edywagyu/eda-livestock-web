@@ -139,6 +139,7 @@
         <nav class="eda-mm-nav">
           <a href="shop.html" class="eda-mm-item eda-mm-item--cta">🛒 Online Shop</a>
           <a href="subscription.html" class="eda-mm-item eda-mm-item--cta">⭐ 定期便を申込</a>
+          <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="eda-mm-item eda-mm-item--cta">📅 商談予約 / Book</a>
           ${navHtml}
         </nav>
         <div class="eda-mm-foot">
@@ -166,6 +167,13 @@
     burger.addEventListener('click', open);
     root.querySelectorAll('[data-mm-close]').forEach(el => el.addEventListener('click', close));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    // ドロワー内の遷移リンクをクリックしたら、ページ遷移する前にドロワーを閉じる
+    // → 次ページに body.overflow:hidden が残らない & 次ページのレンダリングがクリーン
+    root.querySelectorAll('a[href]').forEach(a => {
+      a.addEventListener('click', () => { close(); });
+    });
+    // 念のため: bfcache 復帰時にも body overflow をクリア
+    window.addEventListener('pageshow', () => { document.body.style.overflow = ''; });
 
     return { burger, root };
   }

@@ -52,7 +52,8 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
+@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
 body {
  margin: 0;
  font-family: var(--font-body);
@@ -61,7 +62,18 @@ body {
  color: var(--color-ink);
  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
  min-height: 100vh; height: 100dvh; min-height: 100dvh;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
+/* mobile-scroll-patch: touch & perf */
+a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
+@media (max-width: 1024px) {
+  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
+}
+@supports (content-visibility: auto) {
+  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+}
+
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -2073,14 +2085,19 @@ function renderSummary() {
  const taxTotal = tax8 + tax10;
 
  let rowsHtml = '';
- if (subSavings > 0) {
- rowsHtml += `<div class="summary-row discount"><span>初月50%OFF適用</span><strong>−¥${subSavings.toLocaleString()}</strong></div>`;
- }
  rowsHtml += `
  <div class="summary-row">
  <span>商品小計<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
  <strong>¥${subTotal.toLocaleString()}</strong>
- </div>
+ </div>`;
+ if (subSavings > 0) {
+ // 「割引適用済み」として表示。すでに小計に反映されていることを明示。
+ rowsHtml += `<div class="summary-row discount" style="background:rgba(212,169,59,0.08);padding:8px 10px;border-radius:8px;margin:6px 0;">
+ <span style="color:var(--color-forest);font-weight:600;">✓ 初月50%OFF 適用済み<small style="font-size:10px;color:var(--color-ink-muted);margin-left:6px;font-weight:400;">小計に反映済</small></span>
+ <strong style="color:#C8102E;">節約 ¥${subSavings.toLocaleString()}</strong>
+ </div>`;
+ }
+ rowsHtml += `
  <div class="summary-row shipping">
  <span>配送料 (自宅)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
  <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>

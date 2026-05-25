@@ -1175,7 +1175,16 @@ ul { list-style: none; padding: 0; margin: 0; }
 <!-- APP -->
 <div class="app" id="app" style="display:none">
 
-  <!-- DEMO BANNER -->
+  <!-- LIVE / DEMO STATUS BAR (Tom が現状一目で把握できる) -->
+  <div id="liveStatusBar" style="display:none;padding:8px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid">
+    <span id="liveStatusText"></span>
+    <button id="testGasBtn" type="button"
+            style="margin-left:10px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:2px 8px;font-size:10px;cursor:pointer;font-weight:600;color:inherit;">
+      接続テスト
+    </button>
+  </div>
+
+  <!-- DEMO BANNER (旧・保留) -->
   <div id="demoBanner" style="display:none;background:#fff3cd;color:#664d03;padding:8px 14px;font-size:11px;font-weight:600;text-align:center;border-bottom:1px solid #ffd166">
     🎭 デモモード — 表示はサンプル / 保存は無効
   </div>
@@ -1276,6 +1285,14 @@ ul { list-style: none; padding: 0; margin: 0; }
 
       <div class="section-label">クイックアクション</div>
       <div class="card" style="padding:6px 0">
+        <a class="settings-item" href="dashboard.html" style="text-decoration:none;color:inherit">
+          <div class="settings-item-icon" style="background:#FEF2D6;color:#92400E"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg></div>
+          <div class="settings-item-text">
+            <div class="settings-item-title">経営ダッシュボード</div>
+            <div class="settings-item-sub">売上・定期便MRR・LINE分析・CRM</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
         <a class="settings-item" href="https://docs.google.com/spreadsheets/d/1kMLksRzJRFMKXotwF8IILZJlgUcjpxI84lRZoEBaOMo/edit#gid=144544549" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
           <div class="settings-item-icon" style="background:#D1FAE5;color:#0F9D58"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M14.4 1.6h-9C4.6 1.6 4 2.2 4 3.2v17.6c0 1 .6 1.6 1.4 1.6h13.2c.8 0 1.4-.6 1.4-1.6V7.6L14.4 1.6zm-1 13.6h-5v-1.6h5v1.6zm2-3.2h-7v-1.6h7v1.6zm-1.5-4.8V2.8l5.1 4.4h-5.1z"/></svg></div>
           <div class="settings-item-text">
@@ -1689,9 +1706,22 @@ function renderPin() {
   });
 }
 
+// 本番URL判定（github.io ホストでは PIN 1234 のデモ動作を禁止）
+function isProductionHost() {
+  var h = location.hostname;
+  return /\.github\.io$/.test(h) || h === 'eda-livestock.com' || h.endsWith('.eda-livestock.com');
+}
+
 async function checkPin() {
-  // ★ PIN 1234 は何があっても通す（GASがあれば本番、無ければデモ）
+  const isProd = isProductionHost();
+
+  // PIN 1234 = デモ体験用。本番URLでは無効化
   if (pinBuffer === '1234') {
+    if (isProd) {
+      showPinError('本番環境ではデモPINは使えません。Tomに正規PINを確認してください');
+      return;
+    }
+    // 本番以外（ローカル / ?test=1 / staging）でのみ PIN 1234 を許可
     if (GAS_URL) {
       try {
         const res = await fetch(GAS_URL + '?action=staff_login&pin=1234');
@@ -1704,7 +1734,7 @@ async function checkPin() {
         }
       } catch (e) {}
     }
-    // GAS未接続 or 認証失敗 → デモモード
+    // GAS未接続 → デモモード（非本番のみ）
     sessionStorage.setItem('eda-staff-demo', '1');
     localStorage.setItem(SESSION_KEY, '1');
     enterApp();
@@ -1713,7 +1743,7 @@ async function checkPin() {
 
   // それ以外のPIN：GAS認証必須
   if (!GAS_URL) {
-    showPinError('PINは 1234（デモ体験）');
+    showPinError(isProd ? 'GAS URL未設定 — Tomに連絡を' : 'PIN 1234でデモ可');
     return;
   }
   try {
@@ -1727,7 +1757,7 @@ async function checkPin() {
       showPinError('PINが違います');
     }
   } catch (e) {
-    showPinError('接続エラー — 1234でデモ');
+    showPinError(isProd ? '接続エラー — 再試行してください' : '接続エラー — PIN 1234でデモ');
   }
 }
 
@@ -1745,10 +1775,59 @@ function showPinError(msg) {
   }, 1200);
 }
 
+/* ライブ/デモ ステータスを描画 + 接続テストボタンを束ねる */
+function renderLiveStatus(state, extra) {
+  const bar = document.getElementById('liveStatusBar');
+  const txt = document.getElementById('liveStatusText');
+  if (!bar || !txt) return;
+  bar.style.display = 'block';
+  if (state === 'live') {
+    bar.style.background = '#D1FAE5';
+    bar.style.color = '#065F46';
+    bar.style.borderColor = '#6EE7B7';
+    txt.innerHTML = '🟢 <strong>ライブ運用中</strong> — GAS 接続OK · 実データ表示中' + (extra ? ' · ' + extra : '');
+  } else if (state === 'demo') {
+    bar.style.background = '#fff3cd';
+    bar.style.color = '#664d03';
+    bar.style.borderColor = '#ffd166';
+    txt.innerHTML = '🟡 <strong>デモモード</strong> — ' + (extra || 'サンプルデータ表示中 / 保存は無効');
+  } else {
+    bar.style.background = '#FEE2E2';
+    bar.style.color = '#991B1B';
+    bar.style.borderColor = '#FCA5A5';
+    txt.innerHTML = '🔴 <strong>GAS 接続失敗</strong> · ' + (extra || '接続復旧までデモにフォールバック');
+  }
+}
+
+async function testGasConnection() {
+  if (!GAS_URL) { renderLiveStatus('error', 'GAS URL 未設定'); return; }
+  renderLiveStatus('demo', '接続テスト中…');
+  try {
+    const res = await fetch(GAS_URL + '?action=ping&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json().catch(() => ({}));
+    if (data && data.ok !== false) {
+      sessionStorage.removeItem('eda-staff-demo');
+      renderLiveStatus('live', '最終確認 ' + new Date().toLocaleTimeString('ja-JP'));
+      // 接続が戻ったので各タブを再ロード
+      if (typeof loadDashboard === 'function') loadDashboard();
+      toast('GAS 接続OK — 実データに切替', 'success');
+    } else {
+      renderLiveStatus('error', (data && data.error) || '不明なレスポンス');
+    }
+  } catch (e) {
+    renderLiveStatus('error', e.message);
+  }
+}
+
 function enterApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = '';
-  document.getElementById('demoBanner').style.display = isDemoMode() ? 'block' : 'none';
+  // 旧 demoBanner は使わず、新 liveStatusBar に集約
+  document.getElementById('demoBanner').style.display = 'none';
+  renderLiveStatus(isDemoMode() ? 'demo' : 'live');
+  const btn = document.getElementById('testGasBtn');
+  if (btn && !btn._bound) { btn.addEventListener('click', testGasConnection); btn._bound = true; }
 
   // 商品マスター同期ステータス表示
   const syncBadge = document.getElementById('masterSyncBadge');
@@ -2200,6 +2279,7 @@ function saveGasUrl() {
 
 /* ================ DASHBOARD ================ */
 async function loadDashboard() {
+  /* デモモード明示中はサンプル表示 */
   if (isDemoMode()) {
     document.getElementById('todayOrders').textContent = '5';
     document.getElementById('todayShip').textContent = '2';
@@ -2210,17 +2290,29 @@ async function loadDashboard() {
     loadAnalytics();
     return;
   }
+  /* ライブ運用: GAS から実データ取得 */
   try {
-    const res = await fetch(GAS_URL + '?action=staff_dashboard');
+    const res = await fetch(GAS_URL + '?action=staff_dashboard&t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
+    if (data && data.ok === false) throw new Error(data.error || 'GAS returned ok:false');
     document.getElementById('todayOrders').textContent = data.todayOrders || 0;
     document.getElementById('todayShip').textContent = data.todayShip || 0;
     document.getElementById('tomorrowShip').textContent = data.tomorrowShip || 0;
     document.getElementById('pendingShip').textContent = data.pendingShip || 0;
     document.getElementById('todayRevenue').textContent = '¥' + Math.round((data.todayRevenue || 0) / 1000) + 'k';
     document.getElementById('lowStock').textContent = data.lowStock || 0;
+    renderLiveStatus('live', '最終更新 ' + new Date().toLocaleTimeString('ja-JP'));
   } catch (e) {
-    console.error(e);
+    console.error('[staff_dashboard] GAS error:', e);
+    /* 失敗時: ダッシュは見せたまま、上部に赤バナーで通知 */
+    document.getElementById('todayOrders').textContent = '—';
+    document.getElementById('todayShip').textContent = '—';
+    document.getElementById('tomorrowShip').textContent = '—';
+    document.getElementById('pendingShip').textContent = '—';
+    document.getElementById('todayRevenue').textContent = '—';
+    document.getElementById('lowStock').textContent = '—';
+    renderLiveStatus('error', e.message + ' — staff_dashboard アクションを GAS で実装してください');
   }
   loadAnalytics();
 }
@@ -4202,12 +4294,25 @@ function deleteSub() {
     }).catch(e => toast('通信エラー: ' + e.message, 'error'));
 }
 
-/* ================ DEMO QUICK ENTRY ================ */
+/* ================ DEMO QUICK ENTRY ================
+   本番ホスト (github.io / eda-livestock.com) では完全無効。
+   ローカル/ステージング/?demo=1 専用。 */
 function enterDemoQuick() {
+  if (typeof isProductionHost === 'function' && isProductionHost()) {
+    alert('本番環境ではデモモードを使えません。\nTomに正規PINを確認してください。');
+    return;
+  }
   sessionStorage.setItem('eda-staff-demo', '1');
   localStorage.setItem(SESSION_KEY, '1');
   enterApp();
 }
+// ログイン画面ロード時、本番なら「デモを試す」ボタンを隠す
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof isProductionHost === 'function' && isProductionHost()) {
+    var btn = document.getElementById('demoQuickBtn');
+    if (btn) btn.style.display = 'none';
+  }
+});
 
 /* ================ INIT ================ */
 (function init() {
@@ -4236,5 +4341,6 @@ function enterDemoQuick() {
 })();
 </script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
+<div style="position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));right:10px;font-size:9px;color:rgba(26,26,26,0.32);letter-spacing:0.04em;pointer-events:none;z-index:5;background:rgba(255,255,255,0.7);padding:2px 6px;border-radius:4px;">build 2026-05-25 10:58 JST</div>
 </body>
 </html>

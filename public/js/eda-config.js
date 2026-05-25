@@ -32,6 +32,8 @@
     STRIPE_PUBLISHABLE_KEY: IS_TEST_MODE
       ? 'pk_test_TESTKEY_REPLACE_ME' // Tom が Stripe ダッシュボードで test キーを発行して置換
       : 'pk_live_51PNNcrGSkhU1UEciCMf2g2dI6aO2x4uQYqIOqm772au6vGfsS4E2t6sQNsTqK2nqwA6JFznKqMkp2xM06UFvr9rB00l0i8uN3T',
+    // テストキー未設定の検知用フラグ
+    STRIPE_TEST_KEY_MISSING: IS_TEST_MODE && true, // 後段で警告表示に使う
     // LINE 公式 ID
     LINE_AT_ID: '@706sgiuq',
     // LIFF ID (LINE Front-end Framework) ← Tom が LINE Developers Console で発行後ここに記入
@@ -45,6 +47,19 @@
   // テストモード時はコンソールに目立つ警告
   if (IS_TEST_MODE) {
     console.warn('%c⚠️ EDA TEST MODE — Stripe は test キー / 実購入は発生しません', 'background:#ffd166;color:#664d03;padding:4px 8px;font-weight:bold;border-radius:4px');
+    // テストキー未差替時の明示エラー
+    if (global.EDA_CONFIG.STRIPE_PUBLISHABLE_KEY === 'pk_test_TESTKEY_REPLACE_ME') {
+      console.error('%c🔴 Stripe test key 未設定! pk_test_TESTKEY_REPLACE_ME のままです。Stripe Dashboard で test key を発行して public/js/eda-config.js を更新してください。', 'background:#C8102E;color:white;padding:4px 8px;font-weight:bold;border-radius:4px');
+      // チェックアウトページでは画面にも警告表示
+      if (/checkout|test-checkout/.test(location.pathname)) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var w = document.createElement('div');
+          w.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#C8102E;color:white;text-align:center;padding:10px 16px;font-size:13px;font-weight:700;';
+          w.innerHTML = '🔴 開発者向け: Stripe test key 未設定。public/js/eda-config.js を編集してください。';
+          document.body.appendChild(w);
+        });
+      }
+    }
   }
 
   // ヘルパー: GAS への fetch を統一
