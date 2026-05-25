@@ -12,7 +12,7 @@
       case 'survey_responses':  return surveyResponsesOverview(e.parameter);
       case 'quiz_responses':    return quizResponsesOverview(e.parameter);
       case 'shipments':         return shipmentsOverview(e.parameter);
-      case 'staff_analytics':   return staffAnalytics(e.parameter);
+      /* staff_analytics は Code.gs に既存実装あり — 再デプロイで動く */
 
    4. 「デプロイ → デプロイを管理 → 編集（鉛筆アイコン）→ 新バージョン → デプロイ」
    5. https://edywagyu.github.io/eda-livestock-web/dashboard.html を再読込
@@ -185,64 +185,9 @@ function shipmentsOverview(params) {
   return jsonResponse({ ok: true, counts: counts, total: rows.length - 1 });
 }
 
-/* ====== STAFF: アクセス分析 (staff.html の アクセス分析セクション) ====== */
-function staffAnalytics(params) {
-  // 期間 (days) = 1 / 7 / 30 / 90 / 365
-  var days = Number(params.days) || 1;
-  // 既存の Events シートがあれば活用、無ければ空
-  var sheet = getSheet('Events') || getSheet('events');
-  if (!sheet) {
-    return jsonResponse({
-      ok: true, days: days,
-      pv: 0, sessions: 0, cartAdds: 0, cvr: 0,
-      topProducts: [], topReferrers: [],
-      note: 'Events シート未作成 (analytics.js から log_event 経由で書き込まれます)'
-    });
-  }
-  var rows = sheet.getDataRange().getValues();
-  if (rows.length < 2) {
-    return jsonResponse({
-      ok: true, days: days,
-      pv: 0, sessions: 0, cartAdds: 0, cvr: 0,
-      topProducts: [], topReferrers: []
-    });
-  }
-  var hdr = rows[0];
-  function idx(name) { return hdr.indexOf(name); }
-  var iTs = idx('timestamp');     if (iTs < 0) iTs = 0;
-  var iEv = idx('event_type');    if (iEv < 0) iEv = 1;
-  var iSe = idx('session_id');    if (iSe < 0) iSe = 2;
-  var iPr = idx('product_id');    if (iPr < 0) iPr = 3;
-  var iRf = idx('referrer');      if (iRf < 0) iRf = 4;
-
-  var cutoff = new Date().getTime() - days * 24 * 3600 * 1000;
-  var pv = 0, cart = 0, purchase = 0;
-  var sessions = {};
-  var prodCount = {}, refCount = {};
-  for (var r = 1; r < rows.length; r++) {
-    var ts = new Date(rows[r][iTs]).getTime();
-    if (ts < cutoff) continue;
-    var ev = String(rows[r][iEv] || '');
-    if (ev === 'pageview') pv++;
-    if (ev === 'cart_add') { cart++; prodCount[rows[r][iPr]] = (prodCount[rows[r][iPr]] || 0) + 1; }
-    if (ev === 'purchase') purchase++;
-    sessions[rows[r][iSe]] = true;
-    var ref = String(rows[r][iRf] || '');
-    if (ref) refCount[ref] = (refCount[ref] || 0) + 1;
-  }
-  var sessionCount = Object.keys(sessions).length;
-  var cvr = sessionCount ? (purchase / sessionCount * 100).toFixed(1) : 0;
-
-  function topN(obj, n) {
-    return Object.entries(obj).sort(function(a,b) { return b[1] - a[1]; }).slice(0, n).map(function(p) { return { name: p[0], count: p[1] }; });
-  }
-  return jsonResponse({
-    ok: true, days: days,
-    pv: pv, sessions: sessionCount, cartAdds: cart, cvr: Number(cvr),
-    topProducts: topN(prodCount, 5),
-    topReferrers: topN(refCount, 5)
-  });
-}
+/* ※ staffAnalytics() は Code.gs に既存実装あり (L2292〜)。重複定義は削除済み。
+   未実装に見えていた原因は GAS 本体の再デプロイ未実施。
+   doGet switch には Code.gs に既に case あり。 */
 
 /* ============================================================
    実装メモ:
