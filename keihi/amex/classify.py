@@ -74,6 +74,12 @@ def is_personal(content: str) -> bool:
     return any(re.search(p, content, re.IGNORECASE) for p in EXCLUDE_PERSONAL)
 
 
+def is_starbucks_charge(content: str, amount: int) -> bool:
+    """¥1,000 / ¥5,000 ジャストのスターバックス取引はカードへのチャージ（前払金）"""
+    is_sb = bool(re.search(r"スターバックス コーヒー ジャパン|STARBUCKS COFFEE JAPAN", content))
+    return is_sb and amount in (1000, 5000)
+
+
 def parse_amount(s: str) -> int:
     s = s.replace(",", "").replace('"', "").strip()
     try:
@@ -94,6 +100,8 @@ def main() -> None:
                 continue
             amount = parse_amount(r["金額"])
             if is_personal(content):
+                continue
+            if is_starbucks_charge(content, amount):
                 continue
             cls = classify(content)
             base = {
