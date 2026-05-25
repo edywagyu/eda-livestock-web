@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Journal | 江田畜産の記録 | EDA-LIVESTOCK</title>
-<meta name="description" content="創業ストーリー、農場の四季、シェフとの対話。江田畜産が発信するオウンドメディア。">
+<title>Recipes & Pairings | シェフ監修レシピ | EDA-LIVESTOCK</title>
+<meta name="description" content="ザ・リッツ・カールトン福岡「幻珠」、東京ステーションホテル、杉浦仁志シェフ監修。江田和牛のシグネチャーレシピとペアリングガイド。">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
@@ -38,29 +38,17 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-weight: 400;
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -3588,212 +3576,218 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </head>
 <body>
 <header class="site-header" id="siteHeader">
- <div class="container nav">
- <a href="index.html" class="brand-mark">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
- </a>
- <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">Book</a></li>
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a class="current" href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- </ul>
- </nav>
- <div class="nav-utils">
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
- <rect x="3" y="3" width="18" height="18" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
- </svg>
- </a>
- <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
- <path d="M3 6h2l3 12h11l3-9H6" />
- <circle cx="9" cy="20" r="1.4" fill="currentColor" />
- <circle cx="18" cy="20" r="1.4" fill="currentColor" />
- </svg>
- <span class="cart-badge" id="cartBadge">0</span>
- </button>
- </div>
- </div>
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a href="restaurants.html">Restaurants</a></li>
+        <li><a class="current" href="shop.html">Shop</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="press.html">Press</a></li>
+        <li><a href="about.html#members">Members</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle">
+        <span class="active">JA</span> / <span>EN</span>
+      </div>
+      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+        </svg>
+      </a>
+      <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6" />
+          <circle cx="9" cy="20" r="1.4" fill="currentColor" />
+          <circle cx="18" cy="20" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- ========= PAGE HEADER ========= -->
 <section class="page-header">
   <div class="container page-header-content">
-    <span class="eyebrow page-eyebrow">— Journal —</span>
+    <span class="eyebrow page-eyebrow">— Recipes & Pairings —</span>
     <h1 class="page-title">
-      Company<br/>
-      <span class="accent">Journal.</span>
+      Crafted by<br/>
+      <span class="accent">The Best Chefs.</span>
     </h1>
     <p class="page-subtitle">
-      江田畜産の自社記事・お知らせ・イベントレポート。<br/>
-      各記事は公式サイト（eda-livestock.com）の詳細ページへリンクしています。
+      ザ・リッツ・カールトン福岡「幻珠」、東京ステーションホテル、内閣府クールジャパンプロデューサー杉浦仁志シェフ。<br/>
+      一流の料理人が江田和牛のために生み出したレシピをご紹介します。
     </p>
   </div>
 </section>
 
-<!-- ========= ARTICLE LIST ========= -->
+<!-- ========= CHEF'S TIPS ========= -->
 <section class="article-body">
   <div class="container">
-    <div class="reveal" style="max-width: 920px; margin: 0 auto;">
+    <div class="reveal" style="text-align: center; margin-bottom: 56px;">
+      <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Chef's Voice</span>
+      <h2 style="margin-top: 24px;">調理の基本</h2>
+    </div>
 
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2026.05</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">HOTEL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">ザ・リッツ・カールトン福岡「幻珠」 江田和牛限定フェア 開催中</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">ザ・リッツ・カールトン福岡 鉄板焼「幻珠」にて、江田和牛を主役にした限定フェアを開催中。九州のフラッグシップホテルで味わうプレミアム和牛体験。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E3%83%AA%E3%83%83%E3%83%84%E3%83%BB%E3%82%AB%E3%83%BC%E3%83%AB%E3%83%88%E3%83%B3%E7%A6%8F%E5%B2%A1" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
+    <div class="reveal testimonial-grid" style="max-width: 1080px; margin: 0 auto;">
+      <div class="testimonial-card" style="background: white; color: var(--color-ink); border-left-color: var(--color-gold);">
+        <p class="testimonial-quote" style="color: var(--color-forest);">
+          灰汁が出づらく、調理がしやすい。塩と胡椒のみで、シンプルにお肉の味を楽しんでほしい。
+        </p>
+        <div class="testimonial-author">— Hotel Chef, Tokyo</div>
+      </div>
+      <div class="testimonial-card" style="background: white; color: var(--color-ink); border-left-color: var(--color-gold);">
+        <p class="testimonial-quote" style="color: var(--color-forest);">
+          無添加飼育の脂は、120度の低温でじっくり焼き上げると最大限旨みを引き出せる。
+        </p>
+        <div class="testimonial-author">— French Chef, Tokyo Station Hotel</div>
+      </div>
+      <div class="testimonial-card" style="background: white; color: var(--color-ink); border-left-color: var(--color-gold);">
+        <p class="testimonial-quote" style="color: var(--color-forest);">
+          ソースをかけてしまうのがもったいない。素材の力を、最小限の手数で。
+        </p>
+        <div class="testimonial-author">— Hitoshi Sugiura, Project Director</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= RECIPE CARDS ========= -->
+<section class="article-body" style="background: var(--color-paper);">
+  <div class="container">
+    <div class="reveal" style="text-align: center; margin-bottom: 56px;">
+      <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Signature Recipes</span>
+      <h2 style="margin-top: 24px;">シェフ監修レシピ</h2>
+    </div>
+
+    <div class="recipe-grid reveal">
+
+      <article class="recipe-card">
+        <div class="recipe-card-img"><img src="public/images/products/sirloin-steak.jpg" alt="サーロインステーキ"/></div>
+        <div class="recipe-card-body">
+          <div class="recipe-meta"><span>STEAK</span><span>20 min</span><span>★★ Easy</span></div>
+          <h3>江田和牛サーロイン 鉄板焼スタイル</h3>
+          <p>「幻珠」総料理長の手法をご家庭向けに翻案。120度の低温でじっくり、表面はカリッと、中はミディアムレアに。</p>
+          <div class="recipe-info">
+            <span><strong>素材</strong>江田和牛サーロイン 200g</span>
+            <span><strong>調味</strong>塩・黒胡椒のみ</span>
+          </div>
         </div>
       </article>
 
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.05</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EVENT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">大丸東京 地下催事にて江田和牛販売会を実施</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">大丸東京店の地下催事「旬鮮探訪」にて、江田和牛の販売会を実施しました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E5%A4%A7%E4%B8%B8%E6%9D%B1%E4%BA%AC-%E5%9C%B0%E4%B8%8B%E5%82%AC%E4%BA%8B%E3%81%AB%E3%81%A6%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B%E8%B2%A9%E5%A3%B2%E4%BC%9A%E3%82%92%E5%AE%9F%E6%96%BD%EF%BC%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.04</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">RETAIL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">イオン九州「BIORAL」にて江田和牛販売スタート</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">イオン九州が展開する自然派食品ブランド「BIORAL（ビオラル）」での販売がスタートしました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%B2%A9%E5%A3%B2%E9%96%8B%E5%A7%8B%E3%80%91%E3%82%A4%E3%82%AA%E3%83%B3%E4%B9%9D%E5%B7%9E" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
+      <article class="recipe-card">
+        <div class="recipe-card-img"><img src="public/images/products/chateaubriand.jpg" alt="シャトーブリアン"/></div>
+        <div class="recipe-card-body">
+          <div class="recipe-meta"><span>FILLET</span><span>30 min</span><span>★★★ Medium</span></div>
+          <h3>シャトーブリアン グランクリュ風</h3>
+          <p>東京ステーションホテル「ブラン ルージュ」のメインディッシュより。静岡産本わさびとジュドジャポネーズで。</p>
+          <div class="recipe-info">
+            <span><strong>素材</strong>シャトーブリアン 150g</span>
+            <span><strong>ペアリング</strong>赤ワイン (BDX)</span>
+          </div>
         </div>
       </article>
 
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.04</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EVENT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">三越銀座・三越日本橋にて江田和牛フェア開催</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">老舗百貨店・三越での合同フェア。3週間で1,200名以上の方にお越しいただきました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E5%87%BA%E5%BA%97%E3%80%91%E4%B8%89%E8%B6%8A%E9%8A%80%E5%BA%A7" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.04</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">GLOBAL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">中国・海南省「国際消費品博覧会（Hainan Expo）」に出展</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">アジアの巨大市場に、宮崎発の和牛ブランドとして出展。海南国際消費品博覧会での4日間。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91%E4%B8%AD%E5%9B%BD%E3%83%BB%E6%B5%B7%E5%8D%97%E7%9C%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
+      <article class="recipe-card">
+        <div class="recipe-card-img"><img src="public/images/products/red-meat-steak.jpg" alt="赤身ステーキ"/></div>
+        <div class="recipe-card-body">
+          <div class="recipe-meta"><span>RED MEAT</span><span>15 min</span><span>★ Beginner</span></div>
+          <h3>赤身ステーキ Tagliata仕立て</h3>
+          <p>イタリアの伝統技法 Tagliata。薄切りにしてルッコラと共に。江田和牛の赤身の濃さを最大限活かすシンプルな一皿。</p>
+          <div class="recipe-info">
+            <span><strong>素材</strong>赤身ステーキ 200g</span>
+            <span><strong>付合せ</strong>ルッコラ・パルミジャーノ</span>
+          </div>
         </div>
       </article>
 
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2025.01</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">SCHEDULE</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">2025年 江田畜産 出演予定のイベントスケジュール</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">2025年の出演・出展予定のイベント情報をまとめました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E6%B1%9F%E7%94%B0%E7%95%9C%E7%94%A3%E3%81%8C%E5%87%BA%E6%BC%94%E4%BA%88%E5%AE%9A" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.12</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">PRODUCT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">オーガニック卵、はじめました</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">江田畜産の新商品ラインとして、オーガニック飼育の鶏卵販売を開始しました。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E3%82%AA%E3%83%BC%E3%82%AC%E3%83%8B%E3%83%83%E3%82%AF%E5%8D%B5%E3%80%81%E3%81%AF%E3%81%98%E3%82%81%E3%81%BE%E3%81%97%E3%81%9F%EF%BC%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
+      <article class="recipe-card">
+        <div class="recipe-card-img"><img src="public/images/products/tongue-thick.jpg" alt="厚切りタン"/></div>
+        <div class="recipe-card-body">
+          <div class="recipe-meta"><span>TONGUE</span><span>25 min</span><span>★★ Easy</span></div>
+          <h3>厚切り和牛タン 塩レモン</h3>
+          <p>無投薬飼育だからこそ味わえる、雑味のない和牛タン。厚切りで強火、レモンと粗塩で。</p>
+          <div class="recipe-info">
+            <span><strong>素材</strong>黒タン厚切り 150g</span>
+            <span><strong>調味</strong>レモン・粗塩</span>
+          </div>
         </div>
       </article>
 
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.11</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EXPO</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">"日本の食品"輸出 EXPO 初出展</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">幕張メッセで開催された「日本の食品 輸出EXPO」に初出展。世界のバイヤーとの出会い。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91%22%E6%97%A5%E6%9C%AC%E3%81%AE%E9%A3%9F%E5%93%81%22%E8%BC%B8%E5%87%BA-EXPO-%E5%88%9D%E5%87%BA%E5%B1%95%EF%BC%81" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.11</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">GLOBAL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">フィリピン視察 — 和牛市場拡大への挑戦</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">フィリピンでの和牛市場の現状と、今後の展開可能性についての視察レポート。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91%E3%83%95%E3%82%A3%E3%83%AA%E3%83%94%E3%83%B3%E8%A6%96%E5%AF%9F%E3%81%AB%E3%81%A6%E5%92%8C%E7%89%9B%E5%B8%82%E5%A0%B4%E6%8B%A1%E5%A4%A7%E3%81%B8%E3%81%AE%E6%8C%91%E6%88%A6" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
+      <article class="recipe-card">
+        <div class="recipe-card-img"><img src="public/images/products/marbled-yakiniku.jpg" alt="霜降り焼肉"/></div>
+        <div class="recipe-card-body">
+          <div class="recipe-meta"><span>YAKINIKU</span><span>10 min</span><span>★ Beginner</span></div>
+          <h3>霜降り焼肉 すき焼き風タレ</h3>
+          <p>上質で溶けるような脂を、すき焼き風の甘辛いタレと卵で。ご家族の食卓に最適。</p>
+          <div class="recipe-info">
+            <span><strong>素材</strong>霜降スライス 200g</span>
+            <span><strong>調味</strong>醤油・みりん・卵</span>
+          </div>
         </div>
       </article>
 
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.10</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">EVENT</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">SKS JAPAN — フードテック国際カンファレンス登壇</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">日本のフードテック国際カンファレンスでの登壇・展示を終えて。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E8%A8%98%E4%BA%8B%E3%80%91sks%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%82%92%E7%B5%82%E3%81%88%E3%81%A6" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--color-bone);">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.09</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">RETAIL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">京王百貨店 新宿店 ECサイト出店</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">60周年記念商品にも選定された京王百貨店、ECサイトでの取り扱いがスタート。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91%E4%BA%AC%E7%8E%8B%E7%99%BE%E8%B2%A8%E5%BA%97%E6%96%B0%E5%AE%BF%E5%BA%97ec%E5%87%BA%E5%BA%97" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
-        </div>
-      </article>
-
-      <article style="display: grid; grid-template-columns: 140px 1fr; gap: 32px; padding: 40px 0;">
-        <div>
-          <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-forest);">2024.09</div>
-          <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-top: 4px;">HOTEL</div>
-        </div>
-        <div>
-          <h3 style="font-family: var(--font-jp-serif); font-size: 22px; line-height: 1.5; color: var(--color-forest); margin: 0 0 12px;">ザ・リッツ・カールトン福岡にてスペシャルディナー開催</h3>
-          <p style="font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0;">9月12〜14日の3日間、ザ・リッツ・カールトン福岡 鉄板焼「幻珠」にて「江田和牛スペシャルディナー」を開催。</p>
-          <div style="margin-top: 16px;"><a href="https://www.eda-livestock.com/news/%E3%80%90%E3%81%8A%E7%9F%A5%E3%82%89%E3%81%9B%E3%80%91ritz-carlton%E3%81%AB%E3%81%A6%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E9%96%8B%E5%82%AC" target="_blank" rel="noopener" style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); text-decoration: none;">公式サイトで読む →</a></div>
+      <article class="recipe-card">
+        <div class="recipe-card-img"><img src="public/images/products/hamburg.jpg" alt="無添加ハンバーグ"/></div>
+        <div class="recipe-card-body">
+          <div class="recipe-meta"><span>HAMBURG</span><span>20 min</span><span>★ Beginner</span></div>
+          <h3>無添加100%ハンバーグ シンプル仕立て</h3>
+          <p>つなぎを一切使わない、和牛100%のハンバーグ。中はジューシー、外はカリッと。素材のみの味で勝負する一品。</p>
+          <div class="recipe-info">
+            <span><strong>素材</strong>無添加ハンバーグ 130g</span>
+            <span><strong>仕上げ</strong>赤ワインソース</span>
+          </div>
         </div>
       </article>
 
     </div>
+  </div>
+</section>
 
-    <p style="text-align: center; margin-top: 64px; color: var(--color-ink-muted); font-size: 14px;" class="reveal">
-      全ニュース一覧は <a href="https://www.eda-livestock.com/news-2" target="_blank" rel="noopener" style="color: var(--color-gold-soft); text-decoration: underline;">eda-livestock.com</a> にて掲載しています。
-    </p>
+<!-- ========= PAIRING ========= -->
+<section class="philosophy section">
+  <div class="container">
+    <div class="reveal" style="text-align: center; margin-bottom: 56px;">
+      <span class="eyebrow text-gold has-dash">Pairing Guide</span>
+      <h2 class="philosophy-title">Pairings.</h2>
+    </div>
+
+    <div class="philosophy-grid reveal">
+      <div class="pillar">
+        <div class="pillar-num">— Wine —</div>
+        <h3 class="pillar-title">Bordeaux Left Bank</h3>
+        <p class="pillar-title-jp">サーロイン × カベルネ・ソーヴィニヨン</p>
+        <p class="pillar-text">タンニンと脂のバランス。Saint-Estèphe や Pauillac の若いビンテージが最適。</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">— Sake —</div>
+        <h3 class="pillar-title">純米大吟醸</h3>
+        <p class="pillar-title-jp">赤身 × 米の旨味</p>
+        <p class="pillar-text">米糠を餌に使う江田和牛は、米由来の純米大吟醸と相性抜群。</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">— Whisky —</div>
+        <h3 class="pillar-title">Japanese Single Malt</h3>
+        <p class="pillar-title-jp">ステーキ × 山崎・白州</p>
+        <p class="pillar-text">脂をまろやかに洗い流す、日本のシングルモルトで余韻を。</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">— Tea —</div>
+        <h3 class="pillar-title">Premium Hojicha</h3>
+        <p class="pillar-title-jp">焼肉 × 焙じ茶</p>
+        <p class="pillar-text">食後に焙じ茶を。脂をリセットし、余韻だけが舌に残ります。</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -4369,8 +4363,5 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
-<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>

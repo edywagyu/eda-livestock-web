@@ -72,6 +72,7 @@ PAGES = [
     {"src": "journal-1.html",   "out": "journal-1.html",    "nav": "journal.html",      "title": "なぜ20代で畜産を選んだのか | Journal | EDA-LIVESTOCK", "desc": "創業者・江田友輝が語る、家業ではなく、ひとつの事業として畜産を選んだ理由。"},
     {"src": "members.html",     "out": "members.html",      "nav": "members.html",      "title": "Members | チーム | EDA-LIVESTOCK", "desc": "20代の経営チームが、平均年齢70歳超の畜産業界に新しい風を吹き込みます。"},
     {"src": "contact.html",     "out": "contact.html",      "nav": "",                  "title": "Contact | お問い合わせ | EDA-LIVESTOCK", "desc": "卸・取材・パートナーシップ・一般のお問い合わせはこちらから。"},
+    {"src": "booking.html",     "out": "booking.html",      "nav": "",                  "title": "Book a Meeting | 商談予約 | EDA-LIVESTOCK", "desc": "江田畜産との商談・お打ち合わせをオンラインで予約。国内・海外バイヤー対応。Google Calendar 連携。"},
 ]
 
 
