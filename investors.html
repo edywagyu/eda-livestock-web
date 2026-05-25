@@ -38,7 +38,8 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
+@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -48,7 +49,18 @@ body {
   color: var(--color-ink);
   background: var(--color-cream);
   overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
+/* mobile-scroll-patch: touch & perf */
+a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
+@media (max-width: 1024px) {
+  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
+}
+@supports (content-visibility: auto) {
+  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+}
+
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -4364,5 +4376,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
+<script src="public/js/eda-bundle.js?v=005" defer></script>
+<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
