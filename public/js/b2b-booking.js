@@ -81,6 +81,21 @@
   border-top: 1px solid rgba(212,169,59,0.32);
 }
 .b2b-sticky-bar.is-visible { transform: translateY(0); }
+/* スティッキーバー出現時、フロート電話/LINEボタンが重ならないよう持ち上げる */
+body:has(.b2b-sticky-bar.is-visible) .eda-floating-phone,
+body:has(.b2b-sticky-bar.is-visible) .eda-floating-line,
+body:has(.b2b-sticky-bar.is-visible) .deck-book-fab,
+body:has(.b2b-sticky-bar.is-visible) .shop-products-jump-fab,
+body:has(.b2b-sticky-bar.is-visible) .sub-sticky-cta {
+  transform: translateY(-72px);
+}
+/* :has() 未対応 ブラウザ向けフォールバック (data 属性経由) */
+body[data-b2b-sticky="1"] .eda-floating-phone,
+body[data-b2b-sticky="1"] .eda-floating-line,
+body[data-b2b-sticky="1"] .deck-book-fab,
+body[data-b2b-sticky="1"] .shop-products-jump-fab {
+  transform: translateY(-72px) !important;
+}
 .b2b-sticky-bar-inner {
   max-width: 1200px; margin: 0 auto;
   display: flex; align-items: center; justify-content: space-between;
@@ -260,7 +275,10 @@
       const docH = document.documentElement.scrollHeight;
       const winH = window.innerHeight;
       const nearBottom = (docH - y - winH) < 100;
-      bar.classList.toggle('is-visible', y > 400 && !nearBottom);
+      const visible = y > 400 && !nearBottom;
+      bar.classList.toggle('is-visible', visible);
+      // :has() フォールバック用 body data 属性
+      document.body.setAttribute('data-b2b-sticky', visible ? '1' : '0');
     }
     window.addEventListener('scroll', () => {
       if (!ticking) { requestAnimationFrame(update); ticking = true; }

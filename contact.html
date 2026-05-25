@@ -4126,18 +4126,101 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 
  <div style="text-align: center; margin-top: 40px;">
- <button type="submit" class="btn btn-dark" style="padding: 22px 56px; font-size: 14px;">
+ <button type="submit" class="btn btn-dark" id="contactSubmitBtn" style="padding: 22px 56px; font-size: 14px;">
  Send Inquiry <span class="btn-arrow"></span>
  </button>
  <p style="margin-top: 16px; font-size: 12px; color: var(--color-ink-muted);">
- 送信後、24〜48時間以内に <strong>backoffice@eda-livestock.com</strong> よりご返信いたします。
+ 送信後、24〜48時間以内に <strong>backoffice@eda-livestock.com</strong> よりご返信いたします。<br/>
+ 急ぎの方は <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" style="color:var(--color-gold-soft);text-decoration:underline;">30分商談予約</a> もどうぞ。
  </p>
+ <div id="contactResult" style="margin-top:24px;padding:18px 22px;border-radius:10px;display:none;font-size:14px;line-height:1.7;"></div>
  </div>
  </div>
 
  </form>
  </div>
 </section>
+
+<!-- Contact form submission handler -->
+<script>
+(function() {
+ const form = document.getElementById('contactForm');
+ const btn = document.getElementById('contactSubmitBtn');
+ const result = document.getElementById('contactResult');
+ if (!form) return;
+
+ // タイプ選択カードのアクティブ切替
+ document.querySelectorAll('.inquiry-type-card').forEach(card => {
+  card.addEventListener('click', () => {
+   document.querySelectorAll('.inquiry-type-card').forEach(c => c.classList.remove('active'));
+   card.classList.add('active');
+   const hidden = document.getElementById('inquiry_type');
+   if (hidden) hidden.value = card.dataset.type || 'general';
+  });
+ });
+
+ form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = {};
+  new FormData(form).forEach((v, k) => { data[k] = v; });
+  data.page_referrer = document.referrer || '';
+  data.timestamp = new Date().toISOString();
+
+  // 必須チェック
+  if (!data.name || !data.email) {
+   showResult('error', 'お名前とメールアドレスは必須です。');
+   return;
+  }
+
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '送信中… / Sending…';
+
+  try {
+   if (window.EDA_API && window.EDA_API.post) {
+    const resp = await window.EDA_API.post('submit_inquiry', data);
+    if (resp && resp.ok) {
+     showResult('success', 'お問い合わせを受け付けました。24〜48時間以内にご返信いたします。<br/><br/>急ぎの方は <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;font-weight:700;">30分商談予約 →</a> もご利用ください。');
+     form.reset();
+     // 予約への自然な誘導
+     setTimeout(() => {
+      window.scrollTo({ top: document.getElementById('contactResult').offsetTop - 100, behavior: 'smooth' });
+     }, 200);
+    } else {
+     throw new Error((resp && resp.error) || 'GAS送信失敗');
+    }
+   } else {
+    // GAS API 未ロード → mailto フォールバック
+    const subject = `Eda Livestock お問い合わせ - ${data.inquiry_type || 'general'}`;
+    const body = Object.entries(data).filter(([k,v]) => v).map(([k,v]) => `${k}: ${v}`).join('\n');
+    window.location.href = `mailto:backoffice@eda-livestock.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    showResult('info', 'メールアプリを起動しました。ご確認の上、送信してください。');
+   }
+  } catch (err) {
+   console.error('[contact] submit error', err);
+   // バックアップ: mailto を即開く
+   const subject = `Eda Livestock お問い合わせ - ${data.inquiry_type || 'general'}`;
+   const body = Object.entries(data).filter(([k,v]) => v).map(([k,v]) => `${k}: ${v}`).join('\n');
+   showResult('error', `送信に失敗しました。<a href="mailto:backoffice@eda-livestock.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}" style="color:inherit;text-decoration:underline;font-weight:700;">こちらをクリック</a>してメールで直接ご連絡ください。`);
+  } finally {
+   btn.disabled = false;
+   btn.innerHTML = originalText;
+  }
+ });
+
+ function showResult(type, msg) {
+  result.style.display = 'block';
+  if (type === 'success') {
+   result.style.cssText = 'margin-top:24px;padding:18px 22px;border-radius:10px;display:block;font-size:14px;line-height:1.7;background:rgba(45,139,82,0.08);color:#1A6B3A;border:1px solid rgba(45,139,82,0.32);';
+  } else if (type === 'error') {
+   result.style.cssText = 'margin-top:24px;padding:18px 22px;border-radius:10px;display:block;font-size:14px;line-height:1.7;background:rgba(200,16,46,0.06);color:#7A0A1A;border:1px solid rgba(200,16,46,0.32);';
+  } else {
+   result.style.cssText = 'margin-top:24px;padding:18px 22px;border-radius:10px;display:block;font-size:14px;line-height:1.7;background:rgba(212,169,59,0.10);color:#5C4A1F;border:1px solid rgba(212,169,59,0.32);';
+  }
+  result.innerHTML = msg;
+ }
+})();
+</script>
 
 <!-- ========= DIRECT CONTACT ========= -->
 <section class="article-body" style="background: var(--color-paper);">

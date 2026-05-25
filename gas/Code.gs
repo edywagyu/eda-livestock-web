@@ -219,6 +219,8 @@ function doPost(e) {
       case 'log_subscription_application': return logSubscriptionApplication(body);
       case 'request_otp':                  return requestOtp(body);
       case 'verify_otp':                   return verifyOtp(body);
+      /* ===== お問い合わせフォーム (Code_v2_Additions.gs に実装) ===== */
+      case 'submit_inquiry':               return submitInquiry(body);
       case 'skip_subscription':            return skipSubscription(body);
       case 'cancel_subscription':          return cancelSubscription(body);
       case 'client_error':                 return logClientError(body);
