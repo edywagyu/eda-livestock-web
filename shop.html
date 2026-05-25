@@ -7012,7 +7012,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
    ★ 「カートに追加」ボタン強制表示 (regression防止)
    通常商品カードの product-buy・cart button は必ず見えるように
    ============================================================ */
-.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .product-buy {
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon) .product-buy {
  display: flex !important;
  visibility: visible !important;
  opacity: 1 !important;
@@ -7021,7 +7021,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 12px 16px 16px !important;
  margin-top: auto !important;
 }
-.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .btn-add-cart {
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon) .btn-add-cart {
  display: block !important;
  visibility: visible !important;
  opacity: 1 !important;
@@ -7039,15 +7039,15 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  box-shadow: 0 2px 6px rgba(15,61,46,0.12) !important;
  transition: background 0.2s, transform 0.18s !important;
 }
-.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .btn-add-cart:hover {
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon) .btn-add-cart:hover {
  background: var(--color-forest-deep) !important;
  transform: translateY(-1px) !important;
 }
-.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .btn-add-cart:disabled {
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon) .btn-add-cart:disabled {
  opacity: 0.5 !important;
  cursor: not-allowed !important;
 }
-.product-card:not(.product-card--organic):not(.product-card--organic-wagyu) .variant-select {
+.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon) .variant-select {
  width: 100% !important;
  padding: 10px 32px 10px 14px !important;
  border-radius: 8px !important;
@@ -7203,14 +7203,29 @@ body.is-member .product-card--organic .org-chk-lock {
  display: none !important;
 }
 
-/* COMING SOON オーバーレイは有機JAS のみ — 🔒ロック演出 */
-.product-card--organic-wagyu .organic-wagyu-overlay {
+/* COMING SOON オーバーレイ — 有機JAS 和牛 + 鶏肉全品 */
+.product-card--organic-wagyu .organic-wagyu-overlay,
+.product-card--organic .organic-wagyu-overlay,
+.product-card--chicken-soon .organic-wagyu-overlay {
  background: rgba(0,0,0,0.72);
  color: var(--color-gold);
  flex-direction: column;
  gap: 8px;
  backdrop-filter: blur(3px);
  -webkit-backdrop-filter: blur(3px);
+}
+/* 鶏肉 SOON カード: buy ボタンを非表示 */
+.product-card--chicken-soon .product-buy { display: none !important; }
+/* 無投薬バッジ */
+.badge-muton {
+ background: rgba(15,61,46,0.82);
+ color: var(--color-gold);
+ font-family: var(--font-jp);
+ font-size: 10px;
+ font-weight: 700;
+ padding: 3px 8px;
+ border-radius: 4px;
+ letter-spacing: 0.06em;
 }
 /* ロックアイコン円 */
 .organic-wagyu-lock-circle {
@@ -9659,12 +9674,6 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="tab" data-filter="chicken">鶏肉</button>
  </div>
 
- <!-- ステータスフィルタ（自動・期間限定） — シンプル3カテゴリに集約 -->
- <div class="status-pills reveal" id="statusPills">
- <button class="status-pill active" data-status="all">全商品</button>
- <button class="status-pill" data-status="sale">💰 今週お得</button>
- <button class="status-pill" data-status="ranking">🏆 直近ランキング</button>
- </div>
 
  <!-- ===== 牛肉（ステーキ・スライス・加工品すべて統合） ===== -->
  <div class="shop-cat-head reveal" data-cat="beef">
@@ -9910,8 +9919,9 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
  <!-- 平飼い鶏 標準ライン（3品）— 250g パック -->
- <div class="product-card" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ (250g)","p":640},{"id":50830250508586,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830250541354,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
- <div class="product-card-img" data-label="CHICKEN BREAST"></div>
+ <div class="product-card product-card--chicken-soon" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ (250g)","p":640},{"id":50830250508586,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830250541354,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
+ <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">COMING SOON</div><div class="org-chk-lock-desc">もうすぐ発売。LINE友だち追加で先行案内します</div></a>
+ <div class="product-card-img" data-label="CHICKEN BREAST"><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
  <div class="product-tag-row"><span class="product-tag">Chicken · Breast</span><span class="product-price">¥640〜</span></div>
  <p class="product-name">平飼い鶏 ムネ</p>
  <p class="product-desc">高タンパク・低脂肪のムネ肉。無投薬の平飼い鶏は身が締まって旨みが濃い。低温調理でサラダチキン、バンバンジーに。</p>
@@ -9925,8 +9935,9 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ (250g)","p":640},{"id":50830293205290,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830293238058,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
- <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge" style="background:var(--color-red);color:#fff">万能</span></div>
+ <div class="product-card product-card--chicken-soon" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ (250g)","p":640},{"id":50830293205290,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830293238058,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
+ <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">COMING SOON</div><div class="org-chk-lock-desc">もうすぐ発売。LINE友だち追加で先行案内します</div></a>
+ <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge" style="background:var(--color-red);color:#fff">万能</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
  <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥640〜</span></div>
  <p class="product-name">平飼い鶏 モモ</p>
  <p class="product-desc">大分県産 平飼い・無投薬。<strong>照り焼き・唐揚げ・煮込み</strong>まで何にでも使える万能部位。週末の唐揚げ、平日のグリルに。</p>
@@ -9940,8 +9951,9 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ (250g)","p":500},{"id":50830210826538,"t":"2つセット (500g)【5%オフ】","p":950},{"id":50830210859306,"t":"3つセット (750g)【10%オフ】","p":1350}]'>
- <div class="product-card-img" data-label="CHICKEN MINCED"></div>
+ <div class="product-card product-card--chicken-soon" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ (250g)","p":500},{"id":50830210826538,"t":"2つセット (500g)【5%オフ】","p":950},{"id":50830210859306,"t":"3つセット (750g)【10%オフ】","p":1350}]'>
+ <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">COMING SOON</div><div class="org-chk-lock-desc">もうすぐ発売。LINE友だち追加で先行案内します</div></a>
+ <div class="product-card-img" data-label="CHICKEN MINCED"><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
  <div class="product-tag-row"><span class="product-tag">Chicken · Minced</span><span class="product-price">¥500〜</span></div>
  <p class="product-name">平飼い鶏 ミンチ</p>
  <p class="product-desc">つくね、そぼろ、鶏団子鍋、キーマカレーに。無投薬で、お子さまの離乳食にも安心。</p>
@@ -9959,7 +9971,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ (250g)","p":1920},{"id":"organic-chicken-breast-2","t":"2つセット (500g)【5%オフ】","p":3648}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
- <div class="product-card-img" data-label="CHICKEN BREAST" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-breast.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span></div>
+ <div class="product-card-img" data-label="CHICKEN BREAST" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-breast.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥1,920〜</span></div>
  <p class="product-name">オーガニックチキン ムネ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ、上等の一品。</p>
@@ -9976,7 +9988,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-thigh","t":"1つ (250g)","p":1920},{"id":"organic-chicken-thigh-2","t":"2つセット (500g)【5%オフ】","p":3648}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
- <div class="product-card-img" data-label="CHICKEN THIGH" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-thigh.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span></div>
+ <div class="product-card-img" data-label="CHICKEN THIGH" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-thigh.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥1,920〜</span></div>
  <p class="product-name">オーガニックチキン モモ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。週末の特別な照り焼きに。</p>
@@ -9993,7 +10005,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-chicken-minced","t":"1つ (250g)","p":1500},{"id":"organic-chicken-minced-2","t":"2つセット (500g)【5%オフ】","p":2850}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
- <div class="product-card-img" data-label="CHICKEN MINCED" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-minced.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span></div>
+ <div class="product-card-img" data-label="CHICKEN MINCED" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-minced.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥1,500〜</span></div>
  <p class="product-name">オーガニックチキン ミンチ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。上質のオーガニック鶏ミンチ。離乳食やつくねの主役に。</p>
@@ -10031,16 +10043,16 @@ body.is-member .product-card--organic .org-chk-lock {
    ※ 寄付金額・返礼内容は各サイトで異なります。ワンストップ特例対応・定期便プランあり。
   </p>
   <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 720px; margin: 0 auto 24px;">
-   <a href="https://www.satofull.jp/city-takaharu-cho/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
+   <a href="https://www.satofull.jp/search/?keyword=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
     <span style="color: #FF6B35;">●</span> さとふる で見る <span class="btn-arrow"></span>
    </a>
-   <a href="https://search.rakuten.co.jp/search/mall/%E6%B1%9F%E7%94%B0%E7%95%9C%E7%94%A3/?sid=304021" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
+   <a href="https://search.rakuten.co.jp/search/mall/%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B/?sid=304021" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
     <span style="color: #BF0000;">●</span> 楽天ふるさと納税 <span class="btn-arrow"></span>
    </a>
-   <a href="https://www.furusato-tax.jp/city/product/45361?keyword=%E6%B1%9F%E7%94%B0" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
+   <a href="https://www.furusato-tax.jp/city/product/45361?keyword=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
     <span style="color: #E60013;">●</span> ふるさとチョイス <span class="btn-arrow"></span>
    </a>
-   <a href="https://furusato.takaharutown.jp/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: var(--color-forest); border: 1px solid var(--color-forest); border-radius: 999px; color: white; font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
+   <a href="https://furusato.takaharutown.jp/?s=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: var(--color-forest); border: 1px solid var(--color-forest); border-radius: 999px; color: white; font-family: var(--font-jp); font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
     🏛 高原町公式「たかふる」 <span class="btn-arrow"></span>
    </a>
   </div>
@@ -13616,6 +13628,28 @@ function copyPopCoupon() {
 
 <!-- 商品マスター: GAS 経由でスプシから動的取得 (fallback: products-master.js)
      スプシ: 1tNbIvsTkqrJiWtgpKCHevs_qeVjfNny0FPEsqTtxruM の products タブ -->
+<script>
+/* 無投薬バッジ — オーガニック以外の全商品カードに自動挿入 */
+(function() {
+  function addMutonBadges() {
+    document.querySelectorAll(
+      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon)'
+    ).forEach(function(card) {
+      var imgDiv = card.querySelector('.product-card-img');
+      if (!imgDiv || imgDiv.querySelector('.badge-muton')) return;
+      var badge = document.createElement('span');
+      badge.className = 'badge badge-muton';
+      badge.textContent = '無投薬';
+      imgDiv.appendChild(badge);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addMutonBadges);
+  } else {
+    addMutonBadges();
+  }
+})();
+</script>
 <script src="public/data/products-master.js" defer></script>
 <script src="public/js/products-loader.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=001" defer></script>

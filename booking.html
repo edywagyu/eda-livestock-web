@@ -4057,9 +4057,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   function updateTzNotice() {
     if (state.buyerType === 'international') {
-      $tzNotice.textContent = 'Your timezone: ' + state.visitorTz + ' — Times shown in your local time (JST 0:00–6:00 excluded)';
+      var tzShort = tzAbbreviation(state.visitorTz);
+      $tzNotice.innerHTML =
+        'Times shown in <strong>your local time (' + tzShort + ' — ' + state.visitorTz + ')</strong>' +
+        '<br/><span style="opacity:0.75;font-size:0.85em;">Available anytime except Japan 00:00–06:00 · Earliest available: 3 days from today</span>';
     } else {
-      $tzNotice.textContent = '日本標準時（JST）で表示しています';
+      $tzNotice.innerHTML =
+        '日本標準時（JST）で表示しています' +
+        '<br/><span style="opacity:0.75;font-size:0.85em;">受付時間 10:00–18:00 JST · 最短予約日: 3日後以降</span>';
     }
   }
 
@@ -4092,6 +4097,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // 最小予約可能日 = 3 日後（72 時間後の日付）
+    var minBookingDate = new Date();
+    minBookingDate.setDate(minBookingDate.getDate() + 3);
+    minBookingDate.setHours(0, 0, 0, 0);
+
     var firstDay = new Date(state.viewYear, state.viewMonth, 1);
     var startWeekday = (firstDay.getDay() + 6) % 7; // Mon=0
     var daysInMonth = new Date(state.viewYear, state.viewMonth + 1, 0).getDate();
@@ -4106,6 +4116,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     for (var d = 1; d <= daysInMonth; d++) {
       var dt = new Date(state.viewYear, state.viewMonth, d);
       var isPast = dt < today;
+      var isTooSoon = dt < minBookingDate;
       var isTooFar = dt > maxDate;
       var isToday = dt.getTime() === today.getTime();
       var isSelected = state.selectedDate &&
@@ -4114,7 +4125,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         dt.getDate() === state.selectedDate.getDate();
 
       var cls = 'cal-day';
-      if (isPast || isTooFar) cls += ' disabled';
+      if (isPast || isTooSoon || isTooFar) cls += ' disabled';
       if (isToday) cls += ' today';
       if (isSelected) cls += ' selected';
 
@@ -4177,17 +4188,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     var startH = state.buyerType === 'domestic' ? 10 : 6;
     var endH = state.buyerType === 'domestic' ? 18 : 24;
     var slots = [];
-    var now = Date.now();
+    // 3 日後（72 時間後）以降のみ
+    var minBooking = Date.now() + 72 * 3600000;
 
     for (var h = startH; h < endH; h++) {
       var iso = dateStr + 'T' + pad(h) + ':00:00+09:00';
       var slotTime = new Date(iso).getTime();
-      if (slotTime < now + 2 * 3600000) continue;
+      if (slotTime < minBooking) continue;
+      var slotStart = new Date(iso);
+      var slotEnd = new Date(slotTime + 3600000);
       slots.push({
-        start_utc: new Date(iso).toISOString(),
-        end_utc: new Date(slotTime + 3600000).toISOString(),
+        start_utc: slotStart.toISOString(),
+        end_utc: slotEnd.toISOString(),
         hour_jst: h,
-        label_jst: pad(h) + ':00 – ' + pad(h + 1) + ':00 JST'
+        label_jst: pad(h) + ':00 – ' + pad(h + 1) + ':00 JST',
+        label_local: formatLocalTime(slotStart) + ' – ' + formatLocalTime(slotEnd),
+        tz_local: state.visitorTz
       });
     }
     renderSlots(dateStr, slots);
@@ -4206,18 +4222,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     var dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     $slotsDateLabel.textContent = dateStr + ' (' + dayNames[dateObj.getDay()] + ')';
 
+    var isIntl = state.buyerType === 'international' && state.visitorTz !== 'Asia/Tokyo';
+    var tzShort = isIntl ? tzAbbreviation(state.visitorTz) : '';
+
     var html = '';
     slots.forEach(function(slot) {
-      var localLabel = '';
-      if (state.buyerType === 'international' && state.visitorTz !== 'Asia/Tokyo') {
-        var localStart = new Date(slot.start_utc);
-        var localEnd = new Date(slot.end_utc);
-        localLabel = formatLocalTime(localStart) + ' – ' + formatLocalTime(localEnd);
+      var primaryLabel, secondaryLabel, primaryAria;
+
+      if (isIntl) {
+        // 国際バイヤー: ローカル時刻を主表示
+        var localStr = slot.label_local ||
+          (formatLocalTime(new Date(slot.start_utc)) + ' – ' + formatLocalTime(new Date(slot.end_utc)));
+        primaryLabel = localStr + ' ' + tzShort;
+        secondaryLabel = '= ' + slot.label_jst + ' (Japan)';
+        primaryAria = localStr + ' ' + tzShort + ' / ' + slot.label_jst;
+      } else {
+        // 国内: JST を主表示
+        primaryLabel = slot.label_jst;
+        secondaryLabel = '';
+        primaryAria = slot.label_jst;
       }
 
-      html += '<button type="button" class="slot-btn" data-start="' + slot.start_utc + '" data-label="' + slot.label_jst + '">' +
-        slot.label_jst +
-        (localLabel ? '<span class="slot-local">' + localLabel + ' (local)</span>' : '') +
+      html += '<button type="button" class="slot-btn" data-start="' + slot.start_utc +
+        '" data-label="' + escapeAttr(primaryAria) + '" aria-label="' + escapeAttr(primaryAria) + '">' +
+        primaryLabel +
+        (secondaryLabel ? '<span class="slot-local">' + secondaryLabel + '</span>' : '') +
         '</button>';
     });
 
@@ -4238,6 +4267,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   function formatLocalTime(date) {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: state.visitorTz });
+  }
+
+  function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // タイムゾーン省略名（NY なら "EST"/"EDT"、Madrid なら "CET"/"CEST"）
+  function tzAbbreviation(tz) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: tz,
+        timeZoneName: 'short'
+      }).formatToParts(new Date());
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].type === 'timeZoneName') return parts[i].value;
+      }
+    } catch (e) {}
+    return tz.split('/').pop().replace(/_/g, ' ');
   }
 
   function selectSlot() {
