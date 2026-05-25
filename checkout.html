@@ -437,6 +437,36 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  font-weight: 600;
  margin-top: 2px;
 }
+/* ===== 数量コントロール ===== */
+.order-item-qty {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ margin-top: 5px;
+}
+.order-item-qty-btn {
+ width: 26px; height: 26px;
+ border: 1px solid var(--color-bone);
+ border-radius: 50%;
+ background: white;
+ color: var(--color-forest);
+ font-size: 15px;
+ line-height: 1;
+ cursor: pointer;
+ display: flex; align-items: center; justify-content: center;
+ transition: background 0.15s, border-color 0.15s;
+ font-weight: 600;
+ padding: 0;
+}
+.order-item-qty-btn:hover { background: var(--color-forest); color: white; border-color: var(--color-forest); }
+.order-item-qty-btn.remove { color: #C8102E; border-color: rgba(200,16,46,0.3); font-size: 12px; }
+.order-item-qty-btn.remove:hover { background: #C8102E; color: white; border-color: #C8102E; }
+.order-item-qty-num {
+ min-width: 20px; text-align: center;
+ font-family: var(--font-numeric);
+ font-size: 13px; font-weight: 700;
+ color: var(--color-ink);
+}
 
 /* ====== Per-item gift toggle (Amazon/Rakuten inspired) ====== */
 .order-card {
@@ -1743,7 +1773,13 @@ function renderOrderList() {
   <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
   <div class="order-item-info">
   <strong>${item.title}</strong>
-  <span>${item.variant} × ${item.qty}</span>
+  <span>${item.variant}</span>
+  <div class="order-item-qty">
+   <button type="button" class="order-item-qty-btn remove" onclick="changeCartQty(${i},-1)" title="削除">×</button>
+   <button type="button" class="order-item-qty-btn" onclick="changeCartQty(${i},-1)">−</button>
+   <span class="order-item-qty-num">${item.qty}</span>
+   <button type="button" class="order-item-qty-btn" onclick="changeCartQty(${i},1)">＋</button>
+  </div>
   </div>
   <div class="order-item-price">
   ¥${(item.price * item.qty).toLocaleString()}
@@ -1763,6 +1799,27 @@ function renderOrderList() {
  html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
  }
  list.innerHTML = html;
+}
+
+/* ---- カート数量変更 ---- */
+function changeCartQty(index, delta) {
+ const item = cartItems[index];
+ if (!item) return;
+ const newQty = item.qty + delta;
+ if (newQty <= 0) {
+  // 削除 — 送り先の itemIds も更新
+  cartItems.splice(index, 1);
+  destinations.forEach(d => {
+  d.itemIds = d.itemIds
+   .filter(id => id !== index)
+   .map(id => id > index ? id - 1 : id);
+  });
+ } else {
+  item.qty = newQty;
+ }
+ localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+ renderOrderList();
+ renderSummary();
 }
 
 /* ---- アイテム別ギフト切替 ---- */
