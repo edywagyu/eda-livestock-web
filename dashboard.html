@@ -1224,15 +1224,38 @@ async function loadTabData(tab) {
     document.getElementById('quizFreqBars').innerHTML   = Object.keys(q.freq   || {}).length ? renderSurveyBars(q.freq)   : empty;
     document.getElementById('quizBudgetBars').innerHTML = Object.keys(q.budget || {}).length ? renderSurveyBars(q.budget) : empty;
   } else if (tab === 'line') {
-    document.getElementById('lineTotal').textContent = '1,062';
-    document.getElementById('lineBlock').textContent = '4';
-    document.getElementById('lineOpen').textContent  = '47';
-    document.getElementById('lineCoupon').textContent = '189';
+    // LINE 統計は GAS 側に segment_stats があれば後で同期。今は "—" で待機。
+    try {
+      const gasUrl = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || localStorage.getItem('eda-gas-url') || '';
+      if (gasUrl) {
+        const res = await fetch(gasUrl + '?action=segment_stats');
+        const d = await res.json();
+        const sum = (d && d.summary) || {};
+        document.getElementById('lineTotal').textContent = (sum.total_customers || 0).toLocaleString();
+        document.getElementById('lineBlock').textContent = sum.blocked || '0';
+        document.getElementById('lineOpen').textContent  = sum.open_rate || '—';
+        document.getElementById('lineCoupon').textContent = sum.coupon_used || '0';
+      } else {
+        document.getElementById('lineTotal').textContent = '—';
+        document.getElementById('lineBlock').textContent = '—';
+        document.getElementById('lineOpen').textContent  = '—';
+        document.getElementById('lineCoupon').textContent = '—';
+      }
+    } catch (e) {
+      console.warn('[line tab]', e);
+      document.getElementById('lineTotal').textContent = '—';
+      document.getElementById('lineBlock').textContent = '—';
+      document.getElementById('lineOpen').textContent  = '—';
+      document.getElementById('lineCoupon').textContent = '—';
+    }
   } else if (tab === 'shipping') {
-    document.getElementById('shipPending').textContent = '12';
-    document.getElementById('shipInTransit').textContent = '34';
-    document.getElementById('shipDelivered').textContent = '78';
-    document.getElementById('shipIssue').textContent = '1';
+    // 配送状況は GAS の shipments エンドポイントから取得
+    const data = await gasGet('shipments');
+    const ship = (data && data.summary) || {};
+    document.getElementById('shipPending').textContent   = ship.pending   || 0;
+    document.getElementById('shipInTransit').textContent = ship.inTransit || 0;
+    document.getElementById('shipDelivered').textContent = ship.delivered || 0;
+    document.getElementById('shipIssue').textContent     = ship.issue     || 0;
   } else if (tab === 'settings') {
     document.getElementById('settingsGasUrl').value = GAS_URL();
   }
