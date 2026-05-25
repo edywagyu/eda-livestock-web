@@ -3658,8 +3658,82 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  創業1年目の1カ国から、3年目で13カ国へ。<br/>
  江田畜産は商社を介さず、すべての海外取引を自社で完結させています。
  </p>
+ <!-- B2B 予約導線: Hero 直下プライマリCTA -->
+ <div class="b2b-hero-cta">
+ <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="b2b-cta-primary">
+  <span class="b2b-cta-icon" aria-hidden="true">📅</span>
+  <span class="b2b-cta-label">
+   <strong>Book a 30-min Call</strong>
+   <small>Direct meeting with Tomoki Eda · JST 6-24h</small>
+  </span>
+  <span class="b2b-cta-arrow" aria-hidden="true">→</span>
+ </a>
+ <a href="buyer-deck.html" class="b2b-cta-secondary">
+  <span aria-hidden="true">📄</span>
+  Download Buyer Deck (EN)
+ </a>
+ </div>
  </div>
 </section>
+<style>
+ /* ============ B2B Hero CTA ============ */
+ .b2b-hero-cta { display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:40px; }
+ .b2b-cta-primary {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 18px 28px;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  text-decoration: none;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(212,169,59,0.32);
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+  -webkit-tap-highlight-color: transparent;
+ }
+ .b2b-cta-primary:hover {
+  background: #FFE594;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(212,169,59,0.42);
+ }
+ .b2b-cta-icon {
+  font-size: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--color-forest); color: var(--color-gold);
+ }
+ .b2b-cta-label { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+ .b2b-cta-label strong { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+ .b2b-cta-label small { font-size: 11px; opacity: 0.72; letter-spacing: 0.04em; }
+ .b2b-cta-arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--color-forest-deep); color: var(--color-gold);
+  font-weight: 800; font-size: 12px;
+  transition: transform 0.25s;
+ }
+ .b2b-cta-primary:hover .b2b-cta-arrow { transform: translateX(3px); }
+ .b2b-cta-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 18px 24px;
+  border: 1px solid rgba(212,169,59,0.4);
+  color: white;
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 13px; font-weight: 600;
+  transition: background 0.25s, border-color 0.25s;
+ }
+ .b2b-cta-secondary:hover {
+  background: rgba(212,169,59,0.08);
+  border-color: var(--color-gold);
+ }
+ @media (max-width: 600px) {
+  .b2b-cta-primary { padding: 14px 18px; gap: 10px; }
+  .b2b-cta-icon { width: 36px; height: 36px; font-size: 17px; }
+  .b2b-cta-label strong { font-size: 13px; }
+  .b2b-cta-label small { font-size: 10px; }
+  .b2b-cta-secondary { padding: 12px 18px; font-size: 12px; width: 100%; justify-content: center; }
+  .b2b-hero-cta { flex-direction: column; }
+ }
+</style>
 <script>
  if (location.search.includes('reason=geo')) {
  var n = document.getElementById('geoNotice');
@@ -3955,13 +4029,190 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  江田畜産はこの構造を変えています。生産者と料理人が直接つながることで、フィードバックが早く流れ、品質改善のサイクルが加速し、それぞれの市場に合った提案ができる。これは商社経由では実現できない強みです。
  </p>
 
+ <!-- ★ Value Preview: 30分商談で何が得られるか可視化 -->
+ <div class="value-preview reveal" style="margin: 56px 0 48px;">
+  <div style="text-align:center;margin-bottom:32px;">
+   <span class="eyebrow" style="color:var(--color-gold-soft);font-family:var(--font-display);font-size:13px;letter-spacing:0.22em;">— What You Get in 30 minutes —</span>
+   <h3 style="font-family:var(--font-display);font-size:clamp(24px,3vw,32px);color:white;margin:14px 0 0;font-weight:500;">商談で確認できること</h3>
+  </div>
+  <div class="value-preview-grid">
+   <div class="vp-card">
+    <div class="vp-icon">💴</div>
+    <h4>Wholesale Pricing</h4>
+    <p>部位別卸価格 / MOQ / FOB-CIF条件をその場で提示</p>
+   </div>
+   <div class="vp-card">
+    <div class="vp-icon">📜</div>
+    <h4>Origin Certificate</h4>
+    <p>有機JAS同等性 / 産地証明 / 抗生剤・ホルモン剤不使用エビデンス</p>
+   </div>
+   <div class="vp-card">
+    <div class="vp-icon">🚚</div>
+    <h4>Logistics</h4>
+    <p>OCS / 日通 / 月次配送スケジュール / 必要書類フロー</p>
+   </div>
+   <div class="vp-card">
+    <div class="vp-icon">🥩</div>
+    <h4>Cut Sheet</h4>
+    <p>サーロイン・赤身・ヒレ・モモ・ホルモン 全カット仕様</p>
+   </div>
+  </div>
+  <div style="text-align:center;margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.12);">
+   <small style="display:block;font-family:var(--font-display);font-size:11px;letter-spacing:0.22em;color:rgba(255,229,148,0.62);margin-bottom:18px;">— TRUSTED BY GLOBAL BUYERS —</small>
+   <div style="display:flex;gap:18px 36px;flex-wrap:wrap;justify-content:center;font-family:var(--font-display);font-size:14px;letter-spacing:0.06em;color:rgba(255,255,255,0.72);">
+    <span>ALBERS · Germany</span>
+    <span>ILM · Italy</span>
+    <span>OTTO · Belgium</span>
+    <span>JOLANDA · Italy</span>
+    <span>CARNES · Spain</span>
+    <span>DISCARLUX · Spain</span>
+    <span>ROUBO · Finland</span>
+    <span>TMJ · Japan</span>
+    <span>WAGYU INT'L</span>
+   </div>
+  </div>
+ </div>
+ <style>
+  .value-preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .vp-card { padding: 24px 20px; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,169,59,0.16); border-radius: 12px; text-align: center; transition: background 0.3s, border-color 0.3s, transform 0.3s; }
+  .vp-card:hover { background: rgba(212,169,59,0.06); border-color: rgba(212,169,59,0.4); transform: translateY(-3px); }
+  .vp-icon { font-size: 28px; margin-bottom: 10px; }
+  .vp-card h4 { font-family: var(--font-display); font-size: 16px; margin: 0 0 8px; color: var(--color-gold-soft); font-weight: 500; letter-spacing: 0.02em; }
+  .vp-card p { font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.72); margin: 0; }
+  @media (max-width: 900px) { .value-preview-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .value-preview-grid { grid-template-columns: 1fr; } }
+ </style>
+
  <h2>Buyer Inquiry / バイヤー様向けお問い合わせ</h2>
- <p>
- ホテル・レストラン・高級スーパー・代理店など、海外バイヤー様からのお問い合わせは、<a href="contact.html" style="color: var(--color-gold-soft); text-decoration: underline;">こちら</a>からどうぞ。<br/><br/>
- <strong>WhatsApp / Email</strong> でも対応しています。Eメール: <a href="mailto:backoffice@eda-livestock.com" style="color: var(--color-gold-soft); text-decoration: underline;">backoffice@eda-livestock.com</a>
+ <p style="margin-bottom: 32px;">
+ ホテル・レストラン・高級スーパー・代理店など、海外バイヤー様。<br/>
+ ご希望の方法でお気軽にご連絡ください。<br/>
+ Hotels, restaurants, premium retailers, distributors — please choose your preferred channel.
  </p>
+
+ <!-- 2択UI: メール vs 商談予約 -->
+ <div class="buyer-inquiry-2choice">
+  <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="bi-choice bi-choice--primary">
+   <div class="bi-choice-badge">RECOMMENDED</div>
+   <div class="bi-choice-icon" aria-hidden="true">📅</div>
+   <h3>30-min Direct Call</h3>
+   <p class="bi-choice-meta">Tomoki Eda と直接 / Direct with Tomoki</p>
+   <ul class="bi-choice-bullets">
+    <li>✓ 卸価格・MOQ をその場で確認</li>
+    <li>✓ Origin Certificate サンプル提示</li>
+    <li>✓ 配送スケジュール・条件を即回答</li>
+    <li>✓ Available in EN / IT / ES / JA</li>
+   </ul>
+   <div class="bi-choice-cta">
+    Book Now <span aria-hidden="true">→</span>
+   </div>
+   <small class="bi-choice-fine">JST 6:00 – 24:00 · 3日先以降 · 1時間スロット</small>
+  </a>
+
+  <a href="contact.html" class="bi-choice bi-choice--secondary">
+   <div class="bi-choice-icon" aria-hidden="true">💬</div>
+   <h3>Send a Message</h3>
+   <p class="bi-choice-meta">時間がない方 / Quick inquiry</p>
+   <ul class="bi-choice-bullets">
+    <li>✓ 24時間以内に返信</li>
+    <li>✓ メール・WhatsApp 選択可</li>
+    <li>✓ 資料請求 / 価格表 / 試食依頼</li>
+    <li>✓ 自社のタイミングで返信可能</li>
+   </ul>
+   <div class="bi-choice-cta">
+    Open Form <span aria-hidden="true">→</span>
+   </div>
+   <small class="bi-choice-fine"><a href="https://wa.me/819047241063" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;">WhatsApp +81-90-4724-1063</a> · <a href="mailto:backoffice@eda-livestock.com" style="color:inherit;text-decoration:underline;">backoffice@eda-livestock.com</a></small>
+  </a>
+ </div>
  </div>
 </section>
+<style>
+ /* Buyer Inquiry 2-choice grid */
+ .buyer-inquiry-2choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 32px 0 16px;
+ }
+ .bi-choice {
+  position: relative;
+  display: flex; flex-direction: column;
+  padding: 32px 28px;
+  border-radius: 16px;
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+ }
+ .bi-choice--primary {
+  background: linear-gradient(135deg, rgba(212,169,59,0.18) 0%, rgba(212,169,59,0.04) 100%);
+  border: 1.5px solid var(--color-gold);
+  color: white;
+ }
+ .bi-choice--secondary {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: white;
+ }
+ .bi-choice:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.24);
+ }
+ .bi-choice--primary:hover { border-color: #FFE594; }
+ .bi-choice--secondary:hover { border-color: rgba(255,255,255,0.32); background: rgba(255,255,255,0.06); }
+ .bi-choice-badge {
+  position: absolute; top: -10px; right: 24px;
+  background: var(--color-gold); color: var(--color-forest-deep);
+  font-family: var(--font-display);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  padding: 4px 12px; border-radius: 999px;
+ }
+ .bi-choice-icon {
+  font-size: 36px;
+  margin-bottom: 16px;
+ }
+ .bi-choice h3 {
+  font-family: var(--font-display);
+  font-size: 24px; margin: 0 0 4px;
+  color: var(--color-gold-soft);
+  font-weight: 500;
+ }
+ .bi-choice-meta {
+  font-size: 12px; opacity: 0.7;
+  margin: 0 0 20px;
+  letter-spacing: 0.04em;
+ }
+ .bi-choice-bullets {
+  list-style: none; padding: 0; margin: 0 0 24px;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 13px; line-height: 1.6;
+ }
+ .bi-choice-bullets li { opacity: 0.86; }
+ .bi-choice-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 20px;
+  background: var(--color-gold); color: var(--color-forest-deep);
+  border-radius: 999px;
+  font-weight: 700; font-size: 13px; letter-spacing: 0.04em;
+  align-self: flex-start;
+  transition: gap 0.25s, background 0.25s;
+ }
+ .bi-choice--secondary .bi-choice-cta {
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.24);
+ }
+ .bi-choice:hover .bi-choice-cta { gap: 12px; }
+ .bi-choice-fine {
+  display: block; margin-top: 16px;
+  font-size: 11px; opacity: 0.56; letter-spacing: 0.04em;
+ }
+ @media (max-width: 720px) {
+  .buyer-inquiry-2choice { grid-template-columns: 1fr; gap: 16px; }
+  .bi-choice { padding: 24px 22px; }
+  .bi-choice h3 { font-size: 20px; }
+ }
+</style>
 
 <footer class="site-footer">
  <div class="container">
@@ -4436,5 +4687,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <script src="public/js/eda-bundle.js?v=005" defer></script>
 <script src="public/js/mobile-menu.js" defer></script>
+<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>

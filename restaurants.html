@@ -3774,8 +3774,53 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  国内・海外のホテル、レストラン、百貨店、高級スーパーで江田和牛がお召し上がりいただけます。<br/>
  各店舗の予約ページ・公式サイトに直接アクセスできます。
  </p>
+ <!-- B2B 予約導線: 飲食店・卸様向け -->
+ <div class="b2b-hero-cta">
+ <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="b2b-cta-primary">
+  <span class="b2b-cta-icon" aria-hidden="true">🍽️</span>
+  <span class="b2b-cta-label">
+   <strong>取扱い希望のご相談 (30分)</strong>
+   <small>飲食店・卸・代理店様向け · JST 6-24時</small>
+  </span>
+  <span class="b2b-cta-arrow" aria-hidden="true">→</span>
+ </a>
+ <a href="buyer-deck-jp.html" class="b2b-cta-secondary">
+  <span aria-hidden="true">📄</span>
+  バイヤー資料を見る
+ </a>
+ </div>
  </div>
 </section>
+<style>
+ /* B2B Hero CTA (restaurants/global 共通) */
+ .b2b-hero-cta { display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:40px; }
+ .b2b-cta-primary {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 18px 28px;
+  background: var(--color-gold);
+  color: var(--color-forest-deep);
+  text-decoration: none; border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(212,169,59,0.32);
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+ }
+ .b2b-cta-primary:hover { background:#FFE594; transform:translateY(-2px); box-shadow:0 16px 36px rgba(212,169,59,0.42); }
+ .b2b-cta-icon { font-size:20px; display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:50%; background:var(--color-forest); color:var(--color-gold); }
+ .b2b-cta-label { display:flex; flex-direction:column; gap:2px; text-align:left; }
+ .b2b-cta-label strong { font-size:15px; font-weight:700; letter-spacing:0.02em; }
+ .b2b-cta-label small { font-size:11px; opacity:0.72; letter-spacing:0.04em; }
+ .b2b-cta-arrow { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--color-forest-deep); color:var(--color-gold); font-weight:800; font-size:12px; transition:transform 0.25s; }
+ .b2b-cta-primary:hover .b2b-cta-arrow { transform:translateX(3px); }
+ .b2b-cta-secondary { display:inline-flex; align-items:center; gap:10px; padding:18px 24px; border:1px solid rgba(15,61,46,0.3); color:var(--color-forest); text-decoration:none; border-radius:999px; font-size:13px; font-weight:600; transition:background 0.25s, border-color 0.25s; }
+ .b2b-cta-secondary:hover { background:rgba(15,61,46,0.04); border-color:var(--color-forest); }
+ @media (max-width: 600px) {
+  .b2b-cta-primary { padding:14px 18px; gap:10px; }
+  .b2b-cta-icon { width:36px; height:36px; font-size:17px; }
+  .b2b-cta-label strong { font-size:13px; }
+  .b2b-cta-label small { font-size:10px; }
+  .b2b-cta-secondary { padding:12px 18px; font-size:12px; width:100%; justify-content:center; }
+  .b2b-hero-cta { flex-direction:column; }
+ }
+</style>
 
 <!-- ========= HOTEL BRAND STRIP ========= -->
 <section class="featured" style="padding-top: 64px; padding-bottom: 64px;">
@@ -4668,5 +4713,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 <script src="public/js/eda-bundle.js?v=005" defer></script>
 <script src="public/js/mobile-menu.js" defer></script>
+<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
