@@ -26,9 +26,9 @@
  *   2. プロジェクト設定 → スクリプト プロパティで以下を設定:
  *      - STRIPE_SECRET_KEY        : sk_test_... or sk_live_...
  *      - STRIPE_WEBHOOK_SECRET    : whsec_...
- *      - STRIPE_PRICE_MINI        : price_... (ミニプラン Stripe Price ID)
- *      - STRIPE_PRICE_PRO         : price_...
- *      - STRIPE_PRICE_VIP         : price_...
+ *      - STRIPE_PRICE_MINI        : price_... (ミニ Stripe Price ID, ¥6,980/月 1kg)
+ *      - STRIPE_PRICE_PRO         : price_... (スターター, ¥12,800/月 1.6kg, 旧プロプラン)
+ *      - STRIPE_PRICE_VIP         : price_... (レギュラー, ¥24,400/月 3.2kg, 旧VIPプラン)
  *      - SPREADSHEET_ID           : Google Sheet の ID
  *      - SUCCESS_URL              : https://edywagyu.github.io/eda-livestock-web/order-complete.html
  *      - CANCEL_URL               : https://edywagyu.github.io/eda-livestock-web/checkout.html
@@ -1586,7 +1586,7 @@ function buildRegisterRewardMessage(customerName) {
   var greeting = customerName ? (customerName + ' 様') : 'お客様';
   return {
     type: 'flex',
-    altText: '🍗 無投薬ムネ肉250g プレゼント！ — 会員登録ありがとうございます',
+    altText: '🍗 無投薬ムネ肉 200g プレゼント！ — 会員登録ありがとうございます',
     contents: {
       type: 'bubble',
       hero: {
@@ -1602,7 +1602,7 @@ function buildRegisterRewardMessage(customerName) {
         spacing: 'md',
         contents: [
           { type: 'text', text: '🍗 無投薬ムネ肉 250g GET!', weight: 'bold', size: 'lg', color: '#2d5016' },
-          { type: 'text', text: greeting + '、会員登録ありがとうございます！特典の無投薬ムネ肉250gをお受け取りください。', wrap: true, size: 'sm', color: '#666666' },
+          { type: 'text', text: greeting + '、会員登録ありがとうございます！特典の無投薬ムネ肉200gをお受け取りください。', wrap: true, size: 'sm', color: '#666666' },
           { type: 'separator' },
           { type: 'text', text: '受け取り方法', weight: 'bold', size: 'xs', color: '#888888', margin: 'md' },
           { type: 'text', text: '下のボタンからムネ肉をカートに追加 → お会計時に自動で0円に！', wrap: true, size: 'xs', color: '#999999' }

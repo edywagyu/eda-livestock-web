@@ -3727,9 +3727,9 @@ function renderOrders(orders) {
 /* ---- Reward Stages Definition ---- */
 var REWARD_STAGES = [
  { num: 1, label: '1回目のご注文', reward: '初回 20%OFF', desc: '初回ご注文の感謝として全品20%OFF', code: 'WELCOME20', icon: '1' },
- { num: 2, label: '2回目のご注文', reward: '鶏モモ 250g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
- { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '150g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
- { num: 4, label: '4回目のご注文', reward: '牛焼肉 250g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
+ { num: 2, label: '2回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
+ { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '100g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
+ { num: 4, label: '4回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
  { num: 5, label: '5回目のご注文', reward: '？？？', desc: '5回目以降の特典はお楽しみに', code: '', icon: '5', locked: true },
  { num: 6, label: '6回目のご注文', reward: '？？？', desc: '', code: '', icon: '6', locked: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true }
@@ -4409,13 +4409,13 @@ function generateDemoCoupons(orderCount) {
  all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', conditions: conditions, expires: '2026/05/24まで', status: 'expiring', minPurchase: 5000 });
  }
  if (orderCount >= 1 && orderCount < 2) {
- all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 250g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 2 && orderCount < 3) {
- all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(300g)', description: '3回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(200g)', description: '3回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 3 && orderCount < 4) {
- all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 250g', description: '4回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '4回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  /* Survey reward coupon */
  var surveyDone = false;

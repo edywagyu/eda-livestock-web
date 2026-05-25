@@ -1824,25 +1824,25 @@ const SUBSCRIPTION_PLANS = [
   {
     productId: 'SUB-MINI', variantId: 'SUB-MINI', sku: 'EDA-SUB-MINI',
     stripePriceId: 'price_1TWAN0GSkhU1UEciNGZHORc3',
-    name: 'ミニプラン 定期便', variant: '毎月お届け · 1-2人家族',
+    name: 'ミニ 定期便', variant: '毎月お届け · 1-2人家族',
     price: 6980, stock: 999, temp: '冷凍', category: '定期便',
-    description: '約1.6kg / 全8品 / 初月50%OFF (¥3,490) / 2ヶ月目以降 ¥6,980/月',
+    description: '1kg / 全5品 (鶏600g+牛400g) / 初月50%OFF (¥3,490) / 2ヶ月目以降 ¥6,980/月',
     images: ['public/images/products/drive/yakiniku-brisket.jpg']
   },
   {
-    productId: 'SUB-PRO', variantId: 'SUB-PRO', sku: 'EDA-SUB-PRO',
+    productId: 'SUB-STARTER', variantId: 'SUB-STARTER', sku: 'EDA-SUB-STARTER',
     stripePriceId: 'price_1TWAN0GSkhU1UEciKod4PGpk',
-    name: 'プロプラン 定期便', variant: '毎月お届け · 3-4人家族',
+    name: 'スターター 定期便', variant: '毎月お届け · 3-4人家族',
     price: 12800, stock: 999, temp: '冷凍', category: '定期便',
-    description: '約3.2kg / 全16品 / 初月50%OFF (¥6,400) / 2ヶ月目以降 ¥12,800/月 / 人気No.1',
+    description: '1.6kg / 全8品 (鶏800g+牛800g) / 初月50%OFF (¥6,400) / 2ヶ月目以降 ¥12,800/月 / 人気No.1',
     images: ['public/images/products/drive/red-meat.jpg']
   },
   {
-    productId: 'SUB-VIP', variantId: 'SUB-VIP', sku: 'EDA-SUB-VIP',
+    productId: 'SUB-REGULAR', variantId: 'SUB-REGULAR', sku: 'EDA-SUB-REGULAR',
     stripePriceId: 'price_1TWAN1GSkhU1UEciXQJyqNet',
-    name: 'VIPプラン 定期便', variant: '毎月お届け · 5人以上',
-    price: 27400, stock: 999, temp: '冷凍', category: '定期便',
-    description: '約4.4kg / 全22品 / 初月50%OFF (¥13,700) / 2ヶ月目以降 ¥27,400/月 / 有機JAS 優先案内',
+    name: 'レギュラー 定期便', variant: '毎月お届け · 5人以上',
+    price: 24400, stock: 999, temp: '冷凍', category: '定期便',
+    description: '3.2kg / 全16品 (鶏1.6kg+牛1.6kg) / 初月50%OFF (¥12,200) / 2ヶ月目以降 ¥24,400/月 / 有機JAS 優先案内',
     images: ['public/images/products/drive/sirloin.jpg']
   }
 ];
@@ -1872,7 +1872,7 @@ const DEMO_PRODUCTS = resolveProductsMaster();
 
 const DEMO_ORDERS = [
   { id: '#1023', customerName: '田中 太郎', total: 6790, items: 'サーロインステーキ 200g / 平飼い鶏モモ 500g×2', shipStatus: '未発送', phone: '0901234567', zip: '1500001', address: '東京都渋谷区神宮前1-2-3', address2: '', lineUid: 'U1234abcd', paymentMethod: 'Visa **** 4242', orderDate: '2026-05-10', estimatedArrival: '2026-05-13', purchaseCount: 18 },
-  { id: '#1022', customerName: '佐藤 花子', total: 6400, items: 'プロプラン定期便 (初月50%OFF)', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh', paymentMethod: 'Apple Pay (Mastercard)', orderDate: '2026-05-10', estimatedArrival: '2026-06-01', purchaseCount: 12 },
+  { id: '#1022', customerName: '佐藤 花子', total: 6400, items: 'スターター定期便 (初月50%OFF)', shipStatus: '未発送', phone: '0809876543', zip: '5300001', address: '大阪府大阪市北区梅田2-2', address2: 'マンション101', lineUid: 'U5678efgh', paymentMethod: 'Apple Pay (Mastercard)', orderDate: '2026-05-10', estimatedArrival: '2026-06-01', purchaseCount: 12 },
   { id: '#1021', customerName: '鈴木 一郎', total: 3990, items: '和牛切り落とし 200g×2 / バラ焼肉 200g', shipStatus: '未発送', phone: '0701112233', zip: '4600001', address: '愛知県名古屋市中区栄3-4-5', address2: '', lineUid: '', paymentMethod: 'JCB **** 8888', orderDate: '2026-05-11', estimatedArrival: '2026-05-14', purchaseCount: 6 },
   { id: '#1020', customerName: '山田 美香', total: 5980, items: '和牛ハンバーグ ギフト【梅】 (5個)', shipStatus: '発送済', phone: '0805556677', zip: '8120011', address: '福岡県福岡市博多区博多駅前2-1', address2: '', tracking: '1234-5678-9012', lineUid: '', paymentMethod: 'Visa **** 5678', orderDate: '2026-05-09', estimatedArrival: '2026-05-12', purchaseCount: 4 },
   { id: '#1019', customerName: '中村 健', total: 16800, items: 'ヒレステーキ ギフト【松】 450g', shipStatus: '配達完了', phone: '0903334455', zip: '1500041', address: '東京都渋谷区神南1-1-1', address2: '', tracking: '0987-6543-2109', lineUid: 'U9999xyzz', paymentMethod: 'Visa **** 1111', orderDate: '2026-05-07', estimatedArrival: '2026-05-10', purchaseCount: 1 }
@@ -2111,9 +2111,9 @@ const DEMO_SETS = [
 ];
 
 const DEMO_SUBS = [
-  { id: 'SUB-MINI', name: 'ミニプラン', tagline: '1-2人家族 / 約1.6kg / 8品', price: 6980, period: '/月', items: ['赤身スライス 200g', '赤身焼肉 200g', 'サイコロステーキ 200g', '和牛ミンチ 200g', '鶏モモ 200g', '鶏ムネ 200g×2', '鶏ミンチ 200g'], subscribers: 23, mrr: 160540, featured: false },
-  { id: 'SUB-PRO', name: 'プロプラン', tagline: '3-4人家族 / 約3.2kg / 16品 — 人気No.1', price: 12800, period: '/月', items: ['赤身スライス 200g×2', '赤身焼肉 200g×2', 'サイコロステーキ 200g×2', '和牛ミンチ 200g', '鶏モモ 200g×3', '鶏ムネ 200g×3', '鶏ミンチ 200g×3'], subscribers: 47, mrr: 601600, featured: true },
-  { id: 'SUB-VIP', name: 'VIPプラン', tagline: '5人以上 / 約4.4kg / 22品 — ヒレ含む豪華版', price: 27400, period: '/月', items: ['ヒレステーキ 200g', '赤身ステーキ 200g×2', 'サーロインステーキ 200g×2', '和牛ミンチ 200g×2', '鶏モモ 200g×5', '鶏ムネ 200g×5', '鶏ミンチ 200g×5'], subscribers: 18, mrr: 493200, featured: false }
+  { id: 'SUB-MINI', name: 'ミニ', tagline: '1-2人家族 / 1kg / 5品 (鶏600g+牛400g)', price: 6980, period: '/月', items: ['サーロインステーキ 200g', '赤身スライス 200g', '鶏モモ 200g', '鶏ムネ 200g', '鶏ミンチ 200g'], subscribers: 23, mrr: 160540, featured: false },
+  { id: 'SUB-STARTER', name: 'スターター', tagline: '3-4人家族 / 1.6kg / 8品 (鶏800g+牛800g) — 人気No.1', price: 12800, period: '/月', items: ['サーロインステーキ 200g', '赤身ステーキ 200g', '赤身スライス 200g', '切り落とし 200g', '鶏モモ 200g×2', '鶏ムネ 200g', '鶏ミンチ 200g'], subscribers: 47, mrr: 601600, featured: true },
+  { id: 'SUB-REGULAR', name: 'レギュラー', tagline: '5人以上 / 3.2kg / 16品 (鶏1.6kg+牛1.6kg) — 大家族向け', price: 24400, period: '/月', items: ['サーロインステーキ 200g×2', '赤身ステーキ 200g×2', '赤身スライス 200g×2', '切り落とし 200g×2', '鶏モモ 200g×3', '鶏ムネ 200g×3', '鶏ミンチ 200g×2'], subscribers: 18, mrr: 439200, featured: false }
 ];
 
 const DEMO_CAMPAIGNS = [
@@ -3259,7 +3259,7 @@ function renderProductForm(p) {
     <div class="form-row">
       <div class="form-field">
         <label>バリエーション名</label>
-        <input type="text" id="pf-variant" value="${escapeHtml(p.variant || '')}" placeholder="例: 1袋 250g">
+        <input type="text" id="pf-variant" value="${escapeHtml(p.variant || '')}" placeholder="例: 1袋 200g">
       </div>
       <div class="form-field">
         <label>SKU (商品コード)</label>
@@ -4029,9 +4029,9 @@ let subsCache = [];
 function loadSubscriptions() {
   if (isDemoMode()) {
     subsCache = [
-      { planId:'mini', name:'ミニプラン', target:'1-2人家族', spec:'1.6kg・8品', oldPrice:6980, firstMonthPrice:3490, published:true, featured:false },
-      { planId:'pro',  name:'プロプラン', target:'3-4人家族', spec:'3.2kg・16品', oldPrice:12800, firstMonthPrice:6400, published:true, featured:true, badgeLabel:'人気 No.1' },
-      { planId:'vip',  name:'VIPプラン', target:'5人以上', spec:'4.4kg・22品', oldPrice:27400, firstMonthPrice:13700, published:true, featured:false, badgeLabel:'VIP 限定特典' }
+      { planId:'mini', name:'ミニ', target:'1-2人家族', spec:'1kg・5品 (鶏600g+牛400g)', oldPrice:6980, firstMonthPrice:3490, published:true, featured:false },
+      { planId:'starter', name:'スターター', target:'3-4人家族', spec:'1.6kg・8品 (鶏800g+牛800g)', oldPrice:12800, firstMonthPrice:6400, published:true, featured:true, badgeLabel:'人気 No.1' },
+      { planId:'regular',  name:'レギュラー', target:'5人以上', spec:'3.2kg・16品 (鶏1.6kg+牛1.6kg)', oldPrice:24400, firstMonthPrice:12200, published:true, featured:false, badgeLabel:'大家族向け' }
     ];
     renderSubList();
     return;
@@ -4079,12 +4079,12 @@ function renderSubForm(s) {
   return `
     <div class="form-field">
       <label>プラン名 *</label>
-      <input type="text" id="sf-name" value="${escapeHtml(s.name || '')}" placeholder="例: ミニプラン">
+      <input type="text" id="sf-name" value="${escapeHtml(s.name || '')}" placeholder="例: ミニ">
     </div>
     <div class="form-row">
       <div class="form-field">
         <label>プランID ${editingSub ? '— 編集不可' : ''} *</label>
-        <input type="text" id="sf-planId" value="${escapeHtml(s.planId || '')}" placeholder="mini / pro / vip" ${editingSub ? 'readonly style="background:#f5f5f5"' : ''}>
+        <input type="text" id="sf-planId" value="${escapeHtml(s.planId || '')}" placeholder="mini / starter / regular" ${editingSub ? 'readonly style="background:#f5f5f5"' : ''}>
       </div>
       <div class="form-field">
         <label>対象 (target)</label>
@@ -4093,7 +4093,7 @@ function renderSubForm(s) {
     </div>
     <div class="form-field">
       <label>仕様 (spec)</label>
-      <input type="text" id="sf-spec" value="${escapeHtml(s.spec || '')}" placeholder="1.6kg・8品">
+      <input type="text" id="sf-spec" value="${escapeHtml(s.spec || '')}" placeholder="1.6kg・8品 (鶏800g+牛800g)">
     </div>
     <div class="form-row">
       <div class="form-field">

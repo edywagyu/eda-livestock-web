@@ -139,7 +139,7 @@
     <div class="reward-banner" id="rewardBanner">
       <div class="reward-banner-icon">🍗</div>
       <div class="reward-banner-text">
-        <div class="reward-banner-main" id="rewardText">あと5問で 無投薬ムネ肉250g GET！</div>
+        <div class="reward-banner-main" id="rewardText">あと5問で 無投薬ムネ肉200g GET！</div>
         <div class="reward-banner-sub">登録完了で無料プレゼント</div>
       </div>
     </div>
@@ -270,7 +270,7 @@
     <!-- STEP 5: こだわり & きっかけ -->
     <div class="step" id="step5">
       <div class="step-title">最後の質問です！</div>
-      <div class="step-sub">🍗 回答で無投薬ムネ肉250gプレゼント</div>
+      <div class="step-sub">🍗 回答で無投薬ムネ肉200gプレゼント</div>
 
       <div class="chip-section">
         <div class="chip-section-label">お肉選びで大切にしていること（複数可）</div>
@@ -307,7 +307,7 @@
     <div class="reward-hero">
       <div class="reward-badge">WELCOME GIFT</div>
       <div class="reward-emoji">🍗</div>
-      <div class="reward-product">無投薬ムネ肉 250g</div>
+      <div class="reward-product">無投薬ムネ肉 200g</div>
       <div class="reward-product-sub">GET!</div>
     </div>
     <div class="reward-body">
@@ -319,7 +319,7 @@
         <div class="reward-how-title">特典の受け取り方</div>
         <ul>
           <li>LINEに届いたクーポンコードを確認</li>
-          <li>無投薬ムネ肉250gをカートに追加</li>
+          <li>無投薬ムネ肉200gをカートに追加</li>
           <li>お会計時にクーポンを適用で0円に！</li>
         </ul>
       </div>
@@ -427,9 +427,9 @@ function goStep(n) {
   var remaining = TOTAL_STEPS - n + 1;
   var rewardEl = document.getElementById('rewardText');
   if (remaining <= 1) {
-    rewardEl.textContent = '回答して無投薬ムネ肉250g GET！';
+    rewardEl.textContent = '回答して無投薬ムネ肉200g GET！';
   } else {
-    rewardEl.textContent = 'あと' + remaining + '問で 無投薬ムネ肉250g GET！';
+    rewardEl.textContent = 'あと' + remaining + '問で 無投薬ムネ肉200g GET！';
   }
 
   // Scroll to top of card
