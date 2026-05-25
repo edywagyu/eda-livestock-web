@@ -79,8 +79,7 @@
  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
  margin: 0;
  font-family: var(--font-body);
@@ -90,18 +89,7 @@ body {
  color: var(--color-ink);
  background: var(--color-cream);
  overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -3197,18 +3185,9 @@ try {
 /* ---- LIFF 初期化 ---- */
 let _liffReady = false;
 async function initLiff() {
- const _qs = new URLSearchParams(location.search);
-
- /* ★ デモモード: ?demo=1 でテスター向けにダッシュボードプレビュー
-    LINE 認証なしで触れるため、お客さん・スタッフへの確認依頼に使う */
- if (_qs.has('demo') || _qs.has('preview')) {
- showState('authenticating');
- setTimeout(() => loadDemoDashboard(), 400);
- return;
- }
-
  // モバイル＋外部ブラウザ → 公式 LINE に飛ばす（head の即時スクリプトと二重保険）
  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+ const _qs = new URLSearchParams(location.search);
  const isLiffBrowser = /LIFF|Line\//i.test(navigator.userAgent) || _qs.has('liff.state');
  if (isMobile && !isLiffBrowser) {
  window.location.replace('https://line.me/R/ti/p/@706sgiuq');
@@ -3583,41 +3562,6 @@ function getPerksMessage(orderCount, tierInfo) {
  var toGold = 5 - orderCount;
  if (toGold <= 0) toGold = 1;
  return '<strong>会員様限定</strong>: あと <strong>' + toGold + '回</strong> のご注文でゴールド会員へ';
-}
-
-/* ★ デモモード: テスター向けに架空データでダッシュボードを表示
-   URL: mypage.html?demo=1 でアクセス時に発火 */
-function loadDemoDashboard() {
- const demoCustomer = {
-  name: 'テスト 太郎',
-  email: 'demo@example.com',
-  total_orders: 4,
-  total_spent: 38400,
-  phone: '090-0000-0000'
- };
- const demoOrders = [
-  { order_no: 'DEMO-1023', date: '2026-05-20', amount: 15400, status: '未発送',
-    items: [{name:'サーロインステーキ', qty:2}, {name:'バラ焼肉', qty:1}] },
-  { order_no: 'DEMO-1019', date: '2026-04-15', amount: 11500, status: '完了',
-    items: [{name:'プロプラン定期便', qty:1}] },
-  { order_no: 'DEMO-1015', date: '2026-03-15', amount: 6400, status: '完了',
-    items: [{name:'プロプラン定期便', qty:1}] },
-  { order_no: 'DEMO-1010', date: '2026-02-15', amount: 5100, status: '完了',
-    items: [{name:'スタータープラン定期便（初月50%OFF）', qty:1}] }
- ];
- // デモバナーを最優先表示（renderDashboard より先に出す = ユーザーが混乱しない）
- (function showDemoBanner() {
-  if (document.getElementById('demoBanner')) return;
-  const b = document.createElement('div');
-  b.id = 'demoBanner';
-  b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,#D4A93B,#FFE594);color:#0F3D2E;text-align:center;padding:12px 16px;font-size:13px;font-weight:700;letter-spacing:0.04em;box-shadow:0 2px 12px rgba(0,0,0,0.18);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;';
-  b.innerHTML = '⚙ <strong>DEMO MODE</strong> · 架空データ表示中 · 実マイページは LINE 認証後にあなたの履歴が出ます · <a href="mypage.html" style="color:#0A2D21;text-decoration:underline;font-weight:800;">本物を試す</a>';
-  document.body.appendChild(b);
-  document.body.style.paddingTop = (b.offsetHeight + 4) + 'px';
- })();
- try { renderDashboard(demoCustomer, demoOrders); } catch (e) { console.error('demo render failed', e); }
- // デモ時はサーバへ書き込まない (line_register / line_link_account を呼ばない保険)
- window.__EDA_DEMO_MODE = true;
 }
 
 function renderDashboard(customer, orders) {
