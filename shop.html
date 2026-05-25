@@ -6757,7 +6757,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="KIRIOTOSHI"] { background-image: image-set(url('public/images/products/drive/kiriotoshi.webp') type('image/webp'), url('public/images/products/drive/kiriotoshi.jpg')); }
 .product-card-img[data-label="YAKINIKU BRISKET"]{ background-image: image-set(url('public/images/products/drive/yakiniku-brisket.webp') type('image/webp'), url('public/images/products/drive/yakiniku-brisket.jpg')); }
 .product-card-img[data-label="SENBONSUJI"] { background-image: image-set(url('public/images/products/drive/yakiniku-brisket.webp') type('image/webp'), url('public/images/products/drive/yakiniku-brisket.jpg')); }
-.product-card-img[data-label="RAW HAM"] { background-image: image-set(url('public/images/products/drive/raw-ham.webp') type('image/webp'), url('public/images/products/drive/raw-ham.jpg')); }
+.product-card-img[data-label="RAW HAM"] { background-image: url('public/images/products/drive/raw-ham.jpg'); }
 .product-card-img[data-label="HAMBURG"] { background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg')); }
 .product-card-img[data-label="HAMBURG XL"] { background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg')); }
 .product-card-img[data-label="ROAST BEEF"] { background-image: image-set(url('public/images/products/drive/thin-roast.webp') type('image/webp'), url('public/images/products/drive/thin-roast.jpg')); }
@@ -12485,6 +12485,7 @@ body.has-sticky-cart .floating-phone-btn {
  '鶏ももの照り焼き': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のしゃぶしゃぶ': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
  '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: 'ローストビーフ', img: 'public/images/products/drive/thin-roast.jpg' },
+ '和牛生ハム前菜プレート': { id: 50877844750634, price: 1250, title: '和牛生ハム', img: 'public/images/products/drive/raw-ham.jpg' },
  '無投薬チキンカレー': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 640, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
  '和牛の肉じゃが': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
@@ -12529,7 +12530,8 @@ body.has-sticky-cart .floating-phone-btn {
  { day: '木曜', day_en: 'THU', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'public/images/products/drive/yakiniku-ponzu.jpg', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
  { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
  { day: '週末', day_en: 'SAT', time: 35, name: 'ローストチキン', desc: '丸鶏感覚で。週末ホムパに。', img: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', 'ローズマリー', '塩'], featured: true },
- { day: '月曜', day_en: 'MON', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] }
+ { day: '月曜', day_en: 'MON', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] },
+ { day: '週末', day_en: 'SAT', time: 5, name: '和牛生ハム前菜プレート', desc: 'そのまま盛るだけ。ワインの夜に。', img: 'public/images/products/drive/raw-ham-recipe.jpg', ingredients: ['和牛生ハム', 'クラッカー'], featured: true }
  ];
 
  // ISO週番号でシード（同じ週は同じメニュー）
