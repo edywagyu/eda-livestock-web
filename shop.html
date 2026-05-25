@@ -7253,13 +7253,17 @@ body.is-member .product-card--organic .org-chk-lock {
  color: rgba(212,169,59,0.8);
 }
 /* 商品説明エリアにミステリアスなぼかし */
-.product-card--organic-wagyu .product-desc {
+.product-card--organic-wagyu .product-desc,
+.product-card--organic .product-desc,
+.product-card--organic .product-stats {
  filter: blur(2.5px);
  opacity: 0.5;
  user-select: none;
  transition: filter 0.3s, opacity 0.3s;
 }
-.product-card--organic-wagyu:hover .product-desc {
+.product-card--organic-wagyu:hover .product-desc,
+.product-card--organic:hover .product-desc,
+.product-card--organic:hover .product-stats {
  filter: blur(1.5px);
  opacity: 0.7;
 }
@@ -9919,9 +9923,8 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
  <!-- 平飼い鶏 標準ライン（3品）— 250g パック -->
- <div class="product-card product-card--chicken-soon" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ (250g)","p":640},{"id":50830250508586,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830250541354,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
- <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">COMING SOON</div><div class="org-chk-lock-desc">もうすぐ発売。LINE友だち追加で先行案内します</div></a>
- <div class="product-card-img" data-label="CHICKEN BREAST"><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
+ <div class="product-card" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ (250g)","p":640},{"id":50830250508586,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830250541354,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
+ <div class="product-card-img" data-label="CHICKEN BREAST"></div>
  <div class="product-tag-row"><span class="product-tag">Chicken · Breast</span><span class="product-price">¥640〜</span></div>
  <p class="product-name">平飼い鶏 ムネ</p>
  <p class="product-desc">高タンパク・低脂肪のムネ肉。無投薬の平飼い鶏は身が締まって旨みが濃い。低温調理でサラダチキン、バンバンジーに。</p>
@@ -9935,9 +9938,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card product-card--chicken-soon" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ (250g)","p":640},{"id":50830293205290,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830293238058,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
- <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">COMING SOON</div><div class="org-chk-lock-desc">もうすぐ発売。LINE友だち追加で先行案内します</div></a>
- <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge" style="background:var(--color-red);color:#fff">万能</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
+ <div class="product-card" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ (250g)","p":640},{"id":50830293205290,"t":"2つセット (500g)【5%オフ】","p":1216},{"id":50830293238058,"t":"3つセット (750g)【10%オフ】","p":1728}]'>
+ <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge" style="background:var(--color-red);color:#fff">万能</span></div>
  <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥640〜</span></div>
  <p class="product-name">平飼い鶏 モモ</p>
  <p class="product-desc">大分県産 平飼い・無投薬。<strong>照り焼き・唐揚げ・煮込み</strong>まで何にでも使える万能部位。週末の唐揚げ、平日のグリルに。</p>
@@ -9951,9 +9953,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card product-card--chicken-soon" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ (250g)","p":500},{"id":50830210826538,"t":"2つセット (500g)【5%オフ】","p":950},{"id":50830210859306,"t":"3つセット (750g)【10%オフ】","p":1350}]'>
- <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">COMING SOON</div><div class="org-chk-lock-desc">もうすぐ発売。LINE友だち追加で先行案内します</div></a>
- <div class="product-card-img" data-label="CHICKEN MINCED"><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
+ <div class="product-card" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ (250g)","p":500},{"id":50830210826538,"t":"2つセット (500g)【5%オフ】","p":950},{"id":50830210859306,"t":"3つセット (750g)【10%オフ】","p":1350}]'>
+ <div class="product-card-img" data-label="CHICKEN MINCED"></div>
  <div class="product-tag-row"><span class="product-tag">Chicken · Minced</span><span class="product-price">¥500〜</span></div>
  <p class="product-name">平飼い鶏 ミンチ</p>
  <p class="product-desc">つくね、そぼろ、鶏団子鍋、キーマカレーに。無投薬で、お子さまの離乳食にも安心。</p>
@@ -9972,7 +9973,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN BREAST" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-breast.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥1,920〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price organic-wagyu-price">¥— —</span></div>
  <p class="product-name">オーガニックチキン ムネ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ、上等の一品。</p>
  <div class="product-stats">
@@ -9989,7 +9990,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN THIGH" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-thigh.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥1,920〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price organic-wagyu-price">¥— —</span></div>
  <p class="product-name">オーガニックチキン モモ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。週末の特別な照り焼きに。</p>
  <div class="product-stats">
@@ -10006,7 +10007,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
 
  <div class="product-card-img" data-label="CHICKEN MINCED" style="background-color:#0A0A0A !important;background-image:url('public/images/products/drive/chicken-minced.jpg');background-size:cover;background-position:center"><span class="badge badge-organic">有機JAS</span><div class="organic-wagyu-overlay"><div class="organic-wagyu-lock-circle">🔒</div><span class="organic-wagyu-overlay-text">COMING SOON</span></div></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥1,500〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price organic-wagyu-price">¥— —</span></div>
  <p class="product-name">オーガニックチキン ミンチ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。上質のオーガニック鶏ミンチ。離乳食やつくねの主役に。</p>
  <div class="product-stats">
