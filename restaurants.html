@@ -3,21 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>お取り扱い店舗 — 江田畜産の和牛が食べられるレストラン</title>
-<meta name="description" content="ミシュラン星付き店舗をはじめ、江田畜産の和牛をお召し上がりいただける飲食店をご紹介。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Restaurants | お取り扱いレストラン・取扱いご相談 30分予約 — EDA Wagyu">
-<meta property="og:description" content="江田畜産の和牛を提供するミシュラン星付き・高級レストラン。新規お取り扱いをご検討の飲食店・卸様は 30分の直接商談予約から。JST 6-24時受付。">
-<meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
-<meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/restaurants.html">
-<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
-<meta property="og:locale" content="ja_JP">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Restaurants | 取り扱いレストラン">
-<meta name="twitter:description" content="江田畜産の和牛を提供するミシュラン星付き / 高級レストランをご紹介します。">
-<meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
-<link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/restaurants.html">
-
+<title>Restaurants | 江田和牛が食べられるお店 | EDA-LIVESTOCK</title>
+<meta name="description" content="国内外のホテル・レストラン・百貨店で江田和牛をお召し上がりいただけます。予約はこちらから。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
  * ================================================================ */
@@ -50,29 +38,17 @@
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; scroll-padding-top: 80px; }
-@media (max-width: 720px) { html { scroll-padding-top: 60px; } }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body {
- margin: 0;
- font-family: var(--font-body);
- font-weight: 400;
- font-size: 17px;
- line-height: 1.8;
- color: var(--color-ink);
- background: var(--color-cream);
- overflow-x: hidden;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink);
+  background: var(--color-cream);
+  overflow-x: hidden;
 }
-/* mobile-scroll-patch: touch & perf */
-a, button, [role="button"], input, select, textarea { touch-action: manipulation; }
-@media (max-width: 1024px) {
-  [style*="background-attachment: fixed"], .bg-fixed { background-attachment: scroll !important; }
-}
-@supports (content-visibility: auto) {
-  section { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-}
-
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
@@ -1256,6 +1232,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   align-items: center;
   overflow: hidden;
   isolation: isolate;
+}
+/* hero-photo: 背景の実写差し替えスロット — src を差し替えるだけで反映 */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.42;
+  mix-blend-mode: luminosity;
+  animation: heroPhotoZoom 28s ease-in-out infinite alternate;
+}
+.hero-photo:not([src]),
+.hero-photo[src=""],
+.hero-photo[src*="placeholder"] { display: none; }
+@keyframes heroPhotoZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
 }
 .hero::before {
   content: '';
@@ -3597,126 +3592,63 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   .variant-select { width: 100%; }
 }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css">
-<link rel="stylesheet" href="public/css/jp-typography.css">
-<link rel="stylesheet" href="public/css/a11y.css">
-<link rel="stylesheet" href="public/css/mobile-modern.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "江田畜産 EDA Livestock",
-  "url": "https://edywagyu.github.io/eda-livestock-web/restaurants.html",
-  "description": "国内ミシュラン星付き・高級ホテル・百貨店で採用されている江田和牛。新規取扱店募集中。",
-  "potentialAction": {
-    "@type": "ReserveAction",
-    "name": "取扱いご相談 30分商談予約",
-    "target": "https://calendar.app.google/DjKHsVDhJHesaPM27"
-  }
-}
-</script>
 </head>
 <body>
 <header class="site-header" id="siteHeader">
- <div class="container nav">
- <a href="index.html" class="brand-mark">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
- </a>
- <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener">Book</a></li>
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a class="current" href="restaurants.html">Restaurants</a></li>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- </ul>
- </nav>
- <div class="nav-utils">
- <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
- <rect x="3" y="3" width="18" height="18" rx="5"/>
- <circle cx="12" cy="12" r="4"/>
- <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
- </svg>
- </a>
- <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
- <path d="M3 6h2l3 12h11l3-9H6" />
- <circle cx="9" cy="20" r="1.4" fill="currentColor" />
- <circle cx="18" cy="20" r="1.4" fill="currentColor" />
- </svg>
- <span class="cart-badge" id="cartBadge">0</span>
- </button>
- </div>
- </div>
+  <div class="container nav">
+    <a href="index.html" class="brand-mark">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
+    </a>
+    <nav class="primary-nav">
+      <ul class="nav-list">
+        <li><a href="about.html">About</a></li>
+        <li><a href="philosophy.html">Philosophy</a></li>
+        <li><a href="organic.html">Organic</a></li>
+        <li><a href="global.html">Global</a></li>
+        <li><a class="current" href="restaurants.html">Restaurants</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="press.html">Press</a></li>
+        <li><a href="about.html#members">Members</a></li>
+      </ul>
+    </nav>
+    <div class="nav-utils">
+      <div class="lang-toggle">
+        <span class="active">JA</span> / <span>EN</span>
+      </div>
+      <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/>
+        </svg>
+      </a>
+      <button aria-label="Cart" class="nav-icon" id="cartToggle" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M3 6h2l3 12h11l3-9H6" />
+          <circle cx="9" cy="20" r="1.4" fill="currentColor" />
+          <circle cx="18" cy="20" r="1.4" fill="currentColor" />
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 <!-- ========= PAGE HEADER ========= -->
 <section class="page-header">
- <div class="container page-header-content">
- <span class="eyebrow page-eyebrow">— Find Eda Wagyu —</span>
- <h1 class="page-title">
- Where to<span class="accent">Taste It.</span>
- </h1>
- <p class="page-subtitle">
- 国内・海外のホテル、レストラン、百貨店、高級スーパーで江田和牛がお召し上がりいただけます。<br/>
- 各店舗の予約ページ・公式サイトに直接アクセスできます。
- </p>
- <!-- B2B 予約導線: 飲食店・卸様向け -->
- <div class="b2b-hero-cta">
- <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="b2b-cta-primary">
-  <span class="b2b-cta-icon" aria-hidden="true">🍽️</span>
-  <span class="b2b-cta-label">
-   <strong>取扱い希望のご相談 (30分)</strong>
-   <small>飲食店・卸・代理店様向け · JST 6-24時</small>
-  </span>
-  <span class="b2b-cta-arrow" aria-hidden="true">→</span>
- </a>
- <a href="buyer-deck-jp.html" class="b2b-cta-secondary">
-  <span aria-hidden="true">📄</span>
-  バイヤー資料を見る
- </a>
- </div>
- </div>
+  <div class="container page-header-content">
+    <span class="eyebrow page-eyebrow">— Find Eda Wagyu —</span>
+    <h1 class="page-title">
+      Where to<br/>
+      <span class="accent">Taste It.</span>
+    </h1>
+    <p class="page-subtitle">
+      国内・海外のホテル、レストラン、百貨店、高級スーパーで江田和牛がお召し上がりいただけます。<br/>
+      各店舗の予約ページ・公式サイトに直接アクセスできます。
+    </p>
+  </div>
 </section>
-<style>
- /* B2B Hero CTA (restaurants/global 共通) */
- .b2b-hero-cta { display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:40px; }
- .b2b-cta-primary {
-  display: inline-flex; align-items: center; gap: 14px;
-  padding: 18px 28px;
-  background: var(--color-gold);
-  color: var(--color-forest-deep);
-  text-decoration: none; border-radius: 999px;
-  box-shadow: 0 12px 28px rgba(212,169,59,0.32);
-  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
- }
- .b2b-cta-primary:hover { background:#FFE594; transform:translateY(-2px); box-shadow:0 16px 36px rgba(212,169,59,0.42); }
- .b2b-cta-icon { font-size:20px; display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:50%; background:var(--color-forest); color:var(--color-gold); }
- .b2b-cta-label { display:flex; flex-direction:column; gap:2px; text-align:left; }
- .b2b-cta-label strong { font-size:15px; font-weight:700; letter-spacing:0.02em; }
- .b2b-cta-label small { font-size:11px; opacity:0.72; letter-spacing:0.04em; }
- .b2b-cta-arrow { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; background:var(--color-forest-deep); color:var(--color-gold); font-weight:800; font-size:12px; transition:transform 0.25s; }
- .b2b-cta-primary:hover .b2b-cta-arrow { transform:translateX(3px); }
- .b2b-cta-secondary { display:inline-flex; align-items:center; gap:10px; padding:18px 24px; border:1px solid rgba(15,61,46,0.3); color:var(--color-forest); text-decoration:none; border-radius:999px; font-size:13px; font-weight:600; transition:background 0.25s, border-color 0.25s; }
- .b2b-cta-secondary:hover { background:rgba(15,61,46,0.04); border-color:var(--color-forest); }
- @media (max-width: 600px) {
-  .b2b-cta-primary { padding:14px 18px; gap:10px; }
-  .b2b-cta-icon { width:36px; height:36px; font-size:17px; }
-  .b2b-cta-label strong { font-size:13px; }
-  .b2b-cta-label small { font-size:10px; }
-  .b2b-cta-secondary { padding:12px 18px; font-size:12px; width:100%; justify-content:center; }
-  .b2b-hero-cta { flex-direction:column; }
- }
-</style>
 
 <!-- ========= HOTEL BRAND STRIP ========= -->
 <section class="featured" style="padding-top: 64px; padding-bottom: 64px;">
@@ -4570,8 +4502,5 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   })();
 </script>
 
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
-<script src="public/js/b2b-booking.js" defer></script>
 </body>
 </html>
