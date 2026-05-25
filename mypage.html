@@ -3605,17 +3605,19 @@ function loadDemoDashboard() {
   { order_no: 'DEMO-1010', date: '2026-02-15', amount: 5100, status: '完了',
     items: [{name:'スタータープラン定期便（初月50%OFF）', qty:1}] }
  ];
- try { renderDashboard(demoCustomer, demoOrders); } catch (e) { console.error('demo render failed', e); }
- // デモであることを画面に表示
- setTimeout(() => {
+ // デモバナーを最優先表示（renderDashboard より先に出す = ユーザーが混乱しない）
+ (function showDemoBanner() {
   if (document.getElementById('demoBanner')) return;
   const b = document.createElement('div');
   b.id = 'demoBanner';
-  b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:100;background:linear-gradient(90deg,#D4A93B,#FFE594);color:#0F3D2E;text-align:center;padding:10px 16px;font-size:13px;font-weight:700;letter-spacing:0.04em;box-shadow:0 2px 8px rgba(0,0,0,0.12);';
-  b.innerHTML = '⚙ デモモード · 架空データを表示中 · 実際のマイページではLINE認証後にあなたの履歴が表示されます';
+  b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,#D4A93B,#FFE594);color:#0F3D2E;text-align:center;padding:12px 16px;font-size:13px;font-weight:700;letter-spacing:0.04em;box-shadow:0 2px 12px rgba(0,0,0,0.18);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;';
+  b.innerHTML = '⚙ <strong>DEMO MODE</strong> · 架空データ表示中 · 実マイページは LINE 認証後にあなたの履歴が出ます · <a href="mypage.html" style="color:#0A2D21;text-decoration:underline;font-weight:800;">本物を試す</a>';
   document.body.appendChild(b);
-  document.body.style.paddingTop = (b.offsetHeight) + 'px';
- }, 600);
+  document.body.style.paddingTop = (b.offsetHeight + 4) + 'px';
+ })();
+ try { renderDashboard(demoCustomer, demoOrders); } catch (e) { console.error('demo render failed', e); }
+ // デモ時はサーバへ書き込まない (line_register / line_link_account を呼ばない保険)
+ window.__EDA_DEMO_MODE = true;
 }
 
 function renderDashboard(customer, orders) {

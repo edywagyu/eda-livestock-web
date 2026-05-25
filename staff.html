@@ -1706,9 +1706,22 @@ function renderPin() {
   });
 }
 
+// 本番URL判定（github.io ホストでは PIN 1234 のデモ動作を禁止）
+function isProductionHost() {
+  var h = location.hostname;
+  return /\.github\.io$/.test(h) || h === 'eda-livestock.com' || h.endsWith('.eda-livestock.com');
+}
+
 async function checkPin() {
-  // ★ PIN 1234 は何があっても通す（GASがあれば本番、無ければデモ）
+  const isProd = isProductionHost();
+
+  // PIN 1234 = デモ体験用。本番URLでは無効化
   if (pinBuffer === '1234') {
+    if (isProd) {
+      showPinError('本番環境ではデモPINは使えません。Tomに正規PINを確認してください');
+      return;
+    }
+    // 本番以外（ローカル / ?test=1 / staging）でのみ PIN 1234 を許可
     if (GAS_URL) {
       try {
         const res = await fetch(GAS_URL + '?action=staff_login&pin=1234');
@@ -1721,7 +1734,7 @@ async function checkPin() {
         }
       } catch (e) {}
     }
-    // GAS未接続 or 認証失敗 → デモモード
+    // GAS未接続 → デモモード（非本番のみ）
     sessionStorage.setItem('eda-staff-demo', '1');
     localStorage.setItem(SESSION_KEY, '1');
     enterApp();
@@ -1730,7 +1743,7 @@ async function checkPin() {
 
   // それ以外のPIN：GAS認証必須
   if (!GAS_URL) {
-    showPinError('PINは 1234（デモ体験）');
+    showPinError(isProd ? 'GAS URL未設定 — Tomに連絡を' : 'PIN 1234でデモ可');
     return;
   }
   try {
@@ -1744,7 +1757,7 @@ async function checkPin() {
       showPinError('PINが違います');
     }
   } catch (e) {
-    showPinError('接続エラー — 1234でデモ');
+    showPinError(isProd ? '接続エラー — 再試行してください' : '接続エラー — PIN 1234でデモ');
   }
 }
 
@@ -4281,12 +4294,25 @@ function deleteSub() {
     }).catch(e => toast('通信エラー: ' + e.message, 'error'));
 }
 
-/* ================ DEMO QUICK ENTRY ================ */
+/* ================ DEMO QUICK ENTRY ================
+   本番ホスト (github.io / eda-livestock.com) では完全無効。
+   ローカル/ステージング/?demo=1 専用。 */
 function enterDemoQuick() {
+  if (typeof isProductionHost === 'function' && isProductionHost()) {
+    alert('本番環境ではデモモードを使えません。\nTomに正規PINを確認してください。');
+    return;
+  }
   sessionStorage.setItem('eda-staff-demo', '1');
   localStorage.setItem(SESSION_KEY, '1');
   enterApp();
 }
+// ログイン画面ロード時、本番なら「デモを試す」ボタンを隠す
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof isProductionHost === 'function' && isProductionHost()) {
+    var btn = document.getElementById('demoQuickBtn');
+    if (btn) btn.style.display = 'none';
+  }
+});
 
 /* ================ INIT ================ */
 (function init() {
@@ -4315,5 +4341,6 @@ function enterDemoQuick() {
 })();
 </script>
 <script src="public/js/eda-bundle.js?v=005" defer></script>
+<div style="position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));right:10px;font-size:9px;color:rgba(26,26,26,0.32);letter-spacing:0.04em;pointer-events:none;z-index:5;background:rgba(255,255,255,0.7);padding:2px 6px;border-radius:4px;">build 2026-05-25 10:58 JST</div>
 </body>
 </html>

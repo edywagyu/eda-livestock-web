@@ -262,7 +262,7 @@
         <nav class="eda-mm-nav">
           <a href="shop.html" class="eda-mm-item eda-mm-item--cta">🛒 Online Shop</a>
           <a href="subscription.html" class="eda-mm-item eda-mm-item--cta">⭐ 定期便を申込</a>
-          <a href="booking.html" class="eda-mm-item eda-mm-item--cta">📅 商談予約 / Book</a>
+          <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="eda-mm-item eda-mm-item--cta">📅 商談予約 / Book</a>
           ${navHtml}
         </nav>
         <div class="eda-mm-foot">
