@@ -6760,7 +6760,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="RAW HAM"] { background-image: url('public/images/products/drive/raw-ham-recipe.jpg'); }
 .product-card-img[data-label="HAMBURG"] { background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg')); }
 .product-card-img[data-label="HAMBURG XL"] { background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg')); }
-.product-card-img[data-label="ROAST BEEF"] { background-image: image-set(url('public/images/products/drive/thin-roast.webp') type('image/webp'), url('public/images/products/drive/thin-roast.jpg')); }
+.product-card-img[data-label="ROAST BEEF"] { background-image: url('public/images/products/drive/roast-beef.jpg'); }
 .product-card-img[data-label="OFFAL"] { background-image: image-set(url('public/images/products/drive/offal.webp') type('image/webp'), url('public/images/products/drive/offal.jpg')); }
 .product-card-img[data-label="CHICKEN BREAST"] { background-image: image-set(url('public/images/products/drive/chicken-breast.webp') type('image/webp'), url('public/images/products/drive/chicken-breast.jpg')); }
 .product-card-img[data-label="CHICKEN THIGH"] { background-image: image-set(url('public/images/products/drive/chicken-thigh.webp') type('image/webp'), url('public/images/products/drive/chicken-thigh.jpg')); }
@@ -12484,7 +12484,7 @@ body.has-sticky-cart .floating-phone-btn {
  '和牛のすき焼き': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
  '鶏ももの照り焼き': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のしゃぶしゃぶ': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
- '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: 'ローストビーフ', img: 'public/images/products/drive/thin-roast.jpg' },
+ '和牛のローストビーフ':{ id: 50982670532906, price: 3000, title: 'ローストビーフ', img: 'public/images/products/drive/roast-beef-recipe.jpg' },
  '和牛生ハム前菜プレート': { id: 50877844750634, price: 1250, title: '和牛生ハム', img: 'public/images/products/drive/raw-ham-recipe.jpg' },
  '無投薬チキンカレー': { id: 50830293172522, price: 640, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 640, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
@@ -12523,7 +12523,7 @@ body.has-sticky-cart .floating-phone-btn {
  { day: '木曜', day_en: 'THU', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
  { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1514536958296-436f46226e74?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
  { day: '週末', day_en: 'SAT', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1708597523963-40b30f846281?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
- { day: '日曜', day_en: 'SUN', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=900&q=85', ingredients: ['ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
+ { day: '日曜', day_en: 'SUN', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'public/images/products/drive/roast-beef-recipe.jpg', ingredients: ['ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
  { day: '月曜', day_en: 'MON', time: 25, name: '無投薬チキンカレー', desc: '平飼い鶏で煮込む、お子さま大喜びの定番。', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '玉ねぎ', '人参'] },
  { day: '火曜', day_en: 'TUE', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
  { day: '水曜', day_en: 'WED', time: 20, name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1685209744663-9635c4ba9bd3?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', 'じゃがいも', '人参'] },
