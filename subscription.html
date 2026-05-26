@@ -1841,7 +1841,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥6,980</div>
  <div class="sub-plan-price">¥3,490<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月 ¥3,490 OFF + 送料無料 + 年間 ¥8,530 節約</div>
+ <div class="sub-plan-savings">🎁 初月 ¥3,490 OFF + 送料無料 + 年間およそ ¥8,000 お得</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
@@ -1875,7 +1875,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥12,800</div>
  <div class="sub-plan-price">¥6,400<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月 ¥6,400 OFF + 買い忘れゼロ + 年間 ¥7,600 節約</div>
+ <div class="sub-plan-savings">🎁 初月 ¥6,400 OFF + 買い忘れゼロ + 年間およそ ¥20,000 お得</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
@@ -1916,7 +1916,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥24,400</div>
  <div class="sub-plan-price">¥12,200<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月 ¥12,200 OFF + 有機JAS優先案内 + 年間 ¥29,000 節約</div>
+ <div class="sub-plan-savings">🎁 初月 ¥12,200 OFF + 有機JAS優先案内 + 年間およそ ¥45,000 お得</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥24,400/月 (税込・送料込)<br>
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
@@ -1928,236 +1928,170 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 </section>
 
-<!-- ========= 単品 vs 定期便 比較セクション ========= -->
+<!-- ========= 定期便のお得感（段階的） ========= -->
 <style>
 .compare-section {
  background: linear-gradient(180deg, #FFF9EE 0%, #FFFAF0 100%);
- padding: clamp(56px, 8vw, 88px) 0;
+ padding: clamp(48px, 7vw, 76px) 0;
  border-top: 1px solid #F0E5D0;
  border-bottom: 1px solid #F0E5D0;
 }
-.compare-head {
- text-align: center;
- margin-bottom: 40px;
-}
+.compare-head { text-align: center; margin-bottom: 36px; }
 .compare-head h2 {
  font-family: var(--font-jp-serif);
- font-size: clamp(24px, 3.5vw, 38px);
+ font-size: clamp(22px, 3vw, 32px);
  color: var(--color-forest);
- margin: 16px 0 12px;
+ margin: 14px 0 10px;
  line-height: 1.4;
 }
 .compare-head p {
- font-size: 14px;
+ font-size: 13.5px;
  color: var(--color-ink-muted);
- line-height: 1.85;
- max-width: 620px;
+ line-height: 1.8;
+ max-width: 560px;
  margin: 0 auto;
 }
 .compare-grid {
  display: grid;
- grid-template-columns: 1fr;
- gap: 28px;
- max-width: 760px;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 18px;
+ max-width: 980px;
  margin: 0 auto;
 }
-.compare-row {
+@media (max-width: 760px) {
+ .compare-grid { grid-template-columns: 1fr; gap: 14px; }
+}
+.compare-card {
  background: white;
  border: 1px solid #F0E5D0;
- border-radius: 16px;
- padding: 28px 30px;
- box-shadow: 0 4px 16px rgba(15,61,46,0.04);
+ border-radius: 14px;
+ padding: 24px 22px;
+ text-align: center;
  transition: transform 0.3s, box-shadow 0.3s;
-}
-.compare-row:hover {
- transform: translateY(-3px);
- box-shadow: 0 12px 32px rgba(15,61,46,0.10);
-}
-.compare-row-head {
+ position: relative;
  display: flex;
- justify-content: space-between;
- align-items: baseline;
- margin-bottom: 18px;
- padding-bottom: 14px;
- border-bottom: 1px dashed #E8DCC4;
+ flex-direction: column;
 }
-.compare-plan-name {
+.compare-card:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(15,61,46,0.08); }
+.compare-card--featured {
+ border-color: #D4A93B;
+ background: linear-gradient(180deg, #FFF9EE 0%, white 60%);
+ box-shadow: 0 6px 20px rgba(212,169,59,0.18);
+}
+.compare-card-name {
  font-family: var(--font-jp-serif);
- font-size: 20px;
+ font-size: 18px;
  color: var(--color-forest);
  font-weight: 600;
+ margin-bottom: 2px;
 }
-.compare-plan-spec {
- font-size: 12px;
- color: var(--color-ink-muted);
- letter-spacing: 0.04em;
-}
-.compare-cols {
- display: grid;
- grid-template-columns: 1fr auto 1fr;
- gap: 20px;
- align-items: center;
-}
-.compare-col {
- text-align: center;
-}
-.compare-col-label {
- font-family: var(--font-display);
- font-size: 10.5px;
- letter-spacing: 0.18em;
- color: var(--color-ink-muted);
- margin-bottom: 8px;
- text-transform: uppercase;
-}
-.compare-col-price {
- font-family: var(--font-numeric);
- font-size: clamp(22px, 3.5vw, 30px);
- font-weight: 700;
- color: var(--color-ink);
-}
-.compare-col.individual .compare-col-price {
- color: #999;
- text-decoration: line-through;
- text-decoration-thickness: 1.5px;
- text-decoration-color: #C8102E;
-}
-.compare-col.subscription .compare-col-price {
- color: var(--color-forest);
-}
-.compare-col-sub {
- font-size: 11px;
- color: var(--color-ink-muted);
- margin-top: 4px;
-}
-.compare-arrow {
- font-size: 24px;
- color: var(--color-gold-soft);
- font-weight: 300;
-}
-.compare-savings {
- margin-top: 16px;
- padding: 10px 14px;
- background: linear-gradient(95deg, rgba(212,169,59,0.12), rgba(15,61,46,0.06));
- border-radius: 10px;
- text-align: center;
- font-size: 13.5px;
- color: var(--color-forest);
- font-weight: 600;
-}
-.compare-savings strong {
- color: #C8102E;
- font-size: 1.15em;
-}
-.compare-firstmonth {
- margin-top: 8px;
- padding: 8px 12px;
- background: rgba(212,169,59,0.18);
- border-radius: 8px;
- text-align: center;
- font-size: 12px;
- color: var(--color-forest);
-}
-.compare-firstmonth strong { color: #C8102E; }
-.compare-footnote {
- text-align: center;
- margin-top: 32px;
+.compare-card-spec {
  font-size: 11.5px;
  color: var(--color-ink-muted);
- line-height: 1.7;
+ letter-spacing: 0.03em;
+ margin-bottom: 18px;
 }
-@media (max-width: 640px) {
- .compare-row { padding: 22px 18px; }
- .compare-cols { grid-template-columns: 1fr; gap: 8px; text-align: center; }
- .compare-arrow { transform: rotate(90deg); font-size: 20px; }
- .compare-col-price { font-size: 22px; }
+.compare-card-savings {
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ margin-bottom: 4px;
+ letter-spacing: 0.04em;
+}
+.compare-card-amount {
+ font-family: var(--font-numeric);
+ font-weight: 700;
+ color: #C8102E;
+ line-height: 1.05;
+ margin-bottom: 4px;
+}
+.compare-card--s1 .compare-card-amount { font-size: 30px; }
+.compare-card--s2 .compare-card-amount { font-size: 36px; }
+.compare-card--s3 .compare-card-amount { font-size: 44px; }
+.compare-card-unit {
+ font-size: 14px;
+ color: var(--color-ink);
+ font-weight: 600;
+ margin-bottom: 16px;
+}
+.compare-card-firstmonth {
+ margin-top: auto;
+ padding: 10px 12px;
+ background: linear-gradient(95deg, rgba(212,169,59,0.16), rgba(15,61,46,0.05));
+ border-radius: 8px;
+ font-size: 12px;
+ color: var(--color-forest);
+ line-height: 1.5;
+}
+.compare-card-firstmonth strong { color: #C8102E; font-size: 1.05em; }
+.compare-card-tag {
+ position: absolute;
+ top: -10px; left: 50%;
+ transform: translateX(-50%);
+ background: #D4A93B;
+ color: #0F3D2E;
+ font-size: 10.5px;
+ font-weight: 700;
+ letter-spacing: 0.08em;
+ padding: 3px 12px;
+ border-radius: 999px;
+}
+.compare-disclaimer {
+ max-width: 760px;
+ margin: 28px auto 0;
+ text-align: center;
+ font-size: 11px;
+ color: #999;
+ line-height: 1.7;
+ font-style: italic;
 }
 </style>
 <section class="compare-section" id="compare">
  <div class="container">
  <div class="compare-head">
  <span class="eyebrow text-gold has-dash">— Value Comparison —</span>
- <h2>個別購入 vs 定期便、<br/>どれだけお得？</h2>
- <p>毎月同じ内容を個別注文すると、こんなに違います。<br/>定期便なら、自動でお届け＋送料無料＋カスタマイズ自由。</p>
+ <h2>定期便なら、これだけお得。</h2>
+ <p>同等の内容を単品で買い続けた場合と比較して、年間でこれくらいの差が出ます。</p>
  </div>
 
  <div class="compare-grid">
  <!-- ミニ -->
- <article class="compare-row">
- <div class="compare-row-head">
- <div class="compare-plan-name">ミニ</div>
- <div class="compare-plan-spec">1kg · 5品 · 鶏600g+牛400g</div>
- </div>
- <div class="compare-cols">
- <div class="compare-col individual">
- <div class="compare-col-label">単品×12ヶ月</div>
- <div class="compare-col-price">¥88,800</div>
- <div class="compare-col-sub">年間 (¥7,400/月)</div>
- </div>
- <div class="compare-arrow">→</div>
- <div class="compare-col subscription">
- <div class="compare-col-label">定期便×12ヶ月</div>
- <div class="compare-col-price">¥80,270</div>
- <div class="compare-col-sub">初月50%OFF含む</div>
- </div>
- </div>
- <div class="compare-savings">年間 <strong>¥8,530 節約</strong>（初月50%OFF + 毎月¥420 + 送料無料）</div>
- <div class="compare-firstmonth">🎁 今月入会で <strong>初月¥3,490</strong>（通常¥6,980 → 50%OFF）</div>
+ <article class="compare-card compare-card--s1">
+ <div class="compare-card-name">ミニ</div>
+ <div class="compare-card-spec">1kg · 5品</div>
+ <div class="compare-card-savings">年間でおよそ</div>
+ <div class="compare-card-amount">¥8,000</div>
+ <div class="compare-card-unit">お得</div>
+ <div class="compare-card-firstmonth">🎁 初月 <strong>¥3,490</strong>（通常¥6,980 / 50%OFF）</div>
  </article>
 
  <!-- スターター -->
- <article class="compare-row">
- <div class="compare-row-head">
- <div class="compare-plan-name">スターター <span style="font-size:11px;color:#D4A93B;font-weight:700;letter-spacing:0.08em;margin-left:6px;">人気 No.1</span></div>
- <div class="compare-plan-spec">1.6kg · 8品 · 鶏800g+牛800g</div>
- </div>
- <div class="compare-cols">
- <div class="compare-col individual">
- <div class="compare-col-label">単品×12ヶ月</div>
- <div class="compare-col-price">¥154,800</div>
- <div class="compare-col-sub">年間 (¥12,900/月)</div>
- </div>
- <div class="compare-arrow">→</div>
- <div class="compare-col subscription">
- <div class="compare-col-label">定期便×12ヶ月</div>
- <div class="compare-col-price">¥147,200</div>
- <div class="compare-col-sub">初月50%OFF含む</div>
- </div>
- </div>
- <div class="compare-savings">年間 <strong>¥7,600 節約</strong> + 買い忘れゼロ + 自動カスタマイズ</div>
- <div class="compare-firstmonth">🎁 今月入会で <strong>初月¥6,400</strong>（通常¥12,800 → 50%OFF）</div>
+ <article class="compare-card compare-card--s2 compare-card--featured">
+ <span class="compare-card-tag">人気 No.1</span>
+ <div class="compare-card-name">スターター</div>
+ <div class="compare-card-spec">1.6kg · 8品</div>
+ <div class="compare-card-savings">年間でおよそ</div>
+ <div class="compare-card-amount">¥20,000</div>
+ <div class="compare-card-unit">お得</div>
+ <div class="compare-card-firstmonth">🎁 初月 <strong>¥6,400</strong>（通常¥12,800 / 50%OFF）</div>
  </article>
 
  <!-- レギュラー -->
- <article class="compare-row">
- <div class="compare-row-head">
- <div class="compare-plan-name">レギュラー</div>
- <div class="compare-plan-spec">3.2kg · 16品 · 鶏1.6kg+牛1.6kg</div>
- </div>
- <div class="compare-cols">
- <div class="compare-col individual">
- <div class="compare-col-label">単品×12ヶ月</div>
- <div class="compare-col-price">¥309,600</div>
- <div class="compare-col-sub">年間 (¥25,800/月)</div>
- </div>
- <div class="compare-arrow">→</div>
- <div class="compare-col subscription">
- <div class="compare-col-label">定期便×12ヶ月</div>
- <div class="compare-col-price">¥280,600</div>
- <div class="compare-col-sub">初月50%OFF含む</div>
- </div>
- </div>
- <div class="compare-savings">年間 <strong>¥29,000 節約</strong> + 有機JAS優先案内（月20頭限定）</div>
- <div class="compare-firstmonth">🎁 今月入会で <strong>初月¥12,200</strong>（通常¥24,400 → 50%OFF）</div>
+ <article class="compare-card compare-card--s3">
+ <div class="compare-card-name">レギュラー</div>
+ <div class="compare-card-spec">3.2kg · 16品</div>
+ <div class="compare-card-savings">年間でおよそ</div>
+ <div class="compare-card-amount">¥45,000</div>
+ <div class="compare-card-unit">お得 + 有機JAS優先案内</div>
+ <div class="compare-card-firstmonth">🎁 初月 <strong>¥12,200</strong>（通常¥24,400 / 50%OFF）</div>
  </article>
  </div>
 
- <p class="compare-footnote">
- ※ 個別購入価格は同等の200g単品商品をそれぞれ正規価格で12ヶ月購入した場合の合計です。<br/>
- ※ 定期便は初月50%OFF（初回限定）+ 2ヶ月目以降通常価格×11ヶ月で算出。<br/>
- ※ いつでもスキップ・カスタマイズ可。3ヶ月以降は解約自由。
+ <p class="compare-disclaimer">
+ ※ 金額は目安です。お届け内容（部位の組み合わせ・容量・カスタマイズ）や時期によって変動します。<br/>
+ ※ 初月50%OFFを含めた、定期便1年継続時のおおよその差額を示しています。
  </p>
 
- <div style="text-align:center;margin-top:36px;">
+ <div style="text-align:center;margin-top:32px;">
  <a href="#plans" class="btn btn-gold" style="font-size:14px;padding:14px 32px;">プランを選んで始める →</a>
  </div>
  </div>
