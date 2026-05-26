@@ -3027,58 +3027,536 @@ function toggleSubUnboxingSound() {
 }
 </script>
 
-<!-- ========= 4つの特典 ========= -->
-<section class="sub-trust">
+<!-- ========= マイページでできること（モックアップ） ========= -->
+<style>
+.mypage-section {
+ padding: clamp(72px, 10vw, 120px) 0;
+ background:
+   radial-gradient(circle at 15% 30%, rgba(212,169,59,0.12), transparent 50%),
+   radial-gradient(circle at 85% 70%, rgba(212,169,59,0.07), transparent 50%),
+   linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
+ color: white;
+ border-top: 1px solid rgba(212,169,59,0.2);
+ border-bottom: 1px solid rgba(212,169,59,0.2);
+ position: relative;
+ overflow: hidden;
+}
+.mypage-head { text-align: center; margin-bottom: 56px; max-width: 720px; margin-left: auto; margin-right: auto; }
+.mypage-eyebrow {
+ display: inline-block;
+ background: rgba(212,169,59,0.12);
+ border: 1px solid rgba(212,169,59,0.35);
+ color: #FFD773;
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: 0.22em;
+ padding: 5px 16px;
+ border-radius: 999px;
+ font-weight: 700;
+ margin-bottom: 18px;
+}
+.mypage-head h2 {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(26px, 4vw, 40px);
+ color: white;
+ line-height: 1.4;
+ margin-bottom: 12px;
+ font-weight: 700;
+}
+.mypage-head h2 .accent {
+ background: linear-gradient(120deg, #FFD773, #D4A93B);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ background-clip: text;
+}
+.mypage-head p {
+ font-size: 14px;
+ color: rgba(255,255,255,0.78);
+ line-height: 1.85;
+ margin: 0;
+}
+.mypage-layout {
+ display: grid;
+ grid-template-columns: auto 1fr;
+ gap: 64px;
+ max-width: 1080px;
+ margin: 0 auto;
+ align-items: center;
+}
+@media (max-width: 880px) {
+ .mypage-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* ============ Phone Mockup ============ */
+.phone {
+ width: 300px;
+ height: 600px;
+ background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+ border-radius: 42px;
+ padding: 14px;
+ position: relative;
+ box-shadow:
+   0 0 0 2px #2a2a2a,
+   0 20px 60px rgba(0,0,0,0.6),
+   0 6px 24px rgba(212,169,59,0.18),
+   inset 0 0 0 1px rgba(255,255,255,0.04);
+ margin: 0 auto;
+ flex-shrink: 0;
+}
+.phone-side-btn {
+ position: absolute;
+ right: -2px; top: 130px;
+ width: 4px; height: 64px;
+ background: #2a2a2a;
+ border-radius: 0 2px 2px 0;
+}
+.phone-side-btn::before {
+ content: '';
+ position: absolute;
+ left: -302px; top: -50px;
+ width: 4px; height: 30px;
+ background: #2a2a2a;
+ border-radius: 2px 0 0 2px;
+}
+.phone-side-btn::after {
+ content: '';
+ position: absolute;
+ left: -302px; top: -10px;
+ width: 4px; height: 50px;
+ background: #2a2a2a;
+ border-radius: 2px 0 0 2px;
+}
+.phone-screen {
+ width: 100%; height: 100%;
+ background: linear-gradient(180deg, #FFFAF0 0%, #FFFFFF 100%);
+ border-radius: 30px;
+ overflow: hidden;
+ position: relative;
+ display: flex;
+ flex-direction: column;
+}
+.phone-notch {
+ position: absolute;
+ top: 8px; left: 50%;
+ transform: translateX(-50%);
+ width: 86px; height: 24px;
+ background: #0a0a0a;
+ border-radius: 14px;
+ z-index: 5;
+ display: flex;
+ align-items: center;
+ justify-content: flex-end;
+ padding-right: 8px;
+}
+.phone-notch::after {
+ content: '';
+ width: 8px; height: 8px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, #1a3344, #0a1822);
+ border: 1px solid #2a4555;
+}
+.phone-statusbar {
+ padding: 14px 22px 4px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+ font-size: 13px;
+ font-weight: 600;
+ color: #0F3D2E;
+}
+.phone-statusbar-icons {
+ display: inline-flex;
+ align-items: center;
+ gap: 5px;
+}
+.phone-statusbar-icons .sig {
+ display: inline-flex;
+ align-items: flex-end;
+ gap: 1px;
+}
+.phone-statusbar-icons .sig span {
+ width: 3px;
+ background: #0F3D2E;
+ border-radius: 1px;
+}
+.phone-statusbar-icons .sig span:nth-child(1) { height: 4px; }
+.phone-statusbar-icons .sig span:nth-child(2) { height: 6px; }
+.phone-statusbar-icons .sig span:nth-child(3) { height: 8px; }
+.phone-statusbar-icons .sig span:nth-child(4) { height: 10px; }
+.phone-statusbar-icons .bat {
+ width: 20px; height: 10px;
+ border: 1px solid #0F3D2E;
+ border-radius: 2px;
+ position: relative;
+ padding: 1px;
+}
+.phone-statusbar-icons .bat::after {
+ content: '';
+ position: absolute;
+ right: -3px; top: 2px;
+ width: 2px; height: 4px;
+ background: #0F3D2E;
+ border-radius: 0 1px 1px 0;
+}
+.phone-statusbar-icons .bat span {
+ display: block;
+ width: 80%; height: 100%;
+ background: #0F3D2E;
+ border-radius: 1px;
+}
+.phone-content {
+ flex: 1;
+ padding: 16px 18px;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+}
+.phone-app-header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+}
+.phone-app-logo {
+ font-family: var(--font-display);
+ font-size: 13px;
+ font-weight: 700;
+ letter-spacing: 0.18em;
+ color: #0F3D2E;
+}
+.phone-app-logo span {
+ color: #D4A93B;
+ margin-left: 4px;
+ font-size: 9.5px;
+ letter-spacing: 0.22em;
+}
+.phone-avatar {
+ width: 30px; height: 30px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, #D4A93B, #B98F2A);
+ color: #0F3D2E;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-family: var(--font-jp);
+ font-weight: 700;
+ font-size: 13px;
+}
+.phone-greeting {
+ font-family: var(--font-jp);
+ font-size: 14px;
+ font-weight: 700;
+ color: #0F3D2E;
+}
+.phone-greeting small {
+ display: block;
+ font-size: 10.5px;
+ color: #888;
+ font-weight: 500;
+ margin-top: 2px;
+}
+.phone-next-card {
+ background: linear-gradient(135deg, #0F3D2E, #1a5742);
+ border: 1px solid rgba(212,169,59,0.5);
+ border-radius: 14px;
+ padding: 14px 16px;
+ color: white;
+ position: relative;
+ overflow: hidden;
+}
+.phone-next-card::after {
+ content: '';
+ position: absolute;
+ top: -20px; right: -20px;
+ width: 70px; height: 70px;
+ border-radius: 50%;
+ background: radial-gradient(circle, rgba(212,169,59,0.3), transparent 70%);
+}
+.phone-next-label {
+ font-family: var(--font-display);
+ font-size: 9px;
+ letter-spacing: 0.2em;
+ color: #FFD773;
+ font-weight: 700;
+}
+.phone-next-date {
+ font-family: var(--font-jp);
+ font-size: 17px;
+ font-weight: 700;
+ color: white;
+ margin: 4px 0 2px;
+}
+.phone-next-time {
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.7);
+}
+.phone-next-plan {
+ display: inline-block;
+ margin-top: 8px;
+ background: rgba(212,169,59,0.25);
+ color: #FFD773;
+ font-size: 9.5px;
+ padding: 2px 8px;
+ border-radius: 8px;
+ font-weight: 700;
+}
+.phone-actions-label {
+ font-family: var(--font-display);
+ font-size: 9px;
+ letter-spacing: 0.18em;
+ color: #999;
+ font-weight: 700;
+ margin-top: 4px;
+}
+.phone-action {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ padding: 11px 14px;
+ background: white;
+ border: 1px solid #F0E5D0;
+ border-radius: 10px;
+ box-shadow: 0 1px 4px rgba(15,61,46,0.04);
+}
+.phone-action-icon {
+ width: 32px; height: 32px;
+ border-radius: 8px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.08));
+ border: 1px solid rgba(212,169,59,0.3);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 14px;
+ flex-shrink: 0;
+}
+.phone-action-text {
+ flex: 1;
+}
+.phone-action-text strong {
+ display: block;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ color: #0F3D2E;
+ font-weight: 700;
+}
+.phone-action-text span {
+ display: block;
+ font-size: 9.5px;
+ color: #888;
+ margin-top: 1px;
+}
+.phone-action-arrow {
+ color: #ccc;
+ font-size: 14px;
+}
+.phone-home-indicator {
+ position: absolute;
+ bottom: 7px;
+ left: 50%;
+ transform: translateX(-50%);
+ width: 120px;
+ height: 4px;
+ background: #0F3D2E;
+ opacity: 0.4;
+ border-radius: 2px;
+}
+
+/* ============ サイド機能リスト ============ */
+.mypage-features {
+ display: grid;
+ gap: 14px;
+}
+.mypage-feature {
+ display: grid;
+ grid-template-columns: 56px 1fr;
+ gap: 18px;
+ align-items: start;
+ padding: 22px 24px;
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(212,169,59,0.22);
+ border-radius: 14px;
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
+ transition: all 0.3s var(--ease-out-expo);
+}
+.mypage-feature:hover {
+ transform: translateX(6px);
+ background: rgba(255,255,255,0.07);
+ border-color: rgba(212,169,59,0.5);
+}
+.mypage-feature-icon {
+ width: 56px; height: 56px;
+ border-radius: 14px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.3), rgba(212,169,59,0.12));
+ border: 1px solid rgba(212,169,59,0.4);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 24px;
+ flex-shrink: 0;
+}
+.mypage-feature-body strong {
+ display: block;
+ font-family: var(--font-jp-serif);
+ font-size: 17px;
+ color: #FFD773;
+ font-weight: 700;
+ margin-bottom: 6px;
+}
+.mypage-feature-body p {
+ font-size: 13px;
+ color: rgba(255,255,255,0.82);
+ line-height: 1.75;
+ margin: 0;
+}
+.mypage-feature-body p strong {
+ display: inline;
+ font-family: var(--font-jp);
+ font-size: inherit;
+ color: #FFD773;
+ margin: 0;
+}
+
+/* タップアニメ：3秒ごとにアクションをハイライト */
+@keyframes phoneTap {
+ 0%, 100% { background: white; border-color: #F0E5D0; transform: scale(1); }
+ 50% { background: #FFFCEE; border-color: #D4A93B; transform: scale(1.02); }
+}
+.phone-action[data-tap="1"] { animation: phoneTap 8s ease-in-out infinite 0s; }
+.phone-action[data-tap="2"] { animation: phoneTap 8s ease-in-out infinite 2s; }
+.phone-action[data-tap="3"] { animation: phoneTap 8s ease-in-out infinite 4s; }
+.phone-action[data-tap="4"] { animation: phoneTap 8s ease-in-out infinite 6s; }
+
+@media (prefers-reduced-motion: reduce) {
+ .phone-action { animation: none !important; }
+}
+
+@media (max-width: 880px) {
+ .phone { width: 280px; height: 560px; }
+ .phone-content { padding: 14px 16px; gap: 10px; }
+ .phone-next-date { font-size: 16px; }
+ .phone-action-text strong { font-size: 11.5px; }
+ .phone-action-text span { font-size: 9px; }
+ .mypage-feature { padding: 18px 20px; gap: 14px; grid-template-columns: 48px 1fr; }
+ .mypage-feature-icon { width: 48px; height: 48px; font-size: 20px; }
+ .mypage-feature-body strong { font-size: 15px; }
+ .mypage-feature-body p { font-size: 12px; }
+}
+</style>
+<section class="mypage-section">
  <div class="container">
- <div class="sub-trust-head">
- <h2>定期便だけの、4つの特典。</h2>
- <p>お得・自由・安心 — すべて1つに。</p>
+ <div class="mypage-head">
+ <span class="mypage-eyebrow">YOUR DASHBOARD</span>
+ <h2>マイページで、<br/><span class="accent">すべてが自由自在。</span></h2>
+ <p>定期便にご入会いただくと、アプリのような「マイページ」がご利用いただけます。<br/>毎月のお肉も、配送日も、お支払いも、すべて手のひらで管理できます。</p>
  </div>
 
- <div class="sub-trust-grid">
- <div class="sub-trust-card">
- <span class="sub-trust-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <path d="M12 2 L4 14 H12 L11 22 L20 10 H12 L13 2 Z"/>
- </svg>
+ <div class="mypage-layout">
+ <!-- iPhone モックアップ -->
+ <div class="phone" aria-label="マイページのモックアップ">
+ <div class="phone-side-btn"></div>
+ <div class="phone-screen">
+ <div class="phone-notch"></div>
+ <div class="phone-statusbar">
+ <span>9:41</span>
+ <span class="phone-statusbar-icons">
+ <span class="sig"><span></span><span></span><span></span><span></span></span>
+ <span class="bat"><span></span></span>
  </span>
- <h4>初月 半額</h4>
- <p>初回限定で 50% OFF。お試し感覚でスタートできます。</p>
+ </div>
+ <div class="phone-content">
+ <div class="phone-app-header">
+ <div class="phone-app-logo">EDA<span>MYPAGE</span></div>
+ <div class="phone-avatar">江</div>
+ </div>
+ <div class="phone-greeting">
+ こんにちは、江田さん
+ <small>会員ステータス · スターター</small>
  </div>
 
- <div class="sub-trust-card">
- <span class="sub-trust-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <path d="M2 9V15H14V9H2Z"/>
- <path d="M14 11H18L21 14V15H14"/>
- <circle cx="6" cy="17" r="1.4" fill="currentColor"/>
- <circle cx="17" cy="17" r="1.4" fill="currentColor"/>
- </svg>
- </span>
- <h4>配送 無料</h4>
- <p>毎回送料無料。金額に関係なく冷凍便でお届け。</p>
+ <div class="phone-next-card">
+ <div class="phone-next-label">NEXT DELIVERY</div>
+ <div class="phone-next-date">6/1（土）</div>
+ <div class="phone-next-time">18:00 - 20:00 帯でお届け</div>
+ <span class="phone-next-plan">スターター 定期便</span>
  </div>
 
- <div class="sub-trust-card">
- <span class="sub-trust-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <rect x="4" y="4" width="6" height="16" rx="1"/>
- <rect x="14" y="4" width="6" height="16" rx="1"/>
- </svg>
- </span>
- <h4>スキップ 可能</h4>
- <p>「今月いらない」をLINEで1タップ。翌月から再開。</p>
+ <div class="phone-actions-label">QUICK ACTIONS</div>
+
+ <div class="phone-action" data-tap="1">
+ <div class="phone-action-icon">📦</div>
+ <div class="phone-action-text">
+ <strong>今月をスキップ</strong>
+ <span>1タップで翌月に持ち越し</span>
+ </div>
+ <span class="phone-action-arrow">›</span>
  </div>
 
- <div class="sub-trust-card">
- <span class="sub-trust-card-icon">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <circle cx="12" cy="12" r="3"/>
- <path d="M12 1 V5 M12 19 V23 M4.2 4.2 L7 7 M17 17 L19.8 19.8 M1 12 H5 M19 12 H23 M4.2 19.8 L7 17 M17 7 L19.8 4.2"/>
- </svg>
- </span>
- <h4>カスタム 可能</h4>
- <p>「鶏多め」「赤身中心」など、LINEで自由に調整。</p>
+ <div class="phone-action" data-tap="2">
+ <div class="phone-action-icon">🍖</div>
+ <div class="phone-action-text">
+ <strong>内容をカスタマイズ</strong>
+ <span>鶏多め · ステーキ追加 など</span>
+ </div>
+ <span class="phone-action-arrow">›</span>
+ </div>
+
+ <div class="phone-action" data-tap="3">
+ <div class="phone-action-icon">🔄</div>
+ <div class="phone-action-text">
+ <strong>プランを変更</strong>
+ <span>ミニ / スターター / レギュラー</span>
+ </div>
+ <span class="phone-action-arrow">›</span>
+ </div>
+
+ <div class="phone-action" data-tap="4">
+ <div class="phone-action-icon">💳</div>
+ <div class="phone-action-text">
+ <strong>支払い・お届け先</strong>
+ <span>カード・住所変更も簡単</span>
+ </div>
+ <span class="phone-action-arrow">›</span>
+ </div>
+ </div>
+ <div class="phone-home-indicator"></div>
+ </div>
+ </div>
+
+ <!-- サイド: 4機能 -->
+ <div class="mypage-features">
+ <article class="mypage-feature">
+ <div class="mypage-feature-icon">📦</div>
+ <div class="mypage-feature-body">
+ <strong>今月だけスキップ</strong>
+ <p>「冷凍庫がいっぱい」「来月にして」を <strong>1タップ</strong>で。<br/>キャンセル不要、翌月から自動再開。</p>
+ </div>
+ </article>
+
+ <article class="mypage-feature">
+ <div class="mypage-feature-icon">🍖</div>
+ <div class="mypage-feature-body">
+ <strong>内容を自由にカスタマイズ</strong>
+ <p>「鶏多めに」「ステーキ追加」「赤身中心で」など、<strong>毎月リクエスト可能</strong>。次回お届けから反映されます。</p>
+ </div>
+ </article>
+
+ <article class="mypage-feature">
+ <div class="mypage-feature-icon">🔄</div>
+ <div class="mypage-feature-body">
+ <strong>プランを切り替え</strong>
+ <p>家族構成や消費ペースの変化に合わせて、<strong>翌月から</strong>ミニ ⇄ スターター ⇄ レギュラーに切替OK。</p>
+ </div>
+ </article>
+
+ <article class="mypage-feature">
+ <div class="mypage-feature-icon">💳</div>
+ <div class="mypage-feature-body">
+ <strong>支払い・お届け先の管理</strong>
+ <p>カード変更、住所変更、配送日時の変更、<strong>解約手続き</strong>まで。全部マイページから完結。</p>
+ </div>
+ </article>
  </div>
  </div>
  </div>
