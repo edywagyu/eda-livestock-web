@@ -384,37 +384,11 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  overflow: hidden;
  min-height: 100%; /* 等高 */
 }
-/* 装飾アクセント: 左上の細いゴールドコーナー */
-.sub-plan-card::before {
- content: '';
- position: absolute;
- top: 0; left: 0;
- width: 60px; height: 60px;
- border-top: 2px solid var(--color-gold);
- border-left: 2px solid var(--color-gold);
- border-top-left-radius: 18px;
- opacity: 0.5;
- pointer-events: none;
- transition: opacity 0.4s;
-}
-.sub-plan-card::after {
- content: '';
- position: absolute;
- bottom: 0; right: 0;
- width: 60px; height: 60px;
- border-bottom: 2px solid var(--color-gold);
- border-right: 2px solid var(--color-gold);
- border-bottom-right-radius: 18px;
- opacity: 0.3;
- pointer-events: none;
- transition: opacity 0.4s;
-}
+/* コーナーアクセント削除済み（枠ズレの原因だった） */
 .sub-plan-card:hover {
  transform: translateY(-6px);
  box-shadow: 0 18px 44px rgba(15,61,46,0.12);
 }
-.sub-plan-card:hover::before,
-.sub-plan-card:hover::after { opacity: 1; }
 
 /* === ミニ: クリーンライト === */
 .sub-plan-card[data-plan="starter"] {
@@ -446,27 +420,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  color: #fff;
  box-shadow: 0 8px 28px rgba(15,61,46,0.30);
 }
+/* VIP card のコーナー装飾も削除 */
 .sub-plan-card.sub-plan-card--vip::before,
 .sub-plan-card.sub-plan-card--vip::after {
- background: none !important;
- right: auto;
- height: 60px;
- border-radius: 0;
- border-color: rgba(212,169,59,0.85);
- opacity: 0.85;
-}
-.sub-plan-card.sub-plan-card--vip::before {
- width: 60px;
- border-top: 2px solid rgba(212,169,59,0.85);
- border-left: 2px solid rgba(212,169,59,0.85);
- border-top-left-radius: 18px;
-}
-.sub-plan-card.sub-plan-card--vip::after {
- width: 60px;
- left: auto;
- border-bottom: 2px solid rgba(212,169,59,0.85);
- border-right: 2px solid rgba(212,169,59,0.85);
- border-bottom-right-radius: 18px;
+ display: none;
 }
 .sub-plan-card.sub-plan-card--vip .sub-plan-cycle { color: rgba(212,169,59,0.9); }
 .sub-plan-card.sub-plan-card--vip .sub-plan-name { color: #fff; }
@@ -582,7 +539,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  background: linear-gradient(180deg, rgba(15,61,46,0.04) 0%, rgba(15,61,46,0.02) 100%);
  border: 1px solid rgba(15,61,46,0.10);
  border-radius: 10px;
- text-align: center;
+ text-align: left; /* 左寄せ統一 */
 }
 .sub-plan-summary-total {
  font-family: var(--font-numeric);
@@ -603,7 +560,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-plan-summary-split {
  display: flex;
  align-items: center;
- justify-content: center;
+ justify-content: flex-start; /* 左寄せ統一 */
  gap: 10px;
  font-family: var(--font-jp);
  font-size: 13px;
@@ -677,6 +634,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  background: var(--color-paper);
  border-radius: 10px;
  padding: 12px 14px;
+ min-height: 96px; /* 内容差による高さズレを抑止 */
+ display: flex;
+ flex-direction: column;
+ justify-content: flex-start;
 }
 .meat-group--beef { border-left: 3px solid #B91C1C; }
 .meat-group--chicken { border-left: 3px solid #D4A93B; }
@@ -757,13 +718,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  border: 2px solid var(--color-gold);
  position: relative;
 }
-.sub-plan-card--vip::before {
- content: '';
- position: absolute;
- top: 0; left: 0; right: 0; height: 4px;
- background: linear-gradient(90deg, #B89030, #FFE594, #D4A93B, #FFE594, #B89030);
- border-radius: 14px 14px 0 0;
-}
+/* 旧 VIP 上部ゴールドストライプは削除（コーナーアクセント廃止に合わせて） */
+.sub-plan-card--vip::before { display: none; }
 .sub-plan-tag--vip {
  background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030) !important;
  color: var(--color-forest-deep) !important;
@@ -805,7 +761,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-plan-pricing {
  margin-top: auto;   /* 常に底辺に貼り付ける = 等高 alignment */
  margin-bottom: 16px;
- text-align: center;
+ text-align: left; /* 左寄せ統一 */
  padding-top: 14px;
  border-top: 1px dashed rgba(15,61,46,0.12);
 }
@@ -2185,7 +2141,57 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .sub-hero-badge { font-size: 11px; padding: 6px 11px; }
 }
 </style>
-<section class="sub-hero" style="padding-top: 100px; padding-bottom: 48px;">
+<style>
+.sub-hero-stats {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 12px;
+ margin: 28px 0 22px;
+ max-width: 600px;
+}
+.sub-hero-stat {
+ display: flex;
+ align-items: baseline;
+ gap: 8px;
+ padding: 10px 14px;
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.30);
+ border-radius: 10px;
+}
+.sub-hero-stat-num {
+ font-family: var(--font-numeric);
+ font-weight: 700;
+ color: #FFD773;
+ font-size: 22px;
+ letter-spacing: -0.01em;
+ line-height: 1;
+}
+.sub-hero-stat-num small {
+ font-size: 11px;
+ font-weight: 600;
+ color: rgba(255,255,255,0.7);
+ margin-left: 2px;
+}
+.sub-hero-stat-label {
+ font-family: var(--font-jp);
+ font-size: 11px;
+ color: rgba(255,255,255,0.85);
+ line-height: 1.3;
+ font-weight: 600;
+}
+.sub-hero-source {
+ margin-top: 16px;
+ font-size: 11px;
+ color: rgba(255,255,255,0.55);
+ font-style: italic;
+ line-height: 1.65;
+}
+@media (max-width: 640px) {
+ .sub-hero-stats { grid-template-columns: 1fr; gap: 8px; }
+ .sub-hero-stat { padding: 8px 12px; }
+}
+</style>
+<section class="sub-hero" style="padding-top: 100px; padding-bottom: 56px;">
  <img class="sub-hero-photo" src="public/images/products/drive/freezer-stocked.webp" alt="" loading="eager" fetchpriority="high"/>
  <div class="container sub-hero-content">
  <div class="sub-hero-badges">
@@ -2195,13 +2201,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 
  <h1 class="sub-hero-title">
- 日本で唯一の<br/>
  <span class="sub-hero-title-em">無投薬・国産</span>を、<br/>
  家族の冷凍庫に。
  </h1>
  <p class="sub-hero-sub">
- 抗生物質・ホルモン剤を一切使わない<strong style="color:#FFD773;font-weight:600;">国産和牛＋平飼い鶏</strong>を、毎月1回ご自宅へ。
+ 抗生物質・ホルモン剤を使わない<strong style="color:#FFD773;font-weight:600;">国産和牛＋平飼い鶏</strong>を、毎月1回ご自宅へ。<br/>
+ こうした定期便を運営しているのは、日本で江田畜産のみです。
  </p>
+
+ <div class="sub-hero-stats">
+ <div class="sub-hero-stat"><span class="sub-hero-stat-num">100<small>%</small></span><span class="sub-hero-stat-label">国産</span></div>
+ <div class="sub-hero-stat"><span class="sub-hero-stat-num">0<small>回</small></span><span class="sub-hero-stat-label">抗生物質・ホルモン剤</span></div>
+ <div class="sub-hero-stat"><span class="sub-hero-stat-num">2026<small>夏</small></span><span class="sub-hero-stat-label">有機JAS 解禁</span></div>
+ </div>
 
  <div class="sub-hero-cta">
  <a href="#plans" class="btn btn-gold">プランを選ぶ →</a>
@@ -2214,6 +2226,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="sub-hero-trust-item">3ヶ月から解約可</span>
  <span class="sub-hero-trust-item">カスタマイズ可</span>
  </div>
+
+ <p class="sub-hero-source">※ 和牛は宮崎・江田畜産の農場で。平飼い鶏は大分の信頼できる生産者と連携。</p>
  </div>
 </section>
 
@@ -2338,41 +2352,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  z-index: 1;
 }
 </style>
-<section class="why-only">
- <div class="container">
- <div class="why-only-head">
- <span class="why-only-eyebrow">WHY ONLY EDA</span>
- <h2>日本で唯一の、<br/><span class="accent">無投薬・国産定期便。</span></h2>
- <p class="why-only-lead">
- 抗生物質・ホルモン剤を使わない国産和牛＋平飼い鶏を、毎月定期便で家庭に届ける会社は、日本で江田畜産のみ。
- </p>
- </div>
-
- <div class="why-only-stats">
- <article class="why-only-stat">
- <div class="why-only-stat-icon">🇯🇵</div>
- <div class="why-only-stat-number">100<span class="unit">%</span></div>
- <div class="why-only-stat-label">国産</div>
- </article>
-
- <article class="why-only-stat">
- <div class="why-only-stat-icon">💊</div>
- <div class="why-only-stat-number">0<span class="unit">回</span></div>
- <div class="why-only-stat-label">抗生物質・ホルモン剤</div>
- </article>
-
- <article class="why-only-stat">
- <div class="why-only-stat-icon">🌿</div>
- <div class="why-only-stat-number">2026<span class="unit">夏</span></div>
- <div class="why-only-stat-label">日本初 有機JAS 黒毛和牛</div>
- </article>
- </div>
-
- <p class="why-only-source">
- ※ 和牛は宮崎・江田畜産の農場で。平飼い鶏は大分の信頼できる生産者と連携。
- </p>
- </div>
-</section>
+<!-- WHY ONLY セクションは HERO に統合済み（情報重複排除） -->
 
 <!-- ========= 3プラン ========= -->
 <section class="sub-plans-section" id="plans">
