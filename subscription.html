@@ -1940,51 +1940,12 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  font-weight: 700;
  margin-right: 6px;
 }
-.sub-hero-launch {
- margin-top: 24px;
- padding: 16px 20px;
- background:
-   linear-gradient(95deg, rgba(15,61,46,0.5), rgba(15,61,46,0.2)),
-   url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="none" stroke="%23D4A93B" stroke-width="0.5" opacity="0.15"/></svg>');
- border: 1px solid rgba(212,169,59,0.35);
- border-radius: 10px;
- position: relative;
- overflow: hidden;
-}
-.sub-hero-launch::before {
- content: 'COMING 2026 SUMMER';
- position: absolute;
- top: 10px; right: 14px;
- font-family: var(--font-display);
- font-size: 9.5px;
- letter-spacing: 0.2em;
- color: rgba(212,169,59,0.7);
- font-weight: 700;
-}
-.sub-hero-launch-title {
- font-family: var(--font-jp-serif);
- font-size: clamp(14px, 1.3vw, 17px);
- font-weight: 700;
- color: #FFD773;
- margin-bottom: 6px;
- line-height: 1.45;
-}
-.sub-hero-launch-text {
- font-size: 12px;
- line-height: 1.7;
- color: rgba(255,255,255,0.82);
-}
-.sub-hero-launch-text strong {
- color: #FFD773;
- font-weight: 700;
-}
 @media (max-width: 640px) {
- .sub-hero-launch::before { position: static; display: block; margin-bottom: 6px; }
  .sub-hero-badges { gap: 8px; }
  .sub-hero-badge { font-size: 11px; padding: 6px 11px; }
 }
 </style>
-<section class="sub-hero">
+<section class="sub-hero" style="padding-top: 100px; padding-bottom: 48px;">
  <img class="sub-hero-photo" src="public/images/products/drive/freezer-stocked.webp" alt="" loading="eager" fetchpriority="high"/>
  <div class="container sub-hero-content">
  <div class="sub-hero-badges">
@@ -1999,8 +1960,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  家族の冷凍庫に。
  </h1>
  <p class="sub-hero-sub">
- 抗生物質・ホルモン剤を一切使わない<strong style="color:#FFD773;font-weight:600;">国産和牛と平飼い鶏</strong>を、毎月1回ご自宅へ。<br/>
- 「無投薬・オーガニック専用の定期便」は、日本では江田畜産だけ。
+ 抗生物質・ホルモン剤を一切使わない<strong style="color:#FFD773;font-weight:600;">国産和牛＋平飼い鶏</strong>を、毎月1回ご自宅へ。
  </p>
 
  <div class="sub-hero-cta">
@@ -2008,21 +1968,11 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <a href="#faq" class="btn btn-ghost">よくある質問</a>
  </div>
 
- <!-- 2026年夏 有機JAS定期便 予告ティーザー -->
- <div class="sub-hero-launch">
-  <div class="sub-hero-launch-title">🌿 日本初・国産オーガニックミート定期便、2026年夏 公開</div>
-  <div class="sub-hero-launch-text">
-   有機JAS認証 黒毛和牛＋平飼い鶏。<strong>月20頭限定</strong>。<br/>
-   今お申し込みの定期便会員様には<strong>優先案内</strong>をお送りします。
-  </div>
- </div>
-
  <div class="sub-hero-trust">
  <span class="sub-hero-trust-item">送料無料</span>
  <span class="sub-hero-trust-item">いつでもスキップ</span>
  <span class="sub-hero-trust-item">3ヶ月から解約可</span>
- <span class="sub-hero-trust-item">内容のカスタマイズ可</span>
- <span class="sub-hero-trust-item">小分け真空パック</span>
+ <span class="sub-hero-trust-item">カスタマイズ可</span>
  </div>
  </div>
 </section>
