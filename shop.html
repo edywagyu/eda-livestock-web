@@ -10644,16 +10644,15 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="unboxing-lead">江田畜産のお肉は<strong>小分け真空パック</strong>で冷凍便。受け取ったらそのまま冷凍庫へ。必要な分だけ、ストレスゼロで召し上がっていただけます。</p>
  </div>
 
- <div class="unboxing-layout">
- <div class="unboxing-video">
+ <div class="unboxing-layout" style="display:flex;justify-content:center;">
+ <div class="unboxing-video" style="max-width:960px;">
  <video
  src="public/video/unboxing.mp4"
  autoplay
  muted
  loop
  playsinline
- preload="metadata"
- poster="public/images/products/drive/gift-box.jpg"
+ preload="auto"
  id="unboxingVideo">
  </video>
  <button class="unboxing-sound-btn" id="unboxingSoundBtn" onclick="toggleUnboxingSound()" aria-label="音声 ON/OFF">
@@ -10661,41 +10660,11 @@ body.is-member .product-card--organic .org-chk-lock {
  <svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
  </button>
  </div>
+ </div>
 
- <div class="unboxing-steps">
- <div class="unboxing-step">
- <div class="unboxing-step-icon">📦<span class="unboxing-step-num">1</span></div>
- <div class="unboxing-step-body">
- <strong>玄関で受け取る</strong>
- <p>冷凍便で安全に到着。1.4kg程度のコンパクト箱、不在時は再配達。</p>
- </div>
- </div>
- <div class="unboxing-step">
- <div class="unboxing-step-icon">❄️<span class="unboxing-step-num">2</span></div>
- <div class="unboxing-step-body">
- <strong>そのまま冷凍庫へ</strong>
- <p>小分け真空パックで省スペース。賞味期限<strong>6ヶ月</strong>でゆっくり消費。</p>
- </div>
- </div>
- <div class="unboxing-step">
- <div class="unboxing-step-icon">🌡<span class="unboxing-step-num">3</span></div>
- <div class="unboxing-step-body">
- <strong>冷蔵庫で半日解凍</strong>
- <p>朝、必要な分を冷蔵庫へ。夕方には調理OK。ドリップが出にくい設計。</p>
- </div>
- </div>
- <div class="unboxing-step">
- <div class="unboxing-step-icon">🍳<span class="unboxing-step-num">4</span></div>
- <div class="unboxing-step-body">
- <strong>フライパンへ</strong>
- <p>あとは塩を振って焼くだけ。30ヶ月以上育てた江田畜産の味を。</p>
- </div>
- </div>
- <div class="unboxing-cta-row">
+ <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:32px;">
  <a href="#products" class="btn btn-gold" style="font-size:13px">Collection →</a>
  <a href="#subscription" class="btn" style="font-size:13px; border-color: var(--color-forest); color: var(--color-forest);">定期便を申し込む</a>
- </div>
- </div>
  </div>
  </div>
 </section>
