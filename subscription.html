@@ -8,18 +8,18 @@
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>月の定期便｜江田畜産 — ご家族の冷凍庫に、月1回。</title>
-<meta name="description" content="ご家族構成に合わせた3プラン (ミニ/スターター/レギュラー)。初月50%OFF、いつでもスキップ・3ヶ月から解約可。">
+<title>日本唯一・無投薬専用定期便｜江田畜産 — 国産和牛＋平飼い鶏を月1回</title>
+<meta name="description" content="日本で唯一の無投薬・オーガニック専用定期便。抗生物質・ホルモン剤を一切使わない国産和牛＋平飼い鶏を月1回。2026年夏には日本初の有機JAS認証定期便を公開予定。初月50%OFF。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Eda Subscription | 月一回お届けする定期便">
-<meta property="og:description" content="無投薬の和牛を月一回、ご自宅へ。3プラン（ミニ / スターター / レギュラー）からお選びください。初月50%OFF。">
+<meta property="og:title" content="日本唯一・無投薬専用定期便｜江田畜産">
+<meta property="og:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。日本で唯一の無投薬・オーガニック専用定期便。2026夏 有機JAS解禁。">
 <meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
 <meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/subscription.html">
 <meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Eda Subscription | 月一回お届けする定期便">
-<meta name="twitter:description" content="無投薬の和牛を月一回、ご自宅へ。3プラン（ミニ / スターター / レギュラー）からお選びください。初月50%OFF。">
+<meta name="twitter:title" content="日本唯一・無投薬専用定期便｜江田畜産">
+<meta name="twitter:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。日本で唯一の無投薬・オーガニック専用定期便。2026夏 有機JAS解禁。">
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/subscription.html">
 
@@ -1773,23 +1773,157 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 </script>
 
 <!-- ========= HERO ========= -->
+<style>
+/* ヒーロー差別化バッジ群 */
+.sub-hero-badges {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 10px;
+ margin-bottom: 24px;
+}
+.sub-hero-badge {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ padding: 8px 14px;
+ background: rgba(212,169,59,0.10);
+ border: 1px solid rgba(212,169,59,0.45);
+ border-radius: 999px;
+ font-family: var(--font-jp);
+ font-size: 12px;
+ font-weight: 600;
+ color: var(--color-gold);
+ letter-spacing: 0.02em;
+}
+.sub-hero-badge--solid {
+ background: linear-gradient(95deg, #D4A93B, #B98F2A);
+ color: #0F3D2E;
+ border-color: #D4A93B;
+}
+.sub-hero-badge--solid::before {
+ content: '★';
+ font-size: 11px;
+ margin-right: 2px;
+}
+.sub-hero-badge--coming {
+ background: rgba(255,255,255,0.08);
+ border-color: rgba(255,255,255,0.25);
+ color: #FFD773;
+}
+.sub-hero-badge--coming::before {
+ content: '🔔';
+ margin-right: 2px;
+}
+.sub-hero-title-em {
+ color: #FFD773;
+ background: linear-gradient(120deg, #FFD773 0%, #D4A93B 100%);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ background-clip: text;
+}
+.sub-hero-unique {
+ margin-top: 28px;
+ padding: 18px 22px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.14), rgba(212,169,59,0.04));
+ border-left: 3px solid #D4A93B;
+ border-radius: 8px;
+}
+.sub-hero-unique-title {
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 700;
+ color: #FFD773;
+ margin-bottom: 6px;
+ letter-spacing: 0.04em;
+}
+.sub-hero-unique-text {
+ font-size: 12.5px;
+ line-height: 1.75;
+ color: rgba(255,255,255,0.88);
+}
+.sub-hero-trust {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 18px;
+ margin-top: 22px;
+ padding-top: 22px;
+ border-top: 1px solid rgba(212,169,59,0.18);
+}
+.sub-hero-trust-item {
+ display: inline-flex;
+ align-items: center;
+ font-family: var(--font-jp);
+ font-size: 12.5px;
+ color: rgba(255,255,255,0.85);
+ font-weight: 500;
+}
+.sub-hero-trust-item::before {
+ content: '✓';
+ color: #D4A93B;
+ font-weight: 700;
+ margin-right: 6px;
+}
+.sub-hero-launch {
+ margin-top: 24px;
+ padding: 16px 20px;
+ background:
+   linear-gradient(95deg, rgba(15,61,46,0.5), rgba(15,61,46,0.2)),
+   url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="none" stroke="%23D4A93B" stroke-width="0.5" opacity="0.15"/></svg>');
+ border: 1px solid rgba(212,169,59,0.35);
+ border-radius: 10px;
+ position: relative;
+ overflow: hidden;
+}
+.sub-hero-launch::before {
+ content: 'COMING 2026 SUMMER';
+ position: absolute;
+ top: 10px; right: 14px;
+ font-family: var(--font-display);
+ font-size: 9.5px;
+ letter-spacing: 0.2em;
+ color: rgba(212,169,59,0.7);
+ font-weight: 700;
+}
+.sub-hero-launch-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(14px, 1.3vw, 17px);
+ font-weight: 700;
+ color: #FFD773;
+ margin-bottom: 6px;
+ line-height: 1.45;
+}
+.sub-hero-launch-text {
+ font-size: 12px;
+ line-height: 1.7;
+ color: rgba(255,255,255,0.82);
+}
+.sub-hero-launch-text strong {
+ color: #FFD773;
+ font-weight: 700;
+}
+@media (max-width: 640px) {
+ .sub-hero-launch::before { position: static; display: block; margin-bottom: 6px; }
+ .sub-hero-badges { gap: 8px; }
+ .sub-hero-badge { font-size: 11px; padding: 6px 11px; }
+}
+</style>
 <section class="sub-hero">
- <!--
-   ▼ Tom: 定期便ヒーローに実写を入れる場合
-   1. 写真を public/images/hero/ に置く（例: public/images/hero/subscription-table.jpg）
-   2. 下の img src を差し替える（現在は表示されません）
-   3. 推奨: 家族の食卓・冷凍庫・お肉の盛り合わせなど
- -->
  <img class="sub-hero-photo" src="public/images/products/drive/freezer-stocked.webp" alt="" loading="eager" fetchpriority="high"/>
  <div class="container sub-hero-content">
- <span class="sub-hero-eyebrow">MONTHLY SUBSCRIPTION · 月1回 自動でお届け</span>
+ <div class="sub-hero-badges">
+  <span class="sub-hero-badge sub-hero-badge--solid">日本唯一・無投薬専用定期便</span>
+  <span class="sub-hero-badge">国産100%</span>
+  <span class="sub-hero-badge sub-hero-badge--coming">2026 夏 有機JAS解禁</span>
+ </div>
+
  <h1 class="sub-hero-title">
- 家族の冷凍庫に、<br/>
- <span class="accent">月1回。</span>
+ 日本で唯一の<br/>
+ <span class="sub-hero-title-em">無投薬・国産</span>を、<br/>
+ 家族の冷凍庫に。
  </h1>
  <p class="sub-hero-sub">
- 抗生物質・ホルモン剤 不使用のお肉が、毎月決まった日にお届け。<br/>
- 買い物の手間ゼロ、安心して使えるストックが冷凍庫にある食卓へ。
+ 抗生物質・ホルモン剤を一切使わない<strong style="color:#FFD773;font-weight:600;">国産和牛と平飼い鶏</strong>を、毎月1回ご自宅へ。<br/>
+ 「無投薬・オーガニック専用の定期便」は、日本では江田畜産だけ。
  </p>
 
  <div class="sub-hero-cta">
@@ -1797,11 +1931,234 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <a href="#faq" class="btn btn-ghost">よくある質問</a>
  </div>
 
+ <!-- 2026年夏 有機JAS定期便 予告ティーザー -->
+ <div class="sub-hero-launch">
+  <div class="sub-hero-launch-title">🌿 日本初・国産オーガニックミート定期便、2026年夏 公開</div>
+  <div class="sub-hero-launch-text">
+   有機JAS認証 黒毛和牛＋平飼い鶏。<strong>月20頭限定</strong>。<br/>
+   今お申し込みの定期便会員様には<strong>優先案内</strong>をお送りします。
+  </div>
+ </div>
+
  <div class="sub-hero-trust">
  <span class="sub-hero-trust-item">送料無料</span>
  <span class="sub-hero-trust-item">いつでもスキップ</span>
- <span class="sub-hero-trust-item">3 ヶ月から解約可</span>
+ <span class="sub-hero-trust-item">3ヶ月から解約可</span>
  <span class="sub-hero-trust-item">内容のカスタマイズ可</span>
+ <span class="sub-hero-trust-item">小分け真空パック</span>
+ </div>
+ </div>
+</section>
+
+<!-- ========= なぜ江田畜産だけ？ ========= -->
+<style>
+.why-only {
+ padding: clamp(56px, 8vw, 88px) 0;
+ background: linear-gradient(180deg, #FFFDF7 0%, #FFF9EE 100%);
+ position: relative;
+ overflow: hidden;
+ border-bottom: 1px solid #F0E5D0;
+}
+.why-only::before {
+ content: '';
+ position: absolute;
+ top: -120px; right: -120px;
+ width: 320px; height: 320px;
+ border-radius: 50%;
+ background: radial-gradient(circle, rgba(212,169,59,0.12), transparent 70%);
+ pointer-events: none;
+}
+.why-only-head {
+ text-align: center;
+ margin-bottom: 48px;
+ position: relative;
+ z-index: 1;
+}
+.why-only-eyebrow {
+ display: inline-block;
+ font-family: var(--font-display);
+ font-size: 11px;
+ letter-spacing: 0.24em;
+ color: var(--color-gold-soft);
+ background: rgba(212,169,59,0.10);
+ padding: 5px 14px;
+ border-radius: 999px;
+ margin-bottom: 18px;
+ font-weight: 700;
+}
+.why-only h2 {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(26px, 3.6vw, 38px);
+ color: var(--color-forest);
+ line-height: 1.4;
+ margin-bottom: 14px;
+ font-weight: 700;
+}
+.why-only h2 .accent {
+ color: #B98F2A;
+ background: linear-gradient(120deg, #D4A93B, #B98F2A);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ background-clip: text;
+}
+.why-only-lead {
+ font-size: 14px;
+ color: var(--color-ink-muted);
+ line-height: 1.85;
+ max-width: 640px;
+ margin: 0 auto;
+}
+.why-only-stats {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 18px;
+ max-width: 960px;
+ margin: 0 auto 40px;
+ position: relative;
+ z-index: 1;
+}
+@media (max-width: 760px) {
+ .why-only-stats { grid-template-columns: 1fr; gap: 14px; }
+}
+.why-only-stat {
+ background: white;
+ border: 1px solid #F0E5D0;
+ border-radius: 14px;
+ padding: 28px 22px;
+ text-align: center;
+ box-shadow: 0 4px 14px rgba(15,61,46,0.04);
+ transition: transform 0.3s, box-shadow 0.3s;
+}
+.why-only-stat:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 12px 28px rgba(15,61,46,0.10);
+}
+.why-only-stat-icon {
+ width: 56px; height: 56px;
+ margin: 0 auto 14px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.06));
+ border: 1px solid rgba(212,169,59,0.35);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 26px;
+}
+.why-only-stat-number {
+ font-family: var(--font-display);
+ font-size: clamp(28px, 4vw, 38px);
+ color: var(--color-forest);
+ font-weight: 700;
+ line-height: 1.1;
+ margin-bottom: 4px;
+ letter-spacing: -0.01em;
+}
+.why-only-stat-number .unit {
+ font-size: 0.55em;
+ color: var(--color-ink-muted);
+ font-weight: 500;
+ margin-left: 4px;
+}
+.why-only-stat-label {
+ font-family: var(--font-jp);
+ font-size: 12.5px;
+ font-weight: 600;
+ color: var(--color-forest);
+ margin-bottom: 6px;
+ letter-spacing: 0.02em;
+}
+.why-only-stat-desc {
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
+ line-height: 1.7;
+}
+.why-only-launch {
+ max-width: 760px;
+ margin: 0 auto;
+ padding: 24px 28px;
+ background: linear-gradient(135deg, #0F3D2E, #1a5742);
+ color: white;
+ border-radius: 14px;
+ position: relative;
+ overflow: hidden;
+ border: 1px solid rgba(212,169,59,0.45);
+}
+.why-only-launch::before {
+ content: '';
+ position: absolute;
+ top: 0; left: -100%;
+ width: 50%; height: 100%;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.15), transparent);
+ animation: shimmer 5s ease-in-out infinite;
+}
+.why-only-launch-tag {
+ display: inline-block;
+ font-family: var(--font-display);
+ font-size: 10.5px;
+ letter-spacing: 0.22em;
+ color: #0F3D2E;
+ background: #D4A93B;
+ padding: 4px 12px;
+ border-radius: 999px;
+ font-weight: 700;
+ margin-bottom: 10px;
+}
+.why-only-launch-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(17px, 1.8vw, 22px);
+ font-weight: 700;
+ color: #FFD773;
+ line-height: 1.5;
+ margin-bottom: 10px;
+}
+.why-only-launch-text {
+ font-size: 13px;
+ line-height: 1.85;
+ color: rgba(255,255,255,0.88);
+}
+.why-only-launch-text strong { color: #FFD773; font-weight: 700; }
+</style>
+<section class="why-only">
+ <div class="container">
+ <div class="why-only-head">
+ <span class="why-only-eyebrow">WHY ONLY EDA</span>
+ <h2>無投薬・オーガニック専用の定期便は、<br/><span class="accent">日本で江田畜産だけ。</span></h2>
+ <p class="why-only-lead">
+ 抗生物質・ホルモン剤を一切使わず、自社農場で一貫飼育した国産和牛＋平飼い鶏。<br/>
+ それを毎月「個人のご家庭にお届けする定期便」として運営しているのは、日本で当社1社のみです。
+ </p>
+ </div>
+
+ <div class="why-only-stats">
+ <article class="why-only-stat">
+ <div class="why-only-stat-icon">🇯🇵</div>
+ <div class="why-only-stat-number">100<span class="unit">%</span></div>
+ <div class="why-only-stat-label">国産 + 自社農場</div>
+ <div class="why-only-stat-desc">和牛は宮崎、平飼い鶏は大分。<br/>すべて産地・農家まで追跡可能。</div>
+ </article>
+
+ <article class="why-only-stat">
+ <div class="why-only-stat-icon">💊</div>
+ <div class="why-only-stat-number">0<span class="unit">回</span></div>
+ <div class="why-only-stat-label">抗生物質・ホルモン剤</div>
+ <div class="why-only-stat-desc">出生から出荷まで投薬ゼロ。<br/>子ども・妊婦さんにも安心。</div>
+ </article>
+
+ <article class="why-only-stat">
+ <div class="why-only-stat-icon">🌿</div>
+ <div class="why-only-stat-number">20<span class="unit">頭/月</span></div>
+ <div class="why-only-stat-label">有機JAS 黒毛和牛</div>
+ <div class="why-only-stat-desc">日本初の認証取得。<br/>2026年夏 解禁・定期便会員様に優先案内。</div>
+ </article>
+ </div>
+
+ <div class="why-only-launch">
+ <span class="why-only-launch-tag">COMING 2026 SUMMER</span>
+ <div class="why-only-launch-title">🌿 日本初・国産オーガニックミート定期便、夏に公開予定。</div>
+ <p class="why-only-launch-text">
+ 鹿児島有機農業協会 畜産部門認証 <strong>No.1002</strong> を取得した、日本初の有機JAS認証 黒毛和牛 <strong>「Premium EdaWagyu」</strong>。<br/>
+ 月20頭限定。今お申し込みの定期便会員様には、一般販売前に優先案内をお送りします。
+ </p>
  </div>
  </div>
 </section>
