@@ -412,16 +412,17 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .sub-plan-name {
  font-family: var(--font-jp-serif);
- font-size: 22px;
+ font-size: 28px;
  font-weight: 700;
  color: var(--color-forest);
  margin-bottom: 4px;
+ line-height: 1.2;
 }
 .sub-plan-target {
- font-size: 12px;
+ font-size: 12.5px;
  color: var(--color-gold-soft);
  font-weight: 700;
- margin-bottom: 18px;
+ margin-bottom: 16px;
  letter-spacing: 0.02em;
 }
 .sub-plan-items {
@@ -434,6 +435,66 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  gap: 10px;
 }
 .sub-plan-items b { display: none; }
+
+/* === Summary header: 合計と牛/鶏内訳をひと目で === */
+.sub-plan-summary {
+ margin-bottom: 14px;
+ padding: 14px 16px;
+ background: linear-gradient(180deg, rgba(15,61,46,0.04) 0%, rgba(15,61,46,0.02) 100%);
+ border: 1px solid rgba(15,61,46,0.10);
+ border-radius: 10px;
+ text-align: center;
+}
+.sub-plan-summary-total {
+ font-family: var(--font-numeric);
+ font-size: 22px;
+ font-weight: 700;
+ color: var(--color-forest);
+ line-height: 1.1;
+ letter-spacing: -0.01em;
+ margin-bottom: 8px;
+}
+.sub-plan-summary-total small {
+ font-family: var(--font-jp);
+ font-size: 12.5px;
+ font-weight: 600;
+ color: var(--color-ink-muted);
+ margin-left: 6px;
+}
+.sub-plan-summary-split {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 10px;
+ font-family: var(--font-jp);
+ font-size: 13px;
+ font-weight: 600;
+ color: var(--color-ink);
+}
+.sub-plan-summary-split-item {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+}
+.sub-plan-summary-split-dot {
+ width: 8px; height: 8px;
+ border-radius: 50%;
+}
+.sub-plan-summary-split-dot--beef { background: #B91C1C; }
+.sub-plan-summary-split-dot--chicken { background: #D4A93B; }
+.sub-plan-summary-divider {
+ color: var(--color-bone);
+ font-weight: 400;
+}
+.sub-plan-detail-label {
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.18em;
+ color: var(--color-ink-muted);
+ font-weight: 700;
+ margin-bottom: 8px;
+ text-transform: uppercase;
+}
 
 /* === 1年続けるとお得 (価格の下にコンパクト配置) === */
 .sub-plan-yearly {
@@ -2128,9 +2189,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <article class="sub-plan-card" data-plan="starter">
  <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
  <div class="sub-plan-name">ミニ</div>
- <div class="sub-plan-target">1-2人家族 · 1kg / 全 5品</div>
+ <div class="sub-plan-target">1-2人家族向け</div>
+
+ <div class="sub-plan-summary">
+ <div class="sub-plan-summary-total">1kg<small>/ 全5品</small></div>
+ <div class="sub-plan-summary-split">
+ <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 400g</span>
+ <span class="sub-plan-summary-divider">+</span>
+ <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 600g</span>
+ </div>
+ </div>
 
  <div class="sub-plan-items">
+ <div class="sub-plan-detail-label">お届け内容</div>
  <div class="meat-group meat-group--beef">
  <div class="meat-group-head">
  <span class="meat-group-icon">🥩</span>
@@ -2166,9 +2237,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="sub-plan-tag">人気 No.1</span>
  <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
  <div class="sub-plan-name">スターター</div>
- <div class="sub-plan-target">3-4人家族 · 1.6kg / 全 8品</div>
+ <div class="sub-plan-target">3-4人家族向け</div>
+
+ <div class="sub-plan-summary">
+ <div class="sub-plan-summary-total">1.6kg<small>/ 全8品</small></div>
+ <div class="sub-plan-summary-split">
+ <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 800g</span>
+ <span class="sub-plan-summary-divider">+</span>
+ <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 800g</span>
+ </div>
+ </div>
 
  <div class="sub-plan-items">
+ <div class="sub-plan-detail-label">お届け内容</div>
  <div class="meat-group meat-group--beef">
  <div class="meat-group-head">
  <span class="meat-group-icon">🥩</span>
@@ -2204,9 +2285,19 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="sub-plan-tag sub-plan-tag--vip">👑 大家族</span>
  <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
  <div class="sub-plan-name">レギュラー</div>
- <div class="sub-plan-target">5人以上 · 3.2kg / 全 16品</div>
+ <div class="sub-plan-target">5人以上向け</div>
+
+ <div class="sub-plan-summary">
+ <div class="sub-plan-summary-total">3.2kg<small>/ 全16品</small></div>
+ <div class="sub-plan-summary-split">
+ <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 1.6kg</span>
+ <span class="sub-plan-summary-divider">+</span>
+ <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 1.6kg</span>
+ </div>
+ </div>
 
  <div class="sub-plan-items">
+ <div class="sub-plan-detail-label">お届け内容</div>
  <div class="meat-group meat-group--beef">
  <div class="meat-group-head">
  <span class="meat-group-icon">🥩</span>
