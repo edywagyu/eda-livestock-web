@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>MyPage Preview — 江田畜産</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+ --forest: #0F3D2E;
+ --forest-deep: #0A2D21;
+ --gold: #D4A93B;
+ --gold-light: #FFD773;
+ --bone: #F0E5D0;
+ --paper: #FFFAF0;
+ --ink: #1A1A1A;
+ --ink-muted: #6B7280;
+ --jp: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+ --display: 'Cormorant Garamond', serif;
+ --num: 'Inter', -apple-system, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+ background: linear-gradient(180deg, #FFFAF0 0%, #FFFFFF 100%);
+ font-family: var(--num);
+ color: var(--ink);
+ width: 390px;
+ min-height: 844px;
+ -webkit-font-smoothing: antialiased;
+ -moz-osx-font-smoothing: grayscale;
+}
+body {
+ padding: 14px 18px 32px;
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
+}
+
+/* ===== Top bar (app header) ===== */
+.app-header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ padding-top: 4px;
+}
+.logo {
+ font-family: var(--display);
+ font-size: 16px;
+ font-weight: 700;
+ letter-spacing: 0.18em;
+ color: var(--forest);
+}
+.logo b {
+ color: var(--gold);
+ font-size: 11px;
+ letter-spacing: 0.24em;
+ margin-left: 6px;
+ font-weight: 700;
+}
+.avatar {
+ width: 38px; height: 38px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, var(--gold), #B98F2A);
+ color: var(--forest-deep);
+ display: flex; align-items: center; justify-content: center;
+ font-family: var(--jp);
+ font-weight: 700;
+ font-size: 16px;
+ box-shadow: 0 4px 12px rgba(212,169,59,0.32);
+}
+
+/* ===== Greeting ===== */
+.greeting {
+ font-family: var(--jp);
+ font-size: 18px;
+ font-weight: 700;
+ color: var(--forest);
+ line-height: 1.4;
+}
+.greeting small {
+ display: block;
+ font-family: var(--num);
+ font-size: 11.5px;
+ color: var(--ink-muted);
+ font-weight: 500;
+ margin-top: 4px;
+ letter-spacing: 0.02em;
+}
+.greeting small b {
+ color: var(--gold);
+ font-weight: 700;
+}
+
+/* ===== Next Delivery Hero Card ===== */
+.next-card {
+ background:
+   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.22) 0%, transparent 50%),
+   linear-gradient(135deg, #0F3D2E 0%, #1a5742 100%);
+ border: 1px solid rgba(212,169,59,0.5);
+ border-radius: 18px;
+ padding: 20px 22px;
+ color: white;
+ position: relative;
+ overflow: hidden;
+ box-shadow: 0 10px 28px rgba(15,61,46,0.18);
+}
+.next-card::after {
+ content: '';
+ position: absolute;
+ top: -40px; right: -40px;
+ width: 120px; height: 120px;
+ border-radius: 50%;
+ background: radial-gradient(circle, rgba(212,169,59,0.25), transparent 70%);
+}
+.next-card-top {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 12px;
+ position: relative;
+ z-index: 1;
+}
+.next-label {
+ font-family: var(--display);
+ font-size: 10px;
+ letter-spacing: 0.22em;
+ color: var(--gold-light);
+ font-weight: 700;
+}
+.next-plan-badge {
+ background: rgba(212,169,59,0.28);
+ color: var(--gold-light);
+ font-family: var(--jp);
+ font-size: 10px;
+ padding: 3px 10px;
+ border-radius: 999px;
+ font-weight: 700;
+ border: 1px solid rgba(212,169,59,0.4);
+}
+.next-date {
+ font-family: var(--jp);
+ font-size: 28px;
+ font-weight: 700;
+ color: white;
+ line-height: 1;
+ letter-spacing: 0.02em;
+ margin-bottom: 6px;
+}
+.next-date span {
+ font-family: var(--num);
+ font-size: 22px;
+ margin-right: 4px;
+ color: var(--gold-light);
+}
+.next-time {
+ font-size: 12px;
+ color: rgba(255,255,255,0.85);
+ margin-bottom: 14px;
+}
+.next-progress {
+ padding-top: 14px;
+ border-top: 1px solid rgba(212,169,59,0.25);
+ position: relative;
+ z-index: 1;
+}
+.next-progress-label {
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.7);
+ margin-bottom: 6px;
+}
+.next-progress-bar {
+ height: 6px;
+ background: rgba(255,255,255,0.12);
+ border-radius: 3px;
+ overflow: hidden;
+}
+.next-progress-fill {
+ height: 100%;
+ width: 60%;
+ background: linear-gradient(90deg, var(--gold), var(--gold-light));
+ border-radius: 3px;
+}
+.next-progress-text {
+ display: flex;
+ justify-content: space-between;
+ margin-top: 6px;
+ font-size: 10px;
+ color: rgba(255,255,255,0.7);
+}
+.next-progress-text b {
+ color: var(--gold-light);
+ font-weight: 700;
+}
+
+/* ===== Section Label ===== */
+.section-label {
+ font-family: var(--display);
+ font-size: 10.5px;
+ letter-spacing: 0.2em;
+ color: var(--ink-muted);
+ font-weight: 700;
+ margin: 4px 0 0;
+ text-transform: uppercase;
+}
+
+/* ===== Action Grid (2x2) ===== */
+.actions {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 10px;
+}
+.action {
+ background: white;
+ border: 1px solid var(--bone);
+ border-radius: 14px;
+ padding: 14px 14px 14px;
+ box-shadow: 0 2px 8px rgba(15,61,46,0.05);
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ position: relative;
+ transition: transform 0.2s;
+}
+.action.featured {
+ background: linear-gradient(135deg, #FFF9EE 0%, #FFFCEE 100%);
+ border-color: var(--gold);
+ box-shadow: 0 6px 16px rgba(212,169,59,0.18);
+}
+.action-icon {
+ width: 36px; height: 36px;
+ border-radius: 10px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.2), rgba(212,169,59,0.08));
+ border: 1px solid rgba(212,169,59,0.32);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 18px;
+}
+.action-title {
+ font-family: var(--jp);
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--forest);
+ line-height: 1.3;
+}
+.action-sub {
+ font-size: 10px;
+ color: var(--ink-muted);
+ line-height: 1.5;
+}
+
+/* ===== Recent Order ===== */
+.order {
+ background: white;
+ border: 1px solid var(--bone);
+ border-radius: 14px;
+ padding: 14px 16px;
+ box-shadow: 0 2px 8px rgba(15,61,46,0.04);
+}
+.order-head {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 10px;
+}
+.order-status {
+ background: #E6F4EA;
+ color: #1F7A3F;
+ font-size: 10px;
+ font-weight: 700;
+ padding: 3px 10px;
+ border-radius: 999px;
+}
+.order-date {
+ font-family: var(--num);
+ font-size: 11px;
+ color: var(--ink-muted);
+ font-weight: 600;
+}
+.order-items {
+ display: flex;
+ gap: 8px;
+ margin-bottom: 10px;
+}
+.order-thumb {
+ width: 48px; height: 48px;
+ border-radius: 8px;
+ background: linear-gradient(135deg, #FFE8B5, #D4A93B);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+}
+.order-thumb:nth-child(2) { background: linear-gradient(135deg, #B91C1C, #7F1818); }
+.order-thumb:nth-child(3) { background: linear-gradient(135deg, #F59E0B, #B45309); }
+.order-info {
+ flex: 1;
+}
+.order-title {
+ font-family: var(--jp);
+ font-size: 12.5px;
+ font-weight: 700;
+ color: var(--forest);
+}
+.order-meta {
+ font-size: 10.5px;
+ color: var(--ink-muted);
+ margin-top: 2px;
+}
+.order-cta {
+ background: var(--forest);
+ color: white;
+ border-radius: 10px;
+ padding: 9px 12px;
+ font-size: 11.5px;
+ font-weight: 700;
+ text-align: center;
+ font-family: var(--jp);
+}
+
+/* ===== Rewards ===== */
+.rewards {
+ background: linear-gradient(135deg, #FFF9EE 0%, white 100%);
+ border: 1px solid rgba(212,169,59,0.4);
+ border-radius: 14px;
+ padding: 14px 16px;
+}
+.rewards-head {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ margin-bottom: 10px;
+}
+.rewards-icon {
+ font-size: 16px;
+}
+.rewards-title {
+ font-family: var(--jp);
+ font-size: 12.5px;
+ font-weight: 700;
+ color: var(--forest);
+ flex: 1;
+}
+.rewards-count {
+ font-family: var(--num);
+ font-size: 11px;
+ font-weight: 700;
+ color: var(--gold);
+ background: rgba(212,169,59,0.15);
+ padding: 2px 8px;
+ border-radius: 999px;
+}
+.rewards-stages {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 0 4px;
+}
+.stage {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 4px;
+ position: relative;
+ z-index: 1;
+}
+.stage-dot {
+ width: 24px; height: 24px;
+ border-radius: 50%;
+ background: var(--bone);
+ color: var(--ink-muted);
+ display: flex; align-items: center; justify-content: center;
+ font-family: var(--num);
+ font-size: 11px;
+ font-weight: 700;
+ border: 2px solid white;
+ box-shadow: 0 0 0 1px var(--bone);
+}
+.stage.done .stage-dot {
+ background: var(--gold);
+ color: var(--forest-deep);
+ box-shadow: 0 0 0 1px var(--gold);
+}
+.stage.current .stage-dot {
+ background: var(--forest);
+ color: var(--gold-light);
+ box-shadow: 0 0 0 3px rgba(15,61,46,0.18);
+}
+.stage-label {
+ font-size: 9px;
+ color: var(--ink-muted);
+ white-space: nowrap;
+}
+.stage.done .stage-label,
+.stage.current .stage-label {
+ color: var(--forest);
+ font-weight: 700;
+}
+.rewards-stages-wrap {
+ position: relative;
+}
+.rewards-stages-wrap::before {
+ content: '';
+ position: absolute;
+ top: 11px; left: 18px; right: 18px;
+ height: 2px;
+ background: var(--bone);
+ z-index: 0;
+}
+.rewards-stages-wrap::after {
+ content: '';
+ position: absolute;
+ top: 11px; left: 18px;
+ width: 50%;
+ height: 2px;
+ background: var(--gold);
+ z-index: 0;
+}
+
+/* ===== Bottom Tab Bar ===== */
+.tabbar {
+ position: fixed;
+ bottom: 0; left: 0; right: 0;
+ background: white;
+ border-top: 1px solid var(--bone);
+ padding: 10px 8px 18px;
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ box-shadow: 0 -4px 16px rgba(15,61,46,0.04);
+}
+.tab {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 3px;
+ color: var(--ink-muted);
+ font-size: 9.5px;
+ font-family: var(--jp);
+ font-weight: 600;
+}
+.tab.active {
+ color: var(--forest);
+}
+.tab.active .tab-icon {
+ color: var(--gold);
+}
+.tab-icon {
+ font-size: 20px;
+ line-height: 1;
+}
+</style>
+</head>
+<body>
+
+<!-- Top app header -->
+<div class="app-header">
+ <div class="logo">EDA<b>MYPAGE</b></div>
+ <div class="avatar">江</div>
+</div>
+
+<!-- Greeting -->
+<div class="greeting">
+ こんにちは、江田さん
+ <small>会員ステータス · <b>スターター</b> 6ヶ月目</small>
+</div>
+
+<!-- Next delivery hero card -->
+<div class="next-card">
+ <div class="next-card-top">
+ <span class="next-label">NEXT DELIVERY</span>
+ <span class="next-plan-badge">スターター 定期便</span>
+ </div>
+ <div class="next-date"><span>6/1</span>（土）</div>
+ <div class="next-time">18:00 - 20:00 帯でお届け</div>
+ <div class="next-progress">
+ <div class="next-progress-label">次回お届けまで</div>
+ <div class="next-progress-bar"><div class="next-progress-fill"></div></div>
+ <div class="next-progress-text"><span>5月分 完了</span><b>あと 7日</b></div>
+ </div>
+</div>
+
+<!-- Quick Actions -->
+<p class="section-label">Quick Actions</p>
+<div class="actions">
+ <div class="action featured">
+ <div class="action-icon">📦</div>
+ <div class="action-title">今月をスキップ</div>
+ <div class="action-sub">1タップで翌月へ持ち越し</div>
+ </div>
+ <div class="action">
+ <div class="action-icon">🍖</div>
+ <div class="action-title">内容をカスタマイズ</div>
+ <div class="action-sub">鶏多め · ステーキ追加</div>
+ </div>
+ <div class="action">
+ <div class="action-icon">🔄</div>
+ <div class="action-title">プランを変更</div>
+ <div class="action-sub">ミニ / スターター / レギュラー</div>
+ </div>
+ <div class="action">
+ <div class="action-icon">💳</div>
+ <div class="action-title">支払い・お届け先</div>
+ <div class="action-sub">カード · 住所変更も簡単</div>
+ </div>
+</div>
+
+<!-- Rewards Progress -->
+<div class="rewards">
+ <div class="rewards-head">
+ <span class="rewards-icon">🎁</span>
+ <span class="rewards-title">継続特典プログラム</span>
+ <span class="rewards-count">3 / 7</span>
+ </div>
+ <div class="rewards-stages-wrap">
+ <div class="rewards-stages">
+ <div class="stage done"><div class="stage-dot">✓</div><span class="stage-label">1回</span></div>
+ <div class="stage done"><div class="stage-dot">✓</div><span class="stage-label">2回</span></div>
+ <div class="stage done"><div class="stage-dot">✓</div><span class="stage-label">3回</span></div>
+ <div class="stage current"><div class="stage-dot">4</div><span class="stage-label">次は牛焼肉</span></div>
+ <div class="stage"><div class="stage-dot">5</div><span class="stage-label">5回</span></div>
+ <div class="stage"><div class="stage-dot">6</div><span class="stage-label">6回</span></div>
+ <div class="stage"><div class="stage-dot">7</div><span class="stage-label">7回</span></div>
+ </div>
+ </div>
+</div>
+
+<!-- Recent order -->
+<p class="section-label">Recent Order</p>
+<div class="order">
+ <div class="order-head">
+ <span class="order-status">配達完了</span>
+ <span class="order-date">2026.05.01</span>
+ </div>
+ <div class="order-items">
+ <div class="order-thumb">🥩</div>
+ <div class="order-thumb">🥩</div>
+ <div class="order-thumb">🍗</div>
+ <div class="order-info">
+ <div class="order-title">スターター 定期便 #5</div>
+ <div class="order-meta">1.6kg · 全8品 · ¥12,800</div>
+ </div>
+ </div>
+ <div class="order-cta">配送状況を見る</div>
+</div>
+
+<!-- Bottom tab bar -->
+<div class="tabbar">
+ <div class="tab active"><div class="tab-icon">🏠</div>ホーム</div>
+ <div class="tab"><div class="tab-icon">📋</div>注文履歴</div>
+ <div class="tab"><div class="tab-icon">🎁</div>特典</div>
+ <div class="tab"><div class="tab-icon">⚙️</div>設定</div>
+</div>
+
+</body>
+</html>

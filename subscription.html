@@ -3135,6 +3135,13 @@ function toggleSubUnboxingSound() {
  display: flex;
  flex-direction: column;
 }
+.phone-screenshot {
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ object-position: top center;
+ display: block;
+}
 .phone-notch {
  position: absolute;
  top: 8px; left: 50%;
@@ -3453,73 +3460,12 @@ function toggleSubUnboxingSound() {
  </div>
 
  <div class="mypage-layout">
- <!-- iPhone モックアップ -->
- <div class="phone" aria-label="マイページのモックアップ">
+ <!-- iPhone モックアップ（実 MyPage のスクショ embedded） -->
+ <div class="phone" aria-label="マイページのプレビュー">
  <div class="phone-side-btn"></div>
  <div class="phone-screen">
  <div class="phone-notch"></div>
- <div class="phone-statusbar">
- <span>9:41</span>
- <span class="phone-statusbar-icons">
- <span class="sig"><span></span><span></span><span></span><span></span></span>
- <span class="bat"><span></span></span>
- </span>
- </div>
- <div class="phone-content">
- <div class="phone-app-header">
- <div class="phone-app-logo">EDA<span>MYPAGE</span></div>
- <div class="phone-avatar">江</div>
- </div>
- <div class="phone-greeting">
- こんにちは、江田さん
- <small>会員ステータス · スターター</small>
- </div>
-
- <div class="phone-next-card">
- <div class="phone-next-label">NEXT DELIVERY</div>
- <div class="phone-next-date">6/1（土）</div>
- <div class="phone-next-time">18:00 - 20:00 帯でお届け</div>
- <span class="phone-next-plan">スターター 定期便</span>
- </div>
-
- <div class="phone-actions-label">QUICK ACTIONS</div>
-
- <div class="phone-action" data-tap="1">
- <div class="phone-action-icon">📦</div>
- <div class="phone-action-text">
- <strong>今月をスキップ</strong>
- <span>1タップで翌月に持ち越し</span>
- </div>
- <span class="phone-action-arrow">›</span>
- </div>
-
- <div class="phone-action" data-tap="2">
- <div class="phone-action-icon">🍖</div>
- <div class="phone-action-text">
- <strong>内容をカスタマイズ</strong>
- <span>鶏多め · ステーキ追加 など</span>
- </div>
- <span class="phone-action-arrow">›</span>
- </div>
-
- <div class="phone-action" data-tap="3">
- <div class="phone-action-icon">🔄</div>
- <div class="phone-action-text">
- <strong>プランを変更</strong>
- <span>ミニ / スターター / レギュラー</span>
- </div>
- <span class="phone-action-arrow">›</span>
- </div>
-
- <div class="phone-action" data-tap="4">
- <div class="phone-action-icon">💳</div>
- <div class="phone-action-text">
- <strong>支払い・お届け先</strong>
- <span>カード・住所変更も簡単</span>
- </div>
- <span class="phone-action-arrow">›</span>
- </div>
- </div>
+ <img src="public/images/mypage-preview.png" alt="マイページのプレビュー画像" class="phone-screenshot" loading="lazy">
  <div class="phone-home-indicator"></div>
  </div>
  </div>
