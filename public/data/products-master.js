@@ -91,28 +91,28 @@
 
     /* ===== 牛肉 加工品 ===== */
     {
-      productId: 'P008', variantId: 'HAMBURG', sku: 'EDA-HAMBURG-100',
+      productId: 'P008', variantId: 'HAMBURG', sku: 'EDA-HAMBURG-130',
       stripePriceId: 'price_1TW74qGSkhU1UEciphBYGBDO',
-      name: 'ハンバーグ', variant: '1個 100g',
-      price: 760, weight: 100, stock: 40, temp: '冷凍',
+      name: 'ハンバーグ', variant: '1個 130g',
+      price: 760, weight: 130, stock: 40, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg',
       description: '和牛 100%。冷凍庫で 6 ヶ月、フライパンで蒸し焼き 8 分。',
       images: ['public/images/products/drive/hamburg.jpg']
     },
     {
-      productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-100',
+      productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
       stripePriceId: 'price_1TW74qGSkhU1UEciK9LE14vR',
-      name: 'ローストビーフ', variant: '1袋 100g',
-      price: 3000, weight: 100, stock: 6, temp: '冷凍',
+      name: 'ローストビーフ', variant: '1袋 300g',
+      price: 6000, weight: 300, stock: 6, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Roast Beef',
       description: '赤身を低温でロースト。解凍して、薄く切る。会の前菜に。',
       images: ['public/images/products/drive/thin-roast.jpg']
     },
     {
-      productId: 'P010', variantId: 'RAW-HAM', sku: 'EDA-RAWHAM-40',
+      productId: 'P010', variantId: 'RAW-HAM', sku: 'EDA-RAWHAM-50',
       stripePriceId: 'price_1TW74rGSkhU1UEcidTIwRPd5',
-      name: '生ハム', variant: '個包装 40g',
-      price: 1250, weight: 40, stock: 14, temp: '冷凍',
+      name: '生ハム', variant: '個包装 50g',
+      price: 1250, weight: 50, stock: 14, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Raw Ham',
       description: '赤身を低温で長時間熟成。豚とは異なる、和牛だけの深み。ワインの夕べに。',
       images: ['public/images/products/drive/raw-ham.jpg']
@@ -208,10 +208,10 @@
       images: ['public/images/products/drive/red-meat.jpg']
     },
     {
-      productId: 'P019', variantId: 'GIFT-UME', sku: 'EDA-GIFT-UME-500',
+      productId: 'P019', variantId: 'GIFT-UME', sku: 'EDA-GIFT-UME-650',
       stripePriceId: 'price_1TW74yGSkhU1UEci45Gc54Xx',
-      name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 100g×5',
-      price: 5980, weight: 500, stock: 18, temp: '冷凍',
+      name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5',
+      price: 5980, weight: 650, stock: 18, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · UME',
       description: '和牛 100% のハンバーグを 5 個。ご家庭への手土産に。',
       images: ['public/images/products/drive/hamburg.jpg']

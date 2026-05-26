@@ -392,13 +392,25 @@ function createSubscriptionCheckout(body) {
   const STRIPE = cfg('STRIPE_SECRET_KEY');
   if (!STRIPE) throw new Error('Stripe not configured');
 
+  // 2026-05-26: GAS Properties が古い inactive Price ID を保持しているケースに備え、
+  //              既知の正しい active Price ID を fallback として明示
   const planMap = {
-    starter: cfg('STRIPE_PRICE_MINI'),
-    regular: cfg('STRIPE_PRICE_PRO'),
-    volume:  cfg('STRIPE_PRICE_VIP')
+    starter: cfg('STRIPE_PRICE_MINI', 'price_1TWAN0GSkhU1UEciNGZHORc3'),  // ミニ ¥6,980
+    regular: cfg('STRIPE_PRICE_PRO',  'price_1TWAN0GSkhU1UEciKod4PGpk'),  // スターター ¥12,800
+    volume:  cfg('STRIPE_PRICE_VIP',  'price_1TbK7DGSkhU1UEciPsf2dA53')   // レギュラー ¥24,400 (旧 ¥27,400/¥39,800 は archive 済み)
   };
   const priceId = planMap[body.plan];
   if (!priceId) throw new Error('Invalid plan: ' + body.plan);
+
+  // 防御層: 古い inactive ID を含む Properties 設定でも事故らないよう、
+  //          known-bad ID なら active な fallback に強制差し替え
+  const KNOWN_BAD_PRICE_IDS = {
+    'price_1TWAN1GSkhU1UEciXQJyqNet': 'price_1TbK7DGSkhU1UEciPsf2dA53', // 旧 ¥27,400 → 新 ¥24,400
+    'price_1TW750GSkhU1UEciLLw2gqss': 'price_1TbK7DGSkhU1UEciPsf2dA53', // 旧 ¥39,800 → 新 ¥24,400
+    'price_1TW74zGSkhU1UEciUiGw5tlq': 'price_1TWAN0GSkhU1UEciNGZHORc3', // 旧ミニ ¥9,800  → 現ミニ ¥6,980
+    'price_1TW74zGSkhU1UEci5RQzoKIP': 'price_1TWAN0GSkhU1UEciKod4PGpk'  // 旧スターター ¥19,800 → 現スターター ¥12,800
+  };
+  const correctedPriceId = KNOWN_BAD_PRICE_IDS[priceId] || priceId;
 
   const orderNum = generateOrderNumber();
   const successUrl = cfg('SUCCESS_URL') + '?session_id={CHECKOUT_SESSION_ID}&order=' + encodeURIComponent(orderNum);
@@ -419,7 +431,7 @@ function createSubscriptionCheckout(body) {
     payment_method_types: ['card'],
     customer_email: body.customer && body.customer.email,
     line_items: [{
-      price: priceId,
+      price: correctedPriceId,
       quantity: 1
     }],
     subscription_data: {
@@ -1282,10 +1294,11 @@ function initSheets() {
 */
 function setupAllProperties() {
   const props = {
-    // 新価格 (¥6,980 / ¥12,800 / ¥27,400) — 2026-05-12 サイト表示と整合
+    // 新価格 (¥6,980 / ¥12,800 / ¥24,400) — 2026-05-26 レギュラー ¥27,400→¥24,400 整合修正
+    // 旧 ¥27,400 (price_1TWAN1GSkhU1UEciXQJyqNet) と ¥39,800 (price_1TW750GSkhU1UEciLLw2gqss) は archive 済み
     STRIPE_PRICE_MINI: 'price_1TWAN0GSkhU1UEciNGZHORc3',
     STRIPE_PRICE_PRO:  'price_1TWAN0GSkhU1UEciKod4PGpk',
-    STRIPE_PRICE_VIP:  'price_1TWAN1GSkhU1UEciXQJyqNet',
+    STRIPE_PRICE_VIP:  'price_1TbK7DGSkhU1UEciPsf2dA53',
     STRIPE_DEMO_COUPON: 'DEMO100',
     STRIPE_COUPON_50OFF: 'FIRST50',
     STAFF_NOTIFICATION_EMAIL: 'backoffice@eda-livestock.com',
