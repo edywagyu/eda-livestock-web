@@ -397,14 +397,13 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
    linear-gradient(180deg, #FFFEFB 0%, #FFFFFF 100%);
 }
 
-/* === スターター: featured ゴールド === */
+/* === スターター: featured ゴールド (浮かさず、色味で差別化) === */
 .sub-plan-card.featured {
  border: 2px solid var(--color-gold);
  background:
    radial-gradient(circle at 50% 0%, rgba(212,169,59,0.18) 0%, transparent 50%),
    linear-gradient(180deg, #FFFCEE 0%, #FFFEF7 100%);
  box-shadow: 0 8px 28px rgba(212,169,59,0.22);
- transform: translateY(-4px); /* 常に少し浮く */
 }
 .sub-plan-card.featured::before,
 .sub-plan-card.featured::after {
@@ -2221,12 +2220,6 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  こうした定期便を運営しているのは、日本で江田畜産のみです。
  </p>
 
- <div class="sub-hero-stats">
- <div class="sub-hero-stat"><span class="sub-hero-stat-num">100<small>%</small></span><span class="sub-hero-stat-label">国産</span></div>
- <div class="sub-hero-stat"><span class="sub-hero-stat-num">0<small>回</small></span><span class="sub-hero-stat-label">抗生物質・ホルモン剤</span></div>
- <div class="sub-hero-stat"><span class="sub-hero-stat-num">2026<small>夏</small></span><span class="sub-hero-stat-label">有機JAS 解禁</span></div>
- </div>
-
  <div class="sub-hero-cta">
  <a href="#plans" class="btn btn-gold">プランを選ぶ →</a>
  <a href="#faq" class="btn btn-ghost">よくある質問</a>
@@ -2382,7 +2375,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <article class="sub-plan-card" data-plan="starter">
  <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
  <div class="sub-plan-name">ミニ</div>
- <div class="sub-plan-target">1-2人家族向け</div>
+ <div class="sub-plan-target">1人暮らし向け</div>
 
  <div class="sub-plan-summary">
  <div class="sub-plan-summary-total">1kg<small>/ 全5品</small></div>
@@ -2429,7 +2422,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <article class="sub-plan-card featured" data-plan="regular">
  <div class="sub-plan-cycle">FAMILY · 毎月お届け<span class="sub-plan-tag">★ 人気 No.1</span></div>
  <div class="sub-plan-name">スターター</div>
- <div class="sub-plan-target">3-4人家族向け</div>
+ <div class="sub-plan-target">1-2名向け</div>
 
  <div class="sub-plan-summary">
  <div class="sub-plan-summary-total">1.6kg<small>/ 全8品</small></div>
@@ -2474,9 +2467,9 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </article>
 
  <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
- <div class="sub-plan-cycle">GRAND · 毎月お届け<span class="sub-plan-tag sub-plan-tag--vip">👑 大家族</span></div>
+ <div class="sub-plan-cycle">GRAND · 毎月お届け<span class="sub-plan-tag sub-plan-tag--vip">💰 お得</span></div>
  <div class="sub-plan-name">レギュラー</div>
- <div class="sub-plan-target">5人以上向け</div>
+ <div class="sub-plan-target">3-4名向け</div>
 
  <div class="sub-plan-summary">
  <div class="sub-plan-summary-total">3.2kg<small>/ 全16品</small></div>
@@ -2538,7 +2531,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-detail-head">
  <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
  <h2 class="sub-detail-title" id="detailPlanTitle">スターター定期便の内容</h2>
- <span class="sub-detail-plan-name" id="detailPlanLabel">3-4人家族向け · 月額 ¥12,800</span>
+ <span class="sub-detail-plan-name" id="detailPlanLabel">1-2名向け · 月額 ¥12,800</span>
  </div>
 
  <div class="sub-detail-grid">
@@ -2908,7 +2901,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="container">
  <div class="sub-voice-head">
  <h2>定期便ユーザーの声</h2>
- <p>3-4人家族 · 共働き · 子育て中 — 多くのご家庭で選ばれています。</p>
+ <p>1人暮らしからご家族まで — 多くの方に選ばれています。</p>
  </div>
 
  <div class="sub-voice-grid">
@@ -3068,7 +3061,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 const PLANS = {
  starter: {
  name: 'ミニ',
- target: '1-2人家族 · 1kg · 全 5品（鶏 600g + 牛 400g）',
+ target: '1人暮らし向け · 1kg · 全 5品（鶏 600g + 牛 400g）',
  regular: 6980,
  half: 3490,
  weight: '1kg',
@@ -3089,7 +3082,7 @@ const PLANS = {
  },
  regular: {
  name: 'スターター',
- target: '3-4人家族 · 1.6kg · 全 8品（鶏 800g + 牛 800g）',
+ target: '1-2名向け · 1.6kg · 全 8品（鶏 800g + 牛 800g）',
  regular: 12800,
  half: 6400,
  weight: '1.6kg',
@@ -3112,7 +3105,7 @@ const PLANS = {
  },
  volume: {
  name: 'レギュラー',
- target: '5人以上 · 3.2kg · 全 16品（鶏 1.6kg + 牛 1.6kg）',
+ target: '3-4名向け · 3.2kg · 全 16品（鶏 1.6kg + 牛 1.6kg）',
  regular: 24400,
  half: 12200,
  weight: '3.2kg',
@@ -3141,18 +3134,25 @@ function getInitialPlan() {
  const params = new URLSearchParams(location.search);
  const p = (params.get('plan') || '').toLowerCase();
  if (PLANS[p]) return p;
- return 'regular';
+ return 'regular'; // 内部デフォルト (detail/checkout 用)
 }
 let currentPlan = getInitialPlan();
+// URL に ?plan= 指定があれば最初から選択扱い、なければ未選択スタート
+let isUserSelected = new URLSearchParams(location.search).has('plan');
 
 /* ============ プラン選択 → 詳細 + チェックアウト更新 ============ */
-function selectPlan(planKey) {
+function selectPlan(planKey, fromUser) {
  if (!PLANS[planKey]) return;
  currentPlan = planKey;
+ if (fromUser) isUserSelected = true;
 
- // カードのアクティブ表示
+ // カードのアクティブ表示 (ユーザー操作後のみ)
  document.querySelectorAll('.sub-plan-card').forEach(c => {
- c.classList.toggle('selected', c.dataset.plan === planKey);
+ if (isUserSelected) {
+  c.classList.toggle('selected', c.dataset.plan === planKey);
+ } else {
+  c.classList.remove('selected');
+ }
  });
 
  const plan = PLANS[planKey];
@@ -3187,7 +3187,7 @@ function selectPlan(planKey) {
 document.querySelectorAll('.sub-plan-card').forEach(card => {
  card.addEventListener('click', () => {
  const p = card.dataset.plan;
- selectPlan(p);
+ selectPlan(p, true);
  // 詳細セクションへスクロール
  document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
  });
