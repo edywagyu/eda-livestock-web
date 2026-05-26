@@ -276,7 +276,21 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 
 /* ================ プラン3枚 ================ */
-.sub-plans-section { padding: 96px 0; background: var(--color-cream); }
+.sub-plans-section {
+ padding: 96px 0;
+ background:
+   radial-gradient(circle at 15% 20%, rgba(212,169,59,0.06) 0%, transparent 40%),
+   radial-gradient(circle at 85% 80%, rgba(15,61,46,0.04) 0%, transparent 45%),
+   linear-gradient(180deg, #FAF6EE 0%, #FFFCF5 100%);
+ position: relative;
+}
+.sub-plans-section::before {
+ content: '';
+ position: absolute;
+ top: 0; left: 0; right: 0;
+ height: 1px;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.4), transparent);
+}
 
 /* ?plan= 指定で来た時：プラン選択セクションを圧縮（プラン変更可能ラベルのみに） */
 .sub-plans-section.plans-compact {
@@ -352,32 +366,157 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  display: grid;
  grid-template-columns: repeat(3, 1fr);
  gap: 20px;
- max-width: 1080px; margin: 0 auto;
+ max-width: 1100px; margin: 0 auto;
+ align-items: stretch;
 }
+/* === 共通カード ベース === */
 .sub-plan-card {
- background: white; border: 1px solid var(--color-bone);
- border-radius: 16px; padding: 32px 28px 28px;
+ background: white;
+ border: 1px solid var(--color-bone);
+ border-radius: 18px;
+ padding: 36px 28px 28px;
  position: relative;
  transition: all 0.4s var(--ease-out-expo);
- display: flex; flex-direction: column;
+ display: flex;
+ flex-direction: column;
  cursor: pointer;
- box-shadow: var(--shadow-sm);
+ box-shadow: 0 4px 20px rgba(15,61,46,0.04);
+ overflow: hidden;
+ min-height: 100%; /* 等高 */
+}
+/* 装飾アクセント: 左上の細いゴールドコーナー */
+.sub-plan-card::before {
+ content: '';
+ position: absolute;
+ top: 0; left: 0;
+ width: 60px; height: 60px;
+ border-top: 2px solid var(--color-gold);
+ border-left: 2px solid var(--color-gold);
+ border-top-left-radius: 18px;
+ opacity: 0.5;
+ pointer-events: none;
+ transition: opacity 0.4s;
+}
+.sub-plan-card::after {
+ content: '';
+ position: absolute;
+ bottom: 0; right: 0;
+ width: 60px; height: 60px;
+ border-bottom: 2px solid var(--color-gold);
+ border-right: 2px solid var(--color-gold);
+ border-bottom-right-radius: 18px;
+ opacity: 0.3;
+ pointer-events: none;
+ transition: opacity 0.4s;
 }
 .sub-plan-card:hover {
- transform: translateY(-4px);
- border-color: var(--color-gold);
- box-shadow: var(--shadow-lg);
+ transform: translateY(-6px);
+ box-shadow: 0 18px 44px rgba(15,61,46,0.12);
 }
+.sub-plan-card:hover::before,
+.sub-plan-card:hover::after { opacity: 1; }
+
+/* === ミニ: クリーンライト === */
+.sub-plan-card[data-plan="starter"] {
+ background:
+   radial-gradient(circle at 0% 0%, rgba(212,169,59,0.04), transparent 30%),
+   linear-gradient(180deg, #FFFEFB 0%, #FFFFFF 100%);
+}
+
+/* === スターター: featured ゴールド === */
 .sub-plan-card.featured {
  border: 2px solid var(--color-gold);
- background: linear-gradient(180deg, #FFFCF5, white);
- box-shadow: var(--shadow-md);
+ background:
+   radial-gradient(circle at 50% 0%, rgba(212,169,59,0.18) 0%, transparent 50%),
+   linear-gradient(180deg, #FFFCEE 0%, #FFFEF7 100%);
+ box-shadow: 0 8px 28px rgba(212,169,59,0.22);
+ transform: translateY(-4px); /* 常に少し浮く */
 }
+.sub-plan-card.featured::before,
+.sub-plan-card.featured::after {
+ opacity: 0.7;
+}
+
+/* === レギュラー: 高級ダークグリーン === */
+.sub-plan-card.sub-plan-card--vip {
+ background:
+   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.10) 0%, transparent 40%),
+   linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
+ border: 2px solid rgba(212,169,59,0.6);
+ color: #fff;
+ box-shadow: 0 8px 28px rgba(15,61,46,0.30);
+}
+.sub-plan-card.sub-plan-card--vip::before,
+.sub-plan-card.sub-plan-card--vip::after {
+ background: none !important;
+ right: auto;
+ height: 60px;
+ border-radius: 0;
+ border-color: rgba(212,169,59,0.85);
+ opacity: 0.85;
+}
+.sub-plan-card.sub-plan-card--vip::before {
+ width: 60px;
+ border-top: 2px solid rgba(212,169,59,0.85);
+ border-left: 2px solid rgba(212,169,59,0.85);
+ border-top-left-radius: 18px;
+}
+.sub-plan-card.sub-plan-card--vip::after {
+ width: 60px;
+ left: auto;
+ border-bottom: 2px solid rgba(212,169,59,0.85);
+ border-right: 2px solid rgba(212,169,59,0.85);
+ border-bottom-right-radius: 18px;
+}
+.sub-plan-card.sub-plan-card--vip .sub-plan-cycle { color: rgba(212,169,59,0.9); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-name { color: #fff; }
+.sub-plan-card.sub-plan-card--vip .sub-plan-target { color: #FFD773; }
+.sub-plan-card.sub-plan-card--vip .sub-plan-summary {
+ background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+ border-color: rgba(212,169,59,0.32);
+}
+.sub-plan-card.sub-plan-card--vip .sub-plan-summary-total { color: #fff; }
+.sub-plan-card.sub-plan-card--vip .sub-plan-summary-total small { color: rgba(255,255,255,0.7); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-summary-split { color: rgba(255,255,255,0.95); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-summary-divider { color: rgba(255,255,255,0.4); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-detail-label { color: rgba(212,169,59,0.85); }
+.sub-plan-card.sub-plan-card--vip .meat-group {
+ background: rgba(255,255,255,0.06);
+}
+.sub-plan-card.sub-plan-card--vip .meat-group-name { color: #fff; }
+.sub-plan-card.sub-plan-card--vip .meat-group-weight { color: #FFD773; }
+.sub-plan-card.sub-plan-card--vip .meat-group-items { color: rgba(255,255,255,0.85); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-old-price { color: rgba(255,255,255,0.55); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-price { color: #FFD773; }
+.sub-plan-card.sub-plan-card--vip .sub-plan-price small { color: rgba(255,255,255,0.7); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-savings {
+ color: rgba(255,255,255,0.95);
+ background: rgba(212,169,59,0.18);
+}
+.sub-plan-card.sub-plan-card--vip .sub-plan-yearly {
+ background: linear-gradient(95deg, rgba(212,169,59,0.18) 0%, rgba(212,169,59,0.08) 100%);
+ border-color: rgba(212,169,59,0.4);
+}
+.sub-plan-card.sub-plan-card--vip .sub-plan-yearly-label { color: rgba(255,255,255,0.95); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-yearly-amount { color: #FFD773; }
+.sub-plan-card.sub-plan-card--vip .sub-plan-yearly-amount small { color: rgba(255,255,255,0.85); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-note { color: rgba(255,255,255,0.6); }
+.sub-plan-card.sub-plan-card--vip .sub-plan-note a { color: #FFD773; }
+.sub-plan-card.sub-plan-card--vip .sub-plan-select-btn {
+ background: var(--color-gold);
+ color: var(--color-forest-deep) !important;
+}
+.sub-plan-card.sub-plan-card--vip .sub-plan-select-btn:hover,
+.sub-plan-card.sub-plan-card--vip:hover .sub-plan-select-btn {
+ background: #FFD773;
+}
+
 .sub-plan-card.selected {
+ transform: translateY(-6px);
+ box-shadow: 0 18px 44px rgba(15,61,46,0.18);
+}
+.sub-plan-card.selected:not(.sub-plan-card--vip):not(.featured) {
  border: 2px solid var(--color-forest);
- background: linear-gradient(180deg, #F5F9F5, white);
- transform: translateY(-4px);
- box-shadow: var(--shadow-lg);
 }
 .sub-plan-card.selected::after {
  content: '✓ 選択中';
@@ -663,22 +802,33 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  font-size: 10.5px;
  color: rgba(255,255,255,0.75);
 }
-.sub-plan-pricing { margin-bottom: 16px; }
+.sub-plan-pricing {
+ margin-top: auto;   /* 常に底辺に貼り付ける = 等高 alignment */
+ margin-bottom: 16px;
+ text-align: center;
+ padding-top: 14px;
+ border-top: 1px dashed rgba(15,61,46,0.12);
+}
+.sub-plan-card.sub-plan-card--vip .sub-plan-pricing {
+ border-top-color: rgba(212,169,59,0.25);
+}
 .sub-plan-old-price {
  font-family: var(--font-display);
- font-size: 14px;
+ font-size: 13px;
  color: var(--color-ink-muted);
  text-decoration: line-through;
  text-decoration-color: var(--color-red);
+ margin-bottom: 2px;
 }
 .sub-plan-price {
  font-family: var(--font-display);
- font-size: 36px;
+ font-size: 40px;
  color: var(--color-forest);
  font-weight: 700;
  font-variant-numeric: tabular-nums;
  letter-spacing: -0.02em;
  line-height: 1;
+ margin-bottom: 8px;
 }
 .sub-plan-price small {
  font-family: var(--font-jp);
@@ -691,9 +841,9 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  display: inline-block;
  background: rgba(212,169,59,0.18);
  color: var(--color-gold-soft);
- font-size: 11px; font-weight: 700;
- padding: 3px 10px; border-radius: 10px;
- margin-top: 6px;
+ font-size: 11.5px; font-weight: 700;
+ padding: 4px 12px; border-radius: 10px;
+ margin-top: 4px;
 }
 .sub-plan-select-btn {
  display: block; width: 100%;
@@ -2271,7 +2421,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥12,800</div>
  <div class="sub-plan-price">¥6,400<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月50%OFF + 買い忘れゼロ</div>
+ <div class="sub-plan-savings">🎁 初月50%OFF + 送料無料</div>
  <div class="sub-plan-yearly">
  <span class="sub-plan-yearly-label">1年続けると</span>
  <span class="sub-plan-yearly-amount">およそ¥20,000<small>お得</small></span>
