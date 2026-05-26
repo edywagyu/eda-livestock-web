@@ -387,6 +387,13 @@ function createCheckout(body) {
 
 /* ============================================================
    POST: create_subscription_checkout (Stripe Subscriptions — 定期便)
+   ============================================================
+   ⚠ 2026-05-26 リファクタ: 旧仕様（mode=subscription 単発）→ 新仕様（2段構成）
+   ・初回決済: Checkout `mode=payment` で初月分を即時課金（決済日は顧客の任意日）
+   ・2回目以降: 決済成功 Webhook で Subscription を生成し、billing_cycle_anchor=翌月20日
+                  proration_behavior='none' で「毎月20日に強制課金」
+   ・配送: 月初(1日)に運用側で発送（Stripe 関与なし）
+   ・Tom 指示「翌月の決済は二十日になる。当月は日を問わない。あなたが決済した日」を実装
    ============================================================ */
 function createSubscriptionCheckout(body) {
   const STRIPE = cfg('STRIPE_SECRET_KEY');
@@ -412,6 +419,24 @@ function createSubscriptionCheckout(body) {
   };
   const correctedPriceId = KNOWN_BAD_PRICE_IDS[priceId] || priceId;
 
+  // Stripe Price から金額・プラン名を取得（line_items.price_data 用）
+  const priceRes = UrlFetchApp.fetch('https://api.stripe.com/v1/prices/' + correctedPriceId, {
+    method: 'get',
+    headers: { 'Authorization': 'Bearer ' + STRIPE },
+    muteHttpExceptions: true
+  });
+  const priceObj = JSON.parse(priceRes.getContentText());
+  if (priceObj.error) throw new Error('Stripe price retrieval: ' + priceObj.error.message);
+  const unitAmount = priceObj.unit_amount;
+  const planNames = { starter: 'ミニ', regular: 'スターター', volume: 'レギュラー' };
+  const planName = planNames[body.plan] || body.plan;
+
+  // 翌月20日 9:00 JST の Unix timestamp（2回目以降の billing_cycle_anchor）
+  // GAS 実行タイムゾーンが Asia/Tokyo 想定。Date() はローカル時刻で計算される
+  const now = new Date();
+  const next20th = new Date(now.getFullYear(), now.getMonth() + 1, 20, 9, 0, 0);
+  const anchorUnix = Math.floor(next20th.getTime() / 1000);
+
   const orderNum = generateOrderNumber();
   const successUrl = cfg('SUCCESS_URL') + '?session_id={CHECKOUT_SESSION_ID}&order=' + encodeURIComponent(orderNum);
   const cancelUrl = cfg('CANCEL_URL') + '?plan=' + body.plan;
@@ -419,39 +444,53 @@ function createSubscriptionCheckout(body) {
   // 適用クーポン優先順位:
   //   1. STRIPE_DEMO_COUPON (デモ期間 100%OFF 自動適用) ← デモ時はこれ
   //   2. STRIPE_COUPON_50OFF (本番 初月50%OFF) ← 本番ローンチ時にこれだけ残す
+  // ★ どちらも duration='once' なので、初回 Checkout 一度きりに適用される
+  //    (2回目以降の Subscription billing には適用されない)
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
   const halfCoupon = cfg('STRIPE_COUPON_50OFF');
   const applyCoupon = demoCoupon || halfCoupon || '';
 
-  const subParams = {
-    mode: 'subscription',
+  // Checkout in PAYMENT mode (初月分の一回限り課金)
+  // setup_future_usage='off_session' で決済カードを保存 → Webhook で Subscription にアタッチ
+  const sessionParams = {
+    mode: 'payment',
     success_url: successUrl,
     cancel_url: cancelUrl,
     locale: 'ja',
     payment_method_types: ['card'],
     customer_email: body.customer && body.customer.email,
+    customer_creation: 'always',  // Customer オブジェクトを必須作成 (Subscription 紐付け用)
     line_items: [{
-      price: correctedPriceId,
+      price_data: {
+        currency: 'jpy',
+        product_data: { name: planName + '定期便（初月分）' },
+        unit_amount: unitAmount
+      },
       quantity: 1
     }],
-    subscription_data: {
+    payment_intent_data: {
+      setup_future_usage: 'off_session',
       metadata: {
         plan: body.plan,
         order_number: orderNum,
-        is_demo: demoCoupon ? 'true' : 'false'
+        recurring_price_id: correctedPriceId,
+        billing_anchor: String(anchorUnix),
+        sub_mode: 'create_after_payment'
       }
     },
     metadata: {
       order_number: orderNum,
       plan: body.plan,
-      mode: 'subscription',
+      mode: 'subscription_first_month',
+      recurring_price_id: correctedPriceId,
+      billing_anchor: String(anchorUnix),
       is_demo: demoCoupon ? 'true' : 'false'
     }
   };
   if (applyCoupon) {
-    subParams.discounts = [{ coupon: applyCoupon }];
+    sessionParams.discounts = [{ coupon: applyCoupon }];
   }
-  const params = flattenForm(subParams);
+  const params = flattenForm(sessionParams);
 
   const res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'post',
@@ -463,9 +502,67 @@ function createSubscriptionCheckout(body) {
   const data = JSON.parse(res.getContentText());
   if (data.error) throw new Error('Stripe: ' + data.error.message);
 
-  recordPendingOrder(orderNum, data.id, body, null, 0, 'subscription');
+  recordPendingOrder(orderNum, data.id, body, null, 0, 'subscription_first_month');
 
   return jsonResponse({ ok: true, url: data.url, session_id: data.id, order_number: orderNum });
+}
+
+/* ============================================================
+   Webhook 後処理: 初月決済成功 → Subscription を生成（毎月20日 anchor）
+   ============================================================
+   ・Checkout (mode=payment) で初月課金が完了したら finalizeOrder から呼ばれる
+   ・customer / payment_method は決済時に保存済み（setup_future_usage='off_session'）
+   ・billing_cycle_anchor を翌月20日に設定し、proration_behavior='none' で
+     「anchor まで請求書なし、anchor から毎月20日に自動課金」を実現
+   ============================================================ */
+function createDelayedSubscription(session, meta) {
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) throw new Error('Stripe not configured');
+  if (!session.customer) throw new Error('No customer on session');
+  if (!session.payment_intent) throw new Error('No payment_intent on session');
+
+  // PaymentIntent から saved PaymentMethod を取得
+  const piRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_intents/' + session.payment_intent, {
+    method: 'get',
+    headers: { 'Authorization': 'Bearer ' + STRIPE },
+    muteHttpExceptions: true
+  });
+  const pi = JSON.parse(piRes.getContentText());
+  if (pi.error) throw new Error('PI retrieval: ' + pi.error.message);
+  const paymentMethodId = pi.payment_method;
+  if (!paymentMethodId) throw new Error('No payment_method on PaymentIntent');
+
+  // Subscription 作成 (anchor=翌月20日, proration=none, 初回課金なし)
+  const subParams = {
+    customer: session.customer,
+    'items[0][price]': meta.recurring_price_id,
+    billing_cycle_anchor: parseInt(meta.billing_anchor, 10),
+    proration_behavior: 'none',
+    default_payment_method: paymentMethodId,
+    'metadata[plan]': meta.plan,
+    'metadata[order_number]': meta.order_number,
+    'metadata[first_payment_session]': session.id,
+    'metadata[mode]': 'subscription_recurring'
+  };
+
+  const res = UrlFetchApp.fetch('https://api.stripe.com/v1/subscriptions', {
+    method: 'post',
+    payload: subParams,
+    headers: { 'Authorization': 'Bearer ' + STRIPE },
+    muteHttpExceptions: true
+  });
+  const sub = JSON.parse(res.getContentText());
+  if (sub.error) throw new Error('Subscription create: ' + sub.error.message);
+
+  log('subscription_created_delayed', {
+    subscription_id: sub.id,
+    customer: session.customer,
+    anchor: meta.billing_anchor,
+    plan: meta.plan,
+    order: meta.order_number
+  });
+
+  return sub;
 }
 
 /* ============================================================
@@ -565,6 +662,29 @@ function finalizeOrder(session) {
       decrementStockAfterOrder(session, meta);
     } catch (e) {
       log('stock_decrement_error', { error: e.message, order: orderNum });
+    }
+  }
+
+  // ★ 定期便初月決済完了の場合: Subscription を生成（毎月20日 anchor）
+  //    Tom 指示「翌月の決済は二十日になる。当月は日を問わない」を実装
+  if (meta.mode === 'subscription_first_month' && session.payment_status === 'paid') {
+    try {
+      createDelayedSubscription(session, meta);
+    } catch (e) {
+      log('subscription_create_error', {
+        error: e.message,
+        session: session.id,
+        order: orderNum
+      });
+      // 失敗してもオーダー記録は完了させる。Tom に email でアラート推奨
+      try {
+        MailApp.sendEmail({
+          to: cfg('STAFF_NOTIFICATION_EMAIL') || 'tomoki@eda-livestock.com',
+          subject: '⚠ 定期便Subscription生成失敗',
+          body: 'Order: ' + orderNum + '\nSession: ' + session.id + '\nError: ' + e.message +
+                '\n\n手動で Stripe Dashboard から Subscription 作成が必要です。'
+        });
+      } catch (e2) {}
     }
   }
 
