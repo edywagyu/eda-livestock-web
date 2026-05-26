@@ -15,7 +15,6 @@
  --gold: #D4A93B;
  --gold-light: #FFD773;
  --gold-soft: #B98F2A;
- --bone: rgba(212,169,59,0.18);
  --jp: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
  --display: 'Cormorant Garamond', serif;
  --num: 'Inter', -apple-system, sans-serif;
@@ -23,38 +22,38 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
  background:
-   radial-gradient(circle at 20% 10%, rgba(212,169,59,0.10), transparent 50%),
-   radial-gradient(circle at 80% 90%, rgba(212,169,59,0.06), transparent 50%),
+   radial-gradient(circle at 20% 8%, rgba(212,169,59,0.10), transparent 50%),
+   radial-gradient(circle at 80% 92%, rgba(212,169,59,0.06), transparent 50%),
    linear-gradient(180deg, #0F3D2E 0%, #061A12 100%);
  font-family: var(--num);
  color: white;
  width: 390px;
- min-height: 844px;
+ min-height: 928px; /* iPhone phone screen aspect (282:672 ≈ 0.42) と一致 */
  -webkit-font-smoothing: antialiased;
  -moz-osx-font-smoothing: grayscale;
 }
 body {
- padding: 14px 18px 32px;
+ padding: 14px 16px 24px;
  display: flex;
  flex-direction: column;
- gap: 14px;
+ gap: 12px;
 }
 
-/* ===== Top bar (app header) ===== */
+/* ===== Top app header ===== */
 .app-header {
  display: flex;
  align-items: center;
  justify-content: space-between;
- padding-top: 4px;
+ padding-top: 2px;
 }
 .brand {
  display: flex;
  align-items: center;
- gap: 10px;
+ gap: 9px;
 }
 .brand-logo {
- width: 38px;
- height: 38px;
+ width: 34px;
+ height: 34px;
  object-fit: contain;
  filter: drop-shadow(0 2px 8px rgba(212,169,59,0.4));
 }
@@ -63,138 +62,277 @@ body {
  flex-direction: column;
  line-height: 1.1;
 }
-.brand-text .brand-name {
+.brand-name {
  font-family: var(--display);
- font-size: 15px;
+ font-size: 14px;
  font-weight: 700;
  letter-spacing: 0.22em;
  color: var(--gold-light);
 }
-.brand-text .brand-sub {
+.brand-sub {
  font-family: var(--display);
- font-size: 9.5px;
+ font-size: 9px;
  letter-spacing: 0.28em;
  color: rgba(255,255,255,0.55);
  margin-top: 2px;
 }
-.avatar {
- width: 38px; height: 38px;
+.icons {
+ display: flex;
+ gap: 6px;
+}
+.icon-btn {
+ width: 34px; height: 34px;
+ border-radius: 10px;
+ background: rgba(255,255,255,0.06);
+ border: 1px solid rgba(212,169,59,0.22);
+ display: flex; align-items: center; justify-content: center;
+ font-size: 14px;
+}
+
+/* ===== Welcome card (mypage.html の welcome-card と整合) ===== */
+.welcome-card {
+ background:
+   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.28) 0%, transparent 55%),
+   linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
+ border: 1.5px solid rgba(212,169,59,0.45);
+ border-radius: 18px;
+ padding: 18px 18px 14px;
+ backdrop-filter: blur(10px);
+ -webkit-backdrop-filter: blur(10px);
+ position: relative;
+ overflow: hidden;
+}
+.welcome-card::after {
+ content: '';
+ position: absolute;
+ top: -30px; right: -30px;
+ width: 110px; height: 110px;
+ border-radius: 50%;
+ background: radial-gradient(circle, rgba(212,169,59,0.20), transparent 70%);
+}
+.welcome-tier-badge {
+ position: absolute;
+ top: 12px; right: 14px;
+ background: var(--gold);
+ color: var(--forest-deep);
+ font-family: var(--display);
+ font-size: 9px;
+ letter-spacing: 0.16em;
+ padding: 3px 9px;
+ border-radius: 999px;
+ font-weight: 700;
+ z-index: 2;
+}
+.welcome-row {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ margin-bottom: 12px;
+ position: relative;
+ z-index: 1;
+}
+.welcome-avatar {
+ width: 48px; height: 48px;
  border-radius: 50%;
  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
  color: var(--forest-deep);
  display: flex; align-items: center; justify-content: center;
  font-family: var(--jp);
  font-weight: 700;
- font-size: 16px;
+ font-size: 20px;
  box-shadow: 0 4px 14px rgba(212,169,59,0.5);
  border: 1.5px solid rgba(212,169,59,0.6);
+ flex-shrink: 0;
 }
-
-/* ===== Greeting ===== */
-.greeting {
+.welcome-info {
+ flex: 1;
+ min-width: 0;
+}
+.welcome-greeting {
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.65);
+ letter-spacing: 0.04em;
+ margin-bottom: 2px;
+}
+.welcome-name {
  font-family: var(--jp);
  font-size: 18px;
  font-weight: 700;
  color: white;
- line-height: 1.4;
- margin-top: 4px;
+ line-height: 1.2;
 }
-.greeting small {
+.welcome-stats {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 4px;
+ padding-top: 12px;
+ border-top: 1px solid rgba(212,169,59,0.25);
+}
+.welcome-stat {
+ text-align: center;
+ padding: 4px 2px;
+}
+.welcome-stat-num {
  display: block;
- font-family: var(--num);
- font-size: 11.5px;
- color: rgba(255,255,255,0.65);
- font-weight: 500;
- margin-top: 4px;
- letter-spacing: 0.02em;
+ font-family: var(--display);
+ font-size: 19px;
+ font-weight: 700;
+ color: var(--gold-light);
+ line-height: 1;
 }
-.greeting small b {
+.welcome-stat-num small {
+ font-size: 10px;
+ color: rgba(255,255,255,0.6);
+ font-weight: 500;
+ margin-left: 1px;
+}
+.welcome-stat-label {
+ display: block;
+ font-size: 9.5px;
+ color: rgba(255,255,255,0.6);
+ margin-top: 4px;
+ letter-spacing: 0.04em;
+}
+
+/* ===== Member Perks Strip ===== */
+.perks-strip {
+ background: linear-gradient(95deg, rgba(212,169,59,0.18), rgba(212,169,59,0.06));
+ border: 1px solid rgba(212,169,59,0.35);
+ border-radius: 12px;
+ padding: 10px 14px;
+ display: flex;
+ align-items: center;
+ gap: 10px;
+}
+.perks-icon { font-size: 14px; }
+.perks-text {
+ flex: 1;
+ font-family: var(--jp);
+ font-size: 11.5px;
+ color: rgba(255,255,255,0.92);
+ line-height: 1.4;
+}
+.perks-text b {
  color: var(--gold-light);
  font-weight: 700;
 }
+.perks-arrow {
+ color: var(--gold-light);
+ font-size: 16px;
+}
 
-/* ===== Next Delivery Hero Card ===== */
-.next-card {
- background:
-   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.30) 0%, transparent 50%),
-   linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
- border: 1.5px solid rgba(212,169,59,0.5);
- border-radius: 18px;
- padding: 20px 22px;
- color: white;
- position: relative;
- overflow: hidden;
- box-shadow: 0 10px 28px rgba(0,0,0,0.35);
- backdrop-filter: blur(12px);
- -webkit-backdrop-filter: blur(12px);
+/* ===== Tab navigation (horizontal scroll) ===== */
+.tabs-wrap {
+ margin: 2px -16px 0;
+ padding: 0 16px;
+ overflow-x: auto;
+ scrollbar-width: none;
 }
-.next-card::after {
- content: '';
- position: absolute;
- top: -40px; right: -40px;
- width: 120px; height: 120px;
- border-radius: 50%;
- background: radial-gradient(circle, rgba(212,169,59,0.32), transparent 70%);
-}
-.next-card-top {
+.tabs-wrap::-webkit-scrollbar { display: none; }
+.tabs {
  display: flex;
- justify-content: space-between;
- align-items: center;
- margin-bottom: 12px;
- position: relative;
- z-index: 1;
+ gap: 4px;
+ padding: 4px 0;
 }
-.next-label {
+.tab {
+ flex-shrink: 0;
+ padding: 8px 14px;
+ font-family: var(--jp);
+ font-size: 11.5px;
+ font-weight: 600;
+ color: rgba(255,255,255,0.55);
+ background: transparent;
+ border: 1px solid transparent;
+ border-radius: 999px;
+ display: inline-flex;
+ align-items: center;
+ gap: 5px;
+ white-space: nowrap;
+}
+.tab.active {
+ background: var(--gold);
+ color: var(--forest-deep);
+ border-color: var(--gold);
+ box-shadow: 0 4px 12px rgba(212,169,59,0.3);
+}
+.tab svg { width: 13px; height: 13px; }
+
+/* ===== Section label ===== */
+.section-label {
  font-family: var(--display);
  font-size: 10px;
  letter-spacing: 0.22em;
  color: var(--gold-light);
  font-weight: 700;
+ margin: 2px 0 -2px;
+ text-transform: uppercase;
+}
+
+/* ===== Next Delivery Card ===== */
+.next-card {
+ background:
+   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.20) 0%, transparent 55%),
+   linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+ border: 1px solid rgba(212,169,59,0.4);
+ border-radius: 14px;
+ padding: 14px 16px;
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
+}
+.next-top {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 8px;
+}
+.next-label {
+ font-family: var(--display);
+ font-size: 9.5px;
+ letter-spacing: 0.22em;
+ color: var(--gold-light);
+ font-weight: 700;
 }
 .next-plan-badge {
- background: rgba(212,169,59,0.28);
+ background: rgba(212,169,59,0.25);
  color: var(--gold-light);
  font-family: var(--jp);
- font-size: 10px;
- padding: 3px 10px;
+ font-size: 9.5px;
+ padding: 2px 8px;
  border-radius: 999px;
  font-weight: 700;
- border: 1px solid rgba(212,169,59,0.5);
+ border: 1px solid rgba(212,169,59,0.4);
+}
+.next-row {
+ display: flex;
+ align-items: baseline;
+ gap: 8px;
+ margin-bottom: 4px;
 }
 .next-date {
  font-family: var(--jp);
- font-size: 28px;
+ font-size: 22px;
  font-weight: 700;
  color: white;
  line-height: 1;
- letter-spacing: 0.02em;
- margin-bottom: 6px;
 }
-.next-date span {
+.next-date b {
  font-family: var(--num);
- font-size: 22px;
- margin-right: 4px;
  color: var(--gold-light);
+ font-size: 18px;
+ margin-right: 2px;
 }
 .next-time {
- font-size: 12px;
- color: rgba(255,255,255,0.9);
- margin-bottom: 14px;
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.7);
 }
 .next-progress {
- padding-top: 14px;
- border-top: 1px solid rgba(212,169,59,0.3);
- position: relative;
- z-index: 1;
-}
-.next-progress-label {
- font-size: 10.5px;
- color: rgba(255,255,255,0.75);
- margin-bottom: 6px;
+ margin-top: 10px;
+ padding-top: 10px;
+ border-top: 1px solid rgba(212,169,59,0.22);
 }
 .next-progress-bar {
- height: 6px;
- background: rgba(255,255,255,0.12);
+ height: 5px;
+ background: rgba(255,255,255,0.10);
  border-radius: 3px;
  overflow: hidden;
 }
@@ -203,82 +341,68 @@ body {
  width: 60%;
  background: linear-gradient(90deg, var(--gold), var(--gold-light));
  border-radius: 3px;
- box-shadow: 0 0 12px rgba(212,169,59,0.6);
+ box-shadow: 0 0 10px rgba(212,169,59,0.5);
 }
 .next-progress-text {
  display: flex;
  justify-content: space-between;
- margin-top: 6px;
- font-size: 10px;
- color: rgba(255,255,255,0.75);
+ margin-top: 5px;
+ font-size: 9.5px;
+ color: rgba(255,255,255,0.65);
 }
 .next-progress-text b {
  color: var(--gold-light);
  font-weight: 700;
 }
 
-/* ===== Section Label ===== */
-.section-label {
- font-family: var(--display);
- font-size: 10.5px;
- letter-spacing: 0.2em;
- color: var(--gold-light);
- font-weight: 700;
- margin: 4px 0 0;
- text-transform: uppercase;
-}
-
-/* ===== Action Grid (2x2) ===== */
+/* ===== Quick Actions ===== */
 .actions {
  display: grid;
  grid-template-columns: 1fr 1fr;
- gap: 10px;
+ gap: 8px;
 }
 .action {
  background: rgba(255,255,255,0.06);
- border: 1px solid rgba(212,169,59,0.22);
- border-radius: 14px;
- padding: 14px 14px;
+ border: 1px solid rgba(212,169,59,0.20);
+ border-radius: 12px;
+ padding: 12px 12px;
  backdrop-filter: blur(8px);
  -webkit-backdrop-filter: blur(8px);
  display: flex;
  flex-direction: column;
- gap: 8px;
- position: relative;
- transition: transform 0.2s;
+ gap: 6px;
 }
 .action.featured {
  background: linear-gradient(135deg, rgba(212,169,59,0.22) 0%, rgba(212,169,59,0.08) 100%);
  border-color: var(--gold);
- box-shadow: 0 6px 18px rgba(212,169,59,0.22);
 }
 .action-icon {
- width: 36px; height: 36px;
- border-radius: 10px;
- background: linear-gradient(135deg, rgba(212,169,59,0.32), rgba(212,169,59,0.12));
+ width: 32px; height: 32px;
+ border-radius: 9px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.30), rgba(212,169,59,0.10));
  border: 1px solid rgba(212,169,59,0.4);
  display: flex; align-items: center; justify-content: center;
- font-size: 18px;
+ font-size: 15px;
 }
 .action-title {
  font-family: var(--jp);
- font-size: 13px;
+ font-size: 12px;
  font-weight: 700;
  color: white;
  line-height: 1.3;
 }
 .action-sub {
- font-size: 10px;
- color: rgba(255,255,255,0.7);
- line-height: 1.5;
+ font-size: 9.5px;
+ color: rgba(255,255,255,0.65);
+ line-height: 1.4;
 }
 
-/* ===== Recent Order ===== */
+/* ===== Recent order ===== */
 .order {
- background: rgba(255,255,255,0.06);
- border: 1px solid rgba(212,169,59,0.22);
- border-radius: 14px;
- padding: 14px 16px;
+ background: rgba(255,255,255,0.05);
+ border: 1px solid rgba(212,169,59,0.20);
+ border-radius: 12px;
+ padding: 12px 14px;
  backdrop-filter: blur(8px);
  -webkit-backdrop-filter: blur(8px);
 }
@@ -286,208 +410,59 @@ body {
  display: flex;
  justify-content: space-between;
  align-items: center;
- margin-bottom: 10px;
+ margin-bottom: 8px;
 }
 .order-status {
  background: rgba(46,160,67,0.20);
  color: #6BE894;
- font-size: 10px;
+ font-size: 9.5px;
  font-weight: 700;
- padding: 3px 10px;
+ padding: 2px 9px;
  border-radius: 999px;
- border: 1px solid rgba(107,232,148,0.35);
+ border: 1px solid rgba(107,232,148,0.32);
 }
 .order-date {
  font-family: var(--num);
- font-size: 11px;
- color: rgba(255,255,255,0.65);
+ font-size: 10px;
+ color: rgba(255,255,255,0.55);
  font-weight: 600;
 }
-.order-items {
+.order-body {
  display: flex;
  gap: 8px;
- margin-bottom: 10px;
+ align-items: center;
 }
 .order-thumb {
- width: 48px; height: 48px;
+ width: 40px; height: 40px;
  border-radius: 8px;
- background: linear-gradient(135deg, #FFE8B5, #D4A93B);
+ background: linear-gradient(135deg, #B91C1C, #7F1818);
  display: flex; align-items: center; justify-content: center;
- font-size: 22px;
+ font-size: 18px;
  flex-shrink: 0;
 }
-.order-thumb:nth-child(2) { background: linear-gradient(135deg, #B91C1C, #7F1818); }
-.order-thumb:nth-child(3) { background: linear-gradient(135deg, #F59E0B, #B45309); }
 .order-info {
  flex: 1;
 }
 .order-title {
  font-family: var(--jp);
- font-size: 12.5px;
+ font-size: 11.5px;
  font-weight: 700;
  color: white;
 }
 .order-meta {
- font-size: 10.5px;
+ font-size: 10px;
  color: rgba(255,255,255,0.7);
- margin-top: 2px;
+ margin-top: 1px;
 }
-.order-cta {
- background: linear-gradient(135deg, var(--gold), var(--gold-soft));
- color: var(--forest-deep);
- border-radius: 10px;
- padding: 9px 12px;
- font-size: 11.5px;
- font-weight: 700;
- text-align: center;
- font-family: var(--jp);
- box-shadow: 0 4px 12px rgba(212,169,59,0.3);
-}
-
-/* ===== Rewards ===== */
-.rewards {
- background:
-   radial-gradient(circle at 100% 100%, rgba(212,169,59,0.18), transparent 60%),
-   rgba(255,255,255,0.06);
- border: 1px solid rgba(212,169,59,0.32);
- border-radius: 14px;
- padding: 14px 16px;
- backdrop-filter: blur(8px);
- -webkit-backdrop-filter: blur(8px);
-}
-.rewards-head {
- display: flex;
- align-items: center;
- gap: 8px;
- margin-bottom: 12px;
-}
-.rewards-icon {
+.order-arrow {
+ color: var(--gold-light);
  font-size: 16px;
-}
-.rewards-title {
- font-family: var(--jp);
- font-size: 12.5px;
- font-weight: 700;
- color: white;
- flex: 1;
-}
-.rewards-count {
- font-family: var(--num);
- font-size: 11px;
- font-weight: 700;
- color: var(--forest-deep);
- background: var(--gold-light);
- padding: 2px 9px;
- border-radius: 999px;
-}
-.rewards-stages {
- display: flex;
- justify-content: space-between;
- align-items: center;
- padding: 0 4px;
-}
-.stage {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 4px;
- position: relative;
- z-index: 1;
-}
-.stage-dot {
- width: 24px; height: 24px;
- border-radius: 50%;
- background: rgba(255,255,255,0.10);
- color: rgba(255,255,255,0.5);
- display: flex; align-items: center; justify-content: center;
- font-family: var(--num);
- font-size: 11px;
- font-weight: 700;
- border: 2px solid rgba(15,61,46,0.7);
- box-shadow: 0 0 0 1px rgba(255,255,255,0.10);
-}
-.stage.done .stage-dot {
- background: var(--gold);
- color: var(--forest-deep);
- border-color: rgba(15,61,46,0.7);
- box-shadow: 0 0 0 1px var(--gold), 0 0 8px rgba(212,169,59,0.4);
-}
-.stage.current .stage-dot {
- background: var(--gold-light);
- color: var(--forest-deep);
- border-color: rgba(15,61,46,0.7);
- box-shadow: 0 0 0 3px rgba(255,215,115,0.3), 0 0 14px rgba(255,215,115,0.6);
-}
-.stage-label {
- font-size: 9px;
- color: rgba(255,255,255,0.55);
- white-space: nowrap;
-}
-.stage.done .stage-label,
-.stage.current .stage-label {
- color: var(--gold-light);
- font-weight: 700;
-}
-.rewards-stages-wrap {
- position: relative;
-}
-.rewards-stages-wrap::before {
- content: '';
- position: absolute;
- top: 11px; left: 18px; right: 18px;
- height: 2px;
- background: rgba(255,255,255,0.10);
- z-index: 0;
-}
-.rewards-stages-wrap::after {
- content: '';
- position: absolute;
- top: 11px; left: 18px;
- width: 50%;
- height: 2px;
- background: var(--gold);
- z-index: 0;
- box-shadow: 0 0 6px rgba(212,169,59,0.5);
-}
-
-/* ===== Bottom Tab Bar ===== */
-.tabbar {
- position: fixed;
- bottom: 0; left: 0; right: 0;
- background: rgba(10,29,21,0.92);
- backdrop-filter: blur(16px);
- -webkit-backdrop-filter: blur(16px);
- border-top: 1px solid rgba(212,169,59,0.25);
- padding: 10px 8px 18px;
- display: grid;
- grid-template-columns: repeat(4, 1fr);
- box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
-}
-.tab {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 3px;
- color: rgba(255,255,255,0.5);
- font-size: 9.5px;
- font-family: var(--jp);
- font-weight: 600;
-}
-.tab.active {
- color: var(--gold-light);
-}
-.tab.active .tab-icon {
- filter: drop-shadow(0 0 6px rgba(255,215,115,0.5));
-}
-.tab-icon {
- font-size: 20px;
- line-height: 1;
 }
 </style>
 </head>
 <body>
 
-<!-- Top app header -->
+<!-- Top brand header -->
 <div class="app-header">
  <div class="brand">
  <img class="brand-logo" src="public/images/logo/eda-livestock-logo-transparent.png" alt="江田畜産">
@@ -496,25 +471,67 @@ body {
  <span class="brand-sub">MYPAGE</span>
  </div>
  </div>
- <div class="avatar">江</div>
+ <div class="icons">
+ <div class="icon-btn">🔔</div>
+ <div class="icon-btn">⚙</div>
+ </div>
 </div>
 
-<!-- Greeting -->
-<div class="greeting">
- こんにちは、江田さん
- <small>会員ステータス · <b>スターター</b> 6ヶ月目</small>
+<!-- Welcome card -->
+<div class="welcome-card">
+ <span class="welcome-tier-badge">★ スターター</span>
+ <div class="welcome-row">
+ <div class="welcome-avatar">江</div>
+ <div class="welcome-info">
+ <div class="welcome-greeting">こんにちは</div>
+ <div class="welcome-name">江田 友輝 さん</div>
+ </div>
+ </div>
+ <div class="welcome-stats">
+ <div class="welcome-stat">
+ <span class="welcome-stat-num">6</span>
+ <span class="welcome-stat-label">ご注文回数</span>
+ </div>
+ <div class="welcome-stat">
+ <span class="welcome-stat-num">76,800<small>円</small></span>
+ <span class="welcome-stat-label">累計お買い上げ</span>
+ </div>
+ <div class="welcome-stat">
+ <span class="welcome-stat-num">2</span>
+ <span class="welcome-stat-label">クーポン</span>
+ </div>
+ </div>
 </div>
 
-<!-- Next delivery hero card -->
+<!-- Member perks strip -->
+<div class="perks-strip">
+ <span class="perks-icon">★</span>
+ <span class="perks-text"><b>会員限定</b>: あと <b>1回</b> のご注文で次のランクへ</span>
+ <span class="perks-arrow">›</span>
+</div>
+
+<!-- Tab navigation -->
+<div class="tabs-wrap">
+ <div class="tabs">
+ <div class="tab active">🏠 ホーム</div>
+ <div class="tab">📋 注文履歴</div>
+ <div class="tab">📅 定期便</div>
+ <div class="tab">🛍 ショップ</div>
+ <div class="tab">🎁 特典</div>
+ </div>
+</div>
+
+<!-- Next delivery card -->
 <div class="next-card">
- <div class="next-card-top">
+ <div class="next-top">
  <span class="next-label">NEXT DELIVERY</span>
  <span class="next-plan-badge">スターター 定期便</span>
  </div>
- <div class="next-date"><span>6/1</span>（土）</div>
- <div class="next-time">18:00 - 20:00 帯でお届け</div>
+ <div class="next-row">
+ <div class="next-date"><b>6/1</b>（土）</div>
+ <div class="next-time">18:00 - 20:00 帯</div>
+ </div>
  <div class="next-progress">
- <div class="next-progress-label">次回お届けまで</div>
  <div class="next-progress-bar"><div class="next-progress-fill"></div></div>
  <div class="next-progress-text"><span>5月分 完了</span><b>あと 7日</b></div>
  </div>
@@ -526,70 +543,40 @@ body {
  <div class="action featured">
  <div class="action-icon">📦</div>
  <div class="action-title">今月をスキップ</div>
- <div class="action-sub">1タップで翌月へ持ち越し</div>
+ <div class="action-sub">1タップで翌月へ</div>
  </div>
  <div class="action">
  <div class="action-icon">🍖</div>
  <div class="action-title">内容をカスタマイズ</div>
- <div class="action-sub">鶏多め · ステーキ追加</div>
+ <div class="action-sub">鶏多め · 追加</div>
  </div>
  <div class="action">
  <div class="action-icon">🔄</div>
  <div class="action-title">プランを変更</div>
- <div class="action-sub">ミニ / スターター / レギュラー</div>
+ <div class="action-sub">ミニ / レギュラー</div>
  </div>
  <div class="action">
  <div class="action-icon">💳</div>
- <div class="action-title">支払い・お届け先</div>
- <div class="action-sub">カード · 住所変更も簡単</div>
+ <div class="action-title">支払い・住所</div>
+ <div class="action-sub">カード · 住所変更</div>
  </div>
 </div>
 
-<!-- Rewards Progress -->
-<div class="rewards">
- <div class="rewards-head">
- <span class="rewards-icon">🎁</span>
- <span class="rewards-title">継続特典プログラム</span>
- <span class="rewards-count">3 / 7</span>
- </div>
- <div class="rewards-stages-wrap">
- <div class="rewards-stages">
- <div class="stage done"><div class="stage-dot">✓</div><span class="stage-label">1回</span></div>
- <div class="stage done"><div class="stage-dot">✓</div><span class="stage-label">2回</span></div>
- <div class="stage done"><div class="stage-dot">✓</div><span class="stage-label">3回</span></div>
- <div class="stage current"><div class="stage-dot">4</div><span class="stage-label">次は牛焼肉</span></div>
- <div class="stage"><div class="stage-dot">5</div><span class="stage-label">5回</span></div>
- <div class="stage"><div class="stage-dot">6</div><span class="stage-label">6回</span></div>
- <div class="stage"><div class="stage-dot">7</div><span class="stage-label">7回</span></div>
- </div>
- </div>
-</div>
-
-<!-- Recent order -->
+<!-- Recent Order -->
 <p class="section-label">Recent Order</p>
 <div class="order">
  <div class="order-head">
  <span class="order-status">配達完了</span>
  <span class="order-date">2026.05.01</span>
  </div>
- <div class="order-items">
+ <div class="order-body">
  <div class="order-thumb">🥩</div>
- <div class="order-thumb">🥩</div>
- <div class="order-thumb">🍗</div>
  <div class="order-info">
- <div class="order-title">スターター 定期便 #5</div>
+ <div class="order-title">スターター定期便 #5</div>
  <div class="order-meta">1.6kg · 全8品 · ¥12,800</div>
  </div>
+ <div class="order-arrow">›</div>
  </div>
- <div class="order-cta">配送状況を見る</div>
-</div>
-
-<!-- Bottom tab bar -->
-<div class="tabbar">
- <div class="tab active"><div class="tab-icon">🏠</div>ホーム</div>
- <div class="tab"><div class="tab-icon">📋</div>注文履歴</div>
- <div class="tab"><div class="tab-icon">🎁</div>特典</div>
- <div class="tab"><div class="tab-icon">⚙️</div>設定</div>
 </div>
 
 </body>
