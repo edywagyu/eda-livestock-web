@@ -862,11 +862,15 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ================ 詳細セクション (選択中プランの内容物・サイクル) ================ */
 .sub-detail {
- background: white;
+ background:
+   radial-gradient(circle at 10% 20%, rgba(212,169,59,0.08), transparent 50%),
+   radial-gradient(circle at 90% 80%, rgba(212,169,59,0.05), transparent 50%),
+   linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
+ color: white;
  padding: 96px 0;
  position: relative;
- border-top: 1px solid var(--color-bone);
- border-bottom: 1px solid var(--color-bone);
+ border-top: 1px solid rgba(212,169,59,0.2);
+ border-bottom: 1px solid rgba(212,169,59,0.2);
 }
 .sub-detail-head { text-align: center; margin-bottom: 56px; }
 .sub-detail-eyebrow {
@@ -875,23 +879,28 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  font-size: 10.5px;
  letter-spacing: 0.22em;
  color: var(--color-gold);
+ background: rgba(212,169,59,0.15);
+ border: 1px solid rgba(212,169,59,0.35);
+ padding: 5px 14px;
+ border-radius: 999px;
  font-weight: 700;
  margin-bottom: 14px;
 }
 .sub-detail-title {
  font-family: var(--font-jp-serif);
  font-size: clamp(24px, 3.6vw, 36px);
- color: var(--color-forest);
+ color: white;
  margin-bottom: 12px;
  font-weight: 700;
 }
 .sub-detail-plan-name {
  display: inline-block;
- font-family: var(--font-jp); /* 日本語見やすく */
+ font-family: var(--font-jp);
  font-size: 13.5px;
  letter-spacing: 0.06em;
- background: var(--color-forest);
- color: white; /* gold→white でコントラストUP */
+ background: rgba(212,169,59,0.18);
+ border: 1px solid rgba(212,169,59,0.4);
+ color: #FFD773;
  padding: 8px 22px;
  border-radius: 16px;
  font-weight: 700;
@@ -913,18 +922,20 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  max-width: 1180px; margin: 0 auto;
 }
 .sub-detail-items {
- background: var(--color-paper);
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(212,169,59,0.25);
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
  border-radius: 16px;
  padding: 32px 36px;
- border: 1px solid var(--color-bone);
 }
 .sub-detail-items h3 {
  font-family: var(--font-jp-serif);
  font-size: 18px;
- color: var(--color-forest);
+ color: #FFD773;
  margin-bottom: 22px;
  padding-bottom: 14px;
- border-bottom: 1px dashed var(--color-bone);
+ border-bottom: 1px dashed rgba(212,169,59,0.3);
  font-weight: 700;
 }
 .sub-detail-item-row {
@@ -932,14 +943,14 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  grid-template-columns: 64px 1fr auto;
  gap: 18px;
  padding: 14px 0;
- border-bottom: 1px solid rgba(212,169,59,0.12);
+ border-bottom: 1px solid rgba(212,169,59,0.18);
  align-items: center;
 }
 .sub-detail-item-row:last-child { border-bottom: 0; }
 .sub-detail-item-img {
  width: 64px; height: 64px;
  border-radius: 8px;
- background-color: var(--color-bone);
+ background-color: rgba(255,255,255,0.08);
  background-size: cover;
  background-position: center;
  flex-shrink: 0;
@@ -948,23 +959,23 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  display: block;
  font-family: var(--font-jp);
  font-size: 14px;
- color: var(--color-forest);
+ color: white;
  font-weight: 700;
  margin-bottom: 2px;
 }
 .sub-detail-item-info span {
  font-size: 11.5px;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.65);
 }
 .sub-detail-item-qty {
- font-family: var(--font-numeric); /* Inter で数字を見やすく */
+ font-family: var(--font-numeric);
  font-size: 15px;
- color: var(--color-forest); /* gold-soft が薄かったので濃緑に */
+ color: #FFD773;
  font-weight: 800;
  font-variant-numeric: tabular-nums;
  letter-spacing: -0.01em;
  padding: 4px 10px;
- background: rgba(212,169,59,0.15);
+ background: rgba(212,169,59,0.18);
  border-radius: 6px;
  border: 1px solid rgba(212,169,59,0.4);
  white-space: nowrap;
@@ -974,11 +985,12 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  display: flex; flex-direction: column; gap: 18px;
 }
 .sub-detail-card {
- background: white;
- border: 1px solid var(--color-bone);
+ background: rgba(255,255,255,0.05);
+ border: 1px solid rgba(212,169,59,0.25);
+ backdrop-filter: blur(6px);
+ -webkit-backdrop-filter: blur(6px);
  border-radius: 14px;
  padding: 22px 24px;
- box-shadow: var(--shadow-sm);
 }
 .sub-detail-card-head {
  display: flex; align-items: center; gap: 10px;
@@ -987,25 +999,27 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-detail-card-icon {
  width: 36px; height: 36px;
  border-radius: 50%;
- background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
- color: var(--color-gold);
+ background: linear-gradient(135deg, rgba(212,169,59,0.3), rgba(212,169,59,0.15));
+ border: 1px solid rgba(212,169,59,0.4);
+ color: #FFD773;
  display: flex; align-items: center; justify-content: center;
 }
 .sub-detail-card-icon svg { width: 18px; height: 18px; }
 .sub-detail-card-title {
  font-family: var(--font-jp); font-size: 13.5px;
- color: var(--color-forest); font-weight: 700;
+ color: #FFD773; font-weight: 700;
 }
 .sub-detail-card p {
  font-size: 12px;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.75);
  line-height: 1.7;
  margin: 0;
 }
+.sub-detail-card p strong { color: #FFD773; }
 .sub-detail-card .delivery-date-large {
  font-family: var(--font-display);
  font-size: 28px;
- color: var(--color-gold);
+ color: #FFD773;
  font-weight: 700;
  letter-spacing: -0.01em;
  margin: 6px 0 2px;
@@ -1013,7 +1027,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-detail-card .delivery-time {
  font-family: var(--font-jp);
  font-size: 12px;
- color: var(--color-forest);
+ color: rgba(255,255,255,0.85);
  font-weight: 600;
 }
 
@@ -1541,17 +1555,26 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 
 /* ================ 安心ポイント 4特徴 ================ */
-.sub-trust { padding: 96px 0; background: white; }
+.sub-trust {
+ padding: 96px 0;
+ background:
+   radial-gradient(circle at 20% 30%, rgba(212,169,59,0.08), transparent 50%),
+   radial-gradient(circle at 80% 70%, rgba(212,169,59,0.05), transparent 50%),
+   linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
+ color: white;
+ border-top: 1px solid rgba(212,169,59,0.2);
+ border-bottom: 1px solid rgba(212,169,59,0.2);
+}
 .sub-trust-head { text-align: center; margin-bottom: 56px; }
 .sub-trust-head h2 {
  font-family: var(--font-jp-serif);
  font-size: clamp(24px, 3.6vw, 36px);
- color: var(--color-forest);
+ color: white;
  font-weight: 700; margin-bottom: 12px;
 }
 .sub-trust-head p {
  font-size: 14px; line-height: 1.85;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.78);
  max-width: 580px; margin: 0 auto;
 }
 .sub-trust-grid {
@@ -1560,24 +1583,26 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  max-width: 1180px; margin: 0 auto;
 }
 .sub-trust-card {
- background: white;
- border: 1px solid var(--color-bone);
+ background: rgba(255,255,255,0.05);
+ border: 1px solid rgba(212,169,59,0.25);
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
  border-radius: 14px;
  padding: 28px 22px;
  text-align: center;
  transition: all 0.4s var(--ease-out-expo);
- box-shadow: var(--shadow-sm);
 }
 .sub-trust-card:hover {
  transform: translateY(-4px);
- border-color: rgba(212,169,59,0.4);
- box-shadow: var(--shadow-md);
+ background: rgba(255,255,255,0.08);
+ border-color: rgba(212,169,59,0.5);
 }
 .sub-trust-card-icon {
  width: 48px; height: 48px;
  border-radius: 50%;
- background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
- color: var(--color-gold);
+ background: linear-gradient(135deg, rgba(212,169,59,0.3), rgba(212,169,59,0.15));
+ border: 1px solid rgba(212,169,59,0.45);
+ color: #FFD773;
  display: inline-flex; align-items: center; justify-content: center;
  margin-bottom: 14px;
 }
@@ -1585,13 +1610,13 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .sub-trust-card h4 {
  font-family: var(--font-jp);
  font-size: 14px;
- color: var(--color-forest);
+ color: #FFD773;
  font-weight: 700;
  margin-bottom: 8px;
 }
 .sub-trust-card p {
  font-size: 12px;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.78);
  line-height: 1.7;
  margin: 0;
 }
@@ -1703,17 +1728,21 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 /* ================ FOOTER CTA ================ */
 .sub-foot-cta {
  padding: 80px 0;
- background: var(--color-cream);
+ background:
+   radial-gradient(circle at 50% 0%, rgba(212,169,59,0.15), transparent 60%),
+   linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
+ color: white;
  text-align: center;
+ border-top: 1px solid rgba(212,169,59,0.2);
 }
 .sub-foot-cta h2 {
  font-family: var(--font-jp-serif);
  font-size: clamp(24px, 3.6vw, 36px);
- color: var(--color-forest);
+ color: white;
  font-weight: 700; margin-bottom: 14px;
 }
 .sub-foot-cta p {
- font-size: 14px; color: var(--color-ink-muted);
+ font-size: 14px; color: rgba(255,255,255,0.78);
  margin-bottom: 28px;
 }
 
@@ -2188,24 +2217,34 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 </section>
 
-<!-- ========= なぜ江田畜産だけ？（コンパクト） ========= -->
+<!-- ========= なぜ江田畜産だけ？（深緑バージョン） ========= -->
 <style>
 .why-only {
  padding: clamp(48px, 6.5vw, 72px) 0;
- background: linear-gradient(180deg, #FFFDF7 0%, #FFF9EE 100%);
- border-bottom: 1px solid #F0E5D0;
+ background:
+   radial-gradient(circle at 15% 30%, rgba(212,169,59,0.10) 0%, transparent 50%),
+   radial-gradient(circle at 85% 70%, rgba(212,169,59,0.06) 0%, transparent 50%),
+   linear-gradient(180deg, #0F3D2E 0%, #0A2D21 100%);
+ color: white;
+ border-top: 1px solid rgba(212,169,59,0.2);
+ border-bottom: 1px solid rgba(212,169,59,0.2);
+ position: relative;
+ overflow: hidden;
 }
 .why-only-head {
  text-align: center;
  margin-bottom: 36px;
+ position: relative;
+ z-index: 1;
 }
 .why-only-eyebrow {
  display: inline-block;
  font-family: var(--font-display);
  font-size: 10.5px;
  letter-spacing: 0.24em;
- color: var(--color-gold-soft);
- background: rgba(212,169,59,0.10);
+ color: #D4A93B;
+ background: rgba(212,169,59,0.15);
+ border: 1px solid rgba(212,169,59,0.35);
  padding: 4px 12px;
  border-radius: 999px;
  margin-bottom: 16px;
@@ -2214,21 +2253,20 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .why-only h2 {
  font-family: var(--font-jp-serif);
  font-size: clamp(22px, 3vw, 30px);
- color: var(--color-forest);
+ color: white;
  line-height: 1.45;
  margin-bottom: 12px;
  font-weight: 700;
 }
 .why-only h2 .accent {
- color: #B98F2A;
- background: linear-gradient(120deg, #D4A93B, #B98F2A);
+ background: linear-gradient(120deg, #FFD773, #D4A93B);
  -webkit-background-clip: text;
  -webkit-text-fill-color: transparent;
  background-clip: text;
 }
 .why-only-lead {
  font-size: 13.5px;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.82);
  line-height: 1.8;
  max-width: 560px;
  margin: 0 auto;
@@ -2239,26 +2277,37 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  gap: 12px;
  max-width: 760px;
  margin: 0 auto;
+ position: relative;
+ z-index: 1;
 }
 @media (max-width: 720px) {
  .why-only-stats { grid-template-columns: 1fr; gap: 10px; }
 }
 .why-only-stat {
- background: white;
- border: 1px solid #F0E5D0;
+ background: rgba(255,255,255,0.04);
+ border: 1px solid rgba(212,169,59,0.25);
  border-radius: 12px;
  padding: 20px 16px;
  text-align: center;
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
+ transition: all 0.3s var(--ease-out-expo);
+}
+.why-only-stat:hover {
+ background: rgba(255,255,255,0.07);
+ border-color: rgba(212,169,59,0.5);
+ transform: translateY(-2px);
 }
 .why-only-stat-icon {
  font-size: 28px;
  line-height: 1;
  margin-bottom: 10px;
+ filter: drop-shadow(0 2px 8px rgba(212,169,59,0.3));
 }
 .why-only-stat-number {
  font-family: var(--font-display);
  font-size: clamp(26px, 3.4vw, 32px);
- color: var(--color-forest);
+ color: #FFD773;
  font-weight: 700;
  line-height: 1.05;
  margin-bottom: 4px;
@@ -2266,7 +2315,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .why-only-stat-number .unit {
  font-size: 0.5em;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.65);
  font-weight: 500;
  margin-left: 3px;
 }
@@ -2274,7 +2323,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  font-family: var(--font-jp);
  font-size: 11.5px;
  font-weight: 600;
- color: var(--color-forest);
+ color: rgba(255,255,255,0.95);
  letter-spacing: 0.02em;
 }
 .why-only-source {
@@ -2282,9 +2331,11 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  margin: 24px auto 0;
  text-align: center;
  font-size: 11.5px;
- color: var(--color-ink-muted);
+ color: rgba(255,255,255,0.55);
  line-height: 1.75;
  font-style: italic;
+ position: relative;
+ z-index: 1;
 }
 </style>
 <section class="why-only">
