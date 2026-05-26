@@ -1638,6 +1638,140 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 </header>
 
+<!-- ========= 月末まで初月50%OFF キャンペーンバナー ========= -->
+<style>
+.campaign-banner {
+ background: linear-gradient(95deg, #0F3D2E 0%, #1a5742 45%, #0F3D2E 100%);
+ color: white;
+ padding: 14px 16px;
+ text-align: center;
+ position: relative;
+ overflow: hidden;
+ border-bottom: 2px solid #D4A93B;
+}
+.campaign-banner::before {
+ content: '';
+ position: absolute;
+ top: 0; left: -100%;
+ width: 50%; height: 100%;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.18), transparent);
+ animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+ 0% { left: -100%; }
+ 50%, 100% { left: 200%; }
+}
+.campaign-banner-inner {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 16px;
+ flex-wrap: wrap;
+ font-family: var(--font-jp);
+ position: relative;
+ z-index: 1;
+}
+.campaign-banner-tag {
+ display: inline-block;
+ padding: 3px 10px;
+ background: #D4A93B;
+ color: #0F3D2E;
+ font-size: 10.5px;
+ font-weight: 700;
+ letter-spacing: 0.08em;
+ border-radius: 4px;
+}
+.campaign-banner-main {
+ font-size: 14.5px;
+ font-weight: 600;
+ letter-spacing: 0.02em;
+}
+.campaign-banner-main strong {
+ color: #FFD773;
+ font-weight: 700;
+ font-size: 1.05em;
+}
+.campaign-banner-countdown {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 4px 12px;
+ background: rgba(255,255,255,0.12);
+ border: 1px solid rgba(212,169,59,0.45);
+ border-radius: 999px;
+ font-size: 12.5px;
+ font-weight: 600;
+ font-family: var(--font-numeric);
+}
+.campaign-banner-countdown .dot {
+ width: 6px; height: 6px;
+ background: #FF6B6B;
+ border-radius: 50%;
+ animation: pulse 1.4s infinite;
+}
+@keyframes pulse {
+ 0%, 100% { opacity: 1; transform: scale(1); }
+ 50% { opacity: 0.5; transform: scale(1.3); }
+}
+.campaign-banner-cta {
+ display: inline-flex;
+ align-items: center;
+ gap: 4px;
+ padding: 6px 14px;
+ background: #D4A93B;
+ color: #0F3D2E;
+ border-radius: 999px;
+ text-decoration: none;
+ font-size: 12.5px;
+ font-weight: 700;
+ transition: all 0.25s;
+}
+.campaign-banner-cta:hover {
+ background: #FFD773;
+ transform: translateY(-1px);
+ box-shadow: 0 4px 12px rgba(212,169,59,0.4);
+}
+@media (max-width: 640px) {
+ .campaign-banner { padding: 12px 12px; }
+ .campaign-banner-inner { gap: 10px; flex-direction: column; }
+ .campaign-banner-main { font-size: 13px; line-height: 1.5; }
+ .campaign-banner-countdown { font-size: 11.5px; padding: 3px 10px; }
+ .campaign-banner-cta { font-size: 12px; padding: 6px 14px; }
+}
+</style>
+<div class="campaign-banner" id="campaignBanner">
+ <div class="campaign-banner-inner">
+ <span class="campaign-banner-tag">期間限定</span>
+ <span class="campaign-banner-main">
+ 今月入会で <strong>初月50%OFF</strong>
+ </span>
+ <span class="campaign-banner-countdown">
+ <span class="dot"></span>
+ <span id="campaignCountdown">月末まで残り—日</span>
+ </span>
+ <a href="#plans" class="campaign-banner-cta">プランを見る →</a>
+ </div>
+</div>
+<script>
+(function(){
+ const el = document.getElementById('campaignCountdown');
+ if (!el) return;
+ function update() {
+ const now = new Date();
+ // 翌月1日 00:00 (JST) を期限とする
+ const deadline = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0);
+ const diffMs = deadline - now;
+ if (diffMs <= 0) { el.textContent = '締切間近！'; return; }
+ const days = Math.floor(diffMs / 86400000);
+ const hours = Math.floor((diffMs % 86400000) / 3600000);
+ if (days > 0) el.textContent = '月末まで残り ' + days + '日 ' + hours + '時間';
+ else el.textContent = '月末まで残り ' + hours + '時間';
+ }
+ update();
+ setInterval(update, 60000);
+})();
+</script>
+
 <!-- ========= HERO ========= -->
 <section class="sub-hero">
  <!--
@@ -1707,7 +1841,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥6,980</div>
  <div class="sub-plan-price">¥3,490<small>/初月</small></div>
- <div class="sub-plan-savings">初月 ¥3,490 OFF / 個別 ¥7,400 より約6%お得</div>
+ <div class="sub-plan-savings">🎁 初月 ¥3,490 OFF + 送料無料 + 年間 ¥8,530 節約</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
@@ -1741,7 +1875,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥12,800</div>
  <div class="sub-plan-price">¥6,400<small>/初月</small></div>
- <div class="sub-plan-savings">初月 ¥6,400 OFF / 個別 ¥12,900 より約1%お得</div>
+ <div class="sub-plan-savings">🎁 初月 ¥6,400 OFF + 買い忘れゼロ + 年間 ¥7,600 節約</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
@@ -1782,7 +1916,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥24,400</div>
  <div class="sub-plan-price">¥12,200<small>/初月</small></div>
- <div class="sub-plan-savings">初月 ¥12,200 OFF / 個別 ¥25,800 より約5%お得</div>
+ <div class="sub-plan-savings">🎁 初月 ¥12,200 OFF + 有機JAS優先案内 + 年間 ¥29,000 節約</div>
  <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
  <strong>2ヶ月目以降:</strong> ¥24,400/月 (税込・送料込)<br>
  <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
@@ -1790,6 +1924,241 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
  </article>
+ </div>
+ </div>
+</section>
+
+<!-- ========= 単品 vs 定期便 比較セクション ========= -->
+<style>
+.compare-section {
+ background: linear-gradient(180deg, #FFF9EE 0%, #FFFAF0 100%);
+ padding: clamp(56px, 8vw, 88px) 0;
+ border-top: 1px solid #F0E5D0;
+ border-bottom: 1px solid #F0E5D0;
+}
+.compare-head {
+ text-align: center;
+ margin-bottom: 40px;
+}
+.compare-head h2 {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.5vw, 38px);
+ color: var(--color-forest);
+ margin: 16px 0 12px;
+ line-height: 1.4;
+}
+.compare-head p {
+ font-size: 14px;
+ color: var(--color-ink-muted);
+ line-height: 1.85;
+ max-width: 620px;
+ margin: 0 auto;
+}
+.compare-grid {
+ display: grid;
+ grid-template-columns: 1fr;
+ gap: 28px;
+ max-width: 760px;
+ margin: 0 auto;
+}
+.compare-row {
+ background: white;
+ border: 1px solid #F0E5D0;
+ border-radius: 16px;
+ padding: 28px 30px;
+ box-shadow: 0 4px 16px rgba(15,61,46,0.04);
+ transition: transform 0.3s, box-shadow 0.3s;
+}
+.compare-row:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 12px 32px rgba(15,61,46,0.10);
+}
+.compare-row-head {
+ display: flex;
+ justify-content: space-between;
+ align-items: baseline;
+ margin-bottom: 18px;
+ padding-bottom: 14px;
+ border-bottom: 1px dashed #E8DCC4;
+}
+.compare-plan-name {
+ font-family: var(--font-jp-serif);
+ font-size: 20px;
+ color: var(--color-forest);
+ font-weight: 600;
+}
+.compare-plan-spec {
+ font-size: 12px;
+ color: var(--color-ink-muted);
+ letter-spacing: 0.04em;
+}
+.compare-cols {
+ display: grid;
+ grid-template-columns: 1fr auto 1fr;
+ gap: 20px;
+ align-items: center;
+}
+.compare-col {
+ text-align: center;
+}
+.compare-col-label {
+ font-family: var(--font-display);
+ font-size: 10.5px;
+ letter-spacing: 0.18em;
+ color: var(--color-ink-muted);
+ margin-bottom: 8px;
+ text-transform: uppercase;
+}
+.compare-col-price {
+ font-family: var(--font-numeric);
+ font-size: clamp(22px, 3.5vw, 30px);
+ font-weight: 700;
+ color: var(--color-ink);
+}
+.compare-col.individual .compare-col-price {
+ color: #999;
+ text-decoration: line-through;
+ text-decoration-thickness: 1.5px;
+ text-decoration-color: #C8102E;
+}
+.compare-col.subscription .compare-col-price {
+ color: var(--color-forest);
+}
+.compare-col-sub {
+ font-size: 11px;
+ color: var(--color-ink-muted);
+ margin-top: 4px;
+}
+.compare-arrow {
+ font-size: 24px;
+ color: var(--color-gold-soft);
+ font-weight: 300;
+}
+.compare-savings {
+ margin-top: 16px;
+ padding: 10px 14px;
+ background: linear-gradient(95deg, rgba(212,169,59,0.12), rgba(15,61,46,0.06));
+ border-radius: 10px;
+ text-align: center;
+ font-size: 13.5px;
+ color: var(--color-forest);
+ font-weight: 600;
+}
+.compare-savings strong {
+ color: #C8102E;
+ font-size: 1.15em;
+}
+.compare-firstmonth {
+ margin-top: 8px;
+ padding: 8px 12px;
+ background: rgba(212,169,59,0.18);
+ border-radius: 8px;
+ text-align: center;
+ font-size: 12px;
+ color: var(--color-forest);
+}
+.compare-firstmonth strong { color: #C8102E; }
+.compare-footnote {
+ text-align: center;
+ margin-top: 32px;
+ font-size: 11.5px;
+ color: var(--color-ink-muted);
+ line-height: 1.7;
+}
+@media (max-width: 640px) {
+ .compare-row { padding: 22px 18px; }
+ .compare-cols { grid-template-columns: 1fr; gap: 8px; text-align: center; }
+ .compare-arrow { transform: rotate(90deg); font-size: 20px; }
+ .compare-col-price { font-size: 22px; }
+}
+</style>
+<section class="compare-section" id="compare">
+ <div class="container">
+ <div class="compare-head">
+ <span class="eyebrow text-gold has-dash">— Value Comparison —</span>
+ <h2>個別購入 vs 定期便、<br/>どれだけお得？</h2>
+ <p>毎月同じ内容を個別注文すると、こんなに違います。<br/>定期便なら、自動でお届け＋送料無料＋カスタマイズ自由。</p>
+ </div>
+
+ <div class="compare-grid">
+ <!-- ミニ -->
+ <article class="compare-row">
+ <div class="compare-row-head">
+ <div class="compare-plan-name">ミニ</div>
+ <div class="compare-plan-spec">1kg · 5品 · 鶏600g+牛400g</div>
+ </div>
+ <div class="compare-cols">
+ <div class="compare-col individual">
+ <div class="compare-col-label">単品×12ヶ月</div>
+ <div class="compare-col-price">¥88,800</div>
+ <div class="compare-col-sub">年間 (¥7,400/月)</div>
+ </div>
+ <div class="compare-arrow">→</div>
+ <div class="compare-col subscription">
+ <div class="compare-col-label">定期便×12ヶ月</div>
+ <div class="compare-col-price">¥80,270</div>
+ <div class="compare-col-sub">初月50%OFF含む</div>
+ </div>
+ </div>
+ <div class="compare-savings">年間 <strong>¥8,530 節約</strong>（初月50%OFF + 毎月¥420 + 送料無料）</div>
+ <div class="compare-firstmonth">🎁 今月入会で <strong>初月¥3,490</strong>（通常¥6,980 → 50%OFF）</div>
+ </article>
+
+ <!-- スターター -->
+ <article class="compare-row">
+ <div class="compare-row-head">
+ <div class="compare-plan-name">スターター <span style="font-size:11px;color:#D4A93B;font-weight:700;letter-spacing:0.08em;margin-left:6px;">人気 No.1</span></div>
+ <div class="compare-plan-spec">1.6kg · 8品 · 鶏800g+牛800g</div>
+ </div>
+ <div class="compare-cols">
+ <div class="compare-col individual">
+ <div class="compare-col-label">単品×12ヶ月</div>
+ <div class="compare-col-price">¥154,800</div>
+ <div class="compare-col-sub">年間 (¥12,900/月)</div>
+ </div>
+ <div class="compare-arrow">→</div>
+ <div class="compare-col subscription">
+ <div class="compare-col-label">定期便×12ヶ月</div>
+ <div class="compare-col-price">¥147,200</div>
+ <div class="compare-col-sub">初月50%OFF含む</div>
+ </div>
+ </div>
+ <div class="compare-savings">年間 <strong>¥7,600 節約</strong> + 買い忘れゼロ + 自動カスタマイズ</div>
+ <div class="compare-firstmonth">🎁 今月入会で <strong>初月¥6,400</strong>（通常¥12,800 → 50%OFF）</div>
+ </article>
+
+ <!-- レギュラー -->
+ <article class="compare-row">
+ <div class="compare-row-head">
+ <div class="compare-plan-name">レギュラー</div>
+ <div class="compare-plan-spec">3.2kg · 16品 · 鶏1.6kg+牛1.6kg</div>
+ </div>
+ <div class="compare-cols">
+ <div class="compare-col individual">
+ <div class="compare-col-label">単品×12ヶ月</div>
+ <div class="compare-col-price">¥309,600</div>
+ <div class="compare-col-sub">年間 (¥25,800/月)</div>
+ </div>
+ <div class="compare-arrow">→</div>
+ <div class="compare-col subscription">
+ <div class="compare-col-label">定期便×12ヶ月</div>
+ <div class="compare-col-price">¥280,600</div>
+ <div class="compare-col-sub">初月50%OFF含む</div>
+ </div>
+ </div>
+ <div class="compare-savings">年間 <strong>¥29,000 節約</strong> + 有機JAS優先案内（月20頭限定）</div>
+ <div class="compare-firstmonth">🎁 今月入会で <strong>初月¥12,200</strong>（通常¥24,400 → 50%OFF）</div>
+ </article>
+ </div>
+
+ <p class="compare-footnote">
+ ※ 個別購入価格は同等の200g単品商品をそれぞれ正規価格で12ヶ月購入した場合の合計です。<br/>
+ ※ 定期便は初月50%OFF（初回限定）+ 2ヶ月目以降通常価格×11ヶ月で算出。<br/>
+ ※ いつでもスキップ・カスタマイズ可。3ヶ月以降は解約自由。
+ </p>
+
+ <div style="text-align:center;margin-top:36px;">
+ <a href="#plans" class="btn btn-gold" style="font-size:14px;padding:14px 32px;">プランを選んで始める →</a>
  </div>
  </div>
 </section>
@@ -2850,6 +3219,100 @@ selectPlan(currentPlan);
  } catch (e) {
    /* canMakePayments() がエラーになる環境はサポート外として非表示のまま */
  }
+})();
+</script>
+
+<!-- ========= モバイル スティッキー CTA（月末50%OFF訴求） ========= -->
+<style>
+.sub-sticky-cta {
+ position: fixed;
+ bottom: 0; left: 0; right: 0;
+ z-index: 950;
+ background: linear-gradient(95deg, #0F3D2E, #1a5742);
+ color: white;
+ padding: 12px 16px;
+ display: none;
+ align-items: center;
+ justify-content: space-between;
+ gap: 12px;
+ box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+ border-top: 2px solid #D4A93B;
+}
+.sub-sticky-cta.visible { display: flex; }
+.sub-sticky-cta-text {
+ flex: 1; min-width: 0;
+ font-family: var(--font-jp);
+}
+.sub-sticky-cta-main {
+ font-size: 12.5px;
+ font-weight: 600;
+ line-height: 1.3;
+ margin-bottom: 2px;
+}
+.sub-sticky-cta-main strong {
+ color: #FFD773;
+}
+.sub-sticky-cta-sub {
+ font-size: 10.5px;
+ color: rgba(255,255,255,0.75);
+}
+.sub-sticky-cta-btn {
+ background: #D4A93B;
+ color: #0F3D2E;
+ padding: 10px 18px;
+ border-radius: 999px;
+ text-decoration: none;
+ font-size: 12.5px;
+ font-weight: 700;
+ white-space: nowrap;
+ flex-shrink: 0;
+ transition: background 0.25s;
+}
+.sub-sticky-cta-btn:hover { background: #FFD773; }
+@media (max-width: 768px) {
+ .sub-sticky-cta.visible { display: flex; }
+}
+@media (min-width: 769px) {
+ .sub-sticky-cta { display: none !important; }
+}
+body.has-sub-sticky { padding-bottom: 64px; }
+</style>
+<div class="sub-sticky-cta" id="subStickyCta">
+ <div class="sub-sticky-cta-text">
+ <div class="sub-sticky-cta-main">今月入会で <strong>初月50%OFF</strong></div>
+ <div class="sub-sticky-cta-sub"><span id="subStickyDays">月末まで残り —日</span></div>
+ </div>
+ <a href="#plans" class="sub-sticky-cta-btn">プランを選ぶ →</a>
+</div>
+<script>
+(function(){
+ const el = document.getElementById('subStickyCta');
+ const daysEl = document.getElementById('subStickyDays');
+ if (!el || !daysEl) return;
+ // 200px スクロール後に表示
+ function onScroll() {
+ if (window.scrollY > 240) {
+ if (!el.classList.contains('visible')) {
+ el.classList.add('visible');
+ document.body.classList.add('has-sub-sticky');
+ }
+ } else {
+ if (el.classList.contains('visible')) {
+ el.classList.remove('visible');
+ document.body.classList.remove('has-sub-sticky');
+ }
+ }
+ }
+ function updateDays() {
+ const now = new Date();
+ const deadline = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0);
+ const days = Math.max(0, Math.floor((deadline - now) / 86400000));
+ daysEl.textContent = days > 0 ? '月末まで残り ' + days + '日' : '本日締切！';
+ }
+ updateDays();
+ setInterval(updateDays, 600000);
+ window.addEventListener('scroll', onScroll, { passive: true });
+ onScroll();
 })();
 </script>
 
