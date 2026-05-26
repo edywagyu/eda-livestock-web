@@ -425,21 +425,97 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  letter-spacing: 0.02em;
 }
 .sub-plan-items {
- font-size: 12.5px; line-height: 1.7;
+ padding: 0;
+ background: transparent;
+ margin-bottom: 18px;
+ flex: 1;
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+}
+.sub-plan-items b { display: none; }
+
+/* === Savings Hero (大きな年間お得額) === */
+.sub-plan-savings-hero {
+ background: linear-gradient(135deg, #FFF9EE 0%, #FFF1D6 100%);
+ border: 1px solid rgba(212,169,59,0.42);
+ border-radius: 12px;
+ padding: 16px 18px;
+ text-align: center;
+ margin-bottom: 18px;
+ line-height: 1.15;
+}
+.sub-plan-savings-label {
+ display: block;
+ font-size: 11px;
  color: var(--color-ink-muted);
- padding: 14px 16px;
+ letter-spacing: 0.06em;
+ margin-bottom: 4px;
+}
+.sub-plan-savings-amount {
+ display: inline-block;
+ font-family: var(--font-numeric);
+ font-weight: 700;
+ color: #C8102E;
+ letter-spacing: -0.01em;
+ line-height: 1;
+}
+.sub-plan-card[data-plan="starter"] .sub-plan-savings-amount { font-size: 30px; }
+.sub-plan-card[data-plan="regular"] .sub-plan-savings-amount { font-size: 36px; }
+.sub-plan-card[data-plan="volume"] .sub-plan-savings-amount { font-size: 42px; }
+.sub-plan-savings-unit {
+ display: inline-block;
+ font-size: 14px;
+ color: var(--color-ink);
+ font-weight: 700;
+ margin-left: 4px;
+ vertical-align: baseline;
+}
+
+/* === 牛/鶏 グループ === */
+.meat-group {
  background: var(--color-paper);
  border-radius: 10px;
- margin-bottom: 20px;
- flex: 1;
+ padding: 12px 14px;
 }
-.sub-plan-items b {
- display: block;
- font-size: 11.5px;
- color: var(--color-forest);
- letter-spacing: 0.04em;
+.meat-group--beef { border-left: 3px solid #B91C1C; }
+.meat-group--chicken { border-left: 3px solid #D4A93B; }
+.meat-group-head {
+ display: flex;
+ align-items: center;
+ gap: 8px;
  margin-bottom: 6px;
 }
+.meat-group-icon { font-size: 14px; }
+.meat-group-name {
+ font-family: var(--font-jp);
+ font-weight: 700;
+ color: var(--color-forest);
+ font-size: 12.5px;
+ letter-spacing: 0.04em;
+}
+.meat-group-weight {
+ margin-left: auto;
+ font-family: var(--font-numeric);
+ font-size: 11.5px;
+ color: var(--color-gold-soft);
+ font-weight: 600;
+}
+.meat-group-items {
+ font-size: 11.5px;
+ line-height: 1.6;
+ color: var(--color-ink-muted);
+ padding-left: 22px;
+}
+
+.sub-plan-note {
+ margin-top: 10px;
+ font-size: 10.5px;
+ color: var(--color-ink-muted);
+ line-height: 1.55;
+ text-align: center;
+}
+.sub-plan-note a { color: var(--color-forest); text-decoration: underline; }
 
 /* ====== プランスペック一覧 (合計/商品/産地/...) ====== */
 .sub-plan-spec {
@@ -2124,8 +2200,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="why-only-eyebrow">WHY ONLY EDA</span>
  <h2>無投薬・オーガニック専用の定期便は、<br/><span class="accent">日本で江田畜産だけ。</span></h2>
  <p class="why-only-lead">
- 抗生物質・ホルモン剤を一切使わず、自社農場で一貫飼育した国産和牛＋平飼い鶏。<br/>
- それを毎月「個人のご家庭にお届けする定期便」として運営しているのは、日本で当社1社のみです。
+ 抗生物質・ホルモン剤を使わない国産和牛と平飼い鶏を、<br/>
+ 毎月「個人のご家庭にお届けする定期便」として運営しているのは、日本で当社のみです。
  </p>
  </div>
 
@@ -2133,15 +2209,15 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <article class="why-only-stat">
  <div class="why-only-stat-icon">🇯🇵</div>
  <div class="why-only-stat-number">100<span class="unit">%</span></div>
- <div class="why-only-stat-label">国産 + 自社農場</div>
- <div class="why-only-stat-desc">和牛は宮崎、平飼い鶏は大分。<br/>すべて産地・農家まで追跡可能。</div>
+ <div class="why-only-stat-label">国産</div>
+ <div class="why-only-stat-desc">和牛は宮崎・江田畜産で。<br/>平飼い鶏は大分の信頼できる生産者と。</div>
  </article>
 
  <article class="why-only-stat">
  <div class="why-only-stat-icon">💊</div>
  <div class="why-only-stat-number">0<span class="unit">回</span></div>
  <div class="why-only-stat-label">抗生物質・ホルモン剤</div>
- <div class="why-only-stat-desc">出生から出荷まで投薬ゼロ。<br/>子ども・妊婦さんにも安心。</div>
+ <div class="why-only-stat-desc">投薬を行わない飼育プログラム。<br/>子ども・妊婦さんにも安心。</div>
  </article>
 
  <article class="why-only-stat">
@@ -2179,29 +2255,39 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <article class="sub-plan-card" data-plan="starter">
  <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
  <div class="sub-plan-name">ミニ</div>
- <div class="sub-plan-target">1-2人家族 / 1kg / 全 5品（鶏 600g + 牛 400g）</div>
- <ul class="sub-plan-spec">
- <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
- <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
- <li><b>加工場所</b><span>宮崎</span></li>
- <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
- <li><b>保管方法</b><span>冷凍</span></li>
- </ul>
- <div class="sub-plan-items">
- <b>お届け例:</b><br/>
- サーロインステーキ 200g<br/>
- 赤身スライス 200g<br/>
- 鶏モモ 200g<br/>
- 鶏ムネ 200g<br/>
- 鶏ミンチ 200g
+ <div class="sub-plan-target">1-2人家族 · 1kg / 全 5品</div>
+
+ <div class="sub-plan-savings-hero">
+ <span class="sub-plan-savings-label">年間およそ</span>
+ <span class="sub-plan-savings-amount">¥8,000</span><span class="sub-plan-savings-unit">お得</span>
  </div>
+
+ <div class="sub-plan-items">
+ <div class="meat-group meat-group--beef">
+ <div class="meat-group-head">
+ <span class="meat-group-icon">🥩</span>
+ <span class="meat-group-name">牛</span>
+ <span class="meat-group-weight">400g / 2品</span>
+ </div>
+ <div class="meat-group-items">サーロイン 200g · 赤身スライス 200g</div>
+ </div>
+ <div class="meat-group meat-group--chicken">
+ <div class="meat-group-head">
+ <span class="meat-group-icon">🍗</span>
+ <span class="meat-group-name">鶏</span>
+ <span class="meat-group-weight">600g / 3品</span>
+ </div>
+ <div class="meat-group-items">モモ 200g · ムネ 200g · ミンチ 200g</div>
+ </div>
+ </div>
+
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥6,980</div>
  <div class="sub-plan-price">¥3,490<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月 ¥3,490 OFF + 送料無料 + 年間およそ ¥8,000 お得</div>
- <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
- <strong>2ヶ月目以降:</strong> ¥6,980/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
+ <div class="sub-plan-savings">🎁 初月50%OFF + 送料無料</div>
+ <div class="sub-plan-note">
+ 2ヶ月目以降 ¥6,980/月 · 最低継続3ヶ月<br/>
+ <a href="#terms">ご利用規約</a>
  </div>
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
@@ -2211,31 +2297,39 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="sub-plan-tag">人気 No.1</span>
  <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
  <div class="sub-plan-name">スターター</div>
- <div class="sub-plan-target">3-4人家族 / 1.6kg / 全 8品（鶏 800g + 牛 800g）</div>
- <ul class="sub-plan-spec">
- <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
- <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
- <li><b>加工場所</b><span>宮崎</span></li>
- <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
- <li><b>保管方法</b><span>冷凍</span></li>
- </ul>
- <div class="sub-plan-items">
- <b>お届け例:</b><br/>
- サーロインステーキ 200g<br/>
- 赤身ステーキ 200g<br/>
- 赤身スライス 200g<br/>
- 切り落とし 200g<br/>
- 鶏モモ 200g×2<br/>
- 鶏ムネ 200g<br/>
- 鶏ミンチ 200g
+ <div class="sub-plan-target">3-4人家族 · 1.6kg / 全 8品</div>
+
+ <div class="sub-plan-savings-hero">
+ <span class="sub-plan-savings-label">年間およそ</span>
+ <span class="sub-plan-savings-amount">¥20,000</span><span class="sub-plan-savings-unit">お得</span>
  </div>
+
+ <div class="sub-plan-items">
+ <div class="meat-group meat-group--beef">
+ <div class="meat-group-head">
+ <span class="meat-group-icon">🥩</span>
+ <span class="meat-group-name">牛</span>
+ <span class="meat-group-weight">800g / 4品</span>
+ </div>
+ <div class="meat-group-items">サーロイン 200g · 赤身ステーキ 200g · 赤身スライス 200g · 切り落とし 200g</div>
+ </div>
+ <div class="meat-group meat-group--chicken">
+ <div class="meat-group-head">
+ <span class="meat-group-icon">🍗</span>
+ <span class="meat-group-name">鶏</span>
+ <span class="meat-group-weight">800g / 4品</span>
+ </div>
+ <div class="meat-group-items">モモ 200g×2 · ムネ 200g · ミンチ 200g</div>
+ </div>
+ </div>
+
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥12,800</div>
  <div class="sub-plan-price">¥6,400<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月 ¥6,400 OFF + 買い忘れゼロ + 年間およそ ¥20,000 お得</div>
- <div style="margin-top:12px;padding:10px 12px;background:rgba(212,169,59,0.10);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
- <strong>2ヶ月目以降:</strong> ¥12,800/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
+ <div class="sub-plan-savings">🎁 初月50%OFF + 買い忘れゼロ</div>
+ <div class="sub-plan-note">
+ 2ヶ月目以降 ¥12,800/月 · 最低継続3ヶ月<br/>
+ <a href="#terms">ご利用規約</a>
  </div>
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
@@ -2245,38 +2339,39 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="sub-plan-tag sub-plan-tag--vip">👑 大家族</span>
  <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
  <div class="sub-plan-name">レギュラー</div>
- <div class="sub-plan-target">5人以上 / 3.2kg / 全 16品（鶏 1.6kg + 牛 1.6kg）</div>
- <ul class="sub-plan-spec">
- <li><b>商　　品</b><span>和牛 + 鶏肉</span></li>
- <li><b>産　　地</b><span>肉(宮崎) / 鶏(大分)</span></li>
- <li><b>加工場所</b><span>宮崎</span></li>
- <li><b>飼　　料</b><span>抗生物質 / ホルモンフリー</span></li>
- <li><b>保管方法</b><span>冷凍</span></li>
- </ul>
+ <div class="sub-plan-target">5人以上 · 3.2kg / 全 16品</div>
+
+ <div class="sub-plan-savings-hero">
+ <span class="sub-plan-savings-label">年間およそ</span>
+ <span class="sub-plan-savings-amount">¥45,000</span><span class="sub-plan-savings-unit">お得</span>
+ </div>
+
  <div class="sub-plan-items">
- <b>お届け例:</b><br/>
- サーロインステーキ 200g×2<br/>
- 赤身ステーキ 200g×2<br/>
- 赤身スライス 200g×2<br/>
- 切り落とし 200g×2<br/>
- 鶏モモ 200g×3<br/>
- 鶏ムネ 200g×3<br/>
- 鶏ミンチ 200g×2
+ <div class="meat-group meat-group--beef">
+ <div class="meat-group-head">
+ <span class="meat-group-icon">🥩</span>
+ <span class="meat-group-name">牛</span>
+ <span class="meat-group-weight">1.6kg / 8品</span>
  </div>
- <div class="sub-plan-vip-perk-row">
- <span>🌿</span>
- <div>
- <strong>有機JAS 黒毛和牛 優先案内</strong>
- <small>2026年夏 解禁・月20頭限定の優先購入権</small>
+ <div class="meat-group-items">サーロイン 200g×2 · 赤身ステーキ 200g×2 · 赤身スライス 200g×2 · 切り落とし 200g×2</div>
+ </div>
+ <div class="meat-group meat-group--chicken">
+ <div class="meat-group-head">
+ <span class="meat-group-icon">🍗</span>
+ <span class="meat-group-name">鶏</span>
+ <span class="meat-group-weight">1.6kg / 8品</span>
+ </div>
+ <div class="meat-group-items">モモ 200g×3 · ムネ 200g×3 · ミンチ 200g×2</div>
  </div>
  </div>
+
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">通常 ¥24,400</div>
  <div class="sub-plan-price">¥12,200<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月 ¥12,200 OFF + 有機JAS優先案内 + 年間およそ ¥45,000 お得</div>
- <div style="margin-top:12px;padding:10px 12px;background:rgba(15,61,46,0.04);border-radius:8px;font-size:11px;color:#1A1A1A;line-height:1.6;text-align:left;">
- <strong>2ヶ月目以降:</strong> ¥24,400/月 (税込・送料込)<br>
- <strong>最低継続:</strong> 3ヶ月（詳細は <a href="#terms" style="color:var(--color-forest);text-decoration:underline;">ご利用規約</a>）
+ <div class="sub-plan-savings">🎁 初月50%OFF + 送料無料</div>
+ <div class="sub-plan-note">
+ 2ヶ月目以降 ¥24,400/月 · 最低継続3ヶ月<br/>
+ <a href="#terms">ご利用規約</a>
  </div>
  </div>
  <div class="sub-plan-select-btn">このプランを選ぶ →</div>
@@ -2285,172 +2380,12 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 </section>
 
-<!-- ========= 定期便のお得感（段階的） ========= -->
-<style>
-.compare-section {
- background: linear-gradient(180deg, #FFF9EE 0%, #FFFAF0 100%);
- padding: clamp(48px, 7vw, 76px) 0;
- border-top: 1px solid #F0E5D0;
- border-bottom: 1px solid #F0E5D0;
-}
-.compare-head { text-align: center; margin-bottom: 36px; }
-.compare-head h2 {
- font-family: var(--font-jp-serif);
- font-size: clamp(22px, 3vw, 32px);
- color: var(--color-forest);
- margin: 14px 0 10px;
- line-height: 1.4;
-}
-.compare-head p {
- font-size: 13.5px;
- color: var(--color-ink-muted);
- line-height: 1.8;
- max-width: 560px;
- margin: 0 auto;
-}
-.compare-grid {
- display: grid;
- grid-template-columns: repeat(3, 1fr);
- gap: 18px;
- max-width: 980px;
- margin: 0 auto;
-}
-@media (max-width: 760px) {
- .compare-grid { grid-template-columns: 1fr; gap: 14px; }
-}
-.compare-card {
- background: white;
- border: 1px solid #F0E5D0;
- border-radius: 14px;
- padding: 24px 22px;
- text-align: center;
- transition: transform 0.3s, box-shadow 0.3s;
- position: relative;
- display: flex;
- flex-direction: column;
-}
-.compare-card:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(15,61,46,0.08); }
-.compare-card--featured {
- border-color: #D4A93B;
- background: linear-gradient(180deg, #FFF9EE 0%, white 60%);
- box-shadow: 0 6px 20px rgba(212,169,59,0.18);
-}
-.compare-card-name {
- font-family: var(--font-jp-serif);
- font-size: 18px;
- color: var(--color-forest);
- font-weight: 600;
- margin-bottom: 2px;
-}
-.compare-card-spec {
- font-size: 11.5px;
- color: var(--color-ink-muted);
- letter-spacing: 0.03em;
- margin-bottom: 18px;
-}
-.compare-card-savings {
- font-size: 12px;
- color: var(--color-ink-muted);
- margin-bottom: 4px;
- letter-spacing: 0.04em;
-}
-.compare-card-amount {
- font-family: var(--font-numeric);
- font-weight: 700;
- color: #C8102E;
- line-height: 1.05;
- margin-bottom: 4px;
-}
-.compare-card--s1 .compare-card-amount { font-size: 30px; }
-.compare-card--s2 .compare-card-amount { font-size: 36px; }
-.compare-card--s3 .compare-card-amount { font-size: 44px; }
-.compare-card-unit {
- font-size: 14px;
- color: var(--color-ink);
- font-weight: 600;
- margin-bottom: 16px;
-}
-.compare-card-firstmonth {
- margin-top: auto;
- padding: 10px 12px;
- background: linear-gradient(95deg, rgba(212,169,59,0.16), rgba(15,61,46,0.05));
- border-radius: 8px;
- font-size: 12px;
- color: var(--color-forest);
- line-height: 1.5;
-}
-.compare-card-firstmonth strong { color: #C8102E; font-size: 1.05em; }
-.compare-card-tag {
- position: absolute;
- top: -10px; left: 50%;
- transform: translateX(-50%);
- background: #D4A93B;
- color: #0F3D2E;
- font-size: 10.5px;
- font-weight: 700;
- letter-spacing: 0.08em;
- padding: 3px 12px;
- border-radius: 999px;
-}
-.compare-disclaimer {
- max-width: 760px;
- margin: 28px auto 0;
- text-align: center;
- font-size: 11px;
- color: #999;
- line-height: 1.7;
- font-style: italic;
-}
-</style>
-<section class="compare-section" id="compare">
+<!-- ========= プラン下の補足注記 ========= -->
+<section style="background:#FFFAF0;padding:20px 0;border-top:1px solid #F0E5D0;">
  <div class="container">
- <div class="compare-head">
- <span class="eyebrow text-gold has-dash">— Value Comparison —</span>
- <h2>定期便なら、これだけお得。</h2>
- <p>同等の内容を単品で買い続けた場合と比較して、年間でこれくらいの差が出ます。</p>
- </div>
-
- <div class="compare-grid">
- <!-- ミニ -->
- <article class="compare-card compare-card--s1">
- <div class="compare-card-name">ミニ</div>
- <div class="compare-card-spec">1kg · 5品</div>
- <div class="compare-card-savings">年間でおよそ</div>
- <div class="compare-card-amount">¥8,000</div>
- <div class="compare-card-unit">お得</div>
- <div class="compare-card-firstmonth">🎁 初月 <strong>¥3,490</strong>（通常¥6,980 / 50%OFF）</div>
- </article>
-
- <!-- スターター -->
- <article class="compare-card compare-card--s2 compare-card--featured">
- <span class="compare-card-tag">人気 No.1</span>
- <div class="compare-card-name">スターター</div>
- <div class="compare-card-spec">1.6kg · 8品</div>
- <div class="compare-card-savings">年間でおよそ</div>
- <div class="compare-card-amount">¥20,000</div>
- <div class="compare-card-unit">お得</div>
- <div class="compare-card-firstmonth">🎁 初月 <strong>¥6,400</strong>（通常¥12,800 / 50%OFF）</div>
- </article>
-
- <!-- レギュラー -->
- <article class="compare-card compare-card--s3">
- <div class="compare-card-name">レギュラー</div>
- <div class="compare-card-spec">3.2kg · 16品</div>
- <div class="compare-card-savings">年間でおよそ</div>
- <div class="compare-card-amount">¥45,000</div>
- <div class="compare-card-unit">お得 + 有機JAS優先案内</div>
- <div class="compare-card-firstmonth">🎁 初月 <strong>¥12,200</strong>（通常¥24,400 / 50%OFF）</div>
- </article>
- </div>
-
- <p class="compare-disclaimer">
- ※ 金額は目安です。お届け内容（部位の組み合わせ・容量・カスタマイズ）や時期によって変動します。<br/>
- ※ 初月50%OFFを含めた、定期便1年継続時のおおよその差額を示しています。
+ <p style="text-align:center;font-size:11px;color:#999;line-height:1.7;font-style:italic;margin:0;max-width:760px;margin:0 auto;">
+ ※ 年間お得額は目安です。お届け内容（部位の組み合わせ・容量・カスタマイズ）や時期によって変動します。初月50%OFF を含めた定期便1年継続時のおおよその差額。
  </p>
-
- <div style="text-align:center;margin-top:32px;">
- <a href="#plans" class="btn btn-gold" style="font-size:14px;padding:14px 32px;">プランを選んで始める →</a>
- </div>
  </div>
 </section>
 
