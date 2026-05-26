@@ -11,21 +11,23 @@
 :root {
  --forest: #0F3D2E;
  --forest-deep: #0A2D21;
+ --forest-darker: #061A12;
  --gold: #D4A93B;
  --gold-light: #FFD773;
- --bone: #F0E5D0;
- --paper: #FFFAF0;
- --ink: #1A1A1A;
- --ink-muted: #6B7280;
+ --gold-soft: #B98F2A;
+ --bone: rgba(212,169,59,0.18);
  --jp: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
  --display: 'Cormorant Garamond', serif;
  --num: 'Inter', -apple-system, sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
- background: linear-gradient(180deg, #FFFAF0 0%, #FFFFFF 100%);
+ background:
+   radial-gradient(circle at 20% 10%, rgba(212,169,59,0.10), transparent 50%),
+   radial-gradient(circle at 80% 90%, rgba(212,169,59,0.06), transparent 50%),
+   linear-gradient(180deg, #0F3D2E 0%, #061A12 100%);
  font-family: var(--num);
- color: var(--ink);
+ color: white;
  width: 390px;
  min-height: 844px;
  -webkit-font-smoothing: antialiased;
@@ -45,30 +47,47 @@ body {
  justify-content: space-between;
  padding-top: 4px;
 }
-.logo {
- font-family: var(--display);
- font-size: 16px;
- font-weight: 700;
- letter-spacing: 0.18em;
- color: var(--forest);
+.brand {
+ display: flex;
+ align-items: center;
+ gap: 10px;
 }
-.logo b {
- color: var(--gold);
- font-size: 11px;
- letter-spacing: 0.24em;
- margin-left: 6px;
+.brand-logo {
+ width: 38px;
+ height: 38px;
+ object-fit: contain;
+ filter: drop-shadow(0 2px 8px rgba(212,169,59,0.4));
+}
+.brand-text {
+ display: flex;
+ flex-direction: column;
+ line-height: 1.1;
+}
+.brand-text .brand-name {
+ font-family: var(--display);
+ font-size: 15px;
  font-weight: 700;
+ letter-spacing: 0.22em;
+ color: var(--gold-light);
+}
+.brand-text .brand-sub {
+ font-family: var(--display);
+ font-size: 9.5px;
+ letter-spacing: 0.28em;
+ color: rgba(255,255,255,0.55);
+ margin-top: 2px;
 }
 .avatar {
  width: 38px; height: 38px;
  border-radius: 50%;
- background: linear-gradient(135deg, var(--gold), #B98F2A);
+ background: linear-gradient(135deg, var(--gold), var(--gold-soft));
  color: var(--forest-deep);
  display: flex; align-items: center; justify-content: center;
  font-family: var(--jp);
  font-weight: 700;
  font-size: 16px;
- box-shadow: 0 4px 12px rgba(212,169,59,0.32);
+ box-shadow: 0 4px 14px rgba(212,169,59,0.5);
+ border: 1.5px solid rgba(212,169,59,0.6);
 }
 
 /* ===== Greeting ===== */
@@ -76,35 +95,38 @@ body {
  font-family: var(--jp);
  font-size: 18px;
  font-weight: 700;
- color: var(--forest);
+ color: white;
  line-height: 1.4;
+ margin-top: 4px;
 }
 .greeting small {
  display: block;
  font-family: var(--num);
  font-size: 11.5px;
- color: var(--ink-muted);
+ color: rgba(255,255,255,0.65);
  font-weight: 500;
  margin-top: 4px;
  letter-spacing: 0.02em;
 }
 .greeting small b {
- color: var(--gold);
+ color: var(--gold-light);
  font-weight: 700;
 }
 
 /* ===== Next Delivery Hero Card ===== */
 .next-card {
  background:
-   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.22) 0%, transparent 50%),
-   linear-gradient(135deg, #0F3D2E 0%, #1a5742 100%);
- border: 1px solid rgba(212,169,59,0.5);
+   radial-gradient(circle at 100% 0%, rgba(212,169,59,0.30) 0%, transparent 50%),
+   linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 100%);
+ border: 1.5px solid rgba(212,169,59,0.5);
  border-radius: 18px;
  padding: 20px 22px;
  color: white;
  position: relative;
  overflow: hidden;
- box-shadow: 0 10px 28px rgba(15,61,46,0.18);
+ box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+ backdrop-filter: blur(12px);
+ -webkit-backdrop-filter: blur(12px);
 }
 .next-card::after {
  content: '';
@@ -112,7 +134,7 @@ body {
  top: -40px; right: -40px;
  width: 120px; height: 120px;
  border-radius: 50%;
- background: radial-gradient(circle, rgba(212,169,59,0.25), transparent 70%);
+ background: radial-gradient(circle, rgba(212,169,59,0.32), transparent 70%);
 }
 .next-card-top {
  display: flex;
@@ -137,7 +159,7 @@ body {
  padding: 3px 10px;
  border-radius: 999px;
  font-weight: 700;
- border: 1px solid rgba(212,169,59,0.4);
+ border: 1px solid rgba(212,169,59,0.5);
 }
 .next-date {
  font-family: var(--jp);
@@ -156,18 +178,18 @@ body {
 }
 .next-time {
  font-size: 12px;
- color: rgba(255,255,255,0.85);
+ color: rgba(255,255,255,0.9);
  margin-bottom: 14px;
 }
 .next-progress {
  padding-top: 14px;
- border-top: 1px solid rgba(212,169,59,0.25);
+ border-top: 1px solid rgba(212,169,59,0.3);
  position: relative;
  z-index: 1;
 }
 .next-progress-label {
  font-size: 10.5px;
- color: rgba(255,255,255,0.7);
+ color: rgba(255,255,255,0.75);
  margin-bottom: 6px;
 }
 .next-progress-bar {
@@ -181,13 +203,14 @@ body {
  width: 60%;
  background: linear-gradient(90deg, var(--gold), var(--gold-light));
  border-radius: 3px;
+ box-shadow: 0 0 12px rgba(212,169,59,0.6);
 }
 .next-progress-text {
  display: flex;
  justify-content: space-between;
  margin-top: 6px;
  font-size: 10px;
- color: rgba(255,255,255,0.7);
+ color: rgba(255,255,255,0.75);
 }
 .next-progress-text b {
  color: var(--gold-light);
@@ -199,7 +222,7 @@ body {
  font-family: var(--display);
  font-size: 10.5px;
  letter-spacing: 0.2em;
- color: var(--ink-muted);
+ color: var(--gold-light);
  font-weight: 700;
  margin: 4px 0 0;
  text-transform: uppercase;
@@ -212,11 +235,12 @@ body {
  gap: 10px;
 }
 .action {
- background: white;
- border: 1px solid var(--bone);
+ background: rgba(255,255,255,0.06);
+ border: 1px solid rgba(212,169,59,0.22);
  border-radius: 14px;
- padding: 14px 14px 14px;
- box-shadow: 0 2px 8px rgba(15,61,46,0.05);
+ padding: 14px 14px;
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
  display: flex;
  flex-direction: column;
  gap: 8px;
@@ -224,15 +248,15 @@ body {
  transition: transform 0.2s;
 }
 .action.featured {
- background: linear-gradient(135deg, #FFF9EE 0%, #FFFCEE 100%);
+ background: linear-gradient(135deg, rgba(212,169,59,0.22) 0%, rgba(212,169,59,0.08) 100%);
  border-color: var(--gold);
- box-shadow: 0 6px 16px rgba(212,169,59,0.18);
+ box-shadow: 0 6px 18px rgba(212,169,59,0.22);
 }
 .action-icon {
  width: 36px; height: 36px;
  border-radius: 10px;
- background: linear-gradient(135deg, rgba(212,169,59,0.2), rgba(212,169,59,0.08));
- border: 1px solid rgba(212,169,59,0.32);
+ background: linear-gradient(135deg, rgba(212,169,59,0.32), rgba(212,169,59,0.12));
+ border: 1px solid rgba(212,169,59,0.4);
  display: flex; align-items: center; justify-content: center;
  font-size: 18px;
 }
@@ -240,22 +264,23 @@ body {
  font-family: var(--jp);
  font-size: 13px;
  font-weight: 700;
- color: var(--forest);
+ color: white;
  line-height: 1.3;
 }
 .action-sub {
  font-size: 10px;
- color: var(--ink-muted);
+ color: rgba(255,255,255,0.7);
  line-height: 1.5;
 }
 
 /* ===== Recent Order ===== */
 .order {
- background: white;
- border: 1px solid var(--bone);
+ background: rgba(255,255,255,0.06);
+ border: 1px solid rgba(212,169,59,0.22);
  border-radius: 14px;
  padding: 14px 16px;
- box-shadow: 0 2px 8px rgba(15,61,46,0.04);
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
 }
 .order-head {
  display: flex;
@@ -264,17 +289,18 @@ body {
  margin-bottom: 10px;
 }
 .order-status {
- background: #E6F4EA;
- color: #1F7A3F;
+ background: rgba(46,160,67,0.20);
+ color: #6BE894;
  font-size: 10px;
  font-weight: 700;
  padding: 3px 10px;
  border-radius: 999px;
+ border: 1px solid rgba(107,232,148,0.35);
 }
 .order-date {
  font-family: var(--num);
  font-size: 11px;
- color: var(--ink-muted);
+ color: rgba(255,255,255,0.65);
  font-weight: 600;
 }
 .order-items {
@@ -299,36 +325,41 @@ body {
  font-family: var(--jp);
  font-size: 12.5px;
  font-weight: 700;
- color: var(--forest);
+ color: white;
 }
 .order-meta {
  font-size: 10.5px;
- color: var(--ink-muted);
+ color: rgba(255,255,255,0.7);
  margin-top: 2px;
 }
 .order-cta {
- background: var(--forest);
- color: white;
+ background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+ color: var(--forest-deep);
  border-radius: 10px;
  padding: 9px 12px;
  font-size: 11.5px;
  font-weight: 700;
  text-align: center;
  font-family: var(--jp);
+ box-shadow: 0 4px 12px rgba(212,169,59,0.3);
 }
 
 /* ===== Rewards ===== */
 .rewards {
- background: linear-gradient(135deg, #FFF9EE 0%, white 100%);
- border: 1px solid rgba(212,169,59,0.4);
+ background:
+   radial-gradient(circle at 100% 100%, rgba(212,169,59,0.18), transparent 60%),
+   rgba(255,255,255,0.06);
+ border: 1px solid rgba(212,169,59,0.32);
  border-radius: 14px;
  padding: 14px 16px;
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
 }
 .rewards-head {
  display: flex;
  align-items: center;
  gap: 8px;
- margin-bottom: 10px;
+ margin-bottom: 12px;
 }
 .rewards-icon {
  font-size: 16px;
@@ -337,16 +368,16 @@ body {
  font-family: var(--jp);
  font-size: 12.5px;
  font-weight: 700;
- color: var(--forest);
+ color: white;
  flex: 1;
 }
 .rewards-count {
  font-family: var(--num);
  font-size: 11px;
  font-weight: 700;
- color: var(--gold);
- background: rgba(212,169,59,0.15);
- padding: 2px 8px;
+ color: var(--forest-deep);
+ background: var(--gold-light);
+ padding: 2px 9px;
  border-radius: 999px;
 }
 .rewards-stages {
@@ -366,33 +397,35 @@ body {
 .stage-dot {
  width: 24px; height: 24px;
  border-radius: 50%;
- background: var(--bone);
- color: var(--ink-muted);
+ background: rgba(255,255,255,0.10);
+ color: rgba(255,255,255,0.5);
  display: flex; align-items: center; justify-content: center;
  font-family: var(--num);
  font-size: 11px;
  font-weight: 700;
- border: 2px solid white;
- box-shadow: 0 0 0 1px var(--bone);
+ border: 2px solid rgba(15,61,46,0.7);
+ box-shadow: 0 0 0 1px rgba(255,255,255,0.10);
 }
 .stage.done .stage-dot {
  background: var(--gold);
  color: var(--forest-deep);
- box-shadow: 0 0 0 1px var(--gold);
+ border-color: rgba(15,61,46,0.7);
+ box-shadow: 0 0 0 1px var(--gold), 0 0 8px rgba(212,169,59,0.4);
 }
 .stage.current .stage-dot {
- background: var(--forest);
- color: var(--gold-light);
- box-shadow: 0 0 0 3px rgba(15,61,46,0.18);
+ background: var(--gold-light);
+ color: var(--forest-deep);
+ border-color: rgba(15,61,46,0.7);
+ box-shadow: 0 0 0 3px rgba(255,215,115,0.3), 0 0 14px rgba(255,215,115,0.6);
 }
 .stage-label {
  font-size: 9px;
- color: var(--ink-muted);
+ color: rgba(255,255,255,0.55);
  white-space: nowrap;
 }
 .stage.done .stage-label,
 .stage.current .stage-label {
- color: var(--forest);
+ color: var(--gold-light);
  font-weight: 700;
 }
 .rewards-stages-wrap {
@@ -403,7 +436,7 @@ body {
  position: absolute;
  top: 11px; left: 18px; right: 18px;
  height: 2px;
- background: var(--bone);
+ background: rgba(255,255,255,0.10);
  z-index: 0;
 }
 .rewards-stages-wrap::after {
@@ -414,34 +447,37 @@ body {
  height: 2px;
  background: var(--gold);
  z-index: 0;
+ box-shadow: 0 0 6px rgba(212,169,59,0.5);
 }
 
 /* ===== Bottom Tab Bar ===== */
 .tabbar {
  position: fixed;
  bottom: 0; left: 0; right: 0;
- background: white;
- border-top: 1px solid var(--bone);
+ background: rgba(10,29,21,0.92);
+ backdrop-filter: blur(16px);
+ -webkit-backdrop-filter: blur(16px);
+ border-top: 1px solid rgba(212,169,59,0.25);
  padding: 10px 8px 18px;
  display: grid;
  grid-template-columns: repeat(4, 1fr);
- box-shadow: 0 -4px 16px rgba(15,61,46,0.04);
+ box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
 }
 .tab {
  display: flex;
  flex-direction: column;
  align-items: center;
  gap: 3px;
- color: var(--ink-muted);
+ color: rgba(255,255,255,0.5);
  font-size: 9.5px;
  font-family: var(--jp);
  font-weight: 600;
 }
 .tab.active {
- color: var(--forest);
+ color: var(--gold-light);
 }
 .tab.active .tab-icon {
- color: var(--gold);
+ filter: drop-shadow(0 0 6px rgba(255,215,115,0.5));
 }
 .tab-icon {
  font-size: 20px;
@@ -453,7 +489,13 @@ body {
 
 <!-- Top app header -->
 <div class="app-header">
- <div class="logo">EDA<b>MYPAGE</b></div>
+ <div class="brand">
+ <img class="brand-logo" src="public/images/logo/eda-livestock-logo-transparent.png" alt="江田畜産">
+ <div class="brand-text">
+ <span class="brand-name">EDA</span>
+ <span class="brand-sub">MYPAGE</span>
+ </div>
+ </div>
  <div class="avatar">江</div>
 </div>
 
