@@ -179,7 +179,7 @@
   border-bottom: 1px solid rgba(212,169,59,0.2);
 }
 .eda-mm-head strong {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
   letter-spacing: 0.22em;
   font-size: 13px;
   color: #D4A93B;
@@ -197,7 +197,7 @@
   padding: 14px 22px;
   color: #fff;
   text-decoration: none;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 14.5px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -217,7 +217,7 @@
   display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 12px 18px;
   border-radius: 26px;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 13.5px;
   font-weight: 700;
   text-decoration: none;
@@ -364,7 +364,7 @@
   box-shadow: 0 8px 24px rgba(15,61,46,0.35), 0 2px 8px rgba(0,0,0,0.12);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(.16,1,.3,1);
-  font-family: 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 .eda-floating-phone:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,61,46,0.45); }
 .eda-floating-phone-icon {
@@ -374,7 +374,7 @@
 }
 .eda-floating-phone-text { display: flex; flex-direction: column; line-height: 1.2; }
 .eda-floating-phone-text strong { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: #D4A93B; }
-.eda-floating-phone-text .num { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; margin-top: 2px; font-family: 'Inter', sans-serif; }
+.eda-floating-phone-text .num { font-size: 14px; font-weight: 700; letter-spacing: 0.02em; margin-top: 2px; font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif; }
 @media (max-width: 720px) {
   .eda-floating-phone {
     right: 14px; bottom: 14px;

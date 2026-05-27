@@ -6,7 +6,7 @@
 <title>MyPage Preview — 江田畜産</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
  --forest: #0F3D2E;
@@ -15,9 +15,9 @@
  --gold: #D4A93B;
  --gold-light: #FFD773;
  --gold-soft: #B98F2A;
- --jp: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
- --display: 'Cormorant Garamond', serif;
- --num: 'Inter', -apple-system, sans-serif;
+ --jp: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+ --display: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+ --num: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -25,7 +25,7 @@ html, body {
    radial-gradient(circle at 20% 8%, rgba(212,169,59,0.10), transparent 50%),
    radial-gradient(circle at 80% 92%, rgba(212,169,59,0.06), transparent 50%),
    linear-gradient(180deg, #0F3D2E 0%, #061A12 100%);
- font-family: var(--num);
+ font-family: var(--font-numeric);
  color: white;
  width: 390px;
  min-height: 928px; /* iPhone phone screen aspect (282:672 ≈ 0.42) と一致 */
@@ -63,14 +63,14 @@ body {
  line-height: 1.1;
 }
 .brand-name {
- font-family: var(--display);
+ font-family: var(--font-display);
  font-size: 14px;
  font-weight: 700;
  letter-spacing: 0.22em;
  color: var(--gold-light);
 }
 .brand-sub {
- font-family: var(--display);
+ font-family: var(--font-display);
  font-size: 9px;
  letter-spacing: 0.28em;
  color: rgba(255,255,255,0.55);
@@ -115,7 +115,7 @@ body {
  top: 12px; right: 14px;
  background: var(--gold);
  color: var(--forest-deep);
- font-family: var(--display);
+ font-family: var(--font-display);
  font-size: 9px;
  letter-spacing: 0.16em;
  padding: 3px 9px;
@@ -137,7 +137,7 @@ body {
  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
  color: var(--forest-deep);
  display: flex; align-items: center; justify-content: center;
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-weight: 700;
  font-size: 20px;
  box-shadow: 0 4px 14px rgba(212,169,59,0.5);
@@ -155,7 +155,7 @@ body {
  margin-bottom: 2px;
 }
 .welcome-name {
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 18px;
  font-weight: 700;
  color: white;
@@ -174,7 +174,7 @@ body {
 }
 .welcome-stat-num {
  display: block;
- font-family: var(--display);
+ font-family: var(--font-display);
  font-size: 19px;
  font-weight: 700;
  color: var(--gold-light);
@@ -207,7 +207,7 @@ body {
 .perks-icon { font-size: 14px; }
 .perks-text {
  flex: 1;
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 11.5px;
  color: rgba(255,255,255,0.92);
  line-height: 1.4;
@@ -237,7 +237,7 @@ body {
 .tab {
  flex-shrink: 0;
  padding: 8px 14px;
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 11.5px;
  font-weight: 600;
  color: rgba(255,255,255,0.55);
@@ -259,7 +259,7 @@ body {
 
 /* ===== Section label ===== */
 .section-label {
- font-family: var(--display);
+ font-family: var(--font-display);
  font-size: 10px;
  letter-spacing: 0.22em;
  color: var(--gold-light);
@@ -286,7 +286,7 @@ body {
  margin-bottom: 8px;
 }
 .next-label {
- font-family: var(--display);
+ font-family: var(--font-display);
  font-size: 9.5px;
  letter-spacing: 0.22em;
  color: var(--gold-light);
@@ -295,7 +295,7 @@ body {
 .next-plan-badge {
  background: rgba(212,169,59,0.25);
  color: var(--gold-light);
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 9.5px;
  padding: 2px 8px;
  border-radius: 999px;
@@ -309,14 +309,14 @@ body {
  margin-bottom: 4px;
 }
 .next-date {
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 22px;
  font-weight: 700;
  color: white;
  line-height: 1;
 }
 .next-date b {
- font-family: var(--num);
+ font-family: var(--font-numeric);
  color: var(--gold-light);
  font-size: 18px;
  margin-right: 2px;
@@ -385,7 +385,7 @@ body {
  font-size: 15px;
 }
 .action-title {
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 12px;
  font-weight: 700;
  color: white;
@@ -422,7 +422,7 @@ body {
  border: 1px solid rgba(107,232,148,0.32);
 }
 .order-date {
- font-family: var(--num);
+ font-family: var(--font-numeric);
  font-size: 10px;
  color: rgba(255,255,255,0.55);
  font-weight: 600;
@@ -444,7 +444,7 @@ body {
  flex: 1;
 }
 .order-title {
- font-family: var(--jp);
+ font-family: var(--font-jp);
  font-size: 11.5px;
  font-weight: 700;
  color: white;

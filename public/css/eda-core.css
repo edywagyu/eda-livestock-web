@@ -19,15 +19,15 @@
   --color-red: #C8102E;
   --color-line: rgba(212, 169, 59, 0.18);
 
-  /* Fonts — Hiragino fallback で Noto Sans JP 削減 */
-  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
-  --font-jp-serif: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-  --font-jp: 'Hiragino Kaku Gothic ProN', 'Yu Gothic Medium', system-ui, sans-serif;
-  --font-body: 'Inter', 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
+  /* === Fonts: サイト全体で 2 種類のみ ===
+     1. Shippori Mincho (serif) — display, heading, large display Japanese
+     2. Inter + Noto Sans JP (sans) — body, UI, numeric */
+  --font-display: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+  --font-jp-serif: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+  --font-jp: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-numeric: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'SF Mono', 'Monaco', 'Menlo', monospace;
-  /* === Numeric: 価格・数字は可読性最優先 ===
-     Cormorant italic は装飾向き。価格・カウンタには SF Pro / Inter */
-  --font-numeric: 'Inter', -apple-system, 'SF Pro Display', 'Hiragino Kaku Gothic ProN', system-ui, sans-serif;
 
   /* Easing */
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);

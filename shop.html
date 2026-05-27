@@ -41,11 +41,11 @@
  --color-ink-muted: #5C5C5C;
  --color-red: #C8102E;
  --color-line: rgba(212, 169, 59, 0.18);
- --font-display: 'Cormorant Garamond', 'Shippori Mincho', serif; /* タイトル・装飾用のみ */
- --font-numeric: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+ --font-display: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif; /* タイトル・装飾用のみ */
+ --font-numeric: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
  --font-body: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
- --font-jp: 'Noto Sans JP', 'Hiragino Sans', -apple-system, sans-serif;
- --font-jp-serif: 'Shippori Mincho', 'Yu Mincho', 'YuMincho', serif;
+ --font-jp: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+ --font-jp-serif: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  --tracking-tight: -0.01em;
  --tracking-wide: 0.04em;
  --tracking-wider: 0.12em;
@@ -5959,7 +5959,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .shop-proof-card::before {
  content: '"';
- font-family: 'Georgia', serif;
+ font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  font-size: 84px;
  color: var(--color-gold);
  opacity: 0.25;
@@ -9289,8 +9289,8 @@ body.is-member .product-card--organic .org-chk-lock {
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
 <a href="#main" class="skip-link">本文へスキップ</a>
@@ -10772,7 +10772,7 @@ function toggleUnboxingSound() {
   z-index: 1;
 }
 .quiz-intro-title {
-  font-family: var(--font-jp-serif), serif;
+  font-family: var(--font-jp-serif);
   font-size: clamp(28px, 5.5vw, 42px);
   color: var(--color-forest);
   margin: 0 0 16px;
@@ -13577,7 +13577,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 }
 .coupon-pop.minimized .coupon-pop-head { margin: 0; }
 .coupon-pop-eyebrow {
- font-family: 'Cormorant Garamond', 'Shippori Mincho', 'Yu Mincho', serif;
+ font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  font-size: 10px;
  letter-spacing: 0.12em;
  color: #D4A93B;
@@ -13610,14 +13610,14 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 }
 .coupon-pop-body { margin-bottom: 10px; }
 .coupon-pop-title {
- font-family: 'Noto Serif JP', serif;
+ font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  font-size: 14px;
  font-weight: 700;
  margin: 0 0 4px;
  line-height: 1.4;
 }
 .coupon-pop-value {
- font-family: 'Cormorant Garamond', sans-serif;
+ font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  font-size: 28px;
  color: #D4A93B;
  letter-spacing: 0.04em;
@@ -13649,7 +13649,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 .coupon-pop-copy {
  background: #D4A93B;
  color: #0A2D21;
- font-family: 'Cormorant Garamond', sans-serif;
+ font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  font-size: 12px;
  letter-spacing: 0.08em;
  padding: 8px 12px;
@@ -13662,7 +13662,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 .coupon-pop-copy:active { transform: scale(0.96); }
 .coupon-pop-copy.copied { background: #06C755; color: #fff; }
 .coupon-pop-toggle {
- font-family: 'Cormorant Garamond', sans-serif;
+ font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
  font-size: 11px;
  color: #D4A93B;
  letter-spacing: 0.08em;
