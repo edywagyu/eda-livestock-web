@@ -1076,7 +1076,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div style="flex:1">
  <div style="font-size:11px;color:#D4A93B;letter-spacing:0.04em;font-weight:700">到着予定日</div>
  <div id="bigArrivalDate" style="font-size:20px;font-weight:700;margin-top:2px">--月--日（--）</div>
- <div style="font-size:11px;opacity:0.7;margin-top:2px">発送後2〜3日でお届けします</div>
+ <div id="bigArrivalSub" style="font-size:11px;opacity:0.7;margin-top:2px">発送後2〜3日でお届けします</div>
  </div>
  </div>
 
@@ -1395,17 +1395,32 @@ function renderOrder(order) {
  document.getElementById('timelineDate').textContent = formatDate(order.date);
  }
 
- /* Estimated delivery */
- if (order.estimated_delivery) {
- document.getElementById('timelineDelivery').textContent = formatDate(order.estimated_delivery);
- const big = document.getElementById('bigArrivalDate');
- if (big) {
- const d = new Date(order.estimated_delivery);
- if (!isNaN(d.getTime())) {
- const days = ['日','月','火','水','木','金','土'];
- big.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）頃';
+ /* Estimated delivery — モード別に計算
+    ・subscription_first_month / subscription_recurring → 翌月1日納品
+    ・single / その他 → 発送後 2〜3日 */
+ let estDate = order.estimated_delivery ? new Date(order.estimated_delivery) : null;
+ let subTxt = '発送後2〜3日でお届けします';
+ const isSubscription = (order.mode || '').indexOf('subscription') === 0;
+ if (isSubscription) {
+   // 決済日の翌月1日にお届け
+   const paid = order.date ? new Date(order.date) : new Date();
+   estDate = new Date(paid.getFullYear(), paid.getMonth() + 1, 1);
+   subTxt = '定期便: 翌月1日にお届けします';
+ } else if (!estDate) {
+   // 単品: 注文日 + 3日
+   const paid = order.date ? new Date(order.date) : new Date();
+   estDate = new Date(paid.getTime() + 3 * 24 * 60 * 60 * 1000);
  }
- }
+ if (estDate && !isNaN(estDate.getTime())) {
+   const days = ['日','月','火','水','木','金','土'];
+   const big = document.getElementById('bigArrivalDate');
+   const subEl = document.getElementById('bigArrivalSub');
+   if (big) {
+     big.textContent = (estDate.getMonth() + 1) + '月' + estDate.getDate() + '日（' + days[estDate.getDay()] + '）頃';
+   }
+   if (subEl) subEl.textContent = subTxt;
+   const timelineDel = document.getElementById('timelineDelivery');
+   if (timelineDel) timelineDel.textContent = formatDate(estDate.toISOString());
  }
 
  /* Summary items */

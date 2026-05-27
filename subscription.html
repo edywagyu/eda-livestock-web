@@ -4034,10 +4034,11 @@ function handleSubmit(e) {
  const fd = new FormData(form);
 
  // 顧客プロフィール (checkout.html で再利用)
+ // フォームの input name は "tel" だが、顧客オブジェクト・GAS 期待値は "phone" で統一
  const customer = {
  name: fd.get('name') || '',
  email: fd.get('email') || '',
- phone: fd.get('phone') || '',
+ phone: fd.get('tel') || fd.get('phone') || '',
  zip: fd.get('zip') || '',
  pref: fd.get('pref') || '',
  address: fd.get('address') || '',
@@ -4099,8 +4100,13 @@ function handleSubmit(e) {
  localStorage.setItem('eda-last-order', JSON.stringify({
  num: result.order_number,
  session_id: result.session_id,
- mode: 'subscription',
+ mode: 'subscription_first_month',
  plan: currentPlan,
+ email: customer.email,
+ name: customer.name,
+ phone: customer.phone,
+ address: customer.address,
+ total: PLANS[currentPlan] ? PLANS[currentPlan].half : 0,
  date: new Date().toISOString()
  }));
  window.location.href = result.url;
