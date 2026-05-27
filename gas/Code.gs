@@ -238,7 +238,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.05.13',
+    version: '2026.05.27',
+    versionNote: 'Stripe 定期便: mode=payment + Subscription with billing_cycle_anchor=月20日',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });

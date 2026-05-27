@@ -12,7 +12,7 @@
       case 'survey_responses':  return surveyResponsesOverview(e.parameter);
       case 'quiz_responses':    return quizResponsesOverview(e.parameter);
       case 'shipments':         return shipmentsOverview(e.parameter);
-      /* staff_analytics は Code.gs に既存実装あり — 再デプロイで動く */
+      // staff_analytics は Code.gs に既存実装あり — 再デプロイで動く
 
    4. 「デプロイ → デプロイを管理 → 編集（鉛筆アイコン）→ 新バージョン → デプロイ」
    5. https://edywagyu.github.io/eda-livestock-web/dashboard.html を再読込

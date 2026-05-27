@@ -844,7 +844,7 @@ async function loadSubscriptionUpsell(product) {
   if (!product || !product.name) return;
   /* オーガニック/COMING SOON は対象外 */
   if (product.comingSoon || product.category === 'organic-wgy' || product.category === 'gift') return;
-  const GAS = 'https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec';
+  const GAS = 'https://script.google.com/macros/s/AKfycbxrqr_n1YmcicbIlL_S2VEQwQWWWqn720OxoxS0Vi4l5joCPgHoorUNmiLqKEy8nrh1MA/exec';
   let plans = [];
   try {
     /* sessionStorage キャッシュ (5分) */
