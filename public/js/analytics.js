@@ -11,7 +11,7 @@
 (function() {
   'use strict';
 
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxrqr_n1YmcicbIlL_S2VEQwQWWWqn720OxoxS0Vi4l5joCPgHoorUNmiLqKEy8nrh1MA/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzZ6h0ggkCSqccyO3HQfye4ZE7QLXsDqzb6slF-uKIHKWr4yNTIgV7-QqOa7TujPG1i/exec';
   const SESSION_KEY = 'eda-sess';
   const LAST_ACTIVE_KEY = 'eda-sess-last';
   const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 分

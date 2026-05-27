@@ -23,7 +23,7 @@
 (function() {
   'use strict';
 
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxrqr_n1YmcicbIlL_S2VEQwQWWWqn720OxoxS0Vi4l5joCPgHoorUNmiLqKEy8nrh1MA/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzZ6h0ggkCSqccyO3HQfye4ZE7QLXsDqzb6slF-uKIHKWr4yNTIgV7-QqOa7TujPG1i/exec';
 
   /* 5分キャッシュ (sessionStorage) — 同じ訪問内で何度も叩かない */
   const CACHE_KEY = 'eda-products-cache';
