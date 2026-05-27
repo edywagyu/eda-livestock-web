@@ -1279,7 +1279,7 @@ if (header) {
  // 共通ヘルパー: localStorage の eda-last-order を完全な order オブジェクトに変換
  function lastOrderToOrder(last, fallbackNum) {
    if (!last) last = {};
-   // total: 明示値があればそれを、なければ items から再計算
+   const isSubscription = (last.mode || '').indexOf('subscription') === 0;
    let computedTotal = last.total || 0;
    let computedSubtotal = 0;
    const items = Array.isArray(last.items) ? last.items.map(i => ({
@@ -1289,19 +1289,25 @@ if (header) {
      price: Number(i.price || 0)
    })) : [];
    items.forEach(it => { computedSubtotal += it.price * it.qty; });
-   if (!computedTotal && computedSubtotal) {
-     // 簡易: 送料 ¥1,100 (¥11,000 以下時) + 8% 軽減税率
-     const shipping = computedSubtotal >= 11000 ? 0 : 1100;
-     computedTotal = computedSubtotal + shipping;
+
+   // 定期便は送料無料（既存サイト方針）。単品は ¥11,000 以下なら ¥1,100 送料
+   let shippingAmount;
+   if (isSubscription) {
+     shippingAmount = 0;
+   } else {
+     shippingAmount = last.shipping !== undefined ? Number(last.shipping) : (computedSubtotal >= 11000 ? 0 : 1100);
    }
-   const shippingAmount = last.shipping !== undefined
-     ? Number(last.shipping)
-     : (computedSubtotal >= 11000 ? 0 : 1100);
+
+   if (!computedTotal && computedSubtotal) {
+     computedTotal = computedSubtotal + shippingAmount;
+   }
+   // 定期便で items が空 (Stripe Checkout で line_items.price_data だった場合): 小計は total と一致
+   const finalSubtotal = (computedSubtotal > 0) ? computedSubtotal : computedTotal;
    return {
      order_number: (last.num || fallbackNum || '').replace('#',''),
      mode: last.mode,
      total: computedTotal,
-     subtotal: computedSubtotal + shippingAmount,
+     subtotal: finalSubtotal,
      shipping: shippingAmount,
      date: last.date,
      customer_email: last.email || '',
