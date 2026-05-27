@@ -490,7 +490,20 @@ function createSubscriptionCheckout(body) {
       mode: 'subscription_first_month',
       recurring_price_id: correctedPriceId,
       billing_anchor: String(anchorUnix),
-      is_demo: demoCoupon ? 'true' : 'false'
+      is_demo: demoCoupon ? 'true' : 'false',
+      // 顧客情報をメタに含める (スタッフ通知メール / orders シート用)
+      customer_name: (body.customer && body.customer.name) || '',
+      customer_phone: (body.customer && body.customer.phone) || '',
+      customer_zip: (body.customer && body.customer.zip) || '',
+      customer_pref: (body.customer && body.customer.pref) || '',
+      customer_address: (body.customer && body.customer.address) || '',
+      destinations_json: JSON.stringify([{
+        name: (body.customer && body.customer.name) || '',
+        phone: (body.customer && body.customer.phone) || '',
+        zip: (body.customer && body.customer.zip) || '',
+        pref: (body.customer && body.customer.pref) || '',
+        address: (body.customer && body.customer.address) || ''
+      }])
     }
   };
   if (applyCoupon) {
