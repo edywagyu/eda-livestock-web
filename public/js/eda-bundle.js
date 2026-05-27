@@ -252,6 +252,10 @@
 
     const navHtml = links.map(l => `<a href="${l.href}" class="eda-mm-item">${l.text}</a>`).join('');
 
+    // 2026-05-27: Tom 指示「シンプル・スタイリッシュ」モバイルメニュー再構成
+    //  - 絵文字を排除し、装飾を最小化
+    //  - 主要 3 アクション (Shop / 定期便 / 商談予約) のみ強調
+    //  - LINE / 電話の派手な CTA は削除し、フッターに小さくメール表示のみ
     root.innerHTML = `
       <div class="eda-mm-overlay" data-mm-close></div>
       <aside class="eda-mm-drawer" role="dialog" aria-modal="true" aria-label="メニュー">
@@ -260,19 +264,13 @@
           <button class="eda-mm-close" data-mm-close aria-label="閉じる">✕</button>
         </div>
         <nav class="eda-mm-nav">
-          <a href="shop.html" class="eda-mm-item eda-mm-item--cta">🛒 Online Shop</a>
-          <a href="subscription.html" class="eda-mm-item eda-mm-item--cta">⭐ 定期便を申込</a>
-          <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="eda-mm-item eda-mm-item--cta">📅 商談予約 / Book</a>
+          <a href="shop.html" class="eda-mm-item eda-mm-item--cta">Online Shop</a>
+          <a href="subscription.html" class="eda-mm-item eda-mm-item--cta">定期便を申込</a>
+          <a href="booking.html" class="eda-mm-item eda-mm-item--cta">商談予約</a>
           ${navHtml}
         </nav>
         <div class="eda-mm-foot">
-          <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="eda-mm-line">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/></svg>
-            LINE で質問する
-          </a>
-          <a href="tel:09047241063" class="eda-mm-tel">
-            📞 090-4724-1063
-          </a>
+          <a href="mailto:backoffice@eda-livestock.com" class="eda-mm-mail">backoffice@eda-livestock.com</a>
         </div>
       </aside>
     `;

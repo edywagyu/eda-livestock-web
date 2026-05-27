@@ -2428,7 +2428,21 @@ async function placeOrder() {
  orderPayload.plan = subscription.plan;
  }
 
- if (!window.EDA_API) throw new Error('決済設定が読み込まれていません。ページを再読み込みしてください。');
+ // 2026-05-27: window.EDA_API のロード待ち (最大3秒)
+ //  早タップで eda-bundle.js のロード前に発火するケースを救済
+ if (!window.EDA_API) {
+   await new Promise(resolve => {
+     let waited = 0;
+     const interval = setInterval(() => {
+       if (window.EDA_API || waited >= 3000) {
+         clearInterval(interval);
+         resolve();
+       }
+       waited += 100;
+     }, 100);
+   });
+ }
+ if (!window.EDA_API) throw new Error('決済システムの初期化に失敗しました。ページを再読み込みしてください。');
 
  const result = await window.EDA_API.post(action, orderPayload);
 
