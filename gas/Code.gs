@@ -448,13 +448,16 @@ function createSubscriptionCheckout(body) {
   const cancelUrl = cfg('CANCEL_URL') + '?plan=' + body.plan;
 
   // 適用クーポン優先順位:
-  //   1. STRIPE_DEMO_COUPON (デモ期間 100%OFF 自動適用) ← デモ時はこれ
-  //   2. STRIPE_COUPON_50OFF (本番 初月50%OFF) ← 本番ローンチ時にこれだけ残す
-  // ★ どちらも duration='once' なので、初回 Checkout 一度きりに適用される
+  //   1. body.coupon_code === 'test' / 'テスト' → DEMO100 (100%OFF · ¥0決済) ← 実機テスト用
+  //   2. STRIPE_DEMO_COUPON (デモ期間 100%OFF) — 通常は空文字 (本番ローンチ済)
+  //   3. STRIPE_COUPON_50OFF (本番 初月50%OFF) ← 通常はこれが適用される
+  // ★ どれも duration='once' なので、初回 Checkout 一度きりに適用される
   //    (2回目以降の Subscription billing には適用されない)
+  const userCouponInput = String(body.coupon_code || '').trim().toLowerCase();
+  const isTestCoupon = (userCouponInput === 'test' || userCouponInput === 'テスト' || body.coupon_code === 'テスト');
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
   const halfCoupon = cfg('STRIPE_COUPON_50OFF');
-  const applyCoupon = demoCoupon || halfCoupon || '';
+  const applyCoupon = isTestCoupon ? 'DEMO100' : (demoCoupon || halfCoupon || '');
 
   // Checkout in PAYMENT mode (初月分の一回限り課金)
   // setup_future_usage='off_session' で決済カードを保存 → Webhook で Subscription にアタッチ

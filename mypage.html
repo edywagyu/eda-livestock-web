@@ -3209,9 +3209,43 @@ try {
  if (saved) currentSession = JSON.parse(saved);
 } catch (_) {}
 
+/* ---- 直前注文 email からの fallback ログイン ----
+   決済直後 (order-complete.html から遷移) で LINE 未連携の場合、
+   eda-last-order の email を customer_lookup で照会して直接ダッシュボードへ */
+async function tryRecentOrderEmailLogin() {
+  try {
+    const raw = localStorage.getItem('eda-last-order');
+    if (!raw) return false;
+    const last = JSON.parse(raw);
+    if (!last || !last.email) return false;
+    showState('authenticating');
+    const data = await window.EDA_API.get('customer_lookup', { email: last.email });
+    if (data && (data.success || data.ok) && data.orders && data.orders.length > 0) {
+      // セッション化して 30日キープ
+      const session = {
+        email: last.email,
+        name: (data.customer && data.customer.name) || last.name || last.email.split('@')[0],
+        line_uid: '',
+        issued: Date.now(),
+        method: 'order_email_fallback'
+      };
+      localStorage.setItem('eda-mypage-session', JSON.stringify(session));
+      currentSession = session;
+      renderDashboard(data.customer || { name: session.name, email: session.email }, data.orders || []);
+      return true;
+    }
+  } catch (e) {
+    console.warn('[tryRecentOrderEmailLogin]', e);
+  }
+  return false;
+}
+
 /* ---- LIFF 初期化 ---- */
 let _liffReady = false;
 async function initLiff() {
+ // ★ 最優先: 直前注文 email から自動ログイン (LINE 連携なしでも mypage 表示できるように)
+ if (await tryRecentOrderEmailLogin()) return;
+
  // モバイル＋外部ブラウザ → 公式 LINE に飛ばす（head の即時スクリプトと二重保険）
  const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
  const _qs = new URLSearchParams(location.search);

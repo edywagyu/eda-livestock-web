@@ -2711,6 +2711,17 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
  </div>
 
+ <!-- クーポンコード入力（任意） -->
+ <div class="checkout-section">
+ <h3>クーポンコード <small style="font-weight:400;font-size:11px;color:#999;margin-left:6px">（任意）</small></h3>
+ <div class="checkout-row">
+ <div class="checkout-field">
+ <input type="text" name="coupon_code" id="couponInput" placeholder="お持ちの場合のみ入力" autocomplete="off" inputmode="text" maxlength="32" style="letter-spacing:.02em">
+ <small id="couponFeedback" style="display:none;margin-top:4px;font-size:11.5px;font-weight:600;line-height:1.5"></small>
+ </div>
+ </div>
+ </div>
+
  <div class="checkout-summary" id="checkoutSummary">
  <div class="checkout-summary-row">
  <span id="summaryPlanName">スターター定期便</span>
@@ -2719,6 +2730,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="checkout-summary-row discount">
  <span>5月入会 50%OFF</span>
  <strong id="summaryDiscount">−¥6,400</strong>
+ </div>
+ <div class="checkout-summary-row discount" id="summaryCouponRow" style="display:none">
+ <span id="summaryCouponLabel">テストクーポン</span>
+ <strong id="summaryCouponAmount">−¥0</strong>
  </div>
  <div class="checkout-summary-row addon-row" id="summaryAddonRow" style="display:none">
  <span>🛒 今月だけ追加 <small id="summaryAddonCount">(0品)</small></span>
@@ -3922,13 +3937,16 @@ function getAddonsTotal() {
  }, 0);
 }
 
-/* チェックアウトサマリーを再計算（プラン半額 + アドオン合計） */
+/* テストクーポン: 「テスト」と入力すると 100%OFF → 0円決済が走る (実機テスト用) */
+let __testCouponActive = false;
+
+/* チェックアウトサマリーを再計算（プラン半額 + アドオン合計 + テストクーポン） */
 function updateCheckoutSummary() {
  const plan = PLANS[currentPlan];
  if (!plan) return;
  const addonsTotal = getAddonsTotal();
  const addonCount = addedAddons.length;
- const total = plan.half + addonsTotal;
+ let total = plan.half + addonsTotal;
 
  const row = document.getElementById('summaryAddonRow');
  const cnt = document.getElementById('summaryAddonCount');
@@ -3942,11 +3960,54 @@ function updateCheckoutSummary() {
  row.style.display = 'none';
  }
  }
+
+ // テストクーポン適用時: 100%OFF (¥0)
+ const couponRow = document.getElementById('summaryCouponRow');
+ const couponAmt = document.getElementById('summaryCouponAmount');
+ if (__testCouponActive) {
+ const original = total;
+ total = 0;
+ if (couponRow) couponRow.style.display = '';
+ if (couponAmt) couponAmt.textContent = '−¥' + original.toLocaleString();
+ } else {
+ if (couponRow) couponRow.style.display = 'none';
+ }
+
  const totalEl = document.getElementById('summaryTotal');
  if (totalEl) totalEl.textContent = '¥' + total.toLocaleString();
  const submitEl = document.getElementById('submitAmount');
  if (submitEl) submitEl.textContent = total.toLocaleString();
 }
+
+/* クーポン入力ハンドラ — 「テスト」「test」「TEST」全部受け付ける */
+(function bindCouponInput() {
+ function init() {
+ const input = document.getElementById('couponInput');
+ const fb = document.getElementById('couponFeedback');
+ if (!input || !fb) return;
+ input.addEventListener('input', () => {
+ const v = (input.value || '').trim();
+ const isTest = (v === 'テスト' || v.toLowerCase() === 'test');
+ if (isTest) {
+ __testCouponActive = true;
+ fb.textContent = '✅ テストモード — ¥0で決済が走ります';
+ fb.style.color = '#0F3D2E';
+ fb.style.display = 'block';
+ } else if (v) {
+ __testCouponActive = false;
+ fb.textContent = '✗ 無効なクーポンコードです';
+ fb.style.color = '#C8102E';
+ fb.style.display = 'block';
+ } else {
+ __testCouponActive = false;
+ fb.style.display = 'none';
+ }
+ updateCheckoutSummary();
+ });
+ }
+ if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+ else init();
+})();
 
 function renderAddonsCart() {
  const cart = document.getElementById('subAddonsCart');
@@ -4094,7 +4155,8 @@ function handleSubmit(e) {
  addons: addedAddons.map(x => {
  const a = ADDONS.find(p => p.id === x.id);
  return a ? { id: a.id, name: a.name, price: discountedPrice(a.price), qty: x.qty } : null;
- }).filter(Boolean)
+ }).filter(Boolean),
+ coupon_code: __testCouponActive ? 'test' : ''
  }).then(result => {
  if (result.ok && result.url) {
  localStorage.setItem('eda-last-order', JSON.stringify({
