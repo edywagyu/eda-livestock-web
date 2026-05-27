@@ -10682,38 +10682,223 @@ function toggleUnboxingSound() {
 }
 </script>
 
-<!-- ========= お肉事情診断（回答後に50%OFFプレゼントバナーを表示） ========= -->
+<!-- ========= お肉事情診断（START → POPアップ 5問） ========= -->
 <section class="quiz-section" id="quiz">
  <div class="container">
- <span class="quiz-stamp">LIVE SESSION · 診断中</span>
- <div class="quiz-card">
- <div class="quiz-card-body">
- <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
- <h2 class="quiz-title">
-   <span class="quiz-only-desktop">お肉事情診断<strong>あなたに最適なプラン</strong>を5問でご提案</span>
-   <span class="quiz-only-mobile">あなたに合うお肉は？<br/><strong>10秒で、ぴったりの定期便を。</strong></span>
- </h2>
- <p class="quiz-sub">
-   <span class="quiz-only-desktop">ご家族構成・お肉の使用頻度・お好み部位・月予算をお聞きします。回答結果に基づき、定期便プランと推奨アドオンを自動算出します。所要時間 約10秒・回答は記録されません。</span>
-   <span class="quiz-only-mobile">5問だけ。ご家族にぴったりのプランをご提案します。</span>
- </p>
-
- <div class="quiz-progress">
- <span class="quiz-progress-label">Q.<span id="quizCurrentQ">1</span> / <span id="quizTotalQ">5</span></span>
- <div class="quiz-progress-bars">
- <div class="quiz-progress-dot active" data-step="1"></div>
- <div class="quiz-progress-dot" data-step="2"></div>
- <div class="quiz-progress-dot" data-step="3"></div>
- <div class="quiz-progress-dot" data-step="4"></div>
- <div class="quiz-progress-dot" data-step="5"></div>
- </div>
+ <!-- INTRO 状態: STARTボタンを大きく表示 -->
+ <div class="quiz-intro" id="quizIntro">
+   <span class="quiz-stamp">EDA MEAT DIAGNOSIS</span>
+   <h2 class="quiz-intro-title">
+     あなたに合う<br/>
+     <strong>お肉診断</strong>
+   </h2>
+   <p class="quiz-intro-lead">
+     5問の簡単な質問で、ご家族にぴったりの<br/>
+     定期便プランをご提案します。
+   </p>
+   <button type="button" class="quiz-start-btn" id="quizStartBtn">
+     <span class="quiz-start-text">START!</span>
+     <span class="quiz-start-meta">2分で完了 →</span>
+   </button>
+   <p class="quiz-intro-perk">✨ 診断完了で <strong>初月50%OFFクーポン</strong> プレゼント</p>
  </div>
 
- <div id="quizContent"></div>
- </div>
+ <!-- QUIZ POP: STARTクリック後に表示 -->
+ <div class="quiz-pop" id="quizPop" style="display:none">
+   <button type="button" class="quiz-pop-close" id="quizPopClose" aria-label="閉じる">&times;</button>
+   <div class="quiz-card">
+     <div class="quiz-card-body">
+       <span class="quiz-eyebrow">EDA MEAT LIFESTYLE DIAGNOSIS</span>
+       <h2 class="quiz-title quiz-only-desktop"><strong>5問</strong>であなたに最適なプランをご提案</h2>
+       <h2 class="quiz-title quiz-only-mobile"><strong>5問</strong>でぴったりの定期便を</h2>
+
+       <div class="quiz-progress">
+         <span class="quiz-progress-label">Q.<span id="quizCurrentQ">1</span> / <span id="quizTotalQ">5</span></span>
+         <div class="quiz-progress-bars">
+           <div class="quiz-progress-dot active" data-step="1"></div>
+           <div class="quiz-progress-dot" data-step="2"></div>
+           <div class="quiz-progress-dot" data-step="3"></div>
+           <div class="quiz-progress-dot" data-step="4"></div>
+           <div class="quiz-progress-dot" data-step="5"></div>
+         </div>
+       </div>
+
+       <div id="quizContent"></div>
+     </div>
+   </div>
  </div>
  </div>
 </section>
+<style>
+/* ====== INTRO スタイル (START ボタン) ====== */
+.quiz-intro {
+  text-align: center;
+  padding: 56px 24px 64px;
+  background: linear-gradient(180deg, #fffcf5 0%, #faf3e2 100%);
+  border-radius: 18px;
+  border: 1.5px solid rgba(212,169,59,0.3);
+  position: relative;
+  overflow: hidden;
+  max-width: 560px;
+  margin: 0 auto;
+  box-shadow: 0 8px 28px rgba(15, 61, 46, 0.08);
+}
+.quiz-intro::before {
+  content: '';
+  position: absolute;
+  top: -50px; left: -50px;
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(212,169,59,0.15), transparent 70%);
+}
+.quiz-intro::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; right: -50px;
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(15,61,46,0.10), transparent 70%);
+}
+.quiz-intro .quiz-stamp {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--color-gold);
+  padding: 6px 16px;
+  background: white;
+  border: 1px solid var(--color-gold);
+  border-radius: 18px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+.quiz-intro-title {
+  font-family: var(--font-jp-serif), serif;
+  font-size: clamp(28px, 5.5vw, 42px);
+  color: var(--color-forest);
+  margin: 0 0 16px;
+  line-height: 1.3;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+.quiz-intro-title strong {
+  color: var(--color-gold);
+  font-size: 1.4em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.quiz-intro-lead {
+  color: var(--color-ink-muted);
+  font-size: 14px;
+  line-height: 1.85;
+  margin: 0 0 32px;
+  position: relative;
+  z-index: 1;
+}
+.quiz-start-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 56px;
+  background: linear-gradient(135deg, #D4A93B 0%, #B8932F 100%);
+  color: white;
+  border: 0;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  box-shadow: 0 8px 24px rgba(212, 169, 59, 0.4);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out-expo);
+  position: relative;
+  z-index: 1;
+}
+.quiz-start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(212, 169, 59, 0.5);
+}
+.quiz-start-btn:active { transform: translateY(0); }
+.quiz-start-text { line-height: 1; }
+.quiz-start-meta {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  font-weight: 400;
+  opacity: 0.92;
+}
+.quiz-intro-perk {
+  margin: 24px 0 0;
+  font-size: 12.5px;
+  color: var(--color-forest);
+  position: relative;
+  z-index: 1;
+}
+.quiz-intro-perk strong { color: var(--color-gold); font-size: 1.05em; }
+
+/* ====== POP モーダル ====== */
+.quiz-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 61, 46, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: quizPopFadeIn 0.3s ease-out;
+}
+@keyframes quizPopFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.quiz-pop .quiz-card {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+  animation: quizPopSlideUp 0.4s var(--ease-out-expo);
+  position: relative;
+}
+@keyframes quizPopSlideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.quiz-pop-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 2;
+  width: 36px; height: 36px;
+  background: white;
+  border: 1.5px solid var(--color-bone);
+  border-radius: 50%;
+  font-size: 20px;
+  color: var(--color-forest);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+  transition: all 0.2s;
+}
+.quiz-pop-close:hover {
+  background: var(--color-forest);
+  color: white;
+}
+@media (max-width: 640px) {
+  .quiz-intro { padding: 40px 18px 48px; }
+  .quiz-intro-title { font-size: 28px; }
+  .quiz-intro-lead { font-size: 13px; margin-bottom: 24px; }
+  .quiz-start-btn { padding: 16px 40px; font-size: 22px; }
+  .quiz-pop { padding: 8px; }
+  .quiz-pop .quiz-card { max-height: 95vh; }
+}
+</style>
 
 <!-- ========= 今週のメニュー（自動週次切替・スタッフ編集対応） ========= -->
 <section class="weekly-menu">
@@ -11189,45 +11374,67 @@ body.has-sticky-cart .floating-phone-btn {
 }
 
 /* ============================================================
-   🛒 2026-05-27: 数量カウンター + モバイル商品カードコンパクト化
+   🔓 2026-05-27: オーガニック和牛カードを「見える」状態に
+   ============================================================
+   旧: 非会員時に grayscale + blur + 🔒オーバーレイで完全隠蔽
+   新: 商品情報・写真を可視化、価格と詳細のみ「会員限定」表示
    ============================================================ */
-.qty-counter {
- display: flex;
- align-items: center;
- justify-content: center;
- gap: 0;
- margin: 8px 0;
+body:not(.is-member) .product-card--organic-wagyu .product-card-img,
+body:not(.is-member) .product-card--organic .product-card-img {
+  filter: none !important;
+}
+body:not(.is-member) .product-card--organic .product-card-img::after,
+body:not(.is-member) .product-card--organic-wagyu .product-card-img::after {
+  display: none !important;
+}
+body:not(.is-member) .product-card--organic {
+  border-color: var(--color-bone) !important;
+  box-shadow: 0 2px 8px rgba(15, 61, 46, 0.06) !important;
+}
+/* 価格は「LINE登録で表示」と書く. UI に残しつつ案内 */
+body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
+  display: inline !important;
+  color: var(--color-gold) !important;
+  font-size: 11px !important;
+  font-style: italic !important;
+}
+/* 元あった COMING SOON オーバーレイ・大型ロック は撤去 (画像を覆い隠す要素) */
+.product-card--organic-wagyu .organic-wagyu-overlay,
+.product-card--organic .organic-wagyu-overlay {
+  display: none !important;
+}
+/* lock テキストはコンパクトに、画像を隠さない */
+.product-card--organic-wagyu .organic-wagyu-lock {
+  margin: 8px 0 0 !important;
+  padding: 8px 10px !important;
+  flex-direction: row !important;
+  font-size: 10.5px !important;
+  background: linear-gradient(180deg, rgba(212,169,59,0.04), rgba(212,169,59,0.10)) !important;
+}
+.organic-wagyu-lock-title { font-size: 11px !important; }
+.organic-wagyu-lock-desc { font-size: 10px !important; }
+
+/* ============================================================
+   🛒 2026-05-27: シンプル数量セレクト + モバイル商品カードコンパクト化
+   ============================================================ */
+.qty-select {
+ width: 100%;
+ padding: 9px 32px 9px 12px;
  border: 1.5px solid #ddd;
  border-radius: 8px;
- overflow: hidden;
  background: white;
-}
-.qty-btn {
- width: 36px;
- height: 36px;
- background: #f7f1e2;
- border: 0;
- font-size: 20px;
- font-weight: 700;
+ font-size: 13px;
+ font-weight: 600;
  color: #0F3D2E;
  cursor: pointer;
- transition: background 0.2s;
- -webkit-user-select: none;
- user-select: none;
+ margin: 8px 0;
+ appearance: none;
+ -webkit-appearance: none;
+ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230F3D2E' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+ background-repeat: no-repeat;
+ background-position: right 12px center;
 }
-.qty-btn:hover { background: #D4A93B; color: white; }
-.qty-btn:active { transform: scale(0.95); }
-.qty-value {
- flex: 1;
- min-width: 36px;
- text-align: center;
- font-size: 15px;
- font-weight: 700;
- color: #0F3D2E;
- font-family: var(--font-display);
- padding: 0 8px;
- line-height: 36px;
-}
+.qty-select:focus { outline: none; border-color: var(--color-gold); }
 
 @media (max-width: 720px) {
  /* モバイル: 商品カードをぐっとコンパクトに */
@@ -11254,12 +11461,15 @@ body.has-sticky-cart .floating-phone-btn {
  .variant-select,
  .variant-select--static {
    min-height: 36px !important;
-   padding: 7px 28px 7px 10px !important;
+   padding: 7px 12px !important;
    font-size: 12px !important;
  }
- .qty-counter { margin: 6px 0 !important; border-width: 1.2px !important; }
- .qty-btn { width: 32px !important; height: 32px !important; font-size: 17px !important; }
- .qty-value { line-height: 32px !important; font-size: 14px !important; }
+ .qty-select {
+   min-height: 36px !important;
+   padding: 7px 28px 7px 10px !important;
+   font-size: 12px !important;
+   margin: 6px 0 !important;
+ }
  .btn-add-cart {
    padding: 9px 12px !important;
    font-size: 12px !important;
@@ -11808,53 +12018,43 @@ body.has-sticky-cart .floating-phone-btn {
  const imgEl = card.querySelector('.product-card-img img');
  const img = imgEl ? imgEl.src : '';
 
- // 2026-05-27: バリアント (1つ/2つセット/3つセット) + 数量カウンター UI
- //  ・複数バリアントある場合: select (compact) + qty counter
- //  ・単一バリアント (1つ のみ): qty counter のみ
- //  ・「カートに追加」ボタンで qty × variant 分カートに入れる
- let html = '';
- if (variants.length > 1) {
-   html += '<select class="variant-select">';
-   variants.forEach((v, i) => {
-     html += `<option value="${i}">${v.t} — ¥${v.p.toLocaleString()}</option>`;
-   });
-   html += '</select>';
- } else {
-   const v = variants[0];
-   html += `<div class="variant-select variant-select--static">${v.t} — ¥${v.p.toLocaleString()}</div>`;
+ // 2026-05-27: シンプル数量セレクト (1〜10) + 10個以上で10%OFF統一
+ //  ・variants 配列の先頭 (= 1つ単価) のみ使用、bundle pricing は廃止
+ //  ・select で 1〜10 を選択
+ //  ・10個以上で自動 10%OFF (実装は addToCart 時に -10% 計算)
+ //  ・「カートに追加」ボタンで選択 qty 分追加
+ const baseVariant = variants[0];
+ const basePrice = baseVariant.p;
+ const baseId = baseVariant.id;
+ const baseLabel = baseVariant.t || '1つ';
+
+ // 単価表示 (1つ単価)
+ let html = `<div class="variant-select variant-select--static">${baseLabel} — ¥${basePrice.toLocaleString()}</div>`;
+ // 1-10 数量セレクト
+ html += '<select class="qty-select" aria-label="数量">';
+ for (let i = 1; i <= 10; i++) {
+   html += `<option value="${i}">${i}個${i >= 10 ? '以上 (10%OFF)' : ''}</option>`;
  }
- html += `
-   <div class="qty-counter" role="group" aria-label="数量">
-     <button type="button" class="qty-btn qty-minus" aria-label="数量を減らす">−</button>
-     <span class="qty-value" aria-live="polite">1</span>
-     <button type="button" class="qty-btn qty-plus" aria-label="数量を増やす">＋</button>
-   </div>
-   <button class="btn-add-cart">カートに追加</button>`;
+ html += '</select>';
+ html += '<button class="btn-add-cart">カートに追加</button>';
  buyEl.innerHTML = html;
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
- const select = buyEl.querySelector('.variant-select');
- const qtyEl = buyEl.querySelector('.qty-value');
- const qtyMinus = buyEl.querySelector('.qty-minus');
- const qtyPlus = buyEl.querySelector('.qty-plus');
-
- function getQty() { return Math.max(1, parseInt(qtyEl.textContent) || 1); }
- function setQty(n) { qtyEl.textContent = Math.max(1, Math.min(99, n)); }
- if (qtyMinus) qtyMinus.addEventListener('click', () => setQty(getQty() - 1));
- if (qtyPlus) qtyPlus.addEventListener('click', () => setQty(getQty() + 1));
+ const qtySel = buyEl.querySelector('.qty-select');
 
  addBtn.addEventListener('click', () => {
-   const idx = select ? parseInt(select.value) : 0;
-   const v = variants[idx];
-   const qty = getQty();
+   const qty = parseInt(qtySel.value) || 1;
+   // 10個以上で 10%OFF 自動適用
+   const discountPrice = qty >= 10 ? Math.round(basePrice * 0.9) : basePrice;
+   const discountLabel = qty >= 10 ? baseLabel + ' (10個以上 10%OFF)' : baseLabel;
    for (let i = 0; i < qty; i++) {
-     addToCart(v.id, v.p, title, v.t, img);
+     addToCart(baseId, discountPrice, title, discountLabel, img);
    }
 
    /* visual feedback */
    addBtn.classList.add('added');
-   addBtn.textContent = `追加しました ✓ (${qty})`;
-   setQty(1); // reset to 1 after add
+   addBtn.textContent = `追加しました ✓ (${qty}個)`;
+   qtySel.value = '1'; // reset
    setTimeout(() => {
      addBtn.classList.remove('added');
      addBtn.textContent = 'カートに追加';
@@ -13198,7 +13398,33 @@ body.has-sticky-cart .floating-phone-btn {
  step = 0;
  render();
  };
- render();
+
+ // 2026-05-27: STARTボタン押下で POP モーダル開く + render
+ const startBtn = document.getElementById('quizStartBtn');
+ const intro = document.getElementById('quizIntro');
+ const pop = document.getElementById('quizPop');
+ const popClose = document.getElementById('quizPopClose');
+ function openPop() {
+   if (pop) pop.style.display = 'flex';
+   document.body.style.overflow = 'hidden';
+   step = 0;
+   answers.length = 0;
+   render();
+ }
+ function closePop() {
+   if (pop) pop.style.display = 'none';
+   document.body.style.overflow = '';
+ }
+ if (startBtn) startBtn.addEventListener('click', openPop);
+ if (popClose) popClose.addEventListener('click', closePop);
+ // 外側クリック (overlay 部分) で閉じる
+ if (pop) pop.addEventListener('click', (e) => { if (e.target === pop) closePop(); });
+ // ESC で閉じる
+ document.addEventListener('keydown', (e) => {
+   if (e.key === 'Escape' && pop && pop.style.display === 'flex') closePop();
+ });
+
+ // render() は初期実行しない (STARTで開始する)
 })();
 
 /* ライブ活動フィード: 廃止 (デザインクリティーク #1) */
