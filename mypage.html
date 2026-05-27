@@ -2583,6 +2583,62 @@ button:focus-visible, a:focus-visible {
 /* 装飾的な無限アニメはビューポート外で停止 */
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
+
+/* ============================================================
+   🔆 2026-05-27: 深緑背景上での灰色文字を可読色に上書き
+   ============================================================
+   mypage は深緑ベース → 「深緑背景の要素」のみホワイト系に。
+   白カード内の dark text はそのまま (深緑にしない)
+   ============================================================ */
+
+/* セクション見出し (深緑背景上) */
+.dash-section-title {
+  color: #FFD773 !important;
+  font-weight: 700;
+}
+
+/* 深緑背景の「あと N回」「会員特典」帯 */
+.rj-next-banner p,
+.rj-next-banner small {
+  color: rgba(255,255,255,0.92) !important;
+}
+.rj-next-banner strong { color: #FFD773 !important; }
+
+/* 白カード内のメタ情報は dark のまま読みやすく強調 */
+.coupon-meta {
+  color: #555 !important;
+  font-weight: 500 !important;
+}
+.coupon-meta strong { color: var(--color-forest) !important; }
+.coupon-conditions {
+  color: #6B2429 !important;  /* burgundy-deep だが少し濃く */
+  font-weight: 500 !important;
+}
+
+/* 深緑背景の会員特典ストリップ */
+.member-perks-strip {
+  color: #FFD773 !important;
+}
+.member-perks-strip .member-perks-text {
+  color: rgba(255,255,255,0.92) !important;
+}
+.member-perks-strip strong {
+  color: #FFD773 !important;
+}
+
+/* ご注文履歴の空メッセージ */
+.empty-orders {
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* リワード ステップ — 白カード内なので dark のまま */
+.rj-step-desc {
+  color: #555 !important;
+}
+.rj-step.done .rj-step-reward {
+  color: #999 !important;
+  text-decoration-color: #ccc !important;
+}
 </style>
 <!-- モバイル外部ブラウザ → 江田畜産 公式LINE に飛ばす（SDK 不要・最速） -->
 <!-- ※ LIFF 経由 (?page=shop 等) の場合はスキップ → 認証後にルーティング -->
@@ -2817,7 +2873,7 @@ button:focus-visible, a:focus-visible {
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
  </div>
  <div class="member-perks-text" id="memberPerksText">
-  <strong>会員限定</strong>: あと <strong id="perksNextCount">1回</strong> のご注文で次のランクへ
+  <strong>会員限定</strong>: 次のランクで送料無料・限定商品
  </div>
  <svg class="member-perks-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
  </div>
@@ -3834,7 +3890,12 @@ function renderRewardJourney(count) {
  var bannerHtml = '';
  if (count >= 4) {
  bannerHtml = '<div class="rj-next-banner"><p>4ステップ達成 &#x1F389; &#8212; 5回目以降の特典は <strong>お楽しみに</strong></p></div>';
+ } else if (count === 0) {
+ // ★ 矛盾解消: 0回時は WELCOME20 が既に「お持ちのクーポン」にあるので、
+ //    初回ご注文時の使い方を案内 (あと1回… ではなく)
+ bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>WELCOME20</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">5,000円以上のご注文で 20%OFF</small></p></div>';
  } else {
+ // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
  var next = REWARD_STAGES[Math.min(count, 3)];
  var remaining = next.num - count;
  bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong></p></div>';
