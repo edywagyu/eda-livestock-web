@@ -11090,19 +11090,8 @@ function toggleUnboxingSound() {
  </div>
 </aside>
 
-<!-- ========= 浮遊「LINE で質問」ボタン ========= -->
-<a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="floating-phone-btn floating-phone-btn--line" aria-label="LINE で江田畜産に質問">
- <span class="floating-phone-icon">
- <!-- LINE 公式ロゴ風アイコン -->
- <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
- <path d="M12 2C6.48 2 2 5.93 2 10.74c0 4.31 3.82 7.92 8.98 8.61.35.07.82.23.94.52.11.27.07.69.04.96l-.15.93c-.05.28-.22 1.1.96.6 1.18-.5 6.38-3.76 8.71-6.44C23.34 14.02 22 12.51 22 10.74 22 5.93 17.52 2 12 2z"/>
- </svg>
- </span>
- <span class="floating-phone-text">
- <strong>LINE で質問</strong>
- <small>江田畜産公式 / 平日9-18時 返信</small>
- </span>
-</a>
+<!-- 浮遊「LINE で質問」ボタンは Tom 指示で削除済 (2026-05-27) -->
+
 <style>
 .floating-phone-btn {
  position: fixed;
@@ -11197,6 +11186,85 @@ body.has-sticky-cart .floating-phone-btn {
  body.has-sticky-cart .floating-phone-btn--line { display: none !important; }
  body.has-sticky-cart .shop-main-wrap { padding-bottom: 90px; }
  body.has-sticky-cart footer.site-footer { padding-bottom: 90px; }
+}
+
+/* ============================================================
+   🛒 2026-05-27: 数量カウンター + モバイル商品カードコンパクト化
+   ============================================================ */
+.qty-counter {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 0;
+ margin: 8px 0;
+ border: 1.5px solid #ddd;
+ border-radius: 8px;
+ overflow: hidden;
+ background: white;
+}
+.qty-btn {
+ width: 36px;
+ height: 36px;
+ background: #f7f1e2;
+ border: 0;
+ font-size: 20px;
+ font-weight: 700;
+ color: #0F3D2E;
+ cursor: pointer;
+ transition: background 0.2s;
+ -webkit-user-select: none;
+ user-select: none;
+}
+.qty-btn:hover { background: #D4A93B; color: white; }
+.qty-btn:active { transform: scale(0.95); }
+.qty-value {
+ flex: 1;
+ min-width: 36px;
+ text-align: center;
+ font-size: 15px;
+ font-weight: 700;
+ color: #0F3D2E;
+ font-family: var(--font-display);
+ padding: 0 8px;
+ line-height: 36px;
+}
+
+@media (max-width: 720px) {
+ /* モバイル: 商品カードをぐっとコンパクトに */
+ .product-card { padding: 10px !important; }
+ .product-card .product-desc { display: none !important; } /* 2行説明を削除 */
+ .product-card .product-stats {
+   grid-template-columns: 1fr 1fr !important;
+   gap: 4px !important;
+   margin: 6px 0 !important;
+ }
+ /* 補助情報の一部を非表示 (情報過多防止) */
+ .product-card .product-stat-item.wide,
+ .product-card .product-stat-item:nth-child(n+3) { display: none !important; }
+ .product-card .product-stat-item {
+   font-size: 10.5px !important;
+   padding: 3px 5px !important;
+ }
+ .product-card .product-stat-item strong { font-size: 11.5px !important; }
+ .product-card .product-name { font-size: 13.5px !important; margin: 4px 0 2px !important; line-height: 1.35 !important; }
+ .product-card .product-tag-row { gap: 6px !important; margin-bottom: 2px !important; }
+ .product-card .product-tag { font-size: 9.5px !important; padding: 2px 6px !important; }
+ .product-card .product-price { font-size: 13px !important; font-weight: 700 !important; }
+ .product-card-img { height: 130px !important; min-height: 130px !important; }
+ .variant-select,
+ .variant-select--static {
+   min-height: 36px !important;
+   padding: 7px 28px 7px 10px !important;
+   font-size: 12px !important;
+ }
+ .qty-counter { margin: 6px 0 !important; border-width: 1.2px !important; }
+ .qty-btn { width: 32px !important; height: 32px !important; font-size: 17px !important; }
+ .qty-value { line-height: 32px !important; font-size: 14px !important; }
+ .btn-add-cart {
+   padding: 9px 12px !important;
+   font-size: 12px !important;
+   min-height: 36px !important;
+ }
 }
 </style>
 
@@ -11740,36 +11808,57 @@ body.has-sticky-cart .floating-phone-btn {
  const imgEl = card.querySelector('.product-card-img img');
  const img = imgEl ? imgEl.src : '';
 
+ // 2026-05-27: バリアント (1つ/2つセット/3つセット) + 数量カウンター UI
+ //  ・複数バリアントある場合: select (compact) + qty counter
+ //  ・単一バリアント (1つ のみ): qty counter のみ
+ //  ・「カートに追加」ボタンで qty × variant 分カートに入れる
  let html = '';
  if (variants.length > 1) {
- html += '<select class="variant-select">';
- variants.forEach((v, i) => {
- html += `<option value="${i}">${v.t} — ¥${v.p.toLocaleString()}</option>`;
- });
- html += '</select>';
+   html += '<select class="variant-select">';
+   variants.forEach((v, i) => {
+     html += `<option value="${i}">${v.t} — ¥${v.p.toLocaleString()}</option>`;
+   });
+   html += '</select>';
  } else {
- // 単一バリアント時もカード高さを揃えるため、ドロップダウンと同じ枠で価格を表示
- const v = variants[0];
- html += `<div class="variant-select variant-select--static">${v.t} — ¥${v.p.toLocaleString()}</div>`;
+   const v = variants[0];
+   html += `<div class="variant-select variant-select--static">${v.t} — ¥${v.p.toLocaleString()}</div>`;
  }
- html += '<button class="btn-add-cart">カートに追加</button>';
+ html += `
+   <div class="qty-counter" role="group" aria-label="数量">
+     <button type="button" class="qty-btn qty-minus" aria-label="数量を減らす">−</button>
+     <span class="qty-value" aria-live="polite">1</span>
+     <button type="button" class="qty-btn qty-plus" aria-label="数量を増やす">＋</button>
+   </div>
+   <button class="btn-add-cart">カートに追加</button>`;
  buyEl.innerHTML = html;
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
  const select = buyEl.querySelector('.variant-select');
+ const qtyEl = buyEl.querySelector('.qty-value');
+ const qtyMinus = buyEl.querySelector('.qty-minus');
+ const qtyPlus = buyEl.querySelector('.qty-plus');
+
+ function getQty() { return Math.max(1, parseInt(qtyEl.textContent) || 1); }
+ function setQty(n) { qtyEl.textContent = Math.max(1, Math.min(99, n)); }
+ if (qtyMinus) qtyMinus.addEventListener('click', () => setQty(getQty() - 1));
+ if (qtyPlus) qtyPlus.addEventListener('click', () => setQty(getQty() + 1));
 
  addBtn.addEventListener('click', () => {
- const idx = select ? parseInt(select.value) : 0;
- const v = variants[idx];
- addToCart(v.id, v.p, title, v.t, img);
+   const idx = select ? parseInt(select.value) : 0;
+   const v = variants[idx];
+   const qty = getQty();
+   for (let i = 0; i < qty; i++) {
+     addToCart(v.id, v.p, title, v.t, img);
+   }
 
- /* visual feedback */
- addBtn.classList.add('added');
- addBtn.textContent = '追加しました ✓';
- setTimeout(() => {
- addBtn.classList.remove('added');
- addBtn.textContent = 'カートに追加';
- }, 1200);
+   /* visual feedback */
+   addBtn.classList.add('added');
+   addBtn.textContent = `追加しました ✓ (${qty})`;
+   setQty(1); // reset to 1 after add
+   setTimeout(() => {
+     addBtn.classList.remove('added');
+     addBtn.textContent = 'カートに追加';
+   }, 1500);
  });
  });
 

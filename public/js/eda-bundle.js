@@ -324,15 +324,16 @@
 
 /* ===== line-float.js (REPURPOSED: 電話ボタン) ===== */
 /* ============================================================
-   江田畜産 — 浮遊「電話はこちら」ボタン (日本国内のみ表示)
-   - 国外アクセスでは非表示
-   - tel:09047241063 でモバイルから直接発信
-   - デスクトップでは番号を可読表示
+   🚫 2026-05-27: Tom 指示により浮遊「電話はこちら」ボタン無効化
+   - 全ページ (shop, mypage, order-complete, subscription...) で右下に
+     表示されていた緑+ゴールド円形 FAB
+   - 顧客体験を妨げるため完全に無効化
    ============================================================ */
+(function () { return; })();  // 即時 noop で全ロジックスキップ
+/* 旧コード (無効化済 — 復活させる場合はこのコメント開始を消す)
 (function () {
   'use strict';
 
-  /* 日本以外のロケールでは非表示 (簡易判定) */
   function isJapanLocale() {
     try {
       const lang = (navigator.language || '').toLowerCase();
@@ -414,6 +415,7 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+*/ /* end 旧コード */
 
 /* ===== image-lightbox.js ===== */
 /* ============================================================
