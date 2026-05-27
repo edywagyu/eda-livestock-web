@@ -12672,10 +12672,11 @@ body.has-sticky-cart .floating-phone-btn {
  rangeEl.textContent = fmtMD(active.start) + ' 〜 ' + fmtMD(active.end);
  shipEl.textContent = fmtMDW(active.ship) + '着まで対応';
 
+ // 2026-05-27: Tom 指示によりカウントダウン残日数を表示しない (subscription と統一)
  const daysLeft = Math.ceil((active.end - now) / (1000 * 60 * 60 * 24));
  if (daysLeft > 0) {
- ddlBox.style.display = '';
- ddlEl.textContent = '残り ' + daysLeft + ' 日';
+ ddlBox.style.display = 'none'; // 残N日 表示を抑制
+ ddlEl.textContent = '';
  } else {
  ddlBox.style.display = 'none';
  }
@@ -13549,12 +13550,15 @@ body.has-sticky-cart .floating-phone-btn {
  return null;
  }
 
- // 表示
+ // 表示制御:
+ //  1. このセッションで既に表示済みなら出さない (UX改善: 1セッション1回まで)
+ //  2. 24時間以内に閉じられたら出さない
+ //  3. minimized 状態で表示 (大きく被さらない・タップで詳細展開)
  var pop = document.getElementById('couponPop');
+ if (sessionStorage.getItem('eda-coupon-pop-shown') === '1') return;
  var dismissedAt = parseInt(localStorage.getItem('eda-coupon-pop-dismissed') || '0');
  var hoursSince = (Date.now() - dismissedAt) / 3600000;
-
- if (hoursSince < 24) return; // 24時間以内に閉じられたら表示しない
+ if (hoursSince < 24) return;
 
  var coupon = getActiveCoupon();
  if (!coupon) return;
@@ -13565,11 +13569,15 @@ body.has-sticky-cart .floating-phone-btn {
  document.getElementById('cpopMeta').textContent = coupon.meta;
  document.getElementById('cpopCode').textContent = coupon.code;
 
- // 訪問記録
+ // 訪問記録 + 当セッション表示済みフラグ
  localStorage.setItem('eda-visited', '1');
+ sessionStorage.setItem('eda-coupon-pop-shown', '1');
 
- // 3秒後に表示
- setTimeout(function() { pop.classList.add('show'); }, 2500);
+ // ★ 5秒後に minimized 状態で表示 (商品を先に見せる)
+ setTimeout(function() {
+   pop.classList.add('minimized');
+   pop.classList.add('show');
+ }, 5000);
 })();
 
 function toggleCouponPop(e) {

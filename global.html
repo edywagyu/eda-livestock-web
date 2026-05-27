@@ -3944,9 +3944,121 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <h2>Buyer Inquiry / バイヤー様向けお問い合わせ</h2>
  <p>
- ホテル・レストラン・高級スーパー・代理店など、海外バイヤー様からのお問い合わせは、<a href="contact.html" style="color: var(--color-gold-soft); text-decoration: underline;">こちら</a>からどうぞ。<br/><br/>
- <strong>WhatsApp / Email</strong> でも対応しています。Eメール: <a href="mailto:backoffice@eda-livestock.com" style="color: var(--color-gold-soft); text-decoration: underline;">backoffice@eda-livestock.com</a>
+ ホテル・レストラン・高級スーパー・代理店など、海外バイヤー様からのお問い合わせは下記フォームからお送りください。<br/><br/>
+ <strong>WhatsApp / Email</strong> でも対応可能です。Eメール: <a href="mailto:backoffice@eda-livestock.com" style="color: var(--color-gold-soft); text-decoration: underline;">backoffice@eda-livestock.com</a>
  </p>
+
+ <!-- ★ 2026-05-27 追加: 海外バイヤー向けインラインフォーム (英語/日本語両対応) -->
+ <form id="exportInquiryForm" onsubmit="return submitExportInquiry(event)" style="background:white;padding:28px 24px;border-radius:14px;margin-top:24px;box-shadow:0 4px 24px rgba(15,61,46,0.08);border:1px solid var(--color-bone)">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
+   <div>
+    <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Company / 会社名 <span style="color:#c8102e">*</span></label>
+    <input type="text" name="company" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px">
+   </div>
+   <div>
+    <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Country / 国 <span style="color:#c8102e">*</span></label>
+    <input type="text" name="country" placeholder="e.g. France, Hong Kong" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px">
+   </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
+   <div>
+    <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Your Name / お名前 <span style="color:#c8102e">*</span></label>
+    <input type="text" name="name" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px">
+   </div>
+   <div>
+    <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Email <span style="color:#c8102e">*</span></label>
+    <input type="email" name="email" required style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px">
+   </div>
+  </div>
+  <div style="margin-bottom:14px">
+   <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Business Type / 事業形態</label>
+   <select name="business_type" style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;background:white">
+    <option value="">-- Select / 選択してください --</option>
+    <option>Hotel / ホテル</option>
+    <option>Restaurant / レストラン</option>
+    <option>Distributor / 代理店</option>
+    <option>Retailer / 小売・百貨店</option>
+    <option>E-commerce / オンライン販売</option>
+    <option>Other / その他</option>
+   </select>
+  </div>
+  <div style="margin-bottom:14px">
+   <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Monthly Volume (kg) / 月間想定数量</label>
+   <input type="text" name="monthly_volume" placeholder="e.g. 50kg, 100kg, TBD" style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px">
+  </div>
+  <div style="margin-bottom:14px">
+   <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:6px">Cuts of Interest / 興味のある部位 <small style="font-weight:400;opacity:0.7">(multiple OK)</small></label>
+   <div style="display:flex;flex-wrap:wrap;gap:8px">
+    <label style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid #ccc;border-radius:18px;cursor:pointer;font-size:13px"><input type="checkbox" name="cuts" value="Sirloin"> Sirloin / サーロイン</label>
+    <label style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid #ccc;border-radius:18px;cursor:pointer;font-size:13px"><input type="checkbox" name="cuts" value="Tenderloin"> Tenderloin / ヒレ</label>
+    <label style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid #ccc;border-radius:18px;cursor:pointer;font-size:13px"><input type="checkbox" name="cuts" value="Ribeye"> Ribeye / リブアイ</label>
+    <label style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid #ccc;border-radius:18px;cursor:pointer;font-size:13px"><input type="checkbox" name="cuts" value="FullSet"> Full Set / セット</label>
+    <label style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border:1px solid #ccc;border-radius:18px;cursor:pointer;font-size:13px"><input type="checkbox" name="cuts" value="OrganicJAS"> Organic JAS</label>
+   </div>
+  </div>
+  <div style="margin-bottom:18px">
+   <label style="display:block;font-size:12px;color:var(--color-forest);font-weight:600;margin-bottom:4px">Message / メッセージ</label>
+   <textarea name="message" rows="4" placeholder="Tell us about your needs / ご要望をお聞かせください" style="width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;font-size:14px;font-family:inherit;resize:vertical"></textarea>
+  </div>
+  <button type="submit" id="exportInquirySubmit" style="background:var(--color-forest-deep, #0F3D2E);color:white;padding:14px 28px;border:0;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;letter-spacing:0.04em">
+   Send Inquiry / 送信する
+  </button>
+  <p id="exportInquiryFeedback" style="display:none;margin:14px 0 0;text-align:center;font-size:13px;font-weight:600"></p>
+  <p style="margin:14px 0 0;text-align:center;font-size:11px;opacity:0.65">通常 1〜2 営業日以内にご返信いたします / We typically reply within 1-2 business days</p>
+ </form>
+
+ <p style="text-align:center;margin:24px 0 0">
+  <a href="booking.html?type=overseas" style="display:inline-block;background:white;color:var(--color-forest);padding:12px 24px;border:2px solid var(--color-forest);border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+   📅 Book a Direct Meeting / 直接面談を予約する
+  </a>
+ </p>
+
+ <script>
+ function submitExportInquiry(ev) {
+  ev.preventDefault();
+  var form = ev.target;
+  var btn = document.getElementById('exportInquirySubmit');
+  var fb = document.getElementById('exportInquiryFeedback');
+  var fd = new FormData(form);
+  var data = { type: 'export_inquiry' };
+  fd.forEach(function(v, k){
+    if (data[k] === undefined) data[k] = v;
+    else if (Array.isArray(data[k])) data[k].push(v);
+    else data[k] = [data[k], v];
+  });
+  btn.disabled = true;
+  btn.textContent = '送信中… / Sending…';
+  if (window.EDA_API && window.EDA_API.post) {
+    window.EDA_API.post('submit_inquiry', data).then(function(res){
+      btn.disabled = false;
+      btn.textContent = 'Send Inquiry / 送信する';
+      if (res && (res.ok || res.success)) {
+        fb.style.display = 'block';
+        fb.style.color = '#0F3D2E';
+        fb.textContent = '✅ お問い合わせを受け付けました。1〜2営業日以内にご返信します。/ Inquiry received. We will reply within 1-2 business days.';
+        form.reset();
+      } else {
+        fb.style.display = 'block';
+        fb.style.color = '#c8102e';
+        fb.textContent = '⚠ 送信に失敗しました。Email: backoffice@eda-livestock.com へ直接ご連絡ください。';
+      }
+    }).catch(function(){
+      btn.disabled = false;
+      btn.textContent = 'Send Inquiry / 送信する';
+      fb.style.display = 'block';
+      fb.style.color = '#c8102e';
+      fb.textContent = '⚠ 通信エラー / Network error. Please email backoffice@eda-livestock.com directly.';
+    });
+  } else {
+    fb.style.display = 'block';
+    fb.style.color = '#c8102e';
+    fb.textContent = '⚠ API読み込み中… 再度お試しください';
+    btn.disabled = false;
+    btn.textContent = 'Send Inquiry / 送信する';
+  }
+  return false;
+ }
+ </script>
  </div>
 </section>
 

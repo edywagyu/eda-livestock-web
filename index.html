@@ -827,7 +827,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: white;
  border-color: var(--color-forest);
 }
-@media (max-width: 1024px) { .audience-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .audience-grid { grid-template-columns: 1fr; gap: 16px; } }
+@media (max-width: 640px) {
+ .audience-section { padding: 56px 0; }
+ .audience-card { padding: 28px 22px; border-top-width: 3px; }
+ .audience-card h3 { font-size: 22px; margin-bottom: 4px; }
+ .audience-card .jp { font-size: 13px; margin-bottom: 14px; }
+ .audience-card p { font-size: 13px; line-height: 1.7; margin-bottom: 16px; }
+ .audience-card .links a { padding: 11px 0; font-size: 11px; }
+ .audience-phone { padding: 14px 18px; margin-top: 16px; }
+ .audience-phone-name { font-size: 13px; }
+}
 
 /* ================ ADVANCED FORM ================ */
 .form-section {
@@ -4202,15 +4212,23 @@ section.featured {
 </section>
 
 <!-- ========= AUDIENCE NAVIGATION ========= -->
-<section class="audience-section">
+<section class="audience-section" id="for-you">
  <div class="container">
- <div class="reveal" style="text-align: center; margin-bottom: 56px;">
+ <div class="reveal" style="text-align: center; margin-bottom: 32px;">
  <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">For You</span>
- <h2 style="font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); margin: 24px 0 0; color: var(--color-forest);">For You.</h2>
+ <h2 style="font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); margin: 24px 0 8px; color: var(--color-forest);">For You.</h2>
+ <p style="font-size: 13.5px; color: var(--color-ink-muted); margin: 0 16px;">あなたが当てはまる入口を選んでください ↓</p>
+ </div>
+
+ <!-- 2026-05-27 追加: モバイルで一目で3パスを認識できる pill (タップでスクロール) -->
+ <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 16px 32px;" class="reveal">
+  <a href="#for-home-card" style="padding:8px 16px;background:white;border:1.5px solid var(--color-gold);color:var(--color-forest);border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;">🏠 ご家庭で食べる</a>
+  <a href="#for-rest-card" style="padding:8px 16px;background:white;border:1.5px solid var(--color-forest);color:var(--color-forest);border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;">🍽 飲食店・小売</a>
+  <a href="#for-intl-card" style="padding:8px 16px;background:white;border:1.5px solid var(--color-forest);color:var(--color-forest);border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;">🌍 海外バイヤー</a>
  </div>
 
  <div class="audience-grid reveal">
- <article class="audience-card">
+ <article class="audience-card" id="for-home-card">
  <div class="num">— FOR HOME —</div>
  <h3>For Home</h3>
  <div class="jp">ご家庭で</div>
@@ -4218,9 +4236,9 @@ section.featured {
  無投薬で育てた和牛と、大分県の平飼い農家から仕入れた鶏。ご家庭の食卓へ、最短 3 日でお届けします。¥11,000 以上で送料無料（北海道のみ +¥500）。
  </p>
  <div class="links">
- <a href="shop.html">Collection</a>
- <a href="subscription.html">月の定期便</a>
- <a href="shop.html#quiz">あなたに合う定期便を選ぶ</a>
+ <a href="shop.html">単品ご注文（最短3日）</a>
+ <a href="subscription.html">定期便（毎月1日お届け）</a>
+ <a href="shop.html#gift-highlight">ギフト・贈答用</a>
  <a href="restaurants.html">取り扱い店舗</a>
  </div>
  <a href="tel:09047241063" class="audience-phone" data-person="ec">
@@ -4230,7 +4248,7 @@ section.featured {
  </a>
  </article>
 
- <article class="audience-card" style="border-top-color: var(--color-forest);">
+ <article class="audience-card" id="for-rest-card" style="border-top-color: var(--color-forest);">
  <div class="num">— FOR RESTAURANTS —</div>
  <h3>For Restaurants</h3>
  <div class="jp">レストラン・ホテル・百貨店</div>
@@ -4250,7 +4268,7 @@ section.featured {
  </a>
  </article>
 
- <article class="audience-card" style="border-top-color: var(--color-gold-bright);">
+ <article class="audience-card" id="for-intl-card" style="border-top-color: var(--color-gold-bright);">
  <div class="num">— FOR INTERNATIONAL —</div>
  <h3>For International Partners</h3>
  <div class="jp">海外のパートナー</div>
@@ -4586,8 +4604,9 @@ section.featured {
  </div>
  <div style="max-width: 380px;">
  <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
- ご注文から最短3日でお届け。<br/>
- ¥11,000以上のご購入で送料無料。
+ <strong style="color:var(--color-forest)">単品ご注文：</strong>ご注文から最短3日でお届け<br/>
+ <strong style="color:var(--color-forest)">定期便：</strong>毎月1日にお届け（決済は20日）<br/>
+ <small style="opacity:0.85">¥11,000以上のご購入で送料無料</small>
  </p>
  </div>
  </div>
