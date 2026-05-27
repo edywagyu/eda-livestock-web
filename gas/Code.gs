@@ -134,6 +134,11 @@ function doGet(e) {
       case 'check_config':      return jsonResponse(checkConfig());
       case 'setup':             return runSetup(e.parameter);
       case 'update_properties': return jsonResponse(setupAllProperties());
+      /* ===== 🔧 診断用 (read-only / 失敗オーダーの遡及修復) ===== */
+      case 'diag_webhooks':     return diagWebhooks();
+      case 'diag_recover_sub':  return diagRecoverSubscription(e.parameter);
+      case 'diag_update_webhook': return diagUpdateWebhook(e.parameter);
+      case 'diag_find_session':  return diagFindSession(e.parameter);
       /* ===== STAFF ===== */
       case 'staff_login':       return staffLogin(e.parameter);
       case 'staff_dashboard':   return staffDashboard();
@@ -516,6 +521,161 @@ function createSubscriptionCheckout(body) {
    ・billing_cycle_anchor を翌月20日に設定し、proration_behavior='none' で
      「anchor まで請求書なし、anchor から毎月20日に自動課金」を実現
    ============================================================ */
+/* ============================================================
+   🔧 診断: Stripe Webhook 登録 URL を確認 (read-only)
+   ============================================================ */
+function diagWebhooks() {
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY not set' });
+  const res = UrlFetchApp.fetch('https://api.stripe.com/v1/webhook_endpoints?limit=20', {
+    method: 'get',
+    headers: { 'Authorization': 'Bearer ' + STRIPE },
+    muteHttpExceptions: true
+  });
+  const data = JSON.parse(res.getContentText());
+  if (data.error) return jsonResponse({ ok:false, error: data.error.message });
+  return jsonResponse({
+    ok: true,
+    endpoints: (data.data || []).map(function(w){
+      return {
+        id: w.id,
+        url: w.url,
+        status: w.status,
+        enabled_events: w.enabled_events,
+        created: w.created
+      };
+    })
+  });
+}
+
+/* ============================================================
+   🔧 失敗オーダー遡及修復: Subscription を手動生成
+   ============================================================
+   ?action=diag_recover_sub&session_id=cs_live_xxxx
+   ・既存 Checkout Session から PaymentIntent を取得
+   ・PaymentMethod を保存済 Customer に attach
+   ・Subscription を billing_cycle_anchor=翌月20日 で作成
+   ============================================================ */
+function diagRecoverSubscription(params) {
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY not set' });
+  const sessionId = params.session_id;
+  if (!sessionId) return jsonResponse({ ok:false, error:'session_id required' });
+
+  // 1. Checkout Session 取得
+  const ses_res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions/' + sessionId, {
+    method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  const session = JSON.parse(ses_res.getContentText());
+  if (session.error) return jsonResponse({ ok:false, step:'get_session', error: session.error.message });
+
+  const meta = session.metadata || {};
+  const recurringPriceId = meta.recurring_price_id;
+  const billingAnchor = meta.billing_anchor;
+  if (!recurringPriceId) return jsonResponse({ ok:false, step:'metadata', error:'recurring_price_id missing from session metadata', meta: meta });
+  if (!session.customer) return jsonResponse({ ok:false, step:'session', error:'session.customer is null', session_keys: Object.keys(session) });
+  if (!session.payment_intent) return jsonResponse({ ok:false, step:'session', error:'session.payment_intent is null' });
+
+  // 2. 既存 Subscription があるか確認 (重複生成防止)
+  const existing_res = UrlFetchApp.fetch(
+    'https://api.stripe.com/v1/subscriptions?customer=' + session.customer + '&limit=5',
+    { method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true }
+  );
+  const existing = JSON.parse(existing_res.getContentText());
+  if (existing.data && existing.data.length > 0) {
+    return jsonResponse({ ok:false, step:'already_exists', subscriptions: existing.data.map(function(s){ return s.id; }) });
+  }
+
+  // 3. PaymentIntent から PaymentMethod 取得
+  const pi_res = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_intents/' + session.payment_intent, {
+    method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  const pi = JSON.parse(pi_res.getContentText());
+  if (pi.error) return jsonResponse({ ok:false, step:'get_pi', error: pi.error.message });
+  const paymentMethodId = pi.payment_method;
+  if (!paymentMethodId) return jsonResponse({ ok:false, step:'pi', error:'payment_method missing on PI' });
+
+  // 4. Subscription 作成
+  // 2026-05-27: Stripe API は billing_cycle_anchor の unix timestamp を直接受け取らなくなった。
+  // billing_cycle_anchor_config[day_of_month]=20 で「毎月20日に anchor」を指定。
+  const subParams = {
+    customer: session.customer,
+    'items[0][price]': recurringPriceId,
+    proration_behavior: 'none',
+    default_payment_method: paymentMethodId,
+    'billing_cycle_anchor_config[day_of_month]': '20',
+    'metadata[plan]': meta.plan || '',
+    'metadata[order_number]': meta.order_number || '',
+    'metadata[first_payment_session]': session.id,
+    'metadata[mode]': 'subscription_recurring',
+    'metadata[recovered_from]': 'diag_recover_sub'
+  };
+
+  const sub_res = UrlFetchApp.fetch('https://api.stripe.com/v1/subscriptions', {
+    method: 'post', payload: subParams,
+    headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  const sub = JSON.parse(sub_res.getContentText());
+  if (sub.error) return jsonResponse({
+    ok: false, step: 'create_sub', error: sub.error.message,
+    sent_params: subParams
+  });
+
+  return jsonResponse({
+    ok: true,
+    subscription_id: sub.id,
+    status: sub.status,
+    customer: sub.customer,
+    billing_cycle_anchor: sub.billing_cycle_anchor,
+    next_invoice_at: sub.current_period_end
+  });
+}
+
+/* ============================================================
+   🔧 Webhook URL を更新 (1-shot 操作)
+   ?action=diag_update_webhook&webhook_id=we_xxx&new_url=https://...
+   ============================================================ */
+function diagUpdateWebhook(params) {
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY not set' });
+  if (!params.webhook_id || !params.new_url) {
+    return jsonResponse({ ok:false, error:'webhook_id and new_url required' });
+  }
+  var res = UrlFetchApp.fetch('https://api.stripe.com/v1/webhook_endpoints/' + params.webhook_id, {
+    method: 'post',
+    payload: { url: params.new_url },
+    headers: { 'Authorization': 'Bearer ' + STRIPE },
+    muteHttpExceptions: true
+  });
+  var data = JSON.parse(res.getContentText());
+  if (data.error) return jsonResponse({ ok:false, error: data.error.message });
+  return jsonResponse({ ok:true, id: data.id, url: data.url, status: data.status });
+}
+
+/* ============================================================
+   🔧 Checkout Session を PaymentIntent ID で逆引き
+   ?action=diag_find_session&payment_intent=pi_xxx
+   ============================================================ */
+function diagFindSession(params) {
+  var STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!params.payment_intent) return jsonResponse({ ok:false, error:'payment_intent required' });
+  var res = UrlFetchApp.fetch(
+    'https://api.stripe.com/v1/checkout/sessions?payment_intent=' + params.payment_intent + '&limit=5',
+    { method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true }
+  );
+  var data = JSON.parse(res.getContentText());
+  if (data.error) return jsonResponse({ ok:false, error: data.error.message });
+  return jsonResponse({
+    ok: true,
+    sessions: (data.data || []).map(function(s){
+      return {
+        id: s.id, status: s.status, payment_status: s.payment_status,
+        customer: s.customer, metadata: s.metadata, amount_total: s.amount_total
+      };
+    })
+  });
+}
+
 function createDelayedSubscription(session, meta) {
   const STRIPE = cfg('STRIPE_SECRET_KEY');
   if (!STRIPE) throw new Error('Stripe not configured');
@@ -533,11 +693,12 @@ function createDelayedSubscription(session, meta) {
   const paymentMethodId = pi.payment_method;
   if (!paymentMethodId) throw new Error('No payment_method on PaymentIntent');
 
-  // Subscription 作成 (anchor=翌月20日, proration=none, 初回課金なし)
+  // Subscription 作成 (anchor=毎月20日, proration=none, 初回課金なし)
+  // 2026-05-27: Stripe 新API仕様により billing_cycle_anchor_config[day_of_month] を使用
   const subParams = {
     customer: session.customer,
     'items[0][price]': meta.recurring_price_id,
-    billing_cycle_anchor: parseInt(meta.billing_anchor, 10),
+    'billing_cycle_anchor_config[day_of_month]': '20',
     proration_behavior: 'none',
     default_payment_method: paymentMethodId,
     'metadata[plan]': meta.plan,
@@ -1420,7 +1581,9 @@ function setupAllProperties() {
     STRIPE_PRICE_MINI: 'price_1TWAN0GSkhU1UEciNGZHORc3',
     STRIPE_PRICE_PRO:  'price_1TWAN0GSkhU1UEciKod4PGpk',
     STRIPE_PRICE_VIP:  'price_1TbK7DGSkhU1UEciPsf2dA53',
-    STRIPE_DEMO_COUPON: 'DEMO100',
+    // 🔴 2026-05-27: 本番ローンチ完了。DEMO100 (100%OFF) は無効化。
+    //                 FIRST50 (50%OFF 初月限定) のみ適用される。
+    STRIPE_DEMO_COUPON: '',
     STRIPE_COUPON_50OFF: 'FIRST50',
     STAFF_NOTIFICATION_EMAIL: 'backoffice@eda-livestock.com',
     SUCCESS_URL: 'https://edywagyu.github.io/eda-livestock-web/order-complete.html',
