@@ -3773,6 +3773,10 @@ function renderDashboard(customer, orders) {
 
  /* Scroll to dashboard smoothly */
  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+ /* リッチメニュー等から ?tab= で対象タブを直接開く（rewards=特典/クーポン, orders=注文履歴/配送） */
+ var _initTab = _rp.get('tab');
+ if (_initTab) switchTab(_initTab);
 }
 
 /* ---- Render Orders ---- */
