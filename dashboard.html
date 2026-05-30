@@ -925,7 +925,7 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
    - 各タブは描画関数を持ち、データ受信後に呼ばれる
    ============================================================ */
 
-const GAS_URL = () => localStorage.getItem('eda-gas-url') || '';
+const GAS_URL = () => localStorage.getItem('eda-gas-url') || (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
 let cache = {}; // action名 → response data
 
 /* ====== タブ切替 ====== */
