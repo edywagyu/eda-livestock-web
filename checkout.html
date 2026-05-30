@@ -2193,10 +2193,10 @@ function renderSummary() {
  lineItems.innerHTML = itemsHtml;
 
  // 送料 (10%税込) — 11,000円(税込)以上で送料無料（北海道のみ +¥500） / 北海道のみ +¥500 / 定期便はプランに送料込
- const baseShipping = subscription ? 0 : (subTotal >= 11000 ? 0 : 1100);
- // 北海道追加送料 (¥500) — 主送り先の都道府県で判定
- const hokkaidoSurcharge = destinations[0] && destinations[0].pref === '北海道' ? 500 : 0;
- const shipping = baseShipping + hokkaidoSurcharge;
+ // 自宅送料は GAS の calcShipping と同一ロジックで表示（規約通り: ¥11,000以上 無料 / 北海道・沖縄 ¥2,200 / それ以外 ¥1,100）。
+ const _selfPref = destinations[0] && destinations[0].pref;
+ const _remoteArea = (_selfPref === '北海道' || _selfPref === '沖縄県');
+ const shipping = subscription ? 0 : (subTotal >= 11000 ? 0 : (_remoteArea ? 2200 : 1100));
  // ギフト追加配送 (1,100円 税込/件) — 各ギフト送り先も北海道なら +¥500
  const giftShipping = destinations.filter(d => d.type === 'gift' && d.itemIds.length > 0)
    .reduce((sum, d) => sum + 1100 + (d.pref === '北海道' ? 500 : 0), 0);
