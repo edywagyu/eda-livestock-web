@@ -4558,7 +4558,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  checkBtn.addEventListener('click', () => {
  if (items.length === 0) return;
  const parts = items.map(i => `${i.variantId}:${i.qty}`).join(',');
- window.location.href = `${STORE}/cart/${parts}`;
+ save(); location.href = 'checkout.html';
  });
  }
 

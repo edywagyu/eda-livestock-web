@@ -5441,7 +5441,7 @@ section.featured {
  checkBtn.addEventListener('click', () => {
  if (items.length === 0) return;
  const parts = items.map(i => `${i.variantId}:${i.qty}`).join(',');
- window.location.href = `${STORE}/cart/${parts}`;
+ save(); location.href = 'checkout.html';
  });
  }
 
