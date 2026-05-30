@@ -2130,8 +2130,13 @@ function couponDiscountAmount() {
  return full - disc;
 }
 function buildPayloadItems() {
- if (discountRate() === 0) return cartItems;
- return cartItems.map(function(it){ return Object.assign({}, it, { price: discountedUnit(it.price || 0) }); });
+ var arr = (discountRate() === 0) ? cartItems.slice() : cartItems.map(function(it){ return Object.assign({}, it, { price: discountedUnit(it.price || 0) }); });
+ // 配送料を line item として計上 (ECサイト表記通り: ¥11,000以上無料 / 北海道+¥500 / ギフト+¥1,100)。
+ // 現行GASは items の price をそのまま課金するため、これで送料が実課金に乗る（GAS改修不要）。
+ if (gShipping > 0) {
+   arr.push({ variantId: 'shipping', title: '配送料', variant: '', price: gShipping, qty: 1, stripePriceId: null });
+ }
+ return arr;
 }
 function applyCoupon() {
  var input = document.getElementById('couponInput');
@@ -2465,7 +2470,6 @@ async function placeOrder() {
  })),
  items: buildPayloadItems(),
  couponCode: appliedCoupon ? appliedCoupon.code : null,
- shipping: gShipping,
  subscription: subscription,
  payment_method: payment,
  quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
