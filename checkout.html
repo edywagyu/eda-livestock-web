@@ -2132,11 +2132,9 @@ function couponDiscountAmount() {
 }
 function buildPayloadItems() {
  var arr = (discountRate() === 0) ? cartItems.slice() : cartItems.map(function(it){ return Object.assign({}, it, { price: discountedUnit(it.price || 0) }); });
- // 配送料を line item として計上 (ECサイト表記通り: ¥11,000以上無料 / 北海道+¥500 / ギフト+¥1,100)。
- // 現行GASは items の price をそのまま課金するため、これで送料が実課金に乗る（GAS改修不要）。
- if (gShipping > 0) {
-   arr.push({ variantId: 'shipping', title: '配送料', variant: '', price: gShipping, qty: 1, stripePriceId: null });
- }
+ // 送料は GAS 側 (calcShipping → "送料" line item) でサーバー計算・課金する（改ざん不可・
+ // 規約通り ¥1,100 / 北海道・沖縄 ¥2,200 / ¥11,000以上 無料）。
+ // ここで配送料を line item に含めると GAS の「送料」と二重課金になるため、含めない。
  return arr;
 }
 function applyCoupon() {
