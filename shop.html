@@ -6252,8 +6252,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ MICRO-INTERACTIONS ================ */
-.buy-row { display: flex; gap: 8px; align-items: stretch; margin-top: 10px; }
-.buy-row .btn-add-cart { flex: 1; min-width: 0; }
+/* 2026-05-30 商品カード簡素化(Tom): スペック表/お届け日を非表示・買い物UIをカード下端に整列・2段レイアウト */
+.spec-table { display: none !important; }
+.delivery-estimate, .product-meta-delivery { display: none !important; }
+.product-card .product-buy { margin-top: auto; }
+.qty-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.qty-disc { font-size: 13px; font-weight: 700; color: var(--color-ink-muted, #5C5C5C); white-space: nowrap; }
+.qty-disc.on { color: var(--color-red, #C8102E); }
+.product-buy .btn-add-cart { width: 100%; margin-top: 10px; }
 .qty-stepper {
  display: inline-flex;
  align-items: center;
@@ -11890,6 +11896,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  let html = '';
  let subtotal = 0;
  items.forEach((item, idx) => {
+ if (item.baseUnit != null) item.price = tieredUnit(item.baseUnit, item.tiers, item.qty);
  subtotal += item.price * item.qty;
  html += `<div class="cart-item" data-idx="${idx}">
  <div class="cart-item-img"><img src="${item.img}" alt=""/></div>
@@ -12045,7 +12052,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  .reduce((sum, i) => sum + (variantUnits(i.variant) * (i.qty || 1)), 0);
  }
 
- function addToCart(variantId, price, title, variant, img, qtyToAdd) {
+ /* 数量に応じた単価(まとめ買い割引)。tiers={r2,r3}は商品データから導出。 */
+ function tieredUnit(base, tiers, qty) {
+ const r = qty >= 3 ? ((tiers && tiers.r3) || 0) : (qty === 2 ? ((tiers && tiers.r2) || 0) : 0);
+ return Math.round(base * (1 - r));
+ }
+ function addToCart(variantId, price, title, variant, img, qtyToAdd, opts) {
  qtyToAdd = Math.max(1, parseInt(qtyToAdd, 10) || 1);
  /* ★ 在庫上限チェック */
  const stock = getStockForTitle(title);
@@ -12060,12 +12072,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  return false;
  }
+ const tiered = opts && opts.baseUnit != null;
  const existing = items.find(i => i.variantId === variantId);
  if (existing) {
  existing.qty += qtyToAdd;
+ if (tiered) { existing.baseUnit = opts.baseUnit; existing.tiers = opts.tiers; }
  } else {
- const stripePriceId = lookupStripePriceId(title, variant);
- items.push({ variantId, price, title, variant, img, qty: qtyToAdd, stripePriceId });
+ const stripePriceId = tiered ? null : lookupStripePriceId(title, variant);
+ const it = { variantId, price, title, variant, img, qty: qtyToAdd, stripePriceId };
+ if (tiered) { it.baseUnit = opts.baseUnit; it.tiers = opts.tiers; }
+ items.push(it);
  }
  save();
  renderCart();
@@ -12163,43 +12179,52 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  //  ・選択した variant を1つだけカートへ (数量はカート内で +/- 調整)
  //  ・variant が1つだけの商品は静的価格表示
 
- /* 2026-05-30: セット選択ドロップダウン＋別ステッパーの「数量選択2つ・3行」UIを廃止。
-    数量ステッパー1つ(1〜10) ＋ 追加ボタン を1行に統合（モバイル最優先・最高UX）。
-    基本単価×数量のシンプル課金（旧 2つ5%/3つ10% のセット割は一旦廃止）。 */
+ /* 2026-05-30: 注文UIを2段に。上段=数量ステッパー(1〜10)＋割引ラベル(定価/5%/10%)、下段=追加ボタン(横長・合計表示)。
+    まとめ買い割引は商品データ(variants)から導出し自動適用。カート側でも数量に応じ再計算(renderCart)。 */
  const base = variants[0];
- buyEl.innerHTML = '<div class="buy-row">'
+ const tiers = {
+   r2: variants[1] ? Math.max(0, Math.round((1 - variants[1].p / (2 * base.p)) * 100) / 100) : 0,
+   r3: variants[2] ? Math.max(0, Math.round((1 - variants[2].p / (3 * base.p)) * 100) / 100) : 0
+ };
+ buyEl.innerHTML = '<div class="qty-row">'
    + '<div class="qty-stepper" role="group" aria-label="数量">'
    +   '<button type="button" class="qty-btn qty-dec" aria-label="数量を減らす">−</button>'
    +   '<span class="qty-val" aria-live="polite">1</span>'
    +   '<button type="button" class="qty-btn qty-inc" aria-label="数量を増やす">＋</button>'
    + '</div>'
-   + '<button class="btn-add-cart" type="button">カートに追加</button>'
-   + '</div>';
+   + '<span class="qty-disc"></span>'
+   + '</div>'
+   + '<button class="btn-add-cart" type="button">カートに追加</button>';
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
  const QMAX = 10;
  const qtyValEl = buyEl.querySelector('.qty-val');
  const decBtn = buyEl.querySelector('.qty-dec');
  const incBtn = buyEl.querySelector('.qty-inc');
+ const discEl = buyEl.querySelector('.qty-disc');
  function getQ() { return Math.min(QMAX, Math.max(1, parseInt(qtyValEl.textContent, 10) || 1)); }
- function refreshBtn() { if (!addBtn.classList.contains('added')) addBtn.textContent = 'カートに追加 ¥' + (base.p * getQ()).toLocaleString(); }
- function setQ(n) { n = Math.min(QMAX, Math.max(1, n)); qtyValEl.textContent = n; decBtn.disabled = (n <= 1); incBtn.disabled = (n >= QMAX); refreshBtn(); }
+ function rateFor(q) { return q >= 3 ? tiers.r3 : (q === 2 ? tiers.r2 : 0); }
+ function refresh() {
+   const q = getQ(), r = rateFor(q), total = Math.round(base.p * (1 - r)) * q;
+   discEl.textContent = r > 0 ? (Math.round(r * 100) + '%オフ') : '定価';
+   discEl.classList.toggle('on', r > 0);
+   if (!addBtn.classList.contains('added')) addBtn.textContent = 'カートに追加 ¥' + total.toLocaleString();
+ }
+ function setQ(n) { n = Math.min(QMAX, Math.max(1, n)); qtyValEl.textContent = n; decBtn.disabled = (n <= 1); incBtn.disabled = (n >= QMAX); refresh(); }
  decBtn.addEventListener('click', () => setQ(getQ() - 1));
  incBtn.addEventListener('click', () => setQ(getQ() + 1));
  setQ(1);
 
  addBtn.addEventListener('click', () => {
-   const ok = addToCart(base.id, base.p, title, base.t, img, getQ());
+   const q = getQ(), unit = Math.round(base.p * (1 - rateFor(q)));
+   const ok = addToCart(base.id, unit, title, base.t, img, q, { baseUnit: base.p, tiers: tiers });
    if (ok === false) return;
 
    /* visual feedback */
    addBtn.classList.add('added');
    addBtn.textContent = '追加しました ✓';
    setQ(1);
-   setTimeout(() => {
-     addBtn.classList.remove('added');
-     refreshBtn();
-   }, 1500);
+   setTimeout(() => { addBtn.classList.remove('added'); refresh(); }, 1500);
  });
  });
 
