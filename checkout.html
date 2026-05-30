@@ -2466,7 +2466,7 @@ async function placeOrder() {
  type: d.type,
  name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
  noshi: d.noshi || null, fromName: d.fromName || null,
- items: d.itemIds.map(i => cartItems[i]).filter(Boolean)
+ items: d.itemIds.map(i => cartItems[i]).filter(Boolean).map(it => ({ title: it.title, variant: it.variant, qty: it.qty }))
  })),
  items: buildPayloadItems(),
  couponCode: appliedCoupon ? appliedCoupon.code : null,
