@@ -801,36 +801,62 @@ function finalizeOrder(session) {
   const orderNum = meta.order_number || ('SESSION-' + session.id.slice(-8));
   const total = session.amount_total || 0;
 
-  sh.appendRow([
-    orderNum,
-    new Date(),
-    session.id,
-    meta.customer_name || '',
-    session.customer_details && session.customer_details.email,
-    meta.customer_phone || '',
-    meta.mode || 'single',
-    total,
-    0, // shipping calculated separately
-    session.payment_status,
-    (session.payment_method_types && session.payment_method_types[0]) || 'card',
-    meta.destinations_json || '[]',
-    meta.line_items_json || '[]',
-    JSON.stringify(meta),
-    meta.line_uid || '',   // ★ LINE 連携: orders に line_uid を直接記録
-    meta.line_name || '',
-    meta.contact_method || ''
-  ]);
+  // ★ 冪等性ガード: Stripe は webhook を複数回配信する(リトライ仕様)。ガードが無いと
+  //   配信回数ぶん「確認メール・スタッフ通知・orders行追加・在庫減算」が多重実行される。
+  //   (2026-05-30 EDA-20260530-DC5B5E で確認メール4通/在庫4重減算/orders重複行が発生)
+  //   ScriptLock で check→append を直列化し、同一 session_id が既に処理済みなら即 200 で返す。
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(30000);
+  } catch (lockErr) {
+    log('finalize_lock_timeout', { session: session.id });
+    return jsonResponse({ ok: false, error: 'lock timeout' });
+  }
+  try {
+    const existingRows = sh.getDataRange().getValues();
+    for (var r = 1; r < existingRows.length; r++) {
+      if (existingRows[r][2] === session.id) {   // col index 2 = session_id
+        log('finalize_duplicate_skipped', { session: session.id, order: existingRows[r][0] });
+        return jsonResponse({ ok: true, duplicate: true, order: existingRows[r][0] });
+      }
+    }
 
-  // 通知 (顧客 + スタッフ)
-  // contact_method=line の場合は LINE push、email の場合はメール
-  var contactMethod = meta.contact_method || '';
-  if (contactMethod === 'line' && meta.line_uid) {
-    sendLinePush(meta.line_uid, [buildOrderConfirmMessage(
+    sh.appendRow([
+      orderNum,
+      new Date(),
+      session.id,
+      meta.customer_name || '',
+      session.customer_details && session.customer_details.email,
+      meta.customer_phone || '',
+      meta.mode || 'single',
+      total,
+      0, // shipping calculated separately
+      session.payment_status,
+      (session.payment_method_types && session.payment_method_types[0]) || 'card',
+      meta.destinations_json || '[]',
+      meta.line_items_json || '[]',
+      JSON.stringify(meta),
+      meta.line_uid || '',   // ★ LINE 連携: orders に line_uid を直接記録
+      meta.line_name || '',
+      meta.contact_method || ''
+    ]);
+  } finally {
+    lock.releaseLock();
+  }
+
+  // 顧客への受注通知:
+  //   LINE 連携済み (line_uid あり) → LINE で簡潔に送り、メールは送らない。
+  //   未連携、または LINE 送信失敗時 → メールで送る (顧客が無通知になるのを防ぐフォールバック)。
+  var linePushed = false;
+  if (meta.line_uid) {
+    linePushed = sendLinePush(meta.line_uid, [buildOrderConfirmMessage(
       meta.customer_name || '', orderNum, Math.round(total / 100)
     )]);
   }
-  // メール: contact_method に関係なくメールがあれば送信 (受注確認)
-  sendCustomerReceiptEmail(session, orderNum);
+  if (!linePushed) {
+    sendCustomerReceiptEmail(session, orderNum);
+  }
+  // スタッフ通知は常にメール (社内オペ用)
   sendStaffNotificationEmail(session, orderNum);
 
   // 顧客マスタ upsert (LINE 連携情報も保存)
@@ -1857,17 +1883,22 @@ function lineRegister(body) {
 */
 function sendLinePush(lineUid, messages) {
   var token = cfg('LINE_CHANNEL_TOKEN');
-  if (!token || !lineUid) return;
+  if (!token || !lineUid) return false;
   try {
-    UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
+    var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
       method: 'post',
       contentType: 'application/json',
       headers: { 'Authorization': 'Bearer ' + token },
       payload: JSON.stringify({ to: lineUid, messages: messages }),
       muteHttpExceptions: true
     });
+    var code = res.getResponseCode();
+    if (code >= 200 && code < 300) return true;
+    log('line_push_failed', { line_uid: lineUid, code: code, body: res.getContentText() });
+    return false;
   } catch (e) {
     log('line_push_error', { line_uid: lineUid, error: e.message });
+    return false;
   }
 }
 
