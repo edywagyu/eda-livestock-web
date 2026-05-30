@@ -1798,7 +1798,7 @@ function renderOrderList() {
  html += `
  <div class="order-card ${isGift ? 'order-card--gift' : ''}">
   <div class="order-item" data-id="${i}">
-  <div class="order-item-img" style="background-image:url('${item.img || 'public/images/products/drive/sirloin.jpg'}')"></div>
+  <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
   <div class="order-item-info">
   <strong>${item.title}</strong>
   <span>${item.variant}</span>
@@ -1847,6 +1847,7 @@ function changeCartQty(index, delta) {
  }
  localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
  renderOrderList();
+ renderDestinations();
  renderSummary();
 }
 
@@ -1930,7 +1931,7 @@ function renderDestinations() {
  if (_aItems.length > 0) {
  _aChips = '<div class="dest-assigned-items">'
   + '<div class="dest-assigned-label">' + (isGift ? '🎁' : '📦') + ' この送り先のアイテム（' + _aItems.length + '点）</div>'
-  + _aItems.map(it => '<span class="dest-assigned-chip"><span class="dest-assigned-chip-img" style="background-image:url(\'' + (it.img || 'public/images/products/drive/sirloin.jpg') + '\')"></span>' + it.title + '</span>').join('')
+  + _aItems.map(it => '<span class="dest-assigned-chip"><span class="dest-assigned-chip-img" style="background-image:url(\'public/images/products/drive/premium-slice.jpg\')"></span>' + it.title + '</span>').join('')
   + '</div>';
  } else if (isGift) {
  _aChips = '<div style="padding:10px 14px;background:rgba(200,16,46,0.06);border:1px dashed rgba(200,16,46,0.25);border-radius:8px;font-size:12px;color:var(--color-ink-muted);text-align:center;margin-top:8px;">⬆ 注文内容で「🎁 贈り物として送る」を選択するとこの送り先に商品が割り当てられます</div>';
