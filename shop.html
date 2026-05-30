@@ -6252,6 +6252,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ MICRO-INTERACTIONS ================ */
+.buy-row { display: flex; gap: 8px; align-items: stretch; margin-top: 10px; }
+.buy-row .btn-add-cart { flex: 1; min-width: 0; }
 .qty-stepper {
  display: inline-flex;
  align-items: center;
@@ -6259,8 +6261,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  border-radius: 999px;
  overflow: hidden;
  background: #fff;
- margin: 8px 0;
- vertical-align: middle;
+ flex-shrink: 0;
 }
 .qty-stepper .qty-btn {
  width: 40px; height: 40px;
@@ -12162,50 +12163,42 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  //  ・選択した variant を1つだけカートへ (数量はカート内で +/- 調整)
  //  ・variant が1つだけの商品は静的価格表示
 
- let html;
- if (variants.length === 1) {
-   html = `<div class="variant-select variant-select--static">${variants[0].t} — ¥${variants[0].p.toLocaleString()}</div>`;
- } else {
-   html = '<select class="variant-select" aria-label="数量・セットを選択">';
-   variants.forEach(function(v, i) {
-     html += `<option value="${i}">${v.t} — ¥${v.p.toLocaleString()}</option>`;
-   });
-   html += '</select>';
- }
- /* 数量ステッパー (1〜10) — タップで増減できる最高UX。セット割は上のセレクトで選択。 */
- html += '<div class="qty-stepper" role="group" aria-label="数量">'
-   + '<button type="button" class="qty-btn qty-dec" aria-label="数量を減らす">−</button>'
-   + '<span class="qty-val" aria-live="polite">1</span>'
-   + '<button type="button" class="qty-btn qty-inc" aria-label="数量を増やす">＋</button>'
+ /* 2026-05-30: セット選択ドロップダウン＋別ステッパーの「数量選択2つ・3行」UIを廃止。
+    数量ステッパー1つ(1〜10) ＋ 追加ボタン を1行に統合（モバイル最優先・最高UX）。
+    基本単価×数量のシンプル課金（旧 2つ5%/3つ10% のセット割は一旦廃止）。 */
+ const base = variants[0];
+ buyEl.innerHTML = '<div class="buy-row">'
+   + '<div class="qty-stepper" role="group" aria-label="数量">'
+   +   '<button type="button" class="qty-btn qty-dec" aria-label="数量を減らす">−</button>'
+   +   '<span class="qty-val" aria-live="polite">1</span>'
+   +   '<button type="button" class="qty-btn qty-inc" aria-label="数量を増やす">＋</button>'
+   + '</div>'
+   + '<button class="btn-add-cart" type="button">カートに追加</button>'
    + '</div>';
- html += '<button class="btn-add-cart">カートに追加</button>';
- buyEl.innerHTML = html;
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
- const variantSel = buyEl.querySelector('select.variant-select');
  const QMAX = 10;
  const qtyValEl = buyEl.querySelector('.qty-val');
  const decBtn = buyEl.querySelector('.qty-dec');
  const incBtn = buyEl.querySelector('.qty-inc');
  function getQ() { return Math.min(QMAX, Math.max(1, parseInt(qtyValEl.textContent, 10) || 1)); }
- function setQ(n) { n = Math.min(QMAX, Math.max(1, n)); qtyValEl.textContent = n; decBtn.disabled = (n <= 1); incBtn.disabled = (n >= QMAX); }
+ function refreshBtn() { if (!addBtn.classList.contains('added')) addBtn.textContent = 'カートに追加 ¥' + (base.p * getQ()).toLocaleString(); }
+ function setQ(n) { n = Math.min(QMAX, Math.max(1, n)); qtyValEl.textContent = n; decBtn.disabled = (n <= 1); incBtn.disabled = (n >= QMAX); refreshBtn(); }
  decBtn.addEventListener('click', () => setQ(getQ() - 1));
  incBtn.addEventListener('click', () => setQ(getQ() + 1));
  setQ(1);
 
  addBtn.addEventListener('click', () => {
-   const v = variants[variantSel ? (parseInt(variantSel.value) || 0) : 0];
-   const ok = addToCart(v.id, v.p, title, v.t, img, getQ());
+   const ok = addToCart(base.id, base.p, title, base.t, img, getQ());
    if (ok === false) return;
 
    /* visual feedback */
    addBtn.classList.add('added');
    addBtn.textContent = '追加しました ✓';
-   if (variantSel) variantSel.selectedIndex = 0;
    setQ(1);
    setTimeout(() => {
      addBtn.classList.remove('added');
-     addBtn.textContent = 'カートに追加';
+     refreshBtn();
    }, 1500);
  });
  });
