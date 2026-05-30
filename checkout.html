@@ -1511,34 +1511,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
  </div>
 
- <!-- 電話で質問 (担当者直通) — 詳細版 POP -->
- <div class="contact-phone-card-wrap">
- <a href="tel:09047241063" class="contact-phone-card">
- <div class="contact-phone-icon">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
- <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
- </svg>
- </div>
- <div class="contact-phone-body">
- <div class="contact-phone-label">電話で質問する</div>
- <div class="contact-phone-num">担当者に直通 · 090-4724-1063</div>
- <div class="contact-phone-hours">平日 9:00〜18:00 / 不在の際は折り返します</div>
- </div>
- </a>
- <!-- 詳細サポート情報 -->
- <ul class="contact-phone-info">
- <li><span class="cpi-icon">🍖</span><span>お肉の選び方・部位のご相談</span></li>
- <li><span class="cpi-icon">📅</span><span>配送日・冷凍便のご質問</span></li>
- <li><span class="cpi-icon">🎁</span><span>のし・ギフト用のラッピング</span></li>
- <li><span class="cpi-icon">🔄</span><span>定期便のスキップ・変更</span></li>
- </ul>
- <div class="contact-phone-line">
- <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">
- <span class="cpl-icon">💬</span>
- <span class="cpl-text">LINE でも 24時間 受付中 →</span>
- </a>
- </div>
- </div>
+
  </div>
 
  </div>
@@ -1921,9 +1894,10 @@ function renderDestinations() {
  let html = '';
  destinations.forEach((dest, dIdx) => {
  const isGift = dest.type === 'gift';
+ const _homeHasItems = ((destinations[0] && destinations[0].itemIds) || []).length > 0;
  const title = isGift
- ? `🎁 ギフト送付先 ${dIdx > 0 ? `${dIdx}` : ''}`
- : '📦 ご自宅にお届け';
+ ? `🎁 ギフトお届け先 ${dIdx > 0 ? `${dIdx}` : ''}`
+ : (_homeHasItems ? '📦 ご自宅にお届け' : '🏠 ご依頼主（差出人）・ご自宅');
  const removable = dIdx > 0;
  // 割当済みアイテムのプレビューチップ
  const _aItems = (dest.itemIds || []).map(id => cartItems[id]).filter(Boolean);
@@ -1935,6 +1909,8 @@ function renderDestinations() {
   + '</div>';
  } else if (isGift) {
  _aChips = '<div style="padding:10px 14px;background:rgba(200,16,46,0.06);border:1px dashed rgba(200,16,46,0.25);border-radius:8px;font-size:12px;color:var(--color-ink-muted);text-align:center;margin-top:8px;">⬆ 注文内容で「🎁 贈り物として送る」を選択するとこの送り先に商品が割り当てられます</div>';
+ } else {
+ _aChips = '<div style="padding:10px 14px;background:rgba(212,169,59,0.08);border:1px dashed rgba(212,169,59,0.4);border-radius:8px;font-size:12px;color:var(--color-ink-muted);margin-top:8px;">🎁 ギフトのみのご注文です。こちらは<strong>差出人（ご依頼主）のご住所</strong>として使用します（お品物は下記のギフトお届け先へお送りします）。</div>';
  }
  html += `
  <div class="dest-group">
