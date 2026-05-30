@@ -6252,6 +6252,38 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ================ MICRO-INTERACTIONS ================ */
+.qty-stepper {
+ display: inline-flex;
+ align-items: center;
+ border: 1.5px solid var(--color-bone, #e5ddc8);
+ border-radius: 999px;
+ overflow: hidden;
+ background: #fff;
+ margin: 8px 0;
+ vertical-align: middle;
+}
+.qty-stepper .qty-btn {
+ width: 40px; height: 40px;
+ border: 0; background: transparent;
+ font-size: 20px; line-height: 1; font-weight: 600;
+ color: var(--color-forest, #0F3D2E);
+ cursor: pointer;
+ transition: background 0.2s;
+ -webkit-tap-highlight-color: transparent;
+}
+.qty-stepper .qty-btn:hover:not(:disabled) { background: rgba(15,61,46,0.06); }
+.qty-stepper .qty-btn:disabled { opacity: 0.3; cursor: default; }
+.qty-stepper .qty-val {
+ min-width: 38px; text-align: center;
+ font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums;
+ color: var(--color-ink, #1a1a1a);
+}
+.cart-badge.bump { animation: cartBadgeBump 0.45s var(--ease-out-expo, ease-out); }
+@keyframes cartBadgeBump {
+ 0% { transform: scale(1); }
+ 35% { transform: scale(1.55); }
+ 100% { transform: scale(1); }
+}
 .btn-add-cart {
  transition: all 0.3s var(--ease-out-expo);
 }
@@ -12012,10 +12044,11 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  .reduce((sum, i) => sum + (variantUnits(i.variant) * (i.qty || 1)), 0);
  }
 
- function addToCart(variantId, price, title, variant, img) {
+ function addToCart(variantId, price, title, variant, img, qtyToAdd) {
+ qtyToAdd = Math.max(1, parseInt(qtyToAdd, 10) || 1);
  /* ★ 在庫上限チェック */
  const stock = getStockForTitle(title);
- const addUnits = variantUnits(variant);
+ const addUnits = variantUnits(variant) * qtyToAdd;
  const currentUnits = currentCartUnits(title);
  if (currentUnits + addUnits > stock) {
  const remaining = Math.max(0, stock - currentUnits);
@@ -12028,14 +12061,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  const existing = items.find(i => i.variantId === variantId);
  if (existing) {
- existing.qty++;
+ existing.qty += qtyToAdd;
  } else {
  const stripePriceId = lookupStripePriceId(title, variant);
- items.push({ variantId, price, title, variant, img, qty: 1, stripePriceId });
+ items.push({ variantId, price, title, variant, img, qty: qtyToAdd, stripePriceId });
  }
  save();
  renderCart();
- openCart();
+ /* 2026-05-30: カート追加時にドロワーを開かない。バッジ更新＋軽いアニメだけ（UX改善）。
+    決済導線は カートアイコン / 下部スティッキーバー から。 */
+ if (badge) { badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump'); }
  /* 📊 Analytics: カート追加イベント */
  if (window.edaAnalytics) window.edaAnalytics.addToCart(variantId, price, { title: title, variant: variant });
  return true;
@@ -12137,20 +12172,37 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
    });
    html += '</select>';
  }
+ /* 数量ステッパー (1〜10) — タップで増減できる最高UX。セット割は上のセレクトで選択。 */
+ html += '<div class="qty-stepper" role="group" aria-label="数量">'
+   + '<button type="button" class="qty-btn qty-dec" aria-label="数量を減らす">−</button>'
+   + '<span class="qty-val" aria-live="polite">1</span>'
+   + '<button type="button" class="qty-btn qty-inc" aria-label="数量を増やす">＋</button>'
+   + '</div>';
  html += '<button class="btn-add-cart">カートに追加</button>';
  buyEl.innerHTML = html;
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
  const variantSel = buyEl.querySelector('select.variant-select');
+ const QMAX = 10;
+ const qtyValEl = buyEl.querySelector('.qty-val');
+ const decBtn = buyEl.querySelector('.qty-dec');
+ const incBtn = buyEl.querySelector('.qty-inc');
+ function getQ() { return Math.min(QMAX, Math.max(1, parseInt(qtyValEl.textContent, 10) || 1)); }
+ function setQ(n) { n = Math.min(QMAX, Math.max(1, n)); qtyValEl.textContent = n; decBtn.disabled = (n <= 1); incBtn.disabled = (n >= QMAX); }
+ decBtn.addEventListener('click', () => setQ(getQ() - 1));
+ incBtn.addEventListener('click', () => setQ(getQ() + 1));
+ setQ(1);
 
  addBtn.addEventListener('click', () => {
    const v = variants[variantSel ? (parseInt(variantSel.value) || 0) : 0];
-   addToCart(v.id, v.p, title, v.t, img);
+   const ok = addToCart(v.id, v.p, title, v.t, img, getQ());
+   if (ok === false) return;
 
    /* visual feedback */
    addBtn.classList.add('added');
    addBtn.textContent = '追加しました ✓';
    if (variantSel) variantSel.selectedIndex = 0;
+   setQ(1);
    setTimeout(() => {
      addBtn.classList.remove('added');
      addBtn.textContent = 'カートに追加';
