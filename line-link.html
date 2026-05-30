@@ -555,7 +555,12 @@ function submitRegistration() {
   }
 
   if (!liff.isLoggedIn()) {
-    liff.login({ redirectUri: window.location.href });
+    // redirect_uri は LIFF Endpoint URL (canonical www) と一致必須。apex は 301 で
+    // www へ飛ぶため LINE OAuth が 400 を返す。host を www に固定しつつ ?e=/?order= は維持。
+    var _h = location.hostname;
+    var _canonOrigin = (_h === 'localhost' || _h === '127.0.0.1' || _h === '' || /\.local$/.test(_h))
+      ? location.origin : 'https://www.eda-livestock.com';
+    liff.login({ redirectUri: _canonOrigin + location.pathname + location.search });
     return;
   }
 

@@ -3234,6 +3234,16 @@ function showOtpError(msg) {
  { matched: false } → アカウント連携フォーム表示
  ============================================================ */
 let LIFF_ID = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '';
+/* ★ LINE Login / LIFF の redirect_uri は LIFF Endpoint URL と完全一致が必須。
+   本番 canonical は www（apex eda-livestock.com は 301 で www へ転送）。
+   apex を redirect_uri に送ると LINE OAuth が「リダイレクトするURL」を弾いて 400 になる。
+   apex で読み込まれても www に正規化して送り、apex/www ドリフトを根絶する。
+   ※ localhost / 127.0.0.1 はそのまま（ローカル検証用）。 */
+const CANONICAL_ORIGIN = (function () {
+  var h = location.hostname;
+  if (h === 'localhost' || h === '127.0.0.1' || h === '' || /\.local$/.test(h)) return location.origin;
+  return 'https://www.eda-livestock.com';
+})();
 const loginSection = document.getElementById('loginSection');
 const dashboard = document.getElementById('dashboard');
 const spinner = document.getElementById('spinner');
@@ -3343,7 +3353,7 @@ async function initLiff() {
   return;
  }
  if (!liff.isLoggedIn()) {
-  liff.login({ redirectUri: location.origin + location.pathname });
+  liff.login({ redirectUri: CANONICAL_ORIGIN + location.pathname });
   return;
  }
  showState('authenticating');
@@ -3367,8 +3377,8 @@ function liffLineLogin() {
  var btn = document.getElementById('lineLoginBtn');
  if (btn) { btn.disabled = true; btn.textContent = 'LINE に接続中...'; }
 
- // ?page=shop があれば維持、それ以外はクリーンURL
- var _redirUrl = location.origin + location.pathname;
+ // ?page=shop があれば維持、それ以外はクリーンURL（host は canonical www に固定）
+ var _redirUrl = CANONICAL_ORIGIN + location.pathname;
  var _p = new URLSearchParams(location.search);
  if (_p.get('page')) _redirUrl += '?page=' + _p.get('page');
 
