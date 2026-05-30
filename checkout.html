@@ -1453,6 +1453,34 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
  <div class="summary-line-items" id="summaryLineItems"></div>
 
+ <style>
+ .coupon-box { margin: 6px 0 4px; padding: 14px 0 4px; border-top: 1px solid rgba(15,61,46,0.1); }
+ .coupon-input-row { display: flex; gap: 8px; }
+ .coupon-input-row input {
+   flex: 1; min-width: 0; padding: 11px 13px; border: 1px solid rgba(15,61,46,0.2);
+   border-radius: 8px; font-size: 13px; font-family: inherit; letter-spacing: 0.08em;
+   text-transform: uppercase; color: var(--color-forest); background: #fff;
+ }
+ .coupon-input-row input::placeholder { text-transform: none; letter-spacing: 0; color: var(--color-ink-muted); }
+ .coupon-input-row input:focus { outline: none; border-color: var(--color-gold); }
+ .coupon-input-row button {
+   flex-shrink: 0; padding: 11px 20px; border: none; border-radius: 8px;
+   background: var(--color-forest); color: #fff; font-size: 13px; font-weight: 600;
+   letter-spacing: 0.06em; cursor: pointer; transition: background .2s;
+ }
+ .coupon-input-row button:hover { background: var(--color-forest-deep, #0A2D21); }
+ .coupon-msg { margin-top: 7px; font-size: 12px; line-height: 1.5; }
+ .coupon-msg.ok { color: #1a7a4a; font-weight: 600; }
+ .coupon-msg.error { color: #C8102E; }
+ </style>
+ <div class="coupon-box">
+ <div class="coupon-input-row">
+ <input type="text" id="couponInput" placeholder="クーポンコード" autocomplete="off" spellcheck="false" aria-label="クーポンコード" />
+ <button type="button" id="couponApplyBtn" onclick="applyCoupon()">適用</button>
+ </div>
+ <div class="coupon-msg" id="couponMsg"></div>
+ </div>
+
  <div class="summary-rows" id="summaryRows"></div>
 
  <!-- ギフト仕様について (ギフトモード時のみ表示) -->
@@ -2084,6 +2112,58 @@ function removeDestination(idx) {
 }
 
 /* ---- サマリー ---- */
+/* ======== クーポン (2026-05-30) ======== */
+var COUPONS = {
+ 'エダチク10': { type: 'percent', value: 10, label: '初回購入10%OFF' }
+};
+var appliedCoupon = null;
+var gShipping = 0;
+function discountRate() {
+ if (!appliedCoupon) return 0;
+ return appliedCoupon.type === 'percent' ? appliedCoupon.value / 100 : 0;
+}
+function discountedUnit(price) { var r = discountRate(); return r ? Math.round((price || 0) * (1 - r)) : (price || 0); }
+function couponDiscountAmount() {
+ if (!appliedCoupon) return 0;
+ var full = 0, disc = 0;
+ cartItems.forEach(function(it){ var q = it.qty || 1; full += (it.price || 0) * q; disc += discountedUnit(it.price || 0) * q; });
+ return full - disc;
+}
+function buildPayloadItems() {
+ if (discountRate() === 0) return cartItems;
+ return cartItems.map(function(it){ return Object.assign({}, it, { price: discountedUnit(it.price || 0) }); });
+}
+function applyCoupon() {
+ var input = document.getElementById('couponInput');
+ var msg = document.getElementById('couponMsg');
+ var code = ((input && input.value) || '').trim().toUpperCase();
+ if (!code) { appliedCoupon = null; if(msg){ msg.textContent=''; msg.className='coupon-msg'; } renderSummary(); return; }
+ var c = COUPONS[code];
+ if (!c) {
+   appliedCoupon = null;
+   if(msg){ msg.textContent = 'クーポンコードが正しくありません'; msg.className='coupon-msg error'; }
+   renderSummary(); return;
+ }
+ // 会員限定ゲート: LINE連携/会員登録済み(line_uid)でないと適用不可
+ if (!getLineUid()) {
+   appliedCoupon = null;
+   if(msg){ msg.textContent = '会員限定クーポンです。マイページからLINE連携・会員登録のうえご利用ください。'; msg.className='coupon-msg error'; }
+   renderSummary(); return;
+ }
+ appliedCoupon = { code: code, type: c.type, value: c.value, label: c.label };
+ if(msg){ msg.textContent = '✓ ' + c.label + ' を適用しました'; msg.className='coupon-msg ok'; }
+ try { localStorage.setItem('eda-coupon', code); } catch(e){}
+ renderSummary();
+}
+function initCouponFromStorage() {
+ var code = '';
+ try { code = (new URLSearchParams(location.search)).get('coupon') || localStorage.getItem('eda-coupon') || ''; } catch(e){}
+ if (!code) return;
+ var input = document.getElementById('couponInput');
+ if (input) input.value = code;
+ applyCoupon();
+}
+
 function renderSummary() {
  const lineItems = document.getElementById('summaryLineItems');
  const rows = document.getElementById('summaryRows');
@@ -2120,12 +2200,14 @@ function renderSummary() {
  const subSavings = subscription && PLANS[subscription.plan]
  ? (PLANS[subscription.plan].regular - PLANS[subscription.plan].half) : 0;
 
- const total = subTotal + shipping + giftShipping;
+ const discount = couponDiscountAmount();
+ gShipping = shipping + giftShipping;
+ const total = subTotal - discount + shipping + giftShipping;
 
  // 軽減税率 内消費税の計算 (税込価格→内税)
  // 食品 (subTotal): 軽減税率 8% → tax = subTotal × 8/108
  // 送料 (shipping + giftShipping): 標準税率 10% → tax = ship × 10/110
- const tax8 = Math.round(subTotal * 8 / 108);
+ const tax8 = Math.round((subTotal - discount) * 8 / 108);
  const tax10 = Math.round((shipping + giftShipping) * 10 / 110);
  const taxTotal = tax8 + tax10;
 
@@ -2138,6 +2220,7 @@ function renderSummary() {
  <span>商品小計<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
  <strong>¥${subTotal.toLocaleString()}</strong>
  </div>
+ ${discount > 0 ? `<div class="summary-row discount"><span>クーポン (${appliedCoupon.code})</span><strong>−¥${discount.toLocaleString()}</strong></div>` : ''}
  <div class="summary-row shipping">
  <span>配送料 (自宅)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
  <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
@@ -2380,7 +2463,9 @@ async function placeOrder() {
  noshi: d.noshi || null, fromName: d.fromName || null,
  items: d.itemIds.map(i => cartItems[i]).filter(Boolean)
  })),
- items: cartItems,
+ items: buildPayloadItems(),
+ couponCode: appliedCoupon ? appliedCoupon.code : null,
+ shipping: gShipping,
  subscription: subscription,
  payment_method: payment,
  quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
@@ -2498,7 +2583,8 @@ function lockPaymentMethodForSubscription() {
 function calcTotalAmount() {
  let total = 0;
  if (subscription && PLANS[subscription.plan]) total += PLANS[subscription.plan].half;
- cartItems.forEach(it => { total += (it.price || 0) * (it.qty || 1); });
+ cartItems.forEach(it => { total += discountedUnit(it.price || 0) * (it.qty || 1); });
+ total += gShipping;
  return total;
 }
 
@@ -2527,6 +2613,7 @@ window.addEventListener('focus', () => {
 
 /* ---- 初期化実行 ---- */
 init();
+initCouponFromStorage();
 </script>
 
 <script src="public/js/analytics.js?v=001" defer></script>

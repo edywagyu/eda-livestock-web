@@ -1562,8 +1562,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .philosophy-head { text-align: center; margin-bottom: clamp(64px, 8vw, 120px); }
 .philosophy-title {
  font-family: var(--font-display);
- font-size: clamp(48px, 8vw, 120px);
- line-height: 0.95;
+ font-size: clamp(40px, 5vw, 72px);
+ line-height: 1.02;
  margin: 24px 0 0;
 }
 .philosophy-title .em { color: var(--color-gold); display: block; }
@@ -4673,34 +4673,96 @@ section.featured {
 
  <div class="journal-list-wrap reveal">
  <style>
-   .journal-list { list-style: none; margin: 0; padding: 0; counter-reset: jl; }
+   .journal-list { list-style: none; margin: 0; padding: 0; }
    .journal-list li { border-bottom: 1px solid var(--color-bone); }
    .journal-list li:first-child { border-top: 1px solid var(--color-bone); }
    .journal-list a {
-     display: flex; align-items: baseline; gap: 22px; padding: 24px 6px;
-     text-decoration: none; font-family: var(--font-jp-serif);
-     font-size: clamp(17px, 2.2vw, 23px); color: var(--color-forest); line-height: 1.5;
-     transition: color .25s var(--ease-out-expo), padding-left .25s var(--ease-out-expo);
+     display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 22px;
+     padding: 26px 8px; text-decoration: none;
+     transition: background .3s var(--ease-out-expo), padding .3s var(--ease-out-expo);
    }
-   .journal-list a::before {
-     counter-increment: jl; content: counter(jl, decimal-leading-zero);
-     font-family: var(--font-display); font-size: 13px; color: var(--color-gold-soft);
-     flex-shrink: 0; min-width: 30px; letter-spacing: 0.12em; line-height: 1.9;
+   .journal-list a:hover { background: rgba(15,61,46,0.035); padding-left: 16px; }
+   .jl-num {
+     font-family: var(--font-display); font-size: 26px; font-weight: 500;
+     color: var(--color-gold-soft); line-height: 1; letter-spacing: 0.04em;
+     align-self: start; padding-top: 4px; transition: color .3s;
    }
-   .journal-list a::after {
-     content: '\2192'; margin-left: auto; color: var(--color-gold-soft);
-     opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; flex-shrink: 0;
+   .journal-list a:hover .jl-num { color: var(--color-gold); }
+   .jl-body { min-width: 0; }
+   .jl-meta { display: flex; align-items: center; gap: 11px; margin-bottom: 9px; flex-wrap: wrap; }
+   .jl-cat {
+     font-family: var(--font-display); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+     color: var(--color-forest); background: rgba(15,61,46,0.07); padding: 4px 11px; border-radius: 20px; font-weight: 600;
    }
-   .journal-list a:hover { color: var(--color-gold); padding-left: 14px; }
-   .journal-list a:hover::after { opacity: 1; transform: translateX(0); }
-   @media (max-width: 640px) { .journal-list a { padding: 20px 4px; gap: 16px; } .journal-list a::after { display: none; } }
+   .jl-date { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.1em; color: var(--color-gold-soft); }
+   .jl-title {
+     display: block; font-family: var(--font-jp-serif); font-size: clamp(18px, 2vw, 23px);
+     color: var(--color-forest); line-height: 1.45; transition: color .25s;
+   }
+   .journal-list a:hover .jl-title { color: var(--color-gold); }
+   .jl-excerpt {
+     display: block; margin-top: 8px; font-family: var(--font-jp); font-size: 14px;
+     line-height: 1.75; color: var(--color-ink-muted); max-width: 62ch;
+   }
+   .jl-arrow {
+     color: var(--color-gold-soft); font-size: 18px;
+     opacity: 0; transform: translateX(-8px); transition: opacity .3s, transform .3s;
+   }
+   .journal-list a:hover .jl-arrow { opacity: 1; transform: translateX(0); }
+   @media (max-width: 640px) {
+     .journal-list a { grid-template-columns: 30px 1fr; gap: 14px; padding: 22px 4px; }
+     .journal-list a:hover { padding-left: 8px; }
+     .jl-num { font-size: 19px; padding-top: 2px; }
+     .jl-arrow { display: none; }
+     .jl-excerpt { font-size: 13px; -webkit-line-clamp: 2; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden; }
+   }
  </style>
  <ol class="journal-list">
- <li><a href="journal-14.html">3年目を終えて</a></li>
- <li><a href="journal-12.html">世界初 — 有機JAS認証黒毛和牛</a></li>
- <li><a href="journal-19.html">JFEX 2025 — 2年連続、幕張メッセへ</a></li>
- <li><a href="journal-18.html">フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</a></li>
- <li><a href="journal-21.html">ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</a></li>
+ <li><a href="journal-14.html">
+   <span class="jl-num">01</span>
+   <span class="jl-body">
+     <span class="jl-meta"><span class="jl-cat">創業者の言葉</span><span class="jl-date">2026.04.20</span></span>
+     <span class="jl-title">3年目を終えて</span>
+     <span class="jl-excerpt">創業から丸3年。江田畜産の軌跡と、次の3年への展望。</span>
+   </span>
+   <span class="jl-arrow">→</span>
+ </a></li>
+ <li><a href="journal-12.html">
+   <span class="jl-num">02</span>
+   <span class="jl-body">
+     <span class="jl-meta"><span class="jl-cat">お知らせ</span><span class="jl-date">2026.01.15</span></span>
+     <span class="jl-title">世界初 — 有機JAS認証黒毛和牛</span>
+     <span class="jl-excerpt">世界で初めて有機JAS認証を取得した黒毛和牛「Premium EdaWagyu」が誕生。</span>
+   </span>
+   <span class="jl-arrow">→</span>
+ </a></li>
+ <li><a href="journal-19.html">
+   <span class="jl-num">03</span>
+   <span class="jl-body">
+     <span class="jl-meta"><span class="jl-cat">イベント</span><span class="jl-date">2025.12.10</span></span>
+     <span class="jl-title">JFEX 2025 — 2年連続、幕張メッセへ</span>
+     <span class="jl-excerpt">「日本の食品」輸出EXPO 2025 Winter に2年連続出展。1年前とは違う景色があった。</span>
+   </span>
+   <span class="jl-arrow">→</span>
+ </a></li>
+ <li><a href="journal-18.html">
+   <span class="jl-num">04</span>
+   <span class="jl-body">
+     <span class="jl-meta"><span class="jl-cat">シェフとの対話</span><span class="jl-date">2025.09.01</span></span>
+     <span class="jl-title">フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</span>
+     <span class="jl-excerpt">フォーシーズンズホテル東京大手町のフレンチ「est」で江田和牛の提供を開始。</span>
+   </span>
+   <span class="jl-arrow">→</span>
+ </a></li>
+ <li><a href="journal-21.html">
+   <span class="jl-num">05</span>
+   <span class="jl-body">
+     <span class="jl-meta"><span class="jl-cat">シェフとの対話</span><span class="jl-date">2025.07.29</span></span>
+     <span class="jl-title">ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</span>
+     <span class="jl-excerpt">永田町のキャピトルホテル東急でサーロインと有機卵が同時採用。宴席の夜の記録。</span>
+   </span>
+   <span class="jl-arrow">→</span>
+ </a></li>
  </ol>
  </div>
 

@@ -3843,7 +3843,7 @@ function renderOrders(orders) {
 
 /* ---- Reward Stages Definition ---- */
 var REWARD_STAGES = [
- { num: 1, label: '1回目のご注文', reward: '初回 20%OFF', desc: '初回ご注文の感謝として全品20%OFF', code: 'WELCOME20', icon: '1' },
+ { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
  { num: 2, label: '2回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
  { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
  { num: 4, label: '4回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
@@ -3891,9 +3891,9 @@ function renderRewardJourney(count) {
  if (count >= 4) {
  bannerHtml = '<div class="rj-next-banner"><p>4ステップ達成 &#x1F389; &#8212; 5回目以降の特典は <strong>お楽しみに</strong></p></div>';
  } else if (count === 0) {
- // ★ 矛盾解消: 0回時は WELCOME20 が既に「お持ちのクーポン」にあるので、
+ // ★ 矛盾解消: 0回時は エダチク10 が既に「お持ちのクーポン」にあるので、
  //    初回ご注文時の使い方を案内 (あと1回… ではなく)
- bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>WELCOME20</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">5,000円以上のご注文で 20%OFF</small></p></div>';
+ bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用OK</small></p></div>';
  } else {
  // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
  var next = REWARD_STAGES[Math.min(count, 3)];
@@ -4514,6 +4514,7 @@ function renderCoupons(coupons) {
 }
 
 function copyCoupon(code, btn) {
+ try { localStorage.setItem('eda-coupon', code); } catch(e){}
  if (navigator.clipboard) {
  navigator.clipboard.writeText(code).then(() => {
  const orig = btn.textContent;
@@ -4528,7 +4529,7 @@ function generateDemoCoupons(orderCount) {
  var all = [];
  var conditions = '※ 5,000円（税込）以上のご注文で利用可能・他クーポン併用不可';
  if (orderCount === 0) {
- all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '全商品20%OFF', conditions: conditions, expires: '2026/05/24まで', status: 'expiring', minPurchase: 5000 });
+ all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポンと併用可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
  }
  if (orderCount >= 1 && orderCount < 2) {
  all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
@@ -4546,7 +4547,7 @@ function generateDemoCoupons(orderCount) {
  all.push({ code: 'SURVEY-MINCE', value: '無料', name: '平飼い鶏ミンチ 200g', description: 'アンケートご回答特典', conditions: conditions, expires: '2026/12/31まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 1) {
- all.push({ code: 'WELCOME20', value: '20%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
+ all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
  }
  return all;
 }

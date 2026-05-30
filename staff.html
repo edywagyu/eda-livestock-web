@@ -1880,7 +1880,7 @@ const DEMO_ORDERS = [
 
 /* ★ 4回購入特典マスタ（編集可能） */
 const REWARD_PROGRAM = {
-  stage1: { label: '1回目購入特典', code: 'WELCOME20', name: '20%OFFクーポン', desc: '初回購入時に発行', icon: '🎁', color: '#3498DB' },
+  stage1: { label: '1回目購入特典', code: 'エダチク10', name: '10%OFFクーポン', desc: '初回購入時に発行', icon: '🎁', color: '#3498DB' },
   stage2: { label: '2回目購入特典', code: 'CHK-FREE', name: '鳥もも・むねセット無料', desc: '2回目決済完了で自動付与', icon: '🍗', color: '#9b59b6' },
   stage3: { label: '3回目購入特典', code: 'BURGER-FREE', name: '無添加ハンバーグ2個 無料', desc: '3回目決済完了で自動付与', icon: '🍔', color: '#e67e22' },
   stage4: { label: '4回目購入特典', code: 'ANNUAL10', name: '年間10%OFF（30日以内利用必須）', desc: '4回目から30日以内に使うと1年間10%OFF獲得 / 他クーポン併用不可', icon: '👑', color: '#D4A93B' }
@@ -1904,7 +1904,7 @@ const DEMO_FLOWS = [
   {
     id: 'FLOW001', trigger: 'line_friend_added', triggerLabel: 'LINE友だち追加', icon: '🎉', active: true, friendsCount: 1062,
     steps: [
-      { delay: '即時', name: 'ようこそメッセージ + クーポン', message: 'ご登録ありがとうございます！初回20%OFFクーポンをプレゼント🐂', coupon: 'WELCOME20', delivered: 1062 },
+      { delay: '即時', name: 'ようこそメッセージ + クーポン', message: 'ご登録ありがとうございます！初回10%OFFクーポンをプレゼント🐂', coupon: 'エダチク10', delivered: 1062 },
       { delay: '7日後', name: '初回購入促進・期限付き20%OFF', message: '友だち追加から1週間 — 期間限定20%OFFクーポンをプレゼント！', coupon: 'NEWBIE20', delivered: 387 },
       { delay: '30日後', name: '食の好みアンケート', message: 'よろしければお食事の好みを教えてください', coupon: null, delivered: 142 }
     ]
@@ -2001,10 +2001,10 @@ const DEMO_FLOWS = [
     id: 'STAGE1-A', trigger: 'line_friend_added', triggerLabel: 'LINE友だち追加', icon: '🎉', active: true, stage: 'first', friendsCount: 1062,
     conditions: [],
     steps: [
-      { delay: '即時', name: 'ようこそ + 20%OFFクーポン', message: 'ご登録ありがとうございます🐂\n\n🎁 初回購入特典として 20%OFFクーポン をプレゼント！\nクーポンコード: WELCOME20\n有効期限: 14日間', coupon: 'WELCOME20', delivered: 1062 },
+      { delay: '即時', name: 'ようこそ + 10%OFFクーポン', message: 'ご登録ありがとうございます🐂\n\n🎁 初回購入特典として 10%OFFクーポン をプレゼント！\nクーポンコード: エダチク10\n有効期限: 14日間', coupon: 'エダチク10', delivered: 1062 },
       { delay: '3日後', name: '商品紹介・お客様の声', message: '実際にお召し上がりになったお客様のレビューと、人気部位のご紹介です', coupon: null, delivered: 891 },
-      { delay: '7日後', name: '【期限間近】20%OFFは残り7日', message: '友だち追加から1週間 — まだ20%OFFが使えます。期限まで残り7日！', coupon: 'WELCOME20', delivered: 624 },
-      { delay: '13日後', name: '【最終日】20%OFFは明日まで', message: '20%OFFクーポンの期限が明日までです。お見逃しなく🐂', coupon: 'WELCOME20', delivered: 387 },
+      { delay: '7日後', name: '【期限間近】10%OFFは残り7日', message: '友だち追加から1週間 — まだ10%OFFが使えます。期限まで残り7日！', coupon: 'エダチク10', delivered: 624 },
+      { delay: '13日後', name: '【最終日】10%OFFは明日まで', message: '10%OFFクーポンの期限が明日までです。お見逃しなく🐂', coupon: 'エダチク10', delivered: 387 },
       { delay: '30日後', name: '友だち紹介で更にお得', message: 'お友だちにもご紹介ください。あなたとお友だち両方に20%OFF', coupon: 'REFER20', delivered: 198 }
     ],
     stats: { triggered: 1062, converted: 245, revenue: 2940000 }
@@ -2124,7 +2124,7 @@ const DEMO_CAMPAIGNS = [
 ];
 
 const DEMO_COUPONS = [
-  { id: 'CP001', code: 'WELCOME20', desc: '初回購入20%OFF', type: 'percent', value: 20, minPurchase: 5000, used: 47, limit: null, expires: 'なし', status: 'active' },
+  { id: 'CP001', code: 'エダチク10', desc: '初回購入10%OFF', type: 'percent', value: 10, minPurchase: 5000, used: 47, limit: null, expires: 'なし', status: 'active' },
   { id: 'CP002', code: 'MOTHER2026', desc: '母の日キャンペーン¥1,000OFF', type: 'fixed', value: 1000, minPurchase: 8000, used: 23, limit: 100, expires: '2026/05/12', status: 'active' },
   { id: 'CP003', code: 'BIRTHDAY15', desc: '誕生日月15%OFF', type: 'percent', value: 15, minPurchase: 0, used: 12, limit: null, expires: 'なし', status: 'active' },
   { id: 'CP004', code: 'COMEBACK20', desc: '休眠顧客復活20%OFF', type: 'percent', value: 20, minPurchase: 5000, used: 4, limit: 50, expires: '2026/06/30', status: 'active' },
@@ -3521,7 +3521,7 @@ function openRewardsForm() {
 
 function getRewardMessage(stage) {
   const defaults = {
-    stage1: 'ご登録ありがとうございます🐂\n\n初回購入特典として 20%OFFクーポン をお届けします。\n\nクーポンコード: WELCOME20\n有効期限: 14日間',
+    stage1: 'ご登録ありがとうございます🐂\n\n初回購入特典として 10%OFFクーポン をお届けします。\n\nクーポンコード: エダチク10\n有効期限: 14日間',
     stage2: '2回目のご利用ありがとうございます！\n\n感謝の気持ちを込めて、次回ご注文時に\n🍗 鳥もも・むねセット 無料 \nをプレゼントします。\n\nクーポンコード: CHK-FREE\n有効期限: 30日間',
     stage3: '3回ものご利用、本当にありがとうございます🙏\n\n習慣化のお祝いに、無添加ハンバーグ2個を無料でプレゼントします。\n\nクーポンコード: BURGER-FREE\n有効期限: 30日間',
     stage4: '🎊 基盤顧客に認定されました！\n\n4回ものご利用、本当にありがとうございます。\nあなたは上位5%のお客様です。\n\n📌 ANNUAL10 を 30日以内 にご利用いただくと、\n以後 1年間 全商品10%OFF が適用されます。\n\n※他クーポンとの併用不可\n※30日以内に未使用の場合、特典は失効します'
@@ -3596,7 +3596,7 @@ function openForm(type) {
         <select><option>表示する（バナー）</option><option>非表示（クーポンのみ）</option></select>
       </div>`,
     coupon: `
-      <div class="form-field"><label>クーポンコード</label><input type="text" placeholder="例: WELCOME20" style="text-transform:uppercase"></div>
+      <div class="form-field"><label>クーポンコード</label><input type="text" placeholder="例: エダチク10" style="text-transform:uppercase"></div>
       <div class="form-field"><label>説明</label><input type="text" placeholder="例: 初回購入20%OFF"></div>
       <div class="form-row">
         <div class="form-field"><label>割引タイプ</label><select><option>10%OFF</option><option>15%OFF</option><option>20%OFF</option><option>¥1,000 OFF</option><option>¥3,000 OFF</option></select></div>
@@ -3698,7 +3698,7 @@ function openForm(type) {
         <div class="form-field"><label>クーポン添付</label>
           <select>
             <option value="">なし</option>
-            <option value="WELCOME20">WELCOME20 (初回20%OFF)</option>
+            <option value="エダチク10">エダチク10 (初回10%OFF)</option>
             <option value="NEWBIE20">NEWBIE20 (20%OFF・新規)</option>
             <option value="REPEAT10">REPEAT10 (10%OFF・リピート)</option>
             <option value="REVIVE20">REVIVE20 (20%OFF・復活)</option>
