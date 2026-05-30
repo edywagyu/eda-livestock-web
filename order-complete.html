@@ -1341,6 +1341,16 @@ if (header) {
 
 /* ---- Render Order ---- */
 function renderOrder(order) {
+ /* 配送料 line item を「送料」として分離（明細から隠し、送料行に一本化）— checkout が配送料を items として送るため */
+ if (Array.isArray(order.items)) {
+   var _si = order.items.findIndex(function(it){ return (it.title === '配送料') || (it.name === '配送料') || (it.variantId === 'shipping'); });
+   if (_si >= 0) {
+     var _sh = order.items[_si];
+     order.shipping = (Number(_sh.price) || 0) * (_sh.qty || 1);
+     order.items = order.items.filter(function(_, i){ return i !== _si; });
+     if (order.total) order.subtotal = order.total; // 小計 = total - 送料 = 商品のみ
+   }
+ }
  /* Test mode banner */
  if (order.test_mode) {
    const banner = document.createElement('div');
