@@ -12,14 +12,14 @@
 <meta name="description" content="サーロイン・赤身ステーキ・平飼い鶏の通販。最短3日で全国へ。¥11,000以上 送料無料（北海道のみ +¥500）。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Online Shop | 江田畜産">
-<meta property="og:description" content="黒毛和牛 A5・無投薬オーガニック和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
+<meta property="og:description" content="無投薬・30ヶ月以上育成の黒毛和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
 <meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/logo/eda-livestock-logo.png">
 <meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/shop.html">
 <meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Online Shop | 江田畜産">
-<meta name="twitter:description" content="黒毛和牛 A5・無投薬オーガニック和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
+<meta name="twitter:description" content="無投薬・30ヶ月以上育成の黒毛和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/logo/eda-livestock-logo.png">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/shop.html">
 
@@ -124,7 +124,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .nav-icon { color: white; display: flex; transition: color 0.3s; }
 .nav-icon:hover { color: var(--color-gold); }
-.footer-brand-jp { display: block; font-family: var(--font-jp); font-size: 13px; letter-spacing: 0.16em; opacity: 0.85; margin-top: 2px; }
+.footer-brand-jp { display: block; font-family: var(--font-jp); font-size: 13px; letter-spacing: 0.16em; opacity: 0.9; margin-top: 2px; }
 .testimonial-card {
  background: rgba(255,255,255,0.08);
  border-left: 2px solid var(--color-gold);
@@ -1854,7 +1854,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(212,169,59,0.5); }
  50% { opacity: 0.5; box-shadow: 0 0 0 8px rgba(212,169,59,0); }
 }
-/* 小さなタグライン（無投薬/オーガニック専門） */
+/* 小さなタグライン（無投薬・30ヶ月育成） */
 .shop-hero-tagline {
  font-family: var(--font-jp);
  font-size: 13px;
@@ -3959,6 +3959,90 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  border: 0;
  cursor: pointer;
  margin-top: 16px;
+}
+
+/* ============ E2: お肉診断 ダーク反転 + 虹色強調 (Tom指示 2026-05-29) ============
+   黒ネオン背景の上の「白い診断シート」を透過ダークグラスに反転。
+   背後の虹色グローが透けて際立つ。文字は明色へ反転。!important で後続ソースに勝つ。 */
+.quiz-intro,
+.quiz-card,
+.quiz-plan-section,
+.quiz-price-summary {
+  background: linear-gradient(165deg, rgba(14,30,22,0.90) 0%, rgba(5,11,9,0.94) 100%) !important;
+  border: 1px solid rgba(0,255,180,0.28) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.quiz-intro,
+.quiz-card {
+  box-shadow:
+    0 0 42px rgba(0,255,180,0.22),
+    0 0 90px rgba(140,80,255,0.16),
+    0 24px 60px rgba(0,0,0,0.55) !important;
+}
+.quiz-intro::after { background: radial-gradient(circle, rgba(0,180,255,0.20), transparent 70%) !important; }
+.quiz-price-summary::before { background: rgba(14,30,22,0.96) !important; }
+.quiz-plan-section--vip { background: linear-gradient(165deg, rgba(30,24,8,0.92), rgba(8,11,5,0.95)) !important; border-color: rgba(212,169,59,0.4) !important; }
+/* 見出し（暗→明） */
+.quiz-title, .quiz-question, .quiz-intro-title, .quiz-result-plan,
+.quiz-plan-section h4, .quiz-plan-spec-row dt,
+.quiz-price-row--accent strong:first-child, .quiz-price-row--accent strong:last-child { color: #F5EFE3 !important; }
+.quiz-title strong, .quiz-intro-title strong, .quiz-intro-perk strong,
+.quiz-result-stat-num, .quiz-plan-contents li::before { color: #E5B547 !important; }
+/* 本文・補足（明・ミュート） */
+.quiz-sub, .quiz-progress, .quiz-intro-lead, .quiz-result-desc, .quiz-result-stat-label,
+.quiz-cta-trust, .quiz-restart, .quiz-option .quiz-opt-meta, .quiz-intro-perk,
+.quiz-plan-contents li, .quiz-plan-note, .quiz-plan-spec-row dd, .quiz-plan-vip-perk-desc,
+.quiz-price-row { color: rgba(245,239,227,0.74) !important; }
+.quiz-result-eyebrow, .quiz-plan-section-eyebrow { color: #E5B547 !important; }
+/* 罫線（bone → 透過ライト） */
+.quiz-sub, .quiz-plan-section-title, .quiz-price-row--accent { border-color: rgba(255,255,255,0.12) !important; }
+/* eyebrow チップ */
+.quiz-eyebrow {
+  color: #FFE594 !important;
+  background: rgba(212,169,59,0.10) !important;
+  border-color: rgba(212,169,59,0.35) !important;
+}
+.quiz-intro .quiz-stamp {
+  background: rgba(212,169,59,0.08) !important;
+  color: #FFE594 !important;
+  border-color: rgba(212,169,59,0.5) !important;
+}
+/* 進捗ドット */
+.quiz-progress-dot { background: rgba(255,255,255,0.14) !important; }
+.quiz-progress-dot.done { background: rgba(0,255,180,0.7) !important; }
+/* 選択肢: ダークグラス + ネオンホバー */
+.quiz-option {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(0,255,180,0.18) !important;
+  color: #F5EFE3 !important;
+}
+.quiz-option::before { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.32) !important; }
+.quiz-option:hover {
+  background: rgba(0,255,180,0.10) !important;
+  border-color: rgba(0,255,180,0.6) !important;
+  box-shadow: 0 0 22px rgba(0,255,180,0.20) !important;
+  transform: translateX(2px);
+}
+.quiz-option:hover::before { border-color: #00FFB4 !important; box-shadow: inset 0 0 0 3px rgba(5,11,9,0.9), inset 0 0 0 8px #E5B547 !important; }
+/* 結果スタッツ箱 */
+.quiz-result-stat { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(0,255,180,0.12) !important; }
+/* 二次CTA */
+.quiz-cta-secondary { color: #F5EFE3 !important; border-color: rgba(0,255,180,0.30) !important; }
+.quiz-cta-secondary:hover { color: #fff !important; border-color: rgba(0,255,180,0.7) !important; }
+/* 虹色グローを強化（白パネル撤去で背後が透ける + 放射を増幅） */
+.quiz-section::before {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(0,255,180,0.55), transparent 55%),
+    radial-gradient(ellipse at 100% 0%, rgba(120,60,255,0.50), transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(255,50,120,0.45), transparent 55%),
+    radial-gradient(ellipse at 0% 100%, rgba(0,160,255,0.48), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(255,200,50,0.14), transparent 45%),
+    linear-gradient(rgba(0,255,200,0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140,80,255,0.12) 1px, transparent 1px),
+    linear-gradient(rgba(0,255,180,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140,80,255,0.04) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 150px 150px, 150px 150px, 30px 30px, 30px 30px !important;
 }
 
 /* ============ クイズ結果: プラン全詳細 ============ */
@@ -7605,8 +7689,8 @@ body.is-member .product-card--organic .org-chk-lock {
 .footer-brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; color: white; }
 .footer-brand-img { height: 56px; width: auto; }
 .footer-brand { font-family: var(--font-display); font-size: 24px; letter-spacing: var(--tracking-wider); }
-.footer-tagline { font-size: 14px; opacity: 0.85; line-height: 1.7; max-width: 280px; margin: 0 0 24px; }
-.footer-meta { font-size: 12px; opacity: 0.75; line-height: 1.7; }
+.footer-tagline { font-size: 14px; opacity: 0.9; line-height: 1.7; max-width: 280px; margin: 0 0 24px; }
+.footer-meta { font-size: 12px; opacity: 0.9; line-height: 1.7; }
 .footer-meta p { margin: 0 0 4px; }
 .footer-col h4 { font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold); margin: 0 0 24px; }
 .footer-col li { margin-bottom: 12px; }
@@ -7619,7 +7703,7 @@ body.is-member .product-card--organic .org-chk-lock {
  padding-top: 32px;
  border-top: 1px solid var(--color-line);
  font-size: 12px;
- opacity: 0.5;
+ opacity: 0.9;
  letter-spacing: var(--tracking-wide);
 }
 
@@ -7814,7 +7898,7 @@ body.is-member .product-card--organic .org-chk-lock {
 .cart-close:hover { color: var(--color-ink); }
 
 .cart-drawer-items {
- flex: 1; overflow-y: auto; padding: 20px 28px;
+ flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 20px 28px;
 }
 
 .cart-empty {
@@ -7887,6 +7971,8 @@ body.is-member .product-card--organic .org-chk-lock {
 .cart-drawer-foot {
  padding: 20px 28px; border-top: 1px solid var(--color-bone);
  background: white;
+ flex-shrink: 0; max-height: 62vh; overflow-y: auto;
+ box-shadow: 0 -10px 22px -10px rgba(15,61,46,0.14);
 }
 .cart-subtotal {
  display: flex; justify-content: space-between; align-items: baseline;
@@ -9341,12 +9427,6 @@ body.is-member .product-card--organic .org-chk-lock {
 <section class="shop-hero">
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
  <div class="shop-hero-bg">
- <!--
-   ▼ Tom: ショップヒーローに実写を入れる場合
-   1. 写真を public/images/hero/ に置く（例: public/images/hero/shop-cuts.jpg）
-   2. 下の img src を差し替える（現在は表示されません）
-   3. 推奨: 部位カット・盛り付け・厨房など、お肉そのものが映る写真
- -->
  <img class="shop-hero-img" src="public/images/products/drive/sirloin.webp" alt="" loading="eager" fetchpriority="high"/>
  <div class="shop-hero-overlay"></div>
  </div>
@@ -9472,7 +9552,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  <h3 class="wagyu-guide-card-title">15分で完成、忙しい平日の味方。</h3>
  <p class="wagyu-guide-card-text">
- <strong>選ぶ手間が省けた</strong> ── スーパーで <strong>無投薬・ホルモン剤フリーのお肉</strong>を1つひとつ確認する手間は、想像以上の時間ロス。江田畜産なら全部クリア済み。冷蔵庫で半日解凍するだけで、平日の夕食が15分で整います。
+ <strong>選ぶ手間が省けた</strong> ── スーパーで <strong>無投薬・ホルモン剤フリーのお肉</strong>を1つひとつ確認する手間は、想像以上の時間ロス。江田畜産なら全部クリア済み。流水で解凍するだけで、平日の夕食が15分で整います。
  </p>
  </article>
 
@@ -9639,7 +9719,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="freezer-band-bullet"><span class="fb-check">✓</span>急な来客にも対応</div>
  <div class="freezer-band-bullet"><span class="fb-check">✓</span>子どもの食事にも安心</div>
  <div class="freezer-band-bullet"><span class="fb-check">✓</span>賞味期限 6ヶ月で日持ち</div>
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>解凍は冷蔵庫で半日</div>
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>解凍は最短15分（流水）</div>
  </div>
  </div>
 
@@ -9711,7 +9791,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">1食 <strong>¥1,700</strong></div>
  <div class="product-stat-item">100g <strong>¥1,700</strong></div>
  <div class="product-stat-item">真空 <strong>1枚 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約8時間</strong>で解凍</div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9726,7 +9806,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">1食 <strong>¥1,700</strong></div>
  <div class="product-stat-item">100g <strong>¥1,700</strong></div>
  <div class="product-stat-item">真空 <strong>1枚 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約6時間</strong>で解凍</div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9741,7 +9821,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">1食 <strong>¥500</strong></div>
  <div class="product-stat-item">100g <strong>¥1,000</strong></div>
  <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約4時間</strong>で解凍</div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9756,8 +9836,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item"><strong>3〜4人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥650</strong></div>
  <div class="product-stat-item">100g <strong>¥1,300</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約4時間</strong>で解凍</div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9771,8 +9851,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item"><strong>3〜4人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥400</strong></div>
  <div class="product-stat-item">100g <strong>¥800</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約4時間</strong>で解凍</div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9787,8 +9867,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item"><strong>2〜3人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥450</strong></div>
  <div class="product-stat-item">100g <strong>¥675</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約4時間</strong>で解凍</div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約3時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9803,8 +9883,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item"><strong>2〜3人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥500</strong></div>
  <div class="product-stat-item">100g <strong>¥750</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約4時間</strong>で解凍</div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9819,7 +9899,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">1食 <strong>¥370</strong></div>
  <div class="product-stat-item">100g <strong>¥560</strong></div>
  <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約3時間</strong>で解凍</div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9829,13 +9909,13 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card-img" data-label="HAMBURG"></div>
  <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760〜</span></div>
  <p class="product-name">ハンバーグ</p>
- <p class="product-desc">和牛100%のシンプル配合。冷蔵庫で半日解凍してからフライパンで蒸し焼き。平日の夕食に。</p>
+ <p class="product-desc">和牛100%のシンプル配合。冷蔵庫で数時間解凍してから、フライパンで両面を焼くだけ。平日の夕食に。</p>
  <div class="product-stats">
  <div class="product-stat-item"><strong>1人前</strong></div>
  <div class="product-stat-item">1食 <strong>¥760</strong></div>
  <div class="product-stat-item">100g換算 <strong>¥760</strong></div>
  <div class="product-stat-item">個包装 <strong>1個 100g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約6時間</strong>で解凍推奨</div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約3時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -9850,7 +9930,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">1食 <strong>¥750</strong></div>
  <div class="product-stat-item">100g <strong>¥3,000</strong></div>
  <div class="product-stat-item">真空 <strong>100g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約4時間</strong>で解凍</div>
+ <div class="product-stat-item wide">流水で <strong>約20分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -10375,7 +10455,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </p>
  <ul class="organic-tease-points">
  <li><span class="organic-tease-point-icon">✓</span>無農薬・無投薬の有機飼料</li>
- <li><span class="organic-tease-point-icon">✓</span>30ヶ月以上肥育・A5等級基準</li>
+ <li><span class="organic-tease-point-icon">✓</span>30ヶ月以上肥育・無投薬育成</li>
  <li><span class="organic-tease-point-icon">✓</span>月間 20 頭限定 / 完全予約制</li>
  </ul>
  <div class="organic-tease-cta">
@@ -12693,21 +12773,21 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 (function autoFillProductStats() {
  // data-label別のスペックマスタ
  const STATS = {
- 'SIRLOIN': { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '冷蔵庫で約8時間', tag: 'プレミアム部位' },
- 'RED MEAT': { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '冷蔵庫で約6時間', tag: '脂少なめ・健康志向' },
- 'CUBE STEAK': { meals: '1〜2人前', perMeal: '¥500', per100g: '¥1,000', portions: '真空 1袋', thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短' },
- 'WAGYU SLICE': { meals: '3〜4人前', perMeal: '¥650', per100g: '¥1,300', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'しゃぶしゃぶ・すき焼き' },
- 'KIRIOTOSHI': { meals: '3〜4人前', perMeal: '¥400', per100g: '¥800', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: '子ども人気・時短料理' },
- 'YAKINIKU BRISKET':{ meals: '2〜3人前', perMeal: '¥500', per100g: '¥750', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: '焼肉・週末ごちそう' },
+ 'SIRLOIN': { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '流水で約15分', tag: 'プレミアム部位' },
+ 'RED MEAT': { meals: '1〜2人前', perMeal: '¥1,700', per100g: '¥1,700', portions: '真空 1枚 200g', thaw: '流水で約15分', tag: '脂少なめ・健康志向' },
+ 'CUBE STEAK': { meals: '1〜2人前', perMeal: '¥500', per100g: '¥1,000', portions: '真空 1袋', thaw: '流水で約15分', tag: '子ども人気・時短' },
+ 'WAGYU SLICE': { meals: '3〜4人前', perMeal: '¥650', per100g: '¥1,300', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: 'しゃぶしゃぶ・すき焼き' },
+ 'KIRIOTOSHI': { meals: '3〜4人前', perMeal: '¥400', per100g: '¥800', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: '子ども人気・時短料理' },
+ 'YAKINIKU BRISKET': { meals: '2〜3人前', perMeal: '¥500', per100g: '¥750', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: '焼肉・週末ごちそう' },
  'RAW HAM': { meals: '2人前', perMeal: '¥625', per100g: '¥3,125', portions: '個包装 40g', thaw: '冷蔵庫で30分', tag: 'ワインに' },
- 'HAMBURG': { meals: '1人前', perMeal: '¥760', per100g: '¥760', portions: '個包装 1個 100g',thaw: '約6時間で解凍推奨',tag: '子ども人気' },
- 'ROAST BEEF': { meals: '3〜4人前', perMeal: '¥750', per100g: '¥3,000', portions: '真空 100g', thaw: '冷蔵庫で約4時間', tag: 'パーティー前菜' },
- 'OFFAL': { meals: '2〜3人前', perMeal: '¥370', per100g: '¥560', portions: '真空 1袋 200g', thaw: '冷蔵庫で約3時間', tag: '焼肉・もつ鍋に' },
- 'WAGYU MINCED': { meals: '2〜3人前', perMeal: '¥450', per100g: '¥675', portions: '真空 1袋 200g', thaw: '冷蔵庫で約4時間', tag: 'ハンバーグ・ボロネーゼ' },
+ 'HAMBURG': { meals: '1人前', perMeal: '¥760', per100g: '¥760', portions: '個包装 1個 100g', thaw: '冷蔵庫で約3時間', tag: '子ども人気' },
+ 'ROAST BEEF': { meals: '3〜4人前', perMeal: '¥750', per100g: '¥3,000', portions: '真空 100g', thaw: '流水で約20分', tag: 'パーティー前菜' },
+ 'OFFAL': { meals: '2〜3人前', perMeal: '¥370', per100g: '¥560', portions: '真空 1袋 200g', thaw: '冷蔵庫で約2時間', tag: '焼肉・もつ鍋に' },
+ 'WAGYU MINCED': { meals: '2〜3人前', perMeal: '¥450', per100g: '¥675', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約3時間', tag: 'ハンバーグ・ボロネーゼ' },
  'CHICKEN BREAST': { meals: '1〜2人前', perMeal: '¥250', per100g: '¥250', portions: '真空 1袋 200g', thaw: '流水で約15分', tag: '高たんぱく・無投薬' },
  'CHICKEN THIGH': { meals: '1〜2人前', perMeal: '¥250', per100g: '¥250', portions: '真空 1袋 200g', thaw: '流水で約15分', tag: '子ども人気・万能' },
  'CHICKEN MINCED': { meals: '1〜2人前', perMeal: '¥200', per100g: '¥200', portions: '真空 1袋 200g', thaw: '流水で約15分', tag: 'そぼろ丼・離乳食' },
- 'FILLET': { meals: '1〜2人前', perMeal: '¥1,750', per100g: '¥2,333', portions: '真空 1枚 150g', thaw: '冷蔵庫で約6時間', tag: '希少部位・上質' }
+ 'FILLET': { meals: '1〜2人前', perMeal: '¥1,750', per100g: '¥2,333', portions: '真空 1枚 150g', thaw: '流水で約12分', tag: '希少部位・上質' }
  };
 
  const cards = document.querySelectorAll('.product-card');
@@ -12728,7 +12808,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  <div class="product-stat-item">1食 <strong>${s.perMeal}</strong></div>
  <div class="product-stat-item">100g <strong>${s.per100g}</strong></div>
  <div class="product-stat-item"><strong>${s.portions}</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>${s.thaw}</strong>で解凍</div>
+ <div class="product-stat-item wide"><strong>${s.thaw}</strong>で解凍</div>
  `;
  desc.insertAdjacentElement('afterend', stats);
  });
@@ -12782,7 +12862,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  { day: '週末', day_en: 'SAT', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
  { day: '月曜', day_en: 'MON', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', '玉ねぎ'] },
  { day: '火曜', day_en: 'TUE', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1700325341795-4793ac3ddb59?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
- { day: '水曜', day_en: 'WED', time: 15, name: 'ハンバーグ', desc: '凍ったまま15分蒸し焼き。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
+ { day: '水曜', day_en: 'WED', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
  { day: '木曜', day_en: 'THU', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
  { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1514536958296-436f46226e74?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
  { day: '週末', day_en: 'SAT', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1708597523963-40b30f846281?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
@@ -13956,8 +14036,8 @@ function copyPopCoupon() {
 <script src="public/data/products-master.js" defer></script>
 <script src="public/js/products-loader.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=001" defer></script>
-<script src="public/js/eda-bundle.js?v=005" defer></script>
+<script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/member-gate.js" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
+<script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>

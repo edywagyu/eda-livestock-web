@@ -1922,7 +1922,7 @@ function renderDestinations() {
  <div class="dest-form-row cols2">
  <div class="dest-field">
  <label>${isGift ? '受取人' : 'お名前'}<span class="required">*</span></label>
- <input type="text" value="${dest.name || ''}" placeholder="江田 友輝" aria-label="江田 友輝"
+ <input type="text" value="${dest.name || ''}" placeholder="山田 太郎" aria-label="山田 太郎"
  autocomplete="${isGift ? 'off' : 'name'}"
  oninput="updateDestField(${dIdx}, 'name', this.value)" required>
  </div>
@@ -1976,7 +1976,7 @@ function renderDestinations() {
  <div class="gift-options-head">🎁 ギフト用オプション</div>
  <div class="dest-field" style="margin-bottom: 12px;">
  <label>依頼人名（差出人として記載されます）<span class="required">*</span></label>
- <input type="text" value="${dest.fromName || ''}" placeholder="例: 江田 友輝" aria-label="例: 江田 友輝"
+ <input type="text" value="${dest.fromName || ''}" placeholder="例: 山田 太郎" aria-label="例: 山田 太郎"
  oninput="updateDestField(${dIdx}, 'fromName', this.value)" required>
  </div>
  <div class="gift-noshi-row">
@@ -2402,7 +2402,8 @@ async function placeOrder() {
  if (btn) { btn.disabled = true; btn.textContent = '決済画面へ移動中…'; }
 
  // 🛡 テストモード保護: localhost / ?test=1 のときは Stripe LIVE への接続をブロック
- if (window.EDA_CONFIG && window.EDA_CONFIG.IS_TEST_MODE) {
+ const _testEnv = /(^|\.)localhost$|^127\.0\.0\.1$|\.local$/.test(location.hostname);
+ if (_testEnv && window.EDA_CONFIG && window.EDA_CONFIG.IS_TEST_MODE) {
    const mockOrderNumber = 'EDA-TEST-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' +
      Math.random().toString(36).substr(2,5).toUpperCase();
    const totalAmount = calcTotalAmount();
@@ -2529,7 +2530,7 @@ init();
 </script>
 
 <script src="public/js/analytics.js?v=001" defer></script>
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
+<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>

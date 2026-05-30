@@ -30,7 +30,7 @@
     isProduction: !IS_TEST_MODE && !FINAL_URL.includes('REPLACE_WITH'),
     // Stripe Publishable Key — テストモードでは test キー、本番では live キー
     STRIPE_PUBLISHABLE_KEY: IS_TEST_MODE
-      ? 'pk_test_TESTKEY_REPLACE_ME' // Tom が Stripe ダッシュボードで test キーを発行して置換
+      ? 'pk_test_51PNNcrGSkhU1UEciONG62JlidnBESgU9gf4HTzBiyghpzP8n8gXZ5jr43soudYFg44lAL8qyucBjcsoM2j71t4iK001JsVsKqz' // test publishable key (Tom 発行 2026-05-30)
       : 'pk_live_51PNNcrGSkhU1UEciCMf2g2dI6aO2x4uQYqIOqm772au6vGfsS4E2t6sQNsTqK2nqwA6JFznKqMkp2xM06UFvr9rB00l0i8uN3T',
     // テストキー未設定の検知用フラグ
     STRIPE_TEST_KEY_MISSING: IS_TEST_MODE && true, // 後段で警告表示に使う

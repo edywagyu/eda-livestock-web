@@ -17,4 +17,8 @@
   <url><loc>https://edywagyu.github.io/eda-livestock-web/tokushoho.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://edywagyu.github.io/eda-livestock-web/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://edywagyu.github.io/eda-livestock-web/terms.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://edywagyu.github.io/eda-livestock-web/recipes.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://edywagyu.github.io/eda-livestock-web/gallery.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://edywagyu.github.io/eda-livestock-web/booking.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://edywagyu.github.io/eda-livestock-web/investors.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>

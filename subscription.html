@@ -9,17 +9,17 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>日本唯一・無投薬専用定期便｜江田畜産 — 国産和牛＋平飼い鶏を月1回</title>
-<meta name="description" content="日本で唯一の無投薬・オーガニック専用定期便。抗生物質・ホルモン剤を一切使わない国産和牛＋平飼い鶏を月1回。2026年夏には日本初の有機JAS認証定期便を公開予定。初月50%OFF。">
+<meta name="description" content="日本で唯一の無投薬専用定期便。抗生物質・ホルモン剤を一切使わない国産和牛＋平飼い鶏を月1回。2026年夏には日本初の有機JAS認証定期便を公開予定。初月50%OFF。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="日本唯一・無投薬専用定期便｜江田畜産">
-<meta property="og:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。日本で唯一の無投薬・オーガニック専用定期便。2026夏 有機JAS解禁。">
+<meta property="og:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。日本で唯一の無投薬専用定期便。2026夏 有機JAS解禁。">
 <meta property="og:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/logo/eda-livestock-logo.png">
 <meta property="og:url" content="https://edywagyu.github.io/eda-livestock-web/subscription.html">
 <meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="日本唯一・無投薬専用定期便｜江田畜産">
-<meta name="twitter:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。日本で唯一の無投薬・オーガニック専用定期便。2026夏 有機JAS解禁。">
+<meta name="twitter:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。日本で唯一の無投薬専用定期便。2026夏 有機JAS解禁。">
 <meta name="twitter:image" content="https://edywagyu.github.io/eda-livestock-web/public/images/logo/eda-livestock-logo.png">
 <link rel="canonical" href="https://edywagyu.github.io/eda-livestock-web/subscription.html">
 
@@ -1811,7 +1811,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  gap: 48px; margin-bottom: 40px;
 }
 .footer-brand-name { color: white; font-family: var(--font-display); font-size: 20px; letter-spacing: 0.18em; margin-bottom: 12px; }
-.footer-brand-jp { font-family: var(--font-jp); font-size: 12px; color: rgba(255,255,255,0.6); }
+.footer-brand-jp { font-family: var(--font-jp); font-size: 12px; color: rgba(255,255,255,0.9); }
 .footer-list h4 {
  font-family: var(--font-display); font-size: 11px;
  letter-spacing: 0.24em; color: var(--color-gold);
@@ -1826,7 +1826,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .footer-bottom {
  border-top: 1px solid rgba(212,169,59,0.18);
  padding-top: 24px;
- font-size: 11px; color: rgba(255,255,255,0.4);
+ font-size: 11px; color: rgba(255,255,255,0.9);
  display: flex; justify-content: space-between; gap: 16px;
  flex-wrap: wrap;
 }
@@ -1854,23 +1854,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .sub-hero-promo { padding: 12px 16px; gap: 10px; flex-wrap: wrap; }
  .sub-hero-promo-text strong { font-size: 18px; }
  .sub-hero-cta .btn { padding: 12px 18px; font-size: 12.5px; }
- /* perks chip 4個 — 2x2 grid に揃える (3+1のバランス悪さ解消, Tom指示) */
- .sub-hero-trust {
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 8px 12px;
- padding-top: 20px;
- margin-top: 24px;
- justify-content: center;
- }
- .sub-hero-trust-item {
- font-size: 11.5px;
- justify-content: center;
- padding: 6px 8px;
- background: rgba(255,255,255,0.04);
- border: 1px solid rgba(212,169,59,0.18);
- border-radius: 10px;
- }
+ /* perks chip 4個 — モバイルでは非表示 (Tom指示 2026-05-29) */
+ .sub-hero-trust { display: none !important; }
 
  .sub-plans-section,
  .sub-detail,
@@ -2628,7 +2613,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="checkout-row cols2">
  <div class="checkout-field">
  <label>お名前<span class="required">*</span></label>
- <input type="text" name="name" placeholder="江田 友輝" autocomplete="name" required>
+ <input type="text" name="name" placeholder="山田 太郎" autocomplete="name" required>
  </div>
  <div class="checkout-field">
  <label>電話番号<span class="required">*</span></label>
@@ -3819,8 +3804,6 @@ document.querySelectorAll('.checkout-radio input').forEach(input => {
  });
 });
 
-/* ============ 旧 handleSubmit (重複削除済) ============
- 下記 L2530 の addon 対応版へ統合 */
 
 /* ============ 今月限定の月名を更新 ============ */
 (function updateMonth() {
@@ -3987,7 +3970,9 @@ function updateCheckoutSummary() {
  if (!input || !fb) return;
  input.addEventListener('input', () => {
  const v = (input.value || '').trim();
- const isTest = (v === 'テスト' || v.toLowerCase() === 'test');
+ // 本番ドメインでは無効化（localhost のみテストクーポンを許可）
+ const testEnv = /(^|\.)localhost$|^127\.0\.0\.1$|\.local$/.test(location.hostname);
+ const isTest = testEnv && (v === 'テスト' || v.toLowerCase() === 'test');
  if (isTest) {
  __testCouponActive = true;
  fb.textContent = '✅ テストモード — ¥0で決済が走ります';
@@ -4036,47 +4021,6 @@ function renderAddonsCart() {
  totalEl.textContent = '¥' + total.toLocaleString();
 }
 
-/* 「これもどうですか？」セクションは削除済（上のグリッドと重複のため）。
-   過去の呼び出しに備えて no-op として保持 */
-function renderSuggestions() {
- const wrap = document.getElementById('subAddonsSuggest');
- if (!wrap) return; // 要素が存在しなければ何もしない
- const list = document.getElementById('subAddonsSuggestList');
- if (addedAddons.length === 0) {
- wrap.style.display = 'none';
- return;
- }
- // 未追加品からカテゴリの被らないもの3つ
- const addedCats = addedAddons.map(x => ADDONS.find(a => a.id === x.id).cat);
- const unadded = ADDONS.filter(a => !addedAddons.find(x => x.id === a.id));
- // カテゴリが補完的になるよう優先
- const suggestions = unadded
- .map(a => ({ ...a, score: addedCats.includes(a.cat) ? 0 : 1 }))
- .sort((a, b) => b.score - a.score)
- .slice(0, 5);
-
- if (suggestions.length === 0) {
- wrap.style.display = 'none';
- return;
- }
- wrap.style.display = 'block';
- list.innerHTML = suggestions.map(a => {
- const disc = discountedPrice(a.price);
- return `
- <div class="sub-addons-suggest-item" onclick="toggleAddon('${a.id}')">
- <div class="sub-addons-suggest-img" style="background-image:url('${a.img}')"></div>
- <div class="sub-addons-suggest-body">
- <strong>${a.name}</strong>
- <span>${a.weight} · ${a.desc}</span>
- </div>
- <div class="sub-addons-suggest-price">
- <del>¥${a.price.toLocaleString()}</del>
- <strong>¥${disc.toLocaleString()}</strong>
- </div>
- </div>
- `;
- }).join('');
-}
 
 /* カテゴリタブ */
 document.querySelectorAll('.sub-addon-tab').forEach(tab => {
@@ -4199,7 +4143,6 @@ async function handleSubmit(e) {
 }
 
 renderAddons();
-renderSuggestions();
 
 /* ============ 初期化 ============ */
 selectPlan(currentPlan);
@@ -4295,7 +4238,7 @@ selectPlan(currentPlan);
 
 <!-- モバイル下部スティッキーCTA + 月末カウントダウン関連は Tom 指示で削除済（2026-05-26） -->
 
-<script src="public/js/eda-bundle.js?v=005" defer></script>
-<script src="public/js/mobile-menu.js" defer></script>
+<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>
