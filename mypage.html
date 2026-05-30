@@ -603,7 +603,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-family: var(--font-display);
  font-size: 11px;
  letter-spacing: var(--tracking-wider);
- opacity: 0.8;
+ color: #fff;
+ opacity: 0.92;
  margin: 0;
  position: relative;
  text-transform: uppercase;
@@ -663,7 +664,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .welcome-stat-label {
  font-family: var(--font-jp);
  font-size: 10px;
- color: rgba(255,255,255,0.65);
+ color: rgba(255,255,255,0.82);
  letter-spacing: 0.08em;
  text-transform: uppercase;
  font-weight: 500;
@@ -857,27 +858,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .home-delivery-items {
  list-style: none; padding: 14px 0;
  margin: 0 0 14px;
- border-top: 1px solid var(--color-bone);
- border-bottom: 1px solid var(--color-bone);
+ border-top: 1px solid rgba(212,169,59,0.22);
+ border-bottom: 1px solid rgba(212,169,59,0.22);
 }
 .home-delivery-items li {
  display: flex; justify-content: space-between;
  padding: 6px 0; font-family: var(--font-jp);
 }
 .home-delivery-item-name {
- font-size: 15px; color: var(--color-ink);
+ font-size: 15px; color: rgba(255,255,255,0.92);
  font-weight: 500;
 }
 .home-delivery-item-qty {
- font-size: 14px; color: var(--color-ink-muted);
+ font-size: 14px; color: rgba(255,255,255,0.7);
  font-family: var(--font-display); font-weight: 600;
 }
 .home-delivery-tracking {
  display: flex; align-items: center; gap: 10px;
  padding: 14px 18px; border-radius: 12px;
- background: linear-gradient(135deg, rgba(212,169,59,0.08), rgba(184,115,51,0.04));
- border: 1px solid rgba(212,169,59,0.2);
- color: var(--color-forest); text-decoration: none;
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(184,115,51,0.10));
+ border: 1px solid rgba(212,169,59,0.42);
+ color: #fff; text-decoration: none;
  font-family: var(--font-jp); font-size: 14px;
  font-weight: 600;
  transition: all 0.3s var(--ease-out-expo);
@@ -892,7 +893,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .home-delivery-tracking span { flex: 1; }
 .home-delivery-tracking strong {
  font-family: 'SF Mono', Menlo, monospace;
- font-size: 13px; color: var(--color-burgundy);
+ font-size: 13px; color: #FFD773;
  letter-spacing: 0.04em;
 }
 .home-delivery-empty {
@@ -907,12 +908,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .home-delivery-empty-title {
  font-family: var(--font-jp-serif); font-size: 18px;
- color: var(--color-forest); font-weight: 700;
+ color: #fff; font-weight: 700;
  margin: 0 0 8px;
 }
 .home-delivery-empty-sub {
  font-family: var(--font-jp); font-size: 13px;
- color: var(--color-ink-muted); margin: 0 0 20px;
+ color: rgba(255,255,255,0.82); margin: 0 0 20px;
  line-height: 1.7; font-weight: 500;
 }
 .home-delivery-empty-cta {
@@ -2848,7 +2849,6 @@ button:focus-visible, a:focus-visible {
   <h2 class="welcome-name" id="customerName"></h2>
   </div>
  </div>
- <div class="welcome-tier-row" id="welcomeTierRow"></div>
  <p class="welcome-member-since" id="memberSince"></p>
  </div>
  <div class="welcome-card-bottom has-3-stats">
@@ -2865,17 +2865,6 @@ button:focus-visible, a:focus-visible {
   <span class="welcome-stat-label">利用可能クーポン</span>
  </div>
  </div>
- </div>
-
- <!-- Member Perks Strip -->
- <div class="member-perks-strip fade-in fade-in-d1" id="memberPerksStrip" onclick="switchTab('rewards')" role="button" tabindex="0" aria-label="会員特典を見る">
- <div class="member-perks-icon" aria-hidden="true">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
- </div>
- <div class="member-perks-text" id="memberPerksText">
-  <strong>会員限定</strong>: 次のランクで送料無料・限定商品
- </div>
- <svg class="member-perks-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
  </div>
 
  <!-- Gold divider -->
@@ -2917,9 +2906,6 @@ button:focus-visible, a:focus-visible {
  <div id="homeDelivery" class="home-full"></div>
  <div id="homeInfoGrid" class="home-full"></div>
  <div id="homeCouponsPreview" class="home-full"></div>
- <div id="homeSurvey" class="home-full"></div>
- <div id="homeFarmTour" class="home-full"></div>
- <div id="homeRecentOrder" class="home-full"></div>
  </div>
 
  <!-- ====== TAB: ORDERS ====== -->
@@ -3119,7 +3105,6 @@ button:focus-visible, a:focus-visible {
   <div class="settings-data">
   <div class="settings-row"><span class="settings-label">メールアドレス</span><span class="settings-value" id="dispAccEmail">-</span></div>
   <div class="settings-row"><span class="settings-label">LINE 連携</span><span class="settings-value" id="dispAccLine">-</span></div>
-  <div class="settings-row"><span class="settings-label">会員ランク</span><span class="settings-value" id="dispAccTier">-</span></div>
   </div>
  </div>
  </div>
@@ -3668,18 +3653,7 @@ function getTimeGreeting() {
  if (h < 17) return 'こんにちは';
  return 'こんばんは';
 }
-function getMemberTier(orderCount) {
- if (orderCount >= 10) return { tier: 'platinum', label: 'プラチナ', suffix: '会員', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
- if (orderCount >= 5)  return { tier: 'gold', label: 'ゴールド', suffix: '会員', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1l3.09 6.26L22 8.27l-5 4.87 1.18 6.88L12 16.77l-6.18 3.25L7 13.14 2 8.27l6.91-1.01L12 1z"/></svg>' };
- return { tier: 'standard', label: 'スタンダード', suffix: '会員', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' };
-}
-function getPerksMessage(orderCount, tierInfo) {
- if (tierInfo.tier === 'platinum') return '<strong>プラチナ会員特典</strong>: 全商品 <strong>送料無料</strong> + 限定商品アクセス';
- if (tierInfo.tier === 'gold') return '<strong>ゴールド会員</strong>: あと <strong>' + (10 - orderCount) + '回</strong> のご注文でプラチナ会員へ';
- var toGold = 5 - orderCount;
- if (toGold <= 0) toGold = 1;
- return '<strong>会員様限定</strong>: あと <strong>' + toGold + '回</strong> のご注文でゴールド会員へ';
-}
+/* 会員ランク（スタンダード/ゴールド/プラチナ）機能は廃止 — ランク付けしない */
 
 function renderDashboard(customer, orders) {
  // ★ 認証完了後のルーティング
@@ -3698,10 +3672,7 @@ function renderDashboard(customer, orders) {
 
  var orderCount = customer.total_orders || orders.length || 0;
 
- /* ★ Premium: Tier info */
- var tierInfo = getMemberTier(orderCount);
-
- /* Welcome card — greeting + name + tier all here */
+ /* Welcome card — greeting + name */
  var custName = customer.name || 'お客';
  var greetEl = document.getElementById('welcomeGreeting');
  if (greetEl) greetEl.textContent = getTimeGreeting();
@@ -3709,12 +3680,6 @@ function renderDashboard(customer, orders) {
  document.getElementById('totalOrders').textContent = orderCount;
  var avatarEl = document.getElementById('welcomeAvatar');
  if (avatarEl) avatarEl.textContent = custName.charAt(0);
-
- /* Tier badge inside welcome card */
- var tierRow = document.getElementById('welcomeTierRow');
- if (tierRow) {
-  tierRow.innerHTML = '<span class="welcome-tier-badge">' + tierInfo.icon + ' ' + tierInfo.label + tierInfo.suffix + '</span>';
- }
 
  var spent = customer.total_spent || 0;
  document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
@@ -3737,10 +3702,6 @@ function renderDashboard(customer, orders) {
  var activeCoupons = coupons.filter(function(c) { return !c.used; });
  var couponEl = document.getElementById('availableCoupons');
  if (couponEl) couponEl.textContent = activeCoupons.length > 0 ? activeCoupons.length : '-';
-
- /* ★ Premium: Perks strip message */
- var perksText = document.getElementById('memberPerksText');
- if (perksText) perksText.innerHTML = getPerksMessage(orderCount, tierInfo);
 
  /* Subscription badge */
  var badgeArea = document.getElementById('subBadgeArea');
@@ -3793,7 +3754,7 @@ function renderOrders(orders) {
  }
 
  const statusMap = {
- 'pending': { label: '未発送', class: 'pending' },
+ 'pending': { label: '発送準備中', class: 'pending' },
  'preparing': { label: '発送準備中', class: 'preparing' },
  'shipped': { label: '発送済', class: 'shipped' },
  'delivered': { label: '配達完了', class: 'delivered' }
@@ -3985,12 +3946,6 @@ function renderSettings(customer) {
  if (el) el.textContent = email || '未登録';
  el = document.getElementById('dispAccLine');
  if (el) el.textContent = lineUid ? '連携済み' : '未連携';
- el = document.getElementById('dispAccTier');
- if (el) {
-  var oc = (customer && customer.total_orders) || 0;
-  var ti = getMemberTier(oc);
-  el.innerHTML = '<span class="member-tier ' + ti.tier + '" style="font-size:10px;padding:3px 10px 3px 7px;">' + ti.icon + ' ' + ti.label + '</span>';
- }
 }
 
 function toggleShippingEdit() {
@@ -4101,37 +4056,37 @@ function renderHomeTab(orderCount, orders, customer) {
   var cName = customer.name || customer.display_name || '';
   var initial = cName ? cName.charAt(0) : '?';
   var memberId = customer.member_id || ('EDA-' + String(Math.abs(hashStr(customer.email || 'guest'))).slice(0, 6));
-  var tierInfo = getMemberTier(orderCount);
   mcEl.innerHTML = '<div class="home-member-card">' +
    '<div class="home-member-avatar">' + escapeHtml(initial) + '</div>' +
    '<div class="home-member-info">' +
     '<p class="home-member-name">' + escapeHtml(cName || 'ゲスト') + ' 様</p>' +
     '<p class="home-member-id">会員番号  ' + escapeHtml(memberId) + '</p>' +
    '</div>' +
-   '<div class="home-member-tier"><span class="member-tier ' + tierInfo.tier + '">' + tierInfo.icon + ' ' + tierInfo.label + tierInfo.suffix + '</span></div>' +
    '</div>';
  }
 
  /* ★ Next Delivery Card — prominent display */
  var dvEl = document.getElementById('homeDelivery');
  if (dvEl) {
-  var activeOrder = (orders || []).find(function(o) { return o.status === 'pending' || o.status === 'preparing' || o.status === 'shipped'; });
+  var orderList = orders || [];
+  /* 発送済み（追跡番号 / 配送日 / status=shipped・delivered）→ お届け予定カード */
+  var shippedOrder = orderList.find(function(o) { return o.tracking_number || o.delivery_date || o.status === 'shipped' || o.status === 'delivered'; });
   var delivStatusMap = { 'pending': { label: '発送準備中', cls: 'pending' }, 'preparing': { label: '発送準備中', cls: 'preparing' }, 'shipped': { label: '発送済', cls: 'shipped' }, 'delivered': { label: '配達完了', cls: 'delivered' } };
-  if (activeOrder) {
-   var dst = delivStatusMap[activeOrder.status] || delivStatusMap['pending'];
-   var delivDate = activeOrder.delivery_date || customer.next_delivery || '';
+  if (shippedOrder) {
+   var dst = delivStatusMap[shippedOrder.status] || delivStatusMap['shipped'];
+   var delivDate = shippedOrder.delivery_date || customer.next_delivery || '';
    var dateDisplay = delivDate ? formatDateLong(delivDate) : '日程調整中';
    var trkHtml = '';
-   if (activeOrder.tracking_number) {
-    var yUrl = 'https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number=' + encodeURIComponent(activeOrder.tracking_number);
+   if (shippedOrder.tracking_number) {
+    var yUrl = 'https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number=' + encodeURIComponent(shippedOrder.tracking_number);
     trkHtml = '<a class="home-delivery-tracking" href="' + yUrl + '" target="_blank" rel="noopener">' +
      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
-     '<span>配送状況を確認  <strong>' + escapeHtml(activeOrder.tracking_number) + '</strong></span>' +
+     '<span>配送状況を確認  <strong>' + escapeHtml(shippedOrder.tracking_number) + '</strong></span>' +
      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
    }
    var itemsHtml = '';
-   if (activeOrder.items && activeOrder.items.length) {
-    itemsHtml = '<ul class="home-delivery-items">' + activeOrder.items.map(function(it) {
+   if (shippedOrder.items && shippedOrder.items.length) {
+    itemsHtml = '<ul class="home-delivery-items">' + shippedOrder.items.map(function(it) {
      return '<li><span class="home-delivery-item-name">' + escapeHtml(it.title || it.name) + '</span><span class="home-delivery-item-qty">×' + (it.qty || 1) + '</span></li>';
     }).join('') + '</ul>';
    }
@@ -4142,6 +4097,21 @@ function renderHomeTab(orderCount, orders, customer) {
     '</div>' +
     '<p class="home-delivery-date">' + escapeHtml(dateDisplay) + '</p>' +
     itemsHtml + trkHtml +
+    '</div>';
+  } else if (orderList.length > 0) {
+   /* 注文済みだが発送前 → 「発送までしばらくお待ちください」（お届け予定なし表示はしない） */
+   var pend = orderList[0];
+   dvEl.innerHTML = '<div class="home-delivery-card">' +
+    '<div class="home-delivery-head">' +
+     '<p class="home-delivery-eyebrow">ご注文ありがとうございます</p>' +
+     '<span class="status-badge preparing"><span class="status-badge-dot"></span>発送準備中</span>' +
+    '</div>' +
+    '<p class="home-delivery-date" style="font-size:23px;line-height:1.5;">発送までしばらく<br>お待ちください</p>' +
+    '<p style="font-family:var(--font-jp);font-size:13px;color:rgba(255,255,255,0.85);margin:0;line-height:1.85;font-weight:500;">' +
+     'ご注文番号 <strong style="font-family:\'SF Mono\',Menlo,monospace;color:#FFD773;">' + escapeHtml(pend.order_number || pend.id || '-') + '</strong><br>' +
+     '合計 <strong style="color:#fff;">' + formatYen(pend.total || 0) + '</strong><br>' +
+     '<span style="color:rgba(255,255,255,0.7);">発送が確定しましたら、お届け日と追跡番号をこちらに表示します。</span>' +
+    '</p>' +
     '</div>';
   } else {
    dvEl.innerHTML = '<div class="home-delivery-card home-delivery-empty">' +
@@ -4180,55 +4150,7 @@ function renderHomeTab(orderCount, orders, customer) {
   } else { cpEl.innerHTML = ''; }
  }
 
- /* Survey coupon card */
- var svEl = document.getElementById('homeSurvey');
- if (svEl) {
-  var answered = 0;
-  try { answered = JSON.parse(localStorage.getItem('eda_survey_progress') || '0'); } catch(e){}
-  var totalQ = SURVEY_QUESTIONS.length;
-  if (answered < totalQ) {
-   var pct = Math.round((answered / totalQ) * 100);
-   svEl.innerHTML = '<div class="home-survey-card" onclick="openSurvey()">' +
-    '<div class="home-survey-header"><div class="home-survey-icon">&#x1F381;</div>' +
-    '<div><p class="home-survey-title">アンケートにご回答で特典プレゼント</p><p class="home-survey-sub">残り ' + (totalQ - answered) + ' 問のご回答で平飼い鶏ミンチ200gクーポンを獲得</p></div></div>' +
-    '<div class="home-survey-reward"><div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
-    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>クーポンとして発行（5,000円以上のご注文・他クーポン併用不可）</small></div></div>' +
-    '<div class="home-survey-progress"><div class="home-survey-progress-bar" style="width:' + pct + '%"></div></div></div>';
-  } else {
-   svEl.innerHTML = '<div class="home-survey-card home-survey-done" style="cursor:default">' +
-    '<div class="home-survey-done-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-    '<div class="home-survey-header"><div class="home-survey-icon" style="background:linear-gradient(135deg,var(--color-gold),var(--color-gold-bright));box-shadow:0 4px 12px rgba(212,169,59,0.35);">&#x2728;</div>' +
-    '<div><p class="home-survey-title" style="color:var(--color-burgundy)">クーポン獲得済み</p><p class="home-survey-sub">アンケートのご回答ありがとうございました</p></div></div>' +
-    '<div class="home-survey-reward" style="background:white;border:1px solid var(--color-gold);">' +
-    '<div class="home-survey-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg);border:2px solid var(--color-gold)"></div>' +
-    '<div class="home-survey-reward-text">平飼い鶏ミンチ 200g<small>クーポン発行済 — 5,000円以上のご注文で利用可能・他クーポン併用不可</small></div></div></div>';
-  }
- }
-
- /* Recent order / first order CTA */
- var roEl = document.getElementById('homeRecentOrder');
- if (roEl && orders && orders.length > 0) {
-  var latest = orders[0];
-  var statusMap = { 'pending': { label: '未発送', cls: 'pending' }, 'preparing': { label: '発送準備中', cls: 'preparing' }, 'shipped': { label: '発送済', cls: 'shipped' }, 'delivered': { label: '配達完了', cls: 'delivered' } };
-  var st = statusMap[latest.status] || statusMap['pending'];
-  roEl.innerHTML = '<div class="order-card" onclick="switchTab(\'orders\')" style="cursor:pointer"><div class="order-card-head"><div><div class="order-number">ご注文番号 ' + escapeHtml(latest.order_number || latest.id || '-') + '</div><div class="order-date">' + (latest.date ? formatDate(latest.date) : '') + '</div></div><span class="status-badge ' + st.cls + '"><span class="status-badge-dot"></span>' + st.label + '</span></div><div class="order-total-row"><span class="order-total-label">合計</span><span class="order-total-price">' + formatYen(latest.total || 0) + '</span></div></div>';
- } else if (roEl) {
-  roEl.innerHTML = '<div class="empty-orders"><p class="empty-orders-eyebrow">初めてのご注文</p><p class="empty-orders-text">厳選された江田和牛を<br>ご自宅の食卓へ</p><a href="shop.html" class="shop-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>ご注文する</a></div>';
- }
-
- /* Farm tour booking card */
- var ftEl = document.getElementById('homeFarmTour');
- if (ftEl) {
-  ftEl.innerHTML = '<div class="home-farmtour-card" onclick="openFarmTourBooking()">' +
-   '<div class="home-farmtour-img" style="background-image:url(public/images/cuts/hero-0.webp)"></div>' +
-   '<div class="home-farmtour-body">' +
-    '<p class="home-farmtour-eyebrow">会員様限定</p>' +
-    '<h3 class="home-farmtour-title">農場見学のご予約</h3>' +
-    '<p class="home-farmtour-desc">宮崎の自社牧場で、和牛が育つ現場をご覧いただけます。<br>ご家族・ご友人とのご来場も歓迎です。</p>' +
-    '<span class="home-farmtour-cta">ご予約フォームを開く  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></span>' +
-   '</div>' +
-   '</div>';
- }
+ /* アンケート特典カード・農場見学予約カード・重複の最近注文カードは削除（Tom 指示 2026-05-30） */
 }
 
 /* Format date in Japanese long form e.g. "2026年5月15日（金）" */
@@ -4241,161 +4163,12 @@ function formatDateLong(d) {
  } catch(e) { return String(d); }
 }
 
-/* ---- Farm Tour Booking Modal ---- */
-function openFarmTourBooking() {
- var overlay = document.createElement('div');
- overlay.className = 'eda-modal-overlay';
- overlay.innerHTML = '<div class="eda-modal" style="max-width:480px">' +
-  '<h3 class="eda-modal-title">農場見学のご予約</h3>' +
-  '<p class="eda-modal-body" style="margin-bottom:20px">宮崎の自社牧場にご案内いたします。ご希望日と人数をご記入いただきましたら、担当者よりご連絡いたします。</p>' +
-  '<div class="ft-form">' +
-   '<div class="ft-field"><label>ご希望日（第1希望）</label><input type="date" id="ftDate1"></div>' +
-   '<div class="ft-field"><label>ご希望日（第2希望）</label><input type="date" id="ftDate2"></div>' +
-   '<div class="ft-field"><label>ご参加人数</label>' +
-    '<select id="ftPeople"><option value="1">1名</option><option value="2" selected>2名</option><option value="3">3名</option><option value="4">4名</option><option value="5">5名</option><option value="6+">6名以上</option></select>' +
-   '</div>' +
-   '<div class="ft-field"><label>ご連絡先（電話番号）</label><input type="tel" id="ftPhone" placeholder="090-1234-5678"></div>' +
-   '<div class="ft-field"><label>ご質問・ご要望（任意）</label><textarea id="ftNote" rows="3" placeholder="お子様連れ、アレルギー等ございましたらご記入ください"></textarea></div>' +
-  '</div>' +
-  '<div class="eda-modal-actions" style="margin-top:24px">' +
-   '<button class="eda-modal-btn secondary" data-act="cancel">キャンセル</button>' +
-   '<button class="eda-modal-btn primary" data-act="submit">この内容で送信</button>' +
-  '</div></div>';
- document.body.appendChild(overlay);
- requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('show')));
- function closeFt() {
-  overlay.classList.remove('show');
-  setTimeout(() => overlay.remove(), 300);
- }
- overlay.addEventListener('click', function(e) {
-  if (e.target === overlay) { closeFt(); return; }
-  var act = e.target.closest('[data-act]');
-  if (!act) return;
-  if (act.dataset.act === 'cancel') { closeFt(); return; }
-  if (act.dataset.act === 'submit') {
-   var d1 = document.getElementById('ftDate1').value;
-   var d2 = document.getElementById('ftDate2').value;
-   var p  = document.getElementById('ftPeople').value;
-   var ph = document.getElementById('ftPhone').value;
-   var nt = document.getElementById('ftNote').value;
-   if (!d1 || !ph) { toast('ご希望日と連絡先をご入力ください', 'error'); return; }
-   var booking = { date1: d1, date2: d2, people: p, phone: ph, note: nt, requested_at: new Date().toISOString() };
-   try { localStorage.setItem('eda_farm_tour_request', JSON.stringify(booking)); } catch(e){}
-   if (window.EDA_API && currentSession) {
-    window.EDA_API.post('farm_tour_request', Object.assign({ email: currentSession.email || '', line_uid: currentSession.line_uid || '' }, booking)).catch(function(){});
-   }
-   closeFt();
-   toast('ご予約リクエストを承りました。担当者よりご連絡いたします', 'success');
-  }
- });
-}
+/* 農場見学予約モーダルは削除（Tom 指示 2026-05-30・ホームから導線も削除） */
 
 /* Hash utility for member ID */
 function hashStr(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; } return h; }
 
-/* Survey Questions & Logic — マーケティング実用設計（選択式） */
-var SURVEY_QUESTIONS = [
- {
-  q: 'ご家族構成を教えてください',
-  opts: ['お一人様', 'ご夫婦のみ', 'お子様あり（未就学）', 'お子様あり（就学中・成人）', '三世代同居・大家族']
- },
- {
-  q: '普段のお肉のご購入先（最も多くご利用のもの）',
-  opts: ['百貨店の精肉売場', '高級スーパー（成城石井・紀ノ国屋等）', '一般スーパー', '精肉専門店', 'ネット通販中心']
- },
- {
-  q: '鶏肉と牛肉のバランスを教えてください',
-  opts: ['鶏が中心です', '鶏が多め・牛もいただきます', '半々くらい', '牛が多め・鶏もいただきます', '牛が中心です']
- },
- {
-  q: '無添加・国産へのこだわりは',
-  opts: ['絶対に無添加・国産でないと選びません', 'できれば無添加・国産を選びます', '美味しければ気にしません', '価格を優先します']
- },
- {
-  q: '江田和牛をご注文される主な場面',
-  opts: ['ご家族との特別な日', 'ご自分へのご褒美', 'ギフト・贈答用', 'お客様のおもてなし', '日常のお食事として']
- },
- {
-  q: '高級食材をご購入される頻度',
-  opts: ['週に1回以上', '月に2〜3回', '月に1回程度', '数ヶ月に1回', '特別な機会のみ']
- },
- {
-  q: '普段ご自宅でよくお使いになるお肉（複数選択可）',
-  multi: true,
-  opts: ['牛ステーキ・厚切り肉', '牛焼肉・薄切り', 'すき焼き・しゃぶしゃぶ用', '切り落とし・ひき肉', 'ハンバーグ', '鶏もも肉', '鶏むね肉・ささみ', '鶏ひき肉', '豚肉', 'ソーセージ・ハム等加工品']
- },
- {
-  q: '江田和牛を知ったきっかけ',
-  opts: ['Instagram', 'LINE', 'ご友人・知人のご紹介', '雑誌・メディア', 'Web検索・その他']
- }
-];
-
-async function openSurvey() {
- var answered = 0;
- try { answered = JSON.parse(localStorage.getItem('eda_survey_progress') || '0'); } catch(e){}
- if (answered >= SURVEY_QUESTIONS.length) { showSurveyComplete(); return; }
- for (var i = answered; i < SURVEY_QUESTIONS.length; i++) {
-  var sq = SURVEY_QUESTIONS[i];
-  var result;
-  if (sq.multi) {
-   result = await edaMultiSelect('Q' + (i+1) + '. ' + sq.q, '(' + (i+1) + '/' + SURVEY_QUESTIONS.length + ')', sq.opts);
-  } else {
-   var buttons = sq.opts.map(function(o) { return { label: o, class: 'survey-opt', value: o }; });
-   result = await edaModal('Q' + (i+1) + '. ' + sq.q, '(' + (i+1) + '/' + SURVEY_QUESTIONS.length + ')', buttons, { vertical: true });
-  }
-  if (result === null) break;
-  try {
-   var answers = JSON.parse(localStorage.getItem('eda_survey_answers') || '{}');
-   answers['q' + i] = result;
-   localStorage.setItem('eda_survey_answers', JSON.stringify(answers));
-   localStorage.setItem('eda_survey_progress', JSON.stringify(i + 1));
-  } catch(e){}
- }
- var finalP = 0;
- try { finalP = JSON.parse(localStorage.getItem('eda_survey_progress') || '0'); } catch(e){}
- if (finalP >= SURVEY_QUESTIONS.length) {
-  showSurveyComplete();
-  if (window.EDA_API && currentSession) {
-   var ans = {}; try { ans = JSON.parse(localStorage.getItem('eda_survey_answers') || '{}'); } catch(e){}
-   window.EDA_API.post('survey_complete', { email: currentSession.email || '', line_uid: currentSession.line_uid || '', answers: ans }).catch(function(){});
-  }
- }
- if (currentSession) renderHomeTab(currentSession.total_orders || 0, currentSession._orders || [], currentSession);
-}
-
-/* Survey completion celebration modal */
-function showSurveyComplete() {
- var overlay = document.createElement('div');
- overlay.className = 'eda-modal-overlay survey-complete';
- overlay.innerHTML = '<div class="survey-complete-card">' +
-  '<div class="survey-complete-confetti" aria-hidden="true">' +
-   '<span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>' +
-  '</div>' +
-  '<div class="survey-complete-badge"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-  '<p class="survey-complete-eyebrow">SURVEY COMPLETE</p>' +
-  '<h3 class="survey-complete-title">ご回答ありがとうございました</h3>' +
-  '<p class="survey-complete-sub">特典が獲得されました</p>' +
-  '<div class="survey-complete-reward">' +
-   '<div class="survey-complete-reward-img" style="background-image:url(public/images/products/drive/chicken-minced.jpg)"></div>' +
-   '<div class="survey-complete-reward-info">' +
-    '<p class="survey-complete-reward-name">平飼い鶏ミンチ 200g</p>' +
-    '<p class="survey-complete-reward-note">クーポンとして発行されました</p>' +
-   '</div>' +
-  '</div>' +
-  '<div class="survey-complete-conditions">' +
-   '<strong>ご利用条件</strong>　5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可' +
-  '</div>' +
-  '<button class="survey-complete-btn">ありがとうございます</button>' +
- '</div>';
- document.body.appendChild(overlay);
- requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('show')));
- overlay.addEventListener('click', function(e) {
-  if (e.target === overlay || e.target.closest('.survey-complete-btn')) {
-   overlay.classList.remove('show');
-   setTimeout(() => overlay.remove(), 350);
-  }
- });
-}
+/* アンケート（survey）機能は削除（Tom 指示 2026-05-30） */
 
 /* ---- Quick Cart (Shop Tab) ---- */
 var SHOP_PRODUCTS = [
@@ -4543,12 +4316,6 @@ function generateDemoCoupons(orderCount) {
  }
  if (orderCount >= 3 && orderCount < 4) {
  all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '4回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
- }
- /* Survey reward coupon */
- var surveyDone = false;
- try { surveyDone = JSON.parse(localStorage.getItem('eda_survey_progress') || '0') >= 8; } catch(e){}
- if (surveyDone) {
- all.push({ code: 'SURVEY-MINCE', value: '無料', name: '平飼い鶏ミンチ 200g', description: 'アンケートご回答特典', conditions: conditions, expires: '2026/12/31まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 1) {
  all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
