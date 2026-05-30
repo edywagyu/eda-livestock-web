@@ -1094,7 +1094,7 @@ function requestOtp(body) {
     subject: '【江田畜産】ログイン用 6桁コード',
     body: '江田畜産マイページ ログイン用コード:\n\n' + otp + '\n\n' +
           'このコードは 10 分間有効です。\n心当たりがない場合はこのメールを破棄してください。\n\n' +
-          '江田畜産株式会社\nhttps://eda-livestock-ec.com/'
+          '江田畜産株式会社\nhttps://eda-livestock.com/'
   });
   return jsonResponse({ ok:true, expires_in: 600 });
 }
@@ -1531,6 +1531,14 @@ function sendCustomerReceiptEmail(session, orderNum) {
   if (!email) return;
   const total = session.amount_total ? '¥' + Number(session.amount_total).toLocaleString() : '—';
 
+  // ワンタップ LINE 連携リンク: LIFF (line-link.html) にメールを base64 で埋め込む。
+  // タップ → LINE 認証 → line_link_account が自動実行され、メール一致で全注文が即連携される。
+  // 注文番号も order param で渡す（line-link.html 側で連携完了直後の追跡導線に利用可能）。
+  const liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
+  const lineLinkUrl = 'https://liff.line.me/' + liffId + '/line-link.html'
+    + '?e=' + encodeURIComponent(Utilities.base64Encode(email, Utilities.Charset.UTF_8))
+    + '&order=' + encodeURIComponent(orderNum);
+
   MailApp.sendEmail({
     to: email,
     subject: '【江田畜産】ご注文ありがとうございます (' + orderNum + ')',
@@ -1541,14 +1549,14 @@ function sendCustomerReceiptEmail(session, orderNum) {
       ' お支払い額: ' + total + '\n' +
       '━━━━━━━━━━━━━━━━━━━━━\n\n' +
       '配送状況は LINE 公式アカウントまたはマイページから随時お知らせいたします。\n\n' +
-      '▼ 配送追跡（LINE で「' + orderNum + '」と送信ください）\n' +
-      'https://line.me/R/ti/p/@706sgiuq\n\n' +
+      '▼ LINE で配送状況を受け取る（タップするだけで連携完了）\n' +
+      lineLinkUrl + '\n\n' +
       '▼ マイページ\n' +
-      'https://edywagyu.github.io/eda-livestock-web/mypage.html\n\n' +
+      'https://eda-livestock.com/mypage.html\n\n' +
       '━━━━━━━━━━━━━━━━━━━━━\n' +
       '江田畜産株式会社\n' +
       'backoffice@eda-livestock.com\n' +
-      'https://eda-livestock-ec.com/\n'
+      'https://eda-livestock.com/\n'
   });
 }
 
