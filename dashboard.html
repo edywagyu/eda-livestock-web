@@ -936,7 +936,9 @@ function escapeHtmlD(str) { return String(str == null ? '' : str).replace(/&/g,'
 function normalizeDashOrder(o) {
   var dests = _parseJSON(o.destinations_json, []); if (!Array.isArray(dests)) dests = [];
   var items = _parseJSON(o.items_json, []); if (!Array.isArray(items)) items = [];
-  var itemsText = items.map(function (it) { return (it.title || it.name || '商品') + (it.variant ? '（' + it.variant + '）' : '') + ' ×' + (it.qty || 1); }).join(' / ');
+  // 上位 items_json が空の注文は、届け先(destinations[].items)から商品を導出
+  if (!items.length) { dests.forEach(function (d) { (Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); }); }); }
+  var itemsText = items.map(function (it) { return (it.title || it.name || '商品') + (it.variant ? '（' + it.variant + '）' : '') + ' ×' + (it.qty || it.quantity || 1); }).join(' / ');
   var destText = dests.length ? dests.map(function (d) {
     return (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') + (d.name ? '（' + d.name + (d.tel ? ' / ' + d.tel : '') + '）' : '');
   }).join(' ／ ') : '—';
@@ -956,7 +958,10 @@ function normalizeDashOrder(o) {
 async function fetchOrdersReal() {
   const d = await gasGet('staff_orders');
   if (!d || !d.orders) return [];
-  return d.orders.map(normalizeDashOrder);
+  // 同一 order_number の重複行を排除（webhook 多重発火で重複記録されるため）
+  var seen = {}, uniq = [];
+  d.orders.forEach(function (o) { var k = o.order_number || JSON.stringify(o); if (!seen[k]) { seen[k] = 1; uniq.push(o); } });
+  return uniq.map(normalizeDashOrder);
 }
 
 /* ====== タブ切替 ====== */

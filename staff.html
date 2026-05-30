@@ -2447,7 +2447,10 @@ async function loadOrders() {
   try {
     const res = await fetch(GAS_URL + '?action=staff_orders');
     const data = await res.json();
-    ordersCache = (data.orders || []).map(normalizeStaffOrder);
+    // 同一 order_number の重複行を排除（webhook 多重発火対策）
+    var _seen = {}, _uniq = [];
+    (data.orders || []).forEach(function (o) { var k = o.order_number || JSON.stringify(o); if (!_seen[k]) { _seen[k] = 1; _uniq.push(o); } });
+    ordersCache = _uniq.map(normalizeStaffOrder);
     renderOrders();
   } catch (e) {
     list.innerHTML = '<div class="empty">読み込み失敗: ' + e.message + '</div>';
@@ -2466,8 +2469,10 @@ function normalizeStaffOrder(o) {
   var items = [];
   try { items = JSON.parse(o.items_json || '[]') || []; } catch (e) { items = []; }
   if (!Array.isArray(items)) items = [];
+  // 上位 items_json が空なら、届け先(destinations[].items)から商品を導出
+  if (!items.length) { dests.forEach(function (d) { (Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); }); }); }
   var itemsText = items.map(function (it) {
-    return (it.title || it.name || '商品') + (it.variant ? '（' + it.variant + '）' : '') + ' ×' + (it.qty || 1);
+    return (it.title || it.name || '商品') + (it.variant ? '（' + it.variant + '）' : '') + ' ×' + (it.qty || it.quantity || 1);
   }).join(' / ');
   var d0 = dests[0] || {};
   var addrFull = dests.length ? dests.map(function (d) {
