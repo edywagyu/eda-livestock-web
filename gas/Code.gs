@@ -309,7 +309,18 @@ function createCheckout(body) {
 
   // 送料・税はチェックアウト側で計算 (Stripe automatic_tax か手動)
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = calcShipping(subtotal, body.customer && body.customer.pref);
+  // ★ ギフトは全部 送料無料: 自宅(非ギフト)アイテムの小計のみで calcShipping を計算する。
+  //   gift destination 分は ¥0。全部ギフト → 自宅小計 0 → 送料 0。
+  //   destinations に items が無い古いクライアントは従来通り全額で計算 (fail-safe で無料化しない)。
+  const _selfKeys = {};
+  (body.destinations || []).forEach(function (d) {
+    if (d.type !== 'gift') (d.items || []).forEach(function (it) { _selfKeys[(it.title || '') + '|' + (it.variant || '')] = true; });
+  });
+  const _hasDestItems = (body.destinations || []).some(function (d) { return (d.items || []).length > 0; });
+  const _selfSubtotal = _hasDestItems
+    ? items.reduce(function (s, it) { return _selfKeys[(it.title || '') + '|' + (it.variant || '')] ? s + it.price * it.qty : s; }, 0)
+    : subtotal;
+  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref) : 0;
   if (shipping > 0) {
     lineItems.push({
       price_data: {
