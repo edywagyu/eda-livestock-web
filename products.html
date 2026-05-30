@@ -597,7 +597,8 @@ function renderStickyCart() {
 /* ============ 商品グリッド描画 ============ */
 function renderProducts(filterCat) {
   const grid = document.getElementById('productsGrid');
-  const filtered = filterCat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filterCat);
+  // 安い順（価格 昇順）で表示 — 買うと決めてる人が選びやすいように
+  const filtered = (filterCat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filterCat)).slice().sort((a, b) => a.price - b.price);
   const catLabels = {
     steak: 'STEAK', slice: 'SLICE', yakiniku: 'YAKINIKU', processed: 'PROCESSED', chicken: 'CHICKEN'
   };

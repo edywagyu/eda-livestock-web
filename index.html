@@ -4679,6 +4679,7 @@ section.featured {
    .journal-list a {
      display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 22px;
      padding: 26px 8px; text-decoration: none;
+     pointer-events: none; cursor: default; /* 記事準備中: 遷移先なし */
      transition: background .3s var(--ease-out-expo), padding .3s var(--ease-out-expo);
    }
    .journal-list a:hover { background: rgba(15,61,46,0.035); padding-left: 16px; }
@@ -4718,7 +4719,7 @@ section.featured {
    }
  </style>
  <ol class="journal-list">
- <li><a href="journal-14.html">
+ <li><a>
    <span class="jl-num">01</span>
    <span class="jl-body">
      <span class="jl-meta"><span class="jl-cat">創業者の言葉</span><span class="jl-date">2026.04.20</span></span>
@@ -4727,7 +4728,7 @@ section.featured {
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
- <li><a href="journal-12.html">
+ <li><a>
    <span class="jl-num">02</span>
    <span class="jl-body">
      <span class="jl-meta"><span class="jl-cat">お知らせ</span><span class="jl-date">2026.01.15</span></span>
@@ -4736,7 +4737,7 @@ section.featured {
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
- <li><a href="journal-19.html">
+ <li><a>
    <span class="jl-num">03</span>
    <span class="jl-body">
      <span class="jl-meta"><span class="jl-cat">イベント</span><span class="jl-date">2025.12.10</span></span>
@@ -4745,7 +4746,7 @@ section.featured {
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
- <li><a href="journal-18.html">
+ <li><a>
    <span class="jl-num">04</span>
    <span class="jl-body">
      <span class="jl-meta"><span class="jl-cat">シェフとの対話</span><span class="jl-date">2025.09.01</span></span>
@@ -4754,7 +4755,7 @@ section.featured {
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
- <li><a href="journal-21.html">
+ <li><a>
    <span class="jl-num">05</span>
    <span class="jl-body">
      <span class="jl-meta"><span class="jl-cat">シェフとの対話</span><span class="jl-date">2025.07.29</span></span>
@@ -4766,8 +4767,8 @@ section.featured {
  </ol>
  </div>
 
- <div style="text-align: center; margin-top: 64px;" class="reveal">
- <a href="journal.html" class="btn btn-dark">すべての記事を読む <span class="btn-arrow"></span></a>
+ <div style="text-align: center; margin-top: 48px;" class="reveal">
+ <span style="font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; color: var(--color-gold-soft);">新しい記事を準備中です</span>
  </div>
  </div>
 </section>

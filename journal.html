@@ -3642,6 +3642,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         .journal-list a {
           display: flex; align-items: baseline; gap: 22px;
           padding: 28px 6px; text-decoration: none;
+          pointer-events: none; cursor: default; /* 記事準備中: 遷移先なし */
           font-family: var(--font-jp-serif); font-size: clamp(18px, 2.5vw, 25px);
           color: var(--color-forest); line-height: 1.5;
           transition: color .25s var(--ease-out-expo), padding-left .25s var(--ease-out-expo);
@@ -3663,11 +3664,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         }
       </style>
       <ol class="journal-list">
-        <li><a href="journal-14.html">3年目を終えて</a></li>
-        <li><a href="journal-12.html">世界初 — 有機JAS認証黒毛和牛</a></li>
-        <li><a href="journal-19.html">JFEX 2025 — 2年連続、幕張メッセへ</a></li>
-        <li><a href="journal-18.html">フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</a></li>
-        <li><a href="journal-21.html">ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</a></li>
+        <li><a>3年目を終えて</a></li>
+        <li><a>世界初 — 有機JAS認証黒毛和牛</a></li>
+        <li><a>JFEX 2025 — 2年連続、幕張メッセへ</a></li>
+        <li><a>フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</a></li>
+        <li><a>ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</a></li>
       </ol>
 
     </div>
