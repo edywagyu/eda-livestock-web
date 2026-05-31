@@ -1080,9 +1080,22 @@ async function testConnection() {
 /* ====== オーバービュー描画 ====== */
 function renderOverview(data, orders) {
   const d = (data && data.overview) ? data.overview : { revenue:0, revenueDelta:0, orders:0, avg:0, activeSub:0, subDelta:0, mrr:0, line:0, lineDelta:0, lineConvRate:0, quiz:0, quizDelta:0, quizRate:0 };
-  document.getElementById('kpiRevenue').textContent = '¥' + (d.revenue||0).toLocaleString();
-  document.getElementById('kpiRevenueDelta').textContent = d.revenueDelta ? ('+' + d.revenueDelta + '% vs 先月') : '実データ（過去30日）';
-  document.getElementById('kpiRevenueSub').textContent = '注文 ' + (d.orders||0) + '件 / 平均 ¥' + (d.avg||0).toLocaleString();
+  // ★ 売上KPIは「表示中の実注文」から算出する（届け先あり・重複排除済）。
+  //   GASの /exec→googleusercontent リダイレクトがキャッシュされ集計値が古くなる問題を回避し、
+  //   注文一覧と必ず一致させる（実際の決済額と1円単位で合わせる）。
+  const _PAID = { paid:1, preparing:1, shipped:1, delivered:1 };
+  const _now = Date.now();
+  const _real = (orders || []).filter(function (o) {
+    if (!_PAID[o.status]) return false;
+    const t = o.date ? new Date(String(o.date).replace(' ', 'T')).getTime() : 0;
+    return t && (_now - t) <= 31 * 24 * 3600 * 1000; // 過去31日
+  });
+  const _revenue = _real.reduce(function (s, o) { return s + (Number(o.total) || 0); }, 0);
+  const _orderCount = _real.length;
+  const _avg = _orderCount ? Math.round(_revenue / _orderCount) : 0;
+  document.getElementById('kpiRevenue').textContent = '¥' + _revenue.toLocaleString();
+  document.getElementById('kpiRevenueDelta').textContent = '実データ（過去30日）';
+  document.getElementById('kpiRevenueSub').textContent = '注文 ' + _orderCount + '件 / 平均 ¥' + _avg.toLocaleString();
   document.getElementById('kpiActiveSub').textContent = d.activeSub || 0;
   document.getElementById('kpiSubDelta').textContent = d.subDelta ? ('+' + d.subDelta + ' 今月') : '—';
   document.getElementById('kpiSubSub').textContent = d.mrr ? ('MRR ¥' + d.mrr.toLocaleString()) : 'MRR 集計準備中';
