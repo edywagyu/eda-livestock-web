@@ -4111,6 +4111,47 @@ function renderHomeTab(orderCount, orders, customer) {
    '</div>';
  }
 
+ /* ★ 会員情報 未入力の赤警告 + 入力フォーム（有機JAS購入の前提・Tom指示） */
+ try {
+  var _need = !(customer && customer.name && customer.zip && customer.address);
+  var _old = document.getElementById('profileCompleteBlock'); if (_old) _old.remove();
+  if (mcEl && _need) {
+   var _uid = (customer && customer.line_uid) || (window.__EDA_PROFILE && window.__EDA_PROFILE.userId) || '';
+   var _em  = (customer && customer.email) || '';
+   var _v = function(x){ return escapeHtml((customer && customer[x]) || ''); };
+   var _html = '<div id="profileCompleteBlock" style="margin:14px 0;padding:16px;border:1px solid #FCA5A5;background:#FEF2F2;border-radius:12px;">'
+    + '<p style="color:#DC2626;font-weight:700;margin:0 0 4px;font-size:15px;">＊会員情報を入力してください</p>'
+    + '<p style="color:#991B1B;font-size:13px;margin:0 0 12px;">ご入力いただくと<b>有機JAS認証商品</b>のご予約・ご購入が可能になります。</p>'
+    + '<div style="display:grid;gap:8px;">'
+    + '<input id="pfName" placeholder="お名前 *" value="'+_v('name')+'" style="padding:11px;border:1px solid #ddd;border-radius:8px;font-size:15px;">'
+    + '<input id="pfPhone" placeholder="電話番号" value="'+_v('phone')+'" style="padding:11px;border:1px solid #ddd;border-radius:8px;font-size:15px;">'
+    + '<input id="pfZip" placeholder="郵便番号 *" value="'+_v('zip')+'" style="padding:11px;border:1px solid #ddd;border-radius:8px;font-size:15px;">'
+    + '<input id="pfAddr" placeholder="住所 *" value="'+_v('address')+'" style="padding:11px;border:1px solid #ddd;border-radius:8px;font-size:15px;">'
+    + '<button id="pfSave" style="padding:13px;background:#0F3D2E;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;">保存する</button>'
+    + '<p id="pfMsg" style="font-size:12px;margin:2px 0 0;"></p>'
+    + '</div></div>';
+   mcEl.insertAdjacentHTML('afterend', _html);
+   var _btn = document.getElementById('pfSave');
+   if (_btn) _btn.addEventListener('click', async function(){
+    var g=function(id){ var e=document.getElementById(id); return e? e.value.trim():''; };
+    var nm=g('pfName'), ph=g('pfPhone'), zp=g('pfZip'), ad=g('pfAddr');
+    var msg=document.getElementById('pfMsg');
+    if(!nm||!zp||!ad){ if(msg){msg.style.color='#DC2626';msg.textContent='お名前・郵便番号・住所は必須です';} return; }
+    _btn.disabled=true; _btn.textContent='保存中...';
+    try{
+     var r= await window.EDA_API.post('update_profile',{ line_uid:_uid, email:_em, name:nm, phone:ph, zip:zp, address:ad });
+     if(r && r.ok){
+      if(msg){msg.style.color='#065F46';msg.textContent='保存しました。ありがとうございます。';}
+      try{ localStorage.setItem('eda-profile-complete','1'); }catch(_e){}
+      if (customer){ customer.name=nm; customer.phone=ph; customer.zip=zp; customer.address=ad; customer.profile_complete='TRUE'; }
+      if (typeof window.unlockMember==='function'){ try{ window.unlockMember({ line_uid:_uid, name:nm, email:_em, profile_complete:true }); }catch(_u){} }
+      var _blk=document.getElementById('profileCompleteBlock'); if(_blk) setTimeout(function(){ _blk.remove(); },1600);
+     } else { throw new Error((r&&r.error)||'保存に失敗しました'); }
+    }catch(_err){ if(msg){msg.style.color='#DC2626';msg.textContent=(_err&&_err.message)||'保存に失敗しました';} _btn.disabled=false; _btn.textContent='保存する'; }
+   });
+  }
+ } catch(_e) {}
+
  /* ★ Next Delivery Card — prominent display */
  var dvEl = document.getElementById('homeDelivery');
  if (dvEl) {

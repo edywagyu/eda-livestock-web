@@ -35,3 +35,6 @@ venv/
 .vscode/
 
 *.log
+*.bak
+*.bak2
+*.bak3
