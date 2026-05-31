@@ -139,6 +139,7 @@ function doGet(e) {
       case 'diag_recover_sub':  return diagRecoverSubscription(e.parameter);
       case 'diag_update_webhook': return diagUpdateWebhook(e.parameter);
       case 'diag_find_session':  return diagFindSession(e.parameter);
+      case 'diag_dedupe_orders': return diagDedupeOrders(e.parameter);
       /* ===== STAFF ===== */
       case 'staff_login':       return staffLogin(e.parameter);
       case 'staff_dashboard':   return staffDashboard();
@@ -199,6 +200,13 @@ function doPost(e) {
     return handleStripeWebhook(e);
   }
 
+  // ★ LINE Messaging API Webhook（友だち追加/メッセージ/postback）。
+  //   LINE は ?action= を付けず、body に { destination, events:[...] } を送る。
+  //   switch に入る前に body 形状で振り分ける（?action=line_webhook 明示にも対応）。
+  if (action === 'line_webhook' || (!action && body && (body.destination || Array.isArray(body.events)))) {
+    return handleLineWebhook(body);
+  }
+
   try {
     log(action, body);
     switch (action) {
@@ -243,8 +251,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.05.31',
-    versionNote: 'v17: 売上は届け先のある実注文のみ計上(テスト/未完了を除外)。v16=重複排除+items保存。v15=実データ化+ギフト送料無料',
+    version: '2026.05.31c',
+    versionNote: 'v18: LINE follow webhook新設/Stripe webhook偽造防止(event再照会)/定期便50%OFFフォールバック+失敗時安全継続/testクーポン本番無効化。v17=売上は実注文のみ計上',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -465,9 +473,13 @@ function createSubscriptionCheckout(body) {
   // ★ どれも duration='once' なので、初回 Checkout 一度きりに適用される
   //    (2回目以降の Subscription billing には適用されない)
   const userCouponInput = String(body.coupon_code || '').trim().toLowerCase();
-  const isTestCoupon = (userCouponInput === 'test' || userCouponInput === 'テスト' || body.coupon_code === 'テスト');
+  // ★ test クーポン(100%OFF=¥0)は本番で無効。Script Property ALLOW_TEST_COUPON='true' の時のみ有効化。
+  //   (誰でも coupon欄に 'test' と入れて定期便を¥0にできる穴を塞ぐ。検証時のみ Tom が一時的に ON にする)
+  const isTestCoupon = (cfg('ALLOW_TEST_COUPON') === 'true') &&
+                       (userCouponInput === 'test' || userCouponInput === 'テスト' || body.coupon_code === 'テスト');
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
-  const halfCoupon = cfg('STRIPE_COUPON_50OFF');
+  // ★ 初月50%OFF: Property 未設定でも 'FIRST50' にフォールバック（黙って割引が消える事故を防止）。
+  const halfCoupon = cfg('STRIPE_COUPON_50OFF', 'FIRST50');
   const applyCoupon = isTestCoupon ? 'DEMO100' : (demoCoupon || halfCoupon || '');
 
   // Checkout in PAYMENT mode (初月分の一回限り課金)
@@ -525,14 +537,39 @@ function createSubscriptionCheckout(body) {
   }
   const params = flattenForm(sessionParams);
 
-  const res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
+  let res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'post',
     payload: params,
     headers: { 'Authorization': 'Bearer ' + STRIPE },
     muteHttpExceptions: true
   });
+  let data = JSON.parse(res.getContentText());
 
-  const data = JSON.parse(res.getContentText());
+  // ★ クーポンが原因で失敗した場合は「割引なし」で1回だけ再試行する。
+  //   (例: Stripe live に FIRST50 が存在しない/期限切れ) → 決済自体が不能になるのを防ぐ。
+  //   満額のまま黙って通さず、Tom に通知して原因(クーポン未整備)を可視化する。
+  if (data.error && applyCoupon && /coupon|promotion|discount|no such/i.test(data.error.message || '')) {
+    log('subscription_coupon_failed', { coupon: applyCoupon, error: data.error.message, order: orderNum });
+    try {
+      MailApp.sendEmail({
+        to: cfg('STAFF_NOTIFICATION_EMAIL') || 'tomoki@eda-livestock.com',
+        subject: '⚠ 定期便クーポン未適用（割引なしで継続）',
+        body: '初月50%OFFクーポン "' + applyCoupon + '" が Stripe で適用できませんでした。\n'
+            + 'Error: ' + data.error.message + '\n注文: ' + orderNum + '\n\n'
+            + '→ Stripe(本番/liveモード) に Coupon "' + applyCoupon + '" (50%OFF・duration=once) が\n'
+            + '  存在・有効かを確認してください。今回は割引なし(満額)で Checkout を継続しました。'
+      });
+    } catch (e2) {}
+    delete sessionParams.discounts;
+    res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'post',
+      payload: flattenForm(sessionParams),
+      headers: { 'Authorization': 'Bearer ' + STRIPE },
+      muteHttpExceptions: true
+    });
+    data = JSON.parse(res.getContentText());
+  }
+
   if (data.error) throw new Error('Stripe: ' + data.error.message);
 
   recordPendingOrder(orderNum, data.id, body, null, 0, 'subscription_first_month');
@@ -659,6 +696,63 @@ function diagRecoverSubscription(params) {
 }
 
 /* ============================================================
+   🔧 orders 重複行クリーンアップ（①3倍課金の後始末）
+   ?action=diag_dedupe_orders            … dry-run（集計のみ・削除しない）
+   ?action=diag_dedupe_orders&apply=1    … 実削除（同一 session_id の2行目以降を削除）
+   ============================================================
+   ・Stripe webhook リトライで finalizeOrder が複数回走り、同じ session_id の
+     行が orders シートに2行以上できた分を掃除する。
+   ・各 session_id の「最初の1行」を残し、それ以降を削除（下から上へ削除＝行ズレ防止）。
+   ・session_id が空の行は対象外（手動投入/旧データを誤削除しない）。
+   ・apply 前に必ず dry-run で件数を確認すること。
+   ============================================================ */
+function diagDedupeOrders(params) {
+  var apply = params && (params.apply === '1' || params.apply === 'true');
+  var sh = ss().getSheetByName('orders');
+  if (!sh) return jsonResponse({ ok:false, error:'orders sheet not found' });
+  var data = sh.getDataRange().getValues();
+  if (data.length < 3) return jsonResponse({ ok:true, dryRun: !apply, duplicates: 0, note: 'no rows to dedupe' });
+
+  var headers = data[0];
+  var sidIdx = headers.indexOf('session_id');
+  var onIdx  = headers.indexOf('order_number');
+  if (sidIdx === -1) return jsonResponse({ ok:false, error:'session_id column not found' });
+
+  var seen = {};
+  var dupRows = []; // 1-based シート行番号
+  var dupDetail = [];
+  for (var i = 1; i < data.length; i++) {
+    var sid = data[i][sidIdx];
+    if (!sid) continue; // 空 session_id は触らない
+    if (seen[sid]) {
+      dupRows.push(i + 1);
+      dupDetail.push({ row: i + 1, session_id: sid, order: onIdx >= 0 ? data[i][onIdx] : '' });
+    } else {
+      seen[sid] = true;
+    }
+  }
+
+  if (!apply) {
+    return jsonResponse({
+      ok: true, dryRun: true,
+      totalRows: data.length - 1,
+      uniqueSessions: Object.keys(seen).length,
+      duplicates: dupRows.length,
+      sample: dupDetail.slice(0, 20),
+      note: 'これは集計のみ。実削除は &apply=1 を付けて再実行。'
+    });
+  }
+
+  // 実削除: 行ズレ防止のため必ず下から上へ
+  dupRows.sort(function(a, b){ return b - a; });
+  for (var r = 0; r < dupRows.length; r++) {
+    sh.deleteRow(dupRows[r]);
+  }
+  log('diag_dedupe_orders_applied', { removed: dupRows.length });
+  return jsonResponse({ ok:true, dryRun:false, removed: dupRows.length, detail: dupDetail.slice(0, 50) });
+}
+
+/* ============================================================
    🔧 Webhook URL を更新 (1-shot 操作)
    ?action=diag_update_webhook&webhook_id=we_xxx&new_url=https://...
    ============================================================ */
@@ -755,37 +849,232 @@ function createDelayedSubscription(session, meta) {
 }
 
 /* ============================================================
+   POST: LINE Messaging API Webhook（友だち追加 / メッセージ / postback）
+   ============================================================
+   ・LINE は ?action= を付けず body={ destination, events:[...] } を送る。
+   ・friend追加(follow) → 歓迎メッセージ push ＋ customers に会員行を自動作成。
+     これが無いと「新規が友だち追加しても会員化されない/連携導線が出ない」状態になる。
+   ・前提: LINE Developers Console (Messaging APIチャネル) の Webhook URL を
+     この GAS の /exec に向け、Webhookの利用を ON にする（Tom 側設定）。
+   ・制約: GAS は x-line-signature ヘッダを読めないため署名検証は不可。
+     follow は金銭フローではない(顧客行作成+自分宛pushのみ)ため許容。
+   ============================================================ */
+function handleLineWebhook(body) {
+  try {
+    var events = (body && body.events) || [];
+    for (var i = 0; i < events.length; i++) {
+      var ev = events[i];
+      var type = ev && ev.type;
+      if (type === 'follow') {
+        handleLineFollow_(ev);
+      } else if (type === 'unfollow') {
+        handleLineUnfollow_(ev);
+      } else if (type === 'message') {
+        // 友だち追加後にメッセージが来ても無言にならないよう簡易応答（連携導線を案内）
+        try {
+          var liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
+          replyLineMessage_(ev.replyToken,
+            'お問い合わせありがとうございます。\n' +
+            'マイページ（ご注文・配送状況の確認）はこちら:\n' +
+            'https://liff.line.me/' + liffId + '/mypage.html');
+        } catch (e1) {}
+      }
+    }
+  } catch (e) {
+    log('line_webhook_error', { error: e.message });
+  }
+  // LINE には常に 200 を返す（Verify ボタンの空イベントもここを通る）
+  return jsonResponse({ ok: true });
+}
+
+/* friend追加: line_uid で customers を引き、無ければ会員行を作成して歓迎 push */
+function handleLineFollow_(ev) {
+  var uid = ev.source && ev.source.userId;
+  if (!uid) return;
+
+  var profile = getLineProfile_(uid) || {};
+  var displayName = profile.displayName || '';
+
+  var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
+  var data = sh.getDataRange().getValues();
+  var headers = data[0];
+  function ensureCol(name) {
+    var idx = headers.indexOf(name);
+    if (idx === -1) { idx = headers.length; sh.getRange(1, idx + 1).setValue(name); headers.push(name); }
+    return idx;
+  }
+  var lineIdx     = ensureCol('line_uid');
+  var nameIdx     = ensureCol('name');
+  var lineNameIdx = ensureCol('line_name');
+  var linkedAtIdx = ensureCol('linked_at');
+  var sourceIdx   = ensureCol('source');
+
+  // 既存 line_uid → 表示名だけ更新して終了（重複作成しない）
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][lineIdx]) === String(uid)) {
+      if (displayName) sh.getRange(i + 1, lineNameIdx + 1).setValue(displayName);
+      log('line_follow_existing', { uid: uid });
+      sendLinePush(uid, [buildFollowWelcomeMessage(displayName)]);
+      return;
+    }
+  }
+
+  // 新規 → 会員行作成（購入0・LINEのみ会員）
+  var row = new Array(headers.length).fill('');
+  row[headers.indexOf('customer_id')] = Utilities.getUuid();
+  row[nameIdx]     = displayName;
+  row[lineIdx]     = uid;
+  row[lineNameIdx] = displayName;
+  row[linkedAtIdx] = new Date();
+  row[sourceIdx]   = 'LINE友だち追加';
+  row[headers.indexOf('total_spent')] = 0;
+  row[headers.indexOf('order_count')] = 0;
+  sh.appendRow(row);
+  log('line_follow_new', { uid: uid, name: displayName });
+
+  sendLinePush(uid, [buildFollowWelcomeMessage(displayName)]);
+}
+
+/* unfollow（ブロック）: source 列にタグを残す（行は消さない） */
+function handleLineUnfollow_(ev) {
+  var uid = ev.source && ev.source.userId;
+  if (!uid) return;
+  try {
+    var sh = ss().getSheetByName('customers');
+    if (!sh) return;
+    var data = sh.getDataRange().getValues();
+    var headers = data[0];
+    var lineIdx = headers.indexOf('line_uid');
+    var srcIdx = headers.indexOf('source');
+    if (lineIdx === -1) return;
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][lineIdx]) === String(uid)) {
+        if (srcIdx >= 0) sh.getRange(i + 1, srcIdx + 1).setValue('ブロック');
+        break;
+      }
+    }
+  } catch (e) { log('line_unfollow_error', { error: e.message }); }
+}
+
+/* LINE プロフィール取得（Messaging API・LINE_CHANNEL_TOKEN 必須） */
+function getLineProfile_(uid) {
+  var token = cfg('LINE_CHANNEL_TOKEN');
+  if (!token) return null;
+  try {
+    var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/profile/' + uid, {
+      method: 'get', headers: { 'Authorization': 'Bearer ' + token }, muteHttpExceptions: true
+    });
+    if (res.getResponseCode() === 200) return JSON.parse(res.getContentText());
+  } catch (e) { log('get_line_profile_error', { error: e.message }); }
+  return null;
+}
+
+/* reply（応答トークン使用・LINE_CHANNEL_TOKEN 必須） */
+function replyLineMessage_(replyToken, text) {
+  var token = cfg('LINE_CHANNEL_TOKEN');
+  if (!token || !replyToken) return;
+  try {
+    UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', {
+      method: 'post', contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + token },
+      payload: JSON.stringify({ replyToken: replyToken, messages: [{ type: 'text', text: text }] }),
+      muteHttpExceptions: true
+    });
+  } catch (e) { log('line_reply_error', { error: e.message }); }
+}
+
+/* 友だち追加の歓迎メッセージ（マイページ＝LIFF・購入連携＝LIFF の2導線） */
+function buildFollowWelcomeMessage(customerName) {
+  var liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  return {
+    type: 'flex',
+    altText: '友だち追加ありがとうございます — 江田畜産',
+    contents: {
+      type: 'bubble',
+      body: {
+        type: 'box', layout: 'vertical', spacing: 'md',
+        contents: [
+          { type: 'text', text: '友だち追加ありがとうございます🐂', weight: 'bold', size: 'md', color: '#0F3D2E', wrap: true },
+          { type: 'text', text: greeting + '、江田畜産の公式LINEへようこそ。ご注文状況の確認・発送のお知らせ・会員限定のご案内をお届けします。', size: 'sm', color: '#666666', wrap: true }
+        ]
+      },
+      footer: {
+        type: 'box', layout: 'vertical', spacing: 'sm',
+        contents: [
+          { type: 'button', style: 'primary', color: '#0F3D2E', height: 'sm',
+            action: { type: 'uri', label: 'マイページを開く', uri: 'https://liff.line.me/' + liffId + '/mypage.html' } },
+          { type: 'button', style: 'link', height: 'sm',
+            action: { type: 'uri', label: 'ご購入歴を連携する', uri: 'https://liff.line.me/' + liffId + '/line-link.html' } }
+        ]
+      }
+    }
+  };
+}
+
+/* ============================================================
    POST: stripe_webhook
    ============================================================ */
 function handleStripeWebhook(e) {
-  const sig = e.parameter && e.parameter.signature;
   const raw = e.postData && e.postData.contents;
-
-  // 注意: 本格的な署名検証は GAS の制約上、Crypto API 経由で要実装
-  // ここでは payload を信頼するか、Webhook secret 確認の簡易版を実装
 
   let event;
   try { event = JSON.parse(raw); } catch (err) {
     return jsonResponse({ ok:false, error: 'Invalid JSON' });
   }
 
-  log('stripe_webhook_' + event.type, { id: event.id });
+  // ★ 偽造防止（重要）:
+  //   GAS の Web アプリは HTTP ヘッダ(Stripe-Signature)を読めないため、本来の HMAC 署名検証ができない。
+  //   そこで (1) 任意の共有キー gate と (2) event.id を Stripe API に再照会して実在を確認する、
+  //   の2段で「誰でも ?action=stripe_webhook に偽注文 JSON を POST できる」穴を塞ぐ。
+  //   検証を通った Stripe 取得データ(verified)を「正」として処理する（payload は信用しない）。
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+
+  // (1) 共有キー gate（任意・後方互換）: WEBHOOK_SHARED_KEY を設定し、Stripe 側 Webhook URL を
+  //     ...?action=stripe_webhook&key=XXXX にすると有効化。未設定なら従来どおりスキップ（デプロイで即停止しない）。
+  const sharedKey = cfg('WEBHOOK_SHARED_KEY');
+  if (sharedKey && (!e.parameter || e.parameter.key !== sharedKey)) {
+    log('stripe_webhook_bad_key', { id: event && event.id });
+    return jsonResponse({ ok:false, error: 'unauthorized' });
+  }
+
+  // (2) event.id を Stripe に再照会して実在検証 → 取得データを正とする
+  let verified = event;
+  if (STRIPE && event && typeof event.id === 'string' && event.id.indexOf('evt_') === 0) {
+    try {
+      const vr = UrlFetchApp.fetch('https://api.stripe.com/v1/events/' + event.id, {
+        method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+      });
+      if (vr.getResponseCode() === 200) {
+        verified = JSON.parse(vr.getContentText());
+      } else {
+        // Stripe に存在しない event = 偽造の疑い → 拒否（Stripe は本物なら最大3日リトライするので取りこぼさない）
+        log('stripe_webhook_forgery_rejected', { id: event.id, code: vr.getResponseCode() });
+        return jsonResponse({ ok:false, error: 'event not found on Stripe' });
+      }
+    } catch (verr) {
+      log('stripe_webhook_verify_error', { id: event.id, error: verr.message });
+      return jsonResponse({ ok:false, error: 'verify failed' });
+    }
+  }
+
+  log('stripe_webhook_' + verified.type, { id: verified.id });
 
   try {
-    switch (event.type) {
+    switch (verified.type) {
       case 'checkout.session.completed':
-        return finalizeOrder(event.data.object);
+        return finalizeOrder(verified.data.object);
       case 'customer.subscription.created':
-        return logSubscriptionCreated(event.data.object);
+        return logSubscriptionCreated(verified.data.object);
       case 'customer.subscription.deleted':
-        return logSubscriptionCancelled(event.data.object);
+        return logSubscriptionCancelled(verified.data.object);
       case 'invoice.payment_succeeded':
-        return logInvoicePaid(event.data.object);
+        return logInvoicePaid(verified.data.object);
       default:
-        return jsonResponse({ ok:true, ignored: event.type });
+        return jsonResponse({ ok:true, ignored: verified.type });
     }
   } catch (err) {
-    log('stripe_webhook_error', { type: event.type }, { error: err.message });
+    log('stripe_webhook_error', { type: verified.type }, { error: err.message });
     return jsonResponse({ ok:false, error: err.message });
   }
 }
@@ -1219,8 +1508,25 @@ function getCustomerByEmail(email, ordersHint) {
 function customerLookup(params) {
   const email = params.email;
   if (!email) return jsonResponse({ success:false, message:'email required' });
+  // S3: email形式の検証（不正値・ワイルドカード的入力を弾く）
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(email).trim())) {
+    return jsonResponse({ success:false, message:'invalid email' });
+  }
+  const requestUid = params.line_uid ? String(params.line_uid).trim() : '';
   const orders = getOrdersByEmail(email);
   const customer = getCustomerByEmail(email, orders);
+  // S3 IDOR対策（任意・既定OFF）: ENFORCE_LOOKUP_UID=true のとき、
+  //   line_uid 登録済みの顧客は一致する line_uid が無いと照会できない。
+  //   既定OFF=従来どおりemailのみで照会可（決済直後の非LINEフォールバックを壊さない）。
+  //   LINE導線が安定したら true にして本人確認を強制する。
+  if (customer && (cfg('ENFORCE_LOOKUP_UID') === 'true')) {
+    const storedUid = customer.line_uid ? String(customer.line_uid).trim() : '';
+    if (storedUid && storedUid !== requestUid) {
+      log('customer_lookup_denied', { email: email, reason: 'uid_mismatch' });
+      return jsonResponse({ success:false, message:'verification required', code:'UID_REQUIRED' });
+    }
+  }
+  log('customer_lookup', { email: email, withUid: !!requestUid });
   return jsonResponse({ success:true, customer: customer, orders: orders });
 }
 

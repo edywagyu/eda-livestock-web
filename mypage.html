@@ -3367,6 +3367,17 @@ async function initLiff() {
  } catch (err) {
  console.error('[LIFF init error]', err);
  if (/Line\//i.test(navigator.userAgent)) {
+  // ★ best-effort: in-client で uid が取れるなら会員行を保証する（follow webhook の補完。
+  //   「既存LINEユーザーがマイページから会員登録できない」対策）。失敗しても表示は必ず継続する。
+  //   programmatic な liff.line.me 遷移は一切しない（ループ防止・§handoff）。
+  try {
+   if (typeof liff !== 'undefined' && _liffReady && liff.isLoggedIn && liff.isLoggedIn()) {
+    var _ep = await liff.getProfile();
+    if (_ep && _ep.userId && window.EDA_API) {
+     window.EDA_API.post('line_register', { line_uid: _ep.userId, display_name: _ep.displayName, name: _ep.displayName || '' }).catch(function(){});
+    }
+   }
+  } catch(_e) {}
   var lineName = 'お客';
   try { lineName = decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)line_name\s*=\s*([^;]*).*$)|^.*$/, '$1')) || 'お客'; } catch(_){}
   renderDashboard({ name: lineName, total_orders: 0, total_spent: 0 }, []);

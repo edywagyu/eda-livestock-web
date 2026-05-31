@@ -1645,6 +1645,27 @@ const GAS_URL_KEY   = 'eda-staff-gas-url';
 const SESSION_KEY   = 'eda-staff-session';
 
 let GAS_URL = localStorage.getItem(GAS_URL_KEY) || 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
+
+/* 🔒 管理 API トークン (PIN ログインで取得・12時間有効)。管理系 fetch に付与する */
+const STAFF_TOKEN_KEY = 'eda-staff-token';
+let STAFF_TOKEN = localStorage.getItem(STAFF_TOKEN_KEY) || '';
+function setStaffToken(t) {
+  STAFF_TOKEN = t || '';
+  if (STAFF_TOKEN) localStorage.setItem(STAFF_TOKEN_KEY, STAFF_TOKEN);
+  else localStorage.removeItem(STAFF_TOKEN_KEY);
+}
+function authQS() { return STAFF_TOKEN ? ('&token=' + encodeURIComponent(STAFF_TOKEN)) : ''; }
+/* 管理系レスポンスが unauthorized (トークン失効/未設定) なら再ログインへ */
+function handleAuthError(d) {
+  if (d && d.ok === false && d.error === 'unauthorized') {
+    setStaffToken('');
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem('eda-staff-demo');
+    location.reload();
+    return true;
+  }
+  return false;
+}
 let pinBuffer = '';
 let inventoryCache = [];
 let ordersCache = [];
@@ -1697,6 +1718,7 @@ async function checkPin() {
         const res = await fetch(GAS_URL + '?action=staff_login&pin=1234');
         const data = await res.json();
         if (data && data.success) {
+          setStaffToken(data.token);
           sessionStorage.removeItem('eda-staff-demo');
           localStorage.setItem(SESSION_KEY, '1');
           enterApp();
@@ -1720,6 +1742,7 @@ async function checkPin() {
     const res = await fetch(GAS_URL + '?action=staff_login&pin=' + pinBuffer);
     const data = await res.json();
     if (data && data.success) {
+      setStaffToken(data.token);
       sessionStorage.removeItem('eda-staff-demo');
       localStorage.setItem(SESSION_KEY, '1');
       enterApp();
@@ -2211,7 +2234,7 @@ async function loadDashboard() {
     return;
   }
   try {
-    const res = await fetch(GAS_URL + '?action=staff_dashboard');
+    const res = await fetch(GAS_URL + '?action=staff_dashboard' + authQS());
     const data = await res.json();
     document.getElementById('todayOrders').textContent = data.todayOrders || 0;
     document.getElementById('todayShip').textContent = data.todayShip || 0;
@@ -2257,8 +2280,9 @@ async function loadAnalytics() {
     return;
   }
   try {
-    const res = await fetch(GAS_URL + '?action=staff_analytics&range=' + days + 'd');
+    const res = await fetch(GAS_URL + '?action=staff_analytics&range=' + days + 'd' + authQS());
     const d = await res.json();
+    if (handleAuthError(d)) return;
     if (!d.ok) return;
     const t = d.today || {};
     const y = d.yesterday || {};
@@ -2304,7 +2328,7 @@ async function loadInventory() {
 
   list.innerHTML = '<div class="empty">読み込み中...</div>';
   try {
-    const res = await fetch(GAS_URL + '?action=staff_inventory');
+    const res = await fetch(GAS_URL + '?action=staff_inventory' + authQS());
     const data = await res.json();
     const gasProducts = data.products || [];
 
@@ -2410,7 +2434,7 @@ async function saveStock(variantId, btn) {
   }
 
   try {
-    const res = await fetch(GAS_URL + '?action=staff_update_stock', {
+    const res = await fetch(GAS_URL + '?action=staff_update_stock' + authQS(), {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ variantId, stock: val })
@@ -2445,7 +2469,7 @@ async function loadOrders() {
 
   list.innerHTML = '<div class="empty">読み込み中...</div>';
   try {
-    const res = await fetch(GAS_URL + '?action=staff_orders&_cb=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch(GAS_URL + '?action=staff_orders&_cb=' + Date.now() + authQS(), { cache: 'no-store' });
     const data = await res.json();
     // 同一 order_number の重複行を排除（webhook 多重発火対策）
     var _seen = {}, _uniq = [];
@@ -2662,7 +2686,7 @@ async function confirmShip() {
   }
 
   try {
-    const res = await fetch(GAS_URL + '?action=staff_ship', {
+    const res = await fetch(GAS_URL + '?action=staff_ship' + authQS(), {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
@@ -2693,7 +2717,7 @@ async function confirmShip() {
 /* ================ CSV ================ */
 function downloadCSV() {
   if (!GAS_URL) { toast('GAS URLが未設定', 'error'); return; }
-  window.open(GAS_URL + '?action=b2_csv', '_blank');
+  window.open(GAS_URL + '?action=b2_csv' + authQS(), '_blank');
 }
 
 /* ================ HELPERS ================ */
@@ -2919,7 +2943,7 @@ function saveWeeklyMenu() {
   localStorage.setItem('eda-weekly-menu-override', JSON.stringify(picked));
   toast('今週のメニューを保存しました', 'success');
   if (!isDemoMode()) {
-    fetch(GAS_URL + '?action=staff_weekly_menu_save', {
+    fetch(GAS_URL + '?action=staff_weekly_menu_save' + authQS(), {
       method: 'POST', headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ menu: picked })
     }).catch(() => {});
@@ -3034,7 +3058,7 @@ function sendLineBlast() {
   if (isDemoMode()) {
     toast('🎭 デモ: ' + linked.length + '名へ配信したフリ', 'success');
   } else {
-    fetch(GAS_URL + '?action=staff_line_blast', {
+    fetch(GAS_URL + '?action=staff_line_blast' + authQS(), {
       method: 'POST', headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ segment, message: msg })
     }).then(() => toast('配信完了 (' + linked.length + '名)', 'success'))
@@ -3223,7 +3247,7 @@ function toggleFlow(flowId, isActive) {
     renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
     toast(isActive ? '✅ ON にしました' : '⏸ OFF にしました', 'success');
     if (!isDemoMode()) {
-      fetch(GAS_URL + '?action=staff_flow_toggle', {
+      fetch(GAS_URL + '?action=staff_flow_toggle' + authQS(), {
         method: 'POST', headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ flowId, active: isActive })
       }).catch(() => {});
@@ -3801,7 +3825,7 @@ function saveRewards() {
   if (isDemoMode()) {
     toast('🎭 デモ: 特典マスタを更新しました', 'success');
   } else {
-    fetch(GAS_URL + '?action=staff_rewards_save', {
+    fetch(GAS_URL + '?action=staff_rewards_save' + authQS(), {
       method: 'POST', headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ rewards: REWARD_PROGRAM })
     }).then(() => toast('特典マスタを更新しました', 'success'))
@@ -3866,7 +3890,7 @@ function saveProduct() {
   }
 
   // 本番: GAS POST
-  fetch(GAS_URL + '?action=staff_product_save', {
+  fetch(GAS_URL + '?action=staff_product_save' + authQS(), {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(product)
@@ -3893,7 +3917,7 @@ function deleteProduct() {
     return;
   }
 
-  fetch(GAS_URL + '?action=staff_product_delete', {
+  fetch(GAS_URL + '?action=staff_product_delete' + authQS(), {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ variantId: editingProduct.variantId })
@@ -4047,7 +4071,7 @@ function saveGift() {
     closeForm();
     return;
   }
-  fetch(GAS_URL + '?action=staff_gift_save', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(gift) })
+  fetch(GAS_URL + '?action=staff_gift_save' + authQS(), { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(gift) })
     .then(r => r.json()).then(res => {
       if (res.ok) { toast((editingGift?'更新':'追加')+'しました', 'success'); loadGifts(); closeForm(); }
       else toast('保存失敗: ' + (res.error || 'unknown'), 'error');
@@ -4061,7 +4085,7 @@ function deleteGift() {
     giftsCache = giftsCache.filter(g => g.giftId !== editingGift.giftId);
     renderGiftList(); toast('🎭 デモ: 削除', 'success'); closeForm(); return;
   }
-  fetch(GAS_URL + '?action=staff_gift_delete', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ giftId: editingGift.giftId }) })
+  fetch(GAS_URL + '?action=staff_gift_delete' + authQS(), { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ giftId: editingGift.giftId }) })
     .then(r => r.json()).then(res => {
       if (res.ok) { toast('削除しました', 'success'); loadGifts(); closeForm(); }
       else toast('削除失敗: ' + (res.error || 'unknown'), 'error');
@@ -4229,7 +4253,7 @@ function saveSub() {
     closeForm();
     return;
   }
-  fetch(GAS_URL + '?action=staff_subscription_save', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(plan) })
+  fetch(GAS_URL + '?action=staff_subscription_save' + authQS(), { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(plan) })
     .then(r => r.json()).then(res => {
       if (res.ok) { toast((editingSub?'更新':'追加')+'しました', 'success'); loadSubscriptions(); closeForm(); }
       else toast('保存失敗: ' + (res.error || 'unknown'), 'error');
@@ -4243,7 +4267,7 @@ function deleteSub() {
     subsCache = subsCache.filter(p => p.planId !== editingSub.planId);
     renderSubList(); toast('🎭 デモ: 削除', 'success'); closeForm(); return;
   }
-  fetch(GAS_URL + '?action=staff_subscription_delete', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ planId: editingSub.planId }) })
+  fetch(GAS_URL + '?action=staff_subscription_delete' + authQS(), { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({ planId: editingSub.planId }) })
     .then(r => r.json()).then(res => {
       if (res.ok) { toast('削除しました', 'success'); loadSubscriptions(); closeForm(); }
       else toast('削除失敗: ' + (res.error || 'unknown'), 'error');
