@@ -243,8 +243,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.05.30',
-    versionNote: 'v15: 経営ダッシュボード実データ化(getSheet定義+実スキーマoverview)+ギフト送料無料+ワンタップLINE連携',
+    version: '2026.05.31',
+    versionNote: 'v16: 売上集計の注文重複排除+items_json確実保存(destinations導出)。v15=経営実データ化+ギフト送料無料',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -821,6 +821,18 @@ function finalizeOrder(session) {
       }
     }
 
+    // items_json を確実に保存: metadata.items_json が空(ギフト等で商品が destinations 側)なら
+    //   destinations[].items から導出して記録する（旧コードは存在しないキー line_items_json を読み空保存だった）
+    var itemsJsonOut = meta.items_json || meta.line_items_json || '[]';
+    try {
+      var _pj = JSON.parse(itemsJsonOut);
+      if (!Array.isArray(_pj) || _pj.length === 0) {
+        var _dd = JSON.parse(meta.destinations_json || '[]'); var _arr = [];
+        (_dd || []).forEach(function (d) { (d.items || []).forEach(function (it) { _arr.push({ title: it.title || it.name || '', variant: it.variant || '', qty: it.qty || it.quantity || 1 }); }); });
+        if (_arr.length) itemsJsonOut = JSON.stringify(_arr);
+      }
+    } catch (e) { /* itemsJsonOut はそのまま */ }
+
     sh.appendRow([
       orderNum,
       new Date(),
@@ -834,7 +846,7 @@ function finalizeOrder(session) {
       session.payment_status,
       (session.payment_method_types && session.payment_method_types[0]) || 'card',
       meta.destinations_json || '[]',
-      meta.line_items_json || '[]',
+      itemsJsonOut,
       JSON.stringify(meta),
       meta.line_uid || '',   // ★ LINE 連携: orders に line_uid を直接記録
       meta.line_name || '',
@@ -1310,7 +1322,11 @@ function dashboardSummary(params) {
 
   const ordersData = sheet('orders').getDataRange().getValues();
   let revenue = 0, orderCount = 0, customers = {};
+  const seenOrders = {}; // 同一 order_number の重複行(webhook多重発火の名残)を二重計上しない
   for (let i = 1; i < ordersData.length; i++) {
+    const onum = ordersData[i][0];
+    if (onum && seenOrders[onum]) continue;
+    if (onum) seenOrders[onum] = true;
     const placedAt = new Date(ordersData[i][1]);
     if (placedAt >= since && ordersData[i][9] === 'paid') {
       revenue += Number(ordersData[i][7]) || 0;
