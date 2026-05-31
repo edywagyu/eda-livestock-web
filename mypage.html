@@ -3495,10 +3495,27 @@ async function tryLineLogin(profile) {
  console.warn('[line_login API error]', err);
  }
 
- // 🆕 未登録 LINE ユーザー → 会員登録フォームを表示
- var welcomeEl = document.getElementById('liffWelcomeName');
- if (welcomeEl) welcomeEl.textContent = (profile.displayName || '') + ' さん、ようこそ！';
- showState('linkAccount');
+ // 🆕 未登録 LINE ユーザー → 裏側で自動的に会員作成（名前等は後で登録でOK）。フォームで止めない。
+ try {
+  var reg = await window.EDA_API.post('line_register', {
+   line_uid: profile.userId,
+   display_name: profile.displayName,
+   name: profile.displayName || ''
+  });
+  var cust = (reg && reg.customer) ? reg.customer : {
+   name: profile.displayName || 'お客', email: '',
+   total_orders: 0, total_spent: 0, line_uid: profile.userId, is_new: true
+  };
+  if (typeof window.unlockMember === 'function') {
+   window.unlockMember({ line_uid: profile.userId, name: profile.displayName, email: cust.email || '' });
+  }
+  lineSession.email = cust.email || '';
+  localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
+  renderDashboard(cust, (reg && reg.orders) || []);
+ } catch (e) {
+  // 自動登録に失敗しても止めない: LINEプロフィールだけで表示
+  renderDashboard({ name: profile.displayName || 'お客', email: '', total_orders: 0, total_spent: 0, line_uid: profile.userId, is_new: true }, []);
+ }
 }
 
 /* 状態切替 */
