@@ -12,7 +12,10 @@
     var target = s.replace(/^\//, '');
     p.delete('liff.state');
     var qs = p.toString();
-    window.location.replace(target + (qs ? '?' + qs : ''));
+    // target が既にクエリ(line-link.html?e=… 等)を持つ場合は & で連結し ? の二重化を防ぐ。
+    // (LIFF起動経由で来た line-link の暗号化メール ?e= が code/state 連結時に壊れるのを防止)
+    var sep = target.indexOf('?') >= 0 ? '&' : '?';
+    window.location.replace(target + (qs ? sep + qs : ''));
   }
 })();
 </script>

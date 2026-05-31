@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-05-31-052-linklink-inapp-redirect-fix';
+const CACHE_VERSION = 'eda-v2026-05-31-053-liffstate-query-merge';
 const CORE_ASSETS = [
   './',
   'index.html',
