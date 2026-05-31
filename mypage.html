@@ -3349,7 +3349,13 @@ async function initLiff() {
   _liffReady = true;
  }
  if (!liff.isInClient() && !liff.isLoggedIn()) {
-  showState('external');
+  // ★ LINE アプリ内蔵ブラウザ(プレーンURLで開かれた)では liff.login が遷移せず
+  //   「LINEに接続中…」で固まる。LIFF URL で開き直して in-client(自動ログイン)にする。
+  if (/Line\//i.test(navigator.userAgent)) {
+   window.location.replace('https://liff.line.me/' + (LIFF_ID || '1657458587-mz1dR9e6') + '/mypage.html' + location.search);
+   return;
+  }
+  showState('external');   // 真の外部ブラウザ(PC等)のみ web ログイン
   return;
  }
  if (!liff.isLoggedIn()) {
@@ -3382,6 +3388,11 @@ function liffLineLogin() {
  var _p = new URLSearchParams(location.search);
  if (_p.get('page')) _redirUrl += '?page=' + _p.get('page');
 
+ // LINE 内蔵ブラウザでは liff.login がハングするので LIFF URL で開き直す(in-client化)
+ if (/Line\//i.test(navigator.userAgent)) {
+ window.location.href = 'https://liff.line.me/' + (LIFF_ID || '1657458587-mz1dR9e6') + '/mypage.html' + location.search;
+ return;
+ }
  if (_liffReady && typeof liff !== 'undefined') {
  liff.login({ redirectUri: _redirUrl });
  return;
