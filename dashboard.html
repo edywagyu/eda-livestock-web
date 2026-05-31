@@ -261,6 +261,15 @@ body {
   font-weight: 600;
 }
 .btn-csv:hover { border-color: var(--gold); color: var(--gold-soft); }
+/* ====== できること ガイド ====== */
+.howto-card { background: rgba(212,169,59,0.06); border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px; margin-bottom:22px; }
+.howto-title { font-size:13px; font-weight:700; color:var(--gold-soft); margin:0 0 10px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.howto-note { font-size:10.5px; font-weight:500; color:var(--text-dim); }
+.howto-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:8px; }
+.howto-item { display:flex; flex-direction:column; gap:2px; padding:9px 11px; background:var(--panel); border:1px solid var(--border); border-radius:9px; text-decoration:none; }
+.howto-item b { color:var(--text); font-size:12px; font-weight:700; }
+.howto-item span { color:var(--text-dim); font-size:10.5px; line-height:1.45; }
+a.howto-item:hover { border-color:var(--gold); background:var(--panel-2); }
 
 .panel {
   background: var(--panel);
@@ -507,6 +516,18 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
 
     <!-- ============ TAB: OVERVIEW ============ -->
     <div class="tab-panel active" data-tab-content="overview">
+      <div class="howto-card">
+        <div class="howto-title">📋 このダッシュボードでできること<span class="howto-note">数字はすべて実データ（Stripe決済と一致・デモ表示なし）</span></div>
+        <div class="howto-grid">
+          <div class="howto-item"><b>📦 注文一覧</b><span>届け先・商品を確認 → 発送処理／ヤマトB2 CSV出力</span></div>
+          <div class="howto-item"><b>🚚 配送ステータス</b><span>未発送・配送中・完了の件数をひと目で</span></div>
+          <div class="howto-item"><b>⭐ 定期便メンバー</b><span>契約者・プラン・次回お届けを確認</span></div>
+          <div class="howto-item"><b>👥 顧客CRM</b><span>累計購入額・VIP／リピーター／休眠を把握</span></div>
+          <div class="howto-item"><b>📋 アンケート／🧠 クイズ</b><span>お客様の回答傾向を集計</span></div>
+          <div class="howto-item"><b>💬 LINEセグメント配信</b><span>顧客を5分類 → CSV出力 → LINE配信に活用</span></div>
+          <a class="howto-item" href="staff.html" target="_blank"><b>📱 STAFF（現場）→</b><span>スマホで発送：届け先確認 → 伝票番号入力 → 発送済</span></a>
+        </div>
+      </div>
       <div class="kpi-grid">
         <div class="kpi">
           <div class="kpi-label">今月売上</div>
@@ -928,6 +949,27 @@ table.dash tbody td.num { text-align: right; font-weight: 700; }
 /* 本番 GAS Web App（サイトが使う本番デプロイ）。未設定でもデモに落とさず実データへ。 */
 const PROD_GAS = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
 const GAS_URL = () => localStorage.getItem('eda-gas-url') || (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || PROD_GAS;
+
+/* 🔒 管理 API トークン: スタッフ PIN でログイン → 12h トークン取得 → 全 API に付与 */
+const DASH_TOKEN_KEY = 'eda-dash-token';
+let DASH_TOKEN = localStorage.getItem(DASH_TOKEN_KEY) || '';
+function setDashToken(t){ DASH_TOKEN = t || ''; if (DASH_TOKEN) localStorage.setItem(DASH_TOKEN_KEY, DASH_TOKEN); else localStorage.removeItem(DASH_TOKEN_KEY); }
+function tokenQS(){ return DASH_TOKEN ? ('&token=' + encodeURIComponent(DASH_TOKEN)) : ''; }
+async function ensureDashAuth(){
+  if (DASH_TOKEN) return true;
+  const url = GAS_URL();
+  if (!url) return false;
+  for (let i = 0; i < 3; i++){
+    const pin = prompt(i === 0 ? 'スタッフPINを入力してください' : 'PINが違います。再入力してください');
+    if (pin === null) return false;            // キャンセル
+    try {
+      const res = await fetch(url + '?action=staff_login&pin=' + encodeURIComponent(String(pin).trim()));
+      const d = await res.json();
+      if ((d.ok || d.success) && d.token){ setDashToken(d.token); return true; }
+    } catch(e){}
+  }
+  return false;
+}
 let cache = {}; // action名 → response data
 
 /* ====== 実注文の正規化（staff_orders の実シート行 → 表示用。届け先/商品を展開） ====== */
@@ -998,15 +1040,20 @@ document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
 });
 
 /* ====== GAS データ取得（fail-safe） ====== */
-async function gasGet(action, params = {}) {
+async function gasGet(action, params = {}, _retried) {
   if (cache[action]) return cache[action];
   const url = GAS_URL();
   if (!url) return null;
   try {
     const qs = Object.entries(params).map(([k, v]) => `&${k}=${encodeURIComponent(v)}`).join('');
     // キャッシュバスター: GAS の GET 応答がブラウザ/CDN にキャッシュされ古い数字が出るのを防ぐ
-    const res = await fetch(url + '?action=' + action + qs + '&_cb=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch(url + '?action=' + action + qs + tokenQS() + '&_cb=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
+    if (data && data.ok === false && data.error === 'unauthorized' && !_retried) {
+      setDashToken('');
+      if (await ensureDashAuth()) return gasGet(action, params, true);
+      return data;
+    }
     cache[action] = data;
     return data;
   } catch (e) {
@@ -1220,18 +1267,19 @@ async function loadTabData(tab) {
 }
 
 /* ====== CSV エクスポート ====== */
-function exportCSV(kind) {
+async function exportCSV(kind) {
   // ヤマト B2 形式の CSV（お届け先電話/郵便/住所/氏名）を実注文データから生成・ダウンロード
-  window.open(GAS_URL() + '?action=b2_csv', '_blank');
+  if (!(await ensureDashAuth())) return;
+  window.open(GAS_URL() + '?action=b2_csv&token=' + encodeURIComponent(DASH_TOKEN), '_blank');
 }
 
 /* ====== LINE セグメント ====== */
 async function loadSegmentStats() {
   try {
-    const gasUrl = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || localStorage.getItem('eda-gas-url') || '';
-    if (!gasUrl) return;
-    const res = await fetch(gasUrl + '?action=segment_stats&_cb=' + Date.now(), { cache: 'no-store' });
+    if (!(await ensureDashAuth())) return;
+    const res = await fetch(GAS_URL() + '?action=segment_stats' + tokenQS() + '&_cb=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
+    if (data && data.error === 'unauthorized') { setDashToken(''); return; }
     if (!data.ok) throw new Error(data.error || 'segment_stats failed');
     const s = data.segments || {};
     const sum = data.summary || {};
@@ -1250,13 +1298,14 @@ async function loadSegmentStats() {
 }
 function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
 
-function downloadSegmentCsv(type, format) {
+async function downloadSegmentCsv(type, format) {
   const gasUrl = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || localStorage.getItem('eda-gas-url') || '';
   if (!gasUrl) {
     alert('GAS URL が設定されていません。');
     return;
   }
-  const url = gasUrl + '?action=customers_csv&type=' + encodeURIComponent(type) + '&format=' + encodeURIComponent(format);
+  if (!(await ensureDashAuth())) return;
+  const url = GAS_URL() + '?action=customers_csv&type=' + encodeURIComponent(type) + '&format=' + encodeURIComponent(format) + '&token=' + encodeURIComponent(DASH_TOKEN);
   // 新規タブで開く (Apps Script から CSV ダウンロード)
   window.open(url, '_blank');
 }
@@ -1264,6 +1313,7 @@ function downloadSegmentCsv(type, format) {
 /* ====== 初期化 ====== */
 (async function init() {
   await checkSync();
+  await ensureDashAuth();
   await loadTabData('overview');
   await loadSegmentStats();
   setInterval(checkSync, 30000); // 30秒ごとに同期状況更新
