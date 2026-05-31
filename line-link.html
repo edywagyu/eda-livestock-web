@@ -555,6 +555,15 @@ function submitRegistration() {
   }
 
   if (!liff.isLoggedIn()) {
+    // 🔴 LINE 内蔵ブラウザ(プレーンURLで開かれ isInClient=false)では liff.login が遷移せず
+    //   「LINE 認証中…」で固まる。LIFF URL で開き直して in-client(自動ログイン)化する。
+    //   ?e=(暗号化メール)/?order= は location.search ごと維持。in-client は OAuth code/state を
+    //   付けない(LINEセッションで即ログイン)ため index.html の liff.state ルーターで無傷に復元される。
+    //   既に in-client のページからの遷移時は isInClient=true なのでここは発火しない(既存経路は不変)。
+    if (!liff.isInClient() && /Line\//i.test(navigator.userAgent)) {
+      window.location.replace('https://liff.line.me/' + (LIFF_ID || '1657458587-mz1dR9e6') + '/line-link.html' + location.search);
+      return;
+    }
     // redirect_uri は LIFF Endpoint URL (canonical www) と一致必須。apex は 301 で
     // www へ飛ぶため LINE OAuth が 400 を返す。host を www に固定しつつ ?e=/?order= は維持。
     var _h = location.hostname;
