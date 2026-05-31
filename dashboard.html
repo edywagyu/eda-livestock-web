@@ -998,7 +998,8 @@ async function gasGet(action, params = {}) {
   if (!url) return null;
   try {
     const qs = Object.entries(params).map(([k, v]) => `&${k}=${encodeURIComponent(v)}`).join('');
-    const res = await fetch(url + '?action=' + action + qs);
+    // キャッシュバスター: GAS の GET 応答がブラウザ/CDN にキャッシュされ古い数字が出るのを防ぐ
+    const res = await fetch(url + '?action=' + action + qs + '&_cb=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     cache[action] = data;
     return data;
@@ -1210,7 +1211,7 @@ async function loadSegmentStats() {
   try {
     const gasUrl = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || localStorage.getItem('eda-gas-url') || '';
     if (!gasUrl) return;
-    const res = await fetch(gasUrl + '?action=segment_stats');
+    const res = await fetch(gasUrl + '?action=segment_stats&_cb=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'segment_stats failed');
     const s = data.segments || {};

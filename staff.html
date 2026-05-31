@@ -2445,7 +2445,7 @@ async function loadOrders() {
 
   list.innerHTML = '<div class="empty">読み込み中...</div>';
   try {
-    const res = await fetch(GAS_URL + '?action=staff_orders');
+    const res = await fetch(GAS_URL + '?action=staff_orders&_cb=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     // 同一 order_number の重複行を排除（webhook 多重発火対策）
     var _seen = {}, _uniq = [];
