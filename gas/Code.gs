@@ -244,7 +244,7 @@ function ping() {
   return jsonResponse({
     ok: true,
     version: '2026.05.31',
-    versionNote: 'v16: 売上集計の注文重複排除+items_json確実保存(destinations導出)。v15=経営実データ化+ギフト送料無料',
+    versionNote: 'v17: 売上は届け先のある実注文のみ計上(テスト/未完了を除外)。v16=重複排除+items保存。v15=実データ化+ギフト送料無料',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -1327,6 +1327,10 @@ function dashboardSummary(params) {
     const onum = ordersData[i][0];
     if (onum && seenOrders[onum]) continue;
     if (onum) seenOrders[onum] = true;
+    // 届け先の無い注文(=テスト/未完了。実際に発送できない)は売上に計上しない
+    var _hasDest = false;
+    try { var _dj = JSON.parse(ordersData[i][11] || '[]'); _hasDest = Array.isArray(_dj) && _dj.length > 0; } catch (e) {}
+    if (!_hasDest) continue;
     const placedAt = new Date(ordersData[i][1]);
     if (placedAt >= since && ordersData[i][9] === 'paid') {
       revenue += Number(ordersData[i][7]) || 0;

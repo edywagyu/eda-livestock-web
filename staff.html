@@ -2449,7 +2449,13 @@ async function loadOrders() {
     const data = await res.json();
     // 同一 order_number の重複行を排除（webhook 多重発火対策）
     var _seen = {}, _uniq = [];
-    (data.orders || []).forEach(function (o) { var k = o.order_number || JSON.stringify(o); if (!_seen[k]) { _seen[k] = 1; _uniq.push(o); } });
+    (data.orders || []).forEach(function (o) {
+      var k = o.order_number || JSON.stringify(o);
+      if (_seen[k]) return;
+      var _dj; try { _dj = JSON.parse(o.destinations_json || '[]'); } catch (e) { _dj = []; }
+      if (!Array.isArray(_dj) || _dj.length === 0) return; // 届け先なし(テスト/未完了)は除外
+      _seen[k] = 1; _uniq.push(o);
+    });
     ordersCache = _uniq.map(normalizeStaffOrder);
     renderOrders();
   } catch (e) {

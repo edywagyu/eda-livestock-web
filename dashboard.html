@@ -958,9 +958,15 @@ function normalizeDashOrder(o) {
 async function fetchOrdersReal() {
   const d = await gasGet('staff_orders');
   if (!d || !d.orders) return [];
-  // 同一 order_number の重複行を排除（webhook 多重発火で重複記録されるため）
+  // 重複(webhook多重発火)を排除し、届け先の無い注文(テスト/未完了=発送不可)は除外
   var seen = {}, uniq = [];
-  d.orders.forEach(function (o) { var k = o.order_number || JSON.stringify(o); if (!seen[k]) { seen[k] = 1; uniq.push(o); } });
+  d.orders.forEach(function (o) {
+    var k = o.order_number || JSON.stringify(o);
+    if (seen[k]) return;
+    var dj; try { dj = JSON.parse(o.destinations_json || '[]'); } catch (e) { dj = []; }
+    if (!Array.isArray(dj) || dj.length === 0) return; // 届け先なし=実注文でないため除外
+    seen[k] = 1; uniq.push(o);
+  });
   return uniq.map(normalizeDashOrder);
 }
 
