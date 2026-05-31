@@ -1315,6 +1315,14 @@ function publicCatalog() {
   return jsonResponse(out);
 }
 
+/* 経営サマリー（今月売上・注文件数）。
+   🔴 売上ルール（2026-05-31 「売上ズレ事件」の恒久対策。詳細 memory/project_eda_dashboard_accuracy.md）:
+     1) 同一 order_number の重複行（Stripe webhook 多重発火の名残）は二重計上しない。
+     2) 届け先（destinations_json）の無い注文＝テスト/未完了（実際に発送できない）は売上に計上しない。
+     3) フロント(dashboard.html)は更にこの集計に頼らず、画面表示中の実注文から売上を再集計する
+        （GAS の /exec→googleusercontent リダイレクト応答がキャッシュされ古い値を返すため）。
+     4) 金額は必ず Stripe を一次ソースとして照合してから「正しい」と判断する。
+   ※ ¥9,440 表示の真因＝実注文¥3,040 ＋ テスト決済¥6,400(顧客cus_Uake) の合算だった。 */
 function dashboardSummary(params) {
   const range = params.range || '30d';
   const days = parseInt(range) || 30;
