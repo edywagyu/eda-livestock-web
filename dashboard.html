@@ -1093,9 +1093,9 @@ function renderOverview(data, orders) {
     ? recent.map(r => `<tr><td><strong>${escapeHtmlD(r.num)}</strong></td><td>${escapeHtmlD(r.customer)}</td><td class="num">¥${r.total.toLocaleString()}</td><td>${statusChip(r.status)}</td></tr>`).join('')
     : '<tr><td colspan="4" style="text-align:center;color:var(--text-dim);padding:24px">注文がまだありません</td></tr>';
 
-  // survey summary（survey_responses は実データ連携待ち — 正直に注記）
+  // survey summary は loadTabData('overview') 側で実データ描画（ここは初期プレースホルダ）
   const sb = document.getElementById('overviewSurveyBox');
-  if (sb) sb.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:8px;line-height:1.7">アンケート集計の実データ表示は、バックエンド更新の承認後に有効化されます。</div>';
+  if (sb) sb.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:8px">読み込み中…</div>';
 }
 function statusChip(status) {
   const map = {
