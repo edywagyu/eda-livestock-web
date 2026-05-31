@@ -1135,6 +1135,14 @@ async function loadTabData(tab) {
     const data = await gasGet('dashboard');
     const orders = await fetchOrdersReal();
     renderOverview(data, orders);
+    // オーバービューのアンケート要約も実データで上書き
+    const sv = await gasGet('survey_responses');
+    const sb = document.getElementById('overviewSurveyBox');
+    if (sb) {
+      const s = (sv && sv.survey) ? sv.survey : null;
+      const has = s && (Object.keys(s.organic||{}).length || Object.keys(s.source||{}).length || Object.keys(s.meats||{}).length);
+      sb.innerHTML = has ? (renderSurveyBars(s.organic) + renderSurveyBars(s.source) + renderSurveyBars(s.meats)) : '<div style="color:var(--text-dim);font-size:13px;padding:8px">アンケート回答がまだありません</div>';
+    }
   } else if (tab === 'orders') {
     const orders = await fetchOrdersReal();
     document.getElementById('ordersCountLabel').textContent = orders.length + ' 件';
@@ -1156,20 +1164,34 @@ async function loadTabData(tab) {
     orders.forEach(o => { if (o.status === 'shipped') transit++; else if (o.status === 'delivered') deliv++; else pend++; });
     setText('shipPending', pend); setText('shipInTransit', transit); setText('shipDelivered', deliv); setText('shipIssue', 0);
   } else if (tab === 'subscriptions') {
+    const data = await gasGet('subscriptions');
+    const list = (data && data.subs) ? data.subs : [];
+    const active = list.filter(s => String(s.status || '').toLowerCase() === 'active');
+    setText('subActive', active.length || list.length);
+    setText('subMRR', '—'); setText('subRetention', '—'); setText('subChurn', '—'); setText('subChurnSub', '');
     const tb = document.querySelector('#subsTable tbody');
-    if (tb) tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:24px">定期便メンバーの実データ表示は、バックエンド更新の承認後に有効化されます</td></tr>';
-    ['subActive','subMRR','subRetention','subChurn'].forEach(id => setText(id, '—'));
-    setText('subChurnSub', '');
+    if (tb) tb.innerHTML = list.length ? list.map(s => `<tr><td>${escapeHtmlD(s.customer)}</td><td>${escapeHtmlD(s.plan)}</td><td>${escapeHtmlD(s.start)}</td><td>${escapeHtmlD(s.next)}</td><td>—</td><td>${statusChip(String(s.status||'').toLowerCase() === 'active' ? 'delivered' : s.status)}</td></tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:24px">定期便メンバーはまだいません</td></tr>';
   } else if (tab === 'customers') {
+    const data = await gasGet('customers');
+    const list = (data && data.customers) ? data.customers : [];
+    setText('custVIP', list.filter(c => c.segment === 'vip').length);
+    setText('custRep', list.filter(c => c.segment === 'repeater').length);
+    setText('custNew', list.filter(c => c.segment === 'new').length);
+    setText('custDormant', list.filter(c => c.segment === 'dormant').length);
     const tb = document.querySelector('#custTable tbody');
-    if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:24px">顧客CRMの実データ表示は、バックエンド更新の承認後に有効化されます</td></tr>';
-    ['custVIP','custRep','custNew','custDormant'].forEach(id => setText(id, '—'));
+    if (tb) tb.innerHTML = list.length ? list.map(c => `<tr><td><strong>${escapeHtmlD(c.name)}</strong></td><td><div>${escapeHtmlD(c.email)}</div><small style="color:var(--text-dim)">${escapeHtmlD(c.phone)}</small></td><td class="num">¥${(c.total||0).toLocaleString()}</td><td>${escapeHtmlD(c.last)}</td><td>${segmentChip(c.segment)}</td><td>${c.line ? '💬 ✓' : '—'}</td><td>${(c.orders||0)}回</td></tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:24px">顧客がまだいません</td></tr>';
   } else if (tab === 'survey') {
-    setText('surveyCountLabel', 'バックエンド更新の承認後に表示');
-    ['surveyOrganicBars','surveySourceBars','surveyMeatsBars'].forEach(id => { const e = document.getElementById(id); if (e) e.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:8px">実データ連携の準備中です</div>'; });
+    const data = await gasGet('survey_responses');
+    const s = (data && data.survey) ? data.survey : { organic:{}, source:{}, meats:{} };
+    setText('surveyCountLabel', '回答数 ' + ((data && data.count) || 0) + ' 件');
+    const fillS = (id, obj) => { const e = document.getElementById(id); if (e) e.innerHTML = (obj && Object.keys(obj).length) ? renderSurveyBars(obj) : '<div style="color:var(--text-dim);font-size:13px;padding:8px">まだ回答がありません</div>'; };
+    fillS('surveyOrganicBars', s.organic); fillS('surveySourceBars', s.source); fillS('surveyMeatsBars', s.meats);
   } else if (tab === 'quiz') {
-    setText('quizCountLabel', 'バックエンド更新の承認後に表示');
-    ['quizFamBars','quizFreqBars','quizBudgetBars'].forEach(id => { const e = document.getElementById(id); if (e) e.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:8px">実データ連携の準備中です</div>'; });
+    const data = await gasGet('quiz_responses');
+    const q = (data && data.quiz) ? data.quiz : { fam:{}, freq:{}, budget:{} };
+    setText('quizCountLabel', '完了 ' + ((data && data.count) || 0) + ' 件');
+    const fillQ = (id, obj) => { const e = document.getElementById(id); if (e) e.innerHTML = (obj && Object.keys(obj).length) ? renderSurveyBars(obj) : '<div style="color:var(--text-dim);font-size:13px;padding:8px">まだ回答がありません</div>'; };
+    fillQ('quizFamBars', q.fam); fillQ('quizFreqBars', q.freq); fillQ('quizBudgetBars', q.budget);
   } else if (tab === 'line') {
     ['lineTotal','lineBlock','lineOpen','lineCoupon'].forEach(id => setText(id, '—'));
   } else if (tab === 'settings') {
