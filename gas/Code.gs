@@ -217,6 +217,7 @@ function doPost(e) {
       case 'line_login':                   return lineLogin(body);
       case 'line_link_account':            return lineLinkAccount(body);
       case 'line_register':                return lineRegister(body);
+      case 'update_profile':               return updateProfile(body);
       /* ===== STAFF (POST) ===== */
       case 'staff_update_stock':           return staffUpdateStock(body);
       case 'staff_product_save':           return staffProductSave(body);
@@ -2122,6 +2123,44 @@ function lineLinkAccount(body) {
    - LINE 友だち追加からの新規会員登録（注文不要）
    - line_uid で既存チェック → 既存なら返却のみ、新規なら customers に追加
 */
+/* POST update_profile { line_uid?, email?, name, phone, zip, address }
+   会員情報を customers に保存（行が無ければ作成）。name+zip+address が揃えば profile_complete=TRUE。
+   有機JAS商品の購入解放はこのフラグで判定する。 */
+function updateProfile(body) {
+  var uid = body.line_uid || '';
+  var email = (body.email || '').toString().trim();
+  if (!uid && !email) return jsonResponse({ ok:false, error:'line_uid or email required' });
+  var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
+  var headers = sh.getDataRange().getValues()[0];
+  function col(n){ var i=headers.indexOf(n); if(i===-1){ i=headers.length; sh.getRange(1,i+1).setValue(n); headers.push(n);} return i; }
+  var lineIdx=col('line_uid'), emailIdx=col('email'), nameIdx=col('name'), phoneIdx=col('phone'),
+      zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id');
+  var data = sh.getDataRange().getValues();
+  var foundRow=-1;
+  for (var i=1;i<data.length;i++){
+    if ((uid && String(data[i][lineIdx])===String(uid)) ||
+        (email && String(data[i][emailIdx]).toLowerCase()===email.toLowerCase())) { foundRow=i+1; break; }
+  }
+  if (foundRow===-1) {
+    var row=new Array(headers.length).fill('');
+    row[idIdx]=Utilities.getUuid();
+    if(uid) row[lineIdx]=uid;
+    if(email) row[emailIdx]=email;
+    sh.appendRow(row); foundRow=sh.getLastRow();
+  }
+  if (body.name)    sh.getRange(foundRow, nameIdx+1).setValue(body.name);
+  if (body.phone)   sh.getRange(foundRow, phoneIdx+1).setValue(body.phone);
+  if (body.zip)     sh.getRange(foundRow, zipIdx+1).setValue(body.zip);
+  if (body.address) sh.getRange(foundRow, addrIdx+1).setValue(body.address);
+  if (email && !String(sh.getRange(foundRow, emailIdx+1).getValue())) sh.getRange(foundRow, emailIdx+1).setValue(email);
+  var complete = !!(body.name && body.zip && body.address);
+  sh.getRange(foundRow, pcIdx+1).setValue(complete ? 'TRUE' : '');
+  log('update_profile', { uid: uid, email: email, complete: complete });
+  var rowVals = sh.getRange(foundRow,1,1,headers.length).getValues()[0];
+  var customer={}; headers.forEach(function(h,idx){ customer[h]=rowVals[idx]; });
+  return jsonResponse({ ok:true, complete: complete, customer: customer });
+}
+
 function lineRegister(body) {
   if (!body.line_uid) throw new Error('line_uid required');
 

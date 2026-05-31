@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-05-31-057-mypage-line-autoregister';
+const CACHE_VERSION = 'eda-v2026-05-31-058-profile-complete-jas';
 const CORE_ASSETS = [
   './',
   'index.html',
