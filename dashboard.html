@@ -975,6 +975,12 @@ let cache = {}; // action名 → response data
 /* ====== 実注文の正規化（staff_orders の実シート行 → 表示用。届け先/商品を展開） ====== */
 function _parseJSON(s, dflt) { try { if (s == null || s === '') return dflt; return (typeof s === 'object') ? s : JSON.parse(s); } catch (e) { return dflt; } }
 function escapeHtmlD(str) { return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* のし表書き(用途) を表示用ラベルに。新仕様は日本語値をそのまま、旧ローマ字値も対応。none/空は非表示 */
+function noshiLabel(v) {
+  if (v == null || v === '' || v === 'none' || v === 'なし' || v === 'のし不要') return '';
+  var map = { oseibo:'御歳暮', ochugen:'御中元', uchiwai:'内祝', oiwai:'御祝', fathersday:'父の日', hahanohi:'母の日' };
+  return map[v] || String(v);
+}
 function normalizeDashOrder(o) {
   var dests = _parseJSON(o.destinations_json, []); if (!Array.isArray(dests)) dests = [];
   var items = _parseJSON(o.items_json, []); if (!Array.isArray(items)) items = [];
@@ -982,14 +988,20 @@ function normalizeDashOrder(o) {
   if (!items.length) { dests.forEach(function (d) { (Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); }); }); }
   var itemsText = items.map(function (it) { return (it.title || it.name || '商品') + (it.variant ? '（' + it.variant + '）' : '') + ' ×' + (it.qty || it.quantity || 1); }).join(' / ');
   var destText = dests.length ? dests.map(function (d) {
-    return (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') + (d.name ? '（' + d.name + (d.tel ? ' / ' + d.tel : '') + '）' : '');
+    var base = (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') + (d.name ? '（' + d.name + (d.tel ? ' / ' + d.tel : '') + '）' : '');
+    var nl = (d.type === 'gift') ? noshiLabel(d.noshi) : '';
+    return base + (nl ? ' 〔のし: ' + nl + '〕' : '');
   }).join(' ／ ') : '—';
+  // 用途(のし)一覧 — ギフト宛先ののしを集約（父の日かどうか等の判別用）
+  var occasion = dests.map(function (d) { return (d.type === 'gift') ? noshiLabel(d.noshi) : ''; })
+                      .filter(function (x) { return x; }).join(' / ');
   return {
     num: String(o.order_number || ''),
     date: o.placed_at ? String(o.placed_at).replace('T', ' ').slice(0, 16) : '',
     customer: o.customer_name || '',
     itemsText: itemsText || '—',
     destText: destText,
+    occasion: occasion,
     total: Number(o.total) || 0,
     payment: o.payment_method || '—',
     status: String(o.payment_status || 'pending').toLowerCase(),

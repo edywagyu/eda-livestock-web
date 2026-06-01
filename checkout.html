@@ -724,6 +724,11 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  border-color: var(--color-forest);
  background: rgba(15,61,46,0.04);
 }
+/* 父の日（季節用途）を目立たせる + 全幅 */
+.gift-noshi-option--fd { grid-column: 1 / -1; border-color: var(--color-gold); background: linear-gradient(90deg, rgba(212,169,59,0.12), rgba(212,169,59,0.03)); }
+.gift-noshi-option--fd.selected { border-color: var(--color-gold); background: rgba(212,169,59,0.18); }
+.gift-noshi-fd-tag { margin-left: auto; font-size: 10px; font-weight: 700; color: #fff; background: var(--color-gold); padding: 2px 8px; border-radius: 10px; letter-spacing: 0.04em; }
+.gift-noshi-option--wide { grid-column: 1 / -1; }
 
 /* ============ PAYMENT METHOD ============ */
 .payment-grid {
@@ -1487,7 +1492,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="gift-spec-info" id="giftSpecInfo" style="display:none;margin:14px 0;padding:14px 16px;background:rgba(212,169,59,0.06);border:1px solid rgba(212,169,59,0.25);border-radius:10px;font-size:12px;line-height:1.6;color:var(--color-forest)">
  <strong style="display:block;margin-bottom:6px;">🎁 ギフト仕様について</strong>
  ✅ 化粧箱入り・<strong>のし対応</strong><br>
- <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(表書き: 御歳暮 / 御中元 / 御祝 / 内祝 等)</small>
+ <small style="display:block;color:var(--color-ink-muted);margin-left:18px">(表書き: 父の日 / 御祝 / 御中元 / 御歳暮 / 内祝 等)</small>
  ✅ 送料込み・税込価格<br>
  ✅ <strong>個別配送</strong>: 1注文で最大5箇所まで分割可能<br>
  ⚠️ <strong>メッセージカードは現在お取り扱いしておりません</strong><br>
@@ -1997,20 +2002,29 @@ function renderDestinations() {
  <input type="text" value="${dest.fromName || ''}" placeholder="例: 山田 太郎" aria-label="例: 山田 太郎"
  oninput="updateDestField(${dIdx}, 'fromName', this.value)" required>
  </div>
+ <label style="display:block;font-size:12px;font-weight:600;color:var(--color-forest);margin:4px 0 6px;">のし表書き（ご用途）</label>
  <div class="gift-noshi-row">
- <label class="gift-noshi-option ${dest.noshi === 'oseibo' ? 'selected' : ''}">
- <input type="radio" name="noshi-${dIdx}" value="oseibo" ${dest.noshi === 'oseibo' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'oseibo')">
- 御歳暮
+ <label class="gift-noshi-option gift-noshi-option--fd ${dest.noshi === '父の日' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="父の日" ${dest.noshi === '父の日' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', '父の日')">
+ 🎁 父の日<span class="gift-noshi-fd-tag">6/21 お届け</span>
  </label>
- <label class="gift-noshi-option ${dest.noshi === 'ochugen' ? 'selected' : ''}">
- <input type="radio" name="noshi-${dIdx}" value="ochugen" ${dest.noshi === 'ochugen' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'ochugen')">
+ <label class="gift-noshi-option ${dest.noshi === '御祝' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="御祝" ${dest.noshi === '御祝' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', '御祝')">
+ 御祝
+ </label>
+ <label class="gift-noshi-option ${dest.noshi === '御中元' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="御中元" ${dest.noshi === '御中元' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', '御中元')">
  御中元
  </label>
- <label class="gift-noshi-option ${dest.noshi === 'uchiwai' ? 'selected' : ''}">
- <input type="radio" name="noshi-${dIdx}" value="uchiwai" ${dest.noshi === 'uchiwai' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'uchiwai')">
+ <label class="gift-noshi-option ${dest.noshi === '御歳暮' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="御歳暮" ${dest.noshi === '御歳暮' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', '御歳暮')">
+ 御歳暮
+ </label>
+ <label class="gift-noshi-option ${dest.noshi === '内祝' ? 'selected' : ''}">
+ <input type="radio" name="noshi-${dIdx}" value="内祝" ${dest.noshi === '内祝' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', '内祝')">
  内祝
  </label>
- <label class="gift-noshi-option ${dest.noshi === 'none' ? 'selected' : ''}">
+ <label class="gift-noshi-option gift-noshi-option--wide ${dest.noshi === 'none' ? 'selected' : ''}">
  <input type="radio" name="noshi-${dIdx}" value="none" ${dest.noshi === 'none' ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', 'none')">
  のし不要
  </label>
