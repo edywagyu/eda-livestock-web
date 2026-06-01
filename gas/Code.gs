@@ -374,6 +374,8 @@ function createCheckout(body) {
       line_name:    (body.customer && body.customer.line_name) || '',
       contact_method: (body.customer && body.customer.contact_method) || '',
       destinations_json: JSON.stringify(body.destinations || []),
+      delivery_date: (body.delivery && body.delivery.date) || '',   // 顧客の配送希望日 (ISO YYYY-MM-DD・未指定は空)
+      delivery_time: (body.delivery && body.delivery.time) || '',   // 配送希望時間帯 (表示用ラベル文字列)
       /* ★ 在庫 decrement 用に items を保存 (Stripe metadata は 500 文字制限) */
       items_json: JSON.stringify(items.map(it => ({
         title: it.title || it.name || '',
@@ -1142,6 +1144,23 @@ function finalizeOrder(session) {
       meta.line_name || '',
       meta.contact_method || ''
     ]);
+
+    // 配送希望日/時間帯を orders に記録。列が無ければ row1 に追加 (staffShip の tracking_number と同じ防御)。
+    //   appendRow は固定列のため、後付け列(tracking_number等)とのズレを避けて名前解決で書く。
+    //   日付は setNumberFormat('@') で強制テキスト → Sheets の日付自動変換による前日ズレ(JST→UTC)を防止。
+    try {
+      if (meta.delivery_date || meta.delivery_time) {
+        var _hdr = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+        var _appended = sh.getLastRow();
+        var _ensureCol = function (name) {
+          var idx = _hdr.indexOf(name);
+          if (idx === -1) { sh.getRange(1, _hdr.length + 1).setValue(name); _hdr.push(name); idx = _hdr.length - 1; }
+          return idx + 1;
+        };
+        if (meta.delivery_date) { var _cd = sh.getRange(_appended, _ensureCol('delivery_date')); _cd.setNumberFormat('@'); _cd.setValue(meta.delivery_date); }
+        if (meta.delivery_time) { var _ct = sh.getRange(_appended, _ensureCol('delivery_time')); _ct.setNumberFormat('@'); _ct.setValue(meta.delivery_time); }
+      }
+    } catch (e) { log('delivery_write_error', { order: orderNum, error: e.message }); }
   } finally {
     lock.releaseLock();
   }

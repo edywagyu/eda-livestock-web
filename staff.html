@@ -2530,6 +2530,8 @@ function normalizeStaffOrder(o) {
     tracking: o.tracking_number || '',
     email: o.customer_email || '',
     mode: o.mode || 'single',
+    reqDeliveryDate: String(o.delivery_date || '').slice(0, 10),   // 顧客の配送希望日 (ISO YYYY-MM-DD・空=指定なし)。万一日時で来ても先頭10字で日付化
+    reqDeliveryTime: o.delivery_time || '',                        // 配送希望時間帯ラベル
     _raw: o
   };
 }
@@ -2591,7 +2593,7 @@ function renderShipDetail() {
       <div class="detail-row"><span class="label">商品</span><span class="value">${escapeHtml(o.items || '')}</span></div>
       <div class="detail-row"><span class="label">合計</span><span class="value">¥${Number(o.total || 0).toLocaleString()}</span></div>
       <div class="detail-row"><span class="label">💳 決済方法</span><span class="value" style="font-family:'SF Mono',Menlo,monospace;font-size:13px">${escapeHtml(o.paymentMethod || '-')}</span></div>
-      <div class="detail-row"><span class="label">📅 お届け予定</span><span class="value" style="color:var(--green);font-weight:700">${escapeHtml(o.estimatedArrival || '-')}</span></div>
+      <div class="detail-row"><span class="label">📅 お客様ご希望</span><span class="value" style="color:var(--green);font-weight:700">${escapeHtml((fmtDeliveryDate(o.reqDeliveryDate) || '指定なし（最短でお届け）') + (o.reqDeliveryTime ? ' ／ ' + o.reqDeliveryTime : ''))}</span></div>
       <div class="detail-row"><span class="label">配送STS</span><span class="value">${escapeHtml(o.shipStatus || '')}</span></div>
       ${o.tracking ? `<div class="detail-row"><span class="label">伝票番号</span><span class="value">${escapeHtml(o.tracking)}</span></div>` : ''}
     </div>
@@ -2605,8 +2607,8 @@ function renderShipDetail() {
         <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">伝票番号（配送番号）を入力</div>
         <input type="text" class="tracking-input" id="trackingInput" placeholder="0000-0000-0000" inputmode="numeric" autocomplete="off">
 
-        <div style="font-size:13px;color:var(--muted);font-weight:600;margin:14px 0 6px">お届け予定日（任意・お客様への通知に表示）</div>
-        <input type="date" class="tracking-input" id="deliveryDateInput" autocomplete="off">
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin:14px 0 6px">お届け予定日（お客様ご希望を自動入力・変更可／通知に表示）</div>
+        <input type="date" class="tracking-input" id="deliveryDateInput" autocomplete="off" value="${o.reqDeliveryDate || ''}">
 
         <!-- 発送写真UP -->
         <div style="margin-top:14px">

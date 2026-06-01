@@ -2312,9 +2312,10 @@ function buildDeliveryDateOptions() {
  const dd = nextFirst.getDate();
  const w = days[nextFirst.getDay()];
  const label = `${m}月${dd}日（${w}）`;
+ const iso = `${nextFirst.getFullYear()}-${String(m).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
 
- // select を読み取り専用化（HTML上は disabled で固定値表示）
- select.innerHTML = `<option selected>${label}</option>`;
+ // select を読み取り専用化（HTML上は disabled で固定値表示。value=ISO日付で決済に送る）
+ select.innerHTML = `<option value="${iso}" selected>${label}</option>`;
  select.disabled = true;
  select.style.background = 'rgba(212,169,59,0.10)';
  select.style.cursor = 'not-allowed';
@@ -2361,7 +2362,8 @@ function buildDeliveryDateOptions() {
  const m = d.getMonth() + 1;
  const dd = d.getDate();
  const w = days[d.getDay()];
- html += `<option>${m}月${dd}日（${w}）</option>`;
+ const iso = `${d.getFullYear()}-${String(m).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+ html += `<option value="${iso}">${m}月${dd}日（${w}）</option>`;
  }
  select.innerHTML = html;
 }
@@ -2477,6 +2479,10 @@ async function placeOrder() {
  couponCode: appliedCoupon ? appliedCoupon.code : null,
  subscription: subscription,
  payment_method: payment,
+ delivery: {
+   date: (document.getElementById('checkoutDeliveryDate') || {}).value || '',
+   time: (document.getElementById('checkoutDeliveryTime') || {}).value || ''
+ },
  quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
  };
 
