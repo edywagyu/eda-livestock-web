@@ -1152,7 +1152,7 @@ function finalizeOrder(session) {
   var linePushed = false;
   if (meta.line_uid) {
     linePushed = sendLinePush(meta.line_uid, [buildOrderConfirmMessage(
-      meta.customer_name || '', orderNum, Math.round(total / 100)
+      meta.customer_name || '', orderNum, total
     )]);
   }
   if (!linePushed) {
@@ -1982,8 +1982,8 @@ function setupAllProperties() {
     STRIPE_DEMO_COUPON: '',
     STRIPE_COUPON_50OFF: 'FIRST50',
     STAFF_NOTIFICATION_EMAIL: 'backoffice@eda-livestock.com',
-    SUCCESS_URL: 'https://edywagyu.github.io/eda-livestock-web/order-complete.html',
-    CANCEL_URL: 'https://edywagyu.github.io/eda-livestock-web/checkout.html'
+    SUCCESS_URL: 'https://www.eda-livestock.com/order-complete.html',
+    CANCEL_URL: 'https://www.eda-livestock.com/checkout.html'
   };
   Object.keys(props).forEach(k => {
     PROPS.setProperty(k, props[k]);
@@ -2285,7 +2285,7 @@ function buildLinkSuccessMessage(customerName) {
       type: 'bubble',
       hero: {
         type: 'image',
-        url: 'https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg',
+        url: 'https://www.eda-livestock.com/public/images/cuts/hero-0.jpeg',
         size: 'full',
         aspectRatio: '20:9',
         aspectMode: 'cover'
@@ -2327,7 +2327,7 @@ function buildRegisterRewardMessage(customerName) {
       type: 'bubble',
       hero: {
         type: 'image',
-        url: 'https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg',
+        url: 'https://www.eda-livestock.com/public/images/cuts/hero-0.jpeg',
         size: 'full',
         aspectRatio: '20:9',
         aspectMode: 'cover'
@@ -2379,7 +2379,7 @@ function buildOrderConfirmMessage(customerName, orderNum, totalYen) {
       type: 'bubble',
       hero: {
         type: 'image',
-        url: 'https://edywagyu.github.io/eda-livestock-web/public/images/cuts/hero-0.jpeg',
+        url: 'https://www.eda-livestock.com/public/images/cuts/hero-0.jpeg',
         size: 'full',
         aspectRatio: '20:9',
         aspectMode: 'cover'
