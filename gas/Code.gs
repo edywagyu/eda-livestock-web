@@ -1485,6 +1485,11 @@ function getOrdersByEmail(email) {
         if (typeof o.items === 'string') {
           try { o.items = JSON.parse(o.items); } catch (_) { o.items = []; }
         }
+        // mypage は o.status を見るが orders シートは payment_status 列のみ → 正規化して補完。
+        //   発送済(伝票番号あり or payment_status=shipped/delivered)→ shipped/delivered、それ以外は pending(発送準備中)。
+        //   これが無いと「発送前なのに発送済」誤表示・履歴バッジが常に準備中、になる(配送希望日機能で顕在化)。
+        var _ps = String(o.payment_status || '').toLowerCase();
+        o.status = (_ps === 'shipped' || _ps === 'delivered') ? _ps : (o.tracking_number ? 'shipped' : 'pending');
         orders.push(o);
       }
     }
@@ -3063,17 +3068,21 @@ function b2CsvExport() {
     if (data.length < 2) return ContentService.createTextOutput('').setMimeType(ContentService.MimeType.CSV);
     const headers = data[0];
     const get = (row, name) => row[headers.indexOf(name)] || '';
-    const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名'];
+    // 末尾に「お届け希望日/時間帯」を追加 (顧客が決済時に指定した配送希望)。
+    //   既存4列の後ろに足すので従来の取り込み位置は不変。日付は YYYY/MM/DD (ヤマト形式)。
+    const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名,お届け希望日,お届け希望時間帯'];
     data.slice(1).forEach(row => {
       const dest = get(row, 'destinations_json');
       const name = get(row, 'customer_name');
+      const dDate = String(get(row, 'delivery_date') || '').slice(0, 10).replace(/-/g, '/');  // ISO→YYYY/MM/DD
+      const dTime = String(get(row, 'delivery_time') || '').replace(/,/g, ' ');                 // 念のためカンマ除去
       try {
         const d = JSON.parse(dest);
         d.forEach(addr => {
-          csv.push([addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name].join(','));
+          csv.push([addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, dDate, dTime].join(','));
         });
       } catch (e) {
-        csv.push(['', '', '', name].join(','));
+        csv.push(['', '', '', name, dDate, dTime].join(','));
       }
     });
     return ContentService.createTextOutput(csv.join('\n'))

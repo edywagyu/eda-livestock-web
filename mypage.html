@@ -3834,6 +3834,12 @@ function renderOrders(orders) {
 
  const orderDate = order.date ? formatDate(order.date) : '';
 
+ let deliveryHtml = '';
+ if (order.delivery_date) {
+ deliveryHtml = '<div class="order-delivery" style="font-family:var(--font-jp);font-size:12.5px;color:var(--color-ink-muted);margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+ '<span>📅 お届け希望日</span><strong style="color:var(--color-ink);">' + escapeHtml(formatDateLong(order.delivery_date)) + (order.delivery_time ? '（' + escapeHtml(order.delivery_time) + '）' : '') + '</strong></div>';
+ }
+
  html += '<div class="order-card">' +
  '<div class="order-card-head">' +
  '<div><div class="order-number">ご注文番号 ' + escapeHtml(order.order_number || order.id || '-') + '</div>' +
@@ -3845,6 +3851,7 @@ function renderOrders(orders) {
  '<span class="order-total-label">合計</span>' +
  '<span class="order-total-price">' + formatYen(order.total || 0) + '</span>' +
  '</div>' +
+ deliveryHtml +
  trackingHtml +
  '</div>';
  });
@@ -4160,7 +4167,7 @@ function renderHomeTab(orderCount, orders, customer) {
   var shippedOrder = orderList.find(function(o) { return o.tracking_number || o.delivery_date || o.status === 'shipped' || o.status === 'delivered'; });
   var delivStatusMap = { 'pending': { label: '発送準備中', cls: 'pending' }, 'preparing': { label: '発送準備中', cls: 'preparing' }, 'shipped': { label: '発送済', cls: 'shipped' }, 'delivered': { label: '配達完了', cls: 'delivered' } };
   if (shippedOrder) {
-   var dst = delivStatusMap[shippedOrder.status] || delivStatusMap['shipped'];
+   var dst = delivStatusMap[shippedOrder.status] || delivStatusMap['pending'];  /* 未確定時は「発送済」と誤表示せず準備中に倒す */
    var delivDate = shippedOrder.delivery_date || customer.next_delivery || '';
    var dateDisplay = delivDate ? formatDateLong(delivDate) : '日程調整中';
    var trkHtml = '';
