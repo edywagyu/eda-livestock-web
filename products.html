@@ -520,6 +520,23 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
   </div>
 </div>
 
+<!-- ========= まとめ買い割引バー（全商品対象・shop.html と同一） ========= -->
+<style>
+.qo-setdeal-bar { background: linear-gradient(90deg, var(--color-forest) 0%, var(--color-forest-deep) 100%); padding: 11px 0; }
+.qo-setdeal-inner { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; text-align: center; }
+.qo-setdeal-tag { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.16em; color: var(--color-forest); background: var(--color-gold); padding: 4px 13px; border-radius: 20px; font-weight: 700; white-space: nowrap; }
+.qo-setdeal-text { font-family: var(--font-jp); font-size: 13px; color: #fff; letter-spacing: 0.03em; }
+.qo-setdeal-text strong { color: #E5B547; font-weight: 700; }
+.p-card-deal { font-size: 11px; color: var(--color-forest); background: rgba(15,61,46,0.07); border-radius: 12px; padding: 2px 8px; display: inline-block; margin-top: 4px; letter-spacing: 0.02em; }
+@media (max-width: 640px) { .qo-setdeal-text { font-size: 12px; } .qo-setdeal-inner { gap: 9px; } }
+</style>
+<div class="qo-setdeal-bar">
+  <div class="container qo-setdeal-inner">
+    <span class="qo-setdeal-tag">まとめ買い割引</span>
+    <span class="qo-setdeal-text"><strong>2個で5%OFF</strong>・<strong>3個で10%OFF</strong>（同一商品・自動適用）</span>
+  </div>
+</div>
+
 <!-- ========= PRODUCTS GRID ========= -->
 <section class="products-section">
   <div class="container">
@@ -572,10 +589,28 @@ function saveCart() {
   renderStickyCart();
 }
 
+/* ============ まとめ買い割引 (2個5%OFF / 3個10%OFF・shop.html と同一ロジック) ============
+   割引は商品単位で数量に応じ自動適用。既定 5%/10%。和牛生ハムのみ 8%/12%
+   (shop.html の data-variants と一致)。baseUnit/tiers をカートに保持するので
+   共有カート(shop.html)・レジ(checkout.html)・GAS決済まで割引単価がそのまま通る。 */
+const TIER_OVERRIDES = { 50877844750634: { r2: 0.08, r3: 0.12 } }; /* 和牛生ハム */
+function tiersFor(id) { return TIER_OVERRIDES[id] || { r2: 0.05, r3: 0.10 }; }
+function tieredUnit(base, tiers, qty) {
+  const r = qty >= 3 ? ((tiers && tiers.r3) || 0) : (qty === 2 ? ((tiers && tiers.r2) || 0) : 0);
+  return Math.round((base || 0) * (1 - r));
+}
+
 function addToCart(p) {
+  const tiers = tiersFor(p.id);
   const existing = cart.find(i => i.variantId === p.id);
-  if (existing) existing.qty++;
-  else cart.push({ variantId: p.id, price: p.price, title: p.name, variant: '1つ', img: p.img, qty: 1 });
+  if (existing) {
+    existing.qty++;
+    existing.baseUnit = p.price;
+    existing.tiers = tiers;
+    existing.price = tieredUnit(p.price, tiers, existing.qty);
+  } else {
+    cart.push({ variantId: p.id, price: tieredUnit(p.price, tiers, 1), title: p.name, variant: '1つ', img: p.img, qty: 1, baseUnit: p.price, tiers: tiers });
+  }
   saveCart();
 }
 
@@ -605,6 +640,8 @@ function renderProducts(filterCat) {
   grid.innerHTML = filtered.map(p => {
     const inCart = cart.find(i => i.variantId === p.id);
     const badgeHtml = p.badge ? `<span class="badge ${p.badge.includes('Best') ? 'hot' : ''}">${p.badge}</span>` : '';
+    const tr = tiersFor(p.id);
+    const dealTxt = `2個 -${Math.round(tr.r2 * 100)}% / 3個 -${Math.round(tr.r3 * 100)}%`;
     return `
       <article class="p-card" data-id="${p.id}">
         <div class="p-card-img" style="background-image:url('${p.img}')">${badgeHtml}</div>
@@ -615,9 +652,10 @@ function renderProducts(filterCat) {
             <span class="p-card-weight">${p.weight}</span>
             <span class="p-card-price">¥${p.price.toLocaleString()}<small></small></span>
           </div>
+          <span class="p-card-deal">🛒 ${dealTxt}</span>
           <div class="p-card-actions">
             <button class="p-card-btn-add ${inCart ? 'added' : ''}" onclick="event.stopPropagation(); addToCart(PRODUCTS.find(x=>x.id===${p.id})); renderProducts('${filterCat}');">
-              ${inCart ? '✓ 追加済み' : '+ カート'}
+              ${inCart ? `✓ カート${inCart.qty}点` : '+ カート'}
             </button>
             <a href="shop.html#products" class="p-card-btn-detail" onclick="event.stopPropagation();" aria-label="詳細を見る">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
