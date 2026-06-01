@@ -1146,12 +1146,16 @@ function finalizeOrder(session) {
     lock.releaseLock();
   }
 
-  // 顧客への受注通知:
-  //   LINE 連携済み (line_uid あり) → LINE で簡潔に送り、メールは送らない。
+  // 顧客への受注通知 (①注文確定):
+  //   LINE 連携済み → LINE で簡潔に送り、メールは送らない (Tom 指示: LINE繋がってる方はメールNG)。
   //   未連携、または LINE 送信失敗時 → メールで送る (顧客が無通知になるのを防ぐフォールバック)。
+  //   line_uid は決済metadata優先。無ければ email で customers を逆引き
+  //   (LINE友だちだがWeb経由でemail決済した既存客もメールにしないため)。
+  var custEmailForLine = (session.customer_details && session.customer_details.email) || '';
+  var lineUid = (meta.line_uid && String(meta.line_uid).trim()) || lineUidForEmail(custEmailForLine);
   var linePushed = false;
-  if (meta.line_uid) {
-    linePushed = sendLinePush(meta.line_uid, [buildOrderConfirmMessage(
+  if (lineUid) {
+    linePushed = sendLinePush(lineUid, [buildOrderConfirmMessage(
       meta.customer_name || '', orderNum, total
     )]);
   }
@@ -2424,6 +2428,104 @@ function buildOrderConfirmMessage(customerName, orderNum, totalYen) {
   };
 }
 
+/* email → customers シートの line_uid を逆引き (見つからなければ '')。
+   注文metadataにline_uidが無い既存LINE友だち(Web決済)もLINE通知へ寄せるため。 */
+function lineUidForEmail(email) {
+  if (!email) return '';
+  try {
+    var sh = ss().getSheetByName('customers');
+    if (!sh) return '';
+    var data = sh.getDataRange().getValues();
+    if (data.length < 2) return '';
+    var headers = data[0];
+    var eIdx = headers.indexOf('email');
+    var uIdx = headers.indexOf('line_uid');
+    if (eIdx === -1 || uIdx === -1) return '';
+    var target = String(email).trim().toLowerCase();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][eIdx]).trim().toLowerCase() === target) {
+        return String(data[i][uIdx] || '').trim();
+      }
+    }
+  } catch (e) { /* fallthrough */ }
+  return '';
+}
+
+/* 発送通知 (②) の LINE Flex。配送番号・お届け予定・追跡ボタン(クロネコヤマト)。 */
+function buildShipNotifyMessage(customerName, orderNum, tracking, deliveryDate) {
+  var liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var mypage = 'https://liff.line.me/' + liffId + '/mypage.html';
+  var trackUrl = tracking
+    ? ('https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number01=' + encodeURIComponent(tracking))
+    : mypage;
+  var rows = [
+    { type: 'text', text: '📦 商品を発送しました', weight: 'bold', size: 'md', color: '#2d5016' },
+    { type: 'text', text: greeting + '、ご注文の商品を発送しました。', size: 'sm', color: '#555555', wrap: true },
+    { type: 'separator' },
+    { type: 'box', layout: 'horizontal', contents: [
+      { type: 'text', text: '注文番号', size: 'xs', color: '#888888', flex: 4 },
+      { type: 'text', text: orderNum, size: 'xs', color: '#333333', flex: 6, align: 'end', wrap: true }
+    ]},
+    { type: 'box', layout: 'horizontal', contents: [
+      { type: 'text', text: '配送番号', size: 'xs', color: '#888888', flex: 4 },
+      { type: 'text', text: tracking || '—', size: 'xs', color: '#333333', weight: 'bold', flex: 6, align: 'end', wrap: true }
+    ]}
+  ];
+  if (deliveryDate) {
+    rows.push({ type: 'box', layout: 'horizontal', contents: [
+      { type: 'text', text: 'お届け予定', size: 'xs', color: '#888888', flex: 4 },
+      { type: 'text', text: deliveryDate, size: 'xs', color: '#2d5016', weight: 'bold', flex: 6, align: 'end', wrap: true }
+    ]});
+  }
+  rows.push({ type: 'text', text: 'クロネコヤマトでお届けします。下のボタンから配送状況をご確認いただけます。', size: 'xxs', color: '#999999', wrap: true, margin: 'md' });
+  return {
+    type: 'flex',
+    altText: '【江田畜産】商品を発送しました（' + orderNum + '）配送番号 ' + (tracking || ''),
+    contents: {
+      type: 'bubble',
+      hero: { type: 'image', url: 'https://www.eda-livestock.com/public/images/cuts/hero-0.jpeg', size: 'full', aspectRatio: '20:9', aspectMode: 'cover' },
+      body: { type: 'box', layout: 'vertical', spacing: 'md', contents: rows },
+      footer: { type: 'box', layout: 'vertical', spacing: 'sm', contents: [
+        { type: 'button', action: { type: 'uri', label: '📦 配送状況を確認する', uri: trackUrl }, style: 'primary', color: '#2d5016', height: 'sm' },
+        { type: 'button', action: { type: 'uri', label: 'マイページ', uri: mypage }, style: 'link', color: '#2d5016', height: 'sm' }
+      ]}
+    }
+  };
+}
+
+/* 発送通知 (②) のメール (LINE未連携の顧客向けフォールバック)。 */
+function sendShippingEmail(email, customerName, orderNum, tracking, deliveryDate) {
+  if (!email) return;
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var lines = [
+    greeting,
+    '',
+    'ご注文の商品を発送いたしました。',
+    '',
+    '注文番号: ' + orderNum,
+    '配送番号: ' + (tracking || '—')
+  ];
+  if (deliveryDate) lines.push('お届け予定: ' + deliveryDate);
+  if (tracking) {
+    lines.push('');
+    lines.push('▼ 配送状況の確認（クロネコヤマト）');
+    lines.push('https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number01=' + encodeURIComponent(tracking));
+  }
+  lines.push('');
+  lines.push('このたびは江田畜産をご利用いただき、誠にありがとうございます。');
+  lines.push('— 江田畜産');
+  try {
+    MailApp.sendEmail({
+      to: email,
+      subject: '【江田畜産】商品を発送しました（' + orderNum + '）',
+      body: lines.join('\n')
+    });
+  } catch (e) {
+    log('shipping_email_error', { order: orderNum, error: e.message });
+  }
+}
+
 /* ============================================================
    CUSTOMER SEGMENTATION — LINE 公式メッセージ送信用セグメント抽出
    ------------------------------------------------------------
@@ -2901,8 +3003,33 @@ function staffShip(body) {
         sh.getRange(1, headers.length + 1).setValue('tracking_number');
         tnIdx = headers.length;
       }
-      sh.getRange(i + 1, tnIdx + 1).setValue(body.tracking_number || '');
+      const tracking = String(body.tracking_number || '').trim();
+      sh.getRange(i + 1, tnIdx + 1).setValue(tracking);
       if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('shipped');
+
+      // ★ 発送通知 (②配送確定): 発送伝票確定が起点。
+      //   LINE 連携済み (line_uid あり。無ければ email 逆引き) → LINE で配送番号/お届け予定。
+      //   未連携、または LINE 失敗 → メール。通知失敗で発送記録自体は失敗させない。
+      try {
+        const row = data[i];
+        const get = (n) => { const k = headers.indexOf(n); return k >= 0 ? row[k] : ''; };
+        const custName  = String(get('customer_name') || '');
+        const custEmail = String(get('customer_email') || '');
+        const deliveryDate = String(body.delivery_date || body.eta || '').trim();
+        let shipLineUid = String(get('line_uid') || '').trim();
+        if (!shipLineUid) shipLineUid = lineUidForEmail(custEmail);
+        let notified = false;
+        if (shipLineUid) {
+          notified = sendLinePush(shipLineUid, [buildShipNotifyMessage(custName, body.order_number, tracking, deliveryDate)]);
+        }
+        if (!notified && custEmail) {
+          sendShippingEmail(custEmail, custName, body.order_number, tracking, deliveryDate);
+        }
+        log('ship_notified', { order: body.order_number, via: shipLineUid ? (notified ? 'line' : 'email_fallback') : 'email', tracking: tracking });
+      } catch (e) {
+        log('ship_notify_error', { order: body.order_number, error: e.message });
+      }
+
       return jsonResponse({ ok:true });
     }
   }

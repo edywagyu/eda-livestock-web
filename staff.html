@@ -2602,8 +2602,11 @@ function renderShipDetail() {
       </div>
     ` : `
       <div class="detail-card">
-        <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">伝票番号を入力</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px">伝票番号（配送番号）を入力</div>
         <input type="text" class="tracking-input" id="trackingInput" placeholder="0000-0000-0000" inputmode="numeric" autocomplete="off">
+
+        <div style="font-size:13px;color:var(--muted);font-weight:600;margin:14px 0 6px">お届け予定日（任意・お客様への通知に表示）</div>
+        <input type="date" class="tracking-input" id="deliveryDateInput" autocomplete="off">
 
         <!-- 発送写真UP -->
         <div style="margin-top:14px">
@@ -2619,7 +2622,8 @@ function renderShipDetail() {
           <div style="font-weight:700;margin-bottom:4px">📦 「発送完了として記録」すると</div>
           <div>・伝票番号と「発送済」がシステムに保存されます</div>
           <div>・お客様の<strong>マイページ</strong>に「発送済」と追跡番号が表示されます</div>
-          <div style="margin-top:4px;color:#92400E">※ LINE/メールの自動通知は現状未対応です。${o.lineUid ? 'このお客様はLINE連携済 — 必要なら手動でご連絡を。' : 'このお客様はLINE未連携です。'}</div>
+          <div>・お客様へ<strong>${o.lineUid ? 'LINE' : 'メール'}で発送通知</strong>（配送番号・お届け予定）が<strong>自動送信</strong>されます</div>
+          <div style="margin-top:4px;color:#065F46">※ ${o.lineUid ? 'このお客様はLINE連携済 → LINEで自動通知。' : 'このお客様はLINE未連携 → メールで自動通知。'}</div>
         </div>
         <button class="btn-primary" id="shipBtn" onclick="confirmShip()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
@@ -2661,9 +2665,20 @@ function removeShipPhoto() {
   }
 }
 
+/* YYYY-MM-DD → "M月D日(曜)" (空なら空文字)。お客様通知に表示する配送日程の整形。 */
+function fmtDeliveryDate(v) {
+  if (!v) return '';
+  const d = new Date(v + 'T00:00:00');
+  if (isNaN(d.getTime())) return String(v);
+  const w = ['日','月','火','水','木','金','土'][d.getDay()];
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日(' + w + ')';
+}
+
 async function confirmShip() {
   const tracking = document.getElementById('trackingInput').value.trim();
   if (!tracking) { toast('伝票番号を入力してください', 'error'); return; }
+  const deliveryRaw = (document.getElementById('deliveryDateInput') && document.getElementById('deliveryDateInput').value) || '';
+  const deliveryDate = fmtDeliveryDate(deliveryRaw);
 
   const btn = document.getElementById('shipBtn');
   btn.disabled = true;
@@ -2691,7 +2706,8 @@ async function confirmShip() {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         order_number: selectedOrder.id,
-        tracking_number: tracking
+        tracking_number: tracking,
+        delivery_date: deliveryDate
       })
     });
     const data = await res.json();
