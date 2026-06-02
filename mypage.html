@@ -3995,12 +3995,11 @@ function renderSettings(customer, orders) {
   if (shipData) shipData.style.display = 'none';
   if (shipEditBtn) shipEditBtn.style.display = 'none';
  }
- /* Payment card — localStorage 優先、なければ customer オブジェクトから取得 */
- var card = loadCard();
- if (!card && customer && customer.card_last4) {
-  card = { brand: customer.card_brand || '', last4: customer.card_last4, exp: customer.card_exp || '' };
-  try { localStorage.setItem(CARD_KEY, JSON.stringify(card)); } catch(e){}
- }
+ /* Payment card — サーバー(Stripe保存カード)優先、無ければ localStorage フォールバック。
+    サーバーが常に最新の保存カードを返すため、変更直後も正しく反映される（localStorageの古いカードに引きずられない）。 */
+ var card = (customer && customer.card_last4)
+  ? { brand: customer.card_brand || '', last4: customer.card_last4, exp: customer.card_exp || '' }
+  : loadCard();
  var cardEmpty = document.getElementById('paymentEmpty');
  var cardData = document.getElementById('paymentData');
  if (card && card.last4) {

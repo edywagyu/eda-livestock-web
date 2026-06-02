@@ -352,6 +352,13 @@ function createCheckout(body) {
   const methodTypes = ['card'];
   if (body.payment_method === 'bank') methodTypes.push('konbini', 'customer_balance');
 
+  // ★ (B) 保存カード再利用: email から Stripe Customer を紐付け（取得失敗時は従来の customer_email にフォールバック＝無変更）
+  let checkoutCustomerId = '';
+  try {
+    const _ckEmail = (body.customer && body.customer.email) || '';
+    if (_ckEmail) checkoutCustomerId = getOrCreateStripeCustomer(_ckEmail, (body.customer && body.customer.name) || '');
+  } catch (e) { log('checkout_customer_warn', { error: String(e) }); }
+
   const checkoutParams = {
     mode: 'payment',
     success_url: successUrl,
@@ -387,6 +394,14 @@ function createCheckout(body) {
       }))).slice(0, 480)
     }
   };
+
+  // ★ (B) Customer 紐付け時: 保存カードの再利用UI + 新規カード保存。失敗時(空)は customer_email のまま(無変更)。
+  if (checkoutCustomerId) {
+    delete checkoutParams.customer_email;            // customer と customer_email は同時指定不可
+    checkoutParams.customer = checkoutCustomerId;
+    checkoutParams.payment_method_options = checkoutParams.payment_method_options || {};
+    checkoutParams.payment_method_options.card = { setup_future_usage: 'off_session' };  // card のみ保存（konbini/bank は対象外）
+  }
 
   // 🎁 デモ期間 100%OFF クーポン自動適用
   // STRIPE_DEMO_COUPON が設定されていれば全注文に適用 (デモ後は空に戻す)
@@ -1806,7 +1821,8 @@ function getCardInfoFromOrders(orders) {
 function attachCardToCustomer(customer, orders) {
   try {
     if (!customer || customer.card_last4) return customer;
-    var ci = getCardInfoFromOrders(orders);
+    // 保存カード(Stripe Customer の payment method)優先 → 無ければ直近注文の charge から
+    var ci = (customer.email ? getSavedCardForEmail(customer.email) : null) || getCardInfoFromOrders(orders);
     if (ci && ci.last4) {
       customer.card_brand = ci.brand;
       customer.card_last4 = ci.last4;
@@ -1814,6 +1830,67 @@ function attachCardToCustomer(customer, orders) {
     }
   } catch (e) {}
   return customer;
+}
+
+/* email から Stripe Customer を検索（無ければ作成）。cus_ id を返す。失敗時は ''。 */
+function getOrCreateStripeCustomer(email, name) {
+  var STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE || !email) return '';
+  var listRes = UrlFetchApp.fetch('https://api.stripe.com/v1/customers?email=' + encodeURIComponent(email) + '&limit=1', {
+    method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  var list = JSON.parse(listRes.getContentText());
+  if (list && list.data && list.data.length) return list.data[0].id;
+  var createRes = UrlFetchApp.fetch('https://api.stripe.com/v1/customers', {
+    method: 'post', payload: flattenForm({ email: email, name: name || '' }),
+    headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  var created = JSON.parse(createRes.getContentText());
+  return (created && created.id) ? created.id : '';
+}
+
+/* (A) Stripe Customer に保存されたカード(既定 payment method / card)を返す。
+   - マイページ表示の最優先ソース（顧客が start_card_setup や決済で保存したカード）。
+   - 取得不可なら null。CacheService 300s（カード変更後の鮮度を確保）。失敗しても throw しない。 */
+function getSavedCardForEmail(email) {
+  try {
+    var STRIPE = cfg('STRIPE_SECRET_KEY');
+    if (!STRIPE || !email) return null;
+    var cache = CacheService.getScriptCache();
+    var ckey = 'savedcard_' + email;
+    var hit = cache.get(ckey);
+    if (hit) { try { var p = JSON.parse(hit); return p && p.__none ? null : p; } catch (e) {} }
+    var listRes = UrlFetchApp.fetch('https://api.stripe.com/v1/customers?email=' + encodeURIComponent(email) + '&limit=1', {
+      method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+    });
+    var list = JSON.parse(listRes.getContentText());
+    if (!list || !list.data || !list.data.length) { cache.put(ckey, JSON.stringify({ __none: true }), 300); return null; }
+    var cus = list.data[0];
+    var card = null;
+    var pmId = cus.invoice_settings && cus.invoice_settings.default_payment_method;
+    if (pmId) {
+      var pmRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_methods/' + pmId, {
+        method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+      });
+      var pm = JSON.parse(pmRes.getContentText());
+      if (pm && pm.card) card = pm.card;
+    }
+    if (!card) {
+      var pmsRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_methods?customer=' + cus.id + '&type=card&limit=1', {
+        method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+      });
+      var pms = JSON.parse(pmsRes.getContentText());
+      if (pms && pms.data && pms.data.length) card = pms.data[0].card;
+    }
+    if (!card || !card.last4) { cache.put(ckey, JSON.stringify({ __none: true }), 300); return null; }
+    var mm = card.exp_month ? ('0' + card.exp_month).slice(-2) : '';
+    var yy = card.exp_year ? String(card.exp_year).slice(-2) : '';
+    var info = { brand: card.brand || '', last4: String(card.last4), exp: (mm && yy) ? (mm + '/' + yy) : '' };
+    cache.put(ckey, JSON.stringify(info), 300);
+    return info;
+  } catch (e) {
+    return null;
+  }
 }
 
 /* ============================================================
