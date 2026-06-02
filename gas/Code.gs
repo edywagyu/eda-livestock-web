@@ -1687,6 +1687,7 @@ function verifyOtp(body) {
       const orders = getOrdersByEmail(body.email);
       const customer = getCustomerByEmail(body.email, orders);
       const token = Utilities.base64Encode(body.email + ':' + Utilities.getUuid());
+      attachCardToCustomer(customer, orders);
       return jsonResponse({ ok:true, success: true, token: token, customer: customer, orders: orders });
     }
   }
@@ -1758,6 +1759,62 @@ function getCustomerByEmail(email, ordersHint) {
   return c;
 }
 
+/* ============================================================
+   カード情報を Stripe から取得（マイページ表示用）
+   - 注文の session_id（cs_...）から Checkout Session → PaymentIntent →
+     PaymentMethod / Charge の card を取得し brand/last4/exp を返す。
+   - CacheService で session 単位にキャッシュ（カード情報は不変・6h）。
+   - 取得不可なら null（マイページは「カード未登録」へフォールバック）。失敗しても決して throw しない。
+   ============================================================ */
+function getCardInfoFromOrders(orders) {
+  try {
+    if (!orders || !orders.length) return null;
+    var STRIPE = cfg('STRIPE_SECRET_KEY');
+    if (!STRIPE) return null;
+    // 最新の注文（getOrdersByEmail は reverse 済 = 先頭が最新）から cs_ セッションを探す
+    var sessionId = '';
+    for (var i = 0; i < orders.length; i++) {
+      var sid = String((orders[i] || {}).session_id || '');
+      if (sid.indexOf('cs_') === 0) { sessionId = sid; break; }
+    }
+    if (!sessionId) return null;
+    var cache = CacheService.getScriptCache();
+    var ckey = 'cardinfo_' + sessionId;
+    var hit = cache.get(ckey);
+    if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+    var url = 'https://api.stripe.com/v1/checkout/sessions/' + encodeURIComponent(sessionId) +
+              '?expand[]=payment_intent.payment_method&expand[]=payment_intent.latest_charge';
+    var res = UrlFetchApp.fetch(url, { method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true });
+    var session = JSON.parse(res.getContentText());
+    if (!session || session.error) return null;
+    var pi = session.payment_intent || {};
+    var card = (pi.payment_method && pi.payment_method.card) ||
+               (pi.latest_charge && pi.latest_charge.payment_method_details && pi.latest_charge.payment_method_details.card) || null;
+    if (!card || !card.last4) return null;
+    var mm = card.exp_month ? ('0' + card.exp_month).slice(-2) : '';
+    var yy = card.exp_year ? String(card.exp_year).slice(-2) : '';
+    var info = { brand: card.brand || '', last4: String(card.last4), exp: (mm && yy) ? (mm + '/' + yy) : '' };
+    try { cache.put(ckey, JSON.stringify(info), 21600); } catch (e) {}
+    return info;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* customer に card_brand/card_last4/card_exp を付与（既にあれば何もしない・失敗しても customer をそのまま返す） */
+function attachCardToCustomer(customer, orders) {
+  try {
+    if (!customer || customer.card_last4) return customer;
+    var ci = getCardInfoFromOrders(orders);
+    if (ci && ci.last4) {
+      customer.card_brand = ci.brand;
+      customer.card_last4 = ci.last4;
+      customer.card_exp = ci.exp;
+    }
+  } catch (e) {}
+  return customer;
+}
+
 /* GET ?action=customer_lookup&email=xxx (Token認証推奨だが、デモ用に直接ルックアップも可) */
 function customerLookup(params) {
   const email = params.email;
@@ -1781,6 +1838,7 @@ function customerLookup(params) {
     }
   }
   log('customer_lookup', { email: email, withUid: !!requestUid });
+  attachCardToCustomer(customer, orders);
   return jsonResponse({ success:true, customer: customer, orders: orders });
 }
 
@@ -2283,6 +2341,7 @@ function lineLogin(body) {
         if (body.picture_url) customer.line_picture = body.picture_url;
         // 注文履歴
         const orders = customer.email ? getOrdersByEmail(customer.email) : [];
+        attachCardToCustomer(customer, orders);
         return jsonResponse({ ok:true, matched:true, customer, orders });
       }
     }
@@ -2366,6 +2425,7 @@ function lineLinkAccount(body) {
     // LINE プッシュ通知: 連携完了 + 配送状況リンク
     sendLinePush(body.line_uid, [buildLinkSuccessMessage(customer_name)]);
 
+    attachCardToCustomer(customer, orders);
     return jsonResponse({ ok:true, customer, orders });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });

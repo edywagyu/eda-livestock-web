@@ -3773,7 +3773,7 @@ function renderDashboard(customer, orders) {
  renderHomeTab(orderCount, orders, customer);
 
  /* Settings tab — shipping, payment, account */
- renderSettings(customer);
+ renderSettings(customer, orders);
 
  /* Shop tab — quick cart */
  renderShopProducts(customer);
@@ -3948,9 +3948,35 @@ function loadShipping() {
 function loadCard() {
  try { return JSON.parse(localStorage.getItem(CARD_KEY) || 'null'); } catch(e) { return null; }
 }
-function renderSettings(customer) {
- /* Shipping */
+/* 本人が未入力でも、注文の配送先(destinations_json)または顧客プロフィールから配送情報を表示する */
+var _effectiveShip = null;
+function shipFromServer(customer, orders) {
+ try {
+  var list = orders || [];
+  for (var i = 0; i < list.length; i++) {
+   var o = list[i] || {};
+   var dj = (o.destinations_json != null) ? o.destinations_json : o.dest;
+   var arr = (typeof dj === 'string') ? JSON.parse(dj || '[]') : (dj || []);
+   if (Array.isArray(arr) && arr.length) {
+    var sd = null;
+    for (var j = 0; j < arr.length; j++) { if (arr[j] && arr[j].type === 'self') { sd = arr[j]; break; } }
+    if (!sd) sd = arr[0];
+    if (sd && (sd.address || sd.zip)) {
+     return { name: sd.name || (customer && customer.name) || '', postal: String(sd.zip || '').replace(/-/g, ''), pref: sd.pref || '', city: '', addr: sd.address || '', phone: sd.tel || '' };
+    }
+   }
+  }
+ } catch (e) {}
+ if (customer && (customer.address || customer.zip)) {
+  return { name: customer.name || '', postal: String(customer.zip || '').replace(/-/g, ''), pref: customer.pref || '', city: '', addr: customer.address || '', phone: customer.phone || '' };
+ }
+ return null;
+}
+function renderSettings(customer, orders) {
+ /* Shipping — localStorage(本人編集)優先、なければサーバーの注文配送先/顧客情報から表示 */
  var ship = loadShipping();
+ if (!ship || !ship.name) { var srv = shipFromServer(customer, orders); if (srv) ship = srv; }
+ _effectiveShip = ship || null;
  var shipEmpty = document.getElementById('shippingEmpty');
  var shipData = document.getElementById('shippingData');
  var shipEditBtn = document.getElementById('shippingEditBtn');
@@ -4006,7 +4032,7 @@ function toggleShippingEdit() {
  var disp = document.getElementById('shippingDisplay');
  if (form.style.display === 'none') {
   /* Load existing data into form */
-  var ship = loadShipping() || {};
+  var ship = loadShipping() || _effectiveShip || {};
   document.getElementById('shipName').value = ship.name || '';
   document.getElementById('shipPostal').value = ship.postal || '';
   document.getElementById('shipPref').value = ship.pref || '';
