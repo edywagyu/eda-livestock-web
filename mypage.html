@@ -4118,11 +4118,22 @@ window.saveCardFromCheckout = function(cardData) {
  try { localStorage.setItem(CARD_KEY, JSON.stringify(cardData)); } catch(e){}
 };
 
-/* カード情報を変更 — Stripe Setup Intent flow or redirect to checkout */
+/* カード情報を登録・変更 — Stripe Checkout(setup モード)の安全なホスト画面へ */
 async function changeCard() {
- var ok = await edaConfirm('カード情報の変更', 'お買い物画面で新しいカード情報をご登録いただけます。\n\n「お買い物へ進む」を押すとSHOPへ移動します。チェックアウト時に新しいカードをご登録ください。', { ok: 'お買い物へ進む', cancel: 'キャンセル' });
+ var ok = await edaConfirm('カード情報の登録・変更', 'Stripe の安全な画面でカード情報をご登録・変更いただけます。\n\nカード番号は当社では保持せず、Stripe が安全に管理します。', { ok: '進む', cancel: 'キャンセル' });
  if (!ok) return;
- window.location.href = 'shop.html?action=update_card';
+ var uid = '', em = '';
+ try { uid = localStorage.getItem('eda-member-line-uid') || ''; } catch(e){}
+ try { em = localStorage.getItem('eda-member-email') || ''; } catch(e){}
+ if (!em && !uid) { toast('ログイン情報が見つかりません。再度ログインしてください', 'error'); return; }
+ if (!window.EDA_API) { toast('通信エラー。時間をおいて再度お試しください', 'error'); return; }
+ try {
+  var resp = await window.EDA_API.post('start_card_setup', { email: em, line_uid: uid, return_url: location.href });
+  if (resp && resp.ok && resp.url) { window.location.href = resp.url; return; }
+  toast((resp && resp.error) ? resp.error : 'カード登録ページを開けませんでした', 'error');
+ } catch (e) {
+  toast('カード登録ページを開けませんでした', 'error');
+ }
 }
 
 /* ---- Render Home Tab ---- */

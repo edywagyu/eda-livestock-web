@@ -235,6 +235,7 @@ function doPost(e) {
       case 'log_subscription_application': return logSubscriptionApplication(body);
       case 'request_otp':                  return requestOtp(body);
       case 'verify_otp':                   return verifyOtp(body);
+      case 'start_card_setup':             return startCardSetup(body);
       /* ===== お問い合わせフォーム (Code_v2_Additions.gs に実装) ===== */
       case 'submit_inquiry':               return submitInquiry(body);
       case 'skip_subscription':            return skipSubscription(body);
@@ -1813,6 +1814,69 @@ function attachCardToCustomer(customer, orders) {
     }
   } catch (e) {}
   return customer;
+}
+
+/* ============================================================
+   POST start_card_setup { email, line_uid, return_url }
+   - 顧客が自分でカードを登録/差し替えできるよう、Stripe Checkout(mode=setup)の
+     ホスト画面 URL を発行する。カード番号は Stripe 側でのみ入力＝当社は非保持(PCI安全)。
+   - email から Stripe Customer を検索/作成し、そこへ紐付ける(将来の決済で再利用可)。
+   - 返り値: { ok:true, url }。失敗は { ok:false, error }。
+   ============================================================ */
+function startCardSetup(body) {
+  try {
+    var email = (body && body.email) ? String(body.email).trim() : '';
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return jsonResponse({ ok:false, error:'メールアドレスが不正です' });
+    }
+    var STRIPE = cfg('STRIPE_SECRET_KEY');
+    if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY 未設定' });
+
+    // 1) email で Stripe Customer を検索（無ければ作成）
+    var cusId = '';
+    var listRes = UrlFetchApp.fetch('https://api.stripe.com/v1/customers?email=' + encodeURIComponent(email) + '&limit=1', {
+      method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+    });
+    var list = JSON.parse(listRes.getContentText());
+    if (list && list.data && list.data.length) {
+      cusId = list.data[0].id;
+    } else {
+      var nm = '';
+      try { var c = getCustomerByEmail(email, null); nm = (c && c.name) || ''; } catch (e) {}
+      var createRes = UrlFetchApp.fetch('https://api.stripe.com/v1/customers', {
+        method: 'post', payload: flattenForm({ email: email, name: nm }),
+        headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+      });
+      var created = JSON.parse(createRes.getContentText());
+      if (created.error) return jsonResponse({ ok:false, error:'Stripe(customer): ' + created.error.message });
+      cusId = created.id;
+    }
+
+    // 2) 戻り先(mypage)。クライアント指定を優先・http(s) のみ許可。
+    var ret = (body && body.return_url) ? String(body.return_url) : '';
+    if (!/^https?:\/\//i.test(ret)) ret = cfg('CANCEL_URL') || 'https://www.eda-livestock.com/mypage.html';
+    var sep = (ret.indexOf('?') >= 0) ? '&' : '?';
+
+    // 3) mode=setup の Checkout Session を生成 → ホスト画面 URL を返す
+    var params = flattenForm({
+      mode: 'setup',
+      customer: cusId,
+      payment_method_types: ['card'],
+      locale: 'ja',
+      success_url: ret + sep + 'card=saved',
+      cancel_url: ret + sep + 'card=cancel'
+    });
+    var res = UrlFetchApp.fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'post', payload: params,
+      headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+    });
+    var data = JSON.parse(res.getContentText());
+    if (data.error) return jsonResponse({ ok:false, error:'Stripe(session): ' + data.error.message });
+    log('start_card_setup', { email: email, customer: cusId });
+    return jsonResponse({ ok:true, url: data.url });
+  } catch (e) {
+    return jsonResponse({ ok:false, error: String(e) });
+  }
 }
 
 /* GET ?action=customer_lookup&email=xxx (Token認証推奨だが、デモ用に直接ルックアップも可) */
