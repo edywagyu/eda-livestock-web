@@ -138,6 +138,7 @@ function doGet(e) {
       case 'diag_webhooks':     return diagWebhooks();
       case 'diag_recover_sub':  return diagRecoverSubscription(e.parameter);
       case 'diag_subscriptions': return diagSubscriptions(e.parameter);
+      case 'diag_cancel_subscription': return diagCancelSubscription(e.parameter);
       case 'diag_update_webhook': return diagUpdateWebhook(e.parameter);
       case 'diag_find_session':  return diagFindSession(e.parameter);
       case 'diag_dedupe_orders': return diagDedupeOrders(e.parameter);
@@ -892,6 +893,8 @@ function diagSubscriptions(params) {
       out.push({
         id: s.id,
         status: s.status,
+        created: s.created ? new Date(s.created * 1000).toISOString().slice(0, 10) : '',
+        first_payment_session: (s.metadata && s.metadata.first_payment_session) || '',
         is_test: (s.customer === TEST_CUS) || (cust && cust.id === TEST_CUS),
         customer_id: cust ? cust.id : s.customer,
         email: cust ? (cust.email || '') : '',
@@ -916,6 +919,22 @@ function diagSubscriptions(params) {
     real_past_due: real.filter(function (x) { return x.status === 'past_due' || x.status === 'unpaid'; }).length
   };
   return jsonResponse({ ok:true, summary: summary, real_subs: real });
+}
+
+/* GET ?action=diag_cancel_subscription&id=sub_xxx — 指定サブスクを即時キャンセル（Stripe 実解約・書込）。
+   二重サブスクの片方を消す等の運用用。id(sub_) 明示必須。 */
+function diagCancelSubscription(params) {
+  var STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY not set' });
+  var id = params.id || '';
+  if (!/^sub_/.test(id)) return jsonResponse({ ok:false, error:'valid subscription id (sub_...) required' });
+  var res = UrlFetchApp.fetch('https://api.stripe.com/v1/subscriptions/' + encodeURIComponent(id), {
+    method: 'delete', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  var data = JSON.parse(res.getContentText());
+  if (data.error) return jsonResponse({ ok:false, error: data.error.message });
+  log('subscription_cancelled_manual', { id: id, status: data.status });
+  return jsonResponse({ ok:true, id: data.id, status: data.status });
 }
 
 function diagRecoverSubscription(params) {
@@ -1111,6 +1130,25 @@ function createDelayedSubscription(session, meta) {
   if (pi.error) throw new Error('PI retrieval: ' + pi.error.message);
   const paymentMethodId = pi.payment_method;
   if (!paymentMethodId) throw new Error('No payment_method on PaymentIntent');
+
+  // (b) 冪等性ガード: 同一顧客に同じ price の active サブスクが既にあれば二重作成しない。
+  //     webhook 二重発火で同一定期便サブスクが2本でき二重課金になる事故(ry ¥6,980×2)の再発防止。fail-open。
+  try {
+    const existRes = UrlFetchApp.fetch(
+      'https://api.stripe.com/v1/subscriptions?customer=' + session.customer + '&status=active&limit=20',
+      { method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true }
+    );
+    const exist = JSON.parse(existRes.getContentText());
+    if (exist && exist.data && exist.data.length) {
+      const dup = exist.data.filter(function (s) {
+        return s.items && s.items.data && s.items.data.some(function (it) { return it.price && it.price.id === meta.recurring_price_id; });
+      });
+      if (dup.length) {
+        log('subscription_create_skipped_dup', { customer: session.customer, existing: dup[0].id, order: meta.order_number });
+        return dup[0];
+      }
+    }
+  } catch (e) { /* ガード照会失敗時は従来どおり作成 (fail-open) */ }
 
   // Subscription 作成 (anchor=毎月20日, proration=none, 初回課金なし)
   // 2026-05-27: Stripe 新API仕様により billing_cycle_anchor_config[day_of_month] を使用
