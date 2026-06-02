@@ -2174,6 +2174,42 @@ function publicCatalog() {
         （GAS の /exec→googleusercontent リダイレクト応答がキャッシュされ古い値を返すため）。
      4) 金額は必ず Stripe を一次ソースとして照合してから「正しい」と判断する。
    ※ ¥9,440 表示の真因＝実注文¥3,040 ＋ テスト決済¥6,400(顧客cus_Uake) の合算だった。 */
+/* ダッシュボード用: 実 active サブスクの件数と MRR(月額合計・円)を Stripe 実態から算出。
+   テスト顧客 cus_Uake 除外。年額は /12 で月次換算。CacheService 600s。失敗時は {count:0,mrr:0}。
+   （旧実装は activeSub/mrr を 0 ハードコードで定期便収益が一切反映されなかった。2026-06-02 修正） */
+function getActiveSubsSummary() {
+  var cache = CacheService.getScriptCache();
+  var hit = cache.get('active_subs_summary');
+  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+  var out = { count: 0, mrr: 0 };
+  try {
+    var STRIPE = cfg('STRIPE_SECRET_KEY');
+    if (!STRIPE) return out;
+    var TEST_CUS = 'cus_UakeKnQRLIzK9x';
+    var startingAfter = '', guard = 0;
+    do {
+      var url = 'https://api.stripe.com/v1/subscriptions?status=active&limit=100';
+      if (startingAfter) url += '&starting_after=' + startingAfter;
+      var res = UrlFetchApp.fetch(url, { method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true });
+      var data = JSON.parse(res.getContentText());
+      if (data.error) break;
+      (data.data || []).forEach(function (s) {
+        if (s.customer === TEST_CUS) return;
+        out.count++;
+        var item = (s.items && s.items.data && s.items.data[0]) || {};
+        var price = item.price || {};
+        var amt = Number(price.unit_amount) || 0;
+        var interval = (price.recurring && price.recurring.interval) || 'month';
+        out.mrr += (interval === 'year') ? Math.round(amt / 12) : amt;
+      });
+      startingAfter = (data.has_more && data.data.length) ? data.data[data.data.length - 1].id : '';
+      guard++;
+    } while (startingAfter && guard < 10);
+    cache.put('active_subs_summary', JSON.stringify(out), 600);
+  } catch (e) { /* fail-open: 0 */ }
+  return out;
+}
+
 function dashboardSummary(params) {
   const range = params.range || '30d';
   const days = parseInt(range) || 30;
@@ -2198,6 +2234,8 @@ function dashboardSummary(params) {
     }
   }
 
+  const _subs = getActiveSubsSummary(); // 実 active サブスク(Stripe・cus_Uake除外)
+
   return jsonResponse({
     ok: true,
     overview: {
@@ -2205,9 +2243,9 @@ function dashboardSummary(params) {
       revenueDelta: 0,
       orders: orderCount,
       avg: orderCount ? Math.round(revenue / orderCount) : 0,
-      activeSub: 0, // TODO: count from subscriptions sheet
+      activeSub: _subs.count,
       subDelta: 0,
-      mrr: 0,
+      mrr: _subs.mrr,
       line: 0,
       lineDelta: 0,
       lineConvRate: 0,
@@ -3801,6 +3839,16 @@ function staffAnalytics(params) {
     /* 流入元 (referrer) カウント */
     const refMap = {};
 
+    /* dev/テスト流入(localhost/127.0.0.1)の session を除外集合に（分析の汚染除去・2026-06-02） */
+    const devSessions = {};
+    for (let j = 1; j < data.length; j++) {
+      const rj = data[j][refIdx];
+      if (rj && /^(https?:\/\/)?(localhost|127\.0\.0\.1)/i.test(String(rj))) {
+        const sj = data[j][sidIdx];
+        if (sj) devSessions[sj] = true;
+      }
+    }
+
     for (let i = 1; i < data.length; i++) {
       const ts = new Date(data[i][tsIdx]);
       if (isNaN(ts.getTime())) continue;
@@ -3808,6 +3856,7 @@ function staffAnalytics(params) {
 
       const type = data[i][typeIdx];
       const sid = data[i][sidIdx];
+      if (sid && devSessions[sid]) continue; // dev/localhost セッションは分析から除外
       const pid = data[i][pidIdx];
       const val = Number(data[i][valIdx]) || 0;
       const ref = data[i][refIdx];
