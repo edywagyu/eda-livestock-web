@@ -3370,6 +3370,8 @@ function b2CsvExport() {
       try {
         const d = JSON.parse(dest);
         d.forEach(addr => {
+          // 商品が割り当てられていない宛先(ギフトのご依頼主=差出人など)は配送ラベルを作らない
+          if (Array.isArray(addr.items) && addr.items.length === 0) return;
           csv.push([addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, dDate, dTime].join(','));
         });
       } catch (e) {

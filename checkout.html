@@ -1365,25 +1365,34 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="checkout-block">
  <div class="checkout-block-head">
  <span class="checkout-block-num">2</span>
- <span class="checkout-block-title">お届け先</span>
- <button class="checkout-block-sub" onclick="addDestination()">＋ 別の配送先を追加</button>
+ <span class="checkout-block-title" id="block2Title">お届け先</span>
+ <button class="checkout-block-sub" id="block2AddBtn" onclick="addDestination()">＋ 別の配送先を追加</button>
  </div>
  <div id="destinationGroups"></div>
  </div>
 
- <!-- ③ 配送日時 -->
- <div class="checkout-block">
+ <!-- ③ お届け先（ギフト配送・受取人ごと。mode=gift のみ表示） -->
+ <div class="checkout-block" id="recipientBlock" style="display:none">
  <div class="checkout-block-head">
  <span class="checkout-block-num">3</span>
+ <span class="checkout-block-title">お届け先</span>
+ <button class="checkout-block-sub" onclick="addDestination()">＋ 別の配送先を追加</button>
+ </div>
+ <div id="recipientGroups"></div>
+ </div>
+
+ <!-- 配送日時 -->
+ <div class="checkout-block">
+ <div class="checkout-block-head">
+ <span class="checkout-block-num" id="numDeliveryTime">3</span>
  <span class="checkout-block-title">お届け日時</span>
  <span class="checkout-block-sub" id="deliveryDateDefault">最短: 自動</span>
  </div>
  <div class="dest-form-row cols2">
  <div class="dest-field">
  <label>お届け希望日</label>
- <select id="checkoutDeliveryDate">
- <option value="">最短日でお届け</option>
- </select>
+ <input type="date" id="checkoutDeliveryDate" class="dest-field-date">
+ <small style="display:block;margin-top:4px;font-size:11px;color:var(--color-ink-muted)">未指定＝最短日でお届け（最長1か月先まで指定可）</small>
  </div>
  <div class="dest-field">
  <label>お届け時間帯</label>
@@ -1402,7 +1411,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <!-- ④ お支払い方法 -->
  <div class="checkout-block">
  <div class="checkout-block-head">
- <span class="checkout-block-num">4</span>
+ <span class="checkout-block-num" id="numPayment">4</span>
  <span class="checkout-block-title">お支払い方法</span>
  </div>
  <div class="payment-grid">
@@ -1549,6 +1558,7 @@ const PLANS = {
 let cartItems = [];
 let subscription = null; // { plan: 'regular' } or null
 let senderName = ''; // ギフト時の依頼人名（注文者）
+let isGiftFlow = false; // ?mode=gift で入った安定フラグ。レイアウト判定は getMode()(状態依存で変動) でなくこれを使う
 let destinations = [
  { id: 'self', type: 'self', name: '', tel: '', email: '', zip: '', pref: '', address: '', itemIds: [] }
 ];
@@ -1638,8 +1648,9 @@ function init() {
  }
  } catch (e) {}
 
- // mode=gift: 全商品をギフト送り先に割当
+ // mode=gift: 全商品をギフト送り先に割当（dest[0]=ご依頼主・itemIds空、dest[1+]=お届け先）
  if (params.get('mode') === 'gift' && cartItems.length > 0) {
+ isGiftFlow = true;  // 安定フラグ。受取人を増やしても getMode() は 'multi' に変わるがレイアウトは維持する
  const giftDest = {
   id: 'gift-' + Date.now(), type: 'gift',
   name: '', tel: '', zip: '', pref: '', address: '',
@@ -1664,6 +1675,7 @@ function init() {
  // LINE 連携済みなら自動で併用通知 (購入は妨げない)
  if (getLineUid()) contactMethod = 'line+email';
 
+ applyGiftLayout();
  renderOrderList();
  renderDestinations();
  renderSummary();
@@ -1710,7 +1722,7 @@ function getMode() {
 }
 function renderModeBanner() {
  const area = document.getElementById('orderModeBannerArea');
- const mode = getMode();
+ const mode = isGiftFlow ? 'gift' : getMode();
  const labels = {
  single: { cls: '', icon: '🛒', text: '単品のお買い物' },
  subscription:{ cls: 'subscription', icon: '⭐', text: '定期便のお申込み' },
@@ -1762,9 +1774,9 @@ function renderOrderList() {
  const isGift = dest && dest.type === 'gift';
  const destIdx = isGift ? destinations.indexOf(dest) : 0;
 
- // ギフト展開パネル（送り先セレクタ + 備考）
+ // ギフト展開パネル（送り先セレクタ + 備考）。ギフト導線では商品の割当を「お届け先」ブロック側で行うため出さない。
  let giftExpandHtml = '';
- if (isGift) {
+ if (isGift && !isGiftFlow) {
   const giftDests = destinations.filter(d => d.type === 'gift');
   const optionsHtml = giftDests.map(d => {
   const idx = destinations.indexOf(d);
@@ -1805,10 +1817,10 @@ function renderOrderList() {
   <small>¥${item.price.toLocaleString()} × ${item.qty}</small>
   </div>
   </div>
-  <div class="item-dest-control">
+  ${!isGiftFlow ? `<div class="item-dest-control">
   <button type="button" class="item-dest-btn ${!isGift ? 'active-self' : ''}" onclick="toggleItemGift(${i}, false)">🏠 自宅にお届け</button>
   <button type="button" class="item-dest-btn ${isGift ? 'active-gift' : ''}" onclick="toggleItemGift(${i}, true)">🎁 贈り物として送る</button>
-  </div>
+  </div>` : ''}
   ${giftExpandHtml}
  </div>
  `;
@@ -1907,7 +1919,129 @@ function findItemDestination(itemIdx) {
  return destinations.find(d => d.itemIds.includes(itemIdx));
 }
 
+/* ギフト導線(mode=gift)のレイアウト: ②=ご依頼主 / ③=お届け先(複数可) / 番号を 4・5 にずらす */
+function applyGiftLayout() {
+ const t = document.getElementById('block2Title');
+ const addBtn = document.getElementById('block2AddBtn');
+ const recip = document.getElementById('recipientBlock');
+ const numDT = document.getElementById('numDeliveryTime');
+ const numPay = document.getElementById('numPayment');
+ if (isGiftFlow) {
+  if (t) t.textContent = 'ご依頼主';
+  if (addBtn) addBtn.style.display = 'none';
+  if (recip) recip.style.display = '';
+  if (numDT) numDT.textContent = '4';
+  if (numPay) numPay.textContent = '5';
+ } else {
+  if (t) t.textContent = 'お届け先';
+  if (addBtn) addBtn.style.display = '';
+  if (recip) recip.style.display = 'none';
+  if (numDT) numDT.textContent = '3';
+  if (numPay) numPay.textContent = '4';
+ }
+}
+
+/* のし用途のラジオ群（差出人=ご依頼主なので per受取人の依頼人名フィールドは置かない） */
+function giftNoshiHtml(d, dIdx) {
+ const opt = (val, label, extra) => `<label class="gift-noshi-option ${d.noshi === val ? 'selected' : ''} ${extra || ''}"><input type="radio" name="noshi-${dIdx}" value="${val}" ${d.noshi === val ? 'checked' : ''} onchange="updateDestField(${dIdx}, 'noshi', '${val}')">${label}</label>`;
+ return `
+ <div class="gift-options">
+  <div class="gift-options-head">🎁 のし（ご用途）</div>
+  <div class="gift-noshi-row">
+   ${opt('父の日', '🎁 父の日', 'gift-noshi-option--fd')}
+   ${opt('御祝', '御祝')}
+   ${opt('御中元', '御中元')}
+   ${opt('御歳暮', '御歳暮')}
+   ${opt('内祝', '内祝')}
+   ${opt('none', 'のし不要', 'gift-noshi-option--wide')}
+  </div>
+  <p style="font-size:11px;color:var(--color-ink-muted);margin:8px 0 0;">※ 価格・伝票は同梱しません。のし差出人は「ご依頼主」のお名前を記載します。</p>
+ </div>`;
+}
+
+/* 商品をこのお届け先だけに割り当てる（他からは外す）。空のお届け先は自動削除しない。 */
+function assignItemToDest(itemIdx, destIdx) {
+ destinations.forEach(d => { d.itemIds = (d.itemIds || []).filter(id => id !== itemIdx); });
+ if (destinations[destIdx]) destinations[destIdx].itemIds.push(itemIdx);
+ renderDestinations();
+ renderSummary();
+}
+
+/* ギフト導線の配送先描画: ②ご依頼主(dest[0]) を #destinationGroups、③お届け先(dest[1+]) を #recipientGroups へ */
+function renderGiftDestinations() {
+ const s = destinations[0] || {};
+ const senderWrap = document.getElementById('destinationGroups');
+ if (senderWrap) {
+  senderWrap.innerHTML = `
+  <div class="dest-group">
+   <div class="dest-group-head"><span class="dest-group-title"><span class="dest-group-title-icon">🏠</span>ご依頼主（差出人）</span></div>
+   <div class="dest-group-form">
+    <div class="dest-form-row cols2">
+     <div class="dest-field"><label>お名前<span class="required">*</span></label>
+      <input type="text" value="${s.name || ''}" placeholder="山田 太郎" autocomplete="name" oninput="updateDestField(0,'name',this.value)" required></div>
+     <div class="dest-field"><label>電話番号<span class="required">*</span></label>
+      <input type="tel" value="${s.tel || ''}" placeholder="090-1234-5678" inputmode="tel" autocomplete="tel" oninput="updateDestField(0,'tel',this.value)" required></div>
+    </div>
+    <div class="dest-form-row cols2">
+     <div class="dest-field"><label>郵便番号<span class="required">*</span></label>
+      <input type="text" value="${s.zip || ''}" placeholder="123-4567" inputmode="numeric" autocomplete="postal-code" maxlength="8" oninput="updateDestField(0,'zip',this.value); autoFillFromZip(this,0)" required></div>
+     <div class="dest-field"><label>都道府県<span class="required">*</span></label>
+      <select autocomplete="address-level1" onchange="updateDestField(0,'pref',this.value)" required>${prefOptions(s.pref)}</select></div>
+    </div>
+    <div class="dest-form-row"><div class="dest-field"><label>市区町村・番地・建物名<span class="required">*</span></label>
+     <input type="text" value="${s.address || ''}" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="street-address" oninput="updateDestField(0,'address',this.value)" required></div></div>
+    <div class="dest-field"><label>メールアドレス<span class="required">*</span></label>
+     <input type="email" value="${s.email || ''}" placeholder="example@example.com" inputmode="email" autocomplete="email" oninput="updateDestField(0,'email',this.value)" required>
+     <small style="display:block;margin-top:6px;color:var(--color-ink-muted);font-size:12px">ご注文確認・配送状況をこちらにお送りします。${getLineUid() ? '<br>✅ LINE連携済み — LINEでも通知します。' : ''}</small></div>
+   </div>
+  </div>`;
+ }
+
+ const recipWrap = document.getElementById('recipientGroups');
+ if (!recipWrap) return;
+ const recipients = destinations.map((d, i) => ({ d, i })).filter(x => x.i > 0 && x.d.type === 'gift');
+ let html = '';
+ recipients.forEach((x, rNum) => {
+  const d = x.d, dIdx = x.i;
+  const canRemove = recipients.length > 1;
+  const itemsHtml = cartItems.map((it, ci) => {
+   const checked = (d.itemIds || []).includes(ci) ? 'checked' : '';
+   return `<label style="display:flex;align-items:center;gap:8px;padding:7px 4px;font-size:13px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04)"><input type="checkbox" ${checked} onchange="assignItemToDest(${ci}, ${dIdx})" style="width:18px;height:18px;accent-color:var(--color-forest);flex-shrink:0"> <span>${it.title}${it.variant ? '（' + it.variant + '）' : ''} <span style="color:var(--color-ink-muted)">×${it.qty}</span></span></label>`;
+  }).join('');
+  html += `
+  <div class="dest-group">
+   <div class="dest-group-head">
+    <span class="dest-group-title"><span class="dest-group-title-icon">🎁</span>お届け先 ${rNum + 1}</span>
+    ${canRemove ? `<button class="dest-group-actions" onclick="removeDestination(${dIdx})">削除</button>` : ''}
+   </div>
+   <div class="dest-group-form">
+    <div style="background:rgba(212,169,59,0.07);border:1px solid rgba(212,169,59,0.25);border-radius:8px;padding:8px 12px;margin-bottom:12px">
+     <div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:2px">📦 この方へお届けする商品</div>
+     ${itemsHtml || '<span style="font-size:12px;color:var(--color-ink-muted)">カートに商品がありません</span>'}
+    </div>
+    <div class="dest-form-row cols2">
+     <div class="dest-field"><label>受取人<span class="required">*</span></label>
+      <input type="text" value="${d.name || ''}" placeholder="山田 花子" autocomplete="off" oninput="updateDestField(${dIdx},'name',this.value)" required></div>
+     <div class="dest-field"><label>電話番号<span class="required">*</span></label>
+      <input type="tel" value="${d.tel || ''}" placeholder="090-1234-5678" inputmode="tel" autocomplete="off" oninput="updateDestField(${dIdx},'tel',this.value)" required></div>
+    </div>
+    <div class="dest-form-row cols2">
+     <div class="dest-field"><label>郵便番号<span class="required">*</span></label>
+      <input type="text" value="${d.zip || ''}" placeholder="123-4567" inputmode="numeric" autocomplete="off" maxlength="8" oninput="updateDestField(${dIdx},'zip',this.value); autoFillFromZip(this,${dIdx})" required></div>
+     <div class="dest-field"><label>都道府県<span class="required">*</span></label>
+      <select autocomplete="off" onchange="updateDestField(${dIdx},'pref',this.value)" required>${prefOptions(d.pref)}</select></div>
+    </div>
+    <div class="dest-form-row"><div class="dest-field"><label>市区町村・番地・建物名<span class="required">*</span></label>
+     <input type="text" value="${d.address || ''}" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="off" oninput="updateDestField(${dIdx},'address',this.value)" required></div></div>
+    ${giftNoshiHtml(d, dIdx)}
+   </div>
+  </div>`;
+ });
+ recipWrap.innerHTML = html;
+}
+
 function renderDestinations() {
+ if (isGiftFlow) { renderGiftDestinations(); return; }
  const wrap = document.getElementById('destinationGroups');
  let html = '';
  destinations.forEach((dest, dIdx) => {
@@ -2103,16 +2237,19 @@ function addDestination() {
  });
  renderDestinations();
  renderOrderList(); // バナー更新
+ renderSummary();
 }
 
 function removeDestination(idx) {
  if (idx === 0) return;
  const itemsBack = destinations[idx].itemIds || [];
- // 削除されるグループのアイテムは self に戻す
- destinations[0].itemIds = [...new Set([...destinations[0].itemIds, ...itemsBack])];
  destinations.splice(idx, 1);
+ // ギフト導線: 余った商品は先頭のお届け先へ戻す（ご依頼主には載せない）。通常: 自宅(dest[0])へ。
+ const fb = isGiftFlow ? destinations.findIndex(d => d.type === 'gift') : 0;
+ if (fb >= 0) destinations[fb].itemIds = [...new Set([...(destinations[fb].itemIds || []), ...itemsBack])];
  renderDestinations();
  renderOrderList();
+ renderSummary();
 }
 
 /* ---- サマリー ---- */
@@ -2298,74 +2435,39 @@ function renderSummary() {
  ▸ 単品/ギフトのみ: 最短日（3日後〜）+ 14日先まで選択可
 */
 function buildDeliveryDateOptions() {
- const select = document.getElementById('checkoutDeliveryDate');
- const days = ['日','月','火','水','木','金','土'];
+ // お届け希望日は <input type="date">。範囲＝最短3日後〜1か月後。未指定＝最短でお届け。
+ //  value は ISO(YYYY-MM-DD) のまま orderPayload.delivery.date に渡る（staff/B2/マイページ互換）。
+ const input = document.getElementById('checkoutDeliveryDate');
+ if (!input) return;
  const now = new Date();
  const defaultLabel = document.getElementById('deliveryDateDefault');
- const dateField = select ? select.closest('.dest-field') : null;
+ const dateField = input.closest('.dest-field');
+ const fmtIso = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
- // 定期便モードの場合: 毎月1日固定
+ // 定期便モード: 毎月1日固定（読み取り専用）
  if (subscription && PLANS[subscription.plan]) {
- // 翌月1日を計算
  const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
- const m = nextFirst.getMonth() + 1;
- const dd = nextFirst.getDate();
- const w = days[nextFirst.getDay()];
- const label = `${m}月${dd}日（${w}）`;
- const iso = `${nextFirst.getFullYear()}-${String(m).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
-
- // select を読み取り専用化（HTML上は disabled で固定値表示。value=ISO日付で決済に送る）
- select.innerHTML = `<option value="${iso}" selected>${label}</option>`;
- select.disabled = true;
- select.style.background = 'rgba(212,169,59,0.10)';
- select.style.cursor = 'not-allowed';
-
- // ラベル変更
- if (defaultLabel) {
- defaultLabel.textContent = '定期便 · 毎月1日 固定';
- defaultLabel.style.color = 'var(--color-gold)';
- }
-
- // 既存の補足説明を入れ替え
+ const iso = fmtIso(nextFirst);
+ input.value = iso; input.min = iso; input.max = iso;
+ input.readOnly = true; input.disabled = true;
+ input.style.background = 'rgba(212,169,59,0.10)'; input.style.cursor = 'not-allowed';
+ if (defaultLabel) { defaultLabel.textContent = '定期便 · 毎月1日 固定'; defaultLabel.style.color = 'var(--color-gold)'; }
  if (dateField) {
  let note = dateField.querySelector('.delivery-sub-note');
- if (!note) {
- note = document.createElement('small');
- note.className = 'delivery-sub-note';
- note.style.cssText = 'display:block;margin-top:6px;font-size:11px;color:var(--color-gold);font-weight:600';
- dateField.appendChild(note);
- }
+ if (!note) { note = document.createElement('small'); note.className = 'delivery-sub-note'; note.style.cssText = 'display:block;margin-top:6px;font-size:11px;color:var(--color-gold);font-weight:600'; dateField.appendChild(note); }
  note.innerHTML = '⭐ 定期便のお届けは <strong>毎月1日</strong> に固定です。時間帯のみご指定ください。';
  }
  return;
  }
 
- // 単品/ギフトモード
- select.disabled = false;
- select.style.background = '';
- select.style.cursor = '';
- if (defaultLabel) {
- defaultLabel.textContent = '最短: 自動';
- defaultLabel.style.color = '';
- }
- if (dateField) {
- const note = dateField.querySelector('.delivery-sub-note');
- if (note) note.remove();
- }
-
- const start = new Date(now);
- start.setDate(start.getDate() + 3);
- let html = '<option value="">最短日でお届け（3日後〜）</option>';
- for (let i = 0; i < 14; i++) {
- const d = new Date(start);
- d.setDate(start.getDate() + i);
- const m = d.getMonth() + 1;
- const dd = d.getDate();
- const w = days[d.getDay()];
- const iso = `${d.getFullYear()}-${String(m).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
- html += `<option value="${iso}">${m}月${dd}日（${w}）</option>`;
- }
- select.innerHTML = html;
+ // 通常: 最短3日後 〜 1か月後 を選択可
+ input.disabled = false; input.readOnly = false; input.style.background = ''; input.style.cursor = '';
+ if (defaultLabel) { defaultLabel.textContent = '最短: 自動'; defaultLabel.style.color = ''; }
+ if (dateField) { const note = dateField.querySelector('.delivery-sub-note'); if (note) note.remove(); }
+ const minD = new Date(now); minD.setDate(minD.getDate() + 3);
+ const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
+ input.min = fmtIso(minD);
+ input.max = fmtIso(maxD);
 }
 
 /* ---- 支払いラジオ ---- */
@@ -2472,7 +2574,9 @@ async function placeOrder() {
  destinations: destinations.map(d => ({
  type: d.type,
  name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
- noshi: d.noshi || null, fromName: d.fromName || null,
+ noshi: d.noshi || null,
+ // ギフト導線では のし差出人 = ご依頼主(dest[0])。それ以外は従来の d.fromName。
+ fromName: (isGiftFlow && d.type === 'gift') ? ((destinations[0] && destinations[0].name) || d.fromName || null) : (d.fromName || null),
  items: d.itemIds.map(i => cartItems[i]).filter(Boolean).map(it => ({ title: it.title, variant: it.variant, qty: it.qty }))
  })),
  items: buildPayloadItems(),
