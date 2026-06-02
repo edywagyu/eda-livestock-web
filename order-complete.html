@@ -999,6 +999,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </p>
  </div>
 
+ <!-- 🏦 銀行振込のご案内 (bank orders only) -->
+ <div id="bankInstructions" style="display:none;background:#fff;border:2px solid #0F3D2E;border-radius:14px;padding:20px 18px;margin-bottom:18px;box-shadow:0 4px 16px rgba(15,61,46,0.10)">
+ <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+ <span style="font-size:20px">🏦</span>
+ <span style="font-size:15px;font-weight:700;color:#0F3D2E">お振込先のご案内</span>
+ </div>
+ <p style="font-size:12.5px;color:#555;line-height:1.7;margin:0 0 14px">
+ 下記口座へお振込をお願いいたします。<strong style="color:#0F3D2E">ご入金の確認後、発送のご連絡（追跡番号）をお送りします。</strong>
+ </p>
+ <div style="background:#FBF7EC;border-radius:10px;padding:14px 16px;margin-bottom:12px">
+ <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:10px;margin-bottom:10px;border-bottom:1px dashed rgba(15,61,46,0.2)">
+ <span style="font-size:12px;color:#888">お振込金額</span>
+ <span id="bankAmount" style="font-size:22px;font-weight:800;color:#C8102E">¥-</span>
+ </div>
+ <table style="width:100%;font-size:13px;color:#222;line-height:1.9;border-collapse:collapse">
+ <tr><td style="color:#888;width:84px;vertical-align:top">銀行名</td><td id="bankName" style="font-weight:600">-</td></tr>
+ <tr><td style="color:#888;vertical-align:top">支店名</td><td id="bankBranch" style="font-weight:600">-</td></tr>
+ <tr><td style="color:#888;vertical-align:top">口座種別</td><td id="bankType" style="font-weight:600">-</td></tr>
+ <tr><td style="color:#888;vertical-align:top">口座番号</td><td id="bankNumber" style="font-weight:700;letter-spacing:0.05em">-</td></tr>
+ <tr><td style="color:#888;vertical-align:top">口座名義</td><td id="bankHolder" style="font-weight:600">-</td></tr>
+ </table>
+ </div>
+ <p style="font-size:11px;color:#999;line-height:1.7;margin:0">
+ ※ 振込手数料はお客様のご負担にてお願いいたします。<br>
+ ※ お振込はお名前（ご注文者様）でお願いいたします。<br>
+ ※ 口座情報はご注文確認メールにも記載しています。
+ </p>
+ </div>
+
  <!-- Order Summary -->
  <div class="order-summary-card" id="orderSummary">
  <h3 class="summary-title">ORDER SUMMARY</h3>
@@ -1279,6 +1308,8 @@ if (header) {
      date: last.date,
      customer_email: last.email || '',
      items: items,
+     payment_method: last.payment_method || '',
+     bank: last.bank || null,
      test_mode: !!last.test_mode
    };
  }
@@ -1428,6 +1459,29 @@ function renderOrder(order) {
  document.getElementById('summarySubtotal').textContent = formatYen(subtotal - shipping);
  document.getElementById('summaryShipping').textContent = shipping > 0 ? formatYen(shipping) : '無料';
  document.getElementById('summaryTotal').textContent = formatYen(total);
+
+ /* 🏦 銀行振込: 振込先案内を表示し、文言を「入金待ち」向けに調整 */
+ const _isBank = (order.payment_method === 'bank') ||
+   (new URLSearchParams(window.location.search).get('pay') === 'bank');
+ if (_isBank) {
+   const bank = order.bank || { bank:'GMOあおぞらネット銀行', branch:'法人第二営業部', type:'普通', number:'2449808', holder:'江田畜産株式会社' };
+   const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+   setT('bankAmount', formatYen(total));
+   setT('bankName', bank.bank);
+   setT('bankBranch', bank.branch);
+   setT('bankType', bank.type);
+   setT('bankNumber', bank.number);
+   setT('bankHolder', bank.holder);
+   const box = document.getElementById('bankInstructions');
+   if (box) box.style.display = '';
+   /* 見出し・メール文言・到着予定を入金待ち向けに上書き */
+   const sub = document.querySelector('.complete-subtitle');
+   if (sub) sub.textContent = 'ご注文を受け付けました。下記口座へお振込ください。ご入金の確認後に発送いたします。';
+   const big = document.getElementById('bigArrivalDate');
+   if (big) big.textContent = 'ご入金確認後に発送';
+   const bigSub = document.getElementById('bigArrivalSub');
+   if (bigSub) bigSub.textContent = 'お振込確認後、2〜3日で発送します';
+ }
 }
 
 /* ---- Helpers ---- */

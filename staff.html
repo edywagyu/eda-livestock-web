@@ -2510,10 +2510,11 @@ function normalizeStaffOrder(o) {
            (d.name ? '（' + d.name + (d.tel ? ' / ' + d.tel : '') + '）' : '');
   }).join('　／　') : '（届け先情報なし）';
   var ps = String(o.payment_status || 'pending').toLowerCase();
-  var statusMap = { pending: '未発送', paid: '未発送', preparing: '発送準備中', shipped: '発送済', delivered: '配達完了' };
+  var statusMap = { awaiting_payment: '未入金', pending: '未発送', paid: '未発送', preparing: '発送準備中', shipped: '発送済', delivered: '配達完了' };
   return {
     _normalized: true,
     id: String(o.order_number || ''),
+    awaitingPayment: ps === 'awaiting_payment',  // 🏦 銀行振込・入金前（発送ゲート）
     customerName: o.customer_name || '',
     total: Number(o.total) || 0,
     items: itemsText || '（商品情報なし）',
@@ -2553,7 +2554,7 @@ function renderOrders() {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}</div>
           <div class="order-meta">${escapeHtml((o.items || '').slice(0, 32))}${(o.items || '').length > 32 ? '...' : ''}</div>
         </div>
@@ -2580,6 +2581,7 @@ function renderShipEmpty() {
 function renderShipDetail() {
   const o = selectedOrder;
   const isShipped = o.shipStatus === '発送済' || o.shipStatus === '配達完了';
+  const isAwaitingBank = !!o.awaitingPayment;  // 🏦 銀行振込・入金前は発送フォームを出さない
 
   document.getElementById('shipLabel').textContent = '発送処理 ' + o.id;
   document.getElementById('shipContent').innerHTML = `
@@ -2601,6 +2603,18 @@ function renderShipDetail() {
     ${isShipped ? `
       <div class="card" style="text-align:center;color:var(--green);font-weight:600">
         ✓ 発送済みとして記録済み — お客様のマイページに追跡番号が表示されます${o.tracking ? '（伝票 ' + escapeHtml(o.tracking) + '）' : ''}
+      </div>
+    ` : isAwaitingBank ? `
+      <div class="detail-card">
+        <div style="padding:12px;background:#FFF7E6;border:1px solid #F0C36D;border-radius:8px;font-size:13px;color:#8A6D1A;line-height:1.7;margin-bottom:12px">
+          <div style="font-weight:700;margin-bottom:4px">🏦 銀行振込 — 入金待ち</div>
+          <div>GMOあおぞらネット銀行で <strong>¥${Number(o.total || 0).toLocaleString()}</strong> の入金を確認してから「入金確認」を押してください。</div>
+          <div style="margin-top:4px">※ 入金確認するまで発送（伝票発行）はできません。お客様への通知は発送時の1回のみです。</div>
+        </div>
+        <button class="btn-primary" id="confirmPayBtn" onclick="confirmPayment()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          入金確認 → 発送可能にする
+        </button>
       </div>
     ` : `
       <div class="detail-card">
@@ -2674,6 +2688,55 @@ function fmtDeliveryDate(v) {
   if (isNaN(d.getTime())) return String(v);
   const w = ['日','月','火','水','木','金','土'][d.getDay()];
   return (d.getMonth() + 1) + '月' + d.getDate() + '日(' + w + ')';
+}
+
+/* 🏦 銀行振込の入金確認（アナログ）。awaiting_payment → paid に更新し、発送フォームを解放。
+   顧客通知はここでは行わない（Tom 指示: 通知は発送＝伝票発行時の1回のみ）。 */
+async function confirmPayment() {
+  const o = selectedOrder;
+  if (!o) return;
+  if (!confirm('「' + o.id + '」の入金を確認済みにします。よろしいですか？\n金額: ¥' + Number(o.total || 0).toLocaleString() + '\n（GMOあおぞらで実際の入金をご確認のうえ実行してください）')) return;
+
+  const btn = document.getElementById('confirmPayBtn');
+  const resetBtn = () => { if (btn) { btn.disabled = false; btn.classList.remove('loading'); btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> 入金確認 → 発送可能にする'; } };
+  if (btn) { btn.disabled = true; btn.classList.add('loading'); btn.innerHTML = '処理中...'; }
+
+  const markPaidLocally = () => {
+    o.awaitingPayment = false;
+    o.shipStatus = '未発送';
+    if (o._raw) o._raw.payment_status = 'paid';
+    const idx = ordersCache.findIndex(x => x.id === o.id);
+    if (idx >= 0) ordersCache[idx] = o;
+    renderShipDetail();  // → 発送（伝票入力）フォームが表示される
+    renderOrders();      // 一覧の「未入金」バッジを消す
+  };
+
+  // Demo mode
+  if (isDemoMode()) {
+    setTimeout(() => {
+      toast('🎭 デモ: 入金確認しました（発送可能になりました）', 'success');
+      markPaidLocally();
+    }, 500);
+    return;
+  }
+
+  try {
+    const res = await fetch(GAS_URL + '?action=staff_confirm_payment' + authQS(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ order_number: o.id })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      toast('入金確認しました — 伝票発行（発送）へ進めます', 'success');
+      markPaidLocally();
+    } else {
+      throw new Error(data.error || '入金確認に失敗しました');
+    }
+  } catch (e) {
+    resetBtn();
+    toast('エラー: ' + e.message, 'error');
+  }
 }
 
 async function confirmShip() {

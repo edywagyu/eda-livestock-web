@@ -2479,6 +2479,7 @@ async function placeOrder() {
  couponCode: appliedCoupon ? appliedCoupon.code : null,
  subscription: subscription,
  payment_method: payment,
+ display_total: calcTotalAmount(),  /* 🏦 銀行振込の振込金額（クーポン適用後の最終合計）。card では未使用 */
  delivery: {
    date: (document.getElementById('checkoutDeliveryDate') || {}).value || '',
    time: (document.getElementById('checkoutDeliveryTime') || {}).value || ''
@@ -2544,6 +2545,34 @@ async function placeOrder() {
    });
  }
  if (!window.EDA_API) throw new Error('決済システムの初期化に失敗しました。ページを再読み込みしてください。');
+
+ /* 🏦 銀行振込: Stripe を経由せず注文を記録し、振込先案内ページへ。
+    入金は Tom が GMOあおぞらで実額照合（アナログ）→ STAFF で「入金確認」→ 伝票発行。 */
+ if (payment === 'bank') {
+   const bankRes = await window.EDA_API.post('create_bank_order', orderPayload);
+   if (!bankRes.ok || !bankRes.order_number) {
+     throw new Error(bankRes.message || bankRes.error || 'ご注文の登録に失敗しました。お手数ですが LINE 公式 (@706sgiuq) までお問い合わせください。');
+   }
+   /* order-complete のサマリー（小計/送料/合計）が一致するよう、
+      割引後単価で items を作り、送料は「配送料」ラインとして含める。 */
+   const _bankItems = cartItems.map(it => ({ title: it.title, variant: it.variant, qty: it.qty, price: discountedUnit(it.price || 0) }));
+   if (gShipping > 0) _bankItems.push({ title: '配送料', qty: 1, price: gShipping, variantId: 'shipping' });
+   localStorage.setItem('eda-last-order', JSON.stringify({
+     num: bankRes.order_number,
+     session_id: '',
+     mode: mode,
+     date: new Date().toISOString(),
+     email: destinations[0].email || '',
+     total: bankRes.total || calcTotalAmount(),
+     shipping: gShipping,
+     items: _bankItems,
+     destinations: destinations,
+     payment_method: 'bank',
+     bank: bankRes.bank || null
+   }));
+   window.location.href = 'order-complete.html?order=' + encodeURIComponent(bankRes.order_number) + '&pay=bank';
+   return;
+ }
 
  const result = await window.EDA_API.post(action, orderPayload);
 

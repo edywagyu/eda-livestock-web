@@ -211,6 +211,7 @@ function doPost(e) {
     log(action, body);
     switch (action) {
       case 'create_checkout':              return createCheckout(body);
+      case 'create_bank_order':            return createBankOrder(body);
       case 'create_subscription_checkout': return createSubscriptionCheckout(body);
       case 'submit_order':                 return submitOrder(body);
       /* ===== LINE LIFF Auth ===== */
@@ -227,6 +228,7 @@ function doPost(e) {
       case 'staff_subscription_save':      return staffSubscriptionSave(body);
       case 'staff_subscription_delete':    return staffSubscriptionDelete(body);
       case 'staff_ship':                   return staffShip(body);
+      case 'staff_confirm_payment':        return staffConfirmPayment(body);
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
       case 'log_event':                    return logEvent(body);
@@ -252,8 +254,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.05.31c',
-    versionNote: 'v18: LINE follow webhook新設/Stripe webhook偽造防止(event再照会)/定期便50%OFFフォールバック+失敗時安全継続/testクーポン本番無効化。v17=売上は実注文のみ計上',
+    version: '2026.06.02-bank',
+    versionNote: 'v19: 銀行振込=GMOあおぞら手動フロー(create_bank_order/staff_confirm_payment・Stripe非経由・未入金は発送ガード&売上非計上)。v18: LINE follow webhook/Stripe webhook偽造防止/定期便50%OFFフォールバック',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -411,6 +413,229 @@ function createCheckout(body) {
   recordPendingOrder(orderNum, data.id, body, subtotal, shipping);
 
   return jsonResponse({ ok: true, url: data.url, session_id: data.id, order_number: orderNum });
+}
+
+/* ============================================================
+   銀行振込（GMOあおぞらネット銀行）— 手動振込フロー
+   ------------------------------------------------------------
+   口座情報は顧客に提示する公開情報（秘密鍵ではない）。
+   Script Property（BANK_*）で上書き可、未設定なら既定値。
+   ============================================================ */
+function bankAccountInfo() {
+  return {
+    bank:   cfg('BANK_NAME',   'GMOあおぞらネット銀行'),
+    branch: cfg('BANK_BRANCH', '法人第二営業部'),
+    type:   cfg('BANK_TYPE',   '普通'),
+    number: cfg('BANK_NUMBER', '2449808'),
+    holder: cfg('BANK_HOLDER', '江田畜産株式会社')
+  };
+}
+function bankAccountText() {
+  var b = bankAccountInfo();
+  return '銀行名　: ' + b.bank + '\n' +
+         '支店名　: ' + b.branch + '\n' +
+         '口座種別: ' + b.type + '\n' +
+         '口座番号: ' + b.number + '\n' +
+         '口座名義: ' + b.holder;
+}
+
+/* ============================================================
+   POST: create_bank_order (銀行振込 — Stripe を経由しない手動フロー)
+   ------------------------------------------------------------
+   ・注文を orders に payment_status='awaiting_payment' で直接記録
+   ・GMOあおぞら口座 + 振込金額を顧客へ通知（LINE連携時はLINE push / 無ければメール）
+   ・在庫は decrement しない（入金確認時 staffConfirmPayment で減算）
+   ・スタッフへ「振込待ち」通知メール
+   ・売上は payment_status='paid' のみ計上のため未入金は売上に乗らない
+   body: createCheckout と同形 + display_total（クーポン適用後の最終合計）
+   ============================================================ */
+function createBankOrder(body) {
+  const items = collectItems(body);
+
+  // 在庫上限チェック（createCheckout と同一）
+  try {
+    const stockErrors = validateStockBeforeCheckout(items);
+    if (stockErrors.length > 0) {
+      return jsonResponse({
+        ok: false, error: 'OUT_OF_STOCK',
+        message: '以下の商品は在庫不足のため注文できません:\n' + stockErrors.join('\n'),
+        out_of_stock: stockErrors
+      });
+    }
+  } catch (e) { log('stock_check_warn', { error: e.message }); }
+
+  const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+  // 送料（createCheckout と同一ロジック: ギフトは無料・自宅小計で判定）
+  const _selfKeys = {};
+  (body.destinations || []).forEach(function (d) {
+    if (d.type !== 'gift') (d.items || []).forEach(function (it) { _selfKeys[(it.title || '') + '|' + (it.variant || '')] = true; });
+  });
+  const _hasDestItems = (body.destinations || []).some(function (d) { return (d.items || []).length > 0; });
+  const _selfSubtotal = _hasDestItems
+    ? items.reduce(function (s, it) { return _selfKeys[(it.title || '') + '|' + (it.variant || '')] ? s + it.price * it.qty : s; }, 0)
+    : subtotal;
+  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref) : 0;
+
+  // 振込金額: クライアント計算済みの最終合計（クーポン適用後）を信頼。
+  //   入金は Tom が実額照合（アナログ）するため、画面表示との一致を優先。無ければ subtotal+shipping。
+  let total = Number(body.display_total);
+  if (!total || total <= 0) total = subtotal + shipping;
+
+  const orderNum = generateOrderNumber();
+  const cust = body.customer || {};
+  const itemsJson = JSON.stringify(items.map(it => ({ title: it.title || it.name || '', variant: it.variant || '', qty: it.qty || 1 })));
+  const meta = {
+    order_number: orderNum,
+    mode: body.mode || 'single',
+    customer_name: cust.name || '',
+    customer_phone: cust.phone || '',
+    line_uid: cust.line_uid || '',
+    line_name: cust.line_name || '',
+    contact_method: cust.contact_method || '',
+    destinations_json: JSON.stringify(body.destinations || []),
+    delivery_date: (body.delivery && body.delivery.date) || '',
+    delivery_time: (body.delivery && body.delivery.time) || '',
+    items_json: itemsJson,
+    coupon_code: body.couponCode || '',
+    payment_method: 'bank'
+  };
+
+  // orders に直接記録（awaiting_payment）。session_id は擬似値で重複ガード兼用。
+  const sh = sheet('orders', [
+    'order_number','placed_at','session_id','customer_name','customer_email','customer_phone',
+    'mode','total','shipping','payment_status','payment_method',
+    'destinations_json','items_json','metadata_json','line_uid','line_name','contact_method'
+  ]);
+  const pseudoSession = 'bank-' + orderNum;
+  const lock = LockService.getScriptLock();
+  try { lock.waitLock(30000); } catch (e) {}
+  try {
+    sh.appendRow([
+      orderNum, new Date(), pseudoSession,
+      cust.name || '', cust.email || '', cust.phone || '',
+      body.mode || 'single', total, shipping,
+      'awaiting_payment', 'bank',
+      meta.destinations_json, itemsJson, JSON.stringify(meta),
+      cust.line_uid || '', cust.line_name || '', cust.contact_method || ''
+    ]);
+    // 配送希望日/時間帯（finalizeOrder と同じ名前解決＋テキスト固定で日付ズレ防止）
+    try {
+      if (meta.delivery_date || meta.delivery_time) {
+        var _hdr = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+        var _appended = sh.getLastRow();
+        var _ensureCol = function (name) {
+          var idx = _hdr.indexOf(name);
+          if (idx === -1) { sh.getRange(1, _hdr.length + 1).setValue(name); _hdr.push(name); idx = _hdr.length - 1; }
+          return idx + 1;
+        };
+        if (meta.delivery_date) { var _cd = sh.getRange(_appended, _ensureCol('delivery_date')); _cd.setNumberFormat('@'); _cd.setValue(meta.delivery_date); }
+        if (meta.delivery_time) { var _ct = sh.getRange(_appended, _ensureCol('delivery_time')); _ct.setNumberFormat('@'); _ct.setValue(meta.delivery_time); }
+      }
+    } catch (e) { log('delivery_write_error', { order: orderNum, error: e.message }); }
+  } finally {
+    lock.releaseLock();
+  }
+
+  // 顧客へ振込案内（LINE連携時は LINE、無ければメール）
+  let bankPushed = false;
+  const lineUid = (cust.line_uid && String(cust.line_uid).trim()) || lineUidForEmail(cust.email || '');
+  if (lineUid) {
+    try { bankPushed = sendLinePush(lineUid, [buildBankTransferMessage(cust.name || '', orderNum, total)]); } catch (e) {}
+  }
+  if (!bankPushed && cust.email) {
+    try { sendBankTransferEmail(cust.email, cust.name || '', orderNum, total); } catch (e) { log('bank_email_error', { order: orderNum, error: e.message }); }
+  }
+  // スタッフへ振込待ち通知
+  try { sendStaffBankPendingEmail(orderNum, total, cust); } catch (e) {}
+
+  log('bank_order_created', { order: orderNum, total: total });
+  return jsonResponse({ ok: true, order_number: orderNum, total: total, bank: bankAccountInfo() });
+}
+
+/* 振込案内 LINE Flex（口座 + 金額 + 入金確認後に発送のフロー説明）。 */
+function buildBankTransferMessage(customerName, orderNum, totalYen) {
+  var b = bankAccountInfo();
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  return {
+    type: 'flex',
+    altText: '【江田畜産】ご注文ありがとうございます。お振込先のご案内（' + orderNum + '）',
+    contents: {
+      type: 'bubble',
+      body: {
+        type: 'box', layout: 'vertical', spacing: 'md',
+        contents: [
+          { type: 'text', text: '🏦 お振込先のご案内', weight: 'bold', size: 'md', color: '#2d5016' },
+          { type: 'text', text: greeting + '、ご注文ありがとうございます。下記口座へお振込ください。', size: 'sm', color: '#555555', wrap: true },
+          { type: 'separator' },
+          { type: 'box', layout: 'horizontal', contents: [
+            { type: 'text', text: '振込金額', size: 'sm', color: '#888888', flex: 4 },
+            { type: 'text', text: '¥' + (totalYen || 0).toLocaleString(), size: 'lg', color: '#C8102E', weight: 'bold', flex: 6, align: 'end' }
+          ]},
+          { type: 'separator' },
+          { type: 'box', layout: 'vertical', spacing: 'xs', contents: [
+            { type: 'text', text: b.bank, size: 'sm', color: '#333333', weight: 'bold', wrap: true },
+            { type: 'text', text: b.branch + ' / ' + b.type + ' ' + b.number, size: 'sm', color: '#333333', wrap: true },
+            { type: 'text', text: '名義: ' + b.holder, size: 'sm', color: '#333333', wrap: true }
+          ]},
+          { type: 'separator' },
+          { type: 'box', layout: 'horizontal', contents: [
+            { type: 'text', text: '注文番号', size: 'xs', color: '#888888', flex: 4 },
+            { type: 'text', text: orderNum, size: 'xs', color: '#333333', flex: 6, align: 'end', wrap: true }
+          ]},
+          { type: 'text', text: 'ご入金を確認後、商品を発送いたします（発送時にあらためてご連絡します）。振込手数料はお客様負担にてお願いいたします。', size: 'xxs', color: '#999999', wrap: true, margin: 'md' }
+        ]
+      }
+    }
+  };
+}
+
+/* 振込案内メール（LINE未連携の顧客向けフォールバック）。 */
+function sendBankTransferEmail(email, customerName, orderNum, totalYen) {
+  if (!email) return;
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var body =
+    greeting + '\n\n' +
+    'この度はご注文いただきありがとうございます。\n' +
+    '下記の口座へお振込をお願いいたします。ご入金を確認後、商品を発送いたします。\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━\n' +
+    ' ご注文番号: ' + orderNum + '\n' +
+    ' お振込金額: ¥' + Number(totalYen || 0).toLocaleString() + '\n' +
+    '━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '【お振込先】\n' +
+    bankAccountText() + '\n\n' +
+    '※ 振込手数料はお客様のご負担にてお願いいたします。\n' +
+    '※ ご入金の確認後、発送のご連絡（追跡番号）をお送りいたします。\n' +
+    '※ お振込の際は、お名前（ご注文者様）でお願いいたします。\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━\n' +
+    '江田畜産株式会社\n' +
+    'backoffice@eda-livestock.com\n' +
+    'https://eda-livestock.com/\n';
+  MailApp.sendEmail({
+    to: email,
+    subject: '【江田畜産】お振込先のご案内（' + orderNum + '）',
+    body: body
+  });
+}
+
+/* スタッフ向け「振込待ち」通知（入金を実額で照合するアナログ確認の起点）。 */
+function sendStaffBankPendingEmail(orderNum, totalYen, cust) {
+  var to = cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com';
+  try {
+    MailApp.sendEmail({
+      to: to,
+      subject: '【振込待ち】 ' + orderNum + ' ¥' + Number(totalYen || 0).toLocaleString(),
+      body:
+        '【銀行振込のご注文 — 入金待ち】\n\n' +
+        '注文番号: ' + orderNum + '\n' +
+        '振込予定額: ¥' + Number(totalYen || 0).toLocaleString() + '\n' +
+        'お客様: ' + ((cust && cust.name) || '') + '\n' +
+        'メール: ' + ((cust && cust.email) || '') + '\n' +
+        '電話: ' + ((cust && cust.phone) || '') + '\n\n' +
+        'GMOあおぞらの入金を確認したら、STAFF ポータルで「入金確認」→「伝票発行（発送）」へ進んでください。\n' +
+        '※ 入金確認するまで発送（伝票発行）はできません。'
+    });
+  } catch (e) { log('staff_bank_email_error', { order: orderNum, error: e.message }); }
 }
 
 /* ============================================================
@@ -3019,8 +3244,15 @@ function staffShip(body) {
   const headers = data[0];
   const onIdx = headers.indexOf('order_number');
   const stIdx = headers.indexOf('payment_status');
+  const pmIdx = headers.indexOf('payment_method');
   for (let i = 1; i < data.length; i++) {
     if (data[i][onIdx] === body.order_number) {
+      // ★ 銀行振込ガード: 入金確認前（awaiting_payment）の振込注文は発送（伝票発行）不可。
+      const _curStatus = stIdx >= 0 ? String(data[i][stIdx] || '').toLowerCase() : '';
+      const _payMethod = pmIdx >= 0 ? String(data[i][pmIdx] || '').toLowerCase() : '';
+      if (_payMethod === 'bank' && _curStatus === 'awaiting_payment') {
+        return jsonResponse({ ok:false, error: '未入金のため発送できません。先に「入金確認」を行ってください。' });
+      }
       // tracking_number 列を追加 (なければ)
       let tnIdx = headers.indexOf('tracking_number');
       if (tnIdx === -1) {
@@ -3060,6 +3292,63 @@ function staffShip(body) {
   return jsonResponse({ ok:false, error: 'order not found' });
 }
 
+/* POST staff_confirm_payment { order_number }
+   ------------------------------------------------------------
+   銀行振込の「入金確認（アナログ）」。awaiting_payment → paid に更新し、
+   在庫を減算（card 決済の finalizeOrder と同じく入金確定時に減算）、顧客マスタを upsert。
+   顧客への通知はここでは行わない（Tom 指示: 通知は伝票発行＝発送時の1回のみ）。
+   これにより staffShip の銀行ガードが外れ、伝票発行（発送）へ進めるようになる。 */
+function staffConfirmPayment(body) {
+  if (!body.order_number) throw new Error('order_number required');
+  const sh = sheet('orders');
+  const data = sh.getDataRange().getValues();
+  const headers = data[0];
+  const onIdx = headers.indexOf('order_number');
+  const stIdx = headers.indexOf('payment_status');
+  const pmIdx = headers.indexOf('payment_method');
+  const itemsIdx = headers.indexOf('items_json');
+  const mailIdx = headers.indexOf('customer_email');
+  const nameIdx = headers.indexOf('customer_name');
+  const phoneIdx = headers.indexOf('customer_phone');
+  const totalIdx = headers.indexOf('total');
+  const uidIdx = headers.indexOf('line_uid');
+  const lnameIdx = headers.indexOf('line_name');
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][onIdx] === body.order_number) {
+      const curStatus = stIdx >= 0 ? String(data[i][stIdx] || '').toLowerCase() : '';
+      if (curStatus === 'shipped' || curStatus === 'delivered') {
+        return jsonResponse({ ok:false, error: 'すでに発送済みです。' });
+      }
+      if (curStatus === 'paid') {
+        return jsonResponse({ ok:true, already: true }); // 冪等
+      }
+      if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('paid');
+
+      // 在庫減算（card と同様、入金確定時に減算）。失敗してもステータス更新は維持。
+      try {
+        decrementStockAfterOrder({}, { items_json: itemsIdx >= 0 ? String(data[i][itemsIdx] || '[]') : '[]' });
+      } catch (e) { log('bank_stock_decrement_error', { order: body.order_number, error: e.message }); }
+
+      // 顧客マスタ upsert（入金確定したので売上・回数を計上）
+      try {
+        upsertCustomer({
+          email: mailIdx >= 0 ? data[i][mailIdx] : '',
+          name: nameIdx >= 0 ? data[i][nameIdx] : '',
+          phone: phoneIdx >= 0 ? data[i][phoneIdx] : '',
+          line_uid: uidIdx >= 0 ? (data[i][uidIdx] || '') : '',
+          line_name: lnameIdx >= 0 ? (data[i][lnameIdx] || '') : '',
+          last_order: body.order_number,
+          last_order_total: totalIdx >= 0 ? (Number(data[i][totalIdx]) || 0) : 0
+        });
+      } catch (e) { log('bank_upsert_error', { order: body.order_number, error: e.message }); }
+
+      log('bank_payment_confirmed', { order: body.order_number });
+      return jsonResponse({ ok:true });
+    }
+  }
+  return jsonResponse({ ok:false, error: 'order not found' });
+}
+
 /* GET b2_csv (ヤマト B2 形式の CSV ダウンロード) */
 function b2CsvExport() {
   try {
@@ -3072,6 +3361,8 @@ function b2CsvExport() {
     //   既存4列の後ろに足すので従来の取り込み位置は不変。日付は YYYY/MM/DD (ヤマト形式)。
     const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名,お届け希望日,お届け希望時間帯'];
     data.slice(1).forEach(row => {
+      // 🏦 未入金（銀行振込・入金前）の注文は発送伝票の対象外（入金確認まで除外）。
+      if (String(get(row, 'payment_status') || '').toLowerCase() === 'awaiting_payment') return;
       const dest = get(row, 'destinations_json');
       const name = get(row, 'customer_name');
       const dDate = String(get(row, 'delivery_date') || '').slice(0, 10).replace(/-/g, '/');  // ISO→YYYY/MM/DD
