@@ -137,6 +137,7 @@ function doGet(e) {
       /* ===== 🔧 診断用 (read-only / 失敗オーダーの遡及修復) ===== */
       case 'diag_webhooks':     return diagWebhooks();
       case 'diag_recover_sub':  return diagRecoverSubscription(e.parameter);
+      case 'diag_subscriptions': return diagSubscriptions(e.parameter);
       case 'diag_update_webhook': return diagUpdateWebhook(e.parameter);
       case 'diag_find_session':  return diagFindSession(e.parameter);
       case 'diag_dedupe_orders': return diagDedupeOrders(e.parameter);
@@ -864,6 +865,59 @@ function diagWebhooks() {
    ・PaymentMethod を保存済 Customer に attach
    ・Subscription を billing_cycle_anchor=翌月20日 で作成
    ============================================================ */
+/* ============================================================
+   GET ?action=diag_subscriptions — Stripe の全サブスクを live 一覧（読み取り専用・課金しない）
+   各 sub: status / email / current_period_end(次回課金日) / amount / interval / 既定PM有無。
+   テスト顧客 cus_Uake は is_test=true で除外集計。
+   🔴 active なのに has_default_pm=false = 次回課金が失敗する＝要対応。
+   ============================================================ */
+function diagSubscriptions(params) {
+  var STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY not set' });
+  var TEST_CUS = 'cus_UakeKnQRLIzK9x';
+  var out = [], startingAfter = '', guard = 0;
+  do {
+    var url = 'https://api.stripe.com/v1/subscriptions?status=all&limit=100'
+            + '&expand[]=data.default_payment_method&expand[]=data.customer';
+    if (startingAfter) url += '&starting_after=' + startingAfter;
+    var res = UrlFetchApp.fetch(url, { method:'get', headers:{ 'Authorization':'Bearer '+STRIPE }, muteHttpExceptions:true });
+    var data = JSON.parse(res.getContentText());
+    if (data.error) return jsonResponse({ ok:false, error: data.error.message });
+    (data.data || []).forEach(function (s) {
+      var cust = (s.customer && typeof s.customer === 'object') ? s.customer : null;
+      var pm = (s.default_payment_method && typeof s.default_payment_method === 'object') ? s.default_payment_method : s.default_payment_method;
+      var custDefaultPm = cust && cust.invoice_settings && cust.invoice_settings.default_payment_method;
+      var item = (s.items && s.items.data && s.items.data[0]) || {};
+      var price = item.price || {};
+      out.push({
+        id: s.id,
+        status: s.status,
+        is_test: (s.customer === TEST_CUS) || (cust && cust.id === TEST_CUS),
+        customer_id: cust ? cust.id : s.customer,
+        email: cust ? (cust.email || '') : '',
+        current_period_end: s.current_period_end ? new Date(s.current_period_end * 1000).toISOString().slice(0, 10) : '',
+        cancel_at_period_end: !!s.cancel_at_period_end,
+        amount: (price.unit_amount != null) ? price.unit_amount : '',
+        interval: price.recurring ? price.recurring.interval : '',
+        has_default_pm: !!(pm || custDefaultPm)
+      });
+    });
+    startingAfter = (data.has_more && data.data.length) ? data.data[data.data.length - 1].id : '';
+    guard++;
+  } while (startingAfter && guard < 10);
+  var real = out.filter(function (x) { return !x.is_test; });
+  var realActive = real.filter(function (x) { return x.status === 'active' || x.status === 'trialing' || x.status === 'past_due'; });
+  var summary = {
+    total: out.length,
+    test: out.length - real.length,
+    real: real.length,
+    real_active: realActive.length,
+    real_active_no_pm: realActive.filter(function (x) { return !x.has_default_pm; }).length,
+    real_past_due: real.filter(function (x) { return x.status === 'past_due' || x.status === 'unpaid'; }).length
+  };
+  return jsonResponse({ ok:true, summary: summary, real_subs: real });
+}
+
 function diagRecoverSubscription(params) {
   const STRIPE = cfg('STRIPE_SECRET_KEY');
   if (!STRIPE) return jsonResponse({ ok:false, error:'STRIPE_SECRET_KEY not set' });
