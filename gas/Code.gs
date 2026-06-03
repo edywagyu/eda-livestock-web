@@ -114,8 +114,24 @@ function generateOrderNumber() {
    ルーター
    ============================================================ */
 
+/* 🔒 staff トークン必須アクション（router で一括ガード）。
+   staff_login は token 発行の入口なので除外。token は GET/POST とも e.parameter.token で受ける。 */
+var STAFF_PROTECTED = {
+  staff_dashboard: 1, staff_inventory: 1, staff_orders: 1, staff_analytics: 1, b2_csv: 1,
+  customers: 1, customers_csv: 1, customers_segment: 1, segment_stats: 1,
+  orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
+  staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
+  staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
+  staff_ship: 1, staff_confirm_payment: 1,
+  diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
+  diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1
+};
+
 function doGet(e) {
   const action = (e.parameter && e.parameter.action) || 'ping';
+  if (STAFF_PROTECTED[action] && !requireStaff(e)) {
+    return jsonResponse({ ok:false, error: 'unauthorized' });
+  }
   try {
     switch (action) {
       case 'ping':              return ping();
@@ -209,6 +225,10 @@ function doPost(e) {
     return handleLineWebhook(body);
   }
 
+  if (STAFF_PROTECTED[action] && !requireStaff(e)) {
+    return jsonResponse({ ok:false, error: 'unauthorized' });
+  }
+
   try {
     log(action, body);
     switch (action) {
@@ -257,8 +277,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.02-bank',
-    versionNote: 'v19: 銀行振込=GMOあおぞら手動フロー(create_bank_order/staff_confirm_payment・Stripe非経由・未入金は発送ガード&売上非計上)。v18: LINE follow webhook/Stripe webhook偽造防止/定期便50%OFFフォールバック',
+    version: '2026.06.03-staffauth',
+    versionNote: 'v20: staff/dashboard 認証＝署名トークン(staff_login発行→requireStaffでstaff_*/diag_*を router 一括ガード)・発送通知の冪等化(再送防止)・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー。v18: LINE follow webhook/Stripe webhook偽造防止',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -3294,13 +3314,46 @@ function segmentStats() {
 /* ============================================================
    STAFF endpoints (商品管理・注文管理用)
    ============================================================ */
+/* ============================================================
+   🔒 STAFF 認証トークン（ステートレス HMAC・12時間有効）
+   - 秘密鍵 = Script Properties STAFF_TOKEN_SECRET（無ければ自動生成・サーバ内のみ）
+   - token = "<expMs>.<base64url(HMAC_SHA256(expMs, secret))>"
+   - staffLogin で発行 → フロントが ?token= で送る → requireStaff(e) が router で検証
+   ============================================================ */
+function staffSecret_() {
+  var p = PropertiesService.getScriptProperties();
+  var s = p.getProperty('STAFF_TOKEN_SECRET');
+  if (!s) { s = Utilities.getUuid() + Utilities.getUuid(); p.setProperty('STAFF_TOKEN_SECRET', s); }
+  return s;
+}
+function makeStaffToken_(expMs) {
+  var sig = Utilities.base64EncodeWebSafe(
+    Utilities.computeHmacSha256Signature(String(expMs), staffSecret_()));
+  return String(expMs) + '.' + sig;
+}
+function verifyStaffToken_(token) {
+  if (!token) return false;
+  var parts = String(token).split('.');
+  if (parts.length !== 2) return false;
+  var expMs = Number(parts[0]);
+  if (!expMs || Date.now() > expMs) return false;
+  var expect = Utilities.base64EncodeWebSafe(
+    Utilities.computeHmacSha256Signature(String(expMs), staffSecret_()));
+  return expect === parts[1];
+}
+function requireStaff(e) {
+  var token = (e && e.parameter && e.parameter.token) || '';
+  return verifyStaffToken_(token);
+}
+
 function staffLogin(params) {
   const pin = params.pin || '';
   const validPin = cfg('STAFF_PIN', '1234');
   if (String(pin) !== String(validPin)) {
-    return jsonResponse({ ok:false, error: 'Invalid PIN' });
+    return jsonResponse({ ok:false, success:false, error: 'Invalid PIN' });
   }
-  return jsonResponse({ ok:true, name: '江田畜産スタッフ', role: 'admin' });
+  const token = makeStaffToken_(Date.now() + 12 * 3600 * 1000); // 12h 有効
+  return jsonResponse({ ok:true, success:true, token: token, name: '江田畜産スタッフ', role: 'admin' });
 }
 
 function staffDashboard() {
@@ -3349,53 +3402,65 @@ function staffInventory() {
 /* POST staff_update_stock { variantId, stock } — 在庫数のみ高速更新 */
 function staffUpdateStock(body) {
   if (!body.variantId) throw new Error('variantId required');
-  const sh = productsSheet();
-  const data = sh.getDataRange().getValues();
-  const headers = data[0];
-  const vidIdx = headers.indexOf('variantId');
-  const stockIdx = headers.indexOf('stock');
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][vidIdx] === body.variantId) {
-      sh.getRange(i + 1, stockIdx + 1).setValue(Number(body.stock) || 0);
-      return jsonResponse({ ok:true, row: i + 1 });
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);  // 在庫の read-modify-write を直列化（同時更新のロストアップデート防止）
+  try {
+    const sh = productsSheet();
+    const data = sh.getDataRange().getValues();
+    const headers = data[0];
+    const vidIdx = headers.indexOf('variantId');
+    const stockIdx = headers.indexOf('stock');
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][vidIdx] === body.variantId) {
+        sh.getRange(i + 1, stockIdx + 1).setValue(Number(body.stock) || 0);
+        return jsonResponse({ ok:true, row: i + 1 });
+      }
     }
+    return jsonResponse({ ok:false, error: 'variantId not found in products sheet' });
+  } finally {
+    lock.releaseLock();
   }
-  return jsonResponse({ ok:false, error: 'variantId not found in products sheet' });
 }
 
 /* POST staff_product_save { 全フィールド } — 新規追加 or 全フィールド更新 */
 function staffProductSave(body) {
   if (!body.variantId) throw new Error('variantId required');
-  const sh = productsSheet();
-  const data = sh.getDataRange().getValues();
-  const headers = data[0];
-  const vidIdx = headers.indexOf('variantId');
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);  // 商品行の read-modify-write を直列化
+  try {
+    const sh = productsSheet();
+    const data = sh.getDataRange().getValues();
+    const headers = data[0];
+    const vidIdx = headers.indexOf('variantId');
 
-  /* 既存行を探す */
-  let foundRow = -1;
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][vidIdx] === body.variantId) { foundRow = i + 1; break; }
-  }
-
-  /* 全フィールドを配列化 (PRODUCTS_HEADERS の順序) */
-  const row = headers.map(h => {
-    const v = body[h];
-    if (v === undefined || v === null) return '';
-    /* 数値カラムは Number 化 */
-    if (h === 'price' || h === 'weight' || h === 'stock') return Number(v) || 0;
-    /* boolean カラムは TRUE/FALSE 文字列 */
-    if (h === 'isOrganic' || h === 'comingSoon' || h === 'published') {
-      return (v === true || v === 'TRUE' || v === 'true') ? 'TRUE' : 'FALSE';
+    /* 既存行を探す */
+    let foundRow = -1;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][vidIdx] === body.variantId) { foundRow = i + 1; break; }
     }
-    return String(v);
-  });
 
-  if (foundRow > 0) {
-    sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
-    return jsonResponse({ ok:true, action: 'updated', row: foundRow });
-  } else {
-    sh.appendRow(row);
-    return jsonResponse({ ok:true, action: 'created' });
+    /* 全フィールドを配列化 (PRODUCTS_HEADERS の順序) */
+    const row = headers.map(h => {
+      const v = body[h];
+      if (v === undefined || v === null) return '';
+      /* 数値カラムは Number 化 */
+      if (h === 'price' || h === 'weight' || h === 'stock') return Number(v) || 0;
+      /* boolean カラムは TRUE/FALSE 文字列 */
+      if (h === 'isOrganic' || h === 'comingSoon' || h === 'published') {
+        return (v === true || v === 'TRUE' || v === 'true') ? 'TRUE' : 'FALSE';
+      }
+      return String(v);
+    });
+
+    if (foundRow > 0) {
+      sh.getRange(foundRow, 1, 1, row.length).setValues([row]);
+      return jsonResponse({ ok:true, action: 'updated', row: foundRow });
+    } else {
+      sh.appendRow(row);
+      return jsonResponse({ ok:true, action: 'created' });
+    }
+  } finally {
+    lock.releaseLock();
   }
 }
 
@@ -3586,6 +3651,10 @@ function staffShip(body) {
       }
       // tracking_number 列を追加 (なければ)
       let tnIdx = headers.indexOf('tracking_number');
+      // 冪等化: 既に発送済み(status=shipped/delivered) or 伝票番号が既存なら「再発送」とみなし、
+      //         LINE/メール通知を再送しない（二重通知防止）。記録(伝票/STS)の更新自体は許可。
+      const _existingTracking = tnIdx >= 0 ? String(data[i][tnIdx] || '').trim() : '';
+      const _alreadyShipped = (_curStatus === 'shipped' || _curStatus === 'delivered') || !!_existingTracking;
       if (tnIdx === -1) {
         sh.getRange(1, headers.length + 1).setValue('tracking_number');
         tnIdx = headers.length;
@@ -3594,30 +3663,32 @@ function staffShip(body) {
       sh.getRange(i + 1, tnIdx + 1).setValue(tracking);
       if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('shipped');
 
-      // ★ 発送通知 (②配送確定): 発送伝票確定が起点。
+      // ★ 発送通知 (②配送確定): 発送伝票確定が起点。初回発送時のみ送る（_alreadyShipped は再送しない）。
       //   LINE 連携済み (line_uid あり。無ければ email 逆引き) → LINE で配送番号/お届け予定。
       //   未連携、または LINE 失敗 → メール。通知失敗で発送記録自体は失敗させない。
-      try {
-        const row = data[i];
-        const get = (n) => { const k = headers.indexOf(n); return k >= 0 ? row[k] : ''; };
-        const custName  = String(get('customer_name') || '');
-        const custEmail = String(get('customer_email') || '');
-        const deliveryDate = String(body.delivery_date || body.eta || '').trim();
-        let shipLineUid = String(get('line_uid') || '').trim();
-        if (!shipLineUid) shipLineUid = lineUidForEmail(custEmail);
-        let notified = false;
-        if (shipLineUid) {
-          notified = sendLinePush(shipLineUid, [buildShipNotifyMessage(custName, body.order_number, tracking, deliveryDate)]);
+      if (!_alreadyShipped) {
+        try {
+          const row = data[i];
+          const get = (n) => { const k = headers.indexOf(n); return k >= 0 ? row[k] : ''; };
+          const custName  = String(get('customer_name') || '');
+          const custEmail = String(get('customer_email') || '');
+          const deliveryDate = String(body.delivery_date || body.eta || '').trim();
+          let shipLineUid = String(get('line_uid') || '').trim();
+          if (!shipLineUid) shipLineUid = lineUidForEmail(custEmail);
+          let notified = false;
+          if (shipLineUid) {
+            notified = sendLinePush(shipLineUid, [buildShipNotifyMessage(custName, body.order_number, tracking, deliveryDate)]);
+          }
+          if (!notified && custEmail) {
+            sendShippingEmail(custEmail, custName, body.order_number, tracking, deliveryDate);
+          }
+          log('ship_notified', { order: body.order_number, via: shipLineUid ? (notified ? 'line' : 'email_fallback') : 'email', tracking: tracking });
+        } catch (e) {
+          log('ship_notify_error', { order: body.order_number, error: e.message });
         }
-        if (!notified && custEmail) {
-          sendShippingEmail(custEmail, custName, body.order_number, tracking, deliveryDate);
-        }
-        log('ship_notified', { order: body.order_number, via: shipLineUid ? (notified ? 'line' : 'email_fallback') : 'email', tracking: tracking });
-      } catch (e) {
-        log('ship_notify_error', { order: body.order_number, error: e.message });
       }
 
-      return jsonResponse({ ok:true });
+      return jsonResponse({ ok:true, already: _alreadyShipped });
     }
   }
   return jsonResponse({ ok:false, error: 'order not found' });

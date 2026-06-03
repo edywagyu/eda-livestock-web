@@ -2874,6 +2874,34 @@ function loadCustomers() {
     renderCustomers();
     return;
   }
+  // 本番: customers API（dashboard と同じ customers シート）から取得 → staff 表示形に正規化
+  const list = document.getElementById('custList');
+  if (list) list.innerHTML = '<div class="empty">読み込み中...</div>';
+  fetch(GAS_URL + '?action=customers' + authQS())
+    .then(r => r.json())
+    .then(d => {
+      if (handleAuthError(d)) return;
+      const rows = (d && d.customers) ? d.customers : [];
+      customersCache = rows.map(c => ({
+        id: c.email || c.name || '',
+        name: c.name || '(名称未設定)',
+        email: c.email || '',
+        phone: c.phone || '',
+        orderCount: Number(c.orders || 0),
+        totalSpent: Number(c.total || 0),
+        lastOrder: c.last || '',
+        segment: c.segment || 'new',
+        income: 'mid',          // customers シートに所得情報なし（推定タグは出さない）
+        lineLinked: !!c.line,
+        subPlan: '',
+        surveyOrganic: ''
+      }));
+      renderSegmentInsights();
+      renderCustomers();
+    })
+    .catch(e => {
+      if (list) list.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><div class="empty-text">顧客の取得に失敗しました<br><small>' + escapeHtml(e.message) + '</small></div></div>';
+    });
 }
 
 function renderSegmentInsights() {
@@ -3138,14 +3166,12 @@ function sendLineBlast() {
   if (!confirm(segment + ' のLINE連携済 ' + linked.length + '名 に配信します。実行しますか？')) return;
   if (isDemoMode()) {
     toast('🎭 デモ: ' + linked.length + '名へ配信したフリ', 'success');
+    document.getElementById('blastMessage').value = '';
   } else {
-    fetch(GAS_URL + '?action=staff_line_blast' + authQS(), {
-      method: 'POST', headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ segment, message: msg })
-    }).then(() => toast('配信完了 (' + linked.length + '名)', 'success'))
-      .catch(e => toast('配信失敗: ' + e.message, 'error'));
+    // ⚠️ 本番のLINE一斉配信はバックエンド未実装（staff_line_blast 無し）。
+    //    「配信済」と誤認させないため準備中を明示。下書きは消さず残す。
+    toast('🚧 LINE一斉配信は準備中です（本番未対応）', 'error');
   }
-  document.getElementById('blastMessage').value = '';
 }
 
 /* ================ FLOWS (自動化) ================ */
@@ -3326,12 +3352,11 @@ function toggleFlow(flowId, isActive) {
   if (flow) {
     flow.active = isActive;
     renderFlows(JSON.parse(JSON.stringify(DEMO_FLOWS)));
-    toast(isActive ? '✅ ON にしました' : '⏸ OFF にしました', 'success');
-    if (!isDemoMode()) {
-      fetch(GAS_URL + '?action=staff_flow_toggle' + authQS(), {
-        method: 'POST', headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ flowId, active: isActive })
-      }).catch(() => {});
+    if (isDemoMode()) {
+      toast(isActive ? '✅ ON にしました' : '⏸ OFF にしました', 'success');
+    } else {
+      // 自動化フローの保存はバックエンド未実装（staff_flow_toggle 無し）。表示のみ切替。
+      toast('🚧 自動化フローは準備中（本番には保存されません）', 'error');
     }
   }
 }
@@ -3888,7 +3913,8 @@ function submitForm() {
   if (window._formType === 'rewards')     { saveRewards(); return; }
   if (window._formType === 'gift')        { saveGift(); return; }
   if (window._formType === 'subscription'){ saveSub(); return; }
-  toast(isDemoMode() ? '🎭 デモ: 保存したフリ' : '保存しました', 'success');
+  // campaign / coupon / set / flow は保存先バックエンド未実装＝本番では「準備中」を正直に出す
+  toast(isDemoMode() ? '🎭 デモ: 保存したフリ（本番未対応）' : '🚧 この機能は準備中です（本番未対応）', isDemoMode() ? 'success' : 'error');
   closeForm();
 }
 
@@ -3906,11 +3932,8 @@ function saveRewards() {
   if (isDemoMode()) {
     toast('🎭 デモ: 特典マスタを更新しました', 'success');
   } else {
-    fetch(GAS_URL + '?action=staff_rewards_save' + authQS(), {
-      method: 'POST', headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ rewards: REWARD_PROGRAM })
-    }).then(() => toast('特典マスタを更新しました', 'success'))
-      .catch(e => toast('保存失敗: ' + e.message, 'error'));
+    // 特典マスタの保存はバックエンド未実装（staff_rewards_save 無し）。表示のみ更新。
+    toast('🚧 特典マスタの保存は準備中（本番未対応）', 'error');
   }
   closeForm();
 }
