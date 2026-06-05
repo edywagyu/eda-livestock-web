@@ -297,7 +297,7 @@
 
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(4)">戻る</button>
-        <button class="btn-next final" id="regSubmit" onclick="submitRegistration()">🍗 ムネ肉GETで登録完了</button>
+        <button class="btn-next final" id="regSubmit" onclick="submitRegistration()">🎁 ムネ肉＋10%OFFを受け取る</button>
       </div>
     </div>
   </div>
@@ -313,14 +313,19 @@
     <div class="reward-body">
       <h2 class="success-title" style="margin-top:4px">会員登録ありがとうございます！</h2>
       <p class="success-sub" style="font-size:13px;margin-bottom:16px">
-        📩 特典クーポンをLINEでお送りしました
+        🍗 ムネ肉200gが0円＋全品10%OFF、2つの特典をGET！
       </p>
+      <div style="background:linear-gradient(135deg,#fff8e1,#fef3e0);border:1.5px dashed #D4A93B;border-radius:10px;padding:14px 16px;margin:0 0 16px;text-align:center">
+        <div style="font-size:11px;font-weight:700;color:#b06000;letter-spacing:.05em">🎁 全品10%OFFクーポン</div>
+        <div style="font-size:24px;font-weight:800;color:#0F3D2E;letter-spacing:.08em;margin:6px 0;font-family:monospace">kXI6blJe</div>
+        <div style="font-size:10.5px;color:#888">お会計の「クーポンコード」欄に入力（初回ご注文に適用）</div>
+      </div>
       <div class="reward-how">
         <div class="reward-how-title">特典の受け取り方</div>
         <ul>
-          <li>LINEに届いたクーポンコードを確認</li>
-          <li>無投薬ムネ肉200gをカートに追加</li>
-          <li>お会計時にクーポンを適用で0円に！</li>
+          <li>無投薬ムネ肉200gをカートに追加 → お会計で0円に</li>
+          <li>その他の商品は クーポン「kXI6blJe」で10%OFF</li>
+          <li>この画面の10%OFFコードはスクショ保存を📸（ムネ肉クーポンはLINEにも届きます）</li>
         </ul>
       </div>
       <a href="https://edywagyu.github.io/eda-livestock-web/shop.html?item=mune250" class="btn-next final" style="display:block;text-align:center;text-decoration:none;padding:16px;font-size:16px">🍗 無投薬ムネ肉を見る →</a>
@@ -408,6 +413,16 @@ function goStep(n) {
         return;
       }
     }
+    // アンケート必須化（特典＝ムネ肉＋10%OFFの条件）
+    if (_currentStep === 2 && (!getChipValues('age').length || !getChipValues('family').length)) {
+      alert('年齢層と家族人数を選んでください（特典の条件です）。'); return;
+    }
+    if (_currentStep === 3 && !getChipValues('meat_beef').length && !getChipValues('meat_chicken').length) {
+      alert('よく使うお肉を1つ以上選んでください。'); return;
+    }
+    if (_currentStep === 4 && (!getChipValues('frequency').length || !getChipValues('budget').length)) {
+      alert('購入頻度と月のお肉予算を選んでください。'); return;
+    }
   }
 
   _currentStep = n;
@@ -427,9 +442,9 @@ function goStep(n) {
   var remaining = TOTAL_STEPS - n + 1;
   var rewardEl = document.getElementById('rewardText');
   if (remaining <= 1) {
-    rewardEl.textContent = '回答して無投薬ムネ肉200g GET！';
+    rewardEl.textContent = '回答でムネ肉200g＋全品10%OFFクーポン GET！';
   } else {
-    rewardEl.textContent = 'あと' + remaining + '問で 無投薬ムネ肉200g GET！';
+    rewardEl.textContent = 'あと' + remaining + '問で ムネ肉200g＋10%OFF GET！';
   }
 
   // Scroll to top of card
@@ -471,6 +486,12 @@ function submitRegistration() {
 
   var name  = document.getElementById('regName').value.trim();
   var phone = document.getElementById('regPhone').value.trim();
+
+  // STEP5（最後の質問）も必須＝アンケート完答で特典
+  if (!getChipValues('values').length) {
+    alert('「お肉選びで大切にしていること」を1つ以上選んでください。');
+    btn.disabled = false; btn.textContent = '🎁 ムネ肉＋10%OFFを受け取る'; return;
+  }
 
   // Collect survey data
   var survey = {
