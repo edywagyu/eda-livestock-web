@@ -277,8 +277,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.03-staffauth',
-    versionNote: 'v20: staff/dashboard 認証＝署名トークン(staff_login発行→requireStaffでstaff_*/diag_*を router 一括ガード)・発送通知の冪等化(再送防止)・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー。v18: LINE follow webhook/Stripe webhook偽造防止',
+    version: '2026.06.05-asyncwebhook',
+    versionNote: 'v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -1369,70 +1369,154 @@ function buildFollowWelcomeMessage(customerName) {
 }
 
 /* ============================================================
-   POST: stripe_webhook
+   POST: stripe_webhook  (⚡ 非同期キュー方式 2026-06-05)
+   ------------------------------------------------------------
+   旧実装は「受信 → Stripe再照会 → finalizeOrder(メール2通/在庫/Lock最大30s)
+   → 200」を同期実行していたため応答に十数秒かかり、Stripe のタイムアウトを
+   超えて全配信が失敗扱い → 9日連続失敗で 2026-06-05 にエンドポイント自動停止。
+   対策: 受信したら webhook_queue に積んで【即 200】を返す。重い処理と
+   Stripe 再照会による実在検証は 1分毎の time-trigger processWebhookQueue()
+   が裏で実行する。受信応答はシート追記1回のみ＝1秒未満でタイムアウト根治。
    ============================================================ */
+var WEBHOOK_QUEUE_HEADERS = ['received_at','event_id','type','raw_json','status','attempts','processed_at','error'];
+
 function handleStripeWebhook(e) {
-  const raw = e.postData && e.postData.contents;
+  const raw = (e && e.postData && e.postData.contents) || '';
 
   let event;
   try { event = JSON.parse(raw); } catch (err) {
     return jsonResponse({ ok:false, error: 'Invalid JSON' });
   }
 
-  // ★ 偽造防止（重要）:
-  //   GAS の Web アプリは HTTP ヘッダ(Stripe-Signature)を読めないため、本来の HMAC 署名検証ができない。
-  //   そこで (1) 任意の共有キー gate と (2) event.id を Stripe API に再照会して実在を確認する、
-  //   の2段で「誰でも ?action=stripe_webhook に偽注文 JSON を POST できる」穴を塞ぐ。
-  //   検証を通った Stripe 取得データ(verified)を「正」として処理する（payload は信用しない）。
-  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  const evId = event && event.id;
+  const evType = (event && event.type) || '';
 
-  // (1) 共有キー gate（任意・後方互換）: WEBHOOK_SHARED_KEY を設定し、Stripe 側 Webhook URL を
-  //     ...?action=stripe_webhook&key=XXXX にすると有効化。未設定なら従来どおりスキップ（デプロイで即停止しない）。
-  const sharedKey = cfg('WEBHOOK_SHARED_KEY');
-  if (sharedKey && (!e.parameter || e.parameter.key !== sharedKey)) {
-    log('stripe_webhook_bad_key', { id: event && event.id });
-    return jsonResponse({ ok:false, error: 'unauthorized' });
+  // Stripe の event 形式だけ受理（実在検証は処理時に再照会で行う）。
+  // 形式不正は 200 で静かに捨てる（ここで ok:false を返すと Stripe が無駄にリトライする）。
+  if (!evId || String(evId).indexOf('evt_') !== 0) {
+    log('stripe_webhook_bad_event', { id: evId, type: evType });
+    return jsonResponse({ received: true, ignored: 'bad_event' });
   }
 
-  // (2) event.id を Stripe に再照会して実在検証 → 取得データを正とする
-  let verified = event;
-  if (STRIPE && event && typeof event.id === 'string' && event.id.indexOf('evt_') === 0) {
-    try {
-      const vr = UrlFetchApp.fetch('https://api.stripe.com/v1/events/' + event.id, {
-        method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
-      });
-      if (vr.getResponseCode() === 200) {
-        verified = JSON.parse(vr.getContentText());
-      } else {
-        // Stripe に存在しない event = 偽造の疑い → 拒否（Stripe は本物なら最大3日リトライするので取りこぼさない）
-        log('stripe_webhook_forgery_rejected', { id: event.id, code: vr.getResponseCode() });
-        return jsonResponse({ ok:false, error: 'event not found on Stripe' });
-      }
-    } catch (verr) {
-      log('stripe_webhook_verify_error', { id: event.id, error: verr.message });
-      return jsonResponse({ ok:false, error: 'verify failed' });
-    }
-  }
-
-  log('stripe_webhook_' + verified.type, { id: verified.id });
-
+  // キューに積む（重複は処理時に event_id 単位で吸収するので、受信は無条件 append＝最速）
   try {
-    switch (verified.type) {
-      case 'checkout.session.completed':
-        return finalizeOrder(verified.data.object);
-      case 'customer.subscription.created':
-        return logSubscriptionCreated(verified.data.object);
-      case 'customer.subscription.deleted':
-        return logSubscriptionCancelled(verified.data.object);
-      case 'invoice.payment_succeeded':
-        return logInvoicePaid(verified.data.object);
-      default:
-        return jsonResponse({ ok:true, ignored: verified.type });
-    }
-  } catch (err) {
-    log('stripe_webhook_error', { type: verified.type }, { error: err.message });
-    return jsonResponse({ ok:false, error: err.message });
+    const q = sheet('webhook_queue', WEBHOOK_QUEUE_HEADERS);
+    q.appendRow([ new Date(), evId, evType, String(raw).slice(0, 45000), 'pending', 0, '', '' ]);
+  } catch (qe) {
+    // 積めなかった時だけ ok:false(=2xx以外) を返して Stripe にリトライさせ、取りこぼしを防ぐ
+    log('stripe_webhook_enqueue_error', { id: evId }, { error: qe.message });
+    return jsonResponse({ ok:false, error: 'enqueue failed' });
   }
+
+  log('stripe_webhook_queued', { id: evId, type: evType });
+  return jsonResponse({ received: true });   // ⚡ 即 200（Stripe のタイムアウト回避）
+}
+
+/* ============================================================
+   ⚙ 1分毎の time-trigger が呼ぶ: webhook_queue の pending を検証→処理（重い処理はここ）
+   ・event_id 単位の冪等(Stripe リトライ重複を吸収)
+   ・Stripe 再照会で実在検証してから本処理 → 偽造を弾く
+   ・失敗は最大5回まで pending のまま再試行、超えたら failed
+   ============================================================ */
+function processWebhookQueue() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) return;   // 多重起動防止。取れなければ次回 trigger に任せる
+  try {
+    const q = sheet('webhook_queue', WEBHOOK_QUEUE_HEADERS);
+    const data = q.getDataRange().getValues();
+    if (data.length < 2) return;
+    const H = data[0];
+    const cId = H.indexOf('event_id'), cType = H.indexOf('type'), cRaw = H.indexOf('raw_json'),
+          cStatus = H.indexOf('status'), cAtt = H.indexOf('attempts'),
+          cProc = H.indexOf('processed_at'), cErr = H.indexOf('error');
+
+    // event_id 単位の冪等: 既に done のイベントは再処理しない
+    const doneIds = {};
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][cStatus] === 'done') doneIds[data[i][cId]] = true;
+    }
+
+    const MAX_PER_RUN = 50;            // 6分制限対策。通常は数件
+    let processed = 0;
+    for (let i = 1; i < data.length && processed < MAX_PER_RUN; i++) {
+      if (data[i][cStatus] !== 'pending') continue;
+      const row = i + 1;
+      const evId = data[i][cId];
+
+      if (doneIds[evId]) {             // 同一イベント処理済み → skip(冪等)
+        q.getRange(row, cStatus + 1).setValue('done');
+        q.getRange(row, cErr + 1).setValue('dup-skip');
+        continue;
+      }
+
+      const attempts = Number(data[i][cAtt] || 0) + 1;
+      q.getRange(row, cAtt + 1).setValue(attempts);
+
+      let verified = null;
+      try {
+        verified = verifyStripeEvent_(evId, data[i][cRaw]);
+      } catch (verr) {
+        q.getRange(row, cErr + 1).setValue('verify_err: ' + String(verr.message).slice(0, 200));
+      }
+
+      if (!verified) {                 // 偽造 or 一時的な検証失敗
+        if (attempts >= 5) {
+          q.getRange(row, cStatus + 1).setValue('failed');
+          log('webhook_queue_verify_failed', { id: evId, attempts: attempts });
+        }
+        continue;                      // pending のまま次回再試行（上限5回）
+      }
+
+      try {
+        dispatchWebhookEvent_(verified);
+        doneIds[evId] = true;
+        q.getRange(row, cStatus + 1).setValue('done');
+        q.getRange(row, cProc + 1).setValue(new Date());
+        processed++;
+      } catch (err) {
+        log('webhook_queue_dispatch_error', { id: evId, type: data[i][cType] }, { error: err.message });
+        q.getRange(row, cErr + 1).setValue(String(err.message).slice(0, 300));
+        if (attempts >= 5) q.getRange(row, cStatus + 1).setValue('failed');
+      }
+    }
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/* event.id を Stripe に再照会して実在検証。200 のときだけ取得データ(=正)を返す。
+   鍵未設定時は後方互換で raw を信頼（live 運用では鍵必須）。401(鍵不正)/404(偽造)→null。 */
+function verifyStripeEvent_(evId, rawFallback) {
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) { try { return JSON.parse(rawFallback); } catch (e) { return null; } }
+  if (!evId || String(evId).indexOf('evt_') !== 0) return null;
+  const vr = UrlFetchApp.fetch('https://api.stripe.com/v1/events/' + evId, {
+    method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+  });
+  if (vr.getResponseCode() === 200) return JSON.parse(vr.getContentText());
+  return null;
+}
+
+/* 検証済みイベントを種類別ハンドラへ振り分け（旧 switch を関数化） */
+function dispatchWebhookEvent_(verified) {
+  switch (verified.type) {
+    case 'checkout.session.completed':    return finalizeOrder(verified.data.object);
+    case 'customer.subscription.created': return logSubscriptionCreated(verified.data.object);
+    case 'customer.subscription.deleted': return logSubscriptionCancelled(verified.data.object);
+    case 'invoice.payment_succeeded':     return logInvoicePaid(verified.data.object);
+    default:                              return null;   // 未対応 type は無視
+  }
+}
+
+/* 🔧 デプロイ後に1回だけ実行: processWebhookQueue の1分毎トリガーを登録（重複登録防止）。
+   GAS エディタでこの関数を選んで Run する（裏で処理を回すために必須・1回だけ）。 */
+function setupWebhookQueueTrigger() {
+  const ts = ScriptApp.getProjectTriggers();
+  for (let i = 0; i < ts.length; i++) {
+    if (ts[i].getHandlerFunction() === 'processWebhookQueue') return 'already_exists';
+  }
+  ScriptApp.newTrigger('processWebhookQueue').timeBased().everyMinutes(1).create();
+  return 'created';
 }
 
 function finalizeOrder(session) {
@@ -2942,13 +3026,13 @@ function buildLinkSuccessMessage(customerName) {
   };
 }
 
-/** 新規会員登録後に送る Flex Message (無投薬ムネ肉特典) */
+/** 新規会員登録後に送る Flex Message (全品10%OFFクーポン特典) */
 function buildRegisterRewardMessage(customerName) {
-  var liffShop = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/shop.html?item=mune250';
+  var liffShop = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/shop.html';
   var greeting = customerName ? (customerName + ' 様') : 'お客様';
   return {
     type: 'flex',
-    altText: '🍗 無投薬ムネ肉 200g プレゼント！ — 会員登録ありがとうございます',
+    altText: '🎁 全品10%OFFクーポン — 会員登録ありがとうございます',
     contents: {
       type: 'bubble',
       hero: {
@@ -2963,11 +3047,12 @@ function buildRegisterRewardMessage(customerName) {
         layout: 'vertical',
         spacing: 'md',
         contents: [
-          { type: 'text', text: '🍗 無投薬ムネ肉 250g GET!', weight: 'bold', size: 'lg', color: '#2d5016' },
-          { type: 'text', text: greeting + '、会員登録ありがとうございます！特典の無投薬ムネ肉200gをお受け取りください。', wrap: true, size: 'sm', color: '#666666' },
+          { type: 'text', text: '🎁 全品10%OFFクーポン GET!', weight: 'bold', size: 'lg', color: '#0F3D2E' },
+          { type: 'text', text: greeting + '、会員登録ありがとうございます！アンケート回答特典の全品10%OFFクーポンです。', wrap: true, size: 'sm', color: '#666666' },
           { type: 'separator' },
-          { type: 'text', text: '受け取り方法', weight: 'bold', size: 'xs', color: '#888888', margin: 'md' },
-          { type: 'text', text: '下のボタンからムネ肉をカートに追加 → お会計時に自動で0円に！', wrap: true, size: 'xs', color: '#999999' }
+          { type: 'text', text: 'クーポンコード', weight: 'bold', size: 'xs', color: '#888888', margin: 'md' },
+          { type: 'text', text: 'kXI6blJe', weight: 'bold', size: 'xxl', color: '#0F3D2E', align: 'center' },
+          { type: 'text', text: 'お会計の「クーポンコード」欄に入力 → 初回ご注文が10%OFF！', wrap: true, size: 'xs', color: '#999999' }
         ]
       },
       footer: {
@@ -2977,16 +3062,9 @@ function buildRegisterRewardMessage(customerName) {
         contents: [
           {
             type: 'button',
-            action: { type: 'uri', label: '🍗 無投薬ムネ肉を見る', uri: liffShop },
+            action: { type: 'uri', label: '🛒 商品を見る', uri: liffShop },
             style: 'primary',
-            color: '#2d5016',
-            height: 'sm'
-          },
-          {
-            type: 'button',
-            action: { type: 'uri', label: 'オーガニック製品を見る', uri: liffShop.replace('?item=mune250', '') },
-            style: 'link',
-            color: '#2d5016',
+            color: '#0F3D2E',
             height: 'sm'
           }
         ]
