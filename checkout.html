@@ -2468,6 +2468,15 @@ function buildDeliveryDateOptions() {
  const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
  input.min = fmtIso(minD);
  input.max = fmtIso(maxD);
+ /* カート(ドロワー)で選んだお届け日時を引き継ぐ (Tom 2026-06) */
+ try {
+   const cd = localStorage.getItem('eda-deliv-date');
+   if (cd && cd >= input.min && cd <= input.max) input.value = cd;
+   const ct = localStorage.getItem('eda-deliv-time');
+   const tSel = document.getElementById('checkoutDeliveryTime');
+   const idxMap = { '':0, '0812':1, '1416':2, '1618':3, '1820':4, '1921':5 };
+   if (tSel && ct && idxMap[ct] != null) tSel.selectedIndex = idxMap[ct];
+ } catch(e){}
 }
 
 /* ---- 支払いラジオ ---- */

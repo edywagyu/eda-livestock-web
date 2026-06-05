@@ -92,14 +92,22 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
   font-family: var(--font-display);
   font-size: 13px;
   letter-spacing: 0.18em;
+  white-space: nowrap;
 }
 .back-link {
   font-family: var(--font-display);
   font-size: 12px;
   letter-spacing: 0.16em;
   color: rgba(255,255,255,0.85);
+  white-space: nowrap;
 }
 .back-link:hover { color: var(--color-gold); }
+/* モバイル: ヘッダーを1行に収める (Tom 2026-06 改行解消)。文字ロゴはロゴ画像とEDA-LIVESTOCK表記が重複するため小幅画面では隠す */
+@media (max-width: 480px) {
+  .brand-mono { display: none; }
+  .back-link { font-size: 11px; letter-spacing: 0.1em; }
+  .site-nav { padding: 14px 18px; }
+}
 
 /* ============ MAIN ============ */
 .pdp-main {
@@ -737,15 +745,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
 
   /* === ギャラリー === */
+  const IMGV = '?v=20260606'; /* 画像キャッシュ強制更新 (Tom 2026-06: 鶏ムネに旧・牛画像がキャッシュされる問題の根絶) */
+  const bustImg = (u) => (u && u.indexOf('?') < 0) ? u + IMGV : u;
   const images = (product.images && product.images.length) ? product.images : ['public/images/cuts/hero-0.jpeg'];
   const galMain = document.getElementById('galMain');
-  galMain.src = images[0];
+  galMain.src = bustImg(images[0]);
   galMain.alt = product.name;
   const thumbs = document.getElementById('galThumbs');
   if (images.length > 1) {
     thumbs.innerHTML = images.map((src, i) => `
-      <button class="pdp-thumb ${i === 0 ? 'active' : ''}" onclick="selectThumb(this, '${src}')">
-        <img src="${src}" alt="${product.name} ${i+1}">
+      <button class="pdp-thumb ${i === 0 ? 'active' : ''}" onclick="selectThumb(this, '${bustImg(src)}')">
+        <img src="${bustImg(src)}" alt="${product.name} ${i+1}">
       </button>
     `).join('');
   }
@@ -780,7 +790,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   document.getElementById('relatedGrid').innerHTML = related.map(p => `
     <a href="product.html?id=${p.productId}" class="pdp-related-card">
       <div class="pdp-related-img">
-        <img src="${(p.images && p.images[0]) || 'public/images/cuts/hero-0.jpeg'}" alt="${p.name}">
+        <img src="${bustImg((p.images && p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="${p.name}">
       </div>
       <div class="pdp-related-body">
         <h3 class="pdp-related-name">${p.name}</h3>
