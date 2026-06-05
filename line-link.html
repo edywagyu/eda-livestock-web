@@ -297,7 +297,7 @@
 
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(4)">戻る</button>
-        <button class="btn-next final" id="regSubmit" onclick="submitRegistration()">🎁 ムネ肉＋10%OFFを受け取る</button>
+        <button class="btn-next final" id="regSubmit" onclick="submitRegistration()">🎁 10%OFFクーポンを受け取る</button>
       </div>
     </div>
   </div>
@@ -306,14 +306,14 @@
   <div class="state" id="stateUnlocked">
     <div class="reward-hero">
       <div class="reward-badge">WELCOME GIFT</div>
-      <div class="reward-emoji">🍗</div>
-      <div class="reward-product">無投薬ムネ肉 200g</div>
-      <div class="reward-product-sub">GET!</div>
+      <div class="reward-emoji">🎁</div>
+      <div class="reward-product">全品 10%OFF</div>
+      <div class="reward-product-sub">クーポン GET!</div>
     </div>
     <div class="reward-body">
       <h2 class="success-title" style="margin-top:4px">会員登録ありがとうございます！</h2>
       <p class="success-sub" style="font-size:13px;margin-bottom:16px">
-        🍗 ムネ肉200gが0円＋全品10%OFF、2つの特典をGET！
+        🎁 アンケート回答特典・全品10%OFFクーポンをGET！
       </p>
       <div style="background:linear-gradient(135deg,#fff8e1,#fef3e0);border:1.5px dashed #D4A93B;border-radius:10px;padding:14px 16px;margin:0 0 16px;text-align:center">
         <div style="font-size:11px;font-weight:700;color:#b06000;letter-spacing:.05em">🎁 全品10%OFFクーポン</div>
@@ -321,14 +321,14 @@
         <div style="font-size:10.5px;color:#888">お会計の「クーポンコード」欄に入力（初回ご注文に適用）</div>
       </div>
       <div class="reward-how">
-        <div class="reward-how-title">特典の受け取り方</div>
+        <div class="reward-how-title">クーポンの使い方</div>
         <ul>
-          <li>無投薬ムネ肉200gをカートに追加 → お会計で0円に</li>
-          <li>その他の商品は クーポン「kXI6blJe」で10%OFF</li>
-          <li>この画面の10%OFFコードはスクショ保存を📸（ムネ肉クーポンはLINEにも届きます）</li>
+          <li>気になる商品をカートに追加</li>
+          <li>お会計の「クーポンコード」欄に kXI6blJe を入力</li>
+          <li>このコードはスクショ保存がおすすめ📸</li>
         </ul>
       </div>
-      <a href="https://edywagyu.github.io/eda-livestock-web/shop.html?item=mune250" class="btn-next final" style="display:block;text-align:center;text-decoration:none;padding:16px;font-size:16px">🍗 無投薬ムネ肉を見る →</a>
+      <a href="https://edywagyu.github.io/eda-livestock-web/shop.html" class="btn-next final" style="display:block;text-align:center;text-decoration:none;padding:16px;font-size:16px">🛒 商品を見る →</a>
       <button class="btn-primary" style="margin-top:10px;background:var(--line)" onclick="closeLiff()">LINEに戻る</button>
     </div>
   </div>
@@ -442,9 +442,9 @@ function goStep(n) {
   var remaining = TOTAL_STEPS - n + 1;
   var rewardEl = document.getElementById('rewardText');
   if (remaining <= 1) {
-    rewardEl.textContent = '回答でムネ肉200g＋全品10%OFFクーポン GET！';
+    rewardEl.textContent = '回答で全品10%OFFクーポン GET！';
   } else {
-    rewardEl.textContent = 'あと' + remaining + '問で ムネ肉200g＋10%OFF GET！';
+    rewardEl.textContent = 'あと' + remaining + '問で 全品10%OFFクーポン GET！';
   }
 
   // Scroll to top of card
@@ -490,7 +490,7 @@ function submitRegistration() {
   // STEP5（最後の質問）も必須＝アンケート完答で特典
   if (!getChipValues('values').length) {
     alert('「お肉選びで大切にしていること」を1つ以上選んでください。');
-    btn.disabled = false; btn.textContent = '🎁 ムネ肉＋10%OFFを受け取る'; return;
+    btn.disabled = false; btn.textContent = '🎁 10%OFFクーポンを受け取る'; return;
   }
 
   // Collect survey data
