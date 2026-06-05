@@ -481,7 +481,7 @@ function submitRegistration() {
     frequency: getChipValues('frequency')[0] || '',
     budget: getChipValues('budget')[0] || '',
     values: getChipValues('values'),
-    source: getChipValues('source')[0] || ''
+    source: (new URLSearchParams(location.search).get('src')) || getChipValues('source')[0] || ''
   };
 
   window.EDA_API.post('line_register', {
