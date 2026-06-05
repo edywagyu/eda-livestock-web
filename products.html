@@ -10931,7 +10931,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* keyboard nav */
  document.addEventListener('keydown', function(e) {
- if (!document.getElementById('dynGallery').classList.contains('open')) return;
+ var __g = document.getElementById('dynGallery');
+ if (!__g || !__g.classList.contains('open')) return;
  if (e.key === 'Escape') dynGalleryClose();
  else if (e.key === 'ArrowLeft') dynGalleryStep(-1);
  else if (e.key === 'ArrowRight') dynGalleryStep(1);
@@ -10957,6 +10958,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  function renderDynProducts(products) {
  var section = document.getElementById('dynProducts');
  var grid = document.getElementById('dynProductsGrid');
+ if (!section || !grid) return; /* このページに dynProducts コンテナが無い時は何もしない (顧客側JSエラー防止) */
  if (!products || !products.length) {
  section.hidden = true;
  return;
