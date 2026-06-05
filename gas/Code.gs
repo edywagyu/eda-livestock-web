@@ -2255,6 +2255,10 @@ function dashboardSummary(params) {
   }
 
   const _subs = getActiveSubsSummary(); // 実 active サブスク(Stripe・cus_Uake除外)
+  const _lineFriends = getLineFriendCount(); // LINE 友だち数(targetedReaches・1hキャッシュ)。未設定/エラーは0
+  const _uniqueBuyers = Object.keys(customers).length; // 期間内の実購入ユニーク顧客数(届け先あり・paid・dedup済)
+  // LINE転換率 = 期間内の実購入客 / LINE友だち（新サイト基準。Wix/Shopify移行途中のため低めに出る・実値）
+  const _lineConvRate = _lineFriends > 0 ? Math.round((_uniqueBuyers / _lineFriends) * 1000) / 10 : 0;
 
   return jsonResponse({
     ok: true,
@@ -2266,9 +2270,9 @@ function dashboardSummary(params) {
       activeSub: _subs.count,
       subDelta: 0,
       mrr: _subs.mrr,
-      line: 0,
+      line: _lineFriends,
       lineDelta: 0,
-      lineConvRate: 0,
+      lineConvRate: _lineConvRate,
       quiz: sheet('quiz_responses').getLastRow() - 1,
       quizDelta: 0,
       quizRate: 0
@@ -2288,16 +2292,20 @@ function dashboardSummary(params) {
      - data.status === 'ready' の時のみ有効
      - 1時間 CacheService で API レート対策
    ============================================================ */
-function lineFriends() {
+/* LINE 友だち数(targetedReaches)取得の本体。{count,date,cached} または {count:0,date:null,error} を返す。
+   1時間キャッシュ('line_friends_count'={count,date})を lineFriends() と dashboardSummary で共用する。 */
+function getLineFriendData() {
   var cache = CacheService.getScriptCache();
   var cached = cache.get('line_friends_count');
   if (cached) {
-    var c = JSON.parse(cached);
-    return jsonResponse({ ok: true, count: c.count, friends: c.count, date: c.date, cached: true });
+    try {
+      var c = JSON.parse(cached);
+      return { count: c.count, date: c.date, cached: true };
+    } catch (e) {}
   }
   var token = cfg('LINE_CHANNEL_TOKEN');
   if (!token) {
-    return jsonResponse({ ok: false, count: 0, friends: 0, error: 'LINE_CHANNEL_TOKEN not set' });
+    return { count: 0, date: null, error: 'LINE_CHANNEL_TOKEN not set' };
   }
   try {
     // 当日データは提供されないので 1〜2 日前まで遡って 'ready' なものを使う
@@ -2327,17 +2335,31 @@ function lineFriends() {
       }
     }
     if (!data) {
-      return jsonResponse({ ok: false, count: 0, friends: 0, error: 'LINE insight data not ready' });
+      return { count: 0, date: null, error: 'LINE insight data not ready' };
     }
     // targetedReaches = ブロック除外の有効フォロワー (公式に「友だち」と呼ばれる数)
     // followers = 累計 (ブロック含む)
     var count = (typeof data.targetedReaches === 'number') ? data.targetedReaches : (data.followers || 0);
     // 1 時間キャッシュ
     cache.put('line_friends_count', JSON.stringify({ count: count, date: dateStr }), 3600);
-    return jsonResponse({ ok: true, count: count, friends: count, date: dateStr });
+    return { count: count, date: dateStr };
   } catch (e) {
-    return jsonResponse({ ok: false, count: 0, friends: 0, error: e.message });
+    return { count: 0, date: null, error: e.message };
   }
+}
+
+/* LINE 友だち数を数値で返す（dashboardSummary 用）。未設定/エラー/未ready は 0。 */
+function getLineFriendCount() {
+  return getLineFriendData().count || 0;
+}
+
+/* GET ?action=line_friends — 外部API互換の jsonResponse（ok/count/friends/date/cached） */
+function lineFriends() {
+  var d = getLineFriendData();
+  if (d.error && !d.count) {
+    return jsonResponse({ ok: false, count: 0, friends: 0, error: d.error });
+  }
+  return jsonResponse({ ok: true, count: d.count, friends: d.count, date: d.date, cached: !!d.cached });
 }
 
 /* ============================================================
