@@ -9532,49 +9532,23 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 </header>
 
-<!-- ========= SHOP HERO ========= -->
-<section class="shop-hero">
- <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" class="hero-bg-mark" src="public/images/logo/eda-livestock-logo-transparent.png" alt=""/></picture>
- <div class="shop-hero-bg">
- <img class="shop-hero-img" src="public/images/products/drive/sirloin.webp" alt="" loading="eager" fetchpriority="high"/>
- <div class="shop-hero-overlay"></div>
- </div>
- <div class="container shop-hero-content">
- <div class="cert-row">
- <span class="cert-mark">有機JAS 同等性</span>
- <span class="cert-divider">·</span>
- <span class="cert-mark">無投薬 30ヶ月以上</span>
- <span class="cert-divider">·</span>
- <span class="cert-mark">宮崎 直送</span>
- </div>
- <h1 class="shop-hero-title hero-anim-title">
- <span class="hero-line hero-line--shop">
- <span class="hero-word text-gold">江田畜産の、</span>
- </span>
- <span class="hero-line hero-line--lead">
- <span class="hero-word">すべて。</span>
- </span>
- </h1>
- <p class="shop-hero-sub hero-anim-sub">
- 抗生物質・ホルモン剤 不使用。江田和牛・平飼い鶏、<em>現在販売中の全アイテム。</em>
- </p>
- <div class="shop-hero-cta hero-anim-cta">
- <a href="#products" class="btn btn-gold hero-btn-primary">
- <span>商品を見る</span>
- <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
- </a>
- <a href="subscription.html" class="hero-btn-ghost">
- <span>定期便を見る</span>
- <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
- </a>
- </div>
- <!-- スクロールヒント -->
- <div class="hero-scroll-hint">
- <div class="hero-scroll-mouse"><div class="hero-scroll-wheel"></div></div>
- <span>scroll</span>
- </div>
+<!-- ========= PAGE HEADER（商品一覧・コンパクト / TOP風ヒーローは廃止） ========= -->
+<section class="products-pagehead">
+ <div class="container">
+ <span class="products-eyebrow">ALL PRODUCTS · 全商品一覧</span>
+ <h1 class="products-pagehead-title"><span class="text-gold">江田畜産の、</span>すべて。</h1>
+ <p class="products-pagehead-sub">抗生物質・ホルモン剤 不使用。江田和牛・平飼い鶏、現在販売中の全アイテム。</p>
  </div>
 </section>
+<style>
+.products-pagehead{padding:116px 0 24px;text-align:center;background:linear-gradient(180deg,#FFFCF5 0%,var(--color-cream) 100%);}
+.products-eyebrow{display:inline-block;font-family:var(--font-display);font-size:11px;letter-spacing:0.22em;color:var(--color-gold-soft);background:#fff;border:1px solid rgba(212,169,59,0.35);padding:6px 14px;border-radius:18px;margin-bottom:16px;font-weight:700;box-shadow:var(--shadow-sm);}
+.products-pagehead-title{font-family:var(--font-jp-serif);font-size:clamp(26px,4vw,40px);color:var(--color-forest);font-weight:700;margin:0 0 10px;line-height:1.3;}
+.products-pagehead-sub{font-size:14px;color:var(--color-ink-muted);max-width:560px;margin:0 auto;line-height:1.8;}
+@media(max-width:720px){.products-pagehead{padding:92px 0 18px;}.products-pagehead-sub{font-size:13px;}}
+#products.shop-snippet{padding-top:28px;}
+@media(max-width:720px){#products.shop-snippet{padding-top:20px;}}
+</style>
 <section class="shop-snippet section" id="products">
  <div class="container">
 
