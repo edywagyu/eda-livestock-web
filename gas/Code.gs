@@ -277,8 +277,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.07-shipnotify',
-    versionNote: 'v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
+    version: '2026.06.07-ship-hero',
+    versionNote: 'v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -1510,6 +1510,61 @@ function dispatchWebhookEvent_(verified) {
 
 /* 🔧 デプロイ後に1回だけ実行: processWebhookQueue の1分毎トリガーを登録（重複登録防止）。
    GAS エディタでこの関数を選んで Run する（裏で処理を回すために必須・1回だけ）。 */
+/* ============================================================
+   🚨 未発送アラート (#1 主因対策 2026-06)
+   入金済(paid)なのに UNSHIPPED_ALERT_DAYS 日以上 未発送の実注文を毎朝検知し
+   backoffice にメール通知。今回クレーム(6日未発送・無通知)の再発を防ぐ。
+   ============================================================ */
+var UNSHIPPED_ALERT_DAYS = 2; // 入金からこの日数以上 未発送ならアラート
+
+function alertUnshippedOrders() {
+  try {
+    var sh = sheet('orders');
+    var data = sh.getDataRange().getValues();
+    if (data.length < 2) return 'no_orders';
+    var headers = data[0];
+    var get = function (row, name) { var k = headers.indexOf(name); return k >= 0 ? row[k] : ''; };
+    var now = new Date();
+    var stale = [];
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      var ps = String(get(row, 'payment_status') || '').toLowerCase();
+      if (ps !== 'paid') continue;                                    // 入金済のみ（未入金/その他は対象外）
+      if (String(get(row, 'tracking_number') || '').trim()) continue; // 発送済(伝票あり)は対象外
+      var em = String(get(row, 'customer_email') || '').toLowerCase();
+      if (em.indexOf('@eda-livestock.com') >= 0) continue;            // 社内/テスト除外
+      var placed = get(row, 'placed_at');
+      var pd = placed ? new Date(placed) : null;
+      var days = pd ? Math.floor((now - pd) / 86400000) : 0;
+      if (pd && days < UNSHIPPED_ALERT_DAYS) continue;                // 猶予内はまだOK
+      // 出荷物のある注文のみ（定期便/配送対象明細なし は対象外＝b2_csvと同基準・誤検知防止）
+      var ds; try { ds = JSON.parse(get(row, 'destinations_json') || '[]'); } catch (e) { ds = []; }
+      if (!ds.some(function (a) { return Array.isArray(a.items) && a.items.length > 0; })) continue;
+      stale.push({ on: get(row, 'order_number'), name: get(row, 'customer_name'), days: days, items: get(row, 'items_json'), total: get(row, 'total') });
+    }
+    if (!stale.length) { log('unshipped_alert', { count: 0 }); return 'none'; }
+    var to = cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com';
+    var body = '【未発送アラート】入金済なのに ' + UNSHIPPED_ALERT_DAYS + '日以上 発送されていない注文が ' + stale.length + ' 件あります。\n\n';
+    stale.forEach(function (o) {
+      body += '・' + o.on + '（' + (o.name || '') + '）… 入金から ' + o.days + '日経過 / ¥' + o.total + '\n  ' + o.items + '\n\n';
+    });
+    body += 'STAFFポータルで発送処理してください: https://www.eda-livestock.com/staff.html\n';
+    MailApp.sendEmail({ to: to, subject: '🚨【未発送 ' + stale.length + '件】' + UNSHIPPED_ALERT_DAYS + '日以上 発送漏れ', body: body });
+    log('unshipped_alert', { count: stale.length, orders: stale.map(function (o) { return o.on; }) });
+    return 'alerted:' + stale.length;
+  } catch (e) { log('unshipped_alert_error', { error: e.message }); return 'error:' + e.message; }
+}
+
+/* 毎朝8時に未発送アラートを実行する日次トリガーを設置（冪等）。1回だけ実行すればよい。 */
+function setupUnshippedAlertTrigger() {
+  var ts = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < ts.length; i++) {
+    if (ts[i].getHandlerFunction() === 'alertUnshippedOrders') return 'already_exists';
+  }
+  ScriptApp.newTrigger('alertUnshippedOrders').timeBased().everyDays(1).atHour(8).create();
+  return 'created';
+}
+
 function setupWebhookQueueTrigger() {
   const ts = ScriptApp.getProjectTriggers();
   for (let i = 0; i < ts.length; i++) {
@@ -3239,7 +3294,7 @@ function buildShipNotifyMessage(customerName, orderNum, tracking, deliveryDate) 
     altText: '【江田畜産】商品を発送しました（' + orderNum + '）配送番号 ' + (tracking || ''),
     contents: {
       type: 'bubble',
-      hero: { type: 'image', url: 'https://www.eda-livestock.com/public/images/cuts/hero-0.jpeg', size: 'full', aspectRatio: '20:9', aspectMode: 'cover' },
+      hero: { type: 'image', url: 'https://www.eda-livestock.com/public/images/line/ship-truck.png', size: 'full', aspectRatio: '16:9', aspectMode: 'cover' },
       body: { type: 'box', layout: 'vertical', spacing: 'md', contents: rows },
       footer: { type: 'box', layout: 'vertical', spacing: 'sm', contents: [
         { type: 'button', action: { type: 'uri', label: '📦 配送状況を確認する', uri: trackUrl }, style: 'primary', color: '#2d5016', height: 'sm' },
@@ -3918,6 +3973,8 @@ function b2CsvExport() {
     if (data.length < 2) return ContentService.createTextOutput('').setMimeType(ContentService.MimeType.CSV);
     const headers = data[0];
     const get = (row, name) => row[headers.indexOf(name)] || '';
+    // CSV列ズレ防止(#2): 各項目のカンマ/改行を除去（ヤマトB2は素のCSV取込＝引用符でなく除去で安全）。
+    const clean = (v) => String(v == null ? '' : v).replace(/,/g, ' ').replace(/[\r\n]+/g, ' ');
     // 末尾に「お届け希望日/時間帯」を追加 (顧客が決済時に指定した配送希望)。
     //   既存4列の後ろに足すので従来の取り込み位置は不変。日付は YYYY/MM/DD (ヤマト形式)。
     const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名,お届け希望日,お届け希望時間帯'];
@@ -3939,10 +3996,10 @@ function b2CsvExport() {
         d.forEach(addr => {
           // 商品が割り当てられていない宛先(ギフトのご依頼主=差出人など)は配送ラベルを作らない
           if (Array.isArray(addr.items) && addr.items.length === 0) return;
-          csv.push([addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, dDate, dTime].join(','));
+          csv.push([clean(addr.tel || ''), clean(addr.zip || ''), clean((addr.pref || '') + (addr.address || '')), clean(addr.name || name), dDate, dTime].join(','));
         });
       } catch (e) {
-        csv.push(['', '', '', name, dDate, dTime].join(','));
+        csv.push(['', '', '', clean(name), dDate, dTime].join(','));
       }
     });
     if (_excluded) log('b2_csv_excluded', { count: _excluded, note: '発送済み/社内テストを除外' });
