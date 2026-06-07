@@ -2641,6 +2641,11 @@ function renderShipDetail() {
           <div>・お客様へ<strong>${o.lineUid ? 'LINE' : 'メール'}で発送通知</strong>（配送番号・お届け予定）が<strong>自動送信</strong>されます</div>
           <div style="margin-top:4px;color:#065F46">※ ${o.lineUid ? 'このお客様はLINE連携済 → LINEで自動通知。' : 'このお客様はLINE未連携 → メールで自動通知。'}</div>
         </div>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer">
+          <input type="checkbox" id="notifyChk" checked style="width:18px;height:18px">
+          お客様に発送通知を自動送信する（${o.lineUid ? 'LINE' : 'メール'}）
+        </label>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5">※ 外すと<strong>通知を送らず記録だけ</strong>（担当が手動で連絡する場合に使用）。</div>
         <button class="btn-primary" id="shipBtn" onclick="confirmShip()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           発送完了として記録する
@@ -2772,7 +2777,8 @@ async function confirmShip() {
       body: JSON.stringify({
         order_number: selectedOrder.id,
         tracking_number: tracking,
-        delivery_date: deliveryDate
+        delivery_date: deliveryDate,
+        notify: (document.getElementById('notifyChk') ? document.getElementById('notifyChk').checked : true)
       })
     });
     const data = await res.json();

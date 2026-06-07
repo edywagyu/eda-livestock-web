@@ -277,8 +277,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.05-asyncwebhook',
-    versionNote: 'v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
+    version: '2026.06.07-shipnotify',
+    versionNote: 'v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -1608,7 +1608,7 @@ function finalizeOrder(session) {
   //   line_uid は決済metadata優先。無ければ email で customers を逆引き
   //   (LINE友だちだがWeb経由でemail決済した既存客もメールにしないため)。
   var custEmailForLine = (session.customer_details && session.customer_details.email) || '';
-  var lineUid = (meta.line_uid && String(meta.line_uid).trim()) || lineUidForEmail(custEmailForLine);
+  var lineUid = (meta.line_uid && String(meta.line_uid).trim()) || lineUidForEmail(custEmailForLine) || lineUidByPhone_(meta.customer_phone);
   var linePushed = false;
   if (lineUid) {
     linePushed = sendLinePush(lineUid, [buildOrderConfirmMessage(
@@ -1626,7 +1626,7 @@ function finalizeOrder(session) {
     email: session.customer_details && session.customer_details.email,
     name: meta.customer_name,
     phone: meta.customer_phone,
-    line_uid: meta.line_uid || '',
+    line_uid: lineUid || '',
     line_name: meta.line_name || '',
     last_order: orderNum,
     last_order_total: total,
@@ -2705,6 +2705,54 @@ function setupAllProperties() {
    LINE LIFF 認証 endpoints
    ============================================================ */
 
+/* ============================================================
+   🔗 LINE↔注文 自動連携ヘルパー (#1 再犯防止 2026-06)
+   ============================================================
+   目的: 「メールで注文 → 別途LINE友だち追加」で customers が2レコードに
+   分かれても、電話番号で必ず注文へ辿り着けるようにする。
+   - normPhone_      : 電話番号を比較用に正規化 (非数字/先頭0/国番号81を除去)
+   - emailByPhone_   : orders を電話で引いて customer_email を返す
+   - lineUidByPhone_ : customers を電話で引いて line_uid を返す (注文時の逆連携)
+*/
+function normPhone_(p) {
+  var d = String(p == null ? '' : p).replace(/[^0-9]/g, '');
+  if (d.indexOf('81') === 0 && d.length > 10) d = d.slice(2);
+  return d.replace(/^0+/, '');
+}
+
+function emailByPhone_(phone) {
+  var np = normPhone_(phone);
+  if (!np) return '';
+  try {
+    var sh = sheet('orders');
+    var data = sh.getDataRange().getValues();
+    var headers = data[0];
+    var pIdx = headers.indexOf('customer_phone'), eIdx = headers.indexOf('customer_email');
+    if (pIdx < 0 || eIdx < 0) return '';
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][eIdx] && normPhone_(data[i][pIdx]) === np) return data[i][eIdx];
+    }
+  } catch (e) { log('email_by_phone_error', { error: e.message }); }
+  return '';
+}
+
+function lineUidByPhone_(phone) {
+  var np = normPhone_(phone);
+  if (!np) return '';
+  try {
+    var sh = ss().getSheetByName('customers');
+    if (!sh) return '';
+    var data = sh.getDataRange().getValues();
+    var headers = data[0];
+    var pIdx = headers.indexOf('phone'), lIdx = headers.indexOf('line_uid');
+    if (pIdx < 0 || lIdx < 0) return '';
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][lIdx] && normPhone_(data[i][pIdx]) === np) return data[i][lIdx];
+    }
+  } catch (e) { log('line_uid_by_phone_error', { error: e.message }); }
+  return '';
+}
+
 /* POST line_login { line_uid, display_name, picture_url }
    - customers シートで line_uid が一致するレコードを検索
    - 見つかれば customer + orders を返却 (matched: true)
@@ -2736,8 +2784,15 @@ function lineLogin(body) {
         // 表示名・写真を更新 (LINE側で変更されている可能性)
         if (body.display_name) customer.line_name = body.display_name;
         if (body.picture_url) customer.line_picture = body.picture_url;
-        // 注文履歴
-        const orders = customer.email ? getOrdersByEmail(customer.email) : [];
+        // 注文履歴: email紐付けがあれば email で取得。無い/0件でも電話番号で必ず照合（#1 自動連携・読取のみ）
+        let orders = customer.email ? getOrdersByEmail(customer.email) : [];
+        if (!orders.length && customer.phone) {
+          const bridgedEmail = emailByPhone_(customer.phone);
+          if (bridgedEmail) {
+            const bridged = getOrdersByEmail(bridgedEmail);
+            if (bridged.length) { orders = bridged; if (!customer.email) customer.email = bridgedEmail; }
+          }
+        }
         attachCardToCustomer(customer, orders);
         return jsonResponse({ ok:true, matched:true, customer, orders });
       }
@@ -3766,7 +3821,9 @@ function staffShip(body) {
       // ★ 発送通知 (②配送確定): 発送伝票確定が起点。初回発送時のみ送る（_alreadyShipped は再送しない）。
       //   LINE 連携済み (line_uid あり。無ければ email 逆引き) → LINE で配送番号/お届け予定。
       //   未連携、または LINE 失敗 → メール。通知失敗で発送記録自体は失敗させない。
-      if (!_alreadyShipped) {
+      //   🔕 body.notify === false なら通知せず記録のみ（担当が手動連絡する場合用・既定は通知あり）。
+      const _doNotify = body.notify !== false;
+      if (!_alreadyShipped && _doNotify) {
         try {
           const row = data[i];
           const get = (n) => { const k = headers.indexOf(n); return k >= 0 ? row[k] : ''; };
@@ -3786,9 +3843,11 @@ function staffShip(body) {
         } catch (e) {
           log('ship_notify_error', { order: body.order_number, error: e.message });
         }
+      } else if (!_doNotify) {
+        log('ship_notify_suppressed', { order: body.order_number, tracking: tracking });
       }
 
-      return jsonResponse({ ok:true, already: _alreadyShipped });
+      return jsonResponse({ ok:true, already: _alreadyShipped, notified: (!_alreadyShipped && _doNotify) });
     }
   }
   return jsonResponse({ ok:false, error: 'order not found' });
@@ -3862,9 +3921,15 @@ function b2CsvExport() {
     // 末尾に「お届け希望日/時間帯」を追加 (顧客が決済時に指定した配送希望)。
     //   既存4列の後ろに足すので従来の取り込み位置は不変。日付は YYYY/MM/DD (ヤマト形式)。
     const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名,お届け希望日,お届け希望時間帯'];
+    let _excluded = 0;
     data.slice(1).forEach(row => {
+      const ps = String(get(row, 'payment_status') || '').toLowerCase();
       // 🏦 未入金（銀行振込・入金前）の注文は発送伝票の対象外（入金確認まで除外）。
-      if (String(get(row, 'payment_status') || '').toLowerCase() === 'awaiting_payment') return;
+      if (ps === 'awaiting_payment') return;
+      // 🚚 発送済み（追跡番号あり / status shipped・delivered）は対象外 ＝ 未発送のみ出力（#4 再犯防止）。
+      if (ps === 'shipped' || ps === 'delivered' || get(row, 'tracking_number')) { _excluded++; return; }
+      // 🧪 社内・テスト注文（@eda-livestock.com）は対象外。実顧客はこのドメインを使わない（#4 テスト混入防止）。
+      if (String(get(row, 'customer_email') || '').toLowerCase().indexOf('@eda-livestock.com') >= 0) { _excluded++; return; }
       const dest = get(row, 'destinations_json');
       const name = get(row, 'customer_name');
       const dDate = String(get(row, 'delivery_date') || '').slice(0, 10).replace(/-/g, '/');  // ISO→YYYY/MM/DD
@@ -3880,6 +3945,7 @@ function b2CsvExport() {
         csv.push(['', '', '', name, dDate, dTime].join(','));
       }
     });
+    if (_excluded) log('b2_csv_excluded', { count: _excluded, note: '発送済み/社内テストを除外' });
     return ContentService.createTextOutput(csv.join('\n'))
       .setMimeType(ContentService.MimeType.CSV)
       .downloadAsFile('b2-' + new Date().toISOString().slice(0,10) + '.csv');
