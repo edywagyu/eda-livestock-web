@@ -1757,6 +1757,34 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .order-tracking {
  margin-top: 12px;
 }
+/* 追跡番号コピーボタン (Tom 2026-06-08: ヤマト追跡で番号入力が要るため番号をコピー可能に) */
+.track-copy-btn {
+ display: flex; align-items: center; gap: 10px; width: 100%;
+ margin-top: 10px; padding: 13px 16px;
+ border-radius: 12px; cursor: pointer; text-align: left;
+ background: rgba(255,255,255,0.07);
+ border: 1px solid rgba(212,169,59,0.42);
+ color: #fff; font-family: var(--font-jp); font-size: 14px; font-weight: 600;
+ transition: all 0.25s var(--ease-out-expo); -webkit-tap-highlight-color: transparent;
+}
+.track-copy-btn:hover { background: rgba(255,255,255,0.12); border-color: var(--color-gold); }
+.track-copy-btn:active { transform: scale(0.99); }
+.track-copy-btn > svg { color: var(--color-copper); flex-shrink: 0; }
+.track-copy-btn .tcb-num { flex: 1; font-family: 'SF Mono', Menlo, monospace; letter-spacing: 0.04em; font-size: 15px; }
+.track-copy-btn .tcb-label { font-size: 12px; font-weight: 600; opacity: 0.85; white-space: nowrap; }
+.track-copy-btn.copied { background: rgba(76,175,80,0.20); border-color: rgba(76,175,80,0.6); }
+.track-copy-btn.copied > svg { color: #7fdc7f; }
+.track-copy-btn.copied .tcb-label { color: #9be79b; opacity: 1; }
+/* 注文履歴(明るい背景)用 */
+.track-copy-btn--light {
+ width: auto; margin-top: 8px; padding: 8px 14px; font-size: 12px;
+ background: var(--color-cream); border-color: var(--color-bone); color: var(--color-forest);
+}
+.track-copy-btn--light:hover { background: var(--color-bone); border-color: var(--color-gold); }
+.track-copy-btn--light .tcb-num { font-size: 13px; color: var(--color-forest); }
+.track-copy-btn--light .tcb-label { opacity: 0.7; }
+.track-copy-btn--light.copied { background: rgba(76,175,80,0.14); border-color: rgba(76,175,80,0.5); color: #2e7d32; }
+.track-copy-btn--light.copied .tcb-label { color: #2e7d32; opacity: 1; }
 .tracking-link {
  display: inline-flex;
  align-items: center;
@@ -3829,7 +3857,13 @@ function renderOrders(orders) {
  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg>' +
  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
  ' 配送状況を確認 (' + escapeHtml(order.tracking_number) + ')' +
- '</a></div>';
+ '</a>' +
+ '<button type="button" class="track-copy-btn track-copy-btn--light" data-track="' + escapeHtml(order.tracking_number) + '" onclick="copyTracking(this)">' +
+ '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+ '<code class="tcb-num">' + escapeHtml(order.tracking_number) + '</code>' +
+ '<span class="tcb-label">コピー</span>' +
+ '</button>' +
+ '</div>';
  }
 
  const orderDate = order.date ? formatDate(order.date) : '';
@@ -4212,7 +4246,12 @@ function renderHomeTab(orderCount, orders, customer) {
     trkHtml = '<a class="home-delivery-tracking" href="' + yUrl + '" target="_blank" rel="noopener">' +
      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' +
      '<span>配送状況を確認  <strong>' + escapeHtml(shippedOrder.tracking_number) + '</strong></span>' +
-     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
+     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>' +
+     '<button type="button" class="track-copy-btn" data-track="' + escapeHtml(shippedOrder.tracking_number) + '" onclick="copyTracking(this)">' +
+      '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+      '<code class="tcb-num">' + escapeHtml(shippedOrder.tracking_number) + '</code>' +
+      '<span class="tcb-label">追跡番号をコピー</span>' +
+     '</button>';
    }
    var itemsHtml = '';
    if (shippedOrder.items && shippedOrder.items.length) {
@@ -4734,6 +4773,37 @@ function escapeHtml(str) {
  .replace(/</g, '&lt;')
  .replace(/>/g, '&gt;')
  .replace(/"/g, '&quot;');
+}
+/* 追跡番号をクリップボードへコピー (Tom 2026-06-08: ヤマト追跡ページで番号入力が要るため、
+   マイページから番号だけをワンタップでコピーできるように)。HTTPS必須の navigator.clipboard を
+   優先し、不可の環境(古いLINE内蔵ブラウザ等)は execCommand フォールバック。 */
+function copyTracking(btn) {
+ var num = (btn.getAttribute('data-track') || '').trim();
+ if (!num) return;
+ var lbl = btn.querySelector('.tcb-label');
+ var orig = lbl ? lbl.textContent : '';
+ var done = function () {
+  btn.classList.add('copied');
+  if (lbl) lbl.textContent = '✓ コピーしました';
+  setTimeout(function () { btn.classList.remove('copied'); if (lbl) lbl.textContent = orig; }, 1800);
+ };
+ if (navigator.clipboard && navigator.clipboard.writeText) {
+  navigator.clipboard.writeText(num).then(done, function () { if (copyTrackingFallback(num)) done(); });
+ } else {
+  if (copyTrackingFallback(num)) done();
+ }
+}
+function copyTrackingFallback(text) {
+ try {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { ta.setSelectionRange(0, 99999); } catch (e) {}
+  var ok = document.execCommand('copy');
+  document.body.removeChild(ta);
+  return ok;
+ } catch (e) { return false; }
 }
 </script>
 <!-- 商品カタログ（ライブ）— shop.html と同一。products-master.js=静的fallback → products-loader.js が GAS(スプシ public_catalog)から最新の価格/在庫/Stripe価格IDを取得し window.EDA_PRODUCTS_MASTER を上書き。クイックカートはこれを正本とし価格ドリフトを根絶。 -->
