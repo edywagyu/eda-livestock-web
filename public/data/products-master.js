@@ -41,9 +41,9 @@
     },
     {
       productId: 'P003', variantId: 'CUBE-STEAK', sku: 'EDA-CUBE-200',
-      stripePriceId: 'price_1TW74mGSkhU1UEcibOx5C7Py',
+      stripePriceId: 'price_1TfvbIGSkhU1UEciDITKBlbx',
       name: 'サイコロステーキ', variant: '1袋 200g',
-      price: 1000, weight: 200, stock: 22, temp: '冷凍',
+      price: 1800, weight: 200, stock: 22, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Cube Steak',
       description: 'ひと口大に切り分けたステーキ用の正肉。お弁当や、忙しい平日の夕食に。',
       images: ['public/images/products/drive/cube-steak.jpg']
@@ -83,7 +83,7 @@
       productId: 'P007', variantId: 'OFFAL', sku: 'EDA-OFFAL-200',
       stripePriceId: 'price_1TW74pGSkhU1UEcizY8WlJPz',
       name: 'ホルモン', variant: '1袋 200g',
-      price: 1120, weight: 200, stock: 8, temp: '冷凍',
+      price: 840, weight: 200, stock: 8, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Offal',
       description: '小腸と大腸のミックス。下処理済み。もつ鍋に、焼きホルモンに。',
       images: ['public/images/products/drive/offal.jpg']
@@ -101,9 +101,9 @@
     },
     {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
-      stripePriceId: 'price_1TW74qGSkhU1UEciK9LE14vR',
+      stripePriceId: 'price_1Tcbx9GSkhU1UEcik9aUn4RT',
       name: 'ローストビーフ', variant: '1袋 300g',
-      price: 6000, weight: 300, stock: 6, temp: '冷凍',
+      price: 7400, weight: 300, stock: 6, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Roast Beef',
       description: '赤身を低温でロースト。解凍して、薄く切る。会の前菜に。',
       images: ['public/images/products/drive/thin-roast.jpg']
@@ -130,27 +130,27 @@
     /* ===== 鶏肉 平飼い（標準）— 200g パック ===== */
     {
       productId: 'P011', variantId: 'CHK-BREAST', sku: 'EDA-CHK-BREAST-200',
-      stripePriceId: 'price_1TW74sGSkhU1UEcij8xFudVT',
+      stripePriceId: 'price_1TccuZGSkhU1UEciW3KDATtw',
       name: '平飼い鶏 ムネ', variant: '1袋 200g',
-      price: 500, weight: 200, stock: 20, temp: '冷凍',
+      price: 920, weight: 200, stock: 20, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Breast',
       description: '大分県・無投薬の平飼い農家のもの。低脂肪・高タンパク。サラダチキン、バンバンジーに。',
       images: ['public/images/products/drive/chicken-breast.jpg']
     },
     {
       productId: 'P012', variantId: 'CHK-THIGH', sku: 'EDA-CHK-THIGH-200',
-      stripePriceId: 'price_1TW74tGSkhU1UEcilbKbPhGv',
+      stripePriceId: 'price_1TccurGSkhU1UEciMqEddsVz',
       name: '平飼い鶏 モモ', variant: '1袋 200g',
-      price: 500, weight: 200, stock: 24, temp: '冷凍',
+      price: 980, weight: 200, stock: 24, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Thigh',
       description: '大分県・無投薬の平飼い農家のもの。照り焼き、唐揚げ、煮込みまで。',
       images: ['public/images/products/drive/chicken-thigh.jpg']
     },
     {
       productId: 'P013', variantId: 'CHK-MINCED', sku: 'EDA-CHK-MINCED-200',
-      stripePriceId: 'price_1TW74uGSkhU1UEciOv09JHuD',
+      stripePriceId: 'price_1Tccv0GSkhU1UEcils0CrikT',
       name: '平飼い鶏 ミンチ', variant: '1袋 200g',
-      price: 400, weight: 200, stock: 16, temp: '冷凍',
+      price: 800, weight: 200, stock: 16, temp: '冷凍',
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Chicken · Minced',
       description: '大分県・無投薬の平飼い農家のもの。つくね、そぼろ、鶏団子鍋に。',
       images: ['public/images/products/drive/chicken-minced.jpg']
@@ -159,9 +159,9 @@
     /* ===== 鶏肉 オーガニック（プレミアム）— 200g パック ===== */
     {
       productId: 'P014', variantId: 'ORG-CHK-BREAST', sku: 'EDA-ORG-CHK-BREAST-200',
-      stripePriceId: 'price_1TW74uGSkhU1UEciG30csXKD',
+      stripePriceId: 'price_1Tccv8GSkhU1UEciIJRR3EgR',
       name: 'オーガニックチキン ムネ', variant: '1袋 200g',
-      price: 1540, weight: 200, stock: 6, temp: '冷凍',
+      price: 2760, weight: 200, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Breast',
       isOrganic: true,
       description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
@@ -169,9 +169,9 @@
     },
     {
       productId: 'P015', variantId: 'ORG-CHK-THIGH', sku: 'EDA-ORG-CHK-THIGH-200',
-      stripePriceId: 'price_1TW74vGSkhU1UEci6e5u6hec',
+      stripePriceId: 'price_1TccvFGSkhU1UEcieBG9ameg',
       name: 'オーガニックチキン モモ', variant: '1袋 200g',
-      price: 1540, weight: 200, stock: 6, temp: '冷凍',
+      price: 2940, weight: 200, stock: 6, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Thigh',
       isOrganic: true,
       description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。提携農家から、月に少量だけ。',
@@ -179,9 +179,9 @@
     },
     {
       productId: 'P016', variantId: 'ORG-CHK-MINCED', sku: 'EDA-ORG-CHK-MINCED-200',
-      stripePriceId: 'price_1TW74wGSkhU1UEciMfeKnO9W',
+      stripePriceId: 'price_1TccvLGSkhU1UEciMdkgzxet',
       name: 'オーガニックチキン ミンチ', variant: '1袋 200g',
-      price: 1200, weight: 200, stock: 5, temp: '冷凍',
+      price: 2400, weight: 200, stock: 5, temp: '冷凍',
       category: 'chicken-org', categoryLabel: '鶏肉', tagEn: 'Organic · Minced',
       isOrganic: true,
       description: '千葉県・有機 JAS 認証相当の無農薬飼料、無投薬。離乳食、つくねに。',
@@ -191,27 +191,27 @@
     /* ===== ギフトボックス（送料込み・税込） ===== */
     {
       productId: 'P017', variantId: 'GIFT-MATSU', sku: 'EDA-GIFT-MATSU-450',
-      stripePriceId: 'price_1TW74xGSkhU1UEcibF0y54Yd',
+      stripePriceId: 'price_1TcbwYGSkhU1UEciMRd5Kyu2',
       name: 'ヒレステーキ ギフト【松】', variant: '450g',
-      price: 16800, weight: 450, stock: 10, temp: '冷凍',
+      price: 12900, weight: 450, stock: 10, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · MATSU',
       description: '希少部位のヒレ、450g。脂が少なく、繊維がきめ細かい。大切な方への一品に。',
       images: ['public/images/products/drive/fillet.jpg']
     },
     {
       productId: 'P018', variantId: 'GIFT-TAKE', sku: 'EDA-GIFT-TAKE-750',
-      stripePriceId: 'price_1TW74xGSkhU1UEciDCqXHlsi',
+      stripePriceId: 'price_1TcbwhGSkhU1UEciSyTKt2YQ',
       name: '赤身ステーキ ギフト【竹】', variant: '750g',
-      price: 12800, weight: 750, stock: 12, temp: '冷凍',
+      price: 11000, weight: 750, stock: 12, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · TAKE',
       description: '赤身ステーキを 750g。脂が少なく、鉄分が高い。健康を気遣う方への贈り物に。',
       images: ['public/images/products/drive/red-meat.jpg']
     },
     {
       productId: 'P019', variantId: 'GIFT-UME', sku: 'EDA-GIFT-UME-650',
-      stripePriceId: 'price_1TW74yGSkhU1UEci45Gc54Xx',
+      stripePriceId: 'price_1TcbwoGSkhU1UEciEiu3ymJ0',
       name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5',
-      price: 5980, weight: 650, stock: 18, temp: '冷凍',
+      price: 5500, weight: 650, stock: 18, temp: '冷凍',
       category: 'gift', categoryLabel: 'ギフト', tagEn: 'Gift · UME',
       description: '和牛 100% のハンバーグを 5 個。ご家庭への手土産に。',
       images: ['public/images/products/drive/hamburg.jpg']

@@ -4300,22 +4300,54 @@ function hashStr(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = ((h <<
 
 /* アンケート（survey）機能は削除（Tom 指示 2026-05-30） */
 
-/* ---- Quick Cart (Shop Tab) ---- */
-var SHOP_PRODUCTS = [
- { id:'sirloin', name:'サーロインステーキ', sub:'約200g / 冷凍パック', price:3400, tag:'STEAK', img:'public/images/products/drive/sirloin.jpg' },
- { id:'red-meat', name:'赤身ステーキ', sub:'約200g / 冷凍パック', price:2800, tag:'STEAK', img:'public/images/products/drive/red-meat.jpg' },
- { id:'hamburg', name:'無添加ハンバーグ', sub:'130g×2個 / 冷凍', price:1800, tag:'PROCESSED', img:'public/images/products/drive/hamburg.jpg' },
- { id:'kiriotoshi', name:'切り落とし', sub:'300g / 冷凍パック', price:2200, tag:'SLICE', img:'public/images/products/drive/kiriotoshi.jpg' },
- { id:'wagyu-slice', name:'赤身スライス', sub:'すき焼き・しゃぶしゃぶに', price:3200, tag:'SLICE', img:'public/images/products/drive/wagyu-slice.jpg' },
- { id:'yakiniku', name:'バラ焼肉', sub:'300g / 冷凍パック', price:2600, tag:'YAKINIKU', img:'public/images/products/drive/yakiniku-brisket.jpg' },
- { id:'chicken-breast', name:'平飼い鶏 ムネ', sub:'250g / 冷凍パック', price:980, tag:'CHICKEN', img:'public/images/products/drive/chicken-breast.jpg' },
- { id:'chicken-thigh', name:'平飼い鶏 モモ', sub:'250g / 冷凍パック', price:1080, tag:'CHICKEN', img:'public/images/products/drive/chicken-thigh.jpg' }
+/* ---- Quick Cart (Shop Tab) ----
+   🔴 価格・重量・名称・画像・Stripe価格IDは shop.html と同一の「ライブ商品カタログ」
+   = window.EDA_PRODUCTS_MASTER から取得する。これは products-loader.js が GAS(スプシ
+   public_catalog)から最新を取得して上書きしたもの（静的 products-master.js はその
+   fallback）。🔴 静的ファイルは鶏など一部が陳腐化し得るため直読みしない＝スプシが
+   正本。ハードコードもしない＝価格ドリフトを根絶。ここで決めるのは「並べる商品
+   (variantId)」と「カテゴリ見出しタグ」だけ。 */
+var SHOP_FEATURED = [
+ { vid:'SIRLOIN',          tag:'STEAK' },
+ { vid:'RED-MEAT',         tag:'STEAK' },
+ { vid:'HAMBURG',          tag:'PROCESSED' },
+ { vid:'KIRIOTOSHI',       tag:'SLICE' },
+ { vid:'WAGYU-SLICE',      tag:'SLICE' },
+ { vid:'YAKINIKU-BRISKET', tag:'YAKINIKU' },
+ { vid:'CHK-BREAST',       tag:'CHICKEN' },
+ { vid:'CHK-THIGH',        tag:'CHICKEN' }
 ];
-var _cart = {};
+function buildShopProducts() {
+ var master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+ if (!master.length) { try { console.warn('[mypage] products-master.js 未ロード — クイックカートを表示できません'); } catch(e){} }
+ var out = [];
+ SHOP_FEATURED.forEach(function(f) {
+  var p = master.find(function(x) { return x.variantId === f.vid; });
+  if (!p || p.comingSoon || !(p.price > 0)) return;   // 未解禁・無効はスキップ
+  out.push({
+   id: p.variantId,                          // cart キー＝variantId（shop.html と一致させ受け渡し可能に）
+   variantId: p.variantId,
+   name: p.name,
+   variant: p.variant,                       // 例 '1枚 200g'（Stripe/伝票の variant 表記）
+   sub: p.variant + ' / ' + p.temp,          // 表示用 例 '1枚 200g / 冷凍'
+   price: p.price,                           // ★ カタログ正本価格（税込・円）
+   stripePriceId: p.stripePriceId || null,   // ★ Stripe Price ID（課金はこの ID で解決）
+   tag: f.tag,
+   img: (p.images && p.images[0]) || ''
+  });
+ });
+ return out;
+}
+/* SHOP_PRODUCTS はライブカタログ確定後に renderShopProducts / refreshProductCards で都度ビルドする
+   （GAS 取得は非同期のため、レンダリング時点で最新の EDA_PRODUCTS_MASTER を読む）。 */
+var SHOP_PRODUCTS = [];
+var _lastShopCustomer = null;
 function renderShopProducts(customer) {
+ if (arguments.length > 0) _lastShopCustomer = customer;
+ SHOP_PRODUCTS = buildShopProducts();   // ★ ライブカタログ（GAS→静的fallback）から都度再構築
  var grid = document.getElementById('shopProductsGrid');
  if (!grid) return;
- var hasSub = customer && customer.subscription && customer.subscription.active;
+ var hasSub = _lastShopCustomer && _lastShopCustomer.subscription && _lastShopCustomer.subscription.active;
  var noteEl = document.getElementById('shopSubNote');
  if (noteEl && hasSub) noteEl.style.display = '';
  var html = '';
@@ -4340,7 +4372,13 @@ function renderShopProducts(customer) {
   '</div>';
  });
  grid.innerHTML = html;
+ updateCartFloat();   // 既存カート（shop.html 等で追加済み）をフロートに反映
 }
+/* products-loader.js が GAS ライブカタログ取得後に呼ぶ再描画フック。
+   shop.html と同一機構で、mypage クイックカートの表示価格を常に shop と一致させる
+   （例: 鶏の最新価格 ¥920/¥980 が GAS から来たら自動で再レンダリング）。 */
+window.refreshProductCards = function(){ try { renderShopProducts(); } catch(e){} };
+window.refreshStockBadges  = window.refreshStockBadges || function(){};
 function cartQty(pid, delta) {
  var el = document.getElementById('qty-' + pid);
  if (!el) return;
@@ -4351,7 +4389,27 @@ function cartQty(pid, delta) {
 function addToCart(pid) {
  var qtyEl = document.getElementById('qty-' + pid);
  var qty = qtyEl ? parseInt(qtyEl.textContent) : 1;
- _cart[pid] = (_cart[pid] || 0) + qty;
+ if (!(qty > 0)) qty = 1;
+ var p = SHOP_PRODUCTS.find(function(x) { return x.id === pid; });
+ if (!p) return;
+ /* 🔴 shop.html / checkout.html と同一の配列形式
+    [{variantId, price, title, variant, img, qty, stripePriceId}] で保存する。
+    これでマイページのクイックカートも shop.html?cart=1 へ正しく引き継がれ、
+    課金は stripePriceId（無ければ catalog price）＝カタログ/Stripe 正本で解決される。
+    旧 {pid:qty} オブジェクト形式が残っていても Array でなければ作り直す。 */
+ var cart;
+ try { cart = JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch(e){ cart = []; }
+ if (!Array.isArray(cart)) cart = [];
+ var existing = cart.find(function(x) { return x && x.variantId === p.variantId; });
+ if (existing) {
+  existing.qty = (existing.qty || 1) + qty;
+  /* 価格等はカタログ正本へ寄せ直す（古い localStorage 価格の温存を防ぐ） */
+  existing.price = p.price; existing.title = p.name; existing.variant = p.variant;
+  existing.img = p.img; existing.stripePriceId = p.stripePriceId;
+ } else {
+  cart.push({ variantId: p.variantId, price: p.price, title: p.name, variant: p.variant, img: p.img, qty: qty, stripePriceId: p.stripePriceId });
+ }
+ try { localStorage.setItem('eda-cart', JSON.stringify(cart)); } catch(e){}
  var btn = document.getElementById('btn-' + pid);
  if (btn) {
   btn.classList.add('added');
@@ -4359,23 +4417,28 @@ function addToCart(pid) {
   setTimeout(function() { btn.classList.remove('added'); btn.innerHTML = '&#x1F6D2; カートに追加'; }, 1500);
  }
  updateCartFloat();
- try { localStorage.setItem('eda-cart', JSON.stringify(_cart)); } catch(e){}
 }
 function updateCartFloat() {
  var fl = document.getElementById('cartFloat');
  var cnt = document.getElementById('cartFloatCount');
  var txt = document.getElementById('cartFloatText');
  if (!fl) return;
- var total = 0; var totalYen = 0;
- Object.keys(_cart).forEach(function(k) {
-  total += _cart[k];
-  var p = SHOP_PRODUCTS.find(function(x) { return x.id === k; });
-  if (p) totalYen += p.price * _cart[k];
+ /* 配列形式の eda-cart（shop.html と共有）から実数量・合計を集計。
+    マイページで追加した分も shop.html で追加した分も同じカートに反映される。 */
+ var cart;
+ try { cart = JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch(e){ cart = []; }
+ if (!Array.isArray(cart)) cart = [];
+ var total = 0, totalYen = 0;
+ cart.forEach(function(it) {
+  if (!it) return;
+  var q = it.qty || 0;
+  total += q;
+  totalYen += (it.price || 0) * q;
  });
  if (total > 0) {
   fl.classList.add('show');
-  cnt.textContent = total;
-  txt.textContent = formatYen(totalYen) + ' — 注文へ進む';
+  if (cnt) cnt.textContent = total;
+  if (txt) txt.textContent = formatYen(totalYen) + ' — 注文へ進む';
  } else {
   fl.classList.remove('show');
  }
@@ -4673,6 +4736,9 @@ function escapeHtml(str) {
  .replace(/"/g, '&quot;');
 }
 </script>
+<!-- 商品カタログ（ライブ）— shop.html と同一。products-master.js=静的fallback → products-loader.js が GAS(スプシ public_catalog)から最新の価格/在庫/Stripe価格IDを取得し window.EDA_PRODUCTS_MASTER を上書き。クイックカートはこれを正本とし価格ドリフトを根絶。 -->
+<script src="public/data/products-master.js?v=2026-06-08" defer></script>
+<script src="public/js/products-loader.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
