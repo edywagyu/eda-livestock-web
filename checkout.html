@@ -1806,7 +1806,7 @@ function renderOrderList() {
   <strong>${item.title}</strong>
   <span>${item.variant}</span>
   <div class="order-item-qty">
-   <button type="button" class="order-item-qty-btn remove" onclick="changeCartQty(${i},-1)" title="削除">×</button>
+   <button type="button" class="order-item-qty-btn remove" onclick="changeCartQty(${i},-99999)" title="削除">×</button>
    <button type="button" class="order-item-qty-btn" onclick="changeCartQty(${i},-1)">−</button>
    <span class="order-item-qty-num">${item.qty}</span>
    <button type="button" class="order-item-qty-btn" onclick="changeCartQty(${i},1)">＋</button>
