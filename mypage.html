@@ -4304,7 +4304,7 @@ function hashStr(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = ((h <<
 var SHOP_PRODUCTS = [
  { id:'sirloin', name:'サーロインステーキ', sub:'約200g / 冷凍パック', price:3400, tag:'STEAK', img:'public/images/products/drive/sirloin.jpg' },
  { id:'red-meat', name:'赤身ステーキ', sub:'約200g / 冷凍パック', price:2800, tag:'STEAK', img:'public/images/products/drive/red-meat.jpg' },
- { id:'hamburg', name:'無添加ハンバーグ', sub:'150g×2個 / 冷凍', price:1800, tag:'PROCESSED', img:'public/images/products/drive/hamburg.jpg' },
+ { id:'hamburg', name:'無添加ハンバーグ', sub:'130g×2個 / 冷凍', price:1800, tag:'PROCESSED', img:'public/images/products/drive/hamburg.jpg' },
  { id:'kiriotoshi', name:'切り落とし', sub:'300g / 冷凍パック', price:2200, tag:'SLICE', img:'public/images/products/drive/kiriotoshi.jpg' },
  { id:'wagyu-slice', name:'赤身スライス', sub:'すき焼き・しゃぶしゃぶに', price:3200, tag:'SLICE', img:'public/images/products/drive/wagyu-slice.jpg' },
  { id:'yakiniku', name:'バラ焼肉', sub:'300g / 冷凍パック', price:2600, tag:'YAKINIKU', img:'public/images/products/drive/yakiniku-brisket.jpg' },
@@ -4442,7 +4442,7 @@ function generateDemoCoupons(orderCount) {
  all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 2 && orderCount < 3) {
- all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(200g)', description: '3回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(130g×2)', description: '3回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 3 && orderCount < 4) {
  all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '4回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
