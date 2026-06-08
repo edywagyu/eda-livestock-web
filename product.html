@@ -708,7 +708,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026.05.14-pdp"></script>
+<script src="public/data/products-master.js?v=2026-06-08-photofix"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -745,10 +745,18 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
 
   /* === ギャラリー === */
-  const IMGV = '?v=20260606'; /* 画像キャッシュ強制更新 (Tom 2026-06: 鶏ムネに旧・牛画像がキャッシュされる問題の根絶) */
+  const IMGV = '?v=20260608'; /* 画像キャッシュ強制更新 (Tom 2026-06-08: PDP写真が全部サーロインで固まる問題=旧products-master.jsキャッシュの根絶) */
   const bustImg = (u) => (u && u.indexOf('?') < 0) ? u + IMGV : u;
   const images = (product.images && product.images.length) ? product.images : ['public/images/cuts/hero-0.jpeg'];
   const galMain = document.getElementById('galMain');
+  /* 🔴 真因修正 (Tom 2026-06-08): <picture> 内の <source srcset> が sirloin.webp 固定だったため、
+     img.src を商品画像に差し替えても <source> が優先され、全商品がサーロイン写真で表示されていた。
+     動的に画像が決まる PDP では <source> を持たせない方が安全 → 除去して img.src(商品jpg) を確実に表示する。 */
+  (function dropFixedPictureSource() {
+    const pic = galMain.parentNode;
+    const srcEl = pic && pic.querySelector ? pic.querySelector('source') : null;
+    if (srcEl) srcEl.remove();
+  })();
   galMain.src = bustImg(images[0]);
   galMain.alt = product.name;
   const thumbs = document.getElementById('galThumbs');

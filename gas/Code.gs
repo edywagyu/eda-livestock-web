@@ -56,6 +56,19 @@ function cfg(key, fallback) {
   return PROPS.getProperty(key) || fallback || '';
 }
 
+/* 社内向け「注文通知」の宛先（Tom 2026-06-08）。EC対応の田崎さん＋backoffice の両方へ送る。
+   Script Property STAFF_NOTIFICATION_EMAIL に他アドレスがあれば取り込み、重複は除外して結合。
+   ※ お客様への確認メールはこの関数を使わない（お客様アドレス宛・LINE連携時は送らないルールを維持）。 */
+function staffNotificationRecipients() {
+  var list = ['r.tasaki@eda-livestock.com', 'backoffice@eda-livestock.com'];
+  var prop = cfg('STAFF_NOTIFICATION_EMAIL');
+  if (prop) String(prop).split(',').forEach(function (e) {
+    e = e.trim();
+    if (e && list.indexOf(e) === -1) list.push(e);
+  });
+  return list.join(',');
+}
+
 function jsonResponse(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
@@ -277,8 +290,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.07-ship-hero',
-    versionNote: 'v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
+    version: '2026.06.08-staff-notify-tasaki',
+    versionNote: 'v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -658,7 +671,7 @@ function sendBankTransferEmail(email, customerName, orderNum, totalYen) {
 
 /* スタッフ向け「振込待ち」通知（入金を実額で照合するアナログ確認の起点）。 */
 function sendStaffBankPendingEmail(orderNum, totalYen, cust) {
-  var to = cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com';
+  var to = staffNotificationRecipients();   /* 田崎＋backoffice 両方（Tom 2026-06-08）*/
   try {
     MailApp.sendEmail({
       to: to,
@@ -2685,7 +2698,7 @@ function sendCustomerReceiptEmail(session, orderNum) {
 }
 
 function sendStaffNotificationEmail(session, orderNum) {
-  const to = cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com';
+  const to = staffNotificationRecipients();   /* 田崎＋backoffice 両方（Tom 2026-06-08）*/
   const meta = session.metadata || {};
   const total = '¥' + Number(session.amount_total || 0).toLocaleString();
 
@@ -3872,6 +3885,13 @@ function staffShip(body) {
       const tracking = String(body.tracking_number || '').trim();
       sh.getRange(i + 1, tnIdx + 1).setValue(tracking);
       if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('shipped');
+      // お届け予定日も orders に保存（マイページ「次回お届け予定」に反映。従来は通知のみで未保存＝日程調整中バグ）。
+      if (body.delivery_date) {
+        var _hdrNow = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+        var _ddIdx = _hdrNow.indexOf('delivery_date');
+        if (_ddIdx === -1) { _ddIdx = _hdrNow.length; sh.getRange(1, _ddIdx + 1).setValue('delivery_date'); }
+        var _ddCell = sh.getRange(i + 1, _ddIdx + 1); _ddCell.setNumberFormat('@'); _ddCell.setValue(String(body.delivery_date).slice(0, 10));
+      }
 
       // ★ 発送通知 (②配送確定): 発送伝票確定が起点。初回発送時のみ送る（_alreadyShipped は再送しない）。
       //   LINE 連携済み (line_uid あり。無ければ email 逆引き) → LINE で配送番号/お届け予定。
@@ -3966,49 +3986,145 @@ function staffConfirmPayment(body) {
 }
 
 /* GET b2_csv (ヤマト B2 形式の CSV ダウンロード) */
+/* 🟢 ヤマトB2クラウド「基本レイアウト」標準フォーマット(送り状発行データレイアウト 公式 No.1〜28順)の行を構築する共有ヘルパー。
+   CSV出力(b2CsvExport)と発送スプシ(writeShippingSheet)の両方が使う＝ロジック一元化。
+   固定値→送り状種類=0発払い / クール区分=1冷凍 / 出荷予定日=当日(JST) / 敬称=様 / 依頼主(19-26列)=空欄=B2アカウント既定(江田畜産)補完。
+   配達時間帯(7列)はヤマトコード(0812午前/1416/1618/1820/1921)のみ。1宛先=1ラベル。未発送の実注文のみ(発送済/社内テスト除外)。 */
+const B2_HEADER = ['お客様管理番号','送り状種類','クール区分','伝票番号','出荷予定日','お届け予定（指定）日','配達時間帯','お届け先コード','お届け先電話番号','お届け先電話番号枝番','お届け先郵便番号','お届け先住所','お届け先住所（アパートマンション名）','お届け先会社・部門名１','お届け先会社・部門名２','お届け先名','お届け先名略称カナ','敬称','ご依頼主コード','ご依頼主電話番号','ご依頼主電話番号枝番','ご依頼主郵便番号','ご依頼主住所','ご依頼主住所（アパートマンション名）','ご依頼主名','ご依頼主略称カナ','品名コード１','品名１'];
+
+function b2Rows_() {
+  const sh = sheet('orders');
+  const data = sh.getDataRange().getValues();
+  if (data.length < 2) return { header: B2_HEADER, rows: [], excluded: 0 };
+  const headers = data[0];
+  const get = (row, name) => row[headers.indexOf(name)] || '';
+  // 列ズレ防止: 各項目のカンマ/改行を除去（ヤマトB2は素のCSV取込＝引用符でなく除去で安全。スプシ→CSV書出時も同基準）。
+  const clean = (v) => String(v == null ? '' : v).replace(/,/g, ' ').replace(/[\r\n]+/g, ' ');
+  // 配達時間帯はヤマト公式コードのみ許可。EC checkout は既にコード値(0812等)で保存。不正値は空＝指定なし。
+  const timeCode = (v) => {
+    const t = String(v || '').trim();
+    if (/^(0812|1416|1618|1820|1921)$/.test(t)) return t;
+    if (t.indexOf('午前') >= 0) return '0812';
+    return '';
+  };
+  const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd'); // 出荷予定日=実行当日(JST)
+  const rows = [];
+  let excluded = 0;
+  data.slice(1).forEach(row => {
+    const ps = String(get(row, 'payment_status') || '').toLowerCase();
+    if (ps === 'awaiting_payment') return;                                   // 🏦 未入金(銀行振込)は対象外
+    if (ps === 'shipped' || ps === 'delivered' || get(row, 'tracking_number')) { excluded++; return; } // 🚚 発送済みは対象外
+    if (String(get(row, 'customer_email') || '').toLowerCase().indexOf('@eda-livestock.com') >= 0) { excluded++; return; } // 🧪 社内テスト除外
+    const name = get(row, 'customer_name');
+    const orderNo = get(row, 'order_number');
+    const dDate = String(get(row, 'delivery_date') || '').slice(0, 10).replace(/-/g, '/');  // ISO→YYYY/MM/DD
+    const tCode = timeCode(get(row, 'delivery_time'));
+    // 1宛先=1送り状(1ラベル)。複数個口は発行枚数/複数口で別管理(現状1箱運用)。
+    const pushRow = (tel, zip, addr, nm, hinmei) => {
+      const r = new Array(28).fill('');
+      r[0]  = clean(orderNo);  // 1 お客様管理番号
+      r[1]  = '0';             // 2 送り状種類=発払い
+      r[2]  = '1';             // 3 クール区分=クール冷凍(全商品冷凍・冷蔵追加時はproducts.temp連動に要変更)
+      r[4]  = today;           // 5 出荷予定日=当日(JST)
+      r[5]  = dDate;           // 6 お届け予定（指定）日
+      r[6]  = tCode;           // 7 配達時間帯(コード)
+      r[8]  = clean(tel);      // 9 お届け先電話番号
+      r[10] = clean(zip);      // 11 お届け先郵便番号
+      r[11] = clean(addr);     // 12 お届け先住所
+      r[15] = clean(nm);       // 16 お届け先名
+      r[17] = '様';            // 18 敬称
+      r[27] = clean(hinmei);   // 28 品名１
+      rows.push(r);
+    };
+    const dest = get(row, 'destinations_json');
+    try {
+      const d = JSON.parse(dest);
+      d.forEach(addr => {
+        // 商品が割り当てられていない宛先(ギフトのご依頼主=差出人など)は配送ラベルを作らない
+        const its = Array.isArray(addr.items) ? addr.items : [];
+        if (its.length === 0) return;
+        const hinmei = its.map(function (it) { return (it.title || '') + (it.variant ? (' ' + it.variant) : ''); }).join(' / ');
+        pushRow(addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, hinmei);
+      });
+    } catch (e) {
+      pushRow('', '', '', name, '');
+    }
+  });
+  return { header: B2_HEADER, rows: rows, excluded: excluded };
+}
+
+/* スタッフがB2クラウドへ取り込むCSV(?action=b2_csv)。取込パターン=「基本レイアウト(csv)」・取込み開始行=2。 */
 function b2CsvExport() {
   try {
-    const sh = sheet('orders');
-    const data = sh.getDataRange().getValues();
-    if (data.length < 2) return ContentService.createTextOutput('').setMimeType(ContentService.MimeType.CSV);
-    const headers = data[0];
-    const get = (row, name) => row[headers.indexOf(name)] || '';
-    // CSV列ズレ防止(#2): 各項目のカンマ/改行を除去（ヤマトB2は素のCSV取込＝引用符でなく除去で安全）。
-    const clean = (v) => String(v == null ? '' : v).replace(/,/g, ' ').replace(/[\r\n]+/g, ' ');
-    // 末尾に「お届け希望日/時間帯」を追加 (顧客が決済時に指定した配送希望)。
-    //   既存4列の後ろに足すので従来の取り込み位置は不変。日付は YYYY/MM/DD (ヤマト形式)。
-    const csv = ['お届け先電話番号,お届け先郵便番号,お届け先住所,お届け先名,お届け希望日,お届け希望時間帯'];
-    let _excluded = 0;
-    data.slice(1).forEach(row => {
-      const ps = String(get(row, 'payment_status') || '').toLowerCase();
-      // 🏦 未入金（銀行振込・入金前）の注文は発送伝票の対象外（入金確認まで除外）。
-      if (ps === 'awaiting_payment') return;
-      // 🚚 発送済み（追跡番号あり / status shipped・delivered）は対象外 ＝ 未発送のみ出力（#4 再犯防止）。
-      if (ps === 'shipped' || ps === 'delivered' || get(row, 'tracking_number')) { _excluded++; return; }
-      // 🧪 社内・テスト注文（@eda-livestock.com）は対象外。実顧客はこのドメインを使わない（#4 テスト混入防止）。
-      if (String(get(row, 'customer_email') || '').toLowerCase().indexOf('@eda-livestock.com') >= 0) { _excluded++; return; }
-      const dest = get(row, 'destinations_json');
-      const name = get(row, 'customer_name');
-      const dDate = String(get(row, 'delivery_date') || '').slice(0, 10).replace(/-/g, '/');  // ISO→YYYY/MM/DD
-      const dTime = String(get(row, 'delivery_time') || '').replace(/,/g, ' ');                 // 念のためカンマ除去
-      try {
-        const d = JSON.parse(dest);
-        d.forEach(addr => {
-          // 商品が割り当てられていない宛先(ギフトのご依頼主=差出人など)は配送ラベルを作らない
-          if (Array.isArray(addr.items) && addr.items.length === 0) return;
-          csv.push([clean(addr.tel || ''), clean(addr.zip || ''), clean((addr.pref || '') + (addr.address || '')), clean(addr.name || name), dDate, dTime].join(','));
-        });
-      } catch (e) {
-        csv.push(['', '', '', clean(name), dDate, dTime].join(','));
-      }
-    });
-    if (_excluded) log('b2_csv_excluded', { count: _excluded, note: '発送済み/社内テストを除外' });
+    const b = b2Rows_();
+    if (b.excluded) log('b2_csv_excluded', { count: b.excluded, note: '発送済み/社内テストを除外' });
+    const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
+    const csv = [b.header.join(',')].concat(b.rows.map(function (r) { return r.join(','); }));
     return ContentService.createTextOutput(csv.join('\n'))
       .setMimeType(ContentService.MimeType.CSV)
-      .downloadAsFile('b2-' + new Date().toISOString().slice(0,10) + '.csv');
+      .downloadAsFile('b2-' + today.replace(/\//g, '-') + '.csv');
   } catch (e) {
     return ContentService.createTextOutput('error: ' + e.message);
   }
+}
+
+/* 🟢 専用「EC発送」スプシ(スタッフPC用)へ未発送注文を自動書き出し。30分ごとの時刻トリガー(setupShippingSheet で設置)で実行＝常に最新。
+   書き出し先IDは Script Property SHIPPING_SHEET_ID。「発送リスト」タブ(基本レイアウト28列・ファイル→ダウンロード→CSVでB2取込)＋「使い方」タブ。
+   注文確定等の重要処理には一切割り込まない(独立トリガー)＝安全。 */
+function writeShippingSheet() {
+  try {
+    const id = PROPS.getProperty('SHIPPING_SHEET_ID');
+    if (!id) return 'no_sheet_id';
+    const b = b2Rows_();
+    const ss = SpreadsheetApp.openById(id);
+    // --- 発送リスト(B2取込用・先頭タブ) ---
+    const list = ss.getSheetByName('発送リスト') || ss.insertSheet('発送リスト', 0);
+    list.clear();
+    const all = [b.header].concat(b.rows);
+    list.getRange(1, 1, all.length, b.header.length).setValues(all);
+    list.setFrozenRows(1);
+    ss.setActiveSheet(list); ss.moveActiveSheet(1);
+    // --- 使い方 ---
+    const help = ss.getSheetByName('使い方') || ss.insertSheet('使い方');
+    help.clear();
+    const ts = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+    help.getRange(1, 1, 9, 1).setValues([
+      ['📦 EC発送リスト（スタッフ用・自動更新）'],
+      ['最終更新: ' + ts + ' ／ 未発送 ' + b.rows.length + ' 件（30分ごとに自動更新）'],
+      [''],
+      ['① 「発送リスト」タブを開く → ファイル → ダウンロード → カンマ区切り形式(.csv)'],
+      ['② ヤマトB2クラウド → 外部データから発行 → 取込パターン「基本レイアウト(csv,xls,xlsx)」/ 取込み開始行=2 → 取込み開始'],
+      ['③ 「修正必要 0件」を確認 → 印刷内容の確認へ → 発行（ラベル印刷）'],
+      ['④ 発送後、STAFFページで該当注文に伝票番号を入力し「発送済として記録」（お客様へ通知が1回送られます）'],
+      [''],
+      ['※ このリストは「未発送の実注文のみ」。発送処理すると次回更新で自動的に消えます。'],
+    ]);
+    help.setColumnWidth(1, 760);
+    // 余計なタブ(作成時の既定シート等)は削除し、2タブだけにする
+    ss.getSheets().forEach(function (s) {
+      const n = s.getName();
+      if (n !== '発送リスト' && n !== '使い方') ss.deleteSheet(s);
+    });
+    return 'ok:' + b.rows.length;
+  } catch (e) { log('shipping_sheet_error', { error: e.message }); return 'error:' + e.message; }
+}
+
+/* 🟢 初回セットアップ(1回だけGASエディタで実行)。専用「EC発送」スプシを作成→ID保存→30分自動更新トリガー設置→初回書き出し。
+   返り値=スプシURL。実行後、Tom がそのスプシを開いてスタッフ(田崎/野々)へ共有する。再実行は冪等(既存IDを再利用)。 */
+function setupShippingSheet() {
+  let id = PROPS.getProperty('SHIPPING_SHEET_ID');
+  let ss;
+  if (id) {
+    ss = SpreadsheetApp.openById(id);
+  } else {
+    ss = SpreadsheetApp.create('★EC発送リスト（スタッフ用・自動更新）');
+    PROPS.setProperty('SHIPPING_SHEET_ID', ss.getId());
+    try { DriveApp.getFileById(ss.getId()).addEditor('tomoki@eda-livestock.com'); } catch (e) {}
+  }
+  const has = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'writeShippingSheet'; });
+  if (!has) ScriptApp.newTrigger('writeShippingSheet').timeBased().everyMinutes(30).create();
+  writeShippingSheet();
+  return ss.getUrl();
 }
 
 /* ============================================================
