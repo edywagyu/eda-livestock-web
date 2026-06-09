@@ -2440,7 +2440,7 @@ async function saveStock(variantId, btn) {
       body: JSON.stringify({ variantId, stock: val })
     });
     const data = await res.json();
-    if (data.success) {
+    if (data.ok || data.success) {
       btn.textContent = '✓ 完了';
       btn.classList.add('saved');
       setTimeout(() => { btn.textContent = '保存'; btn.classList.remove('saved'); btn.disabled = false; }, 1500);
@@ -4005,7 +4005,7 @@ function saveProduct() {
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify(product)
   }).then(r => r.json()).then(res => {
-    if (res.success) {
+    if (res.ok || res.success) {
       toast(editingProduct ? '更新しました' : '商品を登録しました', 'success');
       loadInventory();
       closeForm();
