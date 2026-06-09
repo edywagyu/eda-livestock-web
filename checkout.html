@@ -1381,32 +1381,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div id="recipientGroups"></div>
  </div>
 
- <!-- 配送日時 -->
- <div class="checkout-block">
- <div class="checkout-block-head">
- <span class="checkout-block-num" id="numDeliveryTime">3</span>
- <span class="checkout-block-title">お届け日時</span>
- <span class="checkout-block-sub" id="deliveryDateDefault">最短: 自動</span>
- </div>
- <div class="dest-form-row cols2">
- <div class="dest-field">
- <label>お届け希望日</label>
- <input type="date" id="checkoutDeliveryDate" class="dest-field-date">
- <small style="display:block;margin-top:4px;font-size:11px;color:var(--color-ink-muted)">未指定＝最短日でお届け（最長1か月先まで指定可）</small>
- </div>
- <div class="dest-field">
- <label>お届け時間帯</label>
- <select id="checkoutDeliveryTime">
- <option value="">指定なし</option>
- <option>午前中（〜12:00）</option>
- <option>14:00 - 16:00</option>
- <option>16:00 - 18:00</option>
- <option selected>18:00 - 20:00（推奨）</option>
- <option>19:00 - 21:00</option>
- </select>
- </div>
- </div>
- </div>
+ <!-- 配送日時は各「お届け先」カード内に統合（定期便=毎月1日固定／ギフト・単品=日付指定）。旧 #checkoutDeliveryDate ブロックは廃止。 -->
 
  <!-- ④ お支払い方法 -->
  <div class="checkout-block">
@@ -1675,11 +1650,20 @@ function init() {
  // LINE 連携済みなら自動で併用通知 (購入は妨げない)
  if (getLineUid()) contactMethod = 'line+email';
 
+ // カート(ドロワー)で選んだ希望日時を自宅(self)に引き継ぐ
+ destinations[0].delivery = destinations[0].delivery || { mode: '', date: '', time: DELIV_DEFAULT_TIME };
+ try {
+ const _b = _deliveryBounds();
+ const cd = localStorage.getItem('eda-deliv-date');
+ if (cd && cd >= _b.min && cd <= _b.max) destinations[0].delivery.date = cd;
+ const ct = localStorage.getItem('eda-deliv-time');
+ if (ct && TIMECODE_TO_TEXT[ct]) destinations[0].delivery.time = TIMECODE_TO_TEXT[ct];
+ } catch (e) {}
+
  applyGiftLayout();
  renderOrderList();
  renderDestinations();
  renderSummary();
- buildDeliveryDateOptions();
  lockPaymentMethodForSubscription();
  updatePaymentUI();
 
@@ -1924,20 +1908,17 @@ function applyGiftLayout() {
  const t = document.getElementById('block2Title');
  const addBtn = document.getElementById('block2AddBtn');
  const recip = document.getElementById('recipientBlock');
- const numDT = document.getElementById('numDeliveryTime');
  const numPay = document.getElementById('numPayment');
  if (isGiftFlow) {
   if (t) t.textContent = 'ご依頼主';
   if (addBtn) addBtn.style.display = 'none';
   if (recip) recip.style.display = '';
-  if (numDT) numDT.textContent = '4';
-  if (numPay) numPay.textContent = '5';
+  if (numPay) numPay.textContent = '4';
  } else {
   if (t) t.textContent = 'お届け先';
   if (addBtn) addBtn.style.display = '';
   if (recip) recip.style.display = 'none';
-  if (numDT) numDT.textContent = '3';
-  if (numPay) numPay.textContent = '4';
+  if (numPay) numPay.textContent = '3';
  }
 }
 
@@ -1993,6 +1974,7 @@ function renderGiftDestinations() {
     <div class="dest-field"><label>メールアドレス<span class="required">*</span></label>
      <input type="email" value="${s.email || ''}" placeholder="example@example.com" inputmode="email" autocomplete="email" oninput="updateDestField(0,'email',this.value)" required>
      <small style="display:block;margin-top:6px;color:var(--color-ink-muted);font-size:12px">ご注文確認・配送状況をこちらにお送りします。${getLineUid() ? '<br>✅ LINE連携済み — LINEでも通知します。' : ''}</small></div>
+   ${deliveryFieldHtml(s, 0)}
    </div>
   </div>`;
  }
@@ -2034,6 +2016,7 @@ function renderGiftDestinations() {
     <div class="dest-form-row"><div class="dest-field"><label>市区町村・番地・建物名<span class="required">*</span></label>
      <input type="text" value="${d.address || ''}" placeholder="渋谷区神宮前 1-1-1 マンション101号" autocomplete="off" oninput="updateDestField(${dIdx},'address',this.value)" required></div></div>
     ${giftNoshiHtml(d, dIdx)}
+    ${deliveryFieldHtml(d, dIdx)}
    </div>
   </div>`;
  });
@@ -2168,6 +2151,7 @@ function renderDestinations() {
  </p>
  </div>
  ` : '' }
+ ${deliveryFieldHtml(dest, dIdx)}
  </div>
  </div>
  `;
@@ -2317,7 +2301,9 @@ function renderSummary() {
 
  if (subscription && PLANS[subscription.plan]) {
  const p = PLANS[subscription.plan];
- itemsHtml += `<div class="summary-line-item"><span>${p.name}<span class="qty">×1</span></span><span>¥${p.half.toLocaleString()}</span></div>`;
+ // 🔴 サマリー行は「通常価格」を表示し、割引は下の「初月50%OFF適用 −¥X」行で引く（内訳が合うように）。
+ //    subTotal には割引後(half)を足すので 商品小計＝通常−割引 で一致する。
+ itemsHtml += `<div class="summary-line-item"><span>${p.name}<span class="qty">×1</span></span><span>¥${p.regular.toLocaleString()}</span></div>`;
  subTotal += p.half;
  }
 
@@ -2430,53 +2416,92 @@ function renderSummary() {
  btn.disabled = (cartItems.length === 0 && !subscription);
 }
 
-/* ---- 配送日オプション ----
- ▸ 定期便あり: お届け日は「毎月1日」固定 (時間帯のみ選択可)
- ▸ 単品/ギフトのみ: 最短日（3日後〜）+ 14日先まで選択可
+/* ---- 配送日オプション（お届け先ごと）----
+ ▸ 定期便(自宅): 毎月1日固定・時間帯のみ
+ ▸ ギフト / 単品(自宅): 最短3日後〜1か月先で日付指定可
+ ▸ 単品(自宅) + 定期便: 「定期便と一緒(1日)」or「先に自宅へ(日付指定)」を選択
 */
-function buildDeliveryDateOptions() {
- // お届け希望日は <input type="date">。範囲＝最短3日後〜1か月後。未指定＝最短でお届け。
- //  value は ISO(YYYY-MM-DD) のまま orderPayload.delivery.date に渡る（staff/B2/マイページ互換）。
- const input = document.getElementById('checkoutDeliveryDate');
- if (!input) return;
+const DELIV_TIMES = ['', '午前中（〜12:00）', '14:00 - 16:00', '16:00 - 18:00', '18:00 - 20:00（推奨）', '19:00 - 21:00'];
+const DELIV_DEFAULT_TIME = '18:00 - 20:00（推奨）';
+const TIMECODE_TO_TEXT = { '': '', '0812': '午前中（〜12:00）', '1416': '14:00 - 16:00', '1618': '16:00 - 18:00', '1820': '18:00 - 20:00（推奨）', '1921': '19:00 - 21:00' };
+
+function _fmtIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function _deliveryBounds() {
  const now = new Date();
- const defaultLabel = document.getElementById('deliveryDateDefault');
- const dateField = input.closest('.dest-field');
- const fmtIso = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-
- // 定期便モード: 毎月1日固定（読み取り専用）
- if (subscription && PLANS[subscription.plan]) {
- const nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
- const iso = fmtIso(nextFirst);
- input.value = iso; input.min = iso; input.max = iso;
- input.readOnly = true; input.disabled = true;
- input.style.background = 'rgba(212,169,59,0.10)'; input.style.cursor = 'not-allowed';
- if (defaultLabel) { defaultLabel.textContent = '定期便 · 毎月1日 固定'; defaultLabel.style.color = 'var(--color-gold)'; }
- if (dateField) {
- let note = dateField.querySelector('.delivery-sub-note');
- if (!note) { note = document.createElement('small'); note.className = 'delivery-sub-note'; note.style.cssText = 'display:block;margin-top:6px;font-size:11px;color:var(--color-gold);font-weight:600'; dateField.appendChild(note); }
- note.innerHTML = '⭐ 定期便のお届けは <strong>毎月1日</strong> に固定です。時間帯のみご指定ください。';
- }
- return;
- }
-
- // 通常: 最短3日後 〜 1か月後 を選択可
- input.disabled = false; input.readOnly = false; input.style.background = ''; input.style.cursor = '';
- if (defaultLabel) { defaultLabel.textContent = '最短: 自動'; defaultLabel.style.color = ''; }
- if (dateField) { const note = dateField.querySelector('.delivery-sub-note'); if (note) note.remove(); }
  const minD = new Date(now); minD.setDate(minD.getDate() + 3);
  const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
- input.min = fmtIso(minD);
- input.max = fmtIso(maxD);
- /* カート(ドロワー)で選んだお届け日時を引き継ぐ (Tom 2026-06) */
- try {
-   const cd = localStorage.getItem('eda-deliv-date');
-   if (cd && cd >= input.min && cd <= input.max) input.value = cd;
-   const ct = localStorage.getItem('eda-deliv-time');
-   const tSel = document.getElementById('checkoutDeliveryTime');
-   const idxMap = { '':0, '0812':1, '1416':2, '1618':3, '1820':4, '1921':5 };
-   if (tSel && ct && idxMap[ct] != null) tSel.selectedIndex = idxMap[ct];
- } catch(e){}
+ const first = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+ return { min: _fmtIso(minD), max: _fmtIso(maxD), first: _fmtIso(first), firstLabel: `${first.getMonth() + 1}月1日` };
+}
+function _timeSelectHtml(dIdx, cur) {
+ return `<select onchange="updateDestDelivery(${dIdx},'time',this.value)">`
+  + DELIV_TIMES.map(t => `<option value="${t}" ${cur === t ? 'selected' : ''}>${t || '指定なし'}</option>`).join('')
+  + `</select>`;
+}
+
+/* お届け先カード内に出す「お届け日時」ブロック（destination の種別で出し分け） */
+function deliveryFieldHtml(dest, dIdx) {
+ const isGift = dest.type === 'gift';
+ const isSelf = !isGift && dIdx === 0;
+ const hasSub = !!(subscription && PLANS[subscription.plan]);
+ const dv = dest.delivery || (dest.delivery = { mode: '', date: '', time: DELIV_DEFAULT_TIME });
+ const b = _deliveryBounds();
+ const timeSel = _timeSelectHtml(dIdx, dv.time);
+ const pair = (label, hint) => `
+  <div class="dest-form-row cols2">
+   <div class="dest-field"><label>${label}</label>
+    <input type="date" class="dest-field-date" value="${dv.date || ''}" min="${b.min}" max="${b.max}" onchange="updateDestDelivery(${dIdx},'date',this.value)">
+    ${hint ? `<small style="display:block;margin-top:4px;font-size:11px;color:var(--color-ink-muted)">${hint}</small>` : ''}
+   </div>
+   <div class="dest-field"><label>お届け時間帯</label>${timeSel}</div>
+  </div>`;
+ const wrap = (inner) => `<div class="dest-delivery" style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(15,61,46,0.15)"><div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:8px">🚚 お届け日時</div>${inner}</div>`;
+ const timeOnly = `<div class="dest-form-row"><div class="dest-field"><label>お届け時間帯</label>${timeSel}</div></div>`;
+
+ if (isGift) return wrap(pair('お届け希望日', '未指定＝最短でお届け（3日後〜1か月先まで指定可）'));
+
+ if (isSelf) {
+  const selfHasItems = (dest.itemIds || []).length > 0;
+  // 定期便のみ自宅（単品なし）= 毎月1日固定・時間帯のみ
+  if (hasSub && !selfHasItems) {
+   return wrap(`<div style="background:rgba(212,169,59,0.10);border:1px solid rgba(212,169,59,0.3);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--color-forest);font-weight:600">⭐ 定期便は <strong>毎月1日</strong> にお届け（固定）。時間帯のみご指定ください。</div>${timeOnly}`);
+  }
+  // 単品(自分用) + 定期便 = 一緒(1日) or 先に送る(日付指定)
+  if (hasSub && selfHasItems) {
+   const sep = dv.mode === 'separate';
+   const optStyle = (on) => `display:flex;align-items:center;gap:8px;padding:10px 12px;border:1.5px solid ${on ? 'var(--color-forest)' : 'rgba(0,0,0,0.12)'};border-radius:8px;cursor:pointer;font-size:13px;background:${on ? 'rgba(15,61,46,0.05)' : '#fff'}`;
+   return wrap(`
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+     <label style="${optStyle(!sep)}"><input type="radio" name="deliv-mode-${dIdx}" value="with_sub" ${!sep ? 'checked' : ''} onchange="updateDestDelivery(${dIdx},'mode','with_sub')" style="accent-color:var(--color-forest)"><span>⭐ 定期便と一緒に毎月1日お届け（おすすめ）</span></label>
+     <label style="${optStyle(sep)}"><input type="radio" name="deliv-mode-${dIdx}" value="separate" ${sep ? 'checked' : ''} onchange="updateDestDelivery(${dIdx},'mode','separate')" style="accent-color:var(--color-forest)"><span>📅 先に自宅へ届ける（日付を指定）</span></label>
+    </div>
+    ${sep ? pair('お届け希望日', '3日後〜1か月先まで指定可') : timeOnly}`);
+  }
+  // 定期便なし・自宅に商品あり = 通常の日付指定
+  if (selfHasItems) return wrap(pair('お届け希望日', '未指定＝最短でお届け（3日後〜1か月先まで指定可）'));
+  return ''; // 自宅に何も送らない（差出人住所のみ）= 日時欄なし
+ }
+ return '';
+}
+
+/* destination ごとの最終 お届け日/時間 を解決（定期便と一緒=1日固定） */
+function resolveDestDelivery(d, dIdx) {
+ const dv = d.delivery || {};
+ const hasSub = !!(subscription && PLANS[subscription.plan]);
+ const isSelf = d.type !== 'gift' && dIdx === 0;
+ if (isSelf && hasSub) {
+  const selfHasItems = (d.itemIds || []).length > 0;
+  if (!selfHasItems || dv.mode !== 'separate') return { date: _deliveryBounds().first, time: dv.time || '' };
+  return { date: dv.date || '', time: dv.time || '' };
+ }
+ return { date: dv.date || '', time: dv.time || '' };
+}
+
+function updateDestDelivery(idx, key, value) {
+ if (!destinations[idx]) return;
+ if (!destinations[idx].delivery) destinations[idx].delivery = { mode: '', date: '', time: DELIV_DEFAULT_TIME };
+ destinations[idx].delivery[key] = value;
+ if (key === 'mode') renderDestinations(); // 日付欄の表示切替
 }
 
 /* ---- 支払いラジオ ---- */
@@ -2580,23 +2605,27 @@ async function placeOrder() {
  line_name: lineSession?.display_name || '',
  contact_method: contactMethod
  },
- destinations: destinations.map(d => ({
+ destinations: destinations.map((d, i) => ({
  type: d.type,
  name: d.name, tel: d.tel, zip: d.zip, pref: d.pref, address: d.address,
  noshi: d.noshi || null,
  // ギフト導線では のし差出人 = ご依頼主(dest[0])。それ以外は従来の d.fromName。
  fromName: (isGiftFlow && d.type === 'gift') ? ((destinations[0] && destinations[0].name) || d.fromName || null) : (d.fromName || null),
- items: d.itemIds.map(i => cartItems[i]).filter(Boolean).map(it => ({ title: it.title, variant: it.variant, qty: it.qty }))
+ // 🔴 お届け先ごとの希望日時（定期便と一緒=毎月1日固定／ギフト・単品=指定日）。裏側 b2Rows_ がこれを優先。
+ delivery: resolveDestDelivery(d, i),
+ items: d.itemIds.map(i2 => cartItems[i2]).filter(Boolean).map(it => ({ title: it.title, variant: it.variant, qty: it.qty }))
  })),
  items: buildPayloadItems(),
  couponCode: appliedCoupon ? appliedCoupon.code : null,
  subscription: subscription,
  payment_method: payment,
  display_total: calcTotalAmount(),  /* 🏦 銀行振込の振込金額（クーポン適用後の最終合計）。card では未使用 */
- delivery: {
-   date: (document.getElementById('checkoutDeliveryDate') || {}).value || '',
-   time: (document.getElementById('checkoutDeliveryTime') || {}).value || ''
- },
+ /* 後方互換: top-level delivery は「商品を発送する最初のお届け先」の日時（無ければ自宅/定期便）。
+    お届け先ごとの正確な日時は destinations[].delivery に入る（裏側 b2Rows_ が優先使用）。 */
+ delivery: (function () {
+   for (let i = 0; i < destinations.length; i++) { if ((destinations[i].itemIds || []).length > 0) return resolveDestDelivery(destinations[i], i); }
+   return resolveDestDelivery(destinations[0], 0);
+ })(),
  quiz: (() => { try { return JSON.parse(localStorage.getItem('eda-quiz-answers') || 'null'); } catch(e) { return null; } })()
  };
 
