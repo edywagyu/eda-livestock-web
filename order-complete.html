@@ -1387,7 +1387,7 @@ function renderOrder(order) {
    const banner = document.createElement('div');
    banner.style.cssText = 'background:#ffd166;color:#664d03;padding:10px 16px;font-size:13px;font-weight:700;text-align:center;border-radius:8px;margin:16px;border:2px solid #d4a93b';
    banner.textContent = '🧪 テスト注文 — 実際の決済は発生していません';
-   const success = document.getElementById('success');
+   const success = document.getElementById('successState');
    if (success && success.firstChild) success.insertBefore(banner, success.firstChild);
  }
  /* Order number */

@@ -69,6 +69,14 @@ function staffNotificationRecipients() {
   return list.join(',');
 }
 
+/* 読み取り専用のシート取得（存在しなければ null・新規作成しない）。
+   🔴 Code_v2_Additions.gs 側の定義が本番プロジェクトへ同期されておらず、
+   survey_responses 等の overview が「getSheet is not defined」で落ちていた恒久対策（2026-06-12）。
+   同名定義が複数ファイルにあっても GAS は後勝ちで動作し実装は同一＝無害。 */
+function getSheet(name) {
+  return ss().getSheetByName(name);
+}
+
 function jsonResponse(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
@@ -290,8 +298,8 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.09-checkout-delivery',
-    versionNote: 'v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
+    version: '2026.06.12-mailbrand-subship',
+    versionNote: 'v36: 顧客向けメールをブランドHTML化(緑#0F3D2E×金#D4A93B×クリーム/写真=LINE Flexと同素材hero-0・ship-truck/送信者表示名=江田畜産｜EDA WAGYU)＋文字化け根治(plain単独だと一部経路でISO-2022-JP変換され罫線━や絵文字が化ける→htmlBody UTF-8を必ず併送・plain fallbackはJIS外文字を排除)。対象=注文確認/発送通知/振込案内(OTPは送信者名のみ)。定期便を出荷フローへ包含=b2Rows_がitems空の定期便注文にも品名「定期便ボックス(プラン)」でラベル行を生成(電話はtel→phone→注文者電話フォールバック=定期便destはphoneキー)＋alertUnshippedOrdersも定期便(宛先あり)を監視対象に(2026-06-11松本様の初回ボックスが発送リスト/B2/未発送アラート全てから構造的に漏れていた穴の修正)。getSheetをCode.gsに定義(survey_responses「getSheet is not defined」クラッシュ5件の恒久修正)。v35: ありがとうページ(order-complete.html→?action=order_status)でfinalizeOrderを実行＝Stripe webhookのGAS /exec 302失敗に依存せず新規注文・定期便初月を確実に確定。finalizeOrderはsession_id冪等(ScriptLock+既存チェック)でwebhook復活時も二重記録なし。webhook受信コード(handleStripeWebhook/processWebhookQueue)は保険で残置。v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -648,27 +656,33 @@ function buildBankTransferMessage(customerName, orderNum, totalYen) {
 function sendBankTransferEmail(email, customerName, orderNum, totalYen) {
   if (!email) return;
   var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var amount = '¥' + Number(totalYen || 0).toLocaleString();
   var body =
     greeting + '\n\n' +
     'この度はご注文いただきありがとうございます。\n' +
     '下記の口座へお振込をお願いいたします。ご入金を確認後、商品を発送いたします。\n\n' +
-    '━━━━━━━━━━━━━━━━━━━━━\n' +
-    ' ご注文番号: ' + orderNum + '\n' +
-    ' お振込金額: ¥' + Number(totalYen || 0).toLocaleString() + '\n' +
-    '━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'ご注文番号: ' + orderNum + '\n' +
+    'お振込金額: ' + amount + '\n\n' +
     '【お振込先】\n' +
     bankAccountText() + '\n\n' +
     '※ 振込手数料はお客様のご負担にてお願いいたします。\n' +
     '※ ご入金の確認後、発送のご連絡（追跡番号）をお送りいたします。\n' +
     '※ お振込の際は、お名前（ご注文者様）でお願いいたします。\n\n' +
-    '━━━━━━━━━━━━━━━━━━━━━\n' +
-    '江田畜産株式会社\n' +
-    'backoffice@eda-livestock.com\n' +
-    'https://eda-livestock.com/\n';
+    '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
+    'https://www.eda-livestock.com/';
   MailApp.sendEmail({
     to: email,
+    name: BRAND_MAIL.sender,
     subject: '【江田畜産】お振込先のご案内（' + orderNum + '）',
-    body: body
+    body: body,
+    htmlBody: brandEmailHtml_({
+      heroUrl: BRAND_MAIL.heroOrder,
+      title: 'お振込先のご案内',
+      intro: greeting + '、この度はご注文いただき誠にありがとうございます。<br>下記の口座へお振込をお願いいたします。ご入金の確認後、商品を発送いたします。',
+      rows: [['ご注文番号', orderNum], ['お振込金額', amount]],
+      boxText: '<span style="font-weight:bold;color:#0F3D2E;">お振込先</span><br>' + String(bankAccountText()).replace(/\n/g, '<br>'),
+      note: '※ 振込手数料はお客様のご負担にてお願いいたします。<br>※ お振込の際は、ご注文者様のお名前でお願いいたします。<br>※ ご入金の確認後、発送のご連絡（追跡番号）をお送りいたします。'
+    })
   });
 }
 
@@ -1553,9 +1567,13 @@ function alertUnshippedOrders() {
       var pd = placed ? new Date(placed) : null;
       var days = pd ? Math.floor((now - pd) / 86400000) : 0;
       if (pd && days < UNSHIPPED_ALERT_DAYS) continue;                // 猶予内はまだOK
-      // 出荷物のある注文のみ（定期便/配送対象明細なし は対象外＝b2_csvと同基準・誤検知防止）
+      // 出荷物のある注文のみ（配送対象明細なしは対象外・誤検知防止）。
+      // 🔴 定期便は items 空でもボックス出荷がある＝宛先(住所)が1件でもあれば監視対象
+      //   （b2Rows_ と同基準。初回ボックス発送漏れ対策 2026-06-12）。
+      var isSubAl = String(get(row, 'mode') || '').indexOf('subscription') === 0;
       var ds; try { ds = JSON.parse(get(row, 'destinations_json') || '[]'); } catch (e) { ds = []; }
-      if (!ds.some(function (a) { return Array.isArray(a.items) && a.items.length > 0; })) continue;
+      var hasShippable = ds.some(function (a) { return Array.isArray(a.items) && a.items.length > 0; }) || (isSubAl && ds.length > 0);
+      if (!hasShippable) continue;
       stale.push({ on: get(row, 'order_number'), name: get(row, 'customer_name'), days: days, items: get(row, 'items_json'), total: get(row, 'total') });
     }
     if (!stale.length) { log('unshipped_alert', { count: 0 }); return 'none'; }
@@ -1865,6 +1883,27 @@ function orderStatus(sessionId) {
   const session = JSON.parse(res.getContentText());
   if (session.error) return jsonResponse({ ok:false, error: session.error.message });
 
+  // 🔴 Webhook 補完 (v35 2026-06-12): 決済完了済みなのに orders 未記録＝Stripe webhook が
+  //   GAS /exec の 302 リダイレクトで失敗しているケース。お客様が必ず通る「ありがとうページ」
+  //   (order-complete.html が叩く ?action=order_status) で finalizeOrder を実行し、注文記録・
+  //   通知・在庫・定期便生成まで確定させる。finalizeOrder は session_id 単位で冪等(ScriptLock＋
+  //   既存チェック)なので、webhook 復活時に両方走っても二重記録しない。未払い(銀行振込待ち等)は確定しない。
+  if (session.payment_status === 'paid') {
+    try {
+      finalizeOrder(session);
+      const after = sheet('orders').getDataRange().getValues();
+      const ahdr = after[0];
+      for (var k = 1; k < after.length; k++) {
+        if (after[k][2] === session.id) {
+          var ord = {}; ahdr.forEach(function (h, idx) { ord[h] = after[k][idx]; });
+          return jsonResponse({ ok: true, order: ord, finalized: true });
+        }
+      }
+    } catch (e) {
+      log('orderstatus_finalize_error', { session: sessionId }, { error: e.message });
+    }
+  }
+
   return jsonResponse({
     ok: true,
     order: {
@@ -1961,6 +2000,7 @@ function requestOtp(body) {
 
   MailApp.sendEmail({
     to: body.email,
+    name: BRAND_MAIL.sender,
     subject: '【江田畜産】ログイン用 6桁コード',
     body: '江田畜産マイページ ログイン用コード:\n\n' + otp + '\n\n' +
           'このコードは 10 分間有効です。\n心当たりがない場合はこのメールを破棄してください。\n\n' +
@@ -2680,10 +2720,69 @@ function upsertCustomer(c) {
   sh.appendRow(row);
 }
 
+/* ============================================================
+   📧 顧客向けブランドHTMLメール（共通テンプレ）
+   ------------------------------------------------------------
+   ・🔴 文字化け根治: プレーンtextのみだと一部経路で ISO-2022-JP に変換され
+     罫線(━)や絵文字が「〓」化する → 必ず htmlBody(UTF-8) を併送し、
+     plain fallback には JIS 外の装飾文字を使わない。
+   ・写真は公式LINE Flex と同素材（hero-0.jpeg / ship-truck.png）＝世界観統一。
+   ・配色はブランド基本（緑#0F3D2E × 金#D4A93B × クリーム#FAF7F0）。
+   ・スタッフ向けメールは従来どおりプレーン（対象は顧客向けのみ）。
+   ============================================================ */
+var BRAND_MAIL = {
+  sender: '江田畜産｜EDA WAGYU',
+  heroOrder: 'https://www.eda-livestock.com/public/images/cuts/hero-0.jpeg',
+  heroShip:  'https://www.eda-livestock.com/public/images/line/ship-truck.png'
+};
+
+function brandEmailHtml_(o) {
+  // o = { heroUrl, title, intro, rows:[[label,value]], boxText, ctaLabel, ctaUrl, cta2Label, cta2Url, note }
+  var s = function (v) { return String(v == null ? '' : v); };
+  var rowsHtml = (o.rows || []).map(function (r) {
+    return '<tr><td style="padding:10px 2px;color:#7c8a83;font-size:13px;border-bottom:1px solid #ece8dc;">' + s(r[0]) + '</td>' +
+           '<td align="right" style="padding:10px 2px;color:#1a1a1a;font-size:14px;font-weight:bold;border-bottom:1px solid #ece8dc;">' + s(r[1]) + '</td></tr>';
+  }).join('');
+  var cta = function (label, url, bg, color) {
+    if (!label || !url) return '';
+    return '<table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:10px auto 0;"><tr>' +
+           '<td align="center" bgcolor="' + bg + '" style="border-radius:999px;">' +
+           '<a href="' + url + '" style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:bold;color:' + color + ';text-decoration:none;border-radius:999px;font-family:sans-serif;">' + s(label) + '</a></td></tr></table>';
+  };
+  var section = function (inner) { return '<tr><td style="padding:18px 30px 0;font-family:sans-serif;">' + inner + '</td></tr>'; };
+  return '<div style="margin:0;padding:0;background-color:#FAF7F0;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FAF7F0;"><tr><td align="center" style="padding:24px 12px;">' +
+    '<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background-color:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #ece8dc;">' +
+    '<tr><td align="center" bgcolor="#0F3D2E" style="padding:22px 20px 18px;">' +
+      '<div style="font-family:Georgia,serif;font-size:21px;letter-spacing:6px;color:#FAF7F0;font-weight:bold;">江田畜産</div>' +
+      '<div style="font-family:Georgia,serif;font-size:10px;letter-spacing:5px;color:#D4A93B;padding-top:5px;">EDA LIVESTOCK &mdash; MIYAZAKI</div>' +
+    '</td></tr>' +
+    (o.heroUrl ? '<tr><td style="line-height:0;"><img src="' + o.heroUrl + '" width="560" alt="EDA WAGYU" style="width:100%;height:280px;object-fit:cover;object-position:center;display:block;"></td></tr>' : '') +
+    '<tr><td align="center" style="padding:30px 30px 0;font-family:sans-serif;">' +
+      '<div style="font-size:19px;font-weight:bold;color:#0F3D2E;letter-spacing:1px;">' + s(o.title) + '</div>' +
+      '<div style="width:36px;height:3px;background-color:#D4A93B;margin:14px auto 0;border-radius:2px;font-size:0;line-height:0;">&nbsp;</div>' +
+    '</td></tr>' +
+    (o.intro ? section('<p style="font-size:14px;line-height:2;color:#444444;margin:0;">' + o.intro + '</p>') : '') +
+    (rowsHtml ? section('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FAF7F0;border-radius:12px;"><tr><td style="padding:8px 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' + rowsHtml + '</table></td></tr></table>') : '') +
+    (o.boxText ? section('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FAF7F0;border-radius:12px;"><tr><td style="padding:16px 18px;font-size:13px;line-height:2;color:#333333;">' + o.boxText + '</td></tr></table>') : '') +
+    ((o.ctaLabel || o.cta2Label) ? '<tr><td align="center" style="padding:22px 30px 4px;">' + cta(o.ctaLabel, o.ctaUrl, '#D4A93B', '#1a1a1a') + cta(o.cta2Label, o.cta2Url, '#0F3D2E', '#FAF7F0') + '</td></tr>' : '') +
+    (o.note ? section('<p style="font-size:12px;line-height:1.9;color:#8b968f;margin:0;">' + o.note + '</p>') : '') +
+    '<tr><td align="center" style="padding:24px 30px 26px;">' +
+      '<div style="border-top:1px solid #ece8dc;padding-top:18px;font-family:sans-serif;font-size:11px;color:#8b968f;line-height:1.9;">' +
+      '宮崎・高原町の自家牧場から、安心安全な本物の和牛をお届けします。<br>' +
+      '<span style="color:#0F3D2E;font-weight:bold;">江田畜産株式会社</span><br>' +
+      '<a href="https://www.eda-livestock.com/" style="color:#0F3D2E;">www.eda-livestock.com</a> ｜ ' +
+      '<a href="mailto:backoffice@eda-livestock.com" style="color:#0F3D2E;">backoffice@eda-livestock.com</a></div>' +
+    '</td></tr>' +
+    '</table></td></tr></table></div>';
+}
+
 function sendCustomerReceiptEmail(session, orderNum) {
   const email = session.customer_details && session.customer_details.email;
   if (!email) return;
-  const total = session.amount_total ? '¥' + Number(session.amount_total).toLocaleString() : '—';
+  const total = session.amount_total ? '¥' + Number(session.amount_total).toLocaleString() : '-';
+  const meta = session.metadata || {};
+  const greeting = meta.customer_name ? (meta.customer_name + ' 様') : 'お客様';
 
   // ワンタップ LINE 連携リンク: LIFF (line-link.html) にメールを base64 で埋め込む。
   // タップ → LINE 認証 → line_link_account が自動実行され、メール一致で全注文が即連携される。
@@ -2695,22 +2794,28 @@ function sendCustomerReceiptEmail(session, orderNum) {
 
   MailApp.sendEmail({
     to: email,
+    name: BRAND_MAIL.sender,
     subject: '【江田畜産】ご注文ありがとうございます (' + orderNum + ')',
-    body:
-      'この度はご注文いただきありがとうございます。\n\n' +
-      '━━━━━━━━━━━━━━━━━━━━━\n' +
-      ' ご注文番号: ' + orderNum + '\n' +
-      ' お支払い額: ' + total + '\n' +
-      '━━━━━━━━━━━━━━━━━━━━━\n\n' +
-      '配送状況は LINE 公式アカウントまたはマイページから随時お知らせいたします。\n\n' +
-      '▼ LINE で配送状況を受け取る（タップするだけで連携完了）\n' +
-      lineLinkUrl + '\n\n' +
-      '▼ マイページ\n' +
-      'https://eda-livestock.com/mypage.html\n\n' +
-      '━━━━━━━━━━━━━━━━━━━━━\n' +
-      '江田畜産株式会社\n' +
-      'backoffice@eda-livestock.com\n' +
-      'https://eda-livestock.com/\n'
+    body:  // plain fallback（JIS外の装飾文字を使わない＝文字化け防止）
+      greeting + '\n\n' +
+      'この度はご注文いただき誠にありがとうございます。\n\n' +
+      'ご注文番号: ' + orderNum + '\n' +
+      'お支払い額: ' + total + '\n\n' +
+      'LINEで配送状況を受け取る（タップで連携完了）:\n' + lineLinkUrl + '\n\n' +
+      'マイページ: https://www.eda-livestock.com/mypage.html\n\n' +
+      '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
+      'https://www.eda-livestock.com/',
+    htmlBody: brandEmailHtml_({
+      heroUrl: BRAND_MAIL.heroOrder,
+      title: 'ご注文ありがとうございます',
+      intro: greeting + '、この度は江田和牛をお選びいただき誠にありがとうございます。<br>宮崎の牧場より、心を込めて発送の準備をいたします。',
+      rows: [['ご注文番号', orderNum], ['お支払い金額', total]],
+      ctaLabel: 'LINEで配送状況を受け取る',
+      ctaUrl: lineLinkUrl,
+      cta2Label: 'マイページで注文を確認',
+      cta2Url: 'https://www.eda-livestock.com/mypage.html',
+      note: '※ 上のLINEボタンはタップするだけで連携が完了し、発送のお知らせがLINEに届きます。<br>※ 商品はクール冷凍便でお届けします。発送時に追跡番号をお知らせいたします。'
+    })
   });
 }
 
@@ -3338,28 +3443,42 @@ function buildShipNotifyMessage(customerName, orderNum, tracking, deliveryDate) 
 function sendShippingEmail(email, customerName, orderNum, tracking, deliveryDate) {
   if (!email) return;
   var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var trackUrl = tracking ? 'https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number01=' + encodeURIComponent(tracking) : '';
+  var rows = [['ご注文番号', orderNum], ['お問い合わせ番号', tracking || '-']];
+  if (deliveryDate) rows.push(['お届け予定', deliveryDate]);
   var lines = [
     greeting,
     '',
     'ご注文の商品を発送いたしました。',
     '',
     '注文番号: ' + orderNum,
-    '配送番号: ' + (tracking || '—')
+    '配送番号: ' + (tracking || '-')
   ];
   if (deliveryDate) lines.push('お届け予定: ' + deliveryDate);
-  if (tracking) {
+  if (trackUrl) {
     lines.push('');
-    lines.push('▼ 配送状況の確認（クロネコヤマト）');
-    lines.push('https://toi.kuronekoyamato.co.jp/cgi-bin/tneko?number01=' + encodeURIComponent(tracking));
+    lines.push('配送状況の確認（クロネコヤマト）:');
+    lines.push(trackUrl);
   }
   lines.push('');
   lines.push('このたびは江田畜産をご利用いただき、誠にありがとうございます。');
-  lines.push('— 江田畜産');
   try {
     MailApp.sendEmail({
       to: email,
+      name: BRAND_MAIL.sender,
       subject: '【江田畜産】商品を発送しました（' + orderNum + '）',
-      body: lines.join('\n')
+      body: lines.join('\n'),
+      htmlBody: brandEmailHtml_({
+        heroUrl: BRAND_MAIL.heroShip,
+        title: '商品を発送しました',
+        intro: greeting + '、お待たせいたしました。<br>ご注文の商品をクール冷凍便で発送いたしました。お受け取り後は冷凍庫で保管してください。',
+        rows: rows,
+        ctaLabel: '配送状況を確認する',
+        ctaUrl: trackUrl || 'https://www.eda-livestock.com/mypage.html',
+        cta2Label: 'マイページ',
+        cta2Url: 'https://www.eda-livestock.com/mypage.html',
+        note: '※ お問い合わせ番号の反映には数時間かかる場合があります。<br>※ 解凍は冷蔵庫でゆっくり戻していただくと、旨みを逃さずお召し上がりいただけます。'
+      })
     });
   } catch (e) {
     log('shipping_email_error', { order: orderNum, error: e.message });
@@ -4057,19 +4176,27 @@ function b2Rows_() {
       r[27] = clean(hinmei);   // 28 品名１
       rows.push(r);
     };
+    // 🔴 定期便は items が空でも初回/毎月のボックスを必ず出荷する（2026-06-11 松本様の初回ボックスが
+    //   発送リスト/B2 から漏れた対策）。品名は「定期便ボックス（プラン）」を合成する。
+    const isSub = String(get(row, 'mode') || '').indexOf('subscription') === 0;
+    let subPlan = '';
+    if (isSub) { try { subPlan = JSON.parse(get(row, 'metadata_json') || '{}').plan || ''; } catch (e) {} }
     const dest = get(row, 'destinations_json');
     try {
       const d = JSON.parse(dest);
       d.forEach(addr => {
-        // 商品が割り当てられていない宛先(ギフトのご依頼主=差出人など)は配送ラベルを作らない
+        // 商品が割り当てられていない宛先(ギフトのご依頼主=差出人など)は配送ラベルを作らない。
+        // ただし定期便は items 空が正常形＝ボックスとして出荷対象に含める。
         const its = Array.isArray(addr.items) ? addr.items : [];
-        if (its.length === 0) return;
-        const hinmei = its.map(function (it) { return (it.title || '') + (it.variant ? (' ' + it.variant) : ''); }).join(' / ');
+        if (its.length === 0 && !isSub) return;
+        const hinmei = its.length
+          ? its.map(function (it) { return (it.title || '') + (it.variant ? (' ' + it.variant) : ''); }).join(' / ')
+          : ('定期便ボックス' + (subPlan ? '（' + subPlan + '）' : ''));
         // 🔴 お届け先ごとの希望日/時間（destinations[].delivery）を優先。無ければ注文共通(order-level)へフォールバック。
         const _dv = addr.delivery || {};
         const _dd = _dv.date ? String(_dv.date).slice(0, 10).replace(/-/g, '/') : orderDDate;
         const _tc = _dv.time ? timeCode(_dv.time) : orderTCode;
-        pushRow(addr.tel || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, hinmei, _dd, _tc);
+        pushRow(addr.tel || addr.phone || get(row, 'customer_phone') || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, hinmei, _dd, _tc);
       });
     } catch (e) {
       pushRow('', '', '', name, '', orderDDate, orderTCode);

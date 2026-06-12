@@ -2386,7 +2386,7 @@ function renderSummary() {
  `;
  // 送料無料まであと (¥11,000以上で送料無料 / 北海道のみ +¥500)
  if (!subscription && shipping > 0 && subTotal > 0) {
- const remain = 11000 - subTotal;
+ const remain = 11000 - _selfSubtotal; // 実際の送料判定と同じ基準(割引後・自宅分のみ)で表示。subTotal(割引前全体)だと表示と判定がズレる
  if (remain > 0) {
  rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.12);padding:12px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--color-forest);margin-top:8px;"><span>あと <strong style="color:var(--color-gold-soft);font-size:15px;">¥${remain.toLocaleString()}</strong> で送料無料</span></div>`;
  }
