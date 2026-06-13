@@ -298,7 +298,7 @@ function doPost(e) {
 function ping() {
   return jsonResponse({
     ok: true,
-    version: '2026.06.12-mailbrand-subship',
+    version: '2026.06.13-sub-renewal',
     versionNote: 'v36: 顧客向けメールをブランドHTML化(緑#0F3D2E×金#D4A93B×クリーム/写真=LINE Flexと同素材hero-0・ship-truck/送信者表示名=江田畜産｜EDA WAGYU)＋文字化け根治(plain単独だと一部経路でISO-2022-JP変換され罫線━や絵文字が化ける→htmlBody UTF-8を必ず併送・plain fallbackはJIS外文字を排除)。対象=注文確認/発送通知/振込案内(OTPは送信者名のみ)。定期便を出荷フローへ包含=b2Rows_がitems空の定期便注文にも品名「定期便ボックス(プラン)」でラベル行を生成(電話はtel→phone→注文者電話フォールバック=定期便destはphoneキー)＋alertUnshippedOrdersも定期便(宛先あり)を監視対象に(2026-06-11松本様の初回ボックスが発送リスト/B2/未発送アラート全てから構造的に漏れていた穴の修正)。getSheetをCode.gsに定義(survey_responses「getSheet is not defined」クラッシュ5件の恒久修正)。v35: ありがとうページ(order-complete.html→?action=order_status)でfinalizeOrderを実行＝Stripe webhookのGAS /exec 302失敗に依存せず新規注文・定期便初月を確実に確定。finalizeOrderはsession_id冪等(ScriptLock+既存チェック)でwebhook復活時も二重記録なし。webhook受信コード(handleStripeWebhook/processWebhookQueue)は保険で残置。v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
@@ -1608,6 +1608,72 @@ function setupWebhookQueueTrigger() {
   return 'created';
 }
 
+/* ============================================================
+   🛰 Stripe events ポーリング (2026-06-13)
+   webhook は GAS /exec の 302 リダイレクトで Stripe 側「失敗」扱い→自動停止する構造問題がある。
+   その保険として time-trigger で Stripe events API を定期取得し、未処理イベントを webhook_queue に
+   積んで processWebhookQueue へ委譲する（処理経路・冪等は webhook と完全共通）。
+   webhook が生きていれば同じ event_id は done 済→ dup-skip で二重なし。
+   特に定期便2回目(invoice.payment_succeeded)・解約(subscription.deleted)は success_url を通らない
+   ため、webhook 停止時はこのポーリングが唯一の取りこぼし防止経路になる。
+   ============================================================ */
+function pollStripeEvents() {
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return 'no_key';
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) return 'busy';
+  let fetched = 0;
+  try {
+    const TYPES = ['checkout.session.completed', 'customer.subscription.created',
+                   'customer.subscription.deleted', 'invoice.payment_succeeded'];
+    let url = 'https://api.stripe.com/v1/events?limit=100';
+    TYPES.forEach(function (t) { url += '&types[]=' + encodeURIComponent(t); });
+    const cursor = PROPS.getProperty('STRIPE_POLL_CURSOR');     // 前回処理済みの最新 event id
+    if (cursor) url += '&ending_before=' + encodeURIComponent(cursor);   // それより新しいものだけ
+    else url += '&created[gte]=' + (Math.floor(new Date().getTime() / 1000) - 2 * 86400);  // 初回は直近2日に限定
+
+    const res = UrlFetchApp.fetch(url, {
+      method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+    });
+    const code = res.getResponseCode();
+    if (code === 400 && cursor) {   // cursor が失効(古すぎ等)→クリアして次回フォールバック
+      PROPS.deleteProperty('STRIPE_POLL_CURSOR');
+      log('stripe_poll_cursor_reset', { cursor: cursor });
+      return 'cursor_reset';
+    }
+    if (code !== 200) { log('stripe_poll_error', {}, { code: code, body: res.getContentText().slice(0, 200) }); return 'err_' + code; }
+
+    const body = JSON.parse(res.getContentText());
+    const events = (body && body.data) || [];     // created 降順
+    if (!events.length) { log('stripe_poll', { fetched: 0 }); return 'none'; }
+
+    const q = sheet('webhook_queue', WEBHOOK_QUEUE_HEADERS);
+    // 古い順に積む(処理順を webhook と揃える)。重複は processWebhookQueue が event_id で吸収。
+    for (let i = events.length - 1; i >= 0; i--) {
+      const ev = events[i];
+      q.appendRow([new Date(), ev.id, ev.type || '', JSON.stringify(ev).slice(0, 45000), 'pending', 0, '', 'via:poll']);
+    }
+    PROPS.setProperty('STRIPE_POLL_CURSOR', events[0].id);   // 最新(先頭)を次回 cursor に
+    fetched = events.length;
+    log('stripe_poll', { fetched: fetched, newest: events[0].id });
+  } finally {
+    lock.releaseLock();
+  }
+  // 積んだ分を即処理(1分 trigger を待たない)
+  try { processWebhookQueue(); } catch (e) { log('stripe_poll_process_error', {}, { error: e.message }); }
+  return 'ok:' + fetched;
+}
+
+/* 🔧 1回だけ実行: pollStripeEvents を6時間毎に回す time-trigger を登録(重複防止) */
+function setupStripePollTrigger() {
+  const ts = ScriptApp.getProjectTriggers();
+  for (let i = 0; i < ts.length; i++) {
+    if (ts[i].getHandlerFunction() === 'pollStripeEvents') return 'already_exists';
+  }
+  ScriptApp.newTrigger('pollStripeEvents').timeBased().everyHours(6).create();
+  return 'created';
+}
+
 function finalizeOrder(session) {
   // pending_orders から該当を引いてきて、完了処理
   const sh = sheet('orders', [
@@ -1849,9 +1915,134 @@ function logSubscriptionCancelled(sub) {
 }
 
 function logInvoicePaid(inv) {
+  // 監査用: invoices タブに毎月課金の記録(従来どおり)
   const sh = sheet('invoices', ['invoice_id','subscription_id','customer','amount_paid','paid_at']);
   sh.appendRow([inv.id, inv.subscription || '', inv.customer || '', inv.amount_paid, new Date(inv.created * 1000)]);
+
+  // 🔴 2026-06-13: 定期便2回目以降のボックスを orders に立てる(発送リスト+売上計上)。
+  //   これが無いと「課金されたのに発送されない/売上に乗らない」(invoices タブに残るだけ)。
+  //   初月は Checkout(finalizeOrder)が別 session_id で記録済→ここは inv.id を冪等キーに二重防止。
+  try { recordSubscriptionRenewalOrder_(inv); }
+  catch (e) { log('sub_renewal_order_error', { invoice: inv.id }, { error: e.message }); }
+
   return jsonResponse({ ok:true });
+}
+
+/* ============================================================
+   🔁 定期便の継続課金(invoice.payment_succeeded)から orders に発送注文を1行立てる (2026-06-13)
+   ・guard: subscription 紐付き かつ 実課金(amount_paid>0) のみ
+   ・冪等: orders.session_id == inv.id 既存なら skip(ScriptLock で直列化)
+   ・配送先 = 初回注文(subscription.metadata.order_number)の destinations から復元
+   ・中身   = subscription_plans(price_id 一致)の name/spec を「{plan} 定期便」1明細に
+   ・通知   = 顧客(LINE優先/失敗時メール) + スタッフ(発送依頼メール)
+   ・在庫減算は定期便ボックス(複数品の詰合せ)につき個別 decrement はしない(別管理・誤減算防止)
+   ============================================================ */
+function recordSubscriptionRenewalOrder_(inv) {
+  if (!inv || !inv.subscription) return;              // サブスク以外の invoice は対象外
+  if (!(Number(inv.amount_paid) > 0)) return;         // 0円(初回スキップ等)は対象外
+
+  const STRIPE = cfg('STRIPE_SECRET_KEY');
+  if (!STRIPE) return;
+
+  const ORDER_HEADERS = ['order_number','placed_at','session_id','customer_name','customer_email','customer_phone',
+    'mode','total','shipping','payment_status','payment_method',
+    'destinations_json','items_json','metadata_json','line_uid','line_name','contact_method'];
+  const sh = sheet('orders', ORDER_HEADERS);
+
+  const lock = LockService.getScriptLock();
+  try { lock.waitLock(30000); } catch (e) { log('sub_renewal_lock_timeout', { invoice: inv.id }); return; }
+  try {
+    // 冪等: この invoice を既に orders 化済みなら skip(session_id 列に inv.id を入れている)
+    const rows = sh.getDataRange().getValues();
+    const H = rows[0];
+    const cSess = H.indexOf('session_id');
+    for (let i = 1; i < rows.length; i++) {
+      if (rows[i][cSess] === inv.id) { log('sub_renewal_dup_skip', { invoice: inv.id, order: rows[i][0] }); return; }
+    }
+
+    // subscription を引いて初回注文番号・price_id を得る
+    const subRes = UrlFetchApp.fetch('https://api.stripe.com/v1/subscriptions/' + encodeURIComponent(inv.subscription), {
+      method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+    });
+    const sub = JSON.parse(subRes.getContentText());
+    const subMeta = (sub && sub.metadata) || {};
+    const firstOrderNum = subMeta.order_number || '';
+    let priceId = '';
+    try { priceId = inv.lines.data[0].price.id; } catch (e) {}
+    if (!priceId) { try { priceId = sub.items.data[0].price.id; } catch (e) {} }
+
+    // プラン定義(name/spec)を price_id で解決
+    let planName = subMeta.plan || '定期便', planSpec = '';
+    try {
+      const pData = ss().getSheetByName('subscription_plans').getDataRange().getValues();
+      const pH = pData[0];
+      const cPrice = pH.indexOf('stripePriceId'), cName = pH.indexOf('name'), cSpec = pH.indexOf('spec');
+      for (let i = 1; i < pData.length; i++) {
+        if (priceId && pData[i][cPrice] === priceId) { planName = pData[i][cName] || planName; planSpec = pData[i][cSpec] || ''; break; }
+      }
+    } catch (e) {}
+
+    // 初回注文行から配送先・顧客情報を復元
+    let firstRow = null;
+    if (firstOrderNum) { for (let i = 1; i < rows.length; i++) { if (rows[i][0] === firstOrderNum) { firstRow = rows[i]; break; } } }
+    const gf = function (name) { const k = H.indexOf(name); return (firstRow && k >= 0) ? firstRow[k] : ''; };
+
+    const custName = gf('customer_name') || '';
+    const custEmail = gf('customer_email') || (inv.customer_email || '');
+    const custPhone = gf('customer_phone') || '';
+    const lineUidFirst = gf('line_uid') || '';
+    const lineName = gf('line_name') || '';
+    const contact = gf('contact_method') || '';
+
+    // 配送先: 初回 destinations の住所を流用し、items を「{plan} 定期便」1明細に差し替え
+    const boxTitle = planName + ' 定期便' + (planSpec ? '（' + planSpec + '）' : '');
+    const boxItems = [{ title: boxTitle, variant: '定期便', qty: 1 }];
+    let destinations;
+    try {
+      destinations = JSON.parse(gf('destinations_json') || '[]');
+      if (!Array.isArray(destinations) || !destinations.length) throw new Error('no dest');
+      destinations = destinations.map(function (d) { return Object.assign({}, d, { items: boxItems }); });
+    } catch (e) {
+      destinations = [{ type: 'self', name: custName, items: boxItems }];   // 住所不明でも未発送アラートに乗せる
+    }
+
+    const total = Number(inv.amount_paid) || 0;
+    const newOrderNum = 'EDA-' + Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMMdd') + '-' + String(inv.id).slice(-6).toUpperCase();
+
+    sh.appendRow([
+      newOrderNum, new Date(), inv.id, custName, custEmail, custPhone,
+      'subscription_renewal', total, 0, 'paid', 'card',
+      JSON.stringify(destinations), JSON.stringify(boxItems),
+      JSON.stringify({ source: 'invoice.payment_succeeded', invoice: inv.id, subscription: inv.subscription, plan: planName, first_order: firstOrderNum, cycle: true }),
+      lineUidFirst, lineName, contact
+    ]);
+    log('sub_renewal_order_created', { invoice: inv.id, order: newOrderNum, total: total, plan: planName });
+
+    // 通知: 顧客(LINE優先・失敗時メール) + スタッフ(発送依頼)
+    let uid = lineUidFirst || lineUidForEmail(custEmail) || lineUidByPhone_(custPhone);
+    let pushed = false;
+    if (uid) { try { pushed = sendLinePush(uid, [buildOrderConfirmMessage(custName, newOrderNum, total)]); } catch (e) {} }
+    if (!pushed && custEmail) {
+      try {
+        MailApp.sendEmail({
+          to: custEmail,
+          subject: '【江田畜産】定期便のお届け準備を開始しました',
+          body: custName + ' 様\n\n定期便（' + boxTitle + '）のお届け準備を開始しました。\n注文番号: ' + newOrderNum + '\n\n発送まで今しばらくお待ちください。\n\n江田畜産｜EDA WAGYU'
+        });
+      } catch (e) {}
+    }
+    try {
+      MailApp.sendEmail({
+        to: cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com',
+        subject: '🔁【定期便ボックス発送依頼】' + custName + '様 ' + planName,
+        body: '定期便の継続課金が確定しました。発送をお願いします。\n\n注文番号: ' + newOrderNum + '\nお客様: ' + custName + '（' + custEmail + '）\nプラン: ' + boxTitle + '\n金額: ¥' + total + '\n\nSTAFFポータル: https://www.eda-livestock.com/staff.html'
+      });
+    } catch (e) {}
+
+    try { upsertCustomer({ email: custEmail, name: custName, phone: custPhone, line_uid: uid || '', line_name: lineName, last_order: newOrderNum, last_order_total: total, last_order_at: new Date() }); } catch (e) {}
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /* ============================================================
