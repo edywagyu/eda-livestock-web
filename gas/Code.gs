@@ -2646,8 +2646,15 @@ function dashboardSummary(params) {
     var _hasDest = false;
     try { var _dj = JSON.parse(ordersData[i][11] || '[]'); _hasDest = Array.isArray(_dj) && _dj.length > 0; } catch (e) {}
     if (!_hasDest) continue;
+    // 社内/テスト注文(@eda-livestock.com)は売上から除外（alertUnshippedOrders と同基準・実態化 2026-06-16）
+    var _email = String(ordersData[i][4] || '').toLowerCase();
+    if (_email.indexOf('@eda-livestock.com') >= 0) continue;
     const placedAt = new Date(ordersData[i][1]);
-    if (placedAt >= since && ordersData[i][9] === 'paid') {
+    // 入金済(paid)に加え、発送済(shipped)・着荷(delivered)も売上計上する。
+    // 🔴 発送処理で payment_status が paid→shipped に変わると売上から消える過小バグの修正(2026-06-16)。
+    //    'paid'限定だと発送が進むほどダッシュボード売上が減る逆転現象になっていた。
+    var _ps = String(ordersData[i][9] || '').toLowerCase();
+    if (placedAt >= since && (_ps === 'paid' || _ps === 'shipped' || _ps === 'delivered')) {
       revenue += Number(ordersData[i][7]) || 0;
       orderCount++;
       customers[ordersData[i][4]] = true;
