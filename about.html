@@ -1191,6 +1191,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .lang-toggle span { opacity: 0.55; transition: opacity 0.3s; }
 .lang-toggle .active { opacity: 1; color: var(--color-gold); }
 .cart-icon { color: white; display: flex; }
+.nav-subscribe-cta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  color: #0F3D2E;
+  background: var(--color-gold);
+  padding: 8px 18px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: filter 0.3s;
+}
+.nav-subscribe-cta:hover { filter: brightness(1.08); }
 
 /* ================ BUTTONS ================ */
 .btn {
@@ -4136,18 +4149,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/></picture>
  </a>
  <nav class="primary-nav">
- <ul class="nav-list">
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a class="current" href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
- </ul>
- </nav>
+  <ul class="nav-list">
+    <li><a href="shop.html">ショップ</a></li>
+    <li><a href="organic.html">オーガニック</a></li>
+    <li><a class="current" href="about.html">会社案内</a></li>
+    <li><a href="global.html">海外展開</a></li>
+    <li><a href="restaurants.html">取扱レストラン</a></li>
+    <li><a href="journal.html">読み物</a></li>
+    <li><a href="contact.html">お問い合わせ</a></li>
+    <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
+  </ul>
+  </nav>
  <div class="nav-utils">
+  <a href="subscription.html" class="nav-subscribe-cta">定期便</a>
  <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
  <rect x="3" y="3" width="18" height="18" rx="5"/>
@@ -4206,6 +4220,26 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <p class="glance-desc">2026年、世界初のオーガニック認証黒毛和牛をローンチ。EU Leaf 同等性承認。</p>
    </div>
   </div>
+ </div>
+</section>
+
+<!-- ========= COMPANY OVERVIEW ========= -->
+<section class="about-info">
+ <div class="container">
+  <div class="info-head reveal">
+   <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Company</span>
+   <h2 class="info-title">会社概要</h2>
+  </div>
+  <dl class="info-table reveal">
+   <div class="info-row"><dt>商号</dt><dd>江田畜産株式会社 / Eda Livestock Co., Ltd.</dd></div>
+   <div class="info-row"><dt>代表者</dt><dd>代表取締役 江田 友輝（Tomoki Eda）</dd></div>
+   <div class="info-row"><dt>設立</dt><dd>2023年4月</dd></div>
+   <div class="info-row"><dt>事業内容</dt><dd>黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</dd></div>
+   <div class="info-row"><dt>農場</dt><dd>宮崎（自社）+ パートナー農場：鹿児島／北海道／青森</dd></div>
+   <div class="info-row"><dt>本社</dt><dd>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</dd></div>
+   <div class="info-row"><dt>ブランド</dt><dd>Eda Wagyu（江田和牛）<br/>Premium EdaWagyu（特選江田和牛 · 世界初有機認証 · EU Leaf 同等）</dd></div>
+   <div class="info-row"><dt>連絡先</dt><dd><a href="mailto:backoffice@eda-livestock.com">backoffice@eda-livestock.com</a><br/>Instagram: <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">@eda_livestock</a></dd></div>
+  </dl>
  </div>
 </section>
 
@@ -4392,25 +4426,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 </section>
 
-<!-- ========= COMPANY OVERVIEW ========= -->
-<section class="about-info">
- <div class="container">
-  <div class="info-head reveal">
-   <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Company</span>
-   <h2 class="info-title">会社概要</h2>
-  </div>
-  <dl class="info-table reveal">
-   <div class="info-row"><dt>商号</dt><dd>江田畜産株式会社 / Eda Livestock Co., Ltd.</dd></div>
-   <div class="info-row"><dt>代表者</dt><dd>代表取締役 江田 友輝（Tomoki Eda）</dd></div>
-   <div class="info-row"><dt>設立</dt><dd>2023年4月</dd></div>
-   <div class="info-row"><dt>事業内容</dt><dd>黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</dd></div>
-   <div class="info-row"><dt>農場</dt><dd>宮崎（自社）+ パートナー農場：鹿児島／北海道／青森</dd></div>
-   <div class="info-row"><dt>本社</dt><dd>〒889-4411 宮崎県西諸県郡高原町大字広原 2025-2</dd></div>
-   <div class="info-row"><dt>ブランド</dt><dd>Eda Wagyu（江田和牛）<br/>Premium EdaWagyu（特選江田和牛 · 世界初有機認証 · EU Leaf 同等）</dd></div>
-   <div class="info-row"><dt>連絡先</dt><dd><a href="mailto:backoffice@eda-livestock.com">backoffice@eda-livestock.com</a><br/>Instagram: <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener">@eda_livestock</a></dd></div>
-  </dl>
- </div>
-</section>
 
 <!-- ========= CTA ========= -->
 <section class="about-cta">

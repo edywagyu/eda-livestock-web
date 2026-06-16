@@ -1174,6 +1174,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .lang-toggle span { opacity: 0.4; transition: opacity 0.3s; }
 .lang-toggle .active { opacity: 1; color: var(--color-gold); }
 .cart-icon { color: white; display: flex; }
+.nav-subscribe-cta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  color: #0F3D2E;
+  background: var(--color-gold);
+  padding: 8px 18px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: filter 0.3s;
+}
+.nav-subscribe-cta:hover { filter: brightness(1.08); }
 
 /* ================ BUTTONS ================ */
 .btn {
@@ -3871,19 +3884,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark-img"/>
     </a>
     <nav class="primary-nav">
-      <ul class="nav-list">
-        <li><a href="about.html">About</a></li>
-        <li><a href="philosophy.html">Philosophy</a></li>
-        <li><a href="organic.html">Organic</a></li>
-        <li><a href="global.html">Global</a></li>
-        <li><a href="restaurants.html">Restaurants</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="journal.html">Journal</a></li>
-        <li><a href="press.html">Press</a></li>
-        <li><a href="about.html#members">Members</a></li>
-      </ul>
-    </nav>
+  <ul class="nav-list">
+    <li><a href="shop.html">ショップ</a></li>
+    <li><a href="organic.html">オーガニック</a></li>
+    <li><a href="about.html">会社案内</a></li>
+    <li><a href="global.html">海外展開</a></li>
+    <li><a href="restaurants.html">取扱レストラン</a></li>
+    <li><a href="journal.html">読み物</a></li>
+    <li><a href="contact.html">お問い合わせ</a></li>
+    <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
+  </ul>
+  </nav>
     <div class="nav-utils">
+  <a href="subscription.html" class="nav-subscribe-cta">定期便</a>
       <div class="lang-toggle">
         <span class="active">JA</span> / <span>EN</span>
       </div>

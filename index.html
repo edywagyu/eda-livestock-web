@@ -1217,6 +1217,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .lang-toggle span { opacity: 0.55; transition: opacity 0.3s; }
 .lang-toggle .active { opacity: 1; color: var(--color-gold); }
 .cart-icon { color: white; display: flex; }
+.nav-subscribe-cta {
+ font-family: var(--font-body);
+ font-size: 13px;
+ font-weight: 500;
+ letter-spacing: var(--tracking-wide);
+ color: #0F3D2E;
+ background: var(--color-gold);
+ padding: 8px 18px;
+ border-radius: 4px;
+ white-space: nowrap;
+ transition: filter 0.3s;
+}
+.nav-subscribe-cta:hover { filter: brightness(1.08); }
 
 /* ================ BUTTONS ================ */
 .btn {
@@ -4147,18 +4160,18 @@ section.featured {
  </a>
  <nav class="primary-nav">
  <ul class="nav-list">
- <li><a href="shop.html">Shop</a></li>
- <li><a href="subscription.html">定期便</a></li>
- <li><a href="organic.html">Organic</a></li>
- <li><a href="about.html">About</a></li>
- <li><a href="global.html">Global</a></li>
- <li><a href="restaurants.html">Restaurants</a></li>
- <li><a href="journal.html">Journal</a></li>
- <li><a href="contact.html">Contact</a></li>
+ <li><a href="shop.html">ショップ</a></li>
+ <li><a href="organic.html">オーガニック</a></li>
+ <li><a href="about.html">会社案内</a></li>
+ <li><a href="global.html">海外展開</a></li>
+ <li><a href="restaurants.html">取扱レストラン</a></li>
+ <li><a href="journal.html">読み物</a></li>
+ <li><a href="contact.html">お問い合わせ</a></li>
  <li><a href="mypage.html" class="nav-mypage-link">マイページ</a></li>
  </ul>
  </nav>
  <div class="nav-utils">
+ <a href="subscription.html" class="nav-subscribe-cta">定期便</a>
  <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
  <rect x="3" y="3" width="18" height="18" rx="5"/>
