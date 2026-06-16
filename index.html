@@ -1230,6 +1230,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  transition: filter 0.3s;
 }
 .nav-subscribe-cta:hover { filter: brightness(1.08); }
+/* ===== Certifications ===== */
+.certs-bar { padding: 96px 0; background: #FAF7F0; }
+.certs-head { text-align: center; max-width: 760px; margin: 0 auto 56px; }
+.certs-title { font-family: var(--font-display); font-size: 32px; color: var(--color-forest); margin: 16px 0; line-height: 1.4; }
+.certs-lead { font-size: 15px; color: var(--color-ink-muted); line-height: 1.9; }
+.certs-logos { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+.cert-logo { display: flex; flex-direction: column; align-items: center; gap: 18px; width: 190px; background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; padding: 32px 20px; margin: 0; }
+.cert-logo img { height: 84px; width: auto; max-width: 150px; object-fit: contain; }
+.cert-logo figcaption { font-size: 13px; color: var(--color-forest); font-weight: 500; letter-spacing: 0.04em; text-align: center; }
+@media (max-width: 640px) { .cert-logo { width: 140px; padding: 24px 14px; } .cert-logo img { height: 64px; } .certs-title { font-size: 24px; } }
 
 /* ================ BUTTONS ================ */
 .btn {
@@ -3230,6 +3240,17 @@ section.featured {
  text-align: center; padding: 64px 0;
  color: var(--color-ink-muted); font-size: 14px;
 }
+.cart-empty-text { font-size: 15px; color: var(--color-ink); margin: 0 0 4px; }
+.cart-empty-sub { font-size: 13px; color: var(--color-ink-muted); margin: 0 0 20px; }
+.cart-empty-cta {
+ display: inline-block;
+ font-family: var(--font-body); font-size: 13px; font-weight: 500;
+ letter-spacing: var(--tracking-wide);
+ color: #0F3D2E; background: var(--color-gold);
+ padding: 12px 28px; border-radius: 4px;
+ transition: filter 0.3s;
+}
+.cart-empty-cta:hover { filter: brightness(1.08); }
 .cart-empty-icon {
  font-size: 48px; margin-bottom: 16px; opacity: 0.4;
 }
@@ -4251,6 +4272,23 @@ section.featured {
  </div>
 </section>
 
+<!-- ========= CERTIFICATIONS ========= -->
+<section class="certs-bar">
+ <div class="container">
+  <div class="certs-head reveal">
+   <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Certifications</span>
+   <h2 class="certs-title">第三者機関の認証で、品質を証明する。</h2>
+   <p class="certs-lead">江田和牛は、和牛統一マーク・有機JAS・EU有機（Euro-leaf）・USDA Organic の認証を取得しています。第三者機関による客観的な裏付けが、品質と安全への約束です。</p>
+  </div>
+  <div class="certs-logos reveal">
+   <figure class="cert-logo"><img src="public/images/certs/mark-wagyu.png" alt="和牛統一マーク（BEEF JAPAN）" loading="lazy"/><figcaption>和牛統一マーク</figcaption></figure>
+   <figure class="cert-logo"><img src="public/images/certs/mark-jas.png" alt="有機JAS認証" loading="lazy"/><figcaption>有機JAS</figcaption></figure>
+   <figure class="cert-logo"><img src="public/images/certs/mark-eu.png" alt="EU有機認証 Euro-leaf" loading="lazy"/><figcaption>EU有機（Euro-leaf）</figcaption></figure>
+   <figure class="cert-logo"><img src="public/images/certs/mark-usda.png" alt="USDA Organic 認証" loading="lazy"/><figcaption>USDA Organic</figcaption></figure>
+  </div>
+ </div>
+</section>
+
 <!-- ========= PHILOSOPHY ========= -->
 <section class="philosophy section" id="philosophy">
  <div class="container">
@@ -4999,7 +5037,9 @@ section.featured {
  <div class="cart-drawer-items" id="cartItems">
  <div class="cart-empty" id="cartEmpty">
  <div class="cart-empty-icon"></div>
- カートは空です
+ <p class="cart-empty-text">カートはまだ空です</p>
+ <p class="cart-empty-sub">まずは人気の和牛からどうぞ。</p>
+ <a href="shop.html" class="cart-empty-cta">商品を見る</a>
  </div>
  </div>
  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
