@@ -1199,6 +1199,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   transition: filter 0.3s;
 }
 .nav-subscribe-cta:hover { filter: brightness(1.08); }
+/* ===== Certifications ===== */
+.certs-bar { padding: 96px 0; background: #FAF7F0; }
+.certs-head { text-align: center; max-width: 760px; margin: 0 auto 56px; }
+.certs-title { font-family: var(--font-display); font-size: 32px; color: var(--color-forest); margin: 16px 0; line-height: 1.4; }
+.certs-lead { font-size: 15px; color: var(--color-ink-muted); line-height: 1.9; }
+.certs-logos { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; }
+.cert-logo { display: flex; flex-direction: column; align-items: center; gap: 18px; width: 190px; background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 14px; padding: 32px 20px; margin: 0; }
+.cert-logo img { height: 84px; width: auto; max-width: 150px; object-fit: contain; }
+.cert-logo figcaption { font-size: 13px; color: var(--color-forest); font-weight: 500; letter-spacing: 0.04em; text-align: center; }
+@media (max-width: 640px) { .cert-logo { width: 140px; padding: 24px 14px; } .cert-logo img { height: 64px; } .certs-title { font-size: 24px; } }
 
 /* ================ BUTTONS ================ */
 .btn {
@@ -3972,6 +3982,23 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div style="text-align: center; margin-top: 80px; display:flex; gap:14px; flex-wrap:wrap; justify-content:center;" class="reveal">
  <a href="contact.html?type=organic" class="btn btn-light">フォームから問合せ <span class="btn-arrow"></span></a>
  </div>
+ </div>
+</section>
+
+<!-- ========= CERTIFICATIONS ========= -->
+<section class="certs-bar">
+ <div class="container">
+  <div class="certs-head reveal">
+   <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Certifications</span>
+   <h2 class="certs-title">第三者機関の認証で、品質を証明する。</h2>
+   <p class="certs-lead">江田和牛は、和牛統一マーク・有機JAS・EU有機（Euro-leaf）・USDA Organic の認証を取得しています。第三者機関による客観的な裏付けが、品質と安全への約束です。</p>
+  </div>
+  <div class="certs-logos reveal">
+   <figure class="cert-logo"><img src="public/images/certs/mark-wagyu.png" alt="和牛統一マーク（BEEF JAPAN）" loading="lazy"/><figcaption>和牛統一マーク</figcaption></figure>
+   <figure class="cert-logo"><img src="public/images/certs/mark-jas.png" alt="有機JAS認証" loading="lazy"/><figcaption>有機JAS</figcaption></figure>
+   <figure class="cert-logo"><img src="public/images/certs/mark-eu.png" alt="EU有機認証 Euro-leaf" loading="lazy"/><figcaption>EU有機（Euro-leaf）</figcaption></figure>
+   <figure class="cert-logo"><img src="public/images/certs/mark-usda.png" alt="USDA Organic 認証" loading="lazy"/><figcaption>USDA Organic</figcaption></figure>
+  </div>
  </div>
 </section>
 
