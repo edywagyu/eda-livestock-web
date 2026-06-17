@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>EDA WAGYU — Live Shipment Tracking</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Shippori+Mincho:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+  :root{
+    --green:#0F3D2E; --green-soft:#1d6e56; --gold:#D4A93B; --gold-deep:#854F0B;
+    --cream:#FAF7F0; --ink:#23241f; --muted:#7c8079; --line:rgba(15,61,46,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--cream); color:var(--ink); font-family:Inter,system-ui,-apple-system,"Hiragino Kaku Gothic ProN",sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:480px; margin:0 auto; min-height:100vh; background:var(--cream);}
+  .serif{font-family:"Shippori Mincho",serif;}
+  /* header */
+  .hd{background:var(--green); color:var(--cream); padding:16px 20px;}
+  .hd-row{display:flex; align-items:center; justify-content:space-between;}
+  .brand{font-family:"Shippori Mincho",serif; font-weight:600; font-size:18px; letter-spacing:2px;}
+  .ord{color:var(--gold); font-size:12px; letter-spacing:.5px;}
+  .hd-rule{height:2px; background:var(--gold); margin-top:12px; border-radius:2px;}
+  /* demo banner */
+  .demo{background:#FBF1D8; color:var(--gold-deep); font-size:12.5px; padding:9px 20px; display:flex; gap:10px; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(133,79,11,.18);}
+  .demo a{color:var(--gold-deep); font-weight:600; white-space:nowrap;}
+  /* hero */
+  .hero{padding:18px 20px 6px;}
+  .hero .st{display:flex; align-items:center; gap:9px;}
+  .hero .st svg{width:24px; height:24px; color:var(--green);}
+  .hero h1{margin:0; font-size:21px; font-weight:600;}
+  .live-dot{margin-left:auto; display:inline-flex; align-items:center; gap:6px; background:var(--gold); color:var(--green); font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px; letter-spacing:.5px;}
+  .live-dot .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:p 1.4s infinite;}
+  @keyframes p{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+  .hero p{margin:7px 0 0; color:var(--muted); font-size:13.5px;}
+  .hero .eta{margin-top:10px; display:inline-block; background:#fff; border:1px solid var(--line); border-radius:10px; padding:7px 13px; font-size:13px;}
+  .hero .eta b{font-weight:600;}
+  /* map */
+  #map{height:250px; margin:14px 0 0; background:#e9e6df;}
+  .leaflet-container{font-family:Inter,sans-serif;}
+  .plane-i{transition:transform .6s linear;}
+  .map-note{font-size:11px; color:var(--muted); padding:6px 20px 0; text-align:center;}
+  /* timeline */
+  .sec{padding:16px 20px 4px;}
+  .sec h2{font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:600; margin:0 0 12px;}
+  .tl{position:relative; margin:0; padding:0; list-style:none;}
+  .tl li{position:relative; padding:0 0 16px 30px;}
+  .tl li:before{content:""; position:absolute; left:9px; top:18px; bottom:-2px; width:2px; background:var(--line);}
+  .tl li:last-child:before{display:none;}
+  .dot{position:absolute; left:0; top:1px; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#fff; border:2px solid var(--line);}
+  .dot svg{width:12px;height:12px;}
+  .done .dot{background:var(--green); border-color:var(--green); color:#fff;}
+  .active .dot{background:var(--gold); border-color:var(--gold); color:var(--green);}
+  .tl .lab{font-size:14.5px; font-weight:500;}
+  .tl .sub{font-size:12px; color:var(--muted); margin-top:1px;}
+  .pending .lab{color:var(--muted); font-weight:400;}
+  .active .lab{color:var(--gold-deep); font-weight:600;}
+  .est{font-size:10.5px; color:var(--gold-deep); background:#FBF1D8; border-radius:5px; padding:1px 6px; margin-left:6px; vertical-align:1px;}
+  /* provenance */
+  .prov{margin:6px 20px 0; background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:flex; flex-wrap:wrap; gap:8px 16px;}
+  .prov span{font-size:12px; color:#46504a; display:inline-flex; align-items:center; gap:6px;}
+  .prov svg{width:15px;height:15px;color:var(--green);}
+  /* footer */
+  .ft{background:var(--green); color:var(--cream); text-align:center; padding:14px 20px; margin-top:18px;}
+  .ft .awb{color:var(--gold); font-size:11px; letter-spacing:.5px;}
+  .ft .tag{font-size:12px; margin-top:3px; opacity:.85;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hd">
+    <div class="hd-row">
+      <div class="brand">EDA WAGYU</div>
+      <div class="ord" id="ord">order —</div>
+    </div>
+    <div class="hd-rule"></div>
+  </header>
+
+  <div class="demo" id="demo" style="display:none">
+    <span id="demoTxt"></span>
+    <a href="?live=1" id="liveLink">View live time ▸</a>
+  </div>
+
+  <section class="hero">
+    <div class="st">
+      <span id="heroIcon"></span>
+      <h1 id="status">Loading…</h1>
+      <span class="live-dot" id="liveBadge" style="display:none"><span class="pulse"></span>LIVE</span>
+    </div>
+    <p id="statusSub"></p>
+    <div class="eta" id="etaBox" style="display:none"></div>
+  </section>
+
+  <div id="map"></div>
+  <div class="map-note" id="mapNote"></div>
+
+  <section class="sec">
+    <h2>Shipment progress</h2>
+    <ul class="tl" id="tl"></ul>
+  </section>
+
+  <div class="prov" id="prov"></div>
+
+  <footer class="ft">
+    <div class="awb" id="awb">AWB —</div>
+    <div class="tag">live tracking by EDA WAGYU</div>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+/* ============================================================
+   EDA WAGYU — live shipment tracking (MVP)
+   Data source: OCS booking email (AWB + flight no. + routing + schedule).
+   Plane position = great-circle estimate from the flight schedule.
+   PHASE 2: replace estimatePosition() with a live ADS-B feed
+            (backend ?action=flightpos&awb=... ) for true real-time dot.
+   ============================================================ */
+
+var AIRPORTS = {
+  NRT:{name:"Tokyo Narita",   ll:[35.7720,140.3929]},
+  DXB:{name:"Dubai",          ll:[25.2532, 55.3657]},
+  MAD:{name:"Madrid",         ll:[40.4936, -3.5668]}
+};
+
+/* One real shipment (CARNES, Madrid — 26 Jun 2026 Narita). Keyed by ?id= */
+var SHIPMENTS = {
+  "carnes-0626":{
+    order:"EDA-20260626",
+    buyer:"CARNES · Madrid, Spain",
+    awb:"176-27983023",
+    product:"Eda Wagyu A5 · BMS 11",
+    boxes:"34 boxes · chilled 0–4°C",
+    route:["NRT","DXB","MAD"],
+    legs:[
+      {flight:"EK319", from:"NRT", to:"DXB", dep:"2026-06-30T13:30:00Z", arr:"2026-07-01T00:05:00Z"},
+      {flight:"EK143", from:"DXB", to:"MAD", dep:"2026-07-01T10:20:00Z", arr:"2026-07-01T18:20:00Z"}
+    ],
+    steps:[
+      {key:"slaughter", lab:"Slaughtered & A5 graded", sub:"Kagoshima · K-2 plant",   t:"2026-06-24T02:00:00Z", est:true},
+      {key:"packed",    lab:"Packed & chilled (0–4°C)", sub:"vacuum-sealed",           t:"2026-06-25T06:00:00Z", est:true},
+      {key:"cargoin",   lab:"Received at Narita",       sub:"cargo-in · Jun 26",       t:"2026-06-26T01:00:00Z"},
+      {key:"quar",      lab:"Animal quarantine cleared",sub:"Jun 29",                  t:"2026-06-29T02:00:00Z"},
+      {key:"customs",   lab:"Customs cleared & loaded", sub:"Jun 30",                  t:"2026-06-30T10:00:00Z"},
+      {key:"fly1",      lab:"In flight · EK319",        sub:"Narita → Dubai",          t:"2026-06-30T13:30:00Z", leg:0},
+      {key:"transit",   lab:"Transit at Dubai",         sub:"DXB",                     t:"2026-07-01T00:05:00Z"},
+      {key:"fly2",      lab:"In flight · EK143",        sub:"Dubai → Madrid",          t:"2026-07-01T10:20:00Z", leg:1},
+      {key:"arr",       lab:"Arrived Madrid",           sub:"MAD",                     t:"2026-07-01T18:20:00Z"},
+      {key:"deliver",   lab:"Import clearance & delivery", sub:"Jul 2",                t:"2026-07-02T09:00:00Z", est:true}
+    ]
+  }
+};
+
+/* ---- time resolution: ?live=1 → real now · ?t=ISO → override · default → in-flight demo ---- */
+var P = new URLSearchParams(location.search);
+var ID = P.get("id") || "carnes-0626";
+var S = SHIPMENTS[ID];
+var DEMO_T = "2026-07-01T15:30:00Z";          // mid EK143, over the Mediterranean
+var now, mode;
+if (P.get("live")!==null){ now = Date.now(); mode="live"; }
+else if (P.get("t")){ now = Date.parse(P.get("t")); mode="scrub"; }
+else { now = Date.parse(DEMO_T); mode="demo"; }
+
+/* ---------- geo helpers (great-circle slerp + bearing) ---------- */
+function rad(d){return d*Math.PI/180;} function deg(r){return r*180/Math.PI;}
+function interp(a,b,f){
+  var la1=rad(a[0]),lo1=rad(a[1]),la2=rad(b[0]),lo2=rad(b[1]);
+  var d=2*Math.asin(Math.sqrt(Math.pow(Math.sin((la2-la1)/2),2)+Math.cos(la1)*Math.cos(la2)*Math.pow(Math.sin((lo2-lo1)/2),2)));
+  if(!d) return a.slice();
+  var A=Math.sin((1-f)*d)/Math.sin(d), B=Math.sin(f*d)/Math.sin(d);
+  var x=A*Math.cos(la1)*Math.cos(lo1)+B*Math.cos(la2)*Math.cos(lo2);
+  var y=A*Math.cos(la1)*Math.sin(lo1)+B*Math.cos(la2)*Math.sin(lo2);
+  var z=A*Math.sin(la1)+B*Math.sin(la2);
+  return [deg(Math.atan2(z,Math.sqrt(x*x+y*y))), deg(Math.atan2(y,x))];
+}
+function bearing(a,b){
+  var la1=rad(a[0]),la2=rad(b[0]),dl=rad(b[1]-a[1]);
+  var y=Math.sin(dl)*Math.cos(la2);
+  var x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dl);
+  return (deg(Math.atan2(y,x))+360)%360;
+}
+function gcLine(a,b,n){var o=[];for(var i=0;i<=n;i++)o.push(interp(a,b,i/n));return o;}
+
+/* ---------- compute current state + plane position ---------- */
+function estimatePosition(){
+  var legs=S.legs;
+  var firstDep=Date.parse(legs[0].dep), lastArr=Date.parse(legs[legs.length-1].arr);
+  if(now < firstDep){ return {phase:"prep", pos:AIRPORTS[legs[0].from].ll, head:0}; }
+  if(now >= lastArr){ return {phase:"done", pos:AIRPORTS[legs[legs.length-1].to].ll, head:0}; }
+  for(var i=0;i<legs.length;i++){
+    var dep=Date.parse(legs[i].dep), arr=Date.parse(legs[i].arr);
+    var a=AIRPORTS[legs[i].from].ll, b=AIRPORTS[legs[i].to].ll;
+    if(now>=dep && now<arr){
+      var f=(now-dep)/(arr-dep);
+      return {phase:"flying", leg:legs[i], frac:f, pos:interp(a,b,f), head:bearing(interp(a,b,Math.max(0,f-0.02)),interp(a,b,Math.min(1,f+0.02)))};
+    }
+    if(i<legs.length-1){
+      var nextDep=Date.parse(legs[i+1].dep);
+      if(now>=arr && now<nextDep){ return {phase:"transit", at:legs[i].to, pos:b, head:0}; }
+    }
+  }
+  return {phase:"prep", pos:AIRPORTS[legs[0].from].ll, head:0};
+}
+
+/* ---------- icons ---------- */
+function ico(name){
+  var p={
+    plane:'<path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/>',
+    check:'<path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M4 12l5 5L20 6"/>',
+    box:'<path fill="currentColor" d="M12 2 3 7v10l9 5 9-5V7zm0 2.3L17.7 7 12 9.7 6.3 7zM5 9l6 3v7l-6-3.3zm14 0v6.7L13 19v-7z"/>',
+    shield:'<path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/>',
+    cert:'<path fill="currentColor" d="M4 4h16v12H4zM2 18h20v2H2z"/>',
+    pin:'<path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5"/>',
+    tag:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>'
+  };
+  return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(p[name]||p.tag)+'</svg>';
+}
+
+/* ---------- render ---------- */
+var state = estimatePosition();
+document.getElementById("ord").textContent = "order "+S.order;
+document.getElementById("awb").textContent = "AWB "+S.awb+" · Emirates SkyCargo";
+
+var dest = AIRPORTS[S.route[S.route.length-1]].name;
+var statusText, subText, etaText="";
+var arrDate = new Date(Date.parse(S.legs[S.legs.length-1].arr));
+var etaStr = arrDate.toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+if(state.phase==="prep"){ statusText="Preparing for departure"; subText="Departing Narita "+new Date(Date.parse(S.legs[0].dep)).toLocaleDateString("en-GB",{day:"numeric",month:"short"})+" · destination "+dest; }
+else if(state.phase==="flying"){ statusText="In flight"; subText=state.leg.flight+" · "+AIRPORTS[state.leg.from].name+" → "+AIRPORTS[state.leg.to].name+" · "+Math.round(state.frac*100)+"% of the way"; etaText="Arriving <b>"+dest+"</b> · "+etaStr; }
+else if(state.phase==="transit"){ statusText="In transit"; subText="Connecting at "+AIRPORTS[state.at].name+" · next leg to "+dest; etaText="Arriving <b>"+dest+"</b> · "+etaStr; }
+else { statusText="Delivered to "+dest; subText="Thank you for choosing Eda Wagyu"; }
+document.getElementById("status").textContent = statusText;
+document.getElementById("statusSub").textContent = subText;
+document.getElementById("heroIcon").innerHTML = ico("plane");
+if(etaText){ var e=document.getElementById("etaBox"); e.style.display="inline-block"; e.innerHTML=etaText; }
+if(state.phase==="flying"||state.phase==="transit"){ document.getElementById("liveBadge").style.display="inline-flex"; }
+
+/* provenance */
+document.getElementById("prov").innerHTML =
+  '<span>'+ico("box")+S.product+'</span>'+
+  '<span>'+ico("box")+S.boxes+'</span>'+
+  '<span>'+ico("shield")+'Certificate of origin ✓</span>'+
+  '<span>'+ico("cert")+'Health certificate ✓</span>'+
+  '<span>'+ico("tag")+'Cattle ID traceable</span>';
+
+/* demo banner */
+if(mode!=="live"){
+  var d=document.getElementById("demo"); d.style.display="flex";
+  var when = new Date(now).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+  document.getElementById("demoTxt").innerHTML = (mode==="demo"?"Demo preview — simulated in-flight view ("+when+")":"Preview at "+when);
+}
+
+/* timeline */
+var tl=document.getElementById("tl"), html="", curIdx=-1;
+for(var i=0;i<S.steps.length;i++){ if(now>=Date.parse(S.steps[i].t)) curIdx=i; }
+for(var i=0;i<S.steps.length;i++){
+  var st=S.steps[i], cls, icon;
+  var isFlight = (st.key==="fly1"||st.key==="fly2"||st.key==="transit");
+  if(i<curIdx){ cls="done"; icon=ico("check"); }
+  else if(i===curIdx){ cls="active"; icon=ico(isFlight?"plane":"check"); }
+  else { cls="pending"; icon=ico("tag"); }
+  html+='<li class="'+cls+'"><span class="dot">'+icon+'</span>'+
+        '<div class="lab">'+st.lab+(st.est?'<span class="est">est.</span>':'')+'</div>'+
+        '<div class="sub">'+st.sub+'</div></li>';
+}
+tl.innerHTML=html;
+
+/* ---------- map ---------- */
+var map=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true});
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{
+  subdomains:"abcd", maxZoom:9, attribution:'&copy; OpenStreetMap &copy; CARTO'
+}).addTo(map);
+
+var routePts=[];
+for(var i=0;i<S.legs.length;i++){
+  var a=AIRPORTS[S.legs[i].from].ll, b=AIRPORTS[S.legs[i].to].ll;
+  var line=gcLine(a,b,64);
+  var flown = (state.phase==="done") || (state.phase==="flying" && state.leg===S.legs[i] ) || (curIdxLegDone(i));
+  L.polyline(line,{color:"#0F3D2E",weight:3,opacity: legCompleted(i)?0.85:0.25, dashArray: legCompleted(i)?null:"4 7"}).addTo(map);
+  routePts=routePts.concat(line);
+}
+function legCompleted(i){ // leg i fully flown?
+  return now>=Date.parse(S.legs[i].arr);
+}
+function curIdxLegDone(i){ return now>=Date.parse(S.legs[i].arr); }
+
+Object.keys(AIRPORTS).forEach(function(code){
+  if(S.route.indexOf(code)<0) return;
+  var ap=AIRPORTS[code];
+  L.marker(ap.ll,{icon:L.divIcon({className:"",html:'<div style="background:#0F3D2E;color:#fff;font:600 10px Inter;padding:2px 6px;border-radius:10px;white-space:nowrap;transform:translate(-50%,-50%)">'+code+'</div>',iconSize:[0,0]})}).addTo(map);
+});
+
+/* plane marker */
+var planeHtml='<div class="plane-i" style="transform:rotate('+(state.head)+'deg);color:#D4A93B;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))">'+
+  '<svg viewBox="0 0 24 24" width="30" height="30">'+
+  '<path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/></svg></div>';
+if(state.phase==="flying"){
+  L.marker(state.pos,{icon:L.divIcon({className:"",html:planeHtml,iconSize:[30,30],iconAnchor:[15,15]}),zIndexOffset:1000}).addTo(map);
+}
+
+setTimeout(function(){
+  map.fitBounds(L.latLngBounds(routePts).pad(0.15));
+}, 60);
+
+document.getElementById("mapNote").textContent = (mode==="live")
+  ? "Estimated position from flight schedule · updates as the flight progresses"
+  : "Estimated position from flight schedule (EK319 / EK143)";
+</script>
+</body>
+</html>
