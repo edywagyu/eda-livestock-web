@@ -28,7 +28,7 @@
   .demo{background:#FBF1D8; color:var(--gold-deep); font-size:13px; padding:10px 26px; display:flex; gap:12px; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(133,79,11,.18);}
   .demo a{color:var(--gold-deep); font-weight:600; white-space:nowrap;}
   /* status hero */
-  .hero{padding:20px 26px 16px; border-bottom:1px solid var(--line2); display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+  .hero{padding:20px 26px 16px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
   .hero .ic{width:40px;height:40px;color:var(--green); flex-shrink:0;}
   .hero h1{margin:0; font-size:23px; font-weight:600;}
   .hero .desc{color:var(--muted); font-size:14px; margin-top:2px;}
@@ -39,19 +39,25 @@
   .etabox{background:var(--cream); border:1px solid var(--line); border-radius:10px; padding:8px 14px; font-size:13px; text-align:right;}
   .etabox .k{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px;}
   .etabox .v{font-size:15px; font-weight:600;}
+  /* current location bar */
+  .locbar{display:flex; align-items:center; gap:13px; margin:0 26px 4px; padding:13px 16px; background:#FBF3E2; border:1px solid var(--gold); border-radius:12px;}
+  .locbar .lic{color:var(--gold-deep); flex-shrink:0; display:flex;}
+  .locbar .lic svg{width:24px;height:24px;}
+  .locbar .lk{display:block; font-size:11px; text-transform:uppercase; letter-spacing:.6px; color:var(--gold-deep); font-weight:600;}
+  .locbar .lv{font-size:16px; font-weight:600; color:var(--ink); line-height:1.3;}
   /* main grid */
-  .main{display:grid; grid-template-columns: 1.5fr 1fr; gap:22px; padding:22px 26px;}
-  #map{height:420px; border-radius:12px; background:#e9e6df; border:1px solid var(--line);}
+  .main{display:grid; grid-template-columns: 1.5fr 1fr; gap:22px; padding:18px 26px;}
+  #map{height:430px; border-radius:12px; background:#e9e6df; border:1px solid var(--line);}
   .leaflet-container{font-family:Inter,sans-serif; border-radius:12px;}
   .plane-i{transition:transform .6s linear;}
   .leg-lbl{background:var(--green); color:#fff; font:600 10px/1 Inter; padding:3px 7px; border-radius:10px; white-space:nowrap; transform:translate(-50%,-50%);}
   .ap-lbl{background:#fff; color:var(--green); font:600 10px/1 Inter; padding:3px 6px; border:1px solid var(--green); border-radius:8px; white-space:nowrap; transform:translate(-50%,-50%);}
+  .now-lbl{background:var(--gold); color:var(--green); font:600 10px/1 Inter; padding:3px 7px; border-radius:8px; white-space:nowrap; transform:translate(-50%,-50%); box-shadow:0 1px 3px rgba(0,0,0,.25);}
   .mapnote{font-size:11.5px; color:var(--muted); margin-top:8px; text-align:center;}
   /* details card */
   .card{border:1px solid var(--line); border-radius:12px; padding:16px 18px; align-self:start;}
-  .card h3{margin:0 0 14px; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:600;}
+  .card h3{margin:0 0 12px; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:600;}
   .fld{display:flex; justify-content:space-between; gap:14px; padding:8px 0; border-bottom:1px solid var(--line2); font-size:13.5px;}
-  .fld:last-child{border-bottom:none;}
   .fld .k{color:var(--muted); flex-shrink:0;}
   .fld .v{text-align:right; font-weight:500;}
   .awb{font-family:"Roboto Mono",monospace; font-size:16px; font-weight:500; color:var(--green); display:inline-flex; align-items:center; gap:8px;}
@@ -96,12 +102,13 @@
   @media(max-width:760px){
     .wrap{margin:0; border-radius:0; border:none;}
     .main{grid-template-columns:1fr; gap:18px; padding:18px;}
-    #map{height:280px;}
+    #map{height:300px;}
     .tl{grid-template-columns:1fr; grid-auto-flow:row; grid-template-rows:none;}
     .tl li.col-end:before{display:block;}
     .hero{padding:16px 18px;}
     .hd,.demo,.tlsec,.prov,.ft{padding-left:18px; padding-right:18px;}
     .prov{margin:16px 18px 0;}
+    .locbar{margin-left:18px; margin-right:18px;}
   }
 </style>
 </head>
@@ -130,6 +137,11 @@
     <span class="live" id="liveBadge" style="display:none"><span class="pulse"></span>LIVE</span>
     <div class="etabox" id="etaBox" style="display:none"></div>
   </section>
+
+  <div class="locbar" id="locbar" style="display:none">
+    <span class="lic" id="locIcon"></span>
+    <div><span class="lk">Current location</span><span class="lv" id="locText"></span></div>
+  </div>
 
   <div class="main">
     <div>
@@ -172,7 +184,9 @@ var SHIPMENTS = {
   "carnes-0626":{
     order:"EDA-20260626", buyer:"CARNES · Madrid, Spain",
     awb:"176-27983023", airline:"Emirates SkyCargo",
-    product:"Eda Wagyu A5 · BMS 11", boxes:"34 boxes · chilled 0–4°C",
+    exporter:"Eda Livestock Co., Ltd. · Japan",
+    importer:"Carnes Rojas Premium S.L. · Madrid, Spain",
+    product:"Eda Wagyu A5 (chilled)", pallets:"2 pallets", boxes:"34 boxes · 0–4°C",
     etd:"Narita · 30 Jun", eta:"Madrid · 1 Jul, 20:20",
     route:["NRT","DXB","MAD"],
     legs:[
@@ -247,6 +261,7 @@ function estimatePosition(){
 function ico(name){
   var p={
     plane:'<path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/>',
+    pin:'<path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5"/>',
     check:'<path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M4 12l5 5L20 6"/>',
     box:'<path fill="currentColor" d="M12 2 3 7v10l9 5 9-5V7zm0 2.3L17.7 7 12 9.7 6.3 7zM5 9l6 3v7l-6-3.3zm14 0v6.7L13 19v-7z"/>',
     shield:'<path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/>',
@@ -265,7 +280,7 @@ document.getElementById("heroIcon").innerHTML = ico("plane");
 
 var dest = AIRPORTS[S.route[S.route.length-1]].name;
 var statusText, subText, showEta=false;
-if(state.phase==="prep"){ statusText="Preparing for departure"; subText="Departing "+AIRPORTS[S.legs[0].from].name+" · "+S.etd.split("·")[1].trim()+" · destination "+dest; }
+if(state.phase==="prep"){ statusText="Preparing for departure"; subText="Departing "+AIRPORTS[S.legs[0].from].name+" ·"+S.etd.split("·")[1]+" · destination "+dest; }
 else if(state.phase==="flying"){ var lg=S.legs[state.legIdx]; statusText="In flight"; subText=lg.flight+" · "+lg.carrier+" · "+AIRPORTS[lg.from].name+" → "+AIRPORTS[lg.to].name+" · "+Math.round(state.frac*100)+"% complete"; showEta=true; }
 else if(state.phase==="transit"){ statusText="In transit"; subText="Connecting at "+AIRPORTS[state.at].name+" · next leg to "+dest; showEta=true; }
 else { statusText="Delivered to "+dest; subText="Thank you for choosing Eda Wagyu"; }
@@ -273,6 +288,18 @@ document.getElementById("status").textContent = statusText;
 document.getElementById("statusSub").textContent = subText;
 if(showEta){ var e=document.getElementById("etaBox"); e.style.display="block"; e.innerHTML='<div class="k">Arriving</div><div class="v">'+S.eta+'</div>'; }
 if(state.phase==="flying"||state.phase==="transit") document.getElementById("liveBadge").style.display="inline-flex";
+
+/* current location bar */
+function curLoc(){
+  if(state.phase==="prep") return {ic:"pin", t:"Narita cargo terminal, Tokyo", n:"awaiting departure ·"+S.etd.split("·")[1]};
+  if(state.phase==="flying"){ var lg=S.legs[state.legIdx]; return {ic:"plane", t:"In the air · "+lg.flight+" "+AIRPORTS[lg.from].city+" → "+AIRPORTS[lg.to].city, n:Math.round(state.frac*100)+"% complete · ETA "+S.eta}; }
+  if(state.phase==="transit") return {ic:"pin", t:AIRPORTS[state.at].name+" airport", n:"in transit · awaiting next flight"};
+  return {ic:"pin", t:dest, n:"delivered"};
+}
+var cl=curLoc();
+document.getElementById("locbar").style.display="flex";
+document.getElementById("locIcon").innerHTML=ico(cl.ic);
+document.getElementById("locText").innerHTML=cl.t+' <span style="font-weight:400;color:var(--muted)">— '+cl.n+'</span>';
 
 /* details card */
 var legHtml="";
@@ -288,12 +315,15 @@ document.getElementById("detail").innerHTML =
   '<h3>Shipment details</h3>'+
   '<div class="fld"><span class="k">Air waybill</span><span class="v"><span class="awb" id="awbv">'+S.awb+
      ' <button class="cpy" id="cpy" aria-label="copy AWB">'+ico("copy")+'copy</button></span></span></div>'+
+  '<div class="fld"><span class="k">Exporter</span><span class="v">'+S.exporter+'</span></div>'+
+  '<div class="fld"><span class="k">Importer</span><span class="v">'+S.importer+'</span></div>'+
   '<div class="fld"><span class="k">Carrier</span><span class="v"><span class="carrier">'+ico("plane")+S.airline+'</span></span></div>'+
   '<div style="padding-top:10px"><div class="k" style="color:var(--muted);font-size:13.5px;margin-bottom:6px">Flights</div><div class="legs">'+legHtml+'</div></div>'+
   '<div class="fld"><span class="k">Cargo</span><span class="v">'+S.product+'</span></div>'+
+  '<div class="fld"><span class="k">Pallets</span><span class="v">'+S.pallets+'</span></div>'+
   '<div class="fld"><span class="k">Boxes</span><span class="v">'+S.boxes+'</span></div>'+
   '<div class="fld"><span class="k">Departure (ETD)</span><span class="v">'+S.etd+'</span></div>'+
-  '<div class="fld"><span class="k">Arrival (ETA)</span><span class="v">'+S.eta+'</span></div>';
+  '<div class="fld" style="border-bottom:none"><span class="k">Arrival (ETA)</span><span class="v">'+S.eta+'</span></div>';
 
 document.getElementById("cpy").addEventListener("click",function(){
   var b=this; (navigator.clipboard?navigator.clipboard.writeText(S.awb):Promise.reject()).then(function(){
@@ -301,7 +331,7 @@ document.getElementById("cpy").addEventListener("click",function(){
   }).catch(function(){ b.innerHTML="select & copy"; });
 });
 
-/* provenance */
+/* provenance (no BMS) */
 document.getElementById("prov").innerHTML =
   '<span>'+ico("box")+S.product+'</span>'+
   '<span>'+ico("shield")+'Certificate of origin ✓</span>'+
@@ -346,10 +376,16 @@ for(var i=0;i<S.legs.length;i++){
 S.route.forEach(function(code){
   L.marker(AIRPORTS[code].ll,{icon:L.divIcon({className:"",html:'<div class="ap-lbl">'+code+'</div>',iconSize:[0,0]})}).addTo(map);
 });
+/* current-location marker (every state) */
 if(state.phase==="flying"){
   var planeHtml='<div class="plane-i" style="transform:rotate('+state.head+'deg);color:#D4A93B;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))">'+
-    '<svg viewBox="0 0 24 24" width="32" height="32"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/></svg></div>';
-  L.marker(state.pos,{icon:L.divIcon({className:"",html:planeHtml,iconSize:[32,32],iconAnchor:[16,16]}),zIndexOffset:1000}).addTo(map);
+    '<svg viewBox="0 0 24 24" width="34" height="34"><path fill="currentColor" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/></svg></div>';
+  L.marker(state.pos,{icon:L.divIcon({className:"",html:planeHtml,iconSize:[34,34],iconAnchor:[17,17]}),zIndexOffset:1000}).addTo(map);
+} else {
+  var pinHtml='<div style="transform:translate(-50%,-100%);color:#D4A93B;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))">'+
+    '<svg viewBox="0 0 24 24" width="38" height="38"><path fill="currentColor" stroke="#854F0B" stroke-width="0.6" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5"/></svg></div>';
+  L.marker(state.pos,{icon:L.divIcon({className:"",html:pinHtml,iconSize:[38,38],iconAnchor:[19,38]}),zIndexOffset:1000}).addTo(map);
+  L.marker(state.pos,{icon:L.divIcon({className:"",html:'<div class="now-lbl">NOW</div>',iconSize:[0,0]}),interactive:false,zIndexOffset:1001}).addTo(map);
 }
 setTimeout(function(){ map.fitBounds(L.latLngBounds(routePts).pad(0.12)); },60);
 
