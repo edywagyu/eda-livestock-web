@@ -186,7 +186,7 @@ var SHIPMENTS = {
     awb:"176-27983023", airline:"Emirates SkyCargo",
     exporter:"Eda Livestock Co., Ltd. · Japan",
     importer:"Carnes Rojas Premium S.L. · Madrid, Spain",
-    product:"Eda Wagyu A5 (chilled)", pallets:"2 pallets", boxes:"34 boxes · 0–4°C",
+    product:"Eda Wagyu A5 (chilled)", boxes:34, temp:"0–4°C",
     etd:"Narita · 30 Jun", eta:"Madrid · 1 Jul, 20:20",
     route:["NRT","DXB","MAD"],
     legs:[
@@ -217,6 +217,7 @@ var SHIPMENTS = {
 var P = new URLSearchParams(location.search);
 var ID = P.get("id") || "carnes-0626";
 var S = SHIPMENTS[ID];
+var BOXES_PER_PALLET = 24;            // company rule: 1 pallet per 24 boxes (round up)
 var DEMO_T = "2026-07-01T15:30:00Z";
 var now, mode;
 if (P.get("live")!==null){ now = Date.now(); mode="live"; }
@@ -320,8 +321,8 @@ document.getElementById("detail").innerHTML =
   '<div class="fld"><span class="k">Carrier</span><span class="v"><span class="carrier">'+ico("plane")+S.airline+'</span></span></div>'+
   '<div style="padding-top:10px"><div class="k" style="color:var(--muted);font-size:13.5px;margin-bottom:6px">Flights</div><div class="legs">'+legHtml+'</div></div>'+
   '<div class="fld"><span class="k">Cargo</span><span class="v">'+S.product+'</span></div>'+
-  '<div class="fld"><span class="k">Pallets</span><span class="v">'+S.pallets+'</span></div>'+
-  '<div class="fld"><span class="k">Boxes</span><span class="v">'+S.boxes+'</span></div>'+
+  '<div class="fld"><span class="k">Pallets</span><span class="v">'+Math.ceil(S.boxes/BOXES_PER_PALLET)+' pallets</span></div>'+
+  '<div class="fld"><span class="k">Boxes</span><span class="v">'+S.boxes+' boxes · '+S.temp+'</span></div>'+
   '<div class="fld"><span class="k">Departure (ETD)</span><span class="v">'+S.etd+'</span></div>'+
   '<div class="fld" style="border-bottom:none"><span class="k">Arrival (ETA)</span><span class="v">'+S.eta+'</span></div>';
 
