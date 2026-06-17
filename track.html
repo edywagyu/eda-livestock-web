@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EDA WAGYU — Live Shipment Tracking</title>
+<title>EDA-LIVESTOCK — Live Shipment Tracking</title>
 <meta name="robots" content="noindex" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -106,7 +106,7 @@
 <body>
 <div class="wrap">
   <header class="hd">
-    <div class="brand">EDA WAGYU</div>
+    <img class="brand" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA-LIVESTOCK" style="height:46px;width:auto;display:block;" />
     <div class="right"><div class="ord" id="ord">order —</div><div class="sub" id="ordsub"></div></div>
   </header>
 
@@ -137,7 +137,7 @@
 
   <div class="prov" id="prov"></div>
 
-  <footer class="ft"><div class="awbf" id="awbf">EDA WAGYU</div><div class="tag">live tracking by EDA WAGYU</div></footer>
+  <footer class="ft"><div class="awbf" id="awbf">EDA-LIVESTOCK</div><div class="tag">live tracking by EDA-LIVESTOCK</div></footer>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -302,7 +302,7 @@ function render(){
   if(state.phase==="prep"){ statusText="Preparing for departure"; subText="Departing "+AIRPORTS[S.legs[0].from].name+" ·"+S.etd.split("·")[1]+" · destination "+dest; }
   else if(state.phase==="flying"){ var lg=S.legs[state.legIdx]; statusText="In flight"; subText=lg.flight+" · "+lg.carrier+" · "+AIRPORTS[lg.from].name+" → "+AIRPORTS[lg.to].name+" · "+Math.round(state.frac*100)+"% complete"; showEta=true; }
   else if(state.phase==="transit"){ statusText="In transit"; subText="Connecting at "+AIRPORTS[state.at].name+" · next leg to "+dest; showEta=true; }
-  else { statusText="Delivered to "+dest; subText="Thank you for choosing Eda Wagyu"; }
+  else { statusText="Delivered to "+dest; subText="Thank you for choosing Eda-Livestock"; }
   document.getElementById("status").textContent = statusText;
   document.getElementById("statusSub").textContent = subText;
   if(showEta){ var e=document.getElementById("etaBox"); e.style.display="block"; e.innerHTML='<div class="k">Arriving</div><div class="v">'+S.eta+'</div>'; }
