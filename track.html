@@ -225,6 +225,62 @@ function ico(name){
   return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(p[name]||p.tag)+'</svg>';
 }
 
+/* ---------- live position (ADS-B via airplanes.live — CORS-enabled, keyless) ---------- */
+var planeMarker=null, liveTimer=null;
+function setMapNote(txt,live){ var n=document.getElementById("mapNote"); if(!n)return; n.textContent=txt; n.style.color= live?"var(--gold-deep)":"var(--muted)"; }
+function planeIcon(deg){
+  return L.divIcon({className:"",iconSize:[36,36],iconAnchor:[18,18],
+    html:'<div class="plane-i" style="transform:rotate('+deg+'deg);color:#D4A93B;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))">'+
+    '<svg viewBox="0 0 24 24" width="36" height="36"><path fill="currentColor" stroke="#854F0B" stroke-width="0.5" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/></svg></div>'});
+}
+function liveFetch(cs){
+  if(!cs) return Promise.resolve(null);
+  return fetch("https://api.airplanes.live/v2/callsign/"+encodeURIComponent(cs),{cache:"no-store"})
+    .then(function(r){ return r.ok? r.json() : null; })
+    .then(function(d){
+      if(!d||!d.ac) return null;
+      for(var i=0;i<d.ac.length;i++){ var a=d.ac[i]; if(a.lat!=null&&a.lon!=null) return {lat:a.lat,lon:a.lon,track:(a.track!=null?a.track:0),alt:(typeof a.alt_baro==="number"?a.alt_baro:null),gs:(typeof a.gs==="number"?a.gs:null)}; }
+      return null;
+    }).catch(function(){ return null; });
+}
+function nowHHMM(){ return new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); }
+function startLive(cs, fromU){
+  var got=false;
+  function tick(){
+    liveFetch(cs).then(function(p){
+      if(!p){ if(!got) setMapNote("Estimated from flight schedule · live position appears once airborne", false); return; }
+      got=true;
+      if(planeMarker) planeMarker.setLatLng([p.lat, unwrap(p.lon, fromU)]).setIcon(planeIcon(p.track));
+      setMapNote("Live position · ADS-B"+(p.alt?(" · "+Math.round(p.alt)+" ft"):"")+" · updated "+nowHHMM(), true);
+    });
+  }
+  tick(); liveTimer=setInterval(tick, 45000);
+}
+function probeView(cs){
+  document.getElementById("ord").textContent="live flight";
+  document.getElementById("ordsub").textContent=cs;
+  document.getElementById("heroIcon").innerHTML=ico("plane");
+  ["demo","locbar","tlsec","prov"].forEach(function(x){ var e=document.getElementById(x); if(e) e.style.display="none"; });
+  document.getElementById("detail").style.display="none";
+  document.getElementById("status").textContent="Locating "+cs+"…";
+  document.getElementById("statusSub").textContent="live ADS-B · airplanes.live";
+  var pmap=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true});
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:9,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(pmap);
+  pmap.setView([25,10],2);
+  function tick(){
+    liveFetch(cs).then(function(p){
+      if(!p){ document.getElementById("status").textContent="Not currently airborne"; document.getElementById("statusSub").textContent=cs+" — no live ADS-B signal right now"; setMapNote("airplanes.live · no signal",false); return; }
+      document.getElementById("status").textContent="In flight (live)";
+      document.getElementById("statusSub").textContent=cs+(p.alt?(" · "+Math.round(p.alt)+" ft"):"")+(p.gs?(" · "+Math.round(p.gs)+" kt"):"");
+      document.getElementById("liveBadge").style.display="inline-flex";
+      if(!planeMarker) planeMarker=L.marker([p.lat,p.lon],{icon:planeIcon(p.track),zIndexOffset:1000}).addTo(pmap); else planeMarker.setLatLng([p.lat,p.lon]).setIcon(planeIcon(p.track));
+      pmap.setView([p.lat,p.lon],5);
+      setMapNote("Live position · ADS-B · airplanes.live · updated "+nowHHMM(),true);
+    });
+  }
+  tick(); setInterval(tick,30000);
+}
+
 function notFound(id,err){
   document.getElementById("ord").textContent="";
   document.getElementById("heroIcon").innerHTML=ico("pin");
@@ -351,9 +407,8 @@ function drawMap(){
 
   if(state.phase==="flying"){
     var fromU=uLon[S.legs[state.legIdx].from], cpos=[state.pos[0], unwrap(state.pos[1],fromU)];
-    var planeHtml='<div class="plane-i" style="transform:rotate('+state.head+'deg);color:#D4A93B;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))">'+
-      '<svg viewBox="0 0 24 24" width="36" height="36"><path fill="currentColor" stroke="#854F0B" stroke-width="0.5" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L11 19v-5.5z"/></svg></div>';
-    L.marker(cpos,{icon:L.divIcon({className:"",html:planeHtml,iconSize:[36,36],iconAnchor:[18,18]}),zIndexOffset:1000}).addTo(map);
+    planeMarker = L.marker(cpos,{icon:planeIcon(state.head),zIndexOffset:1000}).addTo(map);
+    if(mode==="live" && S.legs[state.legIdx].callsign) startLive(S.legs[state.legIdx].callsign, fromU);
   } else {
     var here = state.phase==="transit"? apLL(state.at) : (state.phase==="done"? apLL(S.route[S.route.length-1]) : apLL(S.route[0]));
     var pinHtml='<div style="color:#D4A93B;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))">'+
@@ -362,21 +417,25 @@ function drawMap(){
   }
   setTimeout(function(){ map.fitBounds(L.latLngBounds(routePts).pad(0.15)); },60);
 
-  document.getElementById("mapNote").textContent=(mode==="live")
-    ? "Estimated position from flight schedule · live ADS-B in next release"
-    : "Estimated position from flight schedule";
+  var note="Estimated position from flight schedule";
+  if(mode==="live" && state.phase==="flying") note="Estimating from schedule · acquiring live ADS-B…";
+  setMapNote(note,false);
 }
 
 /* ---------- boot: load data, route by ?id ---------- */
-fetch("track-data.json?ts="+Date.now(),{cache:"no-store"})
-  .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
-  .then(function(data){
-    S = data[ID];
-    if(!S){ notFound(ID,false); return; }
-    if(mode==="demo") now = Date.parse(S.demoT || DEFAULT_DEMO_T);
-    render();
-  })
-  .catch(function(){ notFound(ID,true); });
+if(P.get("probe")){
+  probeView(P.get("probe").toUpperCase().trim());
+} else {
+  fetch("track-data.json?ts="+Date.now(),{cache:"no-store"})
+    .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
+    .then(function(data){
+      S = data[ID];
+      if(!S){ notFound(ID,false); return; }
+      if(mode==="demo") now = Date.parse(S.demoT || DEFAULT_DEMO_T);
+      render();
+    })
+    .catch(function(){ notFound(ID,true); });
+}
 </script>
 </body>
 </html>

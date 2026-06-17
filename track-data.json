@@ -12,31 +12,96 @@
     "etd": "Narita · 30 Jun",
     "eta": "Madrid · 1 Jul, 20:20",
     "demoT": "2026-07-01T15:30:00Z",
-    "route": ["NRT", "DXB", "MAD"],
+    "route": [
+      "NRT",
+      "DXB",
+      "MAD"
+    ],
     "legs": [
-      { "flight": "EK319", "carrier": "Emirates", "from": "NRT", "to": "DXB",
-        "dep": "2026-06-30T13:30:00Z", "arr": "2026-07-01T00:05:00Z",
-        "depDisp": "30 Jun 22:30 (JST)", "arrDisp": "1 Jul 04:05 (GST)",
-        "track": "https://www.flightradar24.com/data/flights/ek319" },
-      { "flight": "EK143", "carrier": "Emirates", "from": "DXB", "to": "MAD",
-        "dep": "2026-07-01T10:20:00Z", "arr": "2026-07-01T18:20:00Z",
-        "depDisp": "1 Jul 14:20 (GST)", "arrDisp": "1 Jul 20:20 (CEST)",
-        "track": "https://www.flightradar24.com/data/flights/ek143" }
+      {
+        "flight": "EK319",
+        "carrier": "Emirates",
+        "from": "NRT",
+        "to": "DXB",
+        "dep": "2026-06-30T13:30:00Z",
+        "arr": "2026-07-01T00:05:00Z",
+        "depDisp": "30 Jun 22:30 (JST)",
+        "arrDisp": "1 Jul 04:05 (GST)",
+        "track": "https://www.flightradar24.com/data/flights/ek319",
+        "callsign": "UAE319"
+      },
+      {
+        "flight": "EK143",
+        "carrier": "Emirates",
+        "from": "DXB",
+        "to": "MAD",
+        "dep": "2026-07-01T10:20:00Z",
+        "arr": "2026-07-01T18:20:00Z",
+        "depDisp": "1 Jul 14:20 (GST)",
+        "arrDisp": "1 Jul 20:20 (CEST)",
+        "track": "https://www.flightradar24.com/data/flights/ek143",
+        "callsign": "UAE143"
+      }
     ],
     "steps": [
-      { "lab": "Slaughtered & A5 graded", "sub": "Kagoshima · K-2 plant", "t": "2026-06-24T02:00:00Z", "est": true },
-      { "lab": "Packed & chilled (0–4°C)", "sub": "vacuum-sealed", "t": "2026-06-25T06:00:00Z", "est": true },
-      { "lab": "Received at Narita", "sub": "cargo-in · Jun 26", "t": "2026-06-26T01:00:00Z" },
-      { "lab": "Animal quarantine cleared", "sub": "Jun 29", "t": "2026-06-29T02:00:00Z" },
-      { "lab": "Customs cleared & loaded", "sub": "Jun 30", "t": "2026-06-30T10:00:00Z" },
-      { "lab": "In flight · EK319", "sub": "Narita → Dubai", "t": "2026-06-30T13:30:00Z", "air": true },
-      { "lab": "Transit at Dubai", "sub": "DXB", "t": "2026-07-01T00:05:00Z", "air": true },
-      { "lab": "In flight · EK143", "sub": "Dubai → Madrid", "t": "2026-07-01T10:20:00Z", "air": true },
-      { "lab": "Arrived Madrid", "sub": "MAD", "t": "2026-07-01T18:20:00Z" },
-      { "lab": "Import clearance & delivery", "sub": "Jul 2", "t": "2026-07-02T09:00:00Z", "est": true }
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "Kagoshima · K-2 plant",
+        "t": "2026-06-24T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-06-25T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Jun 26",
+        "t": "2026-06-26T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Jun 29",
+        "t": "2026-06-29T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Jun 30",
+        "t": "2026-06-30T10:00:00Z"
+      },
+      {
+        "lab": "In flight · EK319",
+        "sub": "Tokyo → Dubai",
+        "t": "2026-06-30T13:30:00Z",
+        "air": true
+      },
+      {
+        "lab": "Transit at Dubai",
+        "sub": "DXB",
+        "t": "2026-07-01T00:05:00Z",
+        "air": true
+      },
+      {
+        "lab": "In flight · EK143",
+        "sub": "Dubai → Madrid",
+        "t": "2026-07-01T10:20:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Madrid",
+        "sub": "MAD",
+        "t": "2026-07-01T18:20:00Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Jul 2",
+        "t": "2026-07-02T09:00:00Z",
+        "est": true
+      }
     ]
   },
-
   "ilm-0626": {
     "order": "EDA-20260630-US",
     "buyer": "ILM · Los Angeles, USA",
@@ -50,22 +115,69 @@
     "etd": "Narita · 30 Jun",
     "eta": "Los Angeles · 30 Jun",
     "demoT": "2026-06-30T13:00:00Z",
-    "route": ["NRT", "LAX"],
+    "route": [
+      "NRT",
+      "LAX"
+    ],
     "legs": [
-      { "flight": "SQ12", "carrier": "Singapore Airlines", "from": "NRT", "to": "LAX",
-        "dep": "2026-06-30T09:00:00Z", "arr": "2026-06-30T18:30:00Z",
-        "depDisp": "30 Jun 18:05 (JST)", "arrDisp": "30 Jun 11:25 (PDT)",
-        "track": "https://www.flightradar24.com/data/flights/sq12" }
+      {
+        "flight": "SQ12",
+        "carrier": "Singapore Airlines",
+        "from": "NRT",
+        "to": "LAX",
+        "dep": "2026-06-30T09:00:00Z",
+        "arr": "2026-06-30T18:30:00Z",
+        "depDisp": "30 Jun 18:05 (JST)",
+        "arrDisp": "30 Jun 11:25 (PDT)",
+        "track": "https://www.flightradar24.com/data/flights/sq12",
+        "callsign": "SIA12"
+      }
     ],
     "steps": [
-      { "lab": "Slaughtered & A5 graded", "sub": "Kagoshima · K-2 plant", "t": "2026-06-24T02:00:00Z", "est": true },
-      { "lab": "Packed & chilled (0–4°C)", "sub": "vacuum-sealed", "t": "2026-06-25T06:00:00Z", "est": true },
-      { "lab": "Received at Narita", "sub": "cargo-in · Jun 26", "t": "2026-06-26T01:00:00Z" },
-      { "lab": "Animal quarantine cleared", "sub": "Jun 29", "t": "2026-06-29T02:00:00Z" },
-      { "lab": "Customs cleared & loaded", "sub": "Jun 30", "t": "2026-06-30T08:00:00Z" },
-      { "lab": "In flight · SQ12", "sub": "Narita → Los Angeles", "t": "2026-06-30T09:00:00Z", "air": true },
-      { "lab": "Arrived Los Angeles", "sub": "LAX", "t": "2026-06-30T18:30:00Z" },
-      { "lab": "Import clearance & delivery", "sub": "Jul 1", "t": "2026-07-01T16:00:00Z", "est": true }
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "Kagoshima · K-2 plant",
+        "t": "2026-06-24T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-06-25T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Jun 26",
+        "t": "2026-06-26T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Jun 29",
+        "t": "2026-06-29T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Jun 30",
+        "t": "2026-06-30T08:00:00Z"
+      },
+      {
+        "lab": "In flight · SQ12",
+        "sub": "Tokyo → Los Angeles",
+        "t": "2026-06-30T09:00:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Los Angeles",
+        "sub": "LAX",
+        "t": "2026-06-30T18:30:00Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Jul 1",
+        "t": "2026-07-01T16:00:00Z",
+        "est": true
+      }
     ]
   }
 }
