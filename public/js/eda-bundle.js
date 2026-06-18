@@ -111,6 +111,8 @@
    ============================================================ */
 (function () {
   'use strict';
+  if (window.__edaErrTracker) return;       // standalone error-tracker.js と二重登録しない
+  window.__edaErrTracker = true;
   let sent = 0;
   const MAX_SEND = 10; // 同セッションで最大10回 (無限ループ防止)
 

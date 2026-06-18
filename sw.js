@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-06-17-105-track-brand';
+const CACHE_VERSION = 'eda-v2026-06-18-106-error-tracker';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -12,6 +12,7 @@ const CORE_ASSETS = [
   'product.html',
   'public/data/products-master.js',
   'public/js/eda-bundle.js',
+  'public/js/error-tracker.js',
   'public/css/a11y.css',
   'public/css/jp-typography.css',
   'public/css/mobile-modern.css',
