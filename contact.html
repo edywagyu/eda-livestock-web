@@ -3699,7 +3699,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <h2 style="margin-top: 16px;">お問い合わせ種別を選択</h2>
  </div>
 
- <form id="contactForm">
+ <form id="contactForm" onsubmit="return submitContactInquiry(event)">
  <input type="hidden" name="inquiry_type" id="inquiry_type" value="general"/>
 
  <div class="inquiry-type-grid reveal">
@@ -3830,9 +3830,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 
  <div style="text-align: center; margin-top: 40px;">
- <button type="submit" class="btn btn-dark" style="padding: 22px 56px; font-size: 14px;">
+ <button type="submit" id="contactSubmit" class="btn btn-dark" style="padding: 22px 56px; font-size: 14px;">
  Send Inquiry <span class="btn-arrow"></span>
  </button>
+ <p id="contactFeedback" role="status" aria-live="polite" style="display:none; margin-top: 16px; font-size: 14px; font-weight: 700;"></p>
  <p style="margin-top: 16px; font-size: 12px; color: var(--color-ink-muted);">
  送信後、24〜48時間以内に <strong>backoffice@eda-livestock.com</strong> よりご返信いたします。
  </p>
@@ -3840,6 +3841,45 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 
  </form>
+
+ <script>
+ function submitContactInquiry(ev){
+   ev.preventDefault();
+   var form = ev.target;
+   var btn = document.getElementById('contactSubmit');
+   var fb = document.getElementById('contactFeedback');
+   var fd = new FormData(form);
+   var data = {};
+   fd.forEach(function(v,k){
+     if (k === 'agree_privacy') return;
+     if (data[k] === undefined) data[k] = v;
+     else if (Array.isArray(data[k])) data[k].push(v);
+     else data[k] = [data[k], v];
+   });
+   function show(msg, ok){ fb.style.display='block'; fb.style.color = ok ? '#0F3D2E' : '#c8102e'; fb.textContent = msg; }
+   var label = btn.innerHTML;
+   function restore(){ btn.disabled = false; btn.innerHTML = label; }
+   btn.disabled = true; btn.textContent = '送信中… / Sending…';
+   if (window.EDA_API && window.EDA_API.post){
+     window.EDA_API.post('submit_inquiry', data).then(function(res){
+       restore();
+       if (res && (res.ok || res.success)){
+         show('✅ お問い合わせを受け付けました。24〜48時間以内にご返信します。', true);
+         form.reset();
+       } else {
+         show('⚠ 送信に失敗しました。お手数ですが backoffice@eda-livestock.com へ直接ご連絡ください。', false);
+       }
+     }).catch(function(){
+       restore();
+       show('⚠ 通信エラーが発生しました。backoffice@eda-livestock.com へ直接ご連絡ください。', false);
+     });
+   } else {
+     restore();
+     show('⚠ 読み込み中です。少し待ってから再度お試しください。', false);
+   }
+   return false;
+ }
+ </script>
  </div>
 </section>
 
