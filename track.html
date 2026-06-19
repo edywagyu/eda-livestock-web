@@ -170,9 +170,11 @@ var DEFAULT_DEMO_T = "2026-07-01T15:30:00Z";
 var P = new URLSearchParams(location.search);
 var ID = P.get("id") || "carnes-0626";
 var mode, now;
-if (P.get("live")!==null){ now = Date.now(); mode="live"; }
+// 🔴 Default = LIVE (real time). Buyer-facing links must reflect reality, never a
+// simulated in-flight view. Demo is opt-in via ?demo=1; ?t=... scrubs a fixed time.
+if (P.get("demo")!==null){ mode="demo"; }
 else if (P.get("t")){ now = Date.parse(P.get("t")); mode="scrub"; }
-else { mode="demo"; }
+else { now = Date.now(); mode="live"; }
 var S, state;
 
 /* ---------- geo helpers ---------- */
