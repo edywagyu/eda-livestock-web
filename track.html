@@ -136,8 +136,6 @@
 
   <section class="tlsec" id="tlsec"><h3>Shipment progress</h3><ul class="tl" id="tl"></ul></section>
 
-  <div class="prov" id="prov"></div>
-
   <footer class="ft"><div class="awbf" id="awbf">EDA-LIVESTOCK</div><div class="tag">live tracking by EDA-LIVESTOCK</div></footer>
 </div>
 
@@ -348,12 +346,6 @@ function render(){
       b.innerHTML=ico("check")+"copied"; setTimeout(function(){b.innerHTML=ico("copy")+"copy";},1600);
     }).catch(function(){ b.innerHTML="select & copy"; });
   });
-
-  document.getElementById("prov").innerHTML =
-    '<span>'+ico("box")+S.product+'</span>'+
-    '<span>'+ico("shield")+'Certificate of origin ✓</span>'+
-    '<span>'+ico("cert")+'Health certificate ✓</span>'+
-    '<span>'+ico("tag")+'Cattle ID traceable</span>';
 
   if(mode!=="live"){
     var d=document.getElementById("demo"); d.style.display="flex";
