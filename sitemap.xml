@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/shop.html</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/subscription.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/organic.html</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/about.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/global.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/restaurants.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/journal.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/philosophy.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/journey.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/press.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/contact.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/tokushoho.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/terms.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://edywagyu.github.io/eda-livestock-web/booking.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.eda-livestock.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.eda-livestock.com/shop.html</loc><changefreq>daily</changefreq><priority>0.95</priority></url>
+  <url><loc>https://www.eda-livestock.com/subscription.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.eda-livestock.com/organic.html</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://www.eda-livestock.com/about.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.eda-livestock.com/global.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.eda-livestock.com/restaurants.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.eda-livestock.com/journal.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.eda-livestock.com/philosophy.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.eda-livestock.com/journey.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.eda-livestock.com/press.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.eda-livestock.com/contact.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.eda-livestock.com/tokushoho.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.eda-livestock.com/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.eda-livestock.com/terms.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://www.eda-livestock.com/booking.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>

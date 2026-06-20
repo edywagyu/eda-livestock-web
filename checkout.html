@@ -1589,7 +1589,7 @@ function setContactMethod(method) {
 /* ---- 初期化 ---- */
 function init() {
  try { cartItems = JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) {}
- /* 🔴 まとめ買い割引(2個5%/3個10%)を数量から確定。shop.html / products.html の
+ /* 🔴 まとめ買い割引(2個5%/3個10%)を数量から確定。shop.html の
     どの導線で来ても、また古い localStorage 価格でも、ここで baseUnit×tiers から
     正しい割引単価に上書きする。これで Stripe 課金額(price_data.unit_amount)・
     ダッシュボード集計(Stripe実額ベース)まで割引が確実に反映される。冪等。 */

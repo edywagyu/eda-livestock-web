@@ -7,4 +7,4 @@ Disallow: /gas/
 Disallow: /docs/
 Disallow: /research/
 
-Sitemap: https://edywagyu.github.io/eda-livestock-web/sitemap.xml
+Sitemap: https://www.eda-livestock.com/sitemap.xml
