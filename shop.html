@@ -5419,6 +5419,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: #fff;
 }
 .sub-tab.sub-tab--organic.active::before { background: #fff; }
+/* 🔴 タグは「無投薬」か「有機JAS」のみ：オーガニック商品に無投薬バッジを重複表示させない */
+.product-card[data-sub="organic"] .badge-muton,
+.product-card--organic .badge-muton,
+.product-card--organic-wagyu .badge-muton { display: none !important; }
 
 /* ============ 用途タグ ============ */
 .use-tag {
@@ -14146,7 +14150,7 @@ function copyPopCoupon() {
 (function() {
   function addMutonBadges() {
     document.querySelectorAll(
-      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon)'
+      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon):not([data-sub="organic"])'
     ).forEach(function(card) {
       var imgDiv = card.querySelector('.product-card-img');
       if (!imgDiv || imgDiv.querySelector('.badge-muton')) return;

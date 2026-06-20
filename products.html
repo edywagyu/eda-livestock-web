@@ -5418,6 +5418,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: #fff;
 }
 .sub-tab.sub-tab--organic.active::before { background: #fff; }
+/* 🔴 タグは「無投薬」か「有機JAS」のみ：オーガニック商品に無投薬バッジを重複表示させない */
+.product-card[data-sub="organic"] .badge-muton,
+.product-card--organic .badge-muton,
+.product-card--organic-wagyu .badge-muton { display: none !important; }
 
 /* ============ 用途タグ ============ */
 .use-tag {
@@ -9973,7 +9977,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- オーガニックライン（プレミアム）— 200g パック -->
  <div class="product-card" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ (200g)","p":2760},{"id":"organic-chicken-breast-2","t":"2つセット (400g)【5%オフ】","p":5244},{"id":"organic-chicken-breast-3","t":"3つセット (600g)【10%オフ】","p":7452}]'>
- <div class="product-card-img" data-label="CHICKEN BREAST"><span class="badge badge-organic">オーガニック</span></div>
+ <div class="product-card-img" data-label="CHICKEN BREAST"><span class="badge badge-organic">有機JAS</span></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥2,760〜</span></div>
  <p class="product-name">オーガニックチキン ムネ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬で育てたオーガニック平飼い鶏。健康志向の食卓へ、上等の一品。</p>
@@ -9986,7 +9990,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-card" data-sub="organic" data-variants='[{"id":"organic-chicken-thigh","t":"1つ (200g)","p":2940},{"id":"organic-chicken-thigh-2","t":"2つセット (400g)【5%オフ】","p":5586},{"id":"organic-chicken-thigh-3","t":"3つセット (600g)【10%オフ】","p":7938}]'>
- <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge badge-organic">オーガニック</span></div>
+ <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge badge-organic">有機JAS</span></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥2,940〜</span></div>
  <p class="product-name">オーガニックチキン モモ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。脂と旨みが凝縮されたプレミアム部位。週末の特別な照り焼きに。</p>
@@ -9999,7 +10003,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-card" data-sub="organic" data-variants='[{"id":"organic-chicken-minced","t":"1つ (200g)","p":2400},{"id":"organic-chicken-minced-2","t":"2つセット (400g)【5%オフ】","p":4560},{"id":"organic-chicken-minced-3","t":"3つセット (600g)【10%オフ】","p":6480}]'>
- <div class="product-card-img" data-label="CHICKEN MINCED"><span class="badge badge-organic">オーガニック</span></div>
+ <div class="product-card-img" data-label="CHICKEN MINCED"><span class="badge badge-organic">有機JAS</span></div>
  <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥2,400〜</span></div>
  <p class="product-name">オーガニックチキン ミンチ</p>
  <p class="product-desc"><strong>有機JAS認証相当</strong>の無農薬飼料・無投薬。上質のオーガニック鶏ミンチ。離乳食やつくねの主役に。</p>
