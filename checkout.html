@@ -1602,13 +1602,18 @@ function init() {
  return it;
  });
  try { localStorage.setItem(CART_KEY, JSON.stringify(cartItems)); } catch (e) {}
- try { subscription = JSON.parse(localStorage.getItem(SUB_KEY) || 'null'); } catch (e) {}
-
- // URL params から自動セット可能（subscription.html からの遷移）
+ // URL params（subscription.html からの遷移）
  const params = new URLSearchParams(location.search);
  if (params.get('plan') && PLANS[params.get('plan')]) {
+ // 明示的に定期便プランで来た時のみ定期便を有効化
  subscription = { plan: params.get('plan') };
  localStorage.setItem(SUB_KEY, JSON.stringify(subscription));
+ } else {
+ // 🔴 単品/ギフト等で入った時：過去に残った定期便データ(eda-subscription-pending)を引き継がない。
+ //   定期便申込は subscription.html→Stripe直行で checkout を通らないため、ここに残るのは
+ //   離脱時の残骸＝誤って「定期便+追加購入」になり削除もできない事故の原因(2026-06-20 修正)。
+ subscription = null;
+ try { localStorage.removeItem(SUB_KEY); } catch (e) {}
  }
  // ★ subscription.html で入力済の顧客情報を読み込んでプリフィル
  try {
@@ -1748,6 +1753,7 @@ function renderOrderList() {
   <div class="item-dest-control" style="margin-bottom:14px;">
   <button type="button" class="item-dest-btn active-self" style="cursor:default;border-right:0;" disabled>🏠 ご自宅にお届け（定期便）</button>
   </div>
+  <button type="button" onclick="removeSubscription()" title="定期便をカートから削除" style="display:block;width:100%;padding:11px;background:none;border:1px solid #e5ddc8;border-radius:8px;color:#C8102E;font-size:13px;font-weight:600;cursor:pointer;">× 定期便を削除する</button>
  </div>
  `;
  }
@@ -1833,6 +1839,16 @@ function changeCartQty(index, delta) {
   item.qty = newQty;
  }
  localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+ renderOrderList();
+ renderDestinations();
+ renderSummary();
+}
+
+/* 定期便をカートから削除（2026-06-20: 単品なのに定期便が消せない誤課金事故の修正） */
+function removeSubscription() {
+ subscription = null;
+ try { localStorage.removeItem(SUB_KEY); } catch (e) {}
+ renderModeBanner();
  renderOrderList();
  renderDestinations();
  renderSummary();
