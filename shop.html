@@ -5337,93 +5337,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  }
 }
 
-/* ===== Tom 2026-06-20: 単品グリッドを縦並びに（横スクロール廃止・PC4列/タブ3列/モバイル2列） =====
-   既存の横スクロール(display:flex;overflow-x)を高詳細度(.cols-4[data-cat])で打ち消す。 */
-.product-grid.cols-4[data-cat="beef"],
-.product-grid.cols-4[data-cat="chicken"] {
- display: grid !important;
- grid-template-columns: repeat(4, 1fr) !important;
- gap: 20px !important;
- overflow-x: visible !important;
- scroll-snap-type: none !important;
- margin-left: 0 !important;
- margin-right: 0 !important;
- padding-left: 0 !important;
- padding-right: 0 !important;
- padding-bottom: 0 !important;
-}
-.product-grid.cols-4[data-cat="beef"] .product-card,
-.product-grid.cols-4[data-cat="chicken"] .product-card {
- flex: 0 1 auto !important;
- width: auto !important;
- min-width: 0 !important;
- scroll-snap-align: none !important;
-}
-@media (max-width: 1024px) {
- .product-grid.cols-4[data-cat="beef"],
- .product-grid.cols-4[data-cat="chicken"] { grid-template-columns: repeat(3, 1fr) !important; }
-}
-@media (max-width: 760px) {
- .product-grid.cols-4[data-cat="beef"],
- .product-grid.cols-4[data-cat="chicken"] {
- grid-template-columns: repeat(2, 1fr) !important;
- gap: 14px !important;
- }
-}
-@media (max-width: 560px) {
- /* 単品ページ：スマホは2列（縦スクロール） */
- .product-grid.cols-4[data-cat] {
- grid-template-columns: repeat(2, 1fr) !important;
- gap: 10px !important;
- }
- /* 2列(約170px)にカード内を収める：余白・数量ステッパー・ボタンを縮小 */
- .product-grid.cols-4[data-cat] .product-card .product-tag-row,
- .product-grid.cols-4[data-cat] .product-card .product-name,
- .product-grid.cols-4[data-cat] .product-card .product-desc { padding-left: 10px !important; padding-right: 10px !important; }
- .product-grid.cols-4[data-cat] .product-card .product-stats { margin-left: 10px !important; margin-right: 10px !important; }
- .product-grid.cols-4[data-cat] .product-card .product-buy { padding-left: 10px !important; padding-right: 10px !important; }
- .product-grid.cols-4[data-cat] .product-card .product-tag-row { flex-wrap: wrap; gap: 2px 6px; }
- .product-grid.cols-4[data-cat] .product-card .qty-row { gap: 6px !important; justify-content: center; flex-wrap: wrap; }
- .product-grid.cols-4[data-cat] .product-card .qty-stepper .qty-btn { width: 32px !important; height: 32px !important; font-size: 17px !important; }
- .product-grid.cols-4[data-cat] .product-card .qty-stepper .qty-val { min-width: 22px !important; font-size: 14px !important; }
- .product-grid.cols-4[data-cat] .product-card .qty-disc { font-size: 11px !important; }
- .product-grid.cols-4[data-cat] .product-card .product-buy { display: block !important; }
- .product-grid.cols-4[data-cat] .product-card .btn-add-cart {
- display: block !important;
- width: 100% !important;
- box-sizing: border-box !important;
- font-size: 12px !important;
- padding: 11px 6px !important;
- letter-spacing: 0 !important;
- white-space: normal !important;
- line-height: 1.3 !important;
- }
-}
-/* オーガニック タブ＝緑アクセントで「タグ分け」を視認 */
-.sub-tab.sub-tab--organic {
- border-color: rgba(15,61,46,0.35);
- color: var(--color-forest);
-}
-.sub-tab.sub-tab--organic::before {
- content: '';
- display: inline-block;
- width: 7px; height: 7px;
- border-radius: 50%;
- background: #2E7D32;
- margin-right: 6px;
- vertical-align: middle;
-}
-.sub-tab.sub-tab--organic.active {
- background: #2E7D32;
- border-color: #2E7D32;
- color: #fff;
-}
-.sub-tab.sub-tab--organic.active::before { background: #fff; }
-/* 🔴 タグは「無投薬」か「有機JAS」のみ：オーガニック商品に無投薬バッジを重複表示させない */
-.product-card[data-sub="organic"] .badge-muton,
-.product-card--organic .badge-muton,
-.product-card--organic-wagyu .badge-muton { display: none !important; }
-
 /* ============ 用途タグ ============ */
 .use-tag {
  display: inline-flex;
@@ -9997,7 +9910,6 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
  <button class="sub-tab" data-sub="yakiniku">焼肉</button>
  <button class="sub-tab" data-sub="processed">加工品</button>
- <button class="sub-tab sub-tab--organic" data-sub="organic">オーガニック</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
@@ -10201,13 +10113,6 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-cat-head reveal" data-cat="chicken" style="margin-top: 80px;">
  <h2 class="shop-cat-title">鶏肉 <span>/ Free-Range &amp; Organic</span></h2>
  <p class="shop-cat-desc">平飼い鶏は <strong>大分県産・無投薬</strong>。地面の上を自由に歩き回る「平飼い」方式で運動量が多く、身が引き締まって旨みが濃い。<strong>有機JAS認証相当のオーガニックチキンは千葉県産</strong>もご用意しています。</p>
- </div>
-
- <!-- 鶏肉 サブタブ（平飼い標準 / オーガニック） -->
- <div class="sub-tab-row reveal" data-parent-cat="chicken">
- <button class="sub-tab active" data-sub="all">すべて</button>
- <button class="sub-tab" data-sub="standard">平飼い（標準）</button>
- <button class="sub-tab sub-tab--organic" data-sub="organic">オーガニック</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
