@@ -655,7 +655,7 @@ def main():
     add_text(s, Inches(7.0), Inches(3.7), Inches(3.0), Inches(0.3),
              "INTERNATIONAL SALES", FONT_DISPLAY, 12, GOLD)
     add_text(s, Inches(7.0), Inches(4.1), Inches(3.5), Inches(2),
-             "Export Inquiry · Sample Request · Partnership\n\ninternational.sales@eda-livestock.com\n\nInstagram: @eda_livestock\nWeb: eda-livestock.com",
+             "Export Inquiry · Sample Request · Partnership\n\nbackoffice@eda-livestock.com\n\nInstagram: @eda_livestock\nWeb: eda-livestock.com",
              FONT_JP, 11, RGBColor(0xBB, 0xBB, 0xBB), line_spacing=1.7)
     add_text(s, Inches(0.6), Inches(6.8), Inches(12), Inches(0.3),
              "© 2026 EDA-LIVESTOCK CO., LTD. — CONFIDENTIAL",

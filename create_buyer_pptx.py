@@ -848,7 +848,7 @@ def main():
     add_rich_text(s, Inches(3.5), Inches(5.15), Inches(2.8), Inches(1.2), [
         {"text": "Tomoki Eda — CEO / 4th Generation Representative", "font": FONT_BODY, "size": 12, "color": WHITE_82},
         {"text": "", "font": FONT_BODY, "size": 12, "color": WHITE_82, "newline": True},
-        {"text": "international.sales@eda-livestock.com", "font": FONT_BODY, "size": 12, "color": GOLD, "newline": True},
+        {"text": "backoffice@eda-livestock.com", "font": FONT_BODY, "size": 12, "color": GOLD, "newline": True},
         {"text": "", "font": FONT_BODY, "size": 12, "color": WHITE_82, "newline": True},
         {"text": "We respond within 24 hours.", "font": FONT_BODY, "size": 12, "color": WHITE_82, "newline": True},
     ], line_spacing=1.7)
