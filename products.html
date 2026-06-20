@@ -5337,6 +5337,67 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  }
 }
 
+/* ===== Tom 2026-06-20: 単品グリッドを縦並びに（横スクロール廃止・PC4列/タブ3列/モバイル1-2列） =====
+   既存の横スクロール(display:flex;overflow-x)を高詳細度(.cols-4[data-cat])で打ち消す。 */
+.product-grid.cols-4[data-cat="beef"],
+.product-grid.cols-4[data-cat="chicken"] {
+ display: grid !important;
+ grid-template-columns: repeat(4, 1fr) !important;
+ gap: 20px !important;
+ overflow-x: visible !important;
+ scroll-snap-type: none !important;
+ margin-left: 0 !important;
+ margin-right: 0 !important;
+ padding-left: 0 !important;
+ padding-right: 0 !important;
+ padding-bottom: 0 !important;
+}
+.product-grid.cols-4[data-cat="beef"] .product-card,
+.product-grid.cols-4[data-cat="chicken"] .product-card {
+ flex: 0 1 auto !important;
+ width: auto !important;
+ min-width: 0 !important;
+ scroll-snap-align: none !important;
+}
+@media (max-width: 1024px) {
+ .product-grid.cols-4[data-cat="beef"],
+ .product-grid.cols-4[data-cat="chicken"] { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (max-width: 760px) {
+ .product-grid.cols-4[data-cat="beef"],
+ .product-grid.cols-4[data-cat="chicken"] {
+ grid-template-columns: repeat(2, 1fr) !important;
+ gap: 14px !important;
+ }
+}
+@media (max-width: 560px) {
+ .product-grid.cols-4[data-cat="beef"],
+ .product-grid.cols-4[data-cat="chicken"] {
+ grid-template-columns: 1fr !important;
+ gap: 16px !important;
+ }
+}
+/* オーガニック タブ＝緑アクセントで「タグ分け」を視認 */
+.sub-tab.sub-tab--organic {
+ border-color: rgba(15,61,46,0.35);
+ color: var(--color-forest);
+}
+.sub-tab.sub-tab--organic::before {
+ content: '';
+ display: inline-block;
+ width: 7px; height: 7px;
+ border-radius: 50%;
+ background: #2E7D32;
+ margin-right: 6px;
+ vertical-align: middle;
+}
+.sub-tab.sub-tab--organic.active {
+ background: #2E7D32;
+ border-color: #2E7D32;
+ color: #fff;
+}
+.sub-tab.sub-tab--organic.active::before { background: #fff; }
+
 /* ============ 用途タグ ============ */
 .use-tag {
  display: inline-flex;
@@ -9635,6 +9696,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
  <button class="sub-tab" data-sub="yakiniku">焼肉</button>
  <button class="sub-tab" data-sub="processed">加工品</button>
+ <button class="sub-tab sub-tab--organic" data-sub="organic">オーガニック</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
@@ -9838,6 +9900,13 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-cat-head reveal" data-cat="chicken" style="margin-top: 80px;">
  <h2 class="shop-cat-title">鶏肉 <span>/ Free-Range &amp; Organic</span></h2>
  <p class="shop-cat-desc">平飼い鶏は <strong>大分県産・無投薬</strong>。地面の上を自由に歩き回る「平飼い」方式で運動量が多く、身が引き締まって旨みが濃い。<strong>有機JAS認証相当のオーガニックチキンは千葉県産</strong>もご用意しています。</p>
+ </div>
+
+ <!-- 鶏肉 サブタブ（平飼い標準 / オーガニック） -->
+ <div class="sub-tab-row reveal" data-parent-cat="chicken">
+ <button class="sub-tab active" data-sub="all">すべて</button>
+ <button class="sub-tab" data-sub="standard">平飼い（標準）</button>
+ <button class="sub-tab sub-tab--organic" data-sub="organic">オーガニック</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
