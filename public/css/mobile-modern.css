@@ -228,3 +228,27 @@
 @supports (padding: env(safe-area-inset-bottom)) {
   .sticky-cart-bar { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
 }
+
+/* ---------- Mobile Header: バナーUI 中央揃え (Tom 2026-06-20) ----------
+   ≤1024px は .primary-nav 非表示（ハンバーガー表示）。従来はロゴ左 / 操作群右の
+   両端割り (space-between) で中央に大きな余白＋右側だけ密集して不揃いに見えた。
+   → ロゴを中央、その下に操作群（EC / 言語 / Instagram / カート / メニュー）を
+   中央寄せした 2 段構成へ。要素は削らず中央化のみ。 */
+@media (max-width: 1024px) {
+  .site-header { padding: 12px 0; }
+  .site-header.scrolled { padding: 9px 0; }
+  .site-header .nav {
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
+  }
+  .site-header .brand-mark { justify-content: center; }
+  .site-header .nav-utils {
+    width: 100%;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+@media (max-width: 380px) {
+  .site-header .nav-utils { gap: 15px; }
+}
