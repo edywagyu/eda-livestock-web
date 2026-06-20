@@ -34,13 +34,15 @@ select,
   justify-content: center;
 }
 
-/* 例外: 本文中のインラインリンク (a タグ内の文字リンクは min-height 不要) */
-p a,
+/* 例外: 本文中のインラインリンク (a タグ内の文字リンクは min-height 不要)
+   🔴 .btn は除外: CTAボタンを inline 化すると overflow:hidden が無効になり
+      .btn::before のスライド塗り(緑)が左に露出して崩れる(2026-06-20 contact商談ボタン修正) */
+p a:not(.btn),
 li a:not(.btn):not(.nav-link),
-.article-body a,
-.faq-q a,
-.faq-a a,
-small a {
+.article-body a:not(.btn),
+.faq-q a:not(.btn),
+.faq-a a:not(.btn),
+small a:not(.btn) {
   min-height: 0;
   min-width: 0;
   display: inline;
