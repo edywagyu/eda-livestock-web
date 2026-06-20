@@ -2805,5 +2805,30 @@ initCouponFromStorage();
 <script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
+
+<!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得し注文へ自動紐付け（通常ブラウザは無処理） -->
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+(function(){
+ var LIFF_ID='1657458587-mz1dR9e6';
+ function save(p){
+  if(!p||!p.userId)return;
+  try{
+   var k='eda-mypage-session',s={};
+   try{s=JSON.parse(localStorage.getItem(k)||'{}')||{}}catch(e){}
+   if(!s.line_uid){s.line_uid=p.userId;s.display_name=p.displayName||'';s.picture_url=p.pictureUrl||'';localStorage.setItem(k,JSON.stringify(s));}
+   localStorage.setItem('eda-member-line-uid',p.userId);
+  }catch(e){}
+ }
+ function init(){
+  if(!window.liff)return;
+  try{liff.init({liffId:LIFF_ID}).then(function(){
+   if(!liff.isInClient()||!liff.isLoggedIn())return;
+   liff.getProfile().then(save).catch(function(){});
+  }).catch(function(){});}catch(e){}
+ }
+ if(document.readyState==='complete')init();else window.addEventListener('load',init);
+})();
+</script>
 </body>
 </html>
