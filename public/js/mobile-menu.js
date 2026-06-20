@@ -143,8 +143,6 @@
         <nav class="eda-mm-nav">
           <div class="eda-mm-ctas">
             <a href="shop.html" class="eda-mm-cta eda-mm-cta--primary">Online Shop</a>
-            <a href="subscription.html" class="eda-mm-cta eda-mm-cta--ghost">定期便を申込</a>
-            <a href="https://calendar.app.google/DjKHsVDhJHesaPM27" target="_blank" rel="noopener" class="eda-mm-cta eda-mm-cta--ghost">商談予約 / Book</a>
           </div>
           <div class="eda-mm-label">Explore</div>
           ${navHtml}
