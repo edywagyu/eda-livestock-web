@@ -233,7 +233,7 @@
       price: 0, weight: 0, stock: 0, temp: '冷凍',
       category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Ribeye',
       isOrganic: true, comingSoon: true,
-      description: '2026年夏 解禁。霜降りと赤身の完璧なバランス。希少な有機リブアイ。',
+      description: '2026年夏 解禁。霜降りと赤身の絶妙なバランス。希少な有機リブアイ。',
       images: []
     },
     {
@@ -242,7 +242,7 @@
       price: 0, weight: 0, stock: 0, temp: '冷凍',
       category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Fillet',
       isOrganic: true, comingSoon: true,
-      description: '希少部位のヒレ、有機JAS認証。最高峰の一品。',
+      description: '希少部位のヒレ、有機JAS認証。当牧場を代表する一品。',
       images: []
     }
   ];
