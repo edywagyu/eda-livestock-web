@@ -807,7 +807,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .audience-phone-label {
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: var(--tracking-widest);
  opacity: 0.7;
  margin-bottom: 8px;
@@ -1735,7 +1735,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* 商品タグ（"Chicken · Breast" 等）も整える */
 .product-tag {
  font-family: var(--font-display) !important;
- font-size: 10.5px;
+ font-size: 12px;
  letter-spacing: 0.16em;
  font-weight: 500;
  color: var(--color-forest); /* gold → forest (WCAG 17:1) */
@@ -1773,6 +1773,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  align-items: center;
  overflow: hidden;
+}
+@media (max-width: 768px) {
+ section.shop-hero { min-height: 0 !important; padding: 84px 0 30px !important; }
+ .hero-scroll-hint { display: none; }
+ section.first-time-banner { padding: 14px 0 !important; }
+ .ship-countdown-bar { padding: 10px 0 !important; }
+ .shop-setdeal-bar { padding: 8px 0 !important; }
+ .shop-hero .cert-row { margin-bottom: 10px !important; }
+ .shop-hero-sub { margin: 10px 0 0 !important; }
+ .shop-hero-cta { gap: 10px !important; margin-top: 18px !important; }
+ .shop-hero .hero-btn-ghost { padding: 8px 0 !important; }
+ .sticky-cart-bar { gap: 8px !important; }
+ .sticky-cart-btn { white-space: nowrap; }
 }
 .shop-hero-bg {
  position: absolute;
@@ -1841,9 +1854,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: rgba(212,169,59,0.78);
 }
 .cert-mark { position: relative; padding: 0; }
-.cert-divider { opacity: 0.4; font-size: 9px; }
+.cert-divider { opacity: 0.4; font-size: 12px; }
 @media (max-width: 720px) {
- .cert-row { font-size: 9.5px; gap: 8px; letter-spacing: 0.22em; margin-bottom: 24px; }
+ .cert-row { font-size: 12px; gap: 8px; letter-spacing: 0.22em; margin-bottom: 24px; }
  .cert-divider { display: none; }
 }
 
@@ -2036,7 +2049,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .hero-scroll-hint span {
  font-family: var(--font-display);
- font-size: 9px;
+ font-size: 12px;
  letter-spacing: 0.24em;
  color: rgba(255,255,255,0.45);
  text-transform: uppercase;
@@ -2063,8 +2076,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  60% { opacity: 1; transform: translate(-50%, 14px); }
 }
 @media (max-width: 720px) {
- .shop-hero { min-height: 88vh; }
- .shop-hero-title { font-size: clamp(36px, 9vw, 56px); }
+ .shop-hero { min-height: 0; }
+ .shop-hero-title { font-size: clamp(32px, 8vw, 48px); }
  .hero-scroll-hint { display: none; }
 }
 
@@ -2362,7 +2375,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .sub-cycle-step-time {
  font-family: var(--font-numeric);
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-gold);
  font-weight: 700;
  letter-spacing: 0.02em;
@@ -2429,7 +2442,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .sub-cycle-label {
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  color: rgba(255,255,255,0.55);
  font-weight: 700;
  letter-spacing: 0.18em;
@@ -2477,7 +2490,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  50% { box-shadow: 0 12px 28px rgba(212,169,59,0.6), 0 0 0 10px rgba(212,169,59,0.06), inset 0 -2px 6px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.25); }
 }
 .sub-cycle-time {
- font-size: 10px;
+ font-size: 12px;
  color: var(--color-gold);
  font-weight: 700;
  letter-spacing: 0.04em;
@@ -2521,7 +2534,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  to { transform: rotate(360deg); }
 }
 .sub-cycle-loop small {
- font-size: 10px;
+ font-size: 12px;
  font-weight: 600;
  letter-spacing: 0.02em;
  color: rgba(255,255,255,0.7);
@@ -2534,7 +2547,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .sub-cycle-step-date { font-size: 18px; }
  .sub-cycle-step--main .sub-cycle-step-date { font-size: 22px; }
  .sub-cycle-step-date--small { font-size: 12.5px; }
- .sub-cycle-step-time { font-size: 9.5px; }
+ .sub-cycle-step-time { font-size: 12px; }
  .sub-cycle-sep { font-size: 14px; }
 
  .sub-cycle-visual {
@@ -2554,7 +2567,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 6px 14px;
  }
  .sub-cycle-loop::before { font-size: 14px; }
- .sub-cycle-loop small { font-size: 10.5px; }
+ .sub-cycle-loop small { font-size: 12px; }
 }
 
 /* ============ 定期便プラン（再設計） ============ */
@@ -2593,7 +2606,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  left: 50%;
  transform: translateX(-50%);
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.14em;
  background: var(--color-gold);
  color: var(--color-forest-deep);
@@ -2609,7 +2622,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.12em;
  padding: 5px 16px;
  font-family: var(--font-jp);
- font-size: 10.5px;
+ font-size: 12px;
 }
 
 /* ====== プラン左上の小ロゴバッジ ====== */
@@ -2694,13 +2707,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.02em;
 }
 .sub-plan-vip-perk-text small {
- font-size: 9.5px;
+ font-size: 12px;
  color: rgba(255,255,255,0.7);
  letter-spacing: 0.01em;
 }
 .sub-plan-cycle {
  font-family: var(--font-display);
- font-size: 9px;
+ font-size: 12px;
  letter-spacing: 0.14em;
  color: rgba(212,169,59,0.8);
  margin-bottom: 8px;
@@ -2763,7 +2776,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin-top: 4px;
  background: rgba(255, 184, 28, 0.18);
  color: #FFB81C;
- font-size: 10px;
+ font-size: 12px;
  font-weight: 700;
  padding: 3px 10px;
  border-radius: 10px;
@@ -2847,7 +2860,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  transform: rotate(35deg);
  background: linear-gradient(90deg, #0F3D2E, #061410);
  color: #FFE594;
- font-size: 9px;
+ font-size: 12px;
  font-weight: 800;
  letter-spacing: 0.18em;
  padding: 4px 38px;
@@ -2951,7 +2964,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  50% { transform: scale(1.1); }
 }
 .sub-promo-microcopy {
- font-size: 10.5px;
+ font-size: 12px;
  color: rgba(255,255,255,0.65);
  font-weight: 500;
  letter-spacing: 0.02em;
@@ -3130,7 +3143,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: rgba(15,61,46,0.85);
  color: white;
  font-family: var(--font-display);
- font-size: 10.5px;
+ font-size: 12px;
  letter-spacing: 0.22em;
  padding: 6px 14px;
  border-radius: 16px;
@@ -3145,7 +3158,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .freezer-band-photo img { aspect-ratio: 4 / 3; }
  .freezer-band-photo-caption {
  bottom: 10px; left: 12px;
- font-size: 9px;
+ font-size: 12px;
  padding: 5px 10px;
  }
 }
@@ -3237,7 +3250,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  position: absolute;
  top: -36px; right: clamp(20px, 4vw, 56px);
  font-family: var(--font-display);
- font-size: 9.5px;
+ font-size: 12px;
  letter-spacing: 0.22em;
  color: rgba(0,255,200,0.7);
  font-weight: 700;
@@ -3338,7 +3351,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.02em;
 }
 .quiz-gift-ribbon-label {
- font-size: 9px;
+ font-size: 12px;
  letter-spacing: 0.2em;
  margin-top: -2px;
 }
@@ -3424,7 +3437,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  border: 1px solid rgba(212,169,59,0.5);
  color: var(--color-gold);
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.22em;
  padding: 5px 12px;
  border-radius: 14px;
@@ -3510,7 +3523,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .quiz-gift-price-label {
  font-family: var(--font-display);
- font-size: 10.5px;
+ font-size: 12px;
  letter-spacing: 0.2em;
  color: rgba(255,255,255,0.92); /* 60→92% で読みやすく */
  font-weight: 700;
@@ -3576,12 +3589,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  align-items: center;
  justify-content: center;
- font-size: 10px;
+ font-size: 12px;
  font-weight: 700;
  flex-shrink: 0;
 }
 .quiz-gift-fine {
- font-size: 10.5px;
+ font-size: 12px;
  color: rgba(255,255,255,0.55);
  margin: 0;
  letter-spacing: 0.02em;
@@ -3649,8 +3662,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .quiz-gift-stats { gap: 6px; }
  .quiz-gift-stat { padding: 8px 4px; }
  .quiz-gift-stat-num { font-size: 14px; }
- .quiz-gift-stat-label { font-size: 9px; }
- .quiz-gift-fine { font-size: 9.5px; }
+ .quiz-gift-stat-label { font-size: 12px; }
+ .quiz-gift-fine { font-size: 12px; }
 }
 .quiz-section::before {
  content: '';
@@ -3685,7 +3698,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: linear-gradient(90deg, #0F3D2E 0%, #143D2B 100%);
  color: var(--color-gold);
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.3em;
  padding: 10px 24px;
  border-bottom: 1px solid rgba(212,169,59,0.3);
@@ -3699,7 +3712,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  align-items: center;
  gap: 8px;
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.22em;
  color: var(--color-forest);
  background: rgba(15,61,46,0.06);
@@ -3842,7 +3855,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .quiz-option .quiz-opt-meta {
  margin-left: auto;
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  letter-spacing: 0.08em;
  flex-shrink: 0;
@@ -3890,7 +3903,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-variant-numeric: tabular-nums;
 }
 .quiz-result-stat-label {
- font-size: 10px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  margin-top: 2px;
 }
@@ -4164,7 +4177,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .quiz-plan-section-eyebrow {
  display: block;
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.22em;
  color: var(--color-gold-soft);
  font-weight: 700;
@@ -4200,7 +4213,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  line-height: 1;
 }
 .quiz-plan-note {
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  margin: 14px 0 0;
  line-height: 1.7;
@@ -4249,7 +4262,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  background: white;
  padding: 0 8px;
  font-family: var(--font-display);
- font-size: 9.5px;
+ font-size: 12px;
  letter-spacing: 0.28em;
  color: var(--color-gold-soft);
  font-weight: 700;
@@ -4531,7 +4544,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .menu-ingredient {
  background: rgba(255,255,255,0.18);
  color: white;
- font-size: 10px;
+ font-size: 12px;
  padding: 4px 10px;
  border-radius: 10px;
  font-weight: 500;
@@ -4770,7 +4783,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  line-height: 1.4;
 }
 .live-feed-meta {
- font-size: 10px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  margin: 1px 0 0;
 }
@@ -4787,8 +4800,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
  }
  .live-feed-pulse { width: 7px; height: 7px; }
- .live-feed-name { font-size: 10.5px; line-height: 1.3; font-weight: 700; }
- .live-feed-meta { font-size: 9px; line-height: 1.3; }
+ .live-feed-name { font-size: 12px; line-height: 1.3; font-weight: 700; }
+ .live-feed-meta { font-size: 12px; line-height: 1.3; }
  body.has-sticky-cart .live-feed { bottom: 148px; }
 }
 
@@ -4852,7 +4865,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  align-items: center;
  gap: 4px;
  color: rgba(212,169,59,0.9);
- font-size: 9px;
+ font-size: 12px;
  letter-spacing: 0.08em;
  margin-top: 4px;
  font-weight: 700;
@@ -4944,7 +4957,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-weight: 500;
 }
 .stat-band-sub {
- font-size: 10px;
+ font-size: 12px;
  color: rgba(255,255,255,0.4);
  margin-top: 4px;
  letter-spacing: 0.04em;
@@ -5042,7 +5055,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  bottom: 12px;
  right: 14px;
  font-family: var(--font-display);
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.2em;
  color: var(--color-gold);
  background: rgba(15,61,46,0.85);
@@ -5733,7 +5746,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  white-space: nowrap;
  }
  .gift-season-deadline span {
- font-size: 10px !important;
+ font-size: 12px !important;
  white-space: nowrap;
  }
  .gift-season-cta {
@@ -5861,7 +5874,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .gift-product-price small {
  font-family: var(--font-jp);
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  font-weight: 600;
 }
@@ -5914,7 +5927,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .gift-product-meta { gap: 2px; margin-bottom: 10px; padding-bottom: 10px; }
  .gift-product-vol { font-size: 11px; }
  .gift-product-price { font-size: 18px; flex-direction: row; align-items: baseline; gap: 6px; }
- .gift-product-price small { font-size: 9.5px; }
+ .gift-product-price small { font-size: 12px; }
  .gift-product-cta { font-size: 12px; padding: 8px 0; min-height: 36px; }
  .gift-product-vol { font-size: 11px; }
  .gift-product-price { font-size: 18px; }
@@ -6014,8 +6027,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap { display: flex; flex-direction: column; }
 .shop-main-wrap > section { order: 99; } /* デフォルト 末尾寄り */
 .shop-main-wrap > .ship-countdown-bar { order: 1; }
-.shop-main-wrap > .freezer-band { order: 5; } /* 冷凍庫イメージ */
-.shop-main-wrap > .unboxing-section { order: 7; } /* 開封動画 */
+.shop-main-wrap > .freezer-band { order: 12; } /* 冷凍庫イメージ（2026-07-03 商品前倒しで products 後へ） */
+.shop-main-wrap > .unboxing-section { order: 13; } /* 開封動画（同上） */
 .shop-main-wrap > #products { order: 10; } /* All Products 最上 */
 .shop-main-wrap > .quiz-section { order: 15; } /* 診断クイズ */
 .shop-main-wrap > #subscription { order: 20; } /* 定期便 */
@@ -7073,7 +7086,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: inline-block;
  background: var(--color-gold);
  color: var(--color-forest-deep);
- font-size: 9px;
+ font-size: 12px;
  padding: 2px 6px;
  border-radius: 8px;
  margin-left: 6px;
@@ -7439,7 +7452,7 @@ body.is-member .product-card--organic .org-chk-lock {
  background: rgba(15,61,46,0.82);
  color: var(--color-gold);
  font-family: var(--font-jp);
- font-size: 10px;
+ font-size: 12px;
  font-weight: 700;
  padding: 3px 8px;
  border-radius: 4px;
@@ -7534,7 +7547,7 @@ body.is-member .product-card--organic .org-chk-lock {
 }
 .organic-wagyu-lock-desc,
 .org-chk-lock-desc {
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  line-height: 1.6;
  max-width: 200px;
@@ -8164,7 +8177,7 @@ body.is-member .product-card--organic .org-chk-lock {
 }
 .delivery-picker-row select:focus { outline: 0; border-color: var(--color-gold); }
 .delivery-picker-note {
- font-size: 10px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  margin: 6px 0 0;
  line-height: 1.5;
@@ -8371,7 +8384,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .hero-stats { position: static; display: flex; gap: 20px; margin-top: 24px; justify-content: flex-start; }
  .hero-stats > div { flex: 1; }
  .hero-stat-num { font-size: 24px; }
- .hero-stat-label { font-size: 9px; margin-top: 4px; }
+ .hero-stat-label { font-size: 12px; margin-top: 4px; }
  .brand-mark-img { height: 36px; }
 
  /* ---- Audience (Find Your Way) ---- */
@@ -8494,7 +8507,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .restaurant-loc { font-size: 12px; margin-bottom: 14px; }
  .restaurant-card-img, .restaurant-card-map { aspect-ratio: 3/2; }
  .restaurant-actions { padding-top: 14px; }
- .restaurant-action { font-size: 10px; padding: 10px 0; }
+ .restaurant-action { font-size: 12px; padding: 10px 0; }
 
  /* ---- Sticky cart bar (mobile only) ---- */
  .sticky-cart-bar { display: flex; }
@@ -8514,7 +8527,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .shop-hero-sub br { display: none; }
  .shop-hero-badges { gap: 16px; margin-top: 24px; padding-top: 20px; flex-wrap: wrap; }
  .shop-hero-badge-num { font-size: 28px; }
- .shop-hero-badge-label { font-size: 10px; }
+ .shop-hero-badge-label { font-size: 12px; }
  .hide-sp { display: none; }
 
  /* ---- Trust strip (1行で収める / Tom指示) ---- */
@@ -8534,14 +8547,14 @@ body.is-member .product-card--organic .org-chk-lock {
  }
  .shop-trust-inner::-webkit-scrollbar { display: none; }
  .shop-trust-item {
- font-size: 9.5px;
+ font-size: 12px;
  padding: 2px 4px !important;
  white-space: nowrap;
  gap: 4px !important;
  flex: 0 0 auto;
  border-right: 0 !important;
  }
- .shop-trust-item strong { font-size: 9.5px; }
+ .shop-trust-item strong { font-size: 12px; }
 
  /* ---- LINE Banner ---- */
  .shop-line-inner {
@@ -8665,7 +8678,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .product-card-img { margin-bottom: 10px; }
  .product-name { font-size: 13px; }
  .product-price { font-size: 14px; }
- .product-tag { font-size: 10px; }
+ .product-tag { font-size: 12px; }
 
  /* ---- Subscription banner ---- */
  .sub-banner-body { padding: 28px 16px; }
@@ -8719,7 +8732,7 @@ body.is-member .product-card--organic .org-chk-lock {
  }
  .member-photo { margin-bottom: 12px; }
  .member-name { font-size: 16px; }
- .member-role { font-size: 10px; }
+ .member-role { font-size: 12px; }
  .member-name-jp { font-size: 12px; }
 
  /* ---- Awards → swipe ---- */
@@ -8873,7 +8886,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .article-body table td:first-child,
  .container-narrow table td:first-child {
  width: 100px !important;
- font-size: 10px !important;
+ font-size: 12px !important;
  padding-right: 8px !important;
  }
 
@@ -9006,11 +9019,11 @@ body.is-member .product-card--organic .org-chk-lock {
  .shop-hero-title { font-size: clamp(24px, 6.8vw, 32px); line-height: 1.25; word-break: keep-all; letter-spacing: 0.01em; }
  .shop-hero-sub { font-size: 13px; line-height: 1.75; padding-right: 4px; }
  .shop-hero-cta { gap: 8px; }
- .hero-eyebrow-anim { font-size: 10px; padding: 4px 10px; margin-bottom: 16px; }
+ .hero-eyebrow-anim { font-size: 12px; padding: 4px 10px; margin-bottom: 16px; }
 
  /* Trust strip: 1行スクロールで省スペース */
  .shop-trust-strip { padding: 10px 0; }
- .shop-trust-item { font-size: 10.5px; }
+ .shop-trust-item { font-size: 12px; }
 
  /* 配送カウントダウンバー — コンパクト & 車アイコン削除 (Tom指示) */
  .ship-countdown-bar { padding: 14px 0 8px; }
@@ -9048,13 +9061,13 @@ body.is-member .product-card--organic .org-chk-lock {
  /* 冷凍庫バンド */
  .freezer-band { padding: 40px 0 32px; }
  .freezer-band-text { margin-bottom: 24px; }
- .freezer-band-eyebrow { font-size: 10px; padding: 4px 12px; margin-bottom: 12px; }
+ .freezer-band-eyebrow { font-size: 12px; padding: 4px 12px; margin-bottom: 12px; }
  .freezer-band-title { font-size: 22px; line-height: 1.35; margin-bottom: 12px; }
  .freezer-band-lead { font-size: 12.5px; line-height: 1.75; margin-bottom: 18px; }
  .freezer-band-lead br { display: none; }
  .freezer-band-grid { grid-template-columns: 1fr 1fr; gap: 8px 12px; max-width: 100%; }
  .freezer-band-bullet { font-size: 11.5px; gap: 6px; justify-content: flex-start; }
- .fb-check { width: 18px; height: 18px; font-size: 10px; }
+ .fb-check { width: 18px; height: 18px; font-size: 12px; }
 
  /* UNBOXING — 動画 16:9 / 1-4ステップは非表示 */
  .unboxing-section { padding: 32px 0; }
@@ -9063,7 +9076,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .unboxing-head .unboxing-lead { font-size: 12.5px; line-height: 1.7; }
  .unboxing-layout { gap: 16px; grid-template-columns: 1fr !important; }
  .unboxing-video { max-width: 100%; aspect-ratio: 16 / 9; }
- .unboxing-video::after { font-size: 9px; bottom: 8px; right: 10px; padding: 3px 8px; }
+ .unboxing-video::after { font-size: 12px; bottom: 8px; right: 10px; padding: 3px 8px; }
  .unboxing-sound-btn { width: 32px; height: 32px; bottom: 10px; left: 10px; }
  /* 4ステップは モバイルでは非表示（CTAボタンは別途残す） */
  .unboxing-steps .unboxing-step { display: none; }
@@ -9111,14 +9124,14 @@ body.is-member .product-card--organic .org-chk-lock {
  /* 診断クイズ — モバイル画面1枚に収まるサイズ */
  .quiz-section { padding: 24px 0; }
  .quiz-card { padding: 0; border-radius: 12px; }
- .quiz-card::before { font-size: 9px; padding: 7px 16px; letter-spacing: 0.22em; }
+ .quiz-card::before { font-size: 12px; padding: 7px 16px; letter-spacing: 0.22em; }
  .quiz-card-body { padding: 18px 18px 22px; }
- .quiz-eyebrow { font-size: 9.5px; padding: 4px 10px; margin-bottom: 10px; letter-spacing: 0.18em; }
+ .quiz-eyebrow { font-size: 12px; padding: 4px 10px; margin-bottom: 10px; letter-spacing: 0.18em; }
  .quiz-title { font-size: 21px !important; line-height: 1.45 !important; margin-bottom: 10px !important; }
  .quiz-title strong { display: block; margin-top: 4px; }
  .quiz-sub { font-size: 14px !important; line-height: 1.65 !important; margin-bottom: 18px !important; padding-bottom: 14px !important; }
  .quiz-progress { margin-bottom: 14px; gap: 8px; }
- .quiz-progress-label { font-size: 10px; }
+ .quiz-progress-label { font-size: 12px; }
  .quiz-progress-bars { gap: 3px; }
  .quiz-progress-dot { height: 4px; }
  .quiz-question { font-size: 14px; margin-bottom: 12px; }
@@ -9141,30 +9154,30 @@ body.is-member .product-card--organic .org-chk-lock {
  .quiz-gift-ribbon { left: 12px; padding: 6px 10px 9px; }
  .quiz-gift-ribbon-month { font-size: 13px; }
  .quiz-gift-ribbon-label { font-size: 8px; }
- .quiz-gift-tag { font-size: 9px; padding: 4px 10px; margin-bottom: 10px; }
+ .quiz-gift-tag { font-size: 12px; padding: 4px 10px; margin-bottom: 10px; }
  .quiz-gift-title { font-size: 19px; margin-bottom: 10px; gap: 4px 8px; }
  .quiz-gift-percent { font-size: 1.5em; }
  .quiz-gift-price-reveal { padding: 12px 8px; gap: 8px; margin: 12px 0; }
- .quiz-gift-price-label { font-size: 9px; letter-spacing: 0.16em; }
+ .quiz-gift-price-label { font-size: 12px; letter-spacing: 0.16em; }
  .quiz-gift-price-strike { font-size: 16px; }
  .quiz-gift-price-now { font-size: 22px; }
  .quiz-gift-price-arrow { font-size: 14px; }
  .quiz-gift-bullets { gap: 4px 10px; margin-bottom: 8px; }
  .quiz-gift-bullets li { font-size: 11px; }
- .qgb-check { width: 14px; height: 14px; font-size: 9px; }
- .quiz-gift-fine { font-size: 9.5px; }
+ .qgb-check { width: 14px; height: 14px; font-size: 12px; }
+ .quiz-gift-fine { font-size: 12px; }
 
  /* 結果スタッツも縮小 */
- .quiz-result-eyebrow { font-size: 9.5px; }
+ .quiz-result-eyebrow { font-size: 12px; }
  .quiz-result-plan { font-size: 22px; }
  .quiz-result-desc { font-size: 12px; margin-bottom: 16px; }
  .quiz-result-stats { gap: 8px; margin-bottom: 18px; }
  .quiz-result-stat { padding: 10px 6px; }
  .quiz-result-stat-num { font-size: 16px; }
- .quiz-result-stat-label { font-size: 9.5px; }
+ .quiz-result-stat-label { font-size: 12px; }
  .quiz-addons { padding: 14px 12px; margin-bottom: 16px; }
  .quiz-addon-name { font-size: 12px; }
- .quiz-addon-reason { font-size: 10.5px; }
+ .quiz-addon-reason { font-size: 12px; }
  .quiz-addon-price { font-size: 13px; }
  .quiz-actions { gap: 8px; }
  .quiz-actions .btn { font-size: 12px; padding: 12px 16px; }
@@ -9174,7 +9187,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .shop-sub-cta { padding: 36px 0; }
  .shop-sub-head { margin-bottom: 24px; }
  .shop-sub-head h2 { font-size: 26px; line-height: 1.3; margin-bottom: 14px; }
- .sub-head-tag { font-size: 10px; padding: 5px 12px; margin-bottom: 14px; }
+ .sub-head-tag { font-size: 12px; padding: 5px 12px; margin-bottom: 14px; }
  .sub-head-emph { font-size: 0.65em; }
  .sub-head-emph::before, .sub-head-emph::after { width: 18px; }
  /* 4チップを 2x2 grid に揃える (3+1のバランス悪さ解消, Tom指示) */
@@ -9191,7 +9204,7 @@ body.is-member .product-card--organic .org-chk-lock {
  padding: 5px 8px;
  }
  .sub-head-bullets span { padding: 3px 10px; }
- .sub-head-fine { font-size: 10.5px; }
+ .sub-head-fine { font-size: 12px; }
  .shop-sub-plans-wrap { margin-bottom: 20px; }
  /* 🔴 モバイル: 3プランを1画面で比較可能なコンパクトグリッド (Tom指示) */
  .sub-plans-grid {
@@ -9253,15 +9266,15 @@ body.is-member .product-card--organic .org-chk-lock {
  }
  .sub-plan-target .sub-plan-target-spec {
  display: block;
- font-size: 10px !important;
+ font-size: 12px !important;
  color: rgba(255,255,255,0.7);
  white-space: nowrap;
  line-height: 1.2;
  }
  .sub-plan-pricing { text-align: center; margin-top: auto; padding-top: 6px; }
- .sub-plan-old-price { font-size: 10px !important; margin-bottom: 2px; }
+ .sub-plan-old-price { font-size: 12px !important; margin-bottom: 2px; }
  .sub-plan-price { font-size: 17px !important; line-height: 1.1 !important; }
- .sub-plan-price small { font-size: 9px !important; }
+ .sub-plan-price small { font-size: 12px !important; }
 
  .shop-sub-band { margin-bottom: 24px; gap: 10px; }
  .sub-promo-banner { padding: 14px 16px; gap: 14px; }
@@ -9277,7 +9290,7 @@ body.is-member .product-card--organic .org-chk-lock {
    flex-wrap: nowrap !important;
  }
  .sub-promo-deadline strong { font-size: 18px !important; line-height: 1 !important; }
- .sub-promo-deadline-suffix { font-size: 10px !important; padding-left: 6px !important; margin-left: 2px !important; }
+ .sub-promo-deadline-suffix { font-size: 12px !important; padding-left: 6px !important; margin-left: 2px !important; }
  .sub-promo-microcopy { font-size: 11px; line-height: 1.4; }
  .shop-sub-plans-wrap { margin-bottom: 28px; }
  /* モバイルではこのセクション完全非表示 (Tom指示) */
@@ -9297,7 +9310,7 @@ body.is-member .product-card--organic .org-chk-lock {
  margin-bottom: 2px;
  color: var(--color-gold);
  }
- .shop-sub-feature p { font-size: 10.5px; line-height: 1.45; opacity: 0.7; }
+ .shop-sub-feature p { font-size: 12px; line-height: 1.45; opacity: 0.7; }
  /* CTA 行: BOX 除去 + よりミニマル */
  .shop-sub-cta-row { gap: 8px; margin-top: 12px; }
  .shop-sub-cta-row .btn {
@@ -9311,7 +9324,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .weekly-menu { padding: 36px 0; }
  .weekly-menu-head { margin-bottom: 20px; gap: 12px; }
  .weekly-menu-title { font-size: 22px !important; line-height: 1.35 !important; }
- .weekly-menu-eyebrow { font-size: 10px; }
+ .weekly-menu-eyebrow { font-size: 12px; }
  .weekly-menu-sub { font-size: 12px; }
  .weekly-menu-sub br { display: none; }
  .menu-card.featured { aspect-ratio: 4 / 3; }
@@ -9357,7 +9370,7 @@ body.is-member .product-card--organic .org-chk-lock {
  scroll-snap-align: start;
  }
  .wagyu-guide-card-head { padding-bottom: 12px; }
- .wagyu-guide-num-label { font-size: 10px; }
+ .wagyu-guide-num-label { font-size: 12px; }
  .wagyu-guide-icon { width: 32px; height: 32px; }
  .wagyu-guide-icon svg { width: 16px; height: 16px; }
  .wagyu-guide-card-title { font-size: 15px !important; line-height: 1.5 !important; }
@@ -9379,10 +9392,10 @@ body.is-member .product-card--organic .org-chk-lock {
  .stat-band-num { font-size: 28px !important; line-height: 1; }
  .stat-band-num small { font-size: 12px !important; margin-left: 2px; }
  .stat-band-label { font-size: 11px !important; line-height: 1.3; margin-top: 6px; }
- .stat-band-sub { font-size: 9.5px !important; line-height: 1.4; margin-top: 4px; }
- .stat-band-live { font-size: 9px !important; }
+ .stat-band-sub { font-size: 12px !important; line-height: 1.4; margin-top: 4px; }
+ .stat-band-live { font-size: 12px !important; }
  .stat-band-label { font-size: 11.5px; }
- .stat-band-sub { font-size: 9.5px; }
+ .stat-band-sub { font-size: 12px; }
  .stats-band-cta { margin-top: 28px; }
 
  /* 農場見学 (science) — 横スワイプ */
@@ -9440,7 +9453,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .shop-proof-card { padding: 22px 18px !important; }
  .shop-proof-text { font-size: 13px !important; line-height: 1.7 !important; }
  .shop-proof-name { font-size: 12px; }
- .shop-proof-product { font-size: 10px; }
+ .shop-proof-product { font-size: 12px; }
 
  /* 保存ガイド */
  .shop-guide { padding: 36px 0; }
@@ -9470,17 +9483,17 @@ body.is-member .product-card--organic .org-chk-lock {
  .spec-table { font-size: 12px !important; }
 
  /* セクション間のフットノートを省略してコンパクトに */
- .shop-sub-fine { font-size: 10.5px; margin-top: 10px; }
+ .shop-sub-fine { font-size: 12px; margin-top: 10px; }
 
  /* サブサイクル可視化 */
  .sub-cycle-visual { padding: 12px 10px; gap: 3px; }
  .sub-cycle-month { min-width: 58px; padding-top: 10px; }
- .sub-cycle-label { font-size: 9px; }
+ .sub-cycle-label { font-size: 12px; }
  .sub-cycle-num { width: 50px; height: 32px; font-size: 13px; border-radius: 8px; }
  .sub-cycle-time { font-size: 8.5px; }
  .sub-cycle-arrow { font-size: 12px; padding-top: 26px; }
- .sub-cycle-loop { padding: 5px 8px; font-size: 10px; margin-left: 4px; }
- .sub-cycle-loop small { font-size: 9px; }
+ .sub-cycle-loop { padding: 5px 8px; font-size: 12px; margin-left: 4px; }
+ .sub-cycle-loop small { font-size: 12px; }
 }
 
 /* Dynamic Products Section — removed (新着商品グリッド削除) */
@@ -9528,7 +9541,7 @@ body.is-member .product-card--organic .org-chk-lock {
   </ul>
   </nav>
  <div class="nav-utils">
-  <a href="shop.html" class="nav-subscribe-cta">EC</a>
+  <a href="shop.html" class="nav-subscribe-cta">ショップ</a>
  <div class="lang-switch">
  <button class="lang-switch-btn" aria-label="言語 / Language" aria-haspopup="true">
  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 3.6 5.8 3.6 9s-1 6.3-3.6 9c-2.6-2.7-3.6-5.8-3.6-9s1-6.3 3.6-9z"/></svg>
@@ -9586,7 +9599,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  <div class="container shop-hero-content">
  <div class="cert-row">
- <span class="cert-mark">有機JAS 同等性</span>
+ <span class="cert-mark">有機JAS認証</span>
  <span class="cert-divider">·</span>
  <span class="cert-mark">無投薬 長期肥育</span>
  <span class="cert-divider">·</span>
@@ -9605,7 +9618,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </p>
  <div class="shop-hero-cta hero-anim-cta">
  <a href="#products" class="btn btn-gold hero-btn-primary">
- <span>Collection</span>
+ <span>商品を見る</span>
  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
  </a>
  <a href="#quiz" class="hero-btn-ghost">
@@ -9703,172 +9716,6 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= Why Eda — ご家族向けに、選ばれる理由 ========= -->
-<section class="wagyu-guide section" id="about-wagyu">
- <div class="container">
- <div class="wagyu-guide-head reveal">
- <span class="eyebrow text-gold has-dash">Why Eda</span>
- <h2 class="wagyu-guide-title"><span class="wagyu-guide-emph">ご家族向け</span>に、選ばれる理由。</h2>
- <p class="wagyu-guide-lead">
- 共働きの忙しさも、無投薬肉が見つからない悩みも、ぜんぶ江田畜産が引き受けます。
- </p>
- </div>
-
- <div class="wagyu-guide-grid reveal">
-
- <article class="wagyu-guide-card">
- <div class="wagyu-guide-card-head">
- <span class="wagyu-guide-num-label">01</span>
- <span class="wagyu-guide-icon" aria-hidden="true">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <path d="M13 2 L4 14 H12 L11 22 L20 10 H12 L13 2 Z"/>
- </svg>
- </span>
- </div>
- <h3 class="wagyu-guide-card-title">15分で完成、忙しい平日の味方。</h3>
- <p class="wagyu-guide-card-text">
- <strong>選ぶ手間が省けた</strong> ── スーパーで <strong>無投薬・ホルモン剤フリーのお肉</strong>を1つひとつ確認する手間は、想像以上の時間ロス。江田畜産なら全部クリア済み。流水で解凍するだけで、平日の夕食が15分で整います。
- </p>
- </article>
-
- <article class="wagyu-guide-card">
- <div class="wagyu-guide-card-head">
- <span class="wagyu-guide-num-label">02</span>
- <span class="wagyu-guide-icon" aria-hidden="true">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <path d="M3 4 L20 4 L17 14 L7 14 L5 7 H3"/>
- <circle cx="9" cy="19" r="1.5"/>
- <circle cx="16" cy="19" r="1.5"/>
- </svg>
- </span>
- </div>
- <h3 class="wagyu-guide-card-title">「今日は何にしよう」がなくなる。</h3>
- <p class="wagyu-guide-card-text">
- <strong>カット不要・調理しやすい部位だけ</strong>を厳選して、必要なグラム数で小分け真空パック。スーパーで悩む時間も、お肉を切り分ける手間もゼロ。袋から出してそのまま調理に取りかかれます。
- </p>
- </article>
-
- <article class="wagyu-guide-card">
- <div class="wagyu-guide-card-head">
- <span class="wagyu-guide-num-label">03</span>
- <span class="wagyu-guide-icon" aria-hidden="true">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <path d="M2 9V15H14V9H2Z"/>
- <path d="M14 11H18L21 14V15H14"/>
- <circle cx="6" cy="17" r="1.4" fill="currentColor"/>
- <circle cx="17" cy="17" r="1.4" fill="currentColor"/>
- </svg>
- </span>
- </div>
- <h3 class="wagyu-guide-card-title">最短3日でクール便お届け。</h3>
- <p class="wagyu-guide-card-text">
- 宮崎の自社加工場から直接ご自宅へ。<strong>最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</strong> <strong>¥11,000 以上で送料無料（北海道のみ +¥500）</strong>。
- </p>
- </article>
-
- <article class="wagyu-guide-card">
- <div class="wagyu-guide-card-head">
- <span class="wagyu-guide-num-label">04</span>
- <span class="wagyu-guide-icon" aria-hidden="true">
- <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
- <path d="M12 2v4"/>
- <path d="M6 8 L18 8 L17 20 L7 20 L6 8 Z"/>
- <path d="M9 12 L9 18 M15 12 L15 18"/>
- </svg>
- </span>
- </div>
- <h3 class="wagyu-guide-card-title">冷凍で半年、ストックの安心。</h3>
- <p class="wagyu-guide-card-text">
- 真空パック冷凍で<strong>賞味期限 約6ヶ月</strong>。冷凍庫の常備品として、必要な分だけ取り出せるから「今夜何作ろう」が解決。<strong>食品ロスゼロ</strong>、まとめ買いで送料も無料に。
- </p>
- </article>
-
- </div>
- </div>
-</section>
-
-<!-- 「はじめての方へ」セクションは削除 -->
-
-<!-- ========= SOCIAL PROOF ========= -->
-<section class="shop-proof" id="reviews">
- <div class="container">
- <div class="shop-proof-head reveal">
- <span class="eyebrow text-gold has-dash">Voice</span>
- <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); color: white; margin: 12px 0 0;">
- お客様の声。
- </h2>
- <p class="shop-proof-viewers"></p>
- </div>
- <div class="shop-proof-grid reveal">
- <div class="shop-proof-card">
- <div class="shop-proof-stars">★★★★★</div>
- <p class="shop-proof-text">冷凍庫に常備するようになって、平日の夕食が十分なに楽に。小分けパックだから必要な分だけ解凍できて、スーパーで迷う時間ゼロ。本当に頼りになります。</p>
- <div class="shop-proof-author">
- <div class="shop-proof-avatar">田</div>
- <div class="shop-proof-author-info">
- <div class="shop-proof-name">田中 様 / 東京都 / 共働き</div>
- <div class="shop-proof-product">スターター定期便</div>
- </div>
- </div>
- </div>
- <div class="shop-proof-card">
- <div class="shop-proof-stars">★★★★★</div>
- <p class="shop-proof-text">脂が重すぎなくて、子どもが本当によく食べてくれます。スーパーと比べてなぜ安心できるかが明確。家族用に毎月続けてます。</p>
- <div class="shop-proof-author">
- <div class="shop-proof-avatar">佐</div>
- <div class="shop-proof-author-info">
- <div class="shop-proof-name">佐藤 様 / 福岡 / 4人家族</div>
- <div class="shop-proof-product">スターター定期便</div>
- </div>
- </div>
- </div>
- <div class="shop-proof-card">
- <div class="shop-proof-stars">★★★★★</div>
- <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなく「毎日の安心」が冷凍庫にある感覚です。</p>
- <div class="shop-proof-author">
- <div class="shop-proof-avatar">山</div>
- <div class="shop-proof-author-info">
- <div class="shop-proof-name">山田 様 / 大阪 / 共働き</div>
- <div class="shop-proof-product">レギュラー定期便</div>
- </div>
- </div>
- </div>
- </div>
- </div>
-</section>
-
-<!-- ========= 冷凍庫イメージバンド（テキスト上 / 写真下、オーバーレイなし） ========= -->
-<section class="freezer-band">
- <div class="container freezer-band-inner">
- <div class="freezer-band-text reveal">
- <span class="freezer-band-eyebrow">FROZEN STOCK</span>
- <h2 class="freezer-band-title">冷凍庫に、<strong>江田畜産</strong>がある安心。</h2>
- <p class="freezer-band-lead">
- 抗生物質・ホルモン剤 不使用のお肉を、小分けで冷凍ストック。<br/>
- 必要な分だけ解凍して、毎日のごはんに使えます。
- </p>
- <div class="freezer-band-grid">
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>平日の夕食が楽になる</div>
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>スーパーで迷う時間ゼロ</div>
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>急な来客にも対応</div>
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>子どもの食事にも安心</div>
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>賞味期限 6ヶ月で日持ち</div>
- <div class="freezer-band-bullet"><span class="fb-check">✓</span>解凍は最短15分（流水）</div>
- </div>
- </div>
-
- <!-- 写真（テキストを被せず単独で見せる） -->
- <div class="freezer-band-photo reveal">
- <picture><source type="image/webp" srcset="public/images/products/drive/freezer-stocked.webp"><img src="public/images/products/drive/freezer-stocked.jpg"
- alt="江田畜産のお肉が並んだ冷凍庫"
- loading="lazy"></picture>
- <div class="freezer-band-photo-caption">EDA · FROZEN STOCK</div>
- </div>
- </div>
-</section>
-
-<!-- 新着商品セクション削除 -->
-
-<!-- ========= CATEGORY TABS ========= -->
 <section class="shop-snippet section" id="products">
  <div class="container">
 
@@ -10206,6 +10053,172 @@ body.is-member .product-card--organic .org-chk-lock {
 
 
 <!-- ========= ふるさと納税で江田和牛を ========= -->
+<section class="wagyu-guide section" id="about-wagyu">
+ <div class="container">
+ <div class="wagyu-guide-head reveal">
+ <span class="eyebrow text-gold has-dash">Why Eda</span>
+ <h2 class="wagyu-guide-title"><span class="wagyu-guide-emph">ご家族向け</span>に、選ばれる理由。</h2>
+ <p class="wagyu-guide-lead">
+ 共働きの忙しさも、無投薬肉が見つからない悩みも、ぜんぶ江田畜産が引き受けます。
+ </p>
+ </div>
+
+ <div class="wagyu-guide-grid reveal">
+
+ <article class="wagyu-guide-card">
+ <div class="wagyu-guide-card-head">
+ <span class="wagyu-guide-num-label">01</span>
+ <span class="wagyu-guide-icon" aria-hidden="true">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M13 2 L4 14 H12 L11 22 L20 10 H12 L13 2 Z"/>
+ </svg>
+ </span>
+ </div>
+ <h3 class="wagyu-guide-card-title">15分で完成、忙しい平日の味方。</h3>
+ <p class="wagyu-guide-card-text">
+ <strong>選ぶ手間が省けた</strong> ── スーパーで <strong>無投薬・ホルモン剤フリーのお肉</strong>を1つひとつ確認する手間は、想像以上の時間ロス。江田畜産なら全部クリア済み。流水で解凍するだけで、平日の夕食が15分で整います。
+ </p>
+ </article>
+
+ <article class="wagyu-guide-card">
+ <div class="wagyu-guide-card-head">
+ <span class="wagyu-guide-num-label">02</span>
+ <span class="wagyu-guide-icon" aria-hidden="true">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M3 4 L20 4 L17 14 L7 14 L5 7 H3"/>
+ <circle cx="9" cy="19" r="1.5"/>
+ <circle cx="16" cy="19" r="1.5"/>
+ </svg>
+ </span>
+ </div>
+ <h3 class="wagyu-guide-card-title">「今日は何にしよう」がなくなる。</h3>
+ <p class="wagyu-guide-card-text">
+ <strong>カット不要・調理しやすい部位だけ</strong>を厳選して、必要なグラム数で小分け真空パック。スーパーで悩む時間も、お肉を切り分ける手間もゼロ。袋から出してそのまま調理に取りかかれます。
+ </p>
+ </article>
+
+ <article class="wagyu-guide-card">
+ <div class="wagyu-guide-card-head">
+ <span class="wagyu-guide-num-label">03</span>
+ <span class="wagyu-guide-icon" aria-hidden="true">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M2 9V15H14V9H2Z"/>
+ <path d="M14 11H18L21 14V15H14"/>
+ <circle cx="6" cy="17" r="1.4" fill="currentColor"/>
+ <circle cx="17" cy="17" r="1.4" fill="currentColor"/>
+ </svg>
+ </span>
+ </div>
+ <h3 class="wagyu-guide-card-title">最短3日でクール便お届け。</h3>
+ <p class="wagyu-guide-card-text">
+ 宮崎の自社加工場から直接ご自宅へ。<strong>最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</strong> <strong>¥11,000 以上で送料無料（北海道のみ +¥500）</strong>。
+ </p>
+ </article>
+
+ <article class="wagyu-guide-card">
+ <div class="wagyu-guide-card-head">
+ <span class="wagyu-guide-num-label">04</span>
+ <span class="wagyu-guide-icon" aria-hidden="true">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M12 2v4"/>
+ <path d="M6 8 L18 8 L17 20 L7 20 L6 8 Z"/>
+ <path d="M9 12 L9 18 M15 12 L15 18"/>
+ </svg>
+ </span>
+ </div>
+ <h3 class="wagyu-guide-card-title">冷凍で半年、ストックの安心。</h3>
+ <p class="wagyu-guide-card-text">
+ 真空パック冷凍で<strong>賞味期限 約6ヶ月</strong>。冷凍庫の常備品として、必要な分だけ取り出せるから「今夜何作ろう」が解決。<strong>食品ロスゼロ</strong>、まとめ買いで送料も無料に。
+ </p>
+ </article>
+
+ </div>
+ </div>
+</section>
+
+<!-- 「はじめての方へ」セクションは削除 -->
+
+<!-- ========= SOCIAL PROOF ========= -->
+<section class="shop-proof" id="reviews">
+ <div class="container">
+ <div class="shop-proof-head reveal">
+ <span class="eyebrow text-gold has-dash">Voice</span>
+ <h2 style="font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); color: white; margin: 12px 0 0;">
+ お客様の声。
+ </h2>
+ <p class="shop-proof-viewers"></p>
+ </div>
+ <div class="shop-proof-grid reveal">
+ <div class="shop-proof-card">
+ <div class="shop-proof-stars">★★★★★</div>
+ <p class="shop-proof-text">冷凍庫に常備するようになって、平日の夕食が十分なに楽に。小分けパックだから必要な分だけ解凍できて、スーパーで迷う時間ゼロ。本当に頼りになります。</p>
+ <div class="shop-proof-author">
+ <div class="shop-proof-avatar">田</div>
+ <div class="shop-proof-author-info">
+ <div class="shop-proof-name">田中 様 / 東京都 / 共働き</div>
+ <div class="shop-proof-product">スターター定期便</div>
+ </div>
+ </div>
+ </div>
+ <div class="shop-proof-card">
+ <div class="shop-proof-stars">★★★★★</div>
+ <p class="shop-proof-text">脂が重すぎなくて、子どもが本当によく食べてくれます。スーパーと比べてなぜ安心できるかが明確。家族用に毎月続けてます。</p>
+ <div class="shop-proof-author">
+ <div class="shop-proof-avatar">佐</div>
+ <div class="shop-proof-author-info">
+ <div class="shop-proof-name">佐藤 様 / 福岡 / 4人家族</div>
+ <div class="shop-proof-product">スターター定期便</div>
+ </div>
+ </div>
+ </div>
+ <div class="shop-proof-card">
+ <div class="shop-proof-stars">★★★★★</div>
+ <p class="shop-proof-text">焼肉・カレー・牛丼・炒め物まで毎日使えるのが嬉しい。「特別な日のお肉」じゃなく「毎日の安心」が冷凍庫にある感覚です。</p>
+ <div class="shop-proof-author">
+ <div class="shop-proof-avatar">山</div>
+ <div class="shop-proof-author-info">
+ <div class="shop-proof-name">山田 様 / 大阪 / 共働き</div>
+ <div class="shop-proof-product">レギュラー定期便</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ========= 冷凍庫イメージバンド（テキスト上 / 写真下、オーバーレイなし） ========= -->
+<section class="freezer-band">
+ <div class="container freezer-band-inner">
+ <div class="freezer-band-text reveal">
+ <span class="freezer-band-eyebrow">FROZEN STOCK</span>
+ <h2 class="freezer-band-title">冷凍庫に、<strong>江田畜産</strong>がある安心。</h2>
+ <p class="freezer-band-lead">
+ 抗生物質・ホルモン剤 不使用のお肉を、小分けで冷凍ストック。<br/>
+ 必要な分だけ解凍して、毎日のごはんに使えます。
+ </p>
+ <div class="freezer-band-grid">
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>平日の夕食が楽になる</div>
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>スーパーで迷う時間ゼロ</div>
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>急な来客にも対応</div>
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>子どもの食事にも安心</div>
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>賞味期限 6ヶ月で日持ち</div>
+ <div class="freezer-band-bullet"><span class="fb-check">✓</span>解凍は最短15分（流水）</div>
+ </div>
+ </div>
+
+ <!-- 写真（テキストを被せず単独で見せる） -->
+ <div class="freezer-band-photo reveal">
+ <picture><source type="image/webp" srcset="public/images/products/drive/freezer-stocked.webp"><img src="public/images/products/drive/freezer-stocked.jpg"
+ alt="江田畜産のお肉が並んだ冷凍庫"
+ loading="lazy"></picture>
+ <div class="freezer-band-photo-caption">EDA · FROZEN STOCK</div>
+ </div>
+ </div>
+</section>
+
+<!-- 新着商品セクション削除 -->
+
+<!-- ========= CATEGORY TABS ========= -->
 <section class="shop-furusato section" id="furusato" style="background: linear-gradient(180deg, #FFFAF0 0%, #FFF5E6 100%); padding: clamp(56px, 9vw, 96px) 0; border-top: 1px solid #F0E5D0;">
  <div class="container" style="max-width: 920px; text-align: center;">
   <span class="eyebrow text-gold has-dash" style="display: inline-block;">— Furusato Nozei —</span>
@@ -10762,7 +10775,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .organic-tease-badge-jas svg { width: 48px; height: 48px; }
  .organic-tease-badge-jas-text { font-size: 14px; }
  .organic-tease-visual-label { font-size: 11px; }
- .organic-tease-eyebrow { font-size: 10px; letter-spacing: 0.22em; padding: 4px 10px; }
+ .organic-tease-eyebrow { font-size: 12px; letter-spacing: 0.22em; padding: 4px 10px; }
  .organic-tease-title { font-size: 22px; }
  .organic-tease-lead { font-size: 12.5px; line-height: 1.8; }
  .organic-tease-points { align-items: flex-start; max-width: 280px; margin-left: auto; margin-right: auto; }
@@ -11498,7 +11511,7 @@ body.has-sticky-cart .floating-phone-btn {
  letter-spacing: 0.02em;
 }
 .floating-phone-text small {
- font-size: 10px;
+ font-size: 12px;
  color: rgba(255,255,255,0.7);
  margin-top: 2px;
  letter-spacing: 0.02em;
@@ -11563,11 +11576,11 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
   margin: 8px 0 0 !important;
   padding: 8px 10px !important;
   flex-direction: row !important;
-  font-size: 10.5px !important;
+  font-size: 12px !important;
   background: linear-gradient(180deg, rgba(212,169,59,0.04), rgba(212,169,59,0.10)) !important;
 }
 .organic-wagyu-lock-title { font-size: 11px !important; }
-.organic-wagyu-lock-desc { font-size: 10px !important; }
+.organic-wagyu-lock-desc { font-size: 12px !important; }
 
 /* ============================================================
    🛒 2026-05-27: シンプル数量セレクト + モバイル商品カードコンパクト化
@@ -11604,13 +11617,13 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  .product-card .product-stat-item.wide,
  .product-card .product-stat-item:nth-child(n+3) { display: none !important; }
  .product-card .product-stat-item {
-   font-size: 10.5px !important;
+   font-size: 12px !important;
    padding: 3px 5px !important;
  }
  .product-card .product-stat-item strong { font-size: 11.5px !important; }
  .product-card .product-name { font-size: 13.5px !important; margin: 4px 0 2px !important; line-height: 1.35 !important; }
  .product-card .product-tag-row { gap: 6px !important; margin-bottom: 2px !important; }
- .product-card .product-tag { font-size: 9.5px !important; padding: 2px 6px !important; }
+ .product-card .product-tag { font-size: 12px !important; padding: 2px 6px !important; }
  .product-card .product-price { font-size: 13px !important; font-weight: 700 !important; }
  .product-card-img { height: 130px !important; min-height: 130px !important; }
  .variant-select,
@@ -11638,7 +11651,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  <div class="sticky-cart-info">
  <span class="sticky-cart-count" id="stickyCartCount">0 items</span>
  <span class="sticky-cart-total" id="stickyCartTotal">¥0</span>
- <span id="stickyShipNote" style="font-size:10px;color:#fff;opacity:0.85;display:block;margin-top:2px;"></span>
+ <span id="stickyShipNote" style="font-size: 12px;color:#fff;opacity:0.85;display:block;margin-top:2px;"></span>
  </div>
  <button class="sticky-cart-btn" id="stickyCartBtn">カートを見る</button>
 </div>
@@ -13711,7 +13724,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 .coupon-pop.minimized .coupon-pop-head { margin: 0; }
 .coupon-pop-eyebrow {
  font-family: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
- font-size: 10px;
+ font-size: 12px;
  letter-spacing: 0.12em;
  color: #D4A93B;
  display: flex;

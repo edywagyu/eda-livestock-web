@@ -184,3 +184,10 @@ label:not(.checkout-consent):not(.payment-option) {
   white-space: nowrap;
   border: 0;
 }
+
+/* 2026-07-03 UI改善: モバイルのタップターゲット底上げ */
+@media (max-width: 600px) {
+  .nav-icon { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  .nav-subscribe-cta { min-height: 40px; display: inline-flex; align-items: center; }
+  .footer a, .site-footer a { padding-top: 6px; padding-bottom: 6px; display: inline-block; }
+}

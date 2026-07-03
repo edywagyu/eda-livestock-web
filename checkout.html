@@ -359,7 +359,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .order-section-badge {
  background: linear-gradient(135deg, #FFE594, var(--color-gold));
  color: var(--color-forest-deep);
- font-size: 10.5px;
+ font-size: 12px;
  font-weight: 700;
  letter-spacing: 0.02em;
  padding: 4px 10px;
@@ -388,7 +388,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  width: 64px; height: 64px;
  border-radius: 8px;
  background-color: var(--color-bone);
- background-size: cover;
+ /* 商品写真は黒背景の切り抜き素材のため、ズームして黒フチをクロップ (2026-07-03) */
+ background-size: 200%;
  background-position: center;
 }
 .order-item-info strong {
@@ -409,7 +410,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  gap: 4px;
  background: var(--color-paper);
  border: 1px solid var(--color-bone);
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  padding: 2px 8px;
  border-radius: 10px;
@@ -431,7 +432,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .order-item-price small {
  display: block;
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  font-family: var(--font-jp);
  font-weight: 600;
@@ -727,7 +728,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 /* 父の日（季節用途）を目立たせる + 全幅 */
 .gift-noshi-option--fd { grid-column: 1 / -1; border-color: var(--color-gold); background: linear-gradient(90deg, rgba(212,169,59,0.12), rgba(212,169,59,0.03)); }
 .gift-noshi-option--fd.selected { border-color: var(--color-gold); background: rgba(212,169,59,0.18); }
-.gift-noshi-fd-tag { margin-left: auto; font-size: 10px; font-weight: 700; color: #fff; background: var(--color-gold); padding: 2px 8px; border-radius: 10px; letter-spacing: 0.04em; }
+.gift-noshi-fd-tag { margin-left: auto; font-size: 12px; font-weight: 700; color: #fff; background: var(--color-gold); padding: 2px 8px; border-radius: 10px; letter-spacing: 0.04em; }
 .gift-noshi-option--wide { grid-column: 1 / -1; }
 
 /* ============ PAYMENT METHOD ============ */
@@ -1062,7 +1063,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  justify-content: center;
  flex-wrap: wrap;
  margin-top: 12px;
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
 }
 .summary-trust-item { display: inline-flex; align-items: center; gap: 4px; }
@@ -1111,7 +1112,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  font-variant-numeric: tabular-nums;
 }
 .contact-phone-hours {
- font-size: 10.5px;
+ font-size: 12px;
  color: var(--color-ink-muted);
  margin-top: 3px;
  letter-spacing: 0.02em;
@@ -1232,8 +1233,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  scrollbar-width: none;
  }
  .checkout-stepper::-webkit-scrollbar { display: none; }
- .stepper-step { font-size: 10px; gap: 6px; padding: 0 4px; flex: 0 0 auto; }
- .stepper-num { width: 20px; height: 20px; font-size: 10.5px; }
+ .stepper-step { font-size: 12px; gap: 6px; padding: 0 4px; flex: 0 0 auto; }
+ .stepper-num { width: 20px; height: 20px; font-size: 12px; }
  .stepper-step:not(:last-child)::after { width: 6px; right: -2px; }
  .stepper-step-label { display: none; }
  .stepper-step.active .stepper-step-label { display: inline; }
@@ -1245,7 +1246,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .order-item { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 10px 0; }
  .order-item-img { width: 48px; height: 48px; }
  .order-item-info strong { font-size: 12.5px; }
- .order-item-info span { font-size: 10.5px; }
+ .order-item-info span { font-size: 12px; }
  .order-item-price { font-size: 14px; }
  .gift-noshi-row { grid-template-columns: 1fr; }
  .order-card .order-item { padding: 12px 14px 6px; }
@@ -2366,12 +2367,12 @@ function renderSummary() {
  }
  rowsHtml += `
  <div class="summary-row">
- <span>商品小計<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
+ <span>商品小計<small style="font-size: 12px;color:var(--color-ink-muted);margin-left:4px;">(軽減税率8%)</small></span>
  <strong>¥${subTotal.toLocaleString()}</strong>
  </div>
  ${discount > 0 ? `<div class="summary-row discount"><span>クーポン (${appliedCoupon.code})</span><strong>−¥${discount.toLocaleString()}</strong></div>` : ''}
  <div class="summary-row shipping">
- <span>配送料 (自宅)<small style="font-size:10px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
+ <span>配送料 (自宅)<small style="font-size: 12px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
  <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
  </div>
  `;
@@ -2385,12 +2386,12 @@ function renderSummary() {
  <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${taxTotal.toLocaleString()}</strong>
  </div>
  <div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
- <span style="font-size:10px;">　└ 8%対象（食品）</span>
+ <span style="font-size: 12px;">　└ 8%対象（食品）</span>
  <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax8.toLocaleString()}</strong>
  </div>`;
  if (tax10 > 0) {
  rowsHtml += `<div class="summary-row tax-breakdown" style="font-size:11px;color:var(--color-ink-muted);padding-left:12px;">
- <span style="font-size:10px;">　└ 10%対象（送料）</span>
+ <span style="font-size: 12px;">　└ 10%対象（送料）</span>
  <strong style="color:var(--color-ink-muted);font-size:11px;font-weight:500;">¥${tax10.toLocaleString()}</strong>
  </div>`;
  }
