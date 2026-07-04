@@ -179,6 +179,8 @@ function doGet(e) {
       case 'diag_update_webhook': return diagUpdateWebhook(e.parameter);
       case 'diag_find_session':  return diagFindSession(e.parameter);
       case 'diag_dedupe_orders': return diagDedupeOrders(e.parameter);
+      case 'diag_bank_reminders': return jsonResponse(remindPendingBankTransfers(true));   /* ドライラン: 候補一覧のみ・送信なし */
+      case 'setup_bank_reminder': return jsonResponse(setupBankReminderTrigger());          /* 日次10時トリガー設置(冪等) */
       /* ===== STAFF ===== */
       case 'staff_login':       return staffLogin(e.parameter);
       case 'staff_dashboard':   return staffDashboard();
@@ -299,7 +301,7 @@ function ping() {
   return jsonResponse({
     ok: true,
     version: '2026.06.13-sub-renewal',
-    versionNote: 'v36: 顧客向けメールをブランドHTML化(緑#0F3D2E×金#D4A93B×クリーム/写真=LINE Flexと同素材hero-0・ship-truck/送信者表示名=江田畜産｜EDA WAGYU)＋文字化け根治(plain単独だと一部経路でISO-2022-JP変換され罫線━や絵文字が化ける→htmlBody UTF-8を必ず併送・plain fallbackはJIS外文字を排除)。対象=注文確認/発送通知/振込案内(OTPは送信者名のみ)。定期便を出荷フローへ包含=b2Rows_がitems空の定期便注文にも品名「定期便ボックス(プラン)」でラベル行を生成(電話はtel→phone→注文者電話フォールバック=定期便destはphoneキー)＋alertUnshippedOrdersも定期便(宛先あり)を監視対象に(2026-06-11松本様の初回ボックスが発送リスト/B2/未発送アラート全てから構造的に漏れていた穴の修正)。getSheetをCode.gsに定義(survey_responses「getSheet is not defined」クラッシュ5件の恒久修正)。v35: ありがとうページ(order-complete.html→?action=order_status)でfinalizeOrderを実行＝Stripe webhookのGAS /exec 302失敗に依存せず新規注文・定期便初月を確実に確定。finalizeOrderはsession_id冪等(ScriptLock+既存チェック)でwebhook復活時も二重記録なし。webhook受信コード(handleStripeWebhook/processWebhookQueue)は保険で残置。v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
+    versionNote: 'v38: 振込未入金リマインド(2026-07-04 Tom承認)。ordersの payment_method=bank & payment_status=awaiting_payment を日次10時に走査(bankReminderDaily trigger)、注文3〜14日窓・1回のみ(bank_reminder_at列で冪等)・社内/テスト除外で、LINE連携済はLINE(リマインド文+振込先Flex再送)・無ければブランドHTMLメール(sendBankReminderEmail)。?action=diag_bank_reminders=ドライラン / setup_bank_reminder=トリガー設置(冪等)。背景=ファネル実測で銀行振込の未入金離脱を検出。v37: 未発送アラート(alertUnshippedOrders)から定期便を除外(mode=subscriptionで始まる注文＝初回subscription_first/継続subscription_renewal を一律スキップ)。毎月1日発送の確定運用の定期便が「2日以上未発送」で毎朝アラートされ続けるノイズを停止(2026-06-11松本様の初回ボックスで6/13〜毎日backofficeへ誤通知)。単品(通常注文)の発送漏れアラートは従来どおり継続。2026-06-17 Tom指示。v36: 顧客向けメールをブランドHTML化(緑#0F3D2E×金#D4A93B×クリーム/写真=LINE Flexと同素材hero-0・ship-truck/送信者表示名=江田畜産｜EDA WAGYU)＋文字化け根治(plain単独だと一部経路でISO-2022-JP変換され罫線━や絵文字が化ける→htmlBody UTF-8を必ず併送・plain fallbackはJIS外文字を排除)。対象=注文確認/発送通知/振込案内(OTPは送信者名のみ)。定期便を出荷フローへ包含=b2Rows_がitems空の定期便注文にも品名「定期便ボックス(プラン)」でラベル行を生成(電話はtel→phone→注文者電話フォールバック=定期便destはphoneキー)＋alertUnshippedOrdersも定期便(宛先あり)を監視対象に(2026-06-11松本様の初回ボックスが発送リスト/B2/未発送アラート全てから構造的に漏れていた穴の修正)。getSheetをCode.gsに定義(survey_responses「getSheet is not defined」クラッシュ5件の恒久修正)。v35: ありがとうページ(order-complete.html→?action=order_status)でfinalizeOrderを実行＝Stripe webhookのGAS /exec 302失敗に依存せず新規注文・定期便初月を確実に確定。finalizeOrderはsession_id冪等(ScriptLock+既存チェック)でwebhook復活時も二重記録なし。webhook受信コード(handleStripeWebhook/processWebhookQueue)は保険で残置。v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -704,6 +706,114 @@ function sendStaffBankPendingEmail(orderNum, totalYen, cust) {
         '※ 入金確認するまで発送（伝票発行）はできません。'
     });
   } catch (e) { log('staff_bank_email_error', { order: orderNum, error: e.message }); }
+}
+
+/* ============================================================
+   💰 振込未入金リマインド（v38 / 2026-07-04 Tom承認）
+   ・対象: orders の payment_method=bank & payment_status=awaiting_payment
+   ・注文から 3〜14日 の窓のみ / 1回だけ（bank_reminder_at 列で冪等）
+   ・社内(@eda-livestock.com)・テストは除外
+   ・LINE連携済みは LINE（リマインド文＋振込先Flex再送）、無ければメール
+   ・?action=diag_bank_reminders でドライラン / setup_bank_reminder でトリガー設置
+   ============================================================ */
+const BANK_REMINDER_AFTER_DAYS = 3;
+const BANK_REMINDER_MAX_DAYS = 14;
+
+function remindPendingBankTransfers(dryRun) {
+  dryRun = dryRun === true;   /* trigger のイベントオブジェクト等が渡っても誤ドライラン化しない */
+  var sh = sheet('orders');
+  var data = sh.getDataRange().getValues();
+  if (data.length < 2) return { ok: true, candidates: [], sent: 0, dryRun: dryRun };
+  var headers = data[0];
+  var idx = function (n) { return headers.indexOf(n); };
+  var remIdx = idx('bank_reminder_at');
+  if (remIdx === -1 && !dryRun) {
+    sh.getRange(1, headers.length + 1).setValue('bank_reminder_at');
+    headers.push('bank_reminder_at');
+    remIdx = headers.length - 1;
+  }
+  var now = new Date();
+  var out = [], sent = 0;
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (String(row[idx('payment_method')] || '') !== 'bank') continue;
+    if (String(row[idx('payment_status')] || '').toLowerCase() !== 'awaiting_payment') continue;
+    var em = String(row[idx('customer_email')] || '').toLowerCase().trim();
+    if (em.indexOf('@eda-livestock.com') >= 0 || em.indexOf('test@') === 0) continue;
+    if (remIdx >= 0 && row[remIdx]) continue;                       /* リマインド済み */
+    var placed = row[idx('placed_at')] ? new Date(row[idx('placed_at')]) : null;
+    var days = placed ? Math.floor((now - placed) / 86400000) : -1;
+    if (days < BANK_REMINDER_AFTER_DAYS || days > BANK_REMINDER_MAX_DAYS) continue;
+    var on = row[idx('order_number')], name = row[idx('customer_name')] || '';
+    var total = Number(row[idx('total')]) || 0;
+    var cand = { order: on, days: days, total: total, via: '' };
+    out.push(cand);
+    if (dryRun) continue;
+    var ok = false;
+    var uid = String(row[idx('line_uid')] || '').trim() || lineUidForEmail(em);
+    if (uid) {
+      try {
+        ok = sendLinePush(uid, [
+          { type: 'text', text: (name ? name + '様\n' : '') + 'ご注文（' + on + '）のお振込がまだ確認できておりません。お手続きがお済みの場合は行き違いですのでご容赦ください。\nお振込先を改めてお送りいたします🙇' },
+          buildBankTransferMessage(name, on, total)
+        ]);
+        if (ok) cand.via = 'line';
+      } catch (e) { log('bank_reminder_line_error', { order: on, error: e.message }); }
+    }
+    if (!ok && em) {
+      try { sendBankReminderEmail(em, name, on, total); ok = true; cand.via = 'email'; }
+      catch (e) { log('bank_reminder_email_error', { order: on, error: e.message }); }
+    }
+    if (ok) {
+      sh.getRange(i + 1, remIdx + 1).setValue(new Date());
+      sent++;
+    }
+  }
+  log('bank_reminder', { candidates: out.length, sent: sent, dryRun: dryRun });
+  return { ok: true, candidates: out, sent: sent, dryRun: dryRun };
+}
+
+/* 顧客向け 振込リマインドメール（brandEmailHtml_ 準拠・htmlBody必須） */
+function sendBankReminderEmail(email, customerName, orderNum, totalYen) {
+  if (!email) return;
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var amount = '¥' + Number(totalYen || 0).toLocaleString();
+  MailApp.sendEmail({
+    to: email,
+    name: BRAND_MAIL.sender,
+    subject: '【江田畜産】お振込のご確認（' + orderNum + '）',
+    body:
+      greeting + '\n\n' +
+      '先日はご注文いただき誠にありがとうございます。\n' +
+      'ご注文のお振込がまだ確認できておりません。行き違いの場合はご容赦ください。\n\n' +
+      'ご注文番号: ' + orderNum + '\n' +
+      'お振込金額: ' + amount + '\n\n' +
+      '【お振込先】\n' + bankAccountText() + '\n\n' +
+      '※ ご入金の確認後、発送のご連絡（追跡番号）をお送りいたします。\n' +
+      '※ ご不明点はこのメールへの返信にてお気軽にご連絡ください。\n\n' +
+      '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
+      'https://www.eda-livestock.com/',
+    htmlBody: brandEmailHtml_({
+      heroUrl: BRAND_MAIL.heroOrder,
+      title: 'お振込のご確認',
+      intro: greeting + '、先日はご注文いただき誠にありがとうございます。<br>ご注文のお振込がまだ確認できておりません。行き違いの場合はご容赦ください。',
+      rows: [['ご注文番号', orderNum], ['お振込金額', amount]],
+      boxText: '<span style="font-weight:bold;color:#0F3D2E;">お振込先</span><br>' + String(bankAccountText()).replace(/\n/g, '<br>'),
+      note: '※ ご入金の確認後、発送のご連絡（追跡番号）をお送りいたします。<br>※ ご不明点はこのメールへの返信にてお気軽にご連絡ください。'
+    })
+  });
+}
+
+/* 日次トリガーの実体（trigger はイベントObjを渡すため wrapper で dryRun 混入を防ぐ） */
+function bankReminderDaily() {
+  return remindPendingBankTransfers(false);
+}
+
+/* トリガー設置（冪等・1回だけ ?action=setup_bank_reminder で実行） */
+function setupBankReminderTrigger() {
+  var has = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'bankReminderDaily'; });
+  if (!has) ScriptApp.newTrigger('bankReminderDaily').timeBased().everyDays(1).atHour(10).create();
+  return { ok: true, created: !has };
 }
 
 /* ============================================================
@@ -1567,12 +1677,13 @@ function alertUnshippedOrders() {
       var pd = placed ? new Date(placed) : null;
       var days = pd ? Math.floor((now - pd) / 86400000) : 0;
       if (pd && days < UNSHIPPED_ALERT_DAYS) continue;                // 猶予内はまだOK
+      // 🔴 定期便はアラート対象外（毎月1日発送の確定運用＝「2日以上未発送」で毎日鳴るのはノイズ。
+      //   定期便の発送管理は「🔁定期便リスト」タブ/Stripe で別管理。2026-06-17 Tom指示）。
+      //   単品（通常注文）の発送漏れアラートは従来どおり継続。継続課金分も mode=subscription_renewal で除外される。
+      if (String(get(row, 'mode') || '').indexOf('subscription') === 0) continue;
       // 出荷物のある注文のみ（配送対象明細なしは対象外・誤検知防止）。
-      // 🔴 定期便は items 空でもボックス出荷がある＝宛先(住所)が1件でもあれば監視対象
-      //   （b2Rows_ と同基準。初回ボックス発送漏れ対策 2026-06-12）。
-      var isSubAl = String(get(row, 'mode') || '').indexOf('subscription') === 0;
       var ds; try { ds = JSON.parse(get(row, 'destinations_json') || '[]'); } catch (e) { ds = []; }
-      var hasShippable = ds.some(function (a) { return Array.isArray(a.items) && a.items.length > 0; }) || (isSubAl && ds.length > 0);
+      var hasShippable = ds.some(function (a) { return Array.isArray(a.items) && a.items.length > 0; });
       if (!hasShippable) continue;
       stale.push({ on: get(row, 'order_number'), name: get(row, 'customer_name'), days: days, items: get(row, 'items_json'), total: get(row, 'total') });
     }
