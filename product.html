@@ -763,7 +763,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   if (images.length > 1) {
     thumbs.innerHTML = images.map((src, i) => `
       <button class="pdp-thumb ${i === 0 ? 'active' : ''}" onclick="selectThumb(this, '${bustImg(src)}')">
-        <img src="${bustImg(src)}" alt="${product.name} ${i+1}">
+        <img loading="lazy" decoding="async" src="${bustImg(src)}" alt="${product.name} ${i+1}">
       </button>
     `).join('');
   }

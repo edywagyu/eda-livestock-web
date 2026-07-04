@@ -5277,7 +5277,7 @@ section.featured {
  items.forEach((item, idx) => {
  subtotal += item.price * item.qty;
  html += `<div class="cart-item" data-idx="${idx}">
- <div class="cart-item-img"><img src="${item.img}" alt=""/></div>
+ <div class="cart-item-img"><img loading="lazy" decoding="async" src="${item.img}" alt=""/></div>
  <div class="cart-item-info">
  <div class="cart-item-title">${item.title}</div>
  <div class="cart-item-variant">${item.variant}</div>

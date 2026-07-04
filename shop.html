@@ -11930,7 +11930,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  if (item.baseUnit != null) item.price = tieredUnit(item.baseUnit, item.tiers, item.qty);
  subtotal += item.price * item.qty;
  html += `<div class="cart-item" data-idx="${idx}">
- <div class="cart-item-img"><img src="${item.img}" alt=""/></div>
+ <div class="cart-item-img"><img loading="lazy" decoding="async" src="${item.img}" alt=""/></div>
  <div class="cart-item-info">
  <div class="cart-item-title">${item.title}</div>
  <div class="cart-item-variant">${item.variant}</div>
@@ -12376,7 +12376,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  var thumbs = document.getElementById('dynGalleryThumbs');
  img.src = galleryImages[galleryIndex];
  thumbs.innerHTML = galleryImages.map(function(url, i) {
- return '<img src="' + escAttr(url) + '" class="' + (i === galleryIndex ? 'active' : '') + '" onclick="dynGalleryGoto(' + i + ')" alt="">';
+ return '<img loading="lazy" decoding="async" src="' + escAttr(url) + '" class="' + (i === galleryIndex ? 'active' : '') + '" onclick="dynGalleryGoto(' + i + ')" alt="">';
  }).join('');
  var prev = document.querySelector('.dyn-gallery-nav.prev');
  var next = document.querySelector('.dyn-gallery-nav.next');
