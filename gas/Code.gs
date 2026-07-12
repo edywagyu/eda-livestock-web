@@ -143,7 +143,7 @@ var STAFF_PROTECTED = {
   orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
   staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
-  staff_ship: 1, staff_confirm_payment: 1,
+  staff_ship: 1, staff_confirm_payment: 1, staff_line_blast: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1
 };
@@ -274,6 +274,7 @@ function doPost(e) {
       case 'staff_subscription_delete':    return staffSubscriptionDelete(body);
       case 'staff_ship':                   return staffShip(body);
       case 'staff_confirm_payment':        return staffConfirmPayment(body);
+      case 'staff_line_blast':             return staffLineBlast(body);
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
       case 'log_event':                    return logEvent(body);
@@ -3535,6 +3536,101 @@ function sendLinePush(lineUid, messages) {
     return false;
   } catch (e) {
     log('line_push_error', { line_uid: lineUid, error: e.message });
+    return false;
+  }
+}
+
+/* ============================================================
+   POST: staff_line_blast — スタッフによる LINE 一斉配信
+   ------------------------------------------------------------
+   body: { segment, message, confirm }
+   - confirm !== true : プレビュー（対象人数を返すだけ・送信しない）＝誤爆防止
+   - confirm === true : multicast で 500 件ずつ送信・_logs に記録
+   セグメント分類は customersOverview と一致（vip/repeater/new/dormant/all）。
+   対象 line_uid は customers シートからサーバ側で再抽出（クライアントの値は信用しない）。
+   ⚠️ UID 連携済み顧客のみ届く。全友だち向け broadcast は別途（未実装）。
+   ============================================================ */
+function staffLineBlast(body) {
+  body = body || {};
+  var segment = String(body.segment || 'all');
+  var message = String(body.message || '').trim();
+  var confirm = body.confirm === true;
+
+  if (!message) return jsonResponse({ ok:false, error: 'メッセージが空です' });
+  if (message.length > 4900) return jsonResponse({ ok:false, error: 'メッセージが長すぎます（5000字以内）' });
+
+  var uids = lineBlastTargets_(segment);
+  var count = uids.length;
+
+  // プレビュー（送信前の対象数確認）
+  if (!confirm) {
+    return jsonResponse({ ok:true, preview:true, segment:segment, count:count });
+  }
+
+  if (count === 0) return jsonResponse({ ok:false, error: '対象（LINE連携済）が0名です' });
+
+  var messages = [{ type:'text', text: message }];
+  var BATCH = 500;               // LINE multicast は 1 回 500 件上限
+  var sent = 0, failed = 0, batches = 0;
+  for (var i = 0; i < uids.length; i += BATCH) {
+    var chunk = uids.slice(i, i + BATCH);
+    batches++;
+    if (sendLineMulticast_(chunk, messages)) sent += chunk.length;
+    else failed += chunk.length;
+  }
+
+  log('staff_line_blast', { segment:segment, target:count, message:message.slice(0,200) },
+      { sent:sent, failed:failed, batches:batches });
+
+  return jsonResponse({ ok:true, sent:sent, failed:failed, batches:batches, target:count });
+}
+
+/* 指定セグメントの line_uid 一覧を customers シートから再抽出（サーバ側が真実源）。
+   分類は customersOverview と一致: vip=総額3万+ / dormant=90日超 / repeater=2回+ / new=その他 / all=全員。
+   line_uid 保有行のみ返す。未対応セグメント（subscriber/high-income）は空配列。 */
+function lineBlastTargets_(segment) {
+  var sh = sheet('customers');
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return [];
+  var h = rows[0];
+  var idx = function(name, fb){ var k = h.indexOf(name); return k >= 0 ? k : fb; };
+  var iLast = idx('last_order', 5), iSpent = idx('total_spent', 6),
+      iCnt = idx('order_count', 7), iUid = idx('line_uid', 8);
+  var now = Date.now();
+  var seen = {}, out = [];
+  for (var r = 1; r < rows.length; r++) {
+    var row = rows[r];
+    var uid = row[iUid];
+    if (!uid || seen[uid]) continue;          // 連携済みのみ・重複除外
+    seen[uid] = 1;
+    var spent = Number(row[iSpent]) || 0;
+    var cnt = Number(row[iCnt]) || 0;
+    var last = row[iLast];
+    var days = last ? Math.floor((now - new Date(last).getTime()) / 86400000) : 999;
+    var seg = spent >= 30000 ? 'vip' : (days > 90 ? 'dormant' : (cnt >= 2 ? 'repeater' : 'new'));
+    if (segment === 'all' || segment === seg) out.push(String(uid));
+  }
+  return out;
+}
+
+/* LINE Messaging API — Multicast（最大500件/回）。sendLinePush の複数宛版。 */
+function sendLineMulticast_(uids, messages) {
+  var token = cfg('LINE_CHANNEL_TOKEN');
+  if (!token || !uids || !uids.length) return false;
+  try {
+    var res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/multicast', {
+      method: 'post',
+      contentType: 'application/json',
+      headers: { 'Authorization': 'Bearer ' + token },
+      payload: JSON.stringify({ to: uids, messages: messages }),
+      muteHttpExceptions: true
+    });
+    var code = res.getResponseCode();
+    if (code >= 200 && code < 300) return true;
+    log('line_multicast_failed', { count: uids.length, code: code, body: res.getContentText().slice(0,500) });
+    return false;
+  } catch (e) {
+    log('line_multicast_error', { count: uids.length, error: e.message });
     return false;
   }
 }

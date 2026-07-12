@@ -3164,19 +3164,52 @@ function updateBlastCount() {
   document.getElementById('blastCount').innerHTML = html;
 }
 
-function sendLineBlast() {
+let lineBlastBusy = false;
+async function sendLineBlast() {
+  if (lineBlastBusy) return;
   const msg = document.getElementById('blastMessage').value.trim();
   if (!msg) { toast('メッセージを入力してください', 'error'); return; }
   const { linked, segment } = getBlastTargets();
   if (linked.length === 0) { toast('対象セグメントにLINE連携済の顧客がいません', 'error'); return; }
-  if (!confirm(segment + ' のLINE連携済 ' + linked.length + '名 に配信します。実行しますか？')) return;
+
+  // デモモードは従来どおり「送ったフリ」
   if (isDemoMode()) {
+    if (!confirm(segment + ' のLINE連携済 ' + linked.length + '名 に配信します。実行しますか？')) return;
     toast('🎭 デモ: ' + linked.length + '名へ配信したフリ', 'success');
     document.getElementById('blastMessage').value = '';
-  } else {
-    // ⚠️ 本番のLINE一斉配信はバックエンド未実装（staff_line_blast 無し）。
-    //    「配信済」と誤認させないため準備中を明示。下書きは消さず残す。
-    toast('🚧 LINE一斉配信は準備中です（本番未対応）', 'error');
+    return;
+  }
+
+  try {
+    lineBlastBusy = true;
+    // ① サーバに対象人数を確認（この時点では送信しない＝誤爆防止）
+    const pv = await fetch(GAS_URL + '?action=staff_line_blast' + authQS(), {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ segment, message: msg, confirm: false })
+    }).then(r => r.json());
+    if (handleAuthError(pv)) return;
+    if (!pv.ok) { toast(pv.error || '対象確認に失敗しました', 'error'); return; }
+    if (!pv.count) { toast('対象（LINE連携済）が0名です', 'error'); return; }
+
+    // ② 最終確認（取り消せない旨を明示）
+    if (!confirm('【本番配信】' + segment + ' のLINE連携済 ' + pv.count + '名 に送信します。\n送信後は取り消せません。実行しますか？')) return;
+
+    // ③ 実送信
+    const rs = await fetch(GAS_URL + '?action=staff_line_blast' + authQS(), {
+      method: 'POST', headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ segment, message: msg, confirm: true })
+    }).then(r => r.json());
+    if (handleAuthError(rs)) return;
+    if (!rs.ok) { toast(rs.error || '配信に失敗しました', 'error'); return; }
+
+    if (rs.failed) toast('⚠️ ' + rs.sent + '名へ送信（' + rs.failed + '名は失敗）', 'error');
+    else toast('✅ ' + rs.sent + '名へLINE配信しました', 'success');
+    document.getElementById('blastMessage').value = '';
+    updateBlastCount();
+  } catch (e) {
+    toast('通信エラー: ' + (e && e.message || e), 'error');
+  } finally {
+    lineBlastBusy = false;
   }
 }
 
