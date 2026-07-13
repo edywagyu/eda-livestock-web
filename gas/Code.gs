@@ -301,7 +301,7 @@ function ping() {
   return jsonResponse({
     ok: true,
     version: '2026.06.13-sub-renewal',
-    versionNote: 'v38: 振込未入金リマインド(2026-07-04 Tom承認)。ordersの payment_method=bank & payment_status=awaiting_payment を日次10時に走査(bankReminderDaily trigger)、注文3〜14日窓・1回のみ(bank_reminder_at列で冪等)・社内/テスト除外で、LINE連携済はLINE(リマインド文+振込先Flex再送)・無ければブランドHTMLメール(sendBankReminderEmail)。?action=diag_bank_reminders=ドライラン / setup_bank_reminder=トリガー設置(冪等)。背景=ファネル実測で銀行振込の未入金離脱を検出。v37: 未発送アラート(alertUnshippedOrders)から定期便を除外(mode=subscriptionで始まる注文＝初回subscription_first/継続subscription_renewal を一律スキップ)。毎月1日発送の確定運用の定期便が「2日以上未発送」で毎朝アラートされ続けるノイズを停止(2026-06-11松本様の初回ボックスで6/13〜毎日backofficeへ誤通知)。単品(通常注文)の発送漏れアラートは従来どおり継続。2026-06-17 Tom指示。v36: 顧客向けメールをブランドHTML化(緑#0F3D2E×金#D4A93B×クリーム/写真=LINE Flexと同素材hero-0・ship-truck/送信者表示名=江田畜産｜EDA WAGYU)＋文字化け根治(plain単独だと一部経路でISO-2022-JP変換され罫線━や絵文字が化ける→htmlBody UTF-8を必ず併送・plain fallbackはJIS外文字を排除)。対象=注文確認/発送通知/振込案内(OTPは送信者名のみ)。定期便を出荷フローへ包含=b2Rows_がitems空の定期便注文にも品名「定期便ボックス(プラン)」でラベル行を生成(電話はtel→phone→注文者電話フォールバック=定期便destはphoneキー)＋alertUnshippedOrdersも定期便(宛先あり)を監視対象に(2026-06-11松本様の初回ボックスが発送リスト/B2/未発送アラート全てから構造的に漏れていた穴の修正)。getSheetをCode.gsに定義(survey_responses「getSheet is not defined」クラッシュ5件の恒久修正)。v35: ありがとうページ(order-complete.html→?action=order_status)でfinalizeOrderを実行＝Stripe webhookのGAS /exec 302失敗に依存せず新規注文・定期便初月を確実に確定。finalizeOrderはsession_id冪等(ScriptLock+既存チェック)でwebhook復活時も二重記録なし。webhook受信コード(handleStripeWebhook/processWebhookQueue)は保険で残置。v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
+    versionNote: 'v39: Stripe metadata 500字制限バグ根治(2026-07-13)。createCheckoutが destinations_json/deliveries_json/items_json を Stripe metadata に保存するのをやめ(v34のlean化でも9品種11点カートで destinations_json=551字となり決済不能＝2026-07-06実顧客3連続失敗)、完全版(delivery込みdestinations＋items)は pending_orders シートへ保存(recordPendingOrderに items_json 列を ensureCol 追加)→finalizeOrder が session_id で復元して orders保存・在庫減算・スタッフ通知・metadata_json に使用。items_json の .slice(0,480) 途中切断(壊れたJSONで在庫減算スキップ)も撤去で根治。旧セッション(metadataに実体あり)は従来経路のまま後方互換。定期便 createSubscriptionCheckout は1宛先5フィールド固定で500字リスク無し＝無変更。v38: 振込未入金リマインド(2026-07-04 Tom承認)。ordersの payment_method=bank & payment_status=awaiting_payment を日次10時に走査(bankReminderDaily trigger)、注文3〜14日窓・1回のみ(bank_reminder_at列で冪等)・社内/テスト除外で、LINE連携済はLINE(リマインド文+振込先Flex再送)・無ければブランドHTMLメール(sendBankReminderEmail)。?action=diag_bank_reminders=ドライラン / setup_bank_reminder=トリガー設置(冪等)。背景=ファネル実測で銀行振込の未入金離脱を検出。v37: 未発送アラート(alertUnshippedOrders)から定期便を除外(mode=subscriptionで始まる注文＝初回subscription_first/継続subscription_renewal を一律スキップ)。毎月1日発送の確定運用の定期便が「2日以上未発送」で毎朝アラートされ続けるノイズを停止(2026-06-11松本様の初回ボックスで6/13〜毎日backofficeへ誤通知)。単品(通常注文)の発送漏れアラートは従来どおり継続。2026-06-17 Tom指示。v36: 顧客向けメールをブランドHTML化(緑#0F3D2E×金#D4A93B×クリーム/写真=LINE Flexと同素材hero-0・ship-truck/送信者表示名=江田畜産｜EDA WAGYU)＋文字化け根治(plain単独だと一部経路でISO-2022-JP変換され罫線━や絵文字が化ける→htmlBody UTF-8を必ず併送・plain fallbackはJIS外文字を排除)。対象=注文確認/発送通知/振込案内(OTPは送信者名のみ)。定期便を出荷フローへ包含=b2Rows_がitems空の定期便注文にも品名「定期便ボックス(プラン)」でラベル行を生成(電話はtel→phone→注文者電話フォールバック=定期便destはphoneキー)＋alertUnshippedOrdersも定期便(宛先あり)を監視対象に(2026-06-11松本様の初回ボックスが発送リスト/B2/未発送アラート全てから構造的に漏れていた穴の修正)。getSheetをCode.gsに定義(survey_responses「getSheet is not defined」クラッシュ5件の恒久修正)。v35: ありがとうページ(order-complete.html→?action=order_status)でfinalizeOrderを実行＝Stripe webhookのGAS /exec 302失敗に依存せず新規注文・定期便初月を確実に確定。finalizeOrderはsession_id冪等(ScriptLock+既存チェック)でwebhook復活時も二重記録なし。webhook受信コード(handleStripeWebhook/processWebhookQueue)は保険で残置。v34: お届け日時をお届け先ごとに対応(b2Rows_=各destinationのaddr.delivery.date/timeを優先・無ければ注文共通delivery_dateへフォールバック)＋timeCodeを時間帯テキスト→ヤマトコード変換に拡充(従来は午前以外が空)。createCheckoutはStripe metadata 500字制限回避でdestinationsをdelivery抜きのlean保存+deliveries_json(compact)分離→finalizeOrderでdestinationsに再マージしてシート保存(銀行振込は直接保存のままinline)。フロント=決済ページのお届け日時を「お届け先カードごと」に再構成(定期便自宅=毎月1日固定・時間帯のみ/ギフト=日付指定可/単品自分用=定期便と一緒or先に送るを選択)＋ご注文サマリーの割引二重表示を修正(ミニ通常価格表示で内訳一致)＋index OGP og:title/twitter:titleを「江田畜産」に・og:url/imageを本番ドメインへ。v33: 全体コードレビュー修正(2026-06-08)。getOrdersByEmail を items_json パースに修正(マイページ/LINE/OTPで注文明細が常に空だったバグ)＋staffAnalytics日別トレンドのdayKeyをAsia/Tokyo基準に(0〜9時の取引が前日にズレる問題)。フロント側=レシピ/定期便アドオンの価格をカタログに統一・checkout削除ボタン修正・products-master版番号統一。v32: 社内向け「注文通知」(新規注文/振込待ち)の宛先を田崎(r.tasaki@)＋backoffice@ の両方に変更(staffNotificationRecipients・Tom 2026-06-08)。お客様への確認/振込案内メールは従来通りお客様アドレス宛・LINE連携済みなら送信しない(不変)。v31: 専用「EC発送」スプシ自動更新を追加。未発送注文を基本レイアウト28列で writeShippingSheet が専用スプシ(Script Property SHIPPING_SHEET_ID)へ30分ごと自動書出(「発送リスト」+「使い方」タブ)→スタッフはPCで開きCSVダウンロード→B2取込。setupShippingSheet を1回実行でスプシ作成+トリガー設置。b2CsvExportは共有ヘルパー b2Rows_ にリファクタ(出力不変)。v30: 発送伝票CSVをヤマト「基本レイアウト」標準フォーマット(公式 送り状発行データレイアウト No.1〜28順・28列)に刷新→スタッフは取込パターン=基本レイアウト(csv)を選ぶだけ(カスタム紐付け不要・列ズレ根絶)。固定値=送り状種類0発払い/クール区分1冷凍/出荷予定日=当日JST/敬称様/依頼主空欄=B2アカウント既定。配達時間帯はコード(0812等)のみ・個数列は廃止(1宛先=1ラベル)。v29: 発送処理(staffShip)でお届け予定日をordersに保存→マイページ「次回お届け予定」に反映(従来は通知のみで未保存=日程調整中表示のバグ修正)。v28: 発送伝票CSVをヤマトB2クラウド向けフル項目化(お客様管理番号/クール区分冷凍/お届け予定日/配達時間帯/お届け先/敬称様/品名/個数)＝住所も品名もクールも自動。依頼主はB2クラウド固定設定(お客様コード080579307081)。v27: 発送通知LINEのヒーロー画像を江田畜産オリジナルの配送トラックイラスト(public/images/line/ship-truck.png・16:9)に差し替え。v26: 未発送アラートに「出荷物あり(配送対象明細あり)」条件追加＝定期便/明細なしの誤検知を除外。v25: 入金済×N日未発送を毎朝検知しbackofficeへメール(alertUnshippedOrders/日次trigger #1主因対策)＋b2_csv各項目のカンマ/改行除去で伝票列ズレ防止(#2)。v24: 発送処理staffShipに通知ON/OFF(notify:false=記録のみ・手動連絡用)を追加。v23: 発送伝票b2_csvを未発送の実注文のみ＋社内テスト(@eda-livestock.com)除外(#4)。v22: LINE↔注文を電話番号で自動連携(lineLogin電話ブリッジ+注文時逆連携 #1再犯防止)。v21: Stripe webhook 非同期キュー化(受信→webhook_queueに積んで即200→1分毎trigger processWebhookQueueが再照会検証&finalizeOrder等を実行)。同期処理の応答遅延によるタイムアウト失敗→自動停止を根治。v20: staff/dashboard 認証＝署名トークン・発送通知冪等化・在庫LockService。v19: 銀行振込=GMOあおぞら手動フロー',
     serverTime: new Date().toISOString(),
     stripeMode: cfg('STRIPE_SECRET_KEY').indexOf('sk_live_') === 0 ? 'live' : 'test'
   });
@@ -428,18 +428,12 @@ function createCheckout(body) {
       line_uid:     (body.customer && body.customer.line_uid) || '',
       line_name:    (body.customer && body.customer.line_name) || '',
       contact_method: (body.customer && body.customer.contact_method) || '',
-      // 🔴 Stripe metadata は1値500字制限。destinations から delivery を外して保存し(lean)、
-      //    お届け先ごとの希望日時は compact な deliveries_json(別キー)に分離 → finalizeOrder で destinations に再マージ。
-      destinations_json: JSON.stringify((body.destinations || []).map(function (d) { var c = Object.assign({}, d); delete c.delivery; return c; })),
-      deliveries_json: JSON.stringify((body.destinations || []).map(function (d) { var v = (d && d.delivery) || {}; return { d: v.date || '', t: v.time || '' }; })),
+      // 🔴 destinations/items の実体は Stripe metadata に入れない（1値500字制限。lean化しても
+      //    9品種11点カートで destinations_json=551字となり決済不能＝2026-07-06 実顧客3連続失敗）。
+      //    完全版(delivery込み destinations + items)は recordPendingOrder が pending_orders シートに
+      //    order_number/session_id キーで保存 → finalizeOrder が復元して orders 保存・在庫減算・通知に使う。
       delivery_date: (body.delivery && body.delivery.date) || '',   // 後方互換 top-level (最初の発送分・ISO YYYY-MM-DD・未指定は空)
-      delivery_time: (body.delivery && body.delivery.time) || '',   // 後方互換 top-level (表示用ラベル文字列)
-      /* ★ 在庫 decrement 用に items を保存 (Stripe metadata は 500 文字制限) */
-      items_json: JSON.stringify(items.map(it => ({
-        title: it.title || it.name || '',
-        variant: it.variant || '',
-        qty: it.qty || 1
-      }))).slice(0, 480)
+      delivery_time: (body.delivery && body.delivery.time) || ''    // 後方互換 top-level (表示用ラベル文字列)
     }
   };
 
@@ -473,8 +467,8 @@ function createCheckout(body) {
   const data = JSON.parse(res.getContentText());
   if (data.error) throw new Error('Stripe: ' + data.error.message);
 
-  // pending 注文として記録
-  recordPendingOrder(orderNum, data.id, body, subtotal, shipping);
+  // pending 注文として記録（items も保存＝finalizeOrder が metadata の代わりにここから復元する）
+  recordPendingOrder(orderNum, data.id, body, subtotal, shipping, null, items);
 
   return jsonResponse({ ok: true, url: data.url, session_id: data.id, order_number: orderNum });
 }
@@ -1796,6 +1790,22 @@ function finalizeOrder(session) {
   const orderNum = meta.order_number || ('SESSION-' + session.id.slice(-8));
   const total = session.amount_total || 0;
 
+  // 🔴 v39: Stripe metadata 1値500字制限の根治。新方式のセッションは destinations/items の実体を
+  //    metadata に持たない → pending_orders から session_id で復元して meta に詰め直す。
+  //    meta は session.metadata と同一参照のため、下流の在庫減算(decrementStockAfterOrder)・
+  //    スタッフ通知(sendStaffNotificationEmail)・purchase イベント(logPurchaseEvent)・
+  //    metadata_json 列保存もそのまま復元値を読む。旧セッション(metadata に実体あり)は無変更で通る。
+  //    pending_orders の destinations_json は delivery 込みの完全版＝deliveries_json 再マージ不要。
+  try {
+    if (!meta.destinations_json || !meta.items_json) {
+      const pending = pendingOrderRow_(session.id, meta.order_number || '');
+      if (pending) {
+        if (!meta.destinations_json && pending.destinations_json) meta.destinations_json = String(pending.destinations_json);
+        if (!meta.items_json && pending.items_json) meta.items_json = String(pending.items_json);
+      }
+    }
+  } catch (e) { log('pending_restore_error', { session: session.id, error: e.message }); }
+
   // ★ 冪等性ガード: Stripe は webhook を複数回配信する(リトライ仕様)。ガードが無いと
   //   配信回数ぶん「確認メール・スタッフ通知・orders行追加・在庫減算」が多重実行される。
   //   (2026-05-30 EDA-20260530-DC5B5E で確認メール4通/在庫4重減算/orders重複行が発生)
@@ -2970,7 +2980,7 @@ function flattenForm(obj, prefix) {
   return result;
 }
 
-function recordPendingOrder(orderNum, sessionId, body, subtotal, shipping, mode) {
+function recordPendingOrder(orderNum, sessionId, body, subtotal, shipping, mode, items) {
   const sh = sheet('pending_orders', [
     'created_at','order_number','session_id','mode','customer_json','destinations_json','subtotal','shipping','total'
   ]);
@@ -2985,6 +2995,39 @@ function recordPendingOrder(orderNum, sessionId, body, subtotal, shipping, mode)
     shipping || 0,
     (subtotal || 0) + (shipping || 0)
   ]);
+  // 🔴 items_json は後付け列（既存シートは9列）。appendRow の固定列に足すと列ズレするため
+  //    ensureCol 方式で名前解決して追記行に書く。finalizeOrder の復元元（Stripe metadata 500字対策）。
+  if (items && items.length) {
+    try {
+      const hdr = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+      let idx = hdr.indexOf('items_json');
+      if (idx === -1) { sh.getRange(1, hdr.length + 1).setValue('items_json'); idx = hdr.length; }
+      sh.getRange(sh.getLastRow(), idx + 1).setValue(JSON.stringify(items.map(function (it) {
+        return { title: it.title || it.name || '', variant: it.variant || '', qty: it.qty || 1 };
+      })));
+    } catch (e) { log('pending_items_write_error', { order: orderNum, error: e.message }); }
+  }
+}
+
+/* pending_orders から session_id（無ければ order_number）で1件引く。最新行優先（末尾から走査）。
+   finalizeOrder が destinations/items を復元する読み出し口（Stripe metadata 500字対策）。 */
+function pendingOrderRow_(sessionId, orderNum) {
+  const sh = ss().getSheetByName('pending_orders');
+  if (!sh) return null;
+  const data = sh.getDataRange().getValues();
+  if (data.length < 2) return null;
+  const headers = data[0];
+  const sIdx = headers.indexOf('session_id');
+  const oIdx = headers.indexOf('order_number');
+  for (let i = data.length - 1; i >= 1; i--) {
+    if ((sessionId && sIdx >= 0 && data[i][sIdx] === sessionId) ||
+        (orderNum && oIdx >= 0 && data[i][oIdx] === orderNum)) {
+      const row = {};
+      headers.forEach(function (h, j) { if (h) row[h] = data[i][j]; });
+      return row;
+    }
+  }
+  return null;
 }
 
 function upsertCustomer(c) {

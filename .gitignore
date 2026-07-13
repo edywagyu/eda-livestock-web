@@ -40,3 +40,6 @@ venv/
 *.bak3
 *.bak4
 *.bak5
+
+# STAFF PIN設定ユーティリティ（PIN値ハードコードのため公開リポに載せない・GAS本体には存在）
+gas/Set_Staff_Pin.gs
