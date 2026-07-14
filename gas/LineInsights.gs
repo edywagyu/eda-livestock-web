@@ -1,34 +1,46 @@
 /* ============================================================
-   📊 LINE Insights → 専用スプレッド 自動書き出し
+   📊 LINE Insights → SNS運用管理スプレッド 自動書き出し
    ------------------------------------------------------------
    公式LINEの数値(友だち数/配信実績/属性)を Messaging API Insight から取得し、
-   専用スプレッド(Script Property LINE_INSIGHTS_SHEET_ID)へ日次で書き出す。
-   SHIPPING_SHEET_ID と同じ「別スプシ＋時刻トリガー」パターン。本番注文DBには書かない。
+   既存の「SNS運用管理シート」へ日次で書き出す（SNS運用の数値をそこに集約）。
+   本番注文DBには一切書かない（別ブックへ書き込む）。
 
-   セットアップ(1回だけ GAS エディタで実行):
-     setupLineInsights()  → 専用スプシ作成・ID保存・田崎/Tom共有・日次7時トリガー設置・初回書出。返り値=URL。
+   書き込み先:
+     Script Property LINE_INSIGHTS_SHEET_ID があればそれ、無ければ下記デフォルト
+     （= SNS運用管理シート）。将来別ブックに移すならプロパティを設定するだけ。
+   ⚠️ 前提: GAS を実行するアカウント(トリガー作成者/デプロイ所有者)が、この
+      スプレッドの「編集者」である必要があります（未共有だと書き込み権限エラー）。
+
+   セットアップ(反映後1回だけ実行):
+     setupLineInsights()  → 日次7時トリガー設置＋初回書出。返り値=対象スプシURL。
    手動更新(いつでも):
-     GET ?action=line_insights_now&token=... (STAFF_PROTECTED) → その場で最新取得
+     GET ?action=line_insights_now&token=... (STAFF_PROTECTED)
    自動更新:
-     日次トリガー writeLineInsights が毎朝7時(JST)に実行。
+     日次トリガー writeLineInsights が毎朝7時(JST)。
 
-   注意: LINE の日別データは確定に1〜3日ラグ → 過去 BACKFILL 日分を毎回取り直して upsert。
+   注意: LINE の日別データは確定に1〜3日ラグ → 過去 BACKFILL 日分を毎回 upsert。
    トークンは cfg('LINE_CHANNEL_TOKEN') を参照(再発行不要・既存を共用)。
    ============================================================ */
 
+// SNS運用管理シート（既存・ユーザー管理）。プロパティ未設定時の既定の書き込み先。
+var LINE_INSIGHTS_SHEET_ID_DEFAULT = '1KKCIYgWr2rvESSXTcsuqlAFDs0WlRX0j9A79l2iZut4';
+
 var LINE_INSIGHTS_TZ = 'Asia/Tokyo';
 var LINE_INSIGHTS_BACKFILL = 4;   // 何日前まで遡って埋め直すか
-var LINE_INSIGHTS_TAB_FOLLOWERS = '友だち推移';
-var LINE_INSIGHTS_TAB_DELIVERY  = '配信実績';
-var LINE_INSIGHTS_TAB_DEMO      = '属性';
+var LINE_INSIGHTS_TAB_FOLLOWERS = 'LINE友だち推移';
+var LINE_INSIGHTS_TAB_DELIVERY  = 'LINE配信実績';
+var LINE_INSIGHTS_TAB_DEMO      = 'LINE属性';
 
-/* 日次トリガーの本体。専用スプシへ最新の数値を書き込む。返り値=結果サマリ文字列。 */
+/* 書き込み先ブックのID（プロパティ優先・無ければSNS運用管理シート）。 */
+function lineInsightsBookId_() {
+  return PROPS.getProperty('LINE_INSIGHTS_SHEET_ID') || LINE_INSIGHTS_SHEET_ID_DEFAULT;
+}
+
+/* 日次トリガーの本体。対象スプシへ最新の数値を書き込む。返り値=結果サマリ文字列。 */
 function writeLineInsights() {
   try {
-    var id = PROPS.getProperty('LINE_INSIGHTS_SHEET_ID');
-    if (!id) return 'no_sheet_id';           // 先に setupLineInsights() を実行
     if (!cfg('LINE_CHANNEL_TOKEN')) return 'no_token';
-    var book = SpreadsheetApp.openById(id);
+    var book = SpreadsheetApp.openById(lineInsightsBookId_());
 
     var days = 0;
     var today = new Date();
@@ -46,19 +58,10 @@ function writeLineInsights() {
   }
 }
 
-/* 初回セットアップ(冪等)。専用スプシを作成→ID保存→編集者共有→日次トリガー設置→初回書出。返り値=URL。 */
+/* 初回セットアップ(冪等)。日次トリガー設置→初回書出。返り値=対象スプシURL。
+   ※書き込み先は既存のSNS運用管理シート（新規作成はしない）。 */
 function setupLineInsights() {
-  var id = PROPS.getProperty('LINE_INSIGHTS_SHEET_ID');
-  var book;
-  if (id) {
-    book = SpreadsheetApp.openById(id);
-  } else {
-    book = SpreadsheetApp.create('★公式LINE数値（自動更新）');
-    PROPS.setProperty('LINE_INSIGHTS_SHEET_ID', book.getId());
-    ['tomoki@eda-livestock.com', 'r.tasaki@eda-livestock.com'].forEach(function (mail) {
-      try { DriveApp.getFileById(book.getId()).addEditor(mail); } catch (e) {}
-    });
-  }
+  var book = SpreadsheetApp.openById(lineInsightsBookId_());   // 権限が無ければここで例外＝共有漏れを検知
   var has = ScriptApp.getProjectTriggers().some(function (t) {
     return t.getHandlerFunction() === 'writeLineInsights';
   });
@@ -72,8 +75,7 @@ function setupLineInsights() {
 /* GET ?action=line_insights_now — その場で最新取得(手動更新ボタン用)。 */
 function lineInsightsNow() {
   var r = writeLineInsights();
-  var id = PROPS.getProperty('LINE_INSIGHTS_SHEET_ID');
-  var url = id ? SpreadsheetApp.openById(id).getUrl() : null;
+  var url = SpreadsheetApp.openById(lineInsightsBookId_()).getUrl();
   return jsonResponse({ ok: r.indexOf('ok') === 0, result: r, url: url });
 }
 
@@ -146,16 +148,13 @@ function lineInsightFetch_(path) {
   try { return JSON.parse(res.getContentText() || '{}'); } catch (e) { return null; }
 }
 
-/* 専用スプシ内のタブ取得(無ければヘッダー付きで作成)。 */
+/* 対象スプシ内のタブ取得(無ければヘッダー付きで作成)。既存の他タブには一切触れない。 */
 function getInsightSheet_(book, name, headers) {
   var sh = book.getSheetByName(name);
   if (!sh) {
     sh = book.insertSheet(name);
     sh.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
     sh.setFrozenRows(1);
-    // create() 時の既定「シート1」を掃除(タブが増えたら1回だけ)
-    var def = book.getSheetByName('シート1') || book.getSheetByName('Sheet1');
-    if (def && book.getSheets().length > 1) { try { book.deleteSheet(def); } catch (e) {} }
   }
   return sh;
 }
