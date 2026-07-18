@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-07-18-139-honeypot-fax-rename';
+const CACHE_VERSION = 'eda-v2026-07-18-140-contact-simplify';
 const CORE_ASSETS = [
   './',
   'index.html',

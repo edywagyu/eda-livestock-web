@@ -3626,7 +3626,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <li><a href="organic.html">オーガニック</a></li>
     <li><a href="about.html">会社案内</a></li>
     <li><a href="global.html">海外展開</a></li>
-    <li><a href="restaurants.html">取扱レストラン</a></li>
+    <li><a href="restaurants.html">お取扱店</a></li>
     <li><a href="journal.html">記事</a></li>
     <li><a class="current" href="contact.html">お問い合わせ</a></li>
     <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
@@ -3685,8 +3685,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="accent">Connect.</span>
  </h1>
  <p class="page-subtitle">
- ご用件に応じて、最適な窓口にお問い合わせください。<br/>
- バイヤー・代理店・取材・投資家など、24〜48時間以内にご返信いたします。
+ ご用件はフォームからお気軽にお送りください。<br/>
+ 個人のお客様・卸・取材など、24〜48時間以内にご返信いたします。
  </p>
  </div>
 </section>
@@ -3695,46 +3695,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 <section class="article-body" style="padding-bottom: 32px;">
  <div class="container">
  <div class="reveal" style="text-align: center; margin-bottom: 32px;">
- <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Step 1</span>
- <h2 style="margin-top: 16px;">お問い合わせ種別を選択</h2>
+ <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Contact Form</span>
+ <h2 style="margin-top: 16px;">お問い合わせフォーム</h2>
  </div>
 
  <form id="contactForm" onsubmit="return submitContactInquiry(event)">
- <input type="hidden" name="inquiry_type" id="inquiry_type" value="general"/>
  <input type="text" name="fax" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"/>
-
- <div class="inquiry-type-grid reveal">
- <div class="inquiry-type-card active" data-type="general">
- <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="11" r="5"/><path d="M5 28 C5 22 10 18 16 18 C22 18 27 22 27 28"/></svg>
- <h4>General</h4>
- <p>商品・配送・<br/>定期便など一般</p>
- </div>
- <div class="inquiry-type-card" data-type="wholesale">
- <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="10" width="24" height="18"/><path d="M4 14 L28 14 M10 4 L16 10 L22 4"/></svg>
- <h4>Wholesale (B2B)</h4>
- <p>ホテル・レストラン・<br/>百貨店・小売</p>
- </div>
- <div class="inquiry-type-card" data-type="export">
- <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="12"/><path d="M4 16 L28 16 M16 4 C20 8 22 12 22 16 C22 20 20 24 16 28 C12 24 10 20 10 16 C10 12 12 8 16 4"/></svg>
- <h4>Export Buyer</h4>
- <p>海外バイヤー・<br/>輸入代理店</p>
- </div>
- <div class="inquiry-type-card" data-type="press">
- <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="20" height="22"/><path d="M24 10 L28 10 L28 28 L8 28 M8 12 L20 12 M8 17 L20 17 M8 22 L16 22"/></svg>
- <h4>Press / Media</h4>
- <p>取材・メディア掲載・<br/>登壇依頼</p>
- </div>
- <div class="inquiry-type-card" data-type="career">
- <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="10" width="24" height="18"/><path d="M11 10 L11 5 L21 5 L21 10"/></svg>
- <h4>Career</h4>
- <p>採用・<br/>ジョイン希望</p>
- </div>
- <div class="inquiry-type-card" data-type="partnership">
- <svg class="icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="5"/><circle cx="21" cy="11" r="5"/><path d="M3 28 C3 22 7 19 11 19 M29 28 C29 22 25 19 21 19 M11 19 C13 21 15 22 16 22 C17 22 19 21 21 19"/></svg>
- <h4>Partnership</h4>
- <p>共同事業・<br/>コラボ提案</p>
- </div>
- </div>
 
  <!-- ============ BOOKING CTA BANNER ============ -->
  <div class="reveal" style="margin: 8px 0 40px; padding: 32px 28px; border: 1px solid var(--color-forest); background: var(--color-cream); text-align: center;">
@@ -3748,11 +3714,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </a>
  </div>
 
- <!-- ============ SECTION: BASIC INFO (always shown) ============ -->
+ <!-- ============ SECTION: BASIC INFO ============ -->
  <div class="form-section reveal">
- <div class="form-section-num">— SECTION 01 / BASIC INFO —</div>
  <h3>基本情報 / Contact Information</h3>
- <p class="form-section-desc">最低限ご記入ください。残りの項目はご用件に応じて任意です。</p>
+ <p class="form-section-desc">お名前・メールアドレス・ご用件だけでお送りいただけます。</p>
 
  <div class="form-grid">
  <div class="form-field">
@@ -3760,63 +3725,37 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <input type="text" name="name" placeholder="山田 太郎 / Tanaka Taro" aria-label="山田 太郎 / Tanaka Taro" required/>
  </div>
  <div class="form-field">
- <label>TITLE / 役職</label>
- <input type="text" name="title" placeholder="Buyer · Director · Chef · etc." aria-label="Buyer · Director · Chef · etc."/>
- </div>
- <div class="form-field">
- <label>COMPANY / 会社名</label>
- <input type="text" name="company" placeholder="株式会社○○ / Hotel ○○" aria-label="株式会社○○ / Hotel ○○"/>
- </div>
- <div class="form-field">
- <label>WEBSITE</label>
- <input type="url" name="website" placeholder="https://..." aria-label="https://..."/>
- </div>
- <div class="form-field">
  <label>EMAIL <span class="req">*</span></label>
  <input type="email" name="email" placeholder="your@email.com" aria-label="your@email.com" required/>
  </div>
  <div class="form-field">
- <label>PHONE / WHATSAPP</label>
+ <label>COMPANY / 会社名（任意）</label>
+ <input type="text" name="company" placeholder="株式会社○○ / Hotel ○○" aria-label="株式会社○○ / Hotel ○○"/>
+ </div>
+ <div class="form-field">
+ <label>PHONE（任意）</label>
  <input type="tel" name="phone" placeholder="+81 90-1234-5678" aria-label="+81 90-1234-5678"/>
- </div>
- <div class="form-field">
- <label>COUNTRY / 国 <span class="req">*</span></label>
- <input type="text" name="country" placeholder="Japan / United States / Hong Kong" aria-label="Japan / United States / Hong Kong" required/>
- </div>
- <div class="form-field">
- <label>CITY / 都市</label>
- <input type="text" name="city" placeholder="Tokyo / New York / Hong Kong" aria-label="Tokyo / New York / Hong Kong"/>
- </div>
- <div class="form-field">
- <label>PREFERRED CONTACT</label>
- <select name="preferred_contact">
- <option>Email</option>
- <option>Phone</option>
- <option>WhatsApp</option>
- <option>LINE</option>
- <option>Online Meeting (Zoom/Teams)</option>
- </select>
- </div>
- <div class="form-field">
- <label>LANGUAGE</label>
- <select name="language">
- <option>日本語 / Japanese</option>
- <option>English</option>
- <option>中文 / Chinese</option>
- <option>한국어 / Korean</option>
- <option>Other</option>
- </select>
  </div>
  </div>
  </div>
 
  <!-- ============ SECTION: MESSAGE ============ -->
  <div class="form-section reveal">
- <div class="form-section-num">— SECTION 02 / YOUR MESSAGE —</div>
  <h3>ご用件 / Your Message</h3>
  <p class="form-section-desc">ご用件を簡単にお書きください。卸・輸出など詳細なヒアリングは面談予約でお伺いします。</p>
 
  <div class="form-grid cols-1">
+ <div class="form-field">
+ <label>TOPIC / 何に関するお問い合わせですか？</label>
+ <select name="inquiry_type" id="inquiry_type">
+ <option value="general">商品・配送・定期便など（一般）</option>
+ <option value="wholesale">卸売・レストラン・ホテル (B2B)</option>
+ <option value="export">海外・輸出 / Export</option>
+ <option value="press">取材・メディア / Press</option>
+ <option value="career">採用 / Career</option>
+ <option value="partnership">提携・その他 / Partnership</option>
+ </select>
+ </div>
  <div class="form-field">
  <label>MESSAGE / メッセージ <span class="req">*</span></label>
  <textarea name="message" rows="6" placeholder="ご用件の詳細、ご質問、ご要望などをご記入ください。&#10;&#10;Please describe your inquiry in detail." aria-label="ご用件の詳細、ご質問、ご要望などをご記入ください。&#10;&#10;Please describe your inquiry in detail." required></textarea>
@@ -4074,26 +4013,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 </section>
 
-<!-- ========= INLINE SCRIPT for conditional sections ========= -->
-<script>
- (function() {
- const cards = document.querySelectorAll('.inquiry-type-card');
- const inquiryTypeInput = document.getElementById('inquiry_type');
- const sections = document.querySelectorAll('.form-section[data-show-for]');
-
- function applyType(type) {
- inquiryTypeInput.value = type;
- cards.forEach(c => c.classList.toggle('active', c.dataset.type === type));
- sections.forEach(s => {
- const allowed = (s.dataset.showFor || '').split(',');
- s.hidden = !allowed.includes(type);
- });
- }
-
- cards.forEach(c => c.addEventListener('click', () => applyType(c.dataset.type)));
- applyType('general');
- })();
-</script>
 
 <footer class="site-footer">
  <div class="container">
