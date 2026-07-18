@@ -3701,6 +3701,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <form id="contactForm" onsubmit="return submitContactInquiry(event)">
  <input type="hidden" name="inquiry_type" id="inquiry_type" value="general"/>
+ <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"/>
 
  <div class="inquiry-type-grid reveal">
  <div class="inquiry-type-card active" data-type="general">
@@ -3843,6 +3844,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </form>
 
  <script>
+ window.__formShownAt = Date.now();
  function submitContactInquiry(ev){
    ev.preventDefault();
    var form = ev.target;
@@ -3856,6 +3858,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
      else if (Array.isArray(data[k])) data[k].push(v);
      else data[k] = [data[k], v];
    });
+   data.form_secs = Math.round((Date.now() - (window.__formShownAt || Date.now())) / 1000);
    function show(msg, ok){ fb.style.display='block'; fb.style.color = ok ? '#0F3D2E' : '#c8102e'; fb.textContent = msg; }
    var label = btn.innerHTML;
    function restore(){ btn.disabled = false; btn.innerHTML = label; }

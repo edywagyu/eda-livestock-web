@@ -255,11 +255,53 @@ function quizResponsesOverview(params) {
    - Tom にメール通知
    - 顧客に自動返信（予約への誘導つき）
    ====== */
+/* スパム/詐欺 自動判定 (2026-07-18 Tom指示: スキャム・営業スパムを受信箱に入れない)
+   spam(score>=6)   = シートに記録のみ・メール通知/自動返信なし
+   suspicious(3-5)  = 通知するが件名【⚠️要注意】+ 警告バナー
+   clean(0-2)       = 通常通知 (全通知にセキュリティ注意フッター) */
+function classifyInquiry_(body) {
+  var score = 0, reasons = [];
+  var msg = String(body.message || '');
+  var name = String(body.name || '');
+  var email = String(body.email || '');
+  // honeypot (フォームの不可視欄に入力あり = bot 確定)
+  if (body.website) { score += 10; reasons.push('honeypot'); }
+  // 表示から4秒未満で送信 = bot
+  var secs = Number(body.form_secs);
+  if (!isNaN(secs) && secs >= 0 && secs < 4) { score += 4; reasons.push('too_fast_' + secs + 's'); }
+  // メッセージ内URL
+  var urls = (msg.match(/https?:\/\//gi) || []).length;
+  if (urls >= 2) { score += 4; reasons.push('urls_' + urls); }
+  else if (urls === 1) { score += 2; reasons.push('url_1'); }
+  // SEO/被リンク営業
+  if (/被リンク|相互リンク|検索順位|SEO対策|SEO会社|アクセスアップ|集客支援|backlink|link building|guest post|seo (service|expert|ranking|agency)|website traffic|google ranking|digital marketing service/i.test(msg)) { score += 4; reasons.push('seo_sales'); }
+  // 送金・前払い詐欺 (419型: アフリカ系詐欺の定型語)
+  if (/million (usd|dollars|euros?)|inheritance|next of kin|beneficiar|unclaimed (fund|money)|transfer (of )?funds?|consignment|diplomat|lottery|compensation fund|western union|moneygram|business proposal|investment (proposal|opportunity)|loan offer|urgent (reply|response)|God bless|dear (friend|beloved)|percentage of the (fund|money)/i.test(msg)) { score += 4; reasons.push('scam_419'); }
+  // 暗号資産・アダルト・薬
+  if (/bitcoin|crypto|forex|casino|viagra|cialis|porn|escort|adult site/i.test(msg + ' ' + email)) { score += 4; reasons.push('crypto_adult'); }
+  // ランダム英字の名前 (母音が異常に少ない or 大文字が不規則に混在)
+  var flat = name.replace(/\s/g, '');
+  if (/^[A-Za-z]{8,}$/.test(flat)) {
+    var vowels = (flat.match(/[aeiouAEIOU]/g) || []).length;
+    var midCaps = (flat.slice(1).match(/[A-Z]/g) || []).length;
+    if (vowels / flat.length < 0.25 || midCaps >= 3) { score += 3; reasons.push('random_name'); }
+  }
+  // 日本語向けフォーム経由なのに日本語が1文字も無い
+  var hasJa = /[\u3040-\u30FF\u4E00-\u9FFF]/.test(msg);
+  var fromJaForm = String(body.source || 'contact.html').indexOf('contact') >= 0 && body.inquiry_type !== 'export';
+  if (fromJaForm && msg && !hasJa) { score += 2; reasons.push('no_japanese'); }
+  var verdict = score >= 6 ? 'spam' : (score >= 3 ? 'suspicious' : 'clean');
+  var foreign = (msg && !hasJa) || (body.country && !/japan|日本|^jp$/i.test(String(body.country)));
+  return { score: score, verdict: verdict, reasons: reasons, foreign: !!foreign };
+}
+
 function submitInquiry(body) {
   if (!body || !body.name || !body.email) {
     return jsonResponse({ ok: false, error: 'name と email は必須です' });
   }
-  // 1. Inquiries シートに行追加 (なければ作成)
+  var judge = classifyInquiry_(body);
+  try { log('inquiry_classified', { verdict: judge.verdict, score: judge.score, reasons: judge.reasons.join(','), email: body.email }); } catch (e) {}
+  // 1. Inquiries シートに行追加 (なければ作成) — spam も記録は残す (誤判定の救済用)
   try {
     var sheet = getSheet('Inquiries') || getSheet('inquiries');
     if (!sheet) {
@@ -281,11 +323,19 @@ function submitInquiry(body) {
         body.name, body.company || '', body.title || '',
         body.email, body.phone || '', body.country || '', body.city || '',
         body.message || '', body.source || 'contact.html',
-        body.page_referrer || '', 'new'
+        body.page_referrer || '',
+        judge.verdict === 'spam' ? 'spam(' + judge.score + ':' + judge.reasons.join(',') + ')'
+          : judge.verdict === 'suspicious' ? 'review(' + judge.score + ':' + judge.reasons.join(',') + ')'
+          : 'new'
       ]);
     }
   } catch (sheetErr) {
     log('submit_inquiry_sheet_error', { error: sheetErr.message });
+  }
+
+  // spam 確定: メール通知も自動返信も送らない (bot に成功を装って終了)
+  if (judge.verdict === 'spam') {
+    return jsonResponse({ ok: true });
   }
 
   // 2. Tom にメール通知
@@ -296,7 +346,20 @@ function submitInquiry(body) {
       career: '採用', organic: 'Organic Wagyu', partnership: 'パートナーシップ'
     }[body.inquiry_type] || body.inquiry_type || '一般';
 
-    var subject = '【お問い合わせ】' + typeLabel + ' / ' + (body.company || body.name) + ' — ' + body.name;
+    var prefix = judge.verdict === 'suspicious' ? '【⚠️要注意(営業/詐欺の可能性)】'
+               : judge.foreign ? '【海外】' : '';
+    var subject = prefix + '【お問い合わせ】' + typeLabel + ' / ' + (body.company || body.name) + ' — ' + body.name;
+
+    var warnBanner = judge.verdict === 'suspicious'
+      ? '<div style="background:#FDECEA;border:2px solid #C0392B;border-radius:8px;padding:14px 16px;margin:0 0 4px;font-size:13px;color:#7B241C;">'
+        + '⚠️ <strong>自動判定: 営業スパム/詐欺の可能性 (スコア ' + judge.score + ' — ' + judge.reasons.join(', ') + ')</strong><br/>'
+        + 'メール内リンクは開かない・返信前に会社の実在(法人番号/公式サイト/電話)を確認してください。</div>'
+      : '';
+
+    var securityFooter =
+      '<div style="margin-top:20px;padding:12px 16px;background:#F4F1EA;border-radius:8px;font-size:11px;color:#6B5E4A;line-height:1.7;">'
+      + '🛡 <strong>セキュリティ注意（全問い合わせ共通）</strong>: 本文中のリンクは直接開かない ／ 支払・口座・パスワード情報は返信で送らない ／ '
+      + '取引・取材の提案は、相手ドメイン・法人実在・代表電話を確認してから対応する。</div>';
 
     var html = [
       '<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">',
@@ -305,6 +368,7 @@ function submitInquiry(body) {
       '<p style="margin:6px 0 0;font-size:12px;color:rgba(255,229,148,0.7);">[' + typeLabel + ']</p>',
       '</div>',
       '<div style="padding:28px 32px;background:#FAF7F0;">',
+      warnBanner,
       '<table style="width:100%;border-collapse:collapse;font-size:14px;">',
       tableRow('お名前', body.name),
       tableRow('会社', body.company),
@@ -318,6 +382,7 @@ function submitInquiry(body) {
       '💡 <strong>Action:</strong> 24時間以内に返信。卸売/海外バイヤーは Calendar で 30分商談を提案してください。<br/>',
       '<a href="https://calendar.app.google/DjKHsVDhJHesaPM27" style="color:#0F3D2E;">予約ページ</a>',
       '</div>',
+      securityFooter,
       '</div></div>'
     ].join('');
     MailApp.sendEmail({

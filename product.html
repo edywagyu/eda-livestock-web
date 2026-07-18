@@ -593,6 +593,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         </div>
       </div>
 
+      <!-- 在庫状態 (products-loader のライブ在庫で表示) -->
+      <div id="pdpStockNote" style="display:none;margin:0 0 10px;font-size:13px;letter-spacing:0.04em;"></div>
+
       <!-- CTA -->
       <div class="pdp-cta-section">
         <button class="pdp-cta-primary" id="addToCartBtn" onclick="addToCart()">追加する</button>
@@ -704,7 +707,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     <span class="pdp-sticky-cta-name" id="stickyName">サーロインステーキ</span>
     <span class="pdp-sticky-cta-price" id="stickyPrice">¥3,400</span>
   </div>
-  <button class="pdp-sticky-cta-btn" onclick="addToCart()">追加</button>
+  <button class="pdp-sticky-cta-btn" id="stickyCtaBtn" onclick="addToCart()">追加</button>
 </div>
 
 <!-- ============ SCRIPTS ============ -->
@@ -933,10 +936,38 @@ function changeQty(delta) {
   input.value = v;
 }
 
+/* === ライブ在庫の適用 (products-loader.js が GAS 取得後に呼ぶ) === */
+function pdpApplyStock() {
+  const cur = window.__pdpProduct;
+  if (!cur) return;
+  const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+  const live = all.find(p => p.productId === cur.productId);
+  if (!live || typeof live.stock !== 'number') return;
+  cur.stock = live.stock;
+  const note = document.getElementById('pdpStockNote');
+  const btn = document.getElementById('addToCartBtn');
+  const sticky = document.getElementById('stickyCtaBtn');
+  if (live.stock <= 0) {
+    if (note) { note.style.display = 'block'; note.style.color = '#9B1C1C'; note.textContent = '申し訳ございません — ただいま売り切れです（再入荷までお待ちください）'; }
+    [btn, sticky].forEach(b => { if (b) { b.disabled = true; b.textContent = '売り切れ — 再入荷待ち'; b.style.opacity = '0.5'; b.style.cursor = 'not-allowed'; } });
+    if (sticky) sticky.textContent = '売り切れ';
+  } else {
+    if (note) {
+      if (live.stock <= 8) { note.style.display = 'block'; note.style.color = '#B45309'; note.textContent = '残りわずか — あと ' + live.stock + ' 点'; }
+      else { note.style.display = 'none'; }
+    }
+    [btn, sticky].forEach(b => { if (b && b.disabled) { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; } });
+    if (btn && /売り切れ/.test(btn.textContent)) btn.textContent = '追加する';
+    if (sticky && /売り切れ/.test(sticky.textContent)) sticky.textContent = '追加';
+  }
+}
+window.refreshStockBadges = pdpApplyStock;
+
 /* === カート追加 === */
 function addToCart() {
   const product = window.__pdpProduct;
   if (!product) return;
+  if (typeof product.stock === 'number' && product.stock <= 0) { pdpApplyStock(); return; }
   const qty = +document.getElementById('qty').value || 1;
   const item = {
     variantId: product.variantId,
@@ -969,6 +1000,7 @@ function addToCart() {
   } catch (e) { console.error(e); }
 }
 </script>
+<script src="public/js/products-loader.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=001" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script>
