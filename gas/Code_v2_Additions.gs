@@ -264,8 +264,8 @@ function classifyInquiry_(body) {
   var msg = String(body.message || '');
   var name = String(body.name || '');
   var email = String(body.email || '');
-  // honeypot (フォームの不可視欄に入力あり = bot 確定)
-  if (body.website) { score += 10; reasons.push('honeypot'); }
+  // honeypot (フォームの不可視 fax 欄に入力あり = bot 確定。※name=website は contact.html の正規入力欄と衝突するため不可)
+  if (body.fax) { score += 10; reasons.push('honeypot'); }
   // 表示から4秒未満で送信 = bot
   var secs = Number(body.form_secs);
   if (!isNaN(secs) && secs >= 0 && secs < 4) { score += 4; reasons.push('too_fast_' + secs + 's'); }
