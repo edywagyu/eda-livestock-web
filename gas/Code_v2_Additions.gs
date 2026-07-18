@@ -279,13 +279,16 @@ function classifyInquiry_(body) {
   if (/million (usd|dollars|euros?)|inheritance|next of kin|beneficiar|unclaimed (fund|money)|transfer (of )?funds?|consignment|diplomat|lottery|compensation fund|western union|moneygram|business proposal|investment (proposal|opportunity)|loan offer|urgent (reply|response)|God bless|dear (friend|beloved)|percentage of the (fund|money)/i.test(msg)) { score += 4; reasons.push('scam_419'); }
   // 暗号資産・アダルト・薬
   if (/bitcoin|crypto|forex|casino|viagra|cialis|porn|escort|adult site/i.test(msg + ' ' + email)) { score += 4; reasons.push('crypto_adult'); }
-  // ランダム英字の名前 (母音が異常に少ない or 大文字が不規則に混在)
+  // ランダム英字の名前 (母音が異常に少ない or 大文字が不規則に混在) — 実データ38件のbot連射の主指標のため高配点
   var flat = name.replace(/\s/g, '');
   if (/^[A-Za-z]{8,}$/.test(flat)) {
     var vowels = (flat.match(/[aeiouAEIOU]/g) || []).length;
     var midCaps = (flat.slice(1).match(/[A-Z]/g) || []).length;
-    if (vowels / flat.length < 0.25 || midCaps >= 3) { score += 3; reasons.push('random_name'); }
+    if (vowels / flat.length < 0.25 || midCaps >= 3) { score += 4; reasons.push('random_name'); }
   }
+  // gmail ドット散らしアドレス (m.ea.d.e.rs82@gmail.com 型 = 使い捨てエイリアスの典型)
+  var local = email.split('@')[0] || '';
+  if ((local.match(/\./g) || []).length >= 4) { score += 3; reasons.push('dotted_email'); }
   // 日本語向けフォーム経由なのに日本語が1文字も無い
   var hasJa = /[\u3040-\u30FF\u4E00-\u9FFF]/.test(msg);
   var fromJaForm = String(body.source || 'contact.html').indexOf('contact') >= 0 && body.inquiry_type !== 'export';
