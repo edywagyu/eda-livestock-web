@@ -4517,9 +4517,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .menu-card.feature .menu-card-content { padding: 32px 36px 36px; }
 /* 商品名+説明の下に「ごく薄い」背景。濃さではなく blur で可読性を出す */
 .menu-card-text {
- background: rgba(11,45,34,0.06); /* 「+カート追加」行と同等のほぼ透明。可読性は blur で確保 */
- -webkit-backdrop-filter: blur(10px);
- backdrop-filter: blur(10px);
+ /* 写真をなるべくそのまま見せる: 色味も blur もごく僅か。可読性は文字側の影で担保 */
+ background: rgba(11,45,34,0.06);
+ -webkit-backdrop-filter: blur(2px);
+ backdrop-filter: blur(2px);
  border-radius: 10px;
  padding: 10px 14px 12px;
  margin: 0 0 12px;
@@ -4532,13 +4533,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  margin: 0 0 8px;
  line-height: 1.35;
  color: #fff; /* 本番サーロイン表示と同じ白の明朝体 */
- text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+ text-shadow: 0 2px 10px rgba(0,0,0,0.55), 0 1px 3px rgba(0,0,0,0.45);
 }
 .menu-card.feature .menu-card-title { font-size: clamp(22px, 2.6vw, 28px); }
 .menu-card-desc {
  font-size: 12px;
  color: #fff; /* 商品詳細は白 */
  opacity: 0.95;
+ text-shadow: 0 1px 6px rgba(0,0,0,0.5);
  line-height: 1.7;
  margin: 0;
  display: -webkit-box;
