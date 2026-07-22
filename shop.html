@@ -13046,7 +13046,15 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
  '赤身ステーキ': { id: 50830190379306, price: 3400, title: '赤身ステーキ', img: 'public/images/products/drive/red-meat-2026.jpg' },
  '親子丼': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
- '和牛のサイコロステーキ': { id: 50830132314410, price: 1800, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
+ '和牛のサイコロステーキ': { id: 50830132314410, price: 1800, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' },
+ 'ミスジステーキ': { id: 50831003500201, price: 3500, title: 'ミスジステーキ', img: 'public/images/products/drive/misuji-steak.jpg' },
+ 'ヒレステーキ': { id: 50831004750301, price: 4750, title: 'ヒレステーキ', img: 'public/images/products/drive/hire-steak.jpg' },
+ '赤身の焼肉プレート': { id: 50831002400101, price: 2400, title: '赤身焼肉', img: 'public/images/products/drive/akami-yakiniku.jpg' },
+ '和牛のキーマカレー': { id: 50831001234567, price: 1350, title: 'ミンチ', img: 'public/images/products/drive/minced-2026.jpg' },
+ 'チキン南蛮': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ '鶏むねのねぎ塩焼き': { id: 50830250475818, price: 920, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
+ 'よだれ鶏': { id: 50830250475818, price: 920, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
+ '鶏つくね': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' }
  };
 
  /* クリックで主役肉をカートに追加 */
@@ -13069,14 +13077,45 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  };
 
  // レシピプール（料理名・完成料理写真・所要時間・主要食材）
- /* 固定5メニュー(たろ確定 2026-07-22)。表示順=カード順(先頭が最短着の大カード)。
-    商品紐付けは RECIPE_PRODUCTS */
+ /* ===== 今週のごはん 設定（編集するのはここだけでOK） =====================
+    ■ 出す料理を指定したいとき
+        MENU_PINNED に料理名を並べる。上から順に表示され、先頭が大カードになる。
+        例) const MENU_PINNED = ['和牛のすき焼き', '親子丼'];
+        5品に足りない分は「季節 × 売れ筋」で自動補充。空 [] なら全部自動。
+    ■ 売れ筋の重みづけ
+        各料理の rank … 3=売れ筋(よく出す) / 2=標準 / 1=控えめ
+    ■ 季節
+        season に 'spring'|'summer'|'autumn'|'winter' を列挙。
+        省略した料理は通年扱い。今の季節に該当する料理が優先的に選ばれる。
+    ======================================================================= */
+ const MENU_PINNED = [];
+
+ /* 料理プール(全22品)。name は RECIPE_PRODUCTS のキーと一致させること */
  const RECIPES = [
- { type: 'beef', time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
- { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
- { type: 'chicken', time: 15, name: '親子丼', desc: '平飼いモモと卵でとろとろ。15分で完成の定番丼。', img: 'https://images.pexels.com/photos/37297724/pexels-photo-37297724/free-photo-of-delicious-japanese-oyakodon-bowl-with-chicken.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['平飼い鶏もも', '卵', '玉ねぎ'] },
- { type: 'beef', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
- { type: 'chicken', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] }
+ /* ---- 和牛 ---- */
+ { type: 'beef', rank: 3, time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
+ { type: 'beef', rank: 3, time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
+ { type: 'beef', rank: 3, time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', '玉ねぎ'] },
+ { type: 'beef', rank: 3, time: 25, season: ['autumn', 'winter'], name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
+ { type: 'beef', rank: 2, time: 15, season: ['summer'], name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒。冷しゃぶにすれば、暑い日でもすすむ。', img: 'https://images.unsplash.com/photo-1708597523963-40b30f846281?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'] },
+ { type: 'beef', rank: 2, time: 5, season: ['summer'], name: '和牛のローストビーフ', desc: '解凍して薄く切るだけ。冷たいままごちそうになる一皿。', img: 'public/images/products/drive/roast-beef-recipe.jpg', ingredients: ['ローストビーフ', 'クレソン', 'わさび醤油'] },
+ { type: 'beef', rank: 2, time: 15, name: 'ミスジステーキ', desc: '希少部位ミスジ。赤身のうまみと、とろけるやわらかさ。', img: 'public/images/products/drive/misuji-steak.jpg', ingredients: ['ミスジステーキ', '塩'] },
+ { type: 'beef', rank: 2, time: 15, name: 'ヒレステーキ', desc: '最も脂の少ない部位。高タンパクで、胃にもたれない贅沢。', img: 'public/images/products/drive/hire-steak.jpg', ingredients: ['ヒレステーキ', '塩', 'わさび'] },
+ { type: 'beef', rank: 2, time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] },
+ { type: 'beef', rank: 2, time: 20, season: ['autumn', 'winter'], name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1685209744663-9635c4ba9bd3?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', 'じゃがいも', '人参'] },
+ { type: 'beef', rank: 2, time: 15, season: ['summer'], name: '赤身の焼肉プレート', desc: '赤身だから重くない。ベランダでも、フライパンでも。', img: 'public/images/products/drive/akami-yakiniku.jpg', ingredients: ['赤身焼肉', '塩', 'レモン'] },
+ { type: 'beef', rank: 1, time: 20, season: ['summer'], name: '和牛のキーマカレー', desc: '和牛100%のひき肉で。夏はスパイスを効かせて。', img: 'public/images/products/drive/minced-2026.jpg', ingredients: ['ミンチ', '玉ねぎ', 'スパイス'] },
+ { type: 'beef', rank: 1, time: 5, season: ['summer'], name: '和牛生ハム前菜プレート', desc: 'そのまま盛るだけ。冷えた白ワインの夜に。', img: 'public/images/products/drive/raw-ham-recipe.jpg', ingredients: ['和牛生ハム', 'クラッカー'] },
+ /* ---- 鶏肉 ---- */
+ { type: 'chicken', rank: 3, time: 15, name: '親子丼', desc: '平飼いモモと卵でとろとろ。15分で完成の定番丼。', img: 'https://images.pexels.com/photos/37297724/pexels-photo-37297724/free-photo-of-delicious-japanese-oyakodon-bowl-with-chicken.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['平飼い鶏もも', '卵', '玉ねぎ'] },
+ { type: 'chicken', rank: 3, time: 20, season: ['summer'], name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。夏休みのお昼にも。', img: 'https://images.unsplash.com/photo-1700325341795-4793ac3ddb59?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
+ { type: 'chicken', rank: 3, time: 15, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。ごはんがすすむ定番。', img: 'https://images.unsplash.com/photo-1514536958296-436f46226e74?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
+ { type: 'chicken', rank: 3, time: 15, season: ['summer'], name: '鶏むね蒸し鶏 サラダ', desc: '低温でしっとり。高タンパク・低脂質の作り置き。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
+ { type: 'chicken', rank: 2, time: 30, name: 'チキン南蛮', desc: '宮崎名物。甘酢とタルタルで、平飼いモモがご馳走に。', img: 'public/images/products/drive/chicken-thigh.jpg', ingredients: ['平飼い鶏もも', '卵', '甘酢タルタル'] },
+ { type: 'chicken', rank: 2, time: 15, season: ['summer'], name: '鶏むねのねぎ塩焼き', desc: 'ねぎ塩だれで淡白なむね肉が主役に。低脂質の満足おかず。', img: 'public/images/products/drive/chicken-breast.jpg', ingredients: ['平飼い鶏むね', 'ねぎ', 'ごま油'] },
+ { type: 'chicken', rank: 1, time: 20, season: ['summer'], name: 'よだれ鶏', desc: '冷やしてピリ辛だれ。食欲がない日の高タンパク。', img: 'public/images/products/drive/chicken-breast.jpg', ingredients: ['平飼い鶏むね', 'ラー油', '花椒'] },
+ { type: 'chicken', rank: 2, time: 15, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
+ { type: 'chicken', rank: 1, time: 20, season: ['autumn', 'winter'], name: '鶏つくね', desc: '平飼い鶏のひき肉で。焼いても、鍋に入れても。', img: 'public/images/products/drive/chicken-minced.jpg', ingredients: ['平飼い鶏ミンチ', 'ねぎ', '卵黄'] }
  ];
 
  /* お届け日計算 — チェックアウトの最短日ルールと同一
@@ -13100,14 +13139,74 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const WD_JP = ['日', '月', '火', '水', '木', '金', '土'];
  const fmtMD = d => (d.getMonth() + 1) + '/' + d.getDate();
 
+ const epochDay = d => Math.floor(d.getTime() / 86400000);
+ function currentSeason(d) {
+ const m = d.getMonth() + 1;
+ if (m >= 3 && m <= 5) return 'spring';
+ if (m >= 6 && m <= 8) return 'summer';
+ if (m >= 9 && m <= 11) return 'autumn';
+ return 'winter';
+ }
+ /* 料理名+日付から 0〜1 の決定的な値。日替わりの並べ替えに使う */
+ function jitter(name, salt) {
+ let h = 2166136261 ^ salt;
+ for (let i = 0; i < name.length; i++) { h ^= name.charCodeAt(i); h = Math.imul(h, 16777619); }
+ return ((h >>> 0) % 10000) / 10000;
+ }
+
  function pickRecipes(dates) {
  // スタッフ編集オーバーライド優先（表示順）
  try {
  const override = JSON.parse(localStorage.getItem('eda-weekly-menu-override') || 'null');
  if (override && Array.isArray(override) && override.length >= 5) return override.slice(0, dates.length);
  } catch (e) {}
- // 固定6メニュー(和牛3・鶏3)を表示順のまま。日付だけが毎日ロールする
- return RECIPES.slice(0, dates.length);
+
+ const season = currentSeason(dates[0]);
+ /* 種は「閲覧日」。お届け日を種にすると金土日で最短着が同じ日になり献立が動かない */
+ const today = epochDay(jstNow());
+
+ /* 1. 在庫切れの商品を使う料理は出さない(カート追加で在庫切れアラートになるため)。
+       マスター未読込のうちは全件対象 */
+ const master = (window.EDA_PRODUCTS_MASTER || {}).products || [];
+ const stockByTitle = {};
+ master.forEach(p => { if (p.name) stockByTitle[p.name] = p.stock; });
+ const inStock = RECIPES.filter(r => {
+ const prod = RECIPE_PRODUCTS[r.name];
+ if (!prod) return false;
+ return stockByTitle[prod.title] !== 0;
+ });
+ const available = inStock.length >= dates.length ? inStock : RECIPES;
+
+ /* 2. 今の季節に合う料理だけを対象にする(通年の料理は常に対象) */
+ const inSeason = available.filter(r => !r.season || r.season.indexOf(season) >= 0);
+ const pool = inSeason.length >= dates.length ? inSeason : available;
+
+ /* 2. 売れ筋ほど多く並ぶ「回転リスト」を作る(rank3=3枠 / rank2=2枠 / rank1=1枠)。
+       並び順は名前から決まる固定シャッフルなので、牛と鶏が適度に混ざる */
+ const wheel = [];
+ pool.slice().sort((a, b) => jitter(a.name, 7) - jitter(b.name, 7))
+ .forEach(r => { for (let i = 0; i < (r.rank || 2); i++) wheel.push(r); });
+
+ const picks = [];
+ const count = { beef: 0, chicken: 0 };
+ const add = r => { picks.push(r); count[r.type] = (count[r.type] || 0) + 1; };
+ /* 3. 指定された料理を最優先(記載順) */
+ MENU_PINNED.forEach(name => {
+ const found = RECIPES.find(x => x.name === name);
+ if (found && picks.indexOf(found) < 0 && picks.length < dates.length) add(found);
+ });
+ /* 4. 残りは回転リストを日替わりの位置から拾う。全品が順に巡り、毎日入れ替わる。
+       牛/鶏どちらかに偏らないよう1種類3品までに制限 */
+ const start = (today * dates.length) % wheel.length;
+ for (let pass = 0; pass < 2 && picks.length < dates.length; pass++) {
+ for (let i = 0; i < wheel.length && picks.length < dates.length; i++) {
+ const r = wheel[(start + i) % wheel.length];
+ if (picks.indexOf(r) >= 0) continue;
+ if (pass === 0 && count[r.type] >= 3) continue; /* 2周目は偏り制限を外して補充 */
+ add(r);
+ }
+ }
+ return picks.slice(0, dates.length);
  }
 
  function render() {
@@ -13156,6 +13255,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  render();
  window._refreshWeeklyMenu = render;
+
+ /* 在庫マスター(GAS)が後から届いたら、在庫切れ料理を除いて組み直す */
+ (function rerenderWhenMasterReady() {
+ let tries = 0;
+ const timer = setInterval(() => {
+ const ready = ((window.EDA_PRODUCTS_MASTER || {}).products || []).length > 0;
+ if (ready) { clearInterval(timer); render(); }
+ else if (++tries > 25) clearInterval(timer);  /* 5秒で諦める(マスター無しでも表示は出す) */
+ }, 200);
+ })();
 })();
 
 /* ============ 🎁 今月限定50%OFF：月・締切・残日数を自動更新 ============
