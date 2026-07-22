@@ -4475,8 +4475,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  content: '';
  position: absolute;
  inset: 0;
- /* 文字が乗る下半分をしっかり暗くして可読性を確保 */
- background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 26%, rgba(15,61,46,0.30) 48%, rgba(15,61,46,0.80) 68%, rgba(11,45,34,0.95) 100%);
+ background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 30%, transparent 50%, rgba(15,61,46,0.85) 100%);
 }
 .menu-card-day {
  position: absolute;
@@ -4511,52 +4510,41 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .menu-card-content {
  position: absolute;
  bottom: 0; left: 0; right: 0;
- margin: 0 12px 12px;
+ padding: 24px 26px 28px;
  z-index: 2;
  color: white;
 }
-.menu-card.feature .menu-card-content { margin: 0 16px 16px; }
-/* 料理名・説明: 薄めの半透明パネル(写真が透けて見える) */
-.menu-card-text {
- background: rgba(11,45,34,0.22); /* かなり薄め: 料理写真が透けて見える */
- -webkit-backdrop-filter: blur(7px);
- backdrop-filter: blur(7px);
- border-radius: 12px;
- padding: 12px 16px 13px;
- color: #fff;
-}
-.menu-card .menu-card-title { color: #fff; }
-.menu-card.feature .menu-card-text { padding: 18px 22px 18px; }
+.menu-card.feature .menu-card-content { padding: 32px 36px 36px; }
 .menu-card-title {
  font-family: var(--font-jp-serif);
- font-size: 19px;
+ font-size: 18px;
  font-weight: 700;
  margin: 0 0 8px;
  line-height: 1.35;
- text-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4);
+ color: #fff;
+ text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 .menu-card.feature .menu-card-title { font-size: clamp(22px, 2.6vw, 28px); }
 .menu-card-desc {
- font-size: 13px;
- opacity: 1;
- color: rgba(255,255,255,0.96);
+ font-size: 12px;
+ opacity: 0.9;
  line-height: 1.7;
- margin: 0;
+ margin: 0 0 12px;
  display: -webkit-box;
  -webkit-line-clamp: 2;
  -webkit-box-orient: vertical;
  overflow: hidden;
- text-shadow: 0 1px 6px rgba(0,0,0,0.45);
 }
 .menu-card.feature .menu-card-desc {
- font-size: 14px;
+ font-size: 13px;
  -webkit-line-clamp: 3;
+ margin-bottom: 16px;
 }
 .menu-card-ingredients {
  display: flex;
  flex-wrap: wrap;
  gap: 4px;
- margin-top: 10px;
+ margin-bottom: 12px;
 }
 .menu-ingredient {
  background: rgba(255,255,255,0.18);
@@ -4571,16 +4559,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  display: flex;
  align-items: center;
  justify-content: space-between;
- margin-top: 8px;
- background: rgba(250,247,240,0.94); /* カート追加はクリームの別パネル */
- border-radius: 12px;
- padding: 8px 10px 8px 16px;
+ border-top: 1px solid rgba(255,255,255,0.2);
+ padding-top: 14px;
 }
 .menu-card-cta {
  font-family: var(--font-display);
  font-size: 11px;
  letter-spacing: 0.12em;
- color: var(--color-forest);
+ color: var(--color-gold);
  font-weight: 700;
 }
 .menu-card-arrow {
@@ -4600,7 +4586,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 @media (max-width: 900px) {
  .menu-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1.5fr 1fr 1fr; height: auto; gap: 12px; }
  .menu-card.feature { grid-column: 1 / 3; grid-row: 1 / 2; min-height: 340px; }
- .menu-card { min-height: 264px; } /* 背景パネル分を確保して写真も見せる */
+ .menu-card { min-height: 220px; }
 }
 @media (max-width: 640px) {
  .menu-grid { grid-template-columns: 1fr; grid-template-rows: none; }
@@ -13047,6 +13033,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '焼肉プレート': { id: 50830137655594, price: 1500, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
  '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
  'チキン南蛮': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ '赤身ステーキ': { id: 50830190379306, price: 3400, title: '赤身ステーキ', img: 'public/images/products/drive/red-meat-2026.jpg' },
+ '親子丼': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のサイコロステーキ': { id: 50830132314410, price: 1800, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
  };
 
@@ -13070,23 +13058,15 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  };
 
  // レシピプール（料理名・完成料理写真・所要時間・主要食材）
+ /* 固定6メニュー(和牛3・鶏3)。表示順=カード順(先頭が最短着の大カード)。
+    商品紐付けは RECIPE_PRODUCTS (Tom/たろ確定 2026-07-22) */
  const RECIPES = [
- { type: 'beef', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
- { type: 'beef', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', '玉ねぎ'] },
- { type: 'chicken', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1700325341795-4793ac3ddb59?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
- { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
- { type: 'beef', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
- { type: 'chicken', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1514536958296-436f46226e74?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
- { type: 'beef', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1708597523963-40b30f846281?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
- { type: 'beef', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'public/images/products/drive/roast-beef-recipe.jpg', ingredients: ['ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
- { type: 'chicken', time: 25, name: '無投薬チキンカレー', desc: '平飼い鶏で煮込む、お子さま大喜びの定番。', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '玉ねぎ', '人参'] },
- { type: 'chicken', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
- { type: 'beef', time: 20, name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1685209744663-9635c4ba9bd3?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', 'じゃがいも', '人参'] },
- { type: 'beef', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'public/images/products/drive/yakiniku-ponzu.jpg', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
- { type: 'chicken', time: 20, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
  { type: 'chicken', time: 30, name: 'チキン南蛮', desc: '宮崎名物。甘酢とタルタルで、平飼いモモがご馳走に。', img: 'public/images/products/drive/chicken-thigh.jpg', ingredients: ['平飼い鶏もも', '卵', '甘酢タルタル'], featured: true },
- { type: 'beef', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] },
- { type: 'beef', time: 5, name: '和牛生ハム前菜プレート', desc: 'そのまま盛るだけ。ワインの夜に。', img: 'public/images/products/drive/raw-ham-recipe.jpg', ingredients: ['和牛生ハム', 'クラッカー'], featured: true }
+ { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
+ { type: 'beef', time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
+ { type: 'chicken', time: 15, name: '親子丼', desc: '平飼いモモと卵でとろとろ。15分で完成の定番丼。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '卵', '玉ねぎ'] },
+ { type: 'beef', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
+ { type: 'chicken', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] }
  ];
 
  /* お届け日計算 — チェックアウトの最短日ルールと同一
@@ -13107,7 +13087,6 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  return dates;
  }
- const epochDay = d => Math.floor(d.getTime() / 86400000);
  const WD_JP = ['日', '月', '火', '水', '木', '金', '土'];
  const fmtMD = d => (d.getMonth() + 1) + '/' + d.getDate();
 
@@ -13117,27 +13096,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const override = JSON.parse(localStorage.getItem('eda-weekly-menu-override') || 'null');
  if (override && Array.isArray(override) && override.length >= 5) return override.slice(0, dates.length);
  } catch (e) {}
-
- /* 和牛3品・鶏肉3品になるよう、大カード(最短着)と逆のタイプから交互に割り当てる。
-    献立はお届け日ベースで決定的に選び、同一ウィンドウ内の重複は次候補にずらす */
- const featured = RECIPES.filter(r => r.featured);
- const byType = {
- beef: RECIPES.filter(r => !r.featured && r.type === 'beef'),
- chicken: RECIPES.filter(r => !r.featured && r.type === 'chicken')
- };
- const hero = featured[epochDay(dates[0]) % featured.length];
- const other = t => (t === 'beef' ? 'chicken' : 'beef');
- const used = new Set([hero.name]);
- const picks = [hero];
- dates.slice(1).forEach((d, k) => {
- const type = (k % 2 === 0) ? other(hero.type) : hero.type;
- const pool = byType[type];
- let idx = epochDay(d) % pool.length;
- while (used.has(pool[idx].name)) idx = (idx + 1) % pool.length;
- used.add(pool[idx].name);
- picks.push(pool[idx]);
- });
- return picks;
+ // 固定6メニュー(和牛3・鶏3)を表示順のまま。日付だけが毎日ロールする
+ return RECIPES.slice(0, dates.length);
  }
 
  function render() {
@@ -13167,14 +13127,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  <span class="menu-card-day${isFastest ? ' menu-card-day--fastest' : ''}">${dayLabel}</span>
  <span class="menu-card-time-pill">${r.time}分</span>
  <div class="menu-card-content">
- <div class="menu-card-text">
  <h3 class="menu-card-title">${r.name}</h3>
  <p class="menu-card-desc">${r.desc}</p>
  ${isFeature ? `
  <div class="menu-card-ingredients">
  ${r.ingredients.map(ing => `<span class="menu-ingredient">${ing}</span>`).join('')}
  </div>` : ''}
- </div>
  <div class="menu-card-cta-row">
  <span class="menu-card-cta">${ctaText}</span>
  <span class="menu-card-arrow">→</span>
