@@ -3582,12 +3582,20 @@ function sendLinePush(lineUid, messages) {
   }
 }
 
-/** 購入済顧客の連携完了後に送る Flex Message */
+/* LINE連携特典のクーポンコード。Script Property LINK_COUPON_CODE で差し替え可（デプロイ不要）。
+   Stripe側に同名のクーポン(10%OFF)が存在することが前提。line-link.html の表示も合わせること。 */
+function linkCouponCode_() {
+  return cfg('LINK_COUPON_CODE', 'LINE10');
+}
+
+/** 連携完了後に送る Flex Message（購入歴の有無に関わらずクーポン付き） */
 function buildLinkSuccessMessage(customerName) {
   var liffMypage = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/mypage.html';
+  var liffShop = 'https://liff.line.me/' + cfg('LIFF_ID', '1657458587-mz1dR9e6') + '/shop.html';
+  var coupon = linkCouponCode_();
   return {
     type: 'flex',
-    altText: 'アカウント連携完了 — 配送状況はこちらから確認できます',
+    altText: '🎁 連携ありがとうございます — 全品10%OFFクーポンをどうぞ',
     contents: {
       type: 'bubble',
       hero: {
@@ -3603,7 +3611,11 @@ function buildLinkSuccessMessage(customerName) {
         spacing: 'md',
         contents: [
           { type: 'text', text: '✅ アカウント連携完了', weight: 'bold', size: 'lg', color: '#1a1a1a' },
-          { type: 'text', text: (customerName || 'お客') + '様、連携ありがとうございます。\n注文履歴・配送状況をいつでもLINEから確認できます。', wrap: true, size: 'sm', color: '#666666' }
+          { type: 'text', text: (customerName || 'お客') + '様、連携ありがとうございます。\n特典として全品10%OFFクーポンをお贈りします🎁', wrap: true, size: 'sm', color: '#666666' },
+          { type: 'separator' },
+          { type: 'text', text: 'クーポンコード', weight: 'bold', size: 'xs', color: '#888888', margin: 'md' },
+          { type: 'text', text: coupon, weight: 'bold', size: 'xxl', color: '#0F3D2E', align: 'center' },
+          { type: 'text', text: 'お会計の「クーポンコード」欄に入力 → 全品10%OFF！', wrap: true, size: 'xs', color: '#999999' }
         ]
       },
       footer: {
@@ -3613,9 +3625,14 @@ function buildLinkSuccessMessage(customerName) {
         contents: [
           {
             type: 'button',
-            action: { type: 'uri', label: '📦 配送状況を確認する', uri: liffMypage },
+            action: { type: 'uri', label: '🛒 クーポンを使って商品を見る', uri: liffShop },
             style: 'primary',
-            color: '#2d5016'
+            color: '#0F3D2E'
+          },
+          {
+            type: 'button',
+            action: { type: 'uri', label: '📦 配送状況を確認する', uri: liffMypage },
+            style: 'secondary'
           }
         ]
       }
@@ -3648,8 +3665,8 @@ function buildRegisterRewardMessage(customerName) {
           { type: 'text', text: greeting + '、会員登録ありがとうございます！アンケート回答特典の全品10%OFFクーポンです。', wrap: true, size: 'sm', color: '#666666' },
           { type: 'separator' },
           { type: 'text', text: 'クーポンコード', weight: 'bold', size: 'xs', color: '#888888', margin: 'md' },
-          { type: 'text', text: 'kXI6blJe', weight: 'bold', size: 'xxl', color: '#0F3D2E', align: 'center' },
-          { type: 'text', text: 'お会計の「クーポンコード」欄に入力 → 初回ご注文が10%OFF！', wrap: true, size: 'xs', color: '#999999' }
+          { type: 'text', text: linkCouponCode_(), weight: 'bold', size: 'xxl', color: '#0F3D2E', align: 'center' },
+          { type: 'text', text: 'お会計の「クーポンコード」欄に入力 → 全品10%OFF！', wrap: true, size: 'xs', color: '#999999' }
         ]
       },
       footer: {
