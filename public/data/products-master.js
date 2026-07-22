@@ -127,6 +127,44 @@
       images: ['public/images/products/drive/minced.jpg']
     },
 
+    /* ===== 新商品 2026-07 (Stripe Price ID は友輝側で発行後に記入) ===== */
+    {
+      productId: 'P023', variantId: 'MISUJI-STEAK', sku: 'EDA-MISUJI-150',
+      stripePriceId: '',
+      name: 'ミスジステーキ', variant: '1枚 150g',
+      price: 3500, weight: 150, stock: 12, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Misuji Steak',
+      description: '肩甲骨の内側の希少部位。細かなサシと赤身の旨みが同居。厚めのレア焼きで。',
+      images: ['public/images/products/drive/misuji-steak.jpg']
+    },
+    {
+      productId: 'P024', variantId: 'HIRE-STEAK', sku: 'EDA-HIRE-150',
+      stripePriceId: '',
+      name: 'ヒレステーキ', variant: '1枚 150g',
+      price: 4750, weight: 150, stock: 10, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Fillet Steak',
+      description: '一頭から約3%だけの、最もやわらかい部位。記念日の一枚に。',
+      images: ['public/images/products/drive/hire-steak.jpg']
+    },
+    {
+      productId: 'P025', variantId: 'AKAMI-YAKINIKU', sku: 'EDA-AKAYAKI-200',
+      stripePriceId: '',
+      name: '赤身焼肉', variant: '1袋 200g',
+      price: 2400, weight: 200, stock: 20, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Red Meat Yakiniku',
+      description: 'ウデの赤身を焼肉用にカット。脂は控えめ、噛むほどに肉の味が濃い。',
+      images: ['public/images/products/drive/akami-yakiniku.jpg']
+    },
+    {
+      productId: 'P026', variantId: 'SHIMOFURI-SLICE', sku: 'EDA-SHIMOSLICE-200',
+      stripePriceId: '',
+      name: '霜降スライス', variant: '1袋 200g',
+      price: 3700, weight: 200, stock: 10, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled Slice',
+      description: '霜降り部分を約2mm厚の薄切りに。すき焼き・しゃぶしゃぶで脂の甘みがだしに溶ける。',
+      images: ['public/images/products/drive/shimofuri-slice.jpg']
+    },
+
     /* ===== 鶏肉 平飼い（標準）— 200g パック ===== */
     {
       productId: 'P011', variantId: 'CHK-BREAST', sku: 'EDA-CHK-BREAST-200',
