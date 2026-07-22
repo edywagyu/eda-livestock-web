@@ -4458,12 +4458,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  grid-row: 1 / 3;
  grid-column: 1 / 2;
 }
-/* DOMはお届け日の昇順(最短→先)。最短着を右列に配置し、
-   左の大カード(feature=DOM末尾)ほど先のお届け日になる */
-.menu-card:nth-child(1) { grid-column: 3; grid-row: 1; } /* 最短着 */
-.menu-card:nth-child(2) { grid-column: 3; grid-row: 2; }
-.menu-card:nth-child(3) { grid-column: 2; grid-row: 1; }
-.menu-card:nth-child(4) { grid-column: 2; grid-row: 2; }
 .menu-card:hover {
  transform: translateY(-4px);
  box-shadow: 0 24px 60px rgba(15,61,46,0.18);
@@ -4524,9 +4518,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .menu-card.feature .menu-card-content { margin: 0 16px 16px; }
 /* 料理名・説明: 薄めの半透明パネル(写真が透けて見える) */
 .menu-card-text {
- background: rgba(11,45,34,0.42);
- -webkit-backdrop-filter: blur(5px);
- backdrop-filter: blur(5px);
+ background: rgba(11,45,34,0.22); /* かなり薄め: 料理写真が透けて見える */
+ -webkit-backdrop-filter: blur(7px);
+ backdrop-filter: blur(7px);
  border-radius: 12px;
  padding: 12px 16px 13px;
  color: #fff;
@@ -4605,8 +4599,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 @media (max-width: 900px) {
  .menu-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1.5fr 1fr 1fr; height: auto; gap: 12px; }
- .menu-card:nth-child(1), .menu-card:nth-child(2),
- .menu-card:nth-child(3), .menu-card:nth-child(4) { grid-column: auto; grid-row: auto; }
  .menu-card.feature { grid-column: 1 / 3; grid-row: 1 / 2; min-height: 340px; }
  .menu-card { min-height: 264px; } /* 背景パネル分を確保して写真も見せる */
 }
@@ -13106,12 +13098,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  function nextDeliveryDates(count) {
  const jst = jstNow();
  const lead = jst.getHours() < 10 ? 2 : 3;
+ const MENU_DAYS = [4, 5, 6, 0]; // 木・金・土・日 に固定
  const dates = [];
  let cur = new Date(jst.getFullYear(), jst.getMonth(), jst.getDate() + lead);
  while (dates.length < count) {
- if (cur.getDay() === 0) cur.setDate(cur.getDate() + 1); // 日曜配送なし
- dates.push(new Date(cur));
- cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 2); // 1日置き
+ if (MENU_DAYS.indexOf(cur.getDay()) >= 0) dates.push(new Date(cur));
+ cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1);
  }
  return dates;
  }
@@ -13130,8 +13122,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const featured = RECIPES.filter(r => r.featured);
  const others = RECIPES.filter(r => !r.featured);
  return dates.map((d, i) =>
- i === dates.length - 1
- ? featured[epochDay(d) % featured.length] // 大カード=いちばん先のお届け日
+ i === 0
+ ? featured[epochDay(d) % featured.length] // 大カード=最短お届け日
  : others[epochDay(d) % others.length]
  );
  }
@@ -13140,14 +13132,14 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const grid = document.getElementById('weeklyMenuGrid');
  const label = document.getElementById('weekLabel');
  if (!grid) return;
- /* DOM順=お届け日の昇順[最短, +2日, +4日, +6日, +8日]。
-    CSS(nth-child)で最短着を右列に、大カード(feature=末尾)を左に配置 */
+ /* お届け日=最短着日以降の木・金・土・日を昇順に5枚。
+    先頭(最短着)が feature=左の大カード */
  const dates = nextDeliveryDates(5);
  if (label) label.textContent = `${fmtMD(dates[0])}〜${fmtMD(dates[4])} お届け分`;
  const recipes = pickRecipes(dates);
  grid.innerHTML = recipes.map((r, i) => {
  const d = dates[i];
- const isFeature = i === recipes.length - 1;
+ const isFeature = i === 0;
  const isFastest = i === 0;
  const dayLabel = (isFastest ? '最短 ' : '') + fmtMD(d) + '（' + WD_JP[d.getDay()] + '）着';
  const hasProduct = !!RECIPE_PRODUCTS[r.name];
