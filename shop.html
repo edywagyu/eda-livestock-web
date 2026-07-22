@@ -13124,9 +13124,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const isFeature = i === 0;
  const isFastest = i === 0;
  /* 最短着のみ実日付つき。他は曜日だけ(「日曜着」) */
- const dayLabel = isFastest
- ? '最短 ' + fmtMD(d) + '（' + WD_JP[d.getDay()] + '）着'
- : WD_JP[d.getDay()] + '曜着';
+ const dayLabel = (isFastest ? '最短 ' : '') + WD_JP[d.getDay()] + '曜';
  const hasProduct = !!RECIPE_PRODUCTS[r.name];
  const ctaText = hasProduct
  ? (isFeature ? '🛒 材料をカートに追加' : '+ カート追加')
