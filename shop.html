@@ -4441,10 +4441,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .menu-grid {
  display: grid;
- grid-template-columns: 1.6fr 1fr 1fr;
- grid-template-rows: 1fr 1fr;
+ grid-template-columns: 1fr 1fr 1fr;
+ grid-template-rows: 1fr 1fr 1fr;
  gap: 16px;
- height: 640px;
+ height: 920px; /* 6枚構成: 大カード2x2 + 右2枚 + 下段3枚 */
 }
 .menu-card {
  background: white;
@@ -4456,7 +4456,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .menu-card.feature {
  grid-row: 1 / 3;
- grid-column: 1 / 2;
+ grid-column: 1 / 3; /* 最短着=2x2の大カード */
 }
 .menu-card:hover {
  transform: translateY(-4px);
@@ -11170,7 +11170,7 @@ function toggleUnboxingSound() {
  <p class="weekly-menu-eyebrow">THIS WEEK'S MENU · <span id="weekLabel"></span></p>
  <h2 class="weekly-menu-title">今週のごはんは、江田畜産で。</h2>
  </div>
- <p class="weekly-menu-sub">「今夜何作ろう」をなくす、お届け日で選べる5メニュー。<br/>材料はワンクリックでカートに揃います。</p>
+ <p class="weekly-menu-sub">「今夜何作ろう」をなくす、お届け日で選べる6メニュー（和牛3・鶏3）。<br/>材料はワンクリックでカートに揃います。</p>
  </div>
  <div class="menu-grid" id="weeklyMenuGrid"></div>
  </div>
@@ -13046,7 +13046,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '和牛の肉じゃが': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
  '焼肉プレート': { id: 50830137655594, price: 1500, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
  '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
- 'ローストチキン': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
+ 'チキン南蛮': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のサイコロステーキ': { id: 50830132314410, price: 1800, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
  };
 
@@ -13071,22 +13071,22 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  // レシピプール（料理名・完成料理写真・所要時間・主要食材）
  const RECIPES = [
- { day: '週末', day_en: 'SAT', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
- { day: '月曜', day_en: 'MON', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', '玉ねぎ'] },
- { day: '火曜', day_en: 'TUE', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1700325341795-4793ac3ddb59?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
- { day: '水曜', day_en: 'WED', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
- { day: '木曜', day_en: 'THU', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
- { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1514536958296-436f46226e74?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
- { day: '週末', day_en: 'SAT', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1708597523963-40b30f846281?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
- { day: '日曜', day_en: 'SUN', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'public/images/products/drive/roast-beef-recipe.jpg', ingredients: ['ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
- { day: '月曜', day_en: 'MON', time: 25, name: '無投薬チキンカレー', desc: '平飼い鶏で煮込む、お子さま大喜びの定番。', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '玉ねぎ', '人参'] },
- { day: '火曜', day_en: 'TUE', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
- { day: '水曜', day_en: 'WED', time: 20, name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1685209744663-9635c4ba9bd3?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', 'じゃがいも', '人参'] },
- { day: '木曜', day_en: 'THU', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'public/images/products/drive/yakiniku-ponzu.jpg', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
- { day: '金曜', day_en: 'FRI', time: 20, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
- { day: '週末', day_en: 'SAT', time: 35, name: 'ローストチキン', desc: '丸鶏感覚で。週末ホムパに。', img: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', 'ローズマリー', '塩'], featured: true },
- { day: '月曜', day_en: 'MON', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] },
- { day: '週末', day_en: 'SAT', time: 5, name: '和牛生ハム前菜プレート', desc: 'そのまま盛るだけ。ワインの夜に。', img: 'public/images/products/drive/raw-ham-recipe.jpg', ingredients: ['和牛生ハム', 'クラッカー'], featured: true }
+ { type: 'beef', time: 30, name: 'サーロインステーキ', desc: '塩のみで完結。それを江田畜産の和牛で。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛サーロイン', '塩', 'クレソン'], featured: true },
+ { type: 'beef', time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', '玉ねぎ'] },
+ { type: 'chicken', time: 20, name: '平飼い鶏の唐揚げ', desc: '前夜に下味、揚げるだけ。週末分まで作り置き。', img: 'https://images.unsplash.com/photo-1700325341795-4793ac3ddb59?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '片栗粉'] },
+ { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
+ { type: 'beef', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
+ { type: 'chicken', time: 20, name: '鶏ももの照り焼き', desc: '皮目パリッ、中ジューシー。週末前のごほうび。', img: 'https://images.unsplash.com/photo-1514536958296-436f46226e74?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '醤油', 'みりん'] },
+ { type: 'beef', time: 30, name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒くぐらせて。週末のごほうび。', img: 'https://images.unsplash.com/photo-1708597523963-40b30f846281?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '昆布出汁'], featured: true },
+ { type: 'beef', time: 40, name: '和牛のローストビーフ', desc: '低温でじっくり。日曜のメイン。', img: 'public/images/products/drive/roast-beef-recipe.jpg', ingredients: ['ローストビーフ', 'クレソン', 'わさび醤油'], featured: true },
+ { type: 'chicken', time: 25, name: '無投薬チキンカレー', desc: '平飼い鶏で煮込む、お子さま大喜びの定番。', img: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '玉ねぎ', '人参'] },
+ { type: 'chicken', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] },
+ { type: 'beef', time: 20, name: '和牛の肉じゃが', desc: '切り落とし200gで4人前。家庭の定番。', img: 'https://images.unsplash.com/photo-1685209744663-9635c4ba9bd3?auto=format&fit=crop&w=900&q=85', ingredients: ['切り落とし', 'じゃがいも', '人参'] },
+ { type: 'beef', time: 30, name: '焼肉プレート', desc: 'バラ焼肉×塩タレ。週半ばのテンション。', img: 'public/images/products/drive/yakiniku-ponzu.jpg', ingredients: ['和牛バラ焼肉', '塩', 'レモン'] },
+ { type: 'chicken', time: 20, name: '鶏ミンチのそぼろ丼', desc: '3色丼。お子さま大喜び・お弁当にも。', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏ミンチ', '卵', '醤油'] },
+ { type: 'chicken', time: 30, name: 'チキン南蛮', desc: '宮崎名物。甘酢とタルタルで、平飼いモモがご馳走に。', img: 'public/images/products/drive/chicken-thigh.jpg', ingredients: ['平飼い鶏もも', '卵', '甘酢タルタル'], featured: true },
+ { type: 'beef', time: 15, name: '和牛のサイコロステーキ', desc: '転がすだけ。お子さま用ガーリックライスに。', img: 'public/images/products/drive/cube-griddle.jpg', ingredients: ['サイコロステーキ', '塩'] },
+ { type: 'beef', time: 5, name: '和牛生ハム前菜プレート', desc: 'そのまま盛るだけ。ワインの夜に。', img: 'public/images/products/drive/raw-ham-recipe.jpg', ingredients: ['和牛生ハム', 'クラッカー'], featured: true }
  ];
 
  /* お届け日計算 — チェックアウトの最短日ルールと同一
@@ -13112,30 +13112,42 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const fmtMD = d => (d.getMonth() + 1) + '/' + d.getDate();
 
  function pickRecipes(dates) {
- // スタッフ編集オーバーライド優先（5件・表示順）
+ // スタッフ編集オーバーライド優先（表示順）
  try {
  const override = JSON.parse(localStorage.getItem('eda-weekly-menu-override') || 'null');
- if (override && Array.isArray(override) && override.length === 5) return override;
+ if (override && Array.isArray(override) && override.length >= 5) return override.slice(0, dates.length);
  } catch (e) {}
 
- // お届け日ごとに決定的に選ぶ（同じ日付は日をまたいでも同じ献立=随時ずれて更新される）
+ /* 和牛3品・鶏肉3品になるよう、大カード(最短着)と逆のタイプから交互に割り当てる。
+    献立はお届け日ベースで決定的に選び、同一ウィンドウ内の重複は次候補にずらす */
  const featured = RECIPES.filter(r => r.featured);
- const others = RECIPES.filter(r => !r.featured);
- return dates.map((d, i) =>
- i === 0
- ? featured[epochDay(d) % featured.length] // 大カード=最短お届け日
- : others[epochDay(d) % others.length]
- );
+ const byType = {
+ beef: RECIPES.filter(r => !r.featured && r.type === 'beef'),
+ chicken: RECIPES.filter(r => !r.featured && r.type === 'chicken')
+ };
+ const hero = featured[epochDay(dates[0]) % featured.length];
+ const other = t => (t === 'beef' ? 'chicken' : 'beef');
+ const used = new Set([hero.name]);
+ const picks = [hero];
+ dates.slice(1).forEach((d, k) => {
+ const type = (k % 2 === 0) ? other(hero.type) : hero.type;
+ const pool = byType[type];
+ let idx = epochDay(d) % pool.length;
+ while (used.has(pool[idx].name)) idx = (idx + 1) % pool.length;
+ used.add(pool[idx].name);
+ picks.push(pool[idx]);
+ });
+ return picks;
  }
 
  function render() {
  const grid = document.getElementById('weeklyMenuGrid');
  const label = document.getElementById('weekLabel');
  if (!grid) return;
- /* お届け日=最短着日以降の木・金・土・日を昇順に5枚。
-    先頭(最短着)が feature=左の大カード */
- const dates = nextDeliveryDates(5);
- if (label) label.textContent = `${fmtMD(dates[0])}〜${fmtMD(dates[4])} お届け分`;
+ /* お届け日=最短着日以降の木・金・土・日を昇順に6枚(和牛3・鶏3)。
+    先頭(最短着)が feature=大カード */
+ const dates = nextDeliveryDates(6);
+ if (label) label.textContent = `${fmtMD(dates[0])}〜${fmtMD(dates[dates.length - 1])} お届け分`;
  const recipes = pickRecipes(dates);
  grid.innerHTML = recipes.map((r, i) => {
  const d = dates[i];
