@@ -428,6 +428,7 @@ function createCheckout(body) {
       line_uid:     (body.customer && body.customer.line_uid) || '',
       line_name:    (body.customer && body.customer.line_name) || '',
       contact_method: (body.customer && body.customer.contact_method) || '',
+      coupon_code:  body.coupon_code || '',   // 使用クーポン（1人1回判定は orders.metadata_json を走査）
       // 🔴 destinations/items の実体は Stripe metadata に入れない（1値500字制限。lean化しても
       //    9品種11点カートで destinations_json=551字となり決済不能＝2026-07-06 実顧客3連続失敗）。
       //    完全版(delivery込み destinations + items)は recordPendingOrder が pending_orders シートに
@@ -451,6 +452,10 @@ function createCheckout(body) {
   if (demoCoupon) {
     checkoutParams.discounts = [{ coupon: demoCoupon }];
   } else if (body.coupon_code) {
+    // 連携特典クーポン(LINE10)は1人=1メールアドレスにつき1回まで（支払済み注文を走査）
+    if (String(body.coupon_code).trim() === linkCouponCode_()) {
+      assertLinkCouponUnused_((body.customer && body.customer.email) || '');
+    }
     // 手動クーポンも対応
     checkoutParams.discounts = [{ coupon: body.coupon_code }];
   }
@@ -3586,6 +3591,30 @@ function sendLinePush(lineUid, messages) {
    Stripe側に同名のクーポン(10%OFF)が存在することが前提。line-link.html の表示も合わせること。 */
 function linkCouponCode_() {
   return cfg('LINK_COUPON_CODE', 'LINE10');
+}
+
+/* 連携特典クーポンの「1人(1メール)1回」ガード。
+   支払済みで orders に落ちた注文の metadata_json に coupon_code が刻まれる（createCheckout の
+   session.metadata 経由）ので、同メール×同コードの既存行があれば checkout 作成を拒否する。
+   注: メール違いは検知不可 / 決済未完了(離脱)はカウントしない（再挑戦可）仕様。 */
+function assertLinkCouponUnused_(email) {
+  var code = linkCouponCode_();
+  var em = String(email || '').trim().toLowerCase();
+  if (!em) throw new Error('クーポンのご利用にはメールアドレスの入力が必要です');
+  var sh = sheet('orders');
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return;
+  var h = rows[0];
+  var iMail = h.indexOf('customer_email');
+  var iMeta = h.indexOf('metadata_json');
+  if (iMail < 0 || iMeta < 0) return;
+  var needle = '"coupon_code":"' + code + '"';
+  for (var r = 1; r < rows.length; r++) {
+    if (String(rows[r][iMail] || '').trim().toLowerCase() !== em) continue;
+    if (String(rows[r][iMeta] || '').indexOf(needle) >= 0) {
+      throw new Error('クーポン「' + code + '」はお一人様1回までのご利用です');
+    }
+  }
 }
 
 /** 連携完了後に送る Flex Message（購入歴の有無に関わらずクーポン付き） */
