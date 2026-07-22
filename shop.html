@@ -4441,10 +4441,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .menu-grid {
  display: grid;
- grid-template-columns: 1fr 1fr 1fr;
- grid-template-rows: 1fr 1fr 1fr;
+ grid-template-columns: 1.6fr 1fr 1fr;
+ grid-template-rows: 1fr 1fr;
  gap: 16px;
- height: 920px; /* 6枚構成: 大カード2x2 + 右2枚 + 下段3枚 */
+ height: 640px;
 }
 .menu-card {
  background: white;
@@ -4456,7 +4456,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .menu-card.feature {
  grid-row: 1 / 3;
- grid-column: 1 / 3; /* 最短着=2x2の大カード */
+ grid-column: 1 / 2; /* 最短着=左の大カード */
 }
 .menu-card:hover {
  transform: translateY(-4px);
@@ -11156,7 +11156,7 @@ function toggleUnboxingSound() {
  <p class="weekly-menu-eyebrow">THIS WEEK'S MENU · <span id="weekLabel"></span></p>
  <h2 class="weekly-menu-title">今週のごはんは、江田畜産で。</h2>
  </div>
- <p class="weekly-menu-sub">「今夜何作ろう」をなくす、お届け日で選べる6メニュー（和牛3・鶏3）。<br/>材料はワンクリックでカートに揃います。</p>
+ <p class="weekly-menu-sub">「今夜何作ろう」をなくす、お届け日で選べる5メニュー。<br/>材料はワンクリックでカートに揃います。</p>
  </div>
  <div class="menu-grid" id="weeklyMenuGrid"></div>
  </div>
@@ -13032,7 +13032,6 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '和牛の肉じゃが': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
  '焼肉プレート': { id: 50830137655594, price: 1500, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
  '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
- 'チキン南蛮': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '赤身ステーキ': { id: 50830190379306, price: 3400, title: '赤身ステーキ', img: 'public/images/products/drive/red-meat-2026.jpg' },
  '親子丼': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のサイコロステーキ': { id: 50830132314410, price: 1800, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
@@ -13058,10 +13057,9 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  };
 
  // レシピプール（料理名・完成料理写真・所要時間・主要食材）
- /* 固定6メニュー(和牛3・鶏3)。表示順=カード順(先頭が最短着の大カード)。
-    商品紐付けは RECIPE_PRODUCTS (Tom/たろ確定 2026-07-22) */
+ /* 固定5メニュー(たろ確定 2026-07-22)。表示順=カード順(先頭が最短着の大カード)。
+    商品紐付けは RECIPE_PRODUCTS */
  const RECIPES = [
- { type: 'chicken', time: 30, name: 'チキン南蛮', desc: '宮崎名物。甘酢とタルタルで、平飼いモモがご馳走に。', img: 'public/images/products/drive/chicken-thigh.jpg', ingredients: ['平飼い鶏もも', '卵', '甘酢タルタル'], featured: true },
  { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
  { type: 'beef', time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
  { type: 'chicken', time: 15, name: '親子丼', desc: '平飼いモモと卵でとろとろ。15分で完成の定番丼。', img: 'https://images.unsplash.com/photo-1679279726946-a158b8bcaa23?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏もも', '卵', '玉ねぎ'] },
@@ -13104,9 +13102,9 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const grid = document.getElementById('weeklyMenuGrid');
  const label = document.getElementById('weekLabel');
  if (!grid) return;
- /* お届け日=最短着日以降の木・金・土・日を昇順に6枚(和牛3・鶏3)。
-    先頭(最短着)が feature=大カード */
- const dates = nextDeliveryDates(6);
+ /* お届け日=最短着日以降の木・金・土・日を昇順に5枚。
+    先頭(最短着)が feature=左の大カード */
+ const dates = nextDeliveryDates(5);
  if (label) label.textContent = `${fmtMD(dates[0])}〜${fmtMD(dates[dates.length - 1])} お届け分`;
  const recipes = pickRecipes(dates);
  grid.innerHTML = recipes.map((r, i) => {
