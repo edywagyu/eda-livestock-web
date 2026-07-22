@@ -4458,6 +4458,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  grid-row: 1 / 3;
  grid-column: 1 / 2;
 }
+/* DOMはお届け日の昇順(最短→先)。最短着を右列に配置し、
+   左の大カード(feature=DOM末尾)ほど先のお届け日になる */
+.menu-card:nth-child(1) { grid-column: 3; grid-row: 1; } /* 最短着 */
+.menu-card:nth-child(2) { grid-column: 3; grid-row: 2; }
+.menu-card:nth-child(3) { grid-column: 2; grid-row: 1; }
+.menu-card:nth-child(4) { grid-column: 2; grid-row: 2; }
 .menu-card:hover {
  transform: translateY(-4px);
  box-shadow: 0 24px 60px rgba(15,61,46,0.18);
@@ -4488,8 +4494,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 7px 14px;
  border-radius: 16px;
  color: var(--color-forest);
- z-index: 2;
+ z-index: 3;
  font-weight: 700;
+}
+.menu-card-day--fastest {
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
 }
 .menu-card-time-pill {
  position: absolute;
@@ -4501,17 +4511,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-weight: 700;
  padding: 6px 12px;
  border-radius: 14px;
- z-index: 2;
+ z-index: 3;
  letter-spacing: 0.04em;
 }
 .menu-card-content {
  position: absolute;
  bottom: 0; left: 0; right: 0;
- padding: 24px 26px 28px;
+ margin: 0 12px 12px;
+ padding: 16px 18px 18px;
+ border-radius: 14px;
+ background: rgba(11,45,34,0.80);
+ -webkit-backdrop-filter: blur(6px);
+ backdrop-filter: blur(6px);
  z-index: 2;
  color: white;
 }
-.menu-card.feature .menu-card-content { padding: 32px 36px 36px; }
+.menu-card.feature .menu-card-content { margin: 0 16px 16px; padding: 22px 26px 26px; }
 .menu-card-title {
  font-family: var(--font-jp-serif);
  font-size: 19px;
@@ -4583,8 +4598,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 @media (max-width: 900px) {
  .menu-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 1.5fr 1fr 1fr; height: auto; gap: 12px; }
+ .menu-card:nth-child(1), .menu-card:nth-child(2),
+ .menu-card:nth-child(3), .menu-card:nth-child(4) { grid-column: auto; grid-row: auto; }
  .menu-card.feature { grid-column: 1 / 3; grid-row: 1 / 2; min-height: 340px; }
- .menu-card { min-height: 220px; }
+ .menu-card { min-height: 264px; } /* 背景パネル分を確保して写真も見せる */
 }
 @media (max-width: 640px) {
  .menu-grid { grid-template-columns: 1fr; grid-template-rows: none; }
@@ -11154,7 +11171,7 @@ function toggleUnboxingSound() {
  <p class="weekly-menu-eyebrow">THIS WEEK'S MENU · <span id="weekLabel"></span></p>
  <h2 class="weekly-menu-title">今週のごはんは、江田畜産で。</h2>
  </div>
- <p class="weekly-menu-sub">「今夜何作ろう」をなくす、毎週入れ替わる5メニュー。<br/>材料はワンクリックでカートに揃います。</p>
+ <p class="weekly-menu-sub">「今夜何作ろう」をなくす、お届け日で選べる5メニュー。<br/>材料はワンクリックでカートに揃います。</p>
  </div>
  <div class="menu-grid" id="weeklyMenuGrid"></div>
  </div>
@@ -13073,72 +13090,75 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  { day: '週末', day_en: 'SAT', time: 5, name: '和牛生ハム前菜プレート', desc: 'そのまま盛るだけ。ワインの夜に。', img: 'public/images/products/drive/raw-ham-recipe.jpg', ingredients: ['和牛生ハム', 'クラッカー'], featured: true }
  ];
 
- // ISO週番号でシード（同じ週は同じメニュー）
- function getISOWeek(d) {
- const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
- const dayNum = date.getUTCDay() || 7;
- date.setUTCDate(date.getUTCDate() + 4 - dayNum);
- const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
- return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+ /* お届け日計算 — チェックアウトの最短日ルールと同一
+    (朝10時前の注文=2日後着/以降=3日後着・日曜は配送なし→翌月曜) */
+ function jstNow() {
+ const n = new Date();
+ return new Date(n.getTime() + (9 * 60 + n.getTimezoneOffset()) * 60000);
  }
+ function nextDeliveryDates(count) {
+ const jst = jstNow();
+ const lead = jst.getHours() < 10 ? 2 : 3;
+ const dates = [];
+ let cur = new Date(jst.getFullYear(), jst.getMonth(), jst.getDate() + lead);
+ while (dates.length < count) {
+ if (cur.getDay() === 0) cur.setDate(cur.getDate() + 1); // 日曜配送なし
+ dates.push(new Date(cur));
+ cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 2); // 1日置き
+ }
+ return dates;
+ }
+ const epochDay = d => Math.floor(d.getTime() / 86400000);
+ const WD_JP = ['日', '月', '火', '水', '木', '金', '土'];
+ const fmtMD = d => (d.getMonth() + 1) + '/' + d.getDate();
 
- function pickRecipes(weekNum) {
- // スタッフ編集オーバーライド優先
+ function pickRecipes(dates) {
+ // スタッフ編集オーバーライド優先（5件・表示順）
  try {
  const override = JSON.parse(localStorage.getItem('eda-weekly-menu-override') || 'null');
  if (override && Array.isArray(override) && override.length === 5) return override;
  } catch (e) {}
 
- // 週シードでシャッフル → 5つ選択（featured 1 + others 4）
+ // お届け日ごとに決定的に選ぶ（同じ日付は日をまたいでも同じ献立=随時ずれて更新される）
  const featured = RECIPES.filter(r => r.featured);
  const others = RECIPES.filter(r => !r.featured);
- const seed = weekNum;
- function pickN(arr, n, offset) {
- const out = [];
- for (let i = 0; i < n; i++) {
- out.push(arr[(seed + offset + i * 3) % arr.length]);
- }
- return out;
- }
- const picked = [pickN(featured, 1, 0)[0], ...pickN(others, 4, 1)];
- return picked;
+ return dates.map((d, i) =>
+ i === dates.length - 1
+ ? featured[epochDay(d) % featured.length] // 大カード=いちばん先のお届け日
+ : others[epochDay(d) % others.length]
+ );
  }
 
  function render() {
  const grid = document.getElementById('weeklyMenuGrid');
  const label = document.getElementById('weekLabel');
  if (!grid) return;
- const now = new Date();
- const weekNum = getISOWeek(now);
- if (label) label.textContent = `${now.getMonth() + 1}月第${Math.ceil(now.getDate() / 7)}週`;
- const recipes = pickRecipes(weekNum);
- /* 曜日はレシピ側の値を使わず、表示順で月→金に固定
-    (レシピ由来だと週末/金曜重複などバラつきが出るため) */
- const WEEKDAYS = [
- { jp: '月曜', en: 'MON' },
- { jp: '火曜', en: 'TUE' },
- { jp: '水曜', en: 'WED' },
- { jp: '木曜', en: 'THU' },
- { jp: '金曜', en: 'FRI' }
- ];
+ /* DOM順=お届け日の昇順[最短, +2日, +4日, +6日, +8日]。
+    CSS(nth-child)で最短着を右列に、大カード(feature=末尾)を左に配置 */
+ const dates = nextDeliveryDates(5);
+ if (label) label.textContent = `${fmtMD(dates[0])}〜${fmtMD(dates[4])} お届け分`;
+ const recipes = pickRecipes(dates);
  grid.innerHTML = recipes.map((r, i) => {
- const wd = WEEKDAYS[i] || { jp: r.day, en: r.day_en };
+ const d = dates[i];
+ const isFeature = i === recipes.length - 1;
+ const isFastest = i === 0;
+ const dayLabel = (isFastest ? '最短 ' : '') + fmtMD(d) + '（' + WD_JP[d.getDay()] + '）着';
  const hasProduct = !!RECIPE_PRODUCTS[r.name];
  const ctaText = hasProduct
- ? (i === 0 ? '🛒 材料をカートに追加' : '+ カート追加')
+ ? (isFeature ? '🛒 材料をカートに追加' : '+ カート追加')
  : 'レシピ';
  const onclickJs = hasProduct
  ? `_addRecipeToCart('${r.name.replace(/'/g, "\\'")}'); event.stopPropagation();`
  : `document.querySelector('#products')?.scrollIntoView({behavior:'smooth'});`;
  return `
- <div class="menu-card${i === 0 ? ' feature' : ''}" onclick="${onclickJs}">
+ <div class="menu-card${isFeature ? ' feature' : ''}" onclick="${onclickJs}">
  <div class="menu-card-img" style="background-image:url('${r.img}')"></div>
- <span class="menu-card-day">${wd.en} ${wd.jp}</span>
+ <span class="menu-card-day${isFastest ? ' menu-card-day--fastest' : ''}">${dayLabel}</span>
  <span class="menu-card-time-pill">${r.time}分</span>
  <div class="menu-card-content">
  <h3 class="menu-card-title">${r.name}</h3>
  <p class="menu-card-desc">${r.desc}</p>
- ${i === 0 ? `
+ ${isFeature ? `
  <div class="menu-card-ingredients">
  ${r.ingredients.map(ing => `<span class="menu-ingredient">${ing}</span>`).join('')}
  </div>` : ''}
