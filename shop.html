@@ -4517,9 +4517,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .menu-card.feature .menu-card-content { padding: 32px 36px 36px; }
 /* 商品名+説明の下に「ごく薄い」背景。濃さではなく blur で可読性を出す */
 .menu-card-text {
- background: rgba(11,45,34,0.15);
- -webkit-backdrop-filter: blur(12px);
- backdrop-filter: blur(12px);
+ background: rgba(11,45,34,0.06); /* 「+カート追加」行と同等のほぼ透明。可読性は blur で確保 */
+ -webkit-backdrop-filter: blur(10px);
+ backdrop-filter: blur(10px);
  border-radius: 10px;
  padding: 10px 14px 12px;
  margin: 0 0 12px;
