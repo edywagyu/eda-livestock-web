@@ -12916,5 +12916,42 @@ function copyPopCoupon() {
  if(document.readyState==='complete')init();else window.addEventListener('load',init);
 })();
 </script>
+
+<!-- ============================================================
+     shop.html「すべてを表示」からの遷移: ?cat=beef&sub=steak を受けて
+     カテゴリタブ・サブタブを自動選択し、該当ジャンルへスクロール
+     ============================================================ -->
+<script>
+(function applyUrlFilter() {
+ 'use strict';
+ var params = new URLSearchParams(location.search);
+ var cat = params.get('cat');
+ var sub = params.get('sub');
+ var SAFE = /^[a-z-]+$/;
+ if (cat && !SAFE.test(cat)) cat = null;
+ if (sub && !SAFE.test(sub)) sub = null;
+ if (!cat && !sub) return;
+
+ function run() {
+   if (cat) {
+     var tab = document.querySelector('.tab[data-filter="' + cat + '"]');
+     if (tab) tab.click();
+   }
+   if (sub && sub !== 'all') {
+     var sel = cat
+       ? '.sub-tab-row[data-parent-cat="' + cat + '"] .sub-tab[data-sub="' + sub + '"]'
+       : '.sub-tab[data-sub="' + sub + '"]';
+     var btn = document.querySelector(sel);
+     if (btn) btn.click();
+   }
+ }
+
+ if (document.readyState === 'loading') {
+   document.addEventListener('DOMContentLoaded', run);
+ } else {
+   run();
+ }
+})();
+</script>
 </body>
 </html>

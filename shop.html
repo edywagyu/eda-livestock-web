@@ -10012,6 +10012,11 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
+ <!-- ジャンル別プレビュー(2件)から商品一覧へ -->
+ <div class="shop-viewall-wrap" data-cat="beef">
+ <a href="products.html?cat=beef&amp;sub=all#products" class="btn-viewall">牛肉をすべて表示 →</a>
+ </div>
+
  <!-- ===== 平飼い鶏 + オーガニック ===== -->
  <div class="shop-cat-head reveal" data-cat="chicken" style="margin-top: 80px;">
  <h2 class="shop-cat-title">鶏肉 <span>/ Free-Range &amp; Organic</span></h2>
@@ -10099,6 +10104,11 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
+ </div>
+
+ <!-- ジャンル別プレビュー(2件)から商品一覧へ -->
+ <div class="shop-viewall-wrap" data-cat="chicken">
+ <a href="products.html?cat=chicken&amp;sub=all#products" class="btn-viewall">鶏肉をすべて表示 →</a>
  </div>
 
  <!-- 訳あり は会員限定 — 通常表示から削除（マイページからのみアクセス可） -->
@@ -14229,6 +14239,131 @@ function copyPopCoupon() {
   }).catch(function(){});}catch(e){}
  }
  if(document.readyState==='complete')init();else window.addEventListener('load',init);
+})();
+</script>
+
+<!-- ============================================================
+     ジャンル別 2件プレビュー + 「すべてを表示」→ products.html(商品一覧)
+     サブタブ(すべて/ステーキ/スライス/焼肉/加工品 等)選択時、
+     各グリッドの表示を先頭2商品に制限し、全量は商品一覧ページで見せる
+     ============================================================ -->
+<style>
+.product-card[data-preview-hidden] { display: none !important; }
+.shop-viewall-wrap { text-align: center; margin: 28px 0 8px; }
+.btn-viewall {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 36px; min-height: 44px;
+  border: 1.5px solid var(--color-forest); border-radius: 32px;
+  background: #fff; color: var(--color-forest);
+  font-size: 14px; font-weight: 700; letter-spacing: 0.02em;
+  text-decoration: none; transition: background 0.2s, color 0.2s;
+}
+.btn-viewall:hover { background: var(--color-forest); color: #fff; }
+</style>
+<script>
+(function productPreviewInit() {
+ 'use strict';
+ var LIMIT = 2;
+ var CAT_LABEL = { beef: '牛肉', chicken: '鶏肉' };
+ /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
+ var PREVIEW_PICKS = {
+   beef: { all: ['赤身スライス', '赤身焼肉'] }
+ };
+
+ function searchQuery() {
+   var el = document.getElementById('productSearch');
+   return el && el.value ? el.value.trim() : '';
+ }
+
+ function apply() {
+   var searching = !!searchQuery();
+   document.querySelectorAll('.product-grid[data-cat]').forEach(function(grid) {
+     var cat = grid.dataset.cat;
+     var wrap = document.querySelector('.shop-viewall-wrap[data-cat="' + cat + '"]');
+     var cards = Array.prototype.slice.call(grid.querySelectorAll('.product-card'));
+     cards.forEach(function(c) { c.removeAttribute('data-preview-hidden'); });
+
+     /* 検索中は全件見せる（プレビュー制限もボタンも出さない） */
+     if (searching) { if (wrap) wrap.style.display = 'none'; return; }
+
+     var row = document.querySelector('.sub-tab-row[data-parent-cat="' + cat + '"]');
+     var active = row ? row.querySelector('.sub-tab.active') : null;
+     var sub = (active && active.dataset.sub) ? active.dataset.sub : 'all';
+
+     /* サブタブ絞り込み・非公開(published=FALSE)で隠れていないカードだけ数える */
+     var visible = cards.filter(function(c) {
+       return c.style.display !== 'none' && !c.hasAttribute('data-search-hidden');
+     });
+
+     /* 優先表示商品を先に確保し、足りなければ先頭から補完 */
+     var picks = (PREVIEW_PICKS[cat] || {})[sub] || [];
+     var chosen = [];
+     picks.forEach(function(name) {
+       visible.some(function(c) {
+         var el = c.querySelector('.product-name');
+         if (el && el.textContent.trim() === name && chosen.indexOf(c) < 0) {
+           chosen.push(c);
+           return true;
+         }
+         return false;
+       });
+     });
+     visible.forEach(function(c) {
+       if (chosen.length < LIMIT && chosen.indexOf(c) < 0) chosen.push(c);
+     });
+     chosen = chosen.slice(0, LIMIT);
+     visible.forEach(function(c) {
+       if (chosen.indexOf(c) < 0) c.setAttribute('data-preview-hidden', '1');
+     });
+
+     if (!wrap) return;
+     var gridHidden = getComputedStyle(grid).display === 'none';
+     wrap.style.display = (gridHidden || visible.length <= LIMIT) ? 'none' : '';
+
+     /* 選択中のサブタブを products.html へ引き継ぐ (?cat=beef&sub=steak) */
+     var a = wrap.querySelector('a');
+     if (a) {
+       a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(sub) + '#products';
+       a.textContent = (sub !== 'all' && active
+         ? active.textContent.trim()
+         : (CAT_LABEL[cat] || '')) + 'をすべて表示 →';
+     }
+   });
+ }
+
+ /* 既存ハンドラ(カテゴリ/サブタブ切替)の後に実行 */
+ document.querySelectorAll('.tab[data-filter], .sub-tab').forEach(function(btn) {
+   btn.addEventListener('click', function() { setTimeout(apply, 0); });
+ });
+
+ /* 検索・GAS マスター反映の後にも再適用 */
+ ['filterProductSearch', 'refreshProductCards', 'refreshStockBadges'].forEach(function(name) {
+   var orig = window[name];
+   if (typeof orig === 'function') {
+     window[name] = function() {
+       var r = orig.apply(this, arguments);
+       setTimeout(apply, 0);
+       return r;
+     };
+   }
+ });
+
+ /* GAS 由来の新商品カード追加(__dynRenderNew)を拾う */
+ var moTimer = null;
+ var mo = new MutationObserver(function() {
+   clearTimeout(moTimer);
+   moTimer = setTimeout(apply, 50);
+ });
+ document.querySelectorAll('.product-grid[data-cat]').forEach(function(g) {
+   mo.observe(g, { childList: true });
+ });
+
+ if (document.readyState === 'loading') {
+   document.addEventListener('DOMContentLoaded', function() { setTimeout(apply, 0); });
+ } else {
+   setTimeout(apply, 0);
+ }
+ window.addEventListener('load', function() { setTimeout(apply, 100); });
 })();
 </script>
 </body>
