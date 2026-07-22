@@ -13072,8 +13072,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  /* 固定5メニュー(たろ確定 2026-07-22)。表示順=カード順(先頭が最短着の大カード)。
     商品紐付けは RECIPE_PRODUCTS */
  const RECIPES = [
- { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
  { type: 'beef', time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
+ { type: 'beef', time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
  { type: 'chicken', time: 15, name: '親子丼', desc: '平飼いモモと卵でとろとろ。15分で完成の定番丼。', img: 'https://images.pexels.com/photos/37297724/pexels-photo-37297724/free-photo-of-delicious-japanese-oyakodon-bowl-with-chicken.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['平飼い鶏もも', '卵', '玉ねぎ'] },
  { type: 'beef', time: 25, name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
  { type: 'chicken', time: 15, name: '鶏むね蒸し鶏 サラダ', desc: 'ヘルシー志向に。低温調理でしっとり。', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85', ingredients: ['平飼い鶏むね', '塩', 'レモン'] }
@@ -13124,7 +13124,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const isFeature = i === 0;
  const isFastest = i === 0;
  /* 最短着のみ実日付つき。他は曜日だけ(「日曜着」) */
- const dayLabel = (isFastest ? '最短 ' : '') + WD_JP[d.getDay()] + '曜';
+ const dayLabel = WD_JP[d.getDay()] + '曜';
  const hasProduct = !!RECIPE_PRODUCTS[r.name];
  const ctaText = hasProduct
  ? (isFeature ? '🛒 材料をカートに追加' : '+ カート追加')
