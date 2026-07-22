@@ -13088,7 +13088,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  function nextDeliveryDates(count) {
  const jst = jstNow();
  const lead = jst.getHours() < 10 ? 2 : 3;
- const MENU_DAYS = [4, 5, 6, 0]; // 木・金・土・日 に固定
+ const MENU_DAYS = [3, 4, 5, 6, 0]; // 水・木・金・土・日 に固定
  const dates = [];
  let cur = new Date(jst.getFullYear(), jst.getMonth(), jst.getDate() + lead);
  while (dates.length < count) {
