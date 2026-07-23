@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今週のごはん 写真候補（1料理3枚）</title>
+<style>
+  :root{--forest:#0F3D2E;--gold:#D4A93B;--cream:#FAF7F0;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream);color:#1A1A1A;font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif;line-height:1.5;}
+  header{background:var(--forest);color:#fff;padding:20px 24px;position:sticky;top:0;z-index:10;}
+  header h1{margin:0;font-size:18px;}
+  header p{margin:6px 0 0;font-size:13px;opacity:.85;}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px;}
+  .dish{background:#fff;border-radius:14px;padding:18px;margin-bottom:20px;box-shadow:0 2px 10px rgba(15,61,46,.06);}
+  .dish h2{margin:0 0 4px;font-size:17px;color:var(--forest);}
+  .dish .meta{font-size:12px;color:#5C5C5C;margin:0 0 14px;}
+  .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  @media(max-width:720px){.row{grid-template-columns:1fr;}}
+  .opt{border:2px solid #eee;border-radius:10px;overflow:hidden;background:#000;}
+  .opt.cur{border-color:var(--gold);}
+  .opt .imgbox{aspect-ratio:4/3;background:#111 center/cover no-repeat;}
+  .opt .cap{background:#fff;padding:7px 10px;font-size:11.5px;color:#333;}
+  .opt .tag{display:inline-block;font-size:10px;font-weight:700;color:#fff;background:var(--forest);border-radius:6px;padding:2px 7px;margin-right:5px;}
+  .opt .tag.cur{background:var(--gold);color:var(--forest);}
+  .legend{font-size:12px;color:#5C5C5C;margin:0 0 18px;}
+  .cat{font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.08em;margin:26px 0 10px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>今週のごはん｜写真候補（各料理 A・B・C の3枚）</h1>
+  <p>各料理3枚から1枚を選んでください。金枠＝現在サイト表示中。「◯◯＝B」のように伝えてもらえれば差し替えます。</p>
+</header>
+<div class="wrap">
+  <p class="legend">※すべて調理後の料理写真。Pexels（商用フリー・クレジット不要）＋自社素材。表示されない画像があれば教えてください（別候補を探します）。</p>
+  <div class="cat">── 和牛 ──</div>
+  <div id="beef"></div>
+  <div class="cat">── 鶏肉 ──</div>
+  <div id="chicken"></div>
+</div>
+<script>
+const P = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=600`;
+const U = id => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=80`;
+const DATA = {
+ beef: [
+  {name:'赤身ステーキ', opts:[
+    {src:U('1558030006-450675393462'), cur:true, cap:'焼いたステーキ（現在）'},
+    {src:P('15382847'), cap:'ミディアムレアの断面'},
+    {src:P('8694617'), cap:'スライス＋木のボード'},
+  ]},
+  {name:'ハンバーグ', opts:[
+    {src:'public/images/products/drive/hamburg.jpg', cur:true, cap:'焼きハンバーグ＋野菜（現在/自社）'},
+    {src:P('35116032'), cap:'肉汁のかかった肉（代替）'},
+    {src:U('1600891964092-4316c288032e'), cap:'鉄板ハンバーグ（代替）'},
+  ]},
+  {name:'和牛の牛丼', opts:[
+    {src:P('3799314'), cur:true, cap:'紅生姜のせ牛丼（現在）'},
+    {src:P('31299652'), cap:'半熟卵のせ牛丼'},
+    {src:P('16569555'), cap:'ねぎ・卵の牛丼'},
+  ]},
+  {name:'和牛のすき焼き', opts:[
+    {src:U('1648977555545-4dd006e30d3f'), cur:true, cap:'すき焼き（現在）'},
+    {src:P('19775602'), cap:'和風ホットポット'},
+    {src:P('13688385'), cap:'湯気の立つ鍋'},
+  ]},
+  {name:'和牛のしゃぶしゃぶ', opts:[
+    {src:P('37735951'), cur:true, cap:'鍋に肉を入れる瞬間（現在）'},
+    {src:P('37032054'), cap:'霜降りスライス盛り（前バージョン）'},
+    {src:P('6426069'), cap:'ぐつぐつ煮える鍋'},
+  ]},
+  {name:'和牛のローストビーフ', opts:[
+    {src:'public/images/products/drive/roast-beef-recipe.jpg', cur:true, cap:'スライス盛り＋わさび（現在/自社）'},
+    {src:P('29390886'), cap:'グレイビーソースがけ'},
+    {src:P('29390880'), cap:'バジル添え'},
+  ]},
+  {name:'ミスジステーキ', opts:[
+    {src:P('36555146'), cur:true, cap:'焼き目のステーキ（現在）'},
+    {src:P('35116032'), cap:'スライス＋ソース'},
+    {src:P('36604683'), cap:'スキレットのステーキ'},
+  ]},
+  {name:'ヒレステーキ', opts:[
+    {src:P('7807407'), cur:true, cap:'ハーブ添えステーキ（現在）'},
+    {src:P('36505856'), cap:'木のボードのステーキ'},
+    {src:P('8694617'), cap:'スライス断面'},
+  ]},
+  {name:'和牛のサイコロステーキ', opts:[
+    {src:'public/images/products/drive/cube-griddle.jpg', cur:true, cap:'鉄板で焼くサイコロ（現在/自社）'},
+    {src:P('36138049'), cap:'卵黄のせ和牛'},
+    {src:P('8112966'), cap:'鉄板焼きの盛り付け'},
+  ]},
+  {name:'和牛の肉じゃが', opts:[
+    {src:U('1685209744663-9635c4ba9bd3'), cur:true, cap:'肉じゃが（現在）'},
+    {src:P('10692537'), cap:'牛肉と根菜の煮物'},
+    {src:P('32027931'), cap:'和風の肉と野菜'},
+  ]},
+  {name:'赤身の焼肉プレート', opts:[
+    {src:P('37274310'), cur:true, cap:'石板で焼く焼肉（現在）'},
+    {src:P('8914623'), cap:'焼肉グリル'},
+    {src:P('18426529'), cap:'霜降り焼肉＋副菜'},
+  ]},
+  {name:'和牛のキーマカレー', opts:[
+    {src:P('34429592'), cur:true, cap:'ひき肉と豆の一皿（現在）'},
+    {src:P('9110581'), cap:'カレー＋ごはん＋卵'},
+    {src:P('4611425'), cap:'ごはん添えカレー'},
+  ]},
+  {name:'和牛生ハム前菜プレート', opts:[
+    {src:'public/images/products/drive/raw-ham-recipe.jpg', cur:true, cap:'生ハム盛り（現在/自社）'},
+    {src:P('34178397'), cap:'生ハムの前菜皿'},
+    {src:P('7491945'), cap:'生ハム＋グリッシーニ'},
+  ]},
+ ],
+ chicken: [
+  {name:'親子丼', opts:[
+    {src:P('37297724'), cur:true, cap:'親子丼（現在）'},
+    {src:P('37297720'), cap:'三つ葉のせ親子丼'},
+    {src:P('13441996'), cap:'卵とじの丼'},
+  ]},
+  {name:'鶏ももの照り焼き', opts:[
+    {src:P('13065183'), cur:true, cap:'照り焼きチキン（現在）'},
+    {src:P('13065185'), cap:'ねぎ・ごまのせ'},
+    {src:P('35064955'), cap:'白皿の照り焼き'},
+  ]},
+  {name:'鶏むね蒸し鶏 サラダ', opts:[
+    {src:U('1512621776951-a57141f2eefd'), cur:true, cap:'蒸し鶏サラダ（現在）'},
+    {src:P('13312316'), cap:'グリルチキンサラダ'},
+    {src:P('25315531'), cap:'ごま・チキンのサラダ'},
+  ]},
+  {name:'鶏むねのねぎ塩焼き', opts:[
+    {src:P('6107757'), cur:true, cap:'焼きむね肉スライス（現在）'},
+    {src:P('27969865'), cap:'グリルチキンと野菜'},
+    {src:P('6107770'), cap:'むね肉スライス盛り'},
+  ]},
+  {name:'よだれ鶏', opts:[
+    {src:P('38027763'), cur:true, cap:'ラー油がけスライス鶏（現在）'},
+    {src:P('27039863'), cap:'四川風チキン'},
+    {src:P('35833815'), cap:'黒い器のピリ辛鶏'},
+  ]},
+  {name:'鶏ミンチのそぼろ丼', opts:[
+    {src:U('1546069901-ba9599a7e63c'), cur:true, cap:'三色そぼろ丼（現在）'},
+    {src:P('31317036'), cap:'鶏そぼろ×卵の丼'},
+    {src:P('31962201'), cap:'卵のせごはん丼'},
+  ]},
+  {name:'鶏つくね', opts:[
+    {src:P('36318390'), cur:true, cap:'つくね串（炭火）（現在）'},
+    {src:P('32754748'), cap:'ねぎ添え鶏串'},
+    {src:P('30682902'), cap:'焼き鳥盛り合わせ'},
+  ]},
+ ],
+};
+function render(list, mountId){
+  const wrap = document.getElementById(mountId);
+  list.forEach(d=>{
+    const card = document.createElement('div');
+    card.className = 'dish';
+    const opts = d.opts.map((o,i)=>{
+      const letter = ['A','B','C'][i];
+      return `<div class="opt${o.cur?' cur':''}">
+        <div class="imgbox" style="background-image:url('${o.src}')"></div>
+        <div class="cap"><span class="tag${o.cur?' cur':''}">${letter}${o.cur?'・現在':''}</span>${o.cap}</div>
+      </div>`;
+    }).join('');
+    card.innerHTML = `<h2>${d.name}</h2><p class="meta">A・B・C から1枚選んでください</p><div class="row">${opts}</div>`;
+    wrap.appendChild(card);
+  });
+}
+render(DATA.beef,'beef');
+render(DATA.chicken,'chicken');
+</script>
+</body>
+</html>
