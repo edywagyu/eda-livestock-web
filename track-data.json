@@ -327,5 +327,108 @@
         "est": true
       }
     ]
+  },
+  "jolanda-0731": {
+    "order": "ORDINE 2026.3351",
+    "buyer": "JOLANDA DE COLÒ · Palmanova, Italy",
+    "awb": "205-71200695",
+    "airline": "All Nippon Airways",
+    "exporter": "Eda Livestock Co., Ltd. · Japan",
+    "importer": "Jolanda de Colò S.p.A. · Palmanova, Italy",
+    "product": "Eda Wagyu A5 (chilled)",
+    "boxes": 40,
+    "temp": "0–4°C",
+    "etd": "NRT · 4 Aug",
+    "eta": "MXP · 5 Aug, 01:57",
+    "demoT": "2026-08-04T18:13:45Z",
+    "route": [
+      "NRT",
+      "HND",
+      "MXP"
+    ],
+    "legs": [
+      {
+        "flight": "NH8027",
+        "carrier": "All Nippon",
+        "from": "NRT",
+        "to": "HND",
+        "dep": "2026-08-04T09:00:00Z",
+        "arr": "2026-08-04T10:30:00Z",
+        "depDisp": "4 Aug 18:00 (JST)",
+        "arrDisp": "4 Aug 19:30 (JST)",
+        "track": "https://www.flightradar24.com/data/flights/nh8027",
+        "callsign": "ANA8027"
+      },
+      {
+        "flight": "NH207",
+        "carrier": "All Nippon",
+        "from": "HND",
+        "to": "MXP",
+        "dep": "2026-08-04T12:30:00Z",
+        "arr": "2026-08-04T23:57:31Z",
+        "depDisp": "4 Aug 21:30 (JST)",
+        "arrDisp": "5 Aug 01:57 (CEST)",
+        "track": "https://www.flightradar24.com/data/flights/nh207",
+        "callsign": "ANA207"
+      }
+    ],
+    "steps": [
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "Kagoshima · K-2 plant",
+        "t": "2026-07-29T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-07-30T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Jul 31",
+        "t": "2026-07-31T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Aug 3",
+        "t": "2026-08-03T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Aug 4",
+        "t": "2026-08-04T02:00:00Z"
+      },
+      {
+        "lab": "In flight · NH8027",
+        "sub": "Tokyo → Tokyo",
+        "t": "2026-08-04T09:00:00Z",
+        "air": true
+      },
+      {
+        "lab": "Transit at Tokyo",
+        "sub": "HND",
+        "t": "2026-08-04T10:30:00Z",
+        "air": true
+      },
+      {
+        "lab": "In flight · NH207",
+        "sub": "Tokyo → Milan",
+        "t": "2026-08-04T12:30:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Milan",
+        "sub": "MXP",
+        "t": "2026-08-04T23:57:31Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Aug 5",
+        "t": "2026-08-05T23:57:31Z",
+        "est": true
+      }
+    ]
   }
 }
