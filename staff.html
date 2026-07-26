@@ -2315,7 +2315,7 @@ function renderRealtime(d){
   const tp = d.top_products || [];
   const pe = document.getElementById('rtProds');
   if (pe) pe.innerHTML = tp.length
-    ? tp.slice(0, 3).map(function(p, i){ return ['🥇','🥈','🥉'][i] + ' ' + escapeHtml(p.product) + ' <span style="color:#9db8ac">(' + p.count + '回)</span>'; }).join('<br>')
+    ? tp.slice(0, 3).map(function(p, i){ return ['🥇','🥈','🥉'][i] + ' ' + escapeHtml(productTitleFromCode(p.product)) + ' <span style="color:#9db8ac">(' + p.count + '回)</span>'; }).join('<br>')
     : '<span style="color:#9db8ac">まだデータなし</span>';
 }
 async function pollRealtime(){
@@ -2385,10 +2385,34 @@ const ANALYTICS_PRODUCT_TITLES = {
   'organic-chicken-thigh': 'オーガニックチキン モモ', 'organic-chicken-thigh-2': 'オーガニックチキン モモ', 'organic-chicken-thigh-3': 'オーガニックチキン モモ',
   'organic-chicken-minced': 'オーガニックチキン ミンチ', 'organic-chicken-minced-2': 'オーガニックチキン ミンチ', 'organic-chicken-minced-3': 'オーガニックチキン ミンチ'
 };
+/* events(meta_json.title)由来の実測ID→商品名。ANALYTICS_PRODUCT_TITLES に無い分の補完 */
+var EDA_PRODUCT_NAMES = {
+  "50830132314410": "サイコロステーキ",
+  "50830136082730": "サーロインステーキ",
+  "50830136115498": "サーロインステーキ",
+  "50830136148266": "サーロインステーキ",
+  "50830137655594": "バラ焼肉",
+  "50830187200810": "赤身スライス",
+  "50830190379306": "赤身ステーキ",
+  "50830190444842": "赤身ステーキ",
+  "50830191427882": "ハンバーグ",
+  "50830210793770": "平飼い鶏 ミンチ",
+  "50830250475818": "平飼い鶏 ムネ",
+  "50830287143210": "ホルモン",
+  "50830293172522": "平飼い鶏 モモ",
+  "50830303822122": "切り落とし",
+  "50831001234567": "ミンチ",
+  "50831002400101": "赤身焼肉",
+  "50831003500201": "ミスジステーキ",
+  "50831003700401": "霜降スライス",
+  "50831004750301": "ヒレステーキ",
+  "50877844750634": "和牛生ハム",
+  "50982670532906": "ローストビーフ (300g)"
+};
 function productTitleFromCode(code) {
   if (code == null) return '';
   const key = String(code);
-  return ANALYTICS_PRODUCT_TITLES[key] || key; /* 未知のコードはそのまま表示 */
+  return ANALYTICS_PRODUCT_TITLES[key] || EDA_PRODUCT_NAMES[key] || key; /* 未知のコードはそのまま表示 */
 }
 
 async function loadAnalytics() {
