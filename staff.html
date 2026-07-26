@@ -1230,6 +1230,39 @@ ul { list-style: none; padding: 0; margin: 0; }
         </div>
       </div>
 
+      <!-- 🔴 リアルタイム (LIVE) — staff_analytics を自動ポーリング -->
+      <div class="section-label">🔴 リアルタイム</div>
+      <div class="card" style="padding:14px 16px;background:var(--forest)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:8px;color:#fff;font-size:14px;font-weight:700">
+            <span id="rtDot" style="width:9px;height:9px;border-radius:50%;background:#ff4d4d;display:inline-block"></span>
+            ライブ計測
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="color:var(--gold);font-size:12px">更新 <span id="rtClock">--:--:--</span></span>
+            <button id="rtToggle" onclick="toggleRealtime()" style="border:0;background:rgba(255,255,255,.15);color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;cursor:pointer">⏸ 停止</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div style="background:rgba(0,0,0,.18);border-radius:10px;padding:9px 12px">
+            <div style="color:#9db8ac;font-size:10px">今日のセッション</div>
+            <div id="rtSess" style="color:#fff;font-size:22px;font-weight:800">-</div>
+          </div>
+          <div style="background:rgba(0,0,0,.18);border-radius:10px;padding:9px 12px">
+            <div style="color:#9db8ac;font-size:10px">今日の売上</div>
+            <div id="rtRev" style="color:var(--gold);font-size:22px;font-weight:800">-</div>
+          </div>
+        </div>
+        <div style="background:rgba(0,0,0,.18);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+          <div style="color:#9db8ac;font-size:10px;margin-bottom:6px">ファネル（本日）</div>
+          <div id="rtFunnel"></div>
+        </div>
+        <div style="background:rgba(0,0,0,.18);border-radius:10px;padding:10px 12px">
+          <div style="color:#9db8ac;font-size:10px;margin-bottom:4px">今日よく見られた商品</div>
+          <div id="rtProds" style="color:#eafff5;font-size:12px;line-height:1.7">-</div>
+        </div>
+      </div>
+
       <!-- 📊 アクセス分析ウィジェット (NEW) -->
       <div class="section-label">📊 アクセス分析</div>
       <div class="card" style="padding:14px 16px;background:#fff">
@@ -2231,6 +2264,7 @@ async function loadDashboard() {
     document.getElementById('todayRevenue').textContent = '¥152k';
     document.getElementById('lowStock').textContent = '2';
     loadAnalytics();
+    startRealtime();
     return;
   }
   try {
@@ -2246,6 +2280,70 @@ async function loadDashboard() {
     console.error(e);
   }
   loadAnalytics();
+  startRealtime();
+}
+
+/* 🔴 リアルタイム (LIVE) — staff_analytics(range=1d) を自動ポーリングして本日の数値を更新 */
+let _rtOn = true, _rtPollTimer = null, _rtClockTimer = null, _rtStarted = false;
+function _rtPad(n){ return n < 10 ? '0' + n : '' + n; }
+function _rtTick(){
+  const d = new Date();
+  const el = document.getElementById('rtClock');
+  if (el) el.textContent = _rtPad(d.getHours()) + ':' + _rtPad(d.getMinutes()) + ':' + _rtPad(d.getSeconds());
+  const dot = document.getElementById('rtDot');
+  if (dot && _rtOn) dot.style.opacity = (dot.style.opacity === '0.25') ? '1' : '0.25';
+}
+function _rtDrawFunnel(t){
+  const box = document.getElementById('rtFunnel');
+  if (!box) return;
+  const steps = [['セッション', t.sessions || 0, '#5DCAA5'], ['カート追加', t.addCart || 0, '#9FE1CB'], ['決済開始', t.beginCheckout || 0, '#D4A93B'], ['購入', t.purchase || 0, '#ff9e6d']];
+  const max = Math.max(1, steps[0][1]);
+  box.innerHTML = steps.map(function(s){
+    const w = Math.max(4, Math.round(s[1] / max * 100));
+    return '<div style="display:flex;align-items:center;gap:8px;margin:4px 0">' +
+      '<div style="width:60px;color:#cfe6dc;font-size:11px">' + s[0] + '</div>' +
+      '<div style="flex:1;background:rgba(0,0,0,.28);border-radius:5px;overflow:hidden;height:14px">' +
+      '<div style="width:' + w + '%;height:100%;background:' + s[2] + '"></div></div>' +
+      '<div style="width:26px;text-align:right;color:#fff;font-size:12px;font-weight:700">' + s[1] + '</div></div>';
+  }).join('');
+}
+function renderRealtime(d){
+  const t = d.today || {};
+  const s = document.getElementById('rtSess'); if (s) s.textContent = t.sessions || 0;
+  const r = document.getElementById('rtRev'); if (r) r.textContent = '¥' + Math.round(t.revenue || 0).toLocaleString();
+  _rtDrawFunnel(t);
+  const tp = d.top_products || [];
+  const pe = document.getElementById('rtProds');
+  if (pe) pe.innerHTML = tp.length
+    ? tp.slice(0, 3).map(function(p, i){ return ['🥇','🥈','🥉'][i] + ' ' + escapeHtml(p.product) + ' <span style="color:#9db8ac">(' + p.count + '回)</span>'; }).join('<br>')
+    : '<span style="color:#9db8ac">まだデータなし</span>';
+}
+async function pollRealtime(){
+  if (!_rtOn) return;
+  if (typeof isDemoMode === 'function' && isDemoMode()){
+    renderRealtime({ today: { sessions: 34, addCart: 12, beginCheckout: 4, purchase: 2, revenue: 28600 }, top_products: [{ product: '赤身スライス', count: 9 }, { product: '平飼い鶏ムネ', count: 6 }, { product: '切り落とし', count: 4 }] });
+    return;
+  }
+  try {
+    const res = await fetch(GAS_URL + '?action=staff_analytics&range=1d' + authQS());
+    const d = await res.json();
+    if (d && d.ok) renderRealtime(d);
+  } catch (e) { /* ネットワーク一時失敗は無視して次回リトライ */ }
+}
+function startRealtime(){
+  if (_rtStarted) { pollRealtime(); return; }
+  _rtStarted = true;
+  _rtClockTimer = setInterval(_rtTick, 1000);
+  _rtPollTimer = setInterval(function(){ if (document.visibilityState === 'visible') pollRealtime(); }, 25000);
+  _rtTick(); pollRealtime();
+}
+function toggleRealtime(){
+  _rtOn = !_rtOn;
+  const b = document.getElementById('rtToggle');
+  const dot = document.getElementById('rtDot');
+  if (b) b.textContent = _rtOn ? '⏸ 停止' : '▶ 再開';
+  if (dot) dot.style.background = _rtOn ? '#ff4d4d' : '#8a8a8a';
+  if (_rtOn) pollRealtime();
 }
 
 /* 📊 ANALYTICS ウィジェット — 期間切替対応 */
