@@ -346,6 +346,14 @@ function createCheckout(body) {
     // 在庫検証エラーは fail-open (シート未作成時など) → ログだけ
     log('stock_check_warn', { error: e.message });
   }
+
+  // 🎟️ 顧客クーポン: 正規化 → 許可リスト照合 → LINE10 は「1人1回」ガード。
+  //    🔴 Stripe には渡さない（値引きはフロントが単価を書き換え済み＝渡すと二重割引）。
+  //    ガードは Stripe セッションを作る前に投げる＝副作用ゼロで止める。
+  const custCoupon = normalizeCustomerCoupon_(body);
+  if (custCoupon === linkCouponCode_()) {
+    assertLinkCouponUnused_((body.customer && body.customer.email) || '');
+  }
   items.forEach(it => {
     if (it.stripePriceId) {
       lineItems.push({
@@ -428,7 +436,7 @@ function createCheckout(body) {
       line_uid:     (body.customer && body.customer.line_uid) || '',
       line_name:    (body.customer && body.customer.line_name) || '',
       contact_method: (body.customer && body.customer.contact_method) || '',
-      coupon_code:  body.coupon_code || '',   // 使用クーポン（1人1回判定は orders.metadata_json を走査）
+      coupon_code:  custCoupon,   // 使用クーポン（1人1回判定は orders.metadata_json を走査）
       // 🔴 destinations/items の実体は Stripe metadata に入れない（1値500字制限。lean化しても
       //    9品種11点カートで destinations_json=551字となり決済不能＝2026-07-06 実顧客3連続失敗）。
       //    完全版(delivery込み destinations + items)は recordPendingOrder が pending_orders シートに
@@ -448,16 +456,15 @@ function createCheckout(body) {
 
   // 🎁 デモ期間 100%OFF クーポン自動適用
   // STRIPE_DEMO_COUPON が設定されていれば全注文に適用 (デモ後は空に戻す)
+  // 🔴🔴 discounts に載せてよいのは **Script Property 由来の管理者クーポンだけ**（2026-07-26）。
+  //   顧客入力(custCoupon)を Stripe coupon ID として渡してはいけない。理由2つ:
+  //   ① 値引きはフロントが単価を書き換えて実現済み＝ここで更に引くと二重割引。
+  //   ② 顧客が任意の Stripe coupon ID を指定できてしまう（例 定期便用 FIRST50=50%OFF を
+  //      単品注文に適用）。旧コードは body.coupon_code をそのまま discounts に渡していたが、
+  //      フロントが送るキーが couponCode だったため一度も発火しておらず、実害は出ていない。
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
   if (demoCoupon) {
     checkoutParams.discounts = [{ coupon: demoCoupon }];
-  } else if (body.coupon_code) {
-    // 連携特典クーポン(LINE10)は1人=1メールアドレスにつき1回まで（支払済み注文を走査）
-    if (String(body.coupon_code).trim() === linkCouponCode_()) {
-      assertLinkCouponUnused_((body.customer && body.customer.email) || '');
-    }
-    // 手動クーポンも対応
-    checkoutParams.discounts = [{ coupon: body.coupon_code }];
   }
 
   const params = flattenForm(checkoutParams);
@@ -545,6 +552,12 @@ function createBankOrder(body) {
   let total = Number(body.display_total);
   if (!total || total <= 0) total = subtotal + shipping;
 
+  // 🎟️ 銀行振込も同じクーポン規則（カード側だけガードすると振込を選ぶだけで再利用できてしまう）
+  const custCoupon = normalizeCustomerCoupon_(body);
+  if (custCoupon === linkCouponCode_()) {
+    assertLinkCouponUnused_((body.customer && body.customer.email) || '');
+  }
+
   const orderNum = generateOrderNumber();
   const cust = body.customer || {};
   const itemsJson = JSON.stringify(items.map(it => ({ title: it.title || it.name || '', variant: it.variant || '', qty: it.qty || 1 })));
@@ -560,7 +573,7 @@ function createBankOrder(body) {
     delivery_date: (body.delivery && body.delivery.date) || '',
     delivery_time: (body.delivery && body.delivery.time) || '',
     items_json: itemsJson,
-    coupon_code: body.couponCode || '',
+    coupon_code: custCoupon,
     payment_method: 'bank'
   };
 
@@ -3591,6 +3604,27 @@ function sendLinePush(lineUid, messages) {
    Stripe側に同名のクーポン(10%OFF)が存在することが前提。line-link.html の表示も合わせること。 */
 function linkCouponCode_() {
   return cfg('LINK_COUPON_CODE', 'LINE10');
+}
+
+/* 🎟️ 顧客クーポンの正規化＋許可リスト（2026-07-26 新設）。
+   🔴 フロント checkout.html の `COUPONS`(:2258付近) と**必ず対で維持する**。
+      片方だけに足すと「入力できるのに記録されない」「記録されるのに割引されない」になる。
+   🔴 キー名の罠：決済ページは `couponCode`(キャメル)で送る。`createBankOrder` は元から
+      couponCode を読んでいたが `createCheckout` は `coupon_code`(スネーク)を読んでいたため、
+      LINE10 の割引も「1人1回」ガードも**一度も動いていなかった**（2026-07-26 発見）。
+      ここで両方を受けて正規化し、以後どちらのケースでも同じ結果にする。
+   値引きの実体はフロントが単価を書き換えて表現する（Stripe coupon は使わない）。
+   ここは「どのコードが使われたか」を確定し metadata に刻む役割＝1人1回ガードの根拠になる。 */
+function normalizeCustomerCoupon_(body) {
+  var raw = String((body && (body.couponCode || body.coupon_code)) || '').trim().toUpperCase();
+  if (!raw) return '';
+  var allowed = { 'エダチク10': true };
+  allowed[linkCouponCode_()] = true;         // 既定 LINE10（LINK_COUPON_CODE で変更可）
+  if (!allowed[raw]) {
+    log('coupon_unknown_code', { code: raw.slice(0, 32) });
+    return '';                               // 未知コードは無視（フロントが弾く前提の保険）
+  }
+  return raw;
 }
 
 /* 連携特典クーポンの「1人(1メール)1回」ガード。

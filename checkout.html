@@ -1299,7 +1299,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="checkout-brand-name">CHECKOUT</span>
  </a>
  <div style="display:flex;align-items:center;gap:16px;">
- <a href="shop.html" style="display:inline-flex;align-items:center;gap:4px;color:var(--color-forest);font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;">
+ <a href="shop.html" onclick="return confirmLeaveCheckout();" style="display:inline-flex;align-items:center;gap:4px;color:var(--color-forest);font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;">
  ← 買い物に戻る
  </a>
  <a href="tel:09047241063" style="display:inline-flex;align-items:center;gap:4px;color:var(--color-forest);font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;" class="hide-sp">
@@ -2255,8 +2255,13 @@ function removeDestination(idx) {
 
 /* ---- サマリー ---- */
 /* ======== クーポン (2026-05-30) ======== */
+/* 🔴 裏側 gas/Code.gs の normalizeCustomerCoupon_() の許可リストと**必ず対で維持する**。
+   ここだけに足す → 割引は効くが metadata に残らず「1人1回」ガードが効かない。
+   裏だけに足す → お客様が入力しても「正しくありません」で弾かれる（LINE10 が実際にそうだった）。
+   値引きは下の discountedUnit() が単価を書き換えて実現する（Stripe coupon は使わない）。 */
 var COUPONS = {
- 'エダチク10': { type: 'percent', value: 10, label: '初回購入10%OFF' }
+ 'エダチク10': { type: 'percent', value: 10, label: '初回購入10%OFF' },
+ 'LINE10':     { type: 'percent', value: 10, label: 'LINE連携特典 全品10%OFF' }
 };
 var appliedCoupon = null;
 var gShipping = 0;
@@ -2278,6 +2283,29 @@ function buildPayloadItems() {
  // ここで配送料を line item に含めると GAS の「送料」と二重課金になるため、含めない。
  return arr;
 }
+/* 🔴 2026-07-26: ヘッダーの「← 買い物に戻る」はブランドロゴのすぐ隣（幅48pxのタップ領域）で、
+   入力途中に誤タップすると 氏名・住所・電話・お届け先が全部消えて戻ってこない
+   （このページはフォームを保存していない＝再入力のやり直し）。
+   → 中身が入っている時だけ確認をはさむ。
+   🔴 beforeunload は使わない。決済ボタンから Stripe へリダイレクトする瞬間にも
+      「このサイトを離れますか」が出てしまい、いちばん落としたくない所で離脱を招くため。
+      戻るリンクのクリックだけを対象にする。 */
+function confirmLeaveCheckout() {
+ var filled = false;
+ try {
+   /* お名前・電話・郵便番号・住所・メール・お届け日 ＝ お届け先カードの入力欄。
+      クーポン欄は再入力が一瞬なので対象外にする（無駄な確認を出さない）。 */
+   var els = document.querySelectorAll('.dest-field input, .dest-field textarea, .dest-field-date input');
+   for (var i = 0; i < els.length; i++) {
+     var e = els[i];
+     if (e.type === 'hidden' || e.type === 'checkbox' || e.type === 'radio') continue;
+     if ((e.value || '').trim()) { filled = true; break; }
+   }
+ } catch (_) { return true; }
+ if (!filled) return true;
+ return confirm('入力途中の内容は保存されません。買い物に戻りますか？\n（カートの中身はそのまま残ります）');
+}
+
 function applyCoupon() {
  var input = document.getElementById('couponInput');
  var msg = document.getElementById('couponMsg');

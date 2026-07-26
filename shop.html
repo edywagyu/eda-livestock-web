@@ -11726,6 +11726,86 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
    font-size: 12px !important;
    min-height: 36px !important;
  }
+
+ /* ============ 商品グリッドを2列に折り返す（2026-07-26） ============
+    🔴 それまではモバイルでも「常に横スクロール」レールで、375px の画面に
+       牛肉18商品 × 280px ＝ 実測 4,556px を押し込んでいた。画面に出るのは約1.5商品で、
+       残り16商品は右へ何度もスワイプしないと存在に気づけない（＝ほぼ売り場に無いのと同じ）。
+    → 縦スクロールで全商品が見える2列グリッドへ（スマホECの標準形）。
+       カード自体は上のルールで既に圧縮済みなので、ここは「並べ方」だけを変える。
+    🔴 レールは左右に負マージンで画面端まではみ出させていた。折り返す時に残すと
+       グリッドが container からズレるので必ず 0 に戻す。 */
+ .product-grid[data-cat="beef"],
+ .product-grid[data-cat="chicken"],
+ .product-grid--merged {
+   flex-wrap: wrap !important;
+   overflow-x: visible !important;
+   scroll-snap-type: none !important;
+   gap: 12px !important;
+   margin-left: 0 !important;  margin-right: 0 !important;
+   padding-left: 0 !important; padding-right: 0 !important;
+   padding-bottom: 0 !important;
+ }
+ .product-grid[data-cat="beef"] .product-card,
+ .product-grid[data-cat="chicken"] .product-card,
+ .product-grid--merged .product-card {
+   flex: 1 1 calc(50% - 6px) !important;
+   max-width: calc(50% - 6px) !important;
+   min-width: 0 !important;
+   scroll-snap-align: none !important;
+ }
+ /* 🔴 1枚166px だと「部位タグ」と「価格」が justify-content:space-between で横に並びきらず、
+    価格がカードの外へはみ出していた（実測 scrollWidth 161 > 幅 144・グリッドに22pxの横スクロールが残る）。
+    → 折り返しを許可して価格を必ずカード内に収める。 */
+ .product-grid[data-cat="beef"] .product-tag-row,
+ .product-grid[data-cat="chicken"] .product-tag-row,
+ .product-grid--merged .product-tag-row { flex-wrap: wrap !important; row-gap: 2px !important; }
+ /* nowrap のままだと「カートに追…」と切れるので、狭い時だけ折り返しを許可 */
+ .product-grid[data-cat="beef"] .btn-add-cart,
+ .product-grid[data-cat="chicken"] .btn-add-cart,
+ .product-grid--merged .btn-add-cart {
+   white-space: normal !important;
+   font-size: 11px !important;
+   letter-spacing: 0.02em !important;
+   padding: 9px 6px !important;
+   line-height: 1.35 !important;
+ }
+ /* 🔴 買うUIがカード幅144pxに対して155px必要で、「2個で5%OFF」表示が
+    カードの外にはみ出していた（グリッドに17pxの横スクロールが残る原因）。
+    ステッパーのボタンは40px角のまま（タップ精度を落とさない）、数字欄だけ詰めて1行に収める。
+    まとめ買いの訴求は購入率に効くので消さない。 */
+ .product-grid[data-cat="beef"] .product-buy,
+ .product-grid[data-cat="chicken"] .product-buy,
+ .product-grid--merged .product-buy { align-items: stretch !important; }
+ .product-grid[data-cat="beef"] .qty-row,
+ .product-grid[data-cat="chicken"] .qty-row,
+ .product-grid--merged .qty-row {
+   width: 100% !important; min-width: 0 !important;
+   flex-wrap: nowrap !important; gap: 6px !important;
+   justify-content: space-between !important;
+ }
+ .product-grid[data-cat="beef"] .qty-stepper .qty-val,
+ .product-grid[data-cat="chicken"] .qty-stepper .qty-val,
+ .product-grid--merged .qty-stepper .qty-val { min-width: 22px !important; }
+ /* 端数が出たら押し出さずに、この文字側が縮んで吸収する（flex-shrink:0 だと外へ出る） */
+ .product-grid[data-cat="beef"] .qty-disc,
+ .product-grid[data-cat="chicken"] .qty-disc,
+ .product-grid--merged .qty-disc {
+   font-size: 10px !important; min-width: 0 !important;
+   flex: 0 1 auto !important; overflow: hidden !important;
+ }
+
+ /* 🔴 売切れカードで「在庫切れ」(top:10 left:10) と「無投薬」(top:14 left:14) が
+    どちらも左上に置かれ、実測 56×17px 重なって両方読めなくなっていた。
+    在庫切れの時だけ「無投薬」を下へ逃がす。:has() 非対応ブラウザでは従来表示のまま（無害）。 */
+ .product-card:has(.stock-badge-overlay.stock-out) .badge { top: 52px !important; }
+
+ /* 🔴 スティッキーCTA：カート点数・金額・送料無料まであと¥◯ が横1行に詰め込まれ、
+    「1点」が縦2行に割れ、送料メッセージも折り返して読みづらかった。
+    送料メッセージだけ2行目へ落として、上段は点数と金額を1行で見せる。 */
+ .sticky-cart-info { flex-wrap: wrap !important; gap: 10px !important; row-gap: 0 !important; }
+ .sticky-cart-count { white-space: nowrap !important; }
+ #stickyShipNote { flex: 1 0 100% !important; white-space: nowrap !important; }
 }
 </style>
 
@@ -12017,7 +12097,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  if (item.baseUnit != null) item.price = tieredUnit(item.baseUnit, item.tiers, item.qty);
  subtotal += item.price * item.qty;
  html += `<div class="cart-item" data-idx="${idx}">
- <div class="cart-item-img"><img loading="lazy" decoding="async" src="${item.img}" alt=""/></div>
+ <div class="cart-item-img">${item.img ? `<img loading="lazy" decoding="async" src="${item.img}" alt=""/>` : ''}</div>
  <div class="cart-item-info">
  <div class="cart-item-title">${item.title}</div>
  <div class="cart-item-variant">${item.variant}</div>
@@ -12289,8 +12369,20 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  if (!variants.length) return;
 
  const title = (card.querySelector('.product-name') || {}).textContent || '';
- const imgEl = card.querySelector('.product-card-img img');
- const img = imgEl ? imgEl.src : '';
+ /* 🔴 2026-07-26: カード写真は2方式ある。
+      ① <img> を持つカード（.product-card-img.has-img img）
+      ② CSS background-image のカード（data-label 方式・<img> を持たない）
+    ②では imgEl が null になり img='' のままカートへ入り、カート内の全行が
+    <img src=""> ＝ 画像切れアイコンになっていた（サーロイン等の主力商品が該当）。
+    → <img> が無ければ背景画像の URL を拾う。 */
+ const imgBox = card.querySelector('.product-card-img');
+ const imgEl = imgBox && imgBox.querySelector('img');
+ let img = imgEl ? imgEl.src : '';
+ if (!img && imgBox) {
+   const bg = getComputedStyle(imgBox).backgroundImage || '';
+   const m = bg.match(/url\(["']?(.*?)["']?\)/);
+   if (m && m[1] && m[1] !== 'none') img = m[1];
+ }
 
  // 2026-05-30: 数量セレクトを1つに統合。セット割 (2つ5%/3つ10%OFF) を選択肢に内包。
  //  ・data-variants をそのまま単一セレクトに (各 variant は固有 id / 割引込み価格)
