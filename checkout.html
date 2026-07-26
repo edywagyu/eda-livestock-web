@@ -2681,7 +2681,8 @@ async function placeOrder() {
      payment_method: payment,
      mode: mode,
      item_count: cartItems.length,
-     has_subscription: !!(subscription && PLANS[subscription.plan])
+     has_subscription: !!(subscription && PLANS[subscription.plan]),
+     line_uid: lineSession?.line_uid || ''   // カゴ落ち者を特定しLINEリマインドを送るため
    });
  }
 
