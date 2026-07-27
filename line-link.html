@@ -600,6 +600,8 @@ function submitRegistration() {
 
   _lineUid = profile.userId;
   _displayName = profile.displayName || '';
+  /* c.html のクリック計測で本人を特定できるよう uid を保存 (2026-07-27) */
+  try { if (_lineUid) localStorage.setItem('eda-line-uid', _lineUid); } catch (e) {}
 
   if (!_lineUid) {
     showError('LINE の認証情報が取得できませんでした。');
