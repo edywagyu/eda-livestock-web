@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>移動中… — 江田畜産</title>
+<style>
+  html,body{height:100%;margin:0}
+  body{display:flex;align-items:center;justify-content:center;background:#FAF7F0;
+       color:#0F3D2E;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif}
+  .box{text-align:center}
+  .spin{width:34px;height:34px;border:3px solid #d8d2c2;border-top-color:#0F3D2E;
+        border-radius:50%;margin:0 auto 14px;animation:s .8s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  a{color:#0F3D2E}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="spin"></div>
+    <div>ページに移動しています…</div>
+    <noscript><p><a id="nojs" href="https://www.eda-livestock.com/">こちらをタップ</a></p></noscript>
+  </div>
+
+<script>
+/* ============================================================
+   c.html — クリック計測リダイレクタ (2026-07-27)
+   ------------------------------------------------------------
+   LINE 配信などのリンクをこのページ経由にすると、
+   「誰が・いつ(曜日/時刻)・どの配信の・どのリンクを」押したかを
+   既存の events シート (event_type: msg_click) に記録してから、
+   本来の行き先へ即転送する。
+     使い方: /c.html?to=<行き先URL>&msg=<配信ID>&l=<リンク名>
+   ・to    … 転送先 (必須, 下記 allowlist ドメインのみ許可)
+   ・msg   … 配信/キャンペーン識別子 (例 0726, ochugen2026)
+   ・l     … リンク位置/名称 (例 shop, coupon, gift)
+   個人特定は line-link 連携済みの uid を localStorage から拾って付与。
+   計測は fire-and-forget。失敗しても必ず転送する (UX 最優先)。
+   ============================================================ */
+(function () {
+  'use strict';
+
+  // events が現在着地している GAS Web App (public/js/analytics.js と同一)
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
+
+  // 転送を許可するドメイン (オープンリダイレクト悪用の防止)
+  var ALLOW = ['eda-livestock.com', 'www.eda-livestock.com', 'liff.line.me', 'line.me'];
+  var HOME  = 'https://www.eda-livestock.com/';
+
+  function qs(name) {
+    var m = new RegExp('[?&]' + name + '=([^&]*)').exec(location.search);
+    return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : '';
+  }
+
+  // 転送先の検証: http(s) かつ allowlist ドメインのみ。不正なら HOME。
+  function safeTarget(raw) {
+    if (!raw) return HOME;
+    var u;
+    try { u = new URL(raw, HOME); } catch (e) { return HOME; }
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return HOME;
+    var host = u.hostname.toLowerCase();
+    var ok = ALLOW.some(function (d) { return host === d || host.endsWith('.' + d); });
+    return ok ? u.toString() : HOME;
+  }
+
+  // session_id は analytics.js と同じキーを共有 (page_view 等と紐付く)
+  function sessionId() {
+    try {
+      var sid = localStorage.getItem('eda-sess');
+      if (!sid) { sid = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+                  localStorage.setItem('eda-sess', sid); }
+      localStorage.setItem('eda-sess-last', String(Date.now()));
+      return sid;
+    } catch (e) { return 's' + Date.now().toString(36); }
+  }
+
+  function lineUid() {
+    try { return localStorage.getItem('eda-line-uid') || ''; } catch (e) { return ''; }
+  }
+
+  var target = safeTarget(qs('to'));
+  var now = new Date();
+
+  var payload = {
+    event_type: 'msg_click',
+    session_id: sessionId(),
+    page: qs('msg') || '',            // 配信ID を page 列へ (集計しやすく)
+    product_id: qs('l') || '',        // リンク名を product_id 列へ
+    referrer: document.referrer || '',
+    ua: navigator.userAgent.slice(0, 200),
+    meta: {
+      to: target,
+      msg: qs('msg') || '',
+      l: qs('l') || '',
+      uid: lineUid(),                 // 連携済みなら個人特定, 未連携は ''
+      dow: now.getDay(),              // 0=日 … 6=土 (JST 端末時刻)
+      hour: now.getHours(),          // 0-23
+      src: qs('src') || 'line'
+    }
+  };
+
+  // 計測を投げてから転送 (sendBeacon は転送で中断されても届く)
+  try {
+    var body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(GAS_URL + '?action=log_event', new Blob([body], { type: 'text/plain' }));
+    } else {
+      fetch(GAS_URL + '?action=log_event', {
+        method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body, keepalive: true
+      }).catch(function () {});
+    }
+  } catch (e) {}
+
+  var nojs = document.getElementById('nojs');
+  if (nojs) nojs.href = target;
+
+  // 即転送 (履歴に c.html を残さない)
+  location.replace(target);
+})();
+</script>
+</body>
+</html>
