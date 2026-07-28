@@ -624,6 +624,19 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         <div style="font-size: 12px;color:rgba(255,255,255,0.55);text-align:center;margin-top:8px">スキップ・カスタム可 / 解約は3ヶ月継続が条件</div>
       </div>
 
+      <!-- 🎁 ギフト導線 (のし・化粧箱つきで贈る) -->
+      <div id="pdpGiftOption" class="pdp-gift-option" style="display:none;margin-top:14px;padding:16px 18px 14px;background:linear-gradient(135deg,rgba(212,169,59,0.10) 0%,rgba(212,169,59,0.02) 100%);border:1.5px solid rgba(212,169,59,0.45);border-radius:14px">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-gold-soft,#B8932F);letter-spacing:0.1em;font-weight:700;margin-bottom:6px">
+          <span>🎁</span><span>GIFT — 贈り物として</span>
+        </div>
+        <div style="font-family:var(--font-jp-serif,serif);font-size:16px;font-weight:700;color:var(--color-forest);margin-bottom:4px">この商品をギフトで贈る</div>
+        <div style="font-size:11.5px;color:var(--color-ink-muted);line-height:1.6;margin-bottom:12px">
+          化粧箱入り・のし対応（名入れ無料）・お届け明細に価格の記載なし。お相手のご住所へ直接お届けします。
+        </div>
+        <button type="button" id="pdpGiftBtn" onclick="giftThisProduct()" style="display:block;width:100%;padding:12px 16px;background:transparent;color:var(--color-forest);font-weight:800;font-size:13px;text-align:center;border:1.5px solid var(--color-forest);border-radius:8px;letter-spacing:0.02em;cursor:pointer;font-family:inherit">ギフトで贈る →</button>
+        <div style="font-size:11.5px;color:var(--color-ink-muted);text-align:center;margin-top:8px">のし・メッセージは次のページで選べます</div>
+      </div>
+
       <!-- メタ情報 -->
       <div class="pdp-meta">
         <div class="pdp-meta-row">
@@ -816,6 +829,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      最もお得な (firstMonthPrice / 商品数 最小) プランを提案 */
   loadSubscriptionUpsell(product);
 
+  /* === 🎁 ギフト導線の表示可否 ===
+     販売中の通常商品のみ。COMING SOON・価格未設定・ギフト専用商品は対象外 */
+  if (!product.comingSoon && (product.price || 0) > 0 && product.category !== 'gift') {
+    const giftEl = document.getElementById('pdpGiftOption');
+    if (giftEl) giftEl.style.display = 'block';
+  }
+
   /* === Sticky CTA 表示制御 ===
      - 上にスクロール (戻る) ＝隠す（ユーザーが戻りたい時の邪魔を最小化）
      - 下にスクロール ＝ 表示（CTA を見せる）
@@ -947,6 +967,12 @@ function pdpApplyStock() {
   const note = document.getElementById('pdpStockNote');
   const btn = document.getElementById('addToCartBtn');
   const sticky = document.getElementById('stickyCtaBtn');
+  /* 売り切れ時はギフト導線も止める（表示条件は本体側と揃える） */
+  const giftEl = document.getElementById('pdpGiftOption');
+  if (giftEl) {
+    const giftEligible = !cur.comingSoon && (cur.price || 0) > 0 && cur.category !== 'gift';
+    giftEl.style.display = (giftEligible && live.stock > 0) ? 'block' : 'none';
+  }
   if (live.stock <= 0) {
     if (note) { note.style.display = 'block'; note.style.color = '#9B1C1C'; note.textContent = '申し訳ございません — ただいま売り切れです（再入荷までお待ちください）'; }
     [btn, sticky].forEach(b => { if (b) { b.disabled = true; b.textContent = '売り切れ — 再入荷待ち'; b.style.opacity = '0.5'; b.style.cursor = 'not-allowed'; } });
@@ -963,11 +989,12 @@ function pdpApplyStock() {
 }
 window.refreshStockBadges = pdpApplyStock;
 
-/* === カート追加 === */
-function addToCart() {
+/* === カートへ積む共通処理 (通常追加・ギフトで共用) ===
+   成功なら true。在庫切れ・保存失敗なら false */
+function pdpPushToCart() {
   const product = window.__pdpProduct;
-  if (!product) return;
-  if (typeof product.stock === 'number' && product.stock <= 0) { pdpApplyStock(); return; }
+  if (!product) return false;
+  if (typeof product.stock === 'number' && product.stock <= 0) { pdpApplyStock(); return false; }
   const qty = +document.getElementById('qty').value || 1;
   const item = {
     variantId: product.variantId,
@@ -988,16 +1015,30 @@ function addToCart() {
       cart.push(item);
     }
     localStorage.setItem('eda-cart', JSON.stringify(cart));
-    /* 視覚フィードバック */
-    const btn = document.getElementById('addToCartBtn');
-    const originalText = btn.textContent;
-    btn.textContent = '✓ カートに追加しました';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = originalText;
-      btn.disabled = false;
-    }, 2000);
-  } catch (e) { console.error(e); }
+    return true;
+  } catch (e) { console.error(e); return false; }
+}
+
+/* === カート追加 === */
+function addToCart() {
+  if (!pdpPushToCart()) return;
+  /* 視覚フィードバック */
+  const btn = document.getElementById('addToCartBtn');
+  const originalText = btn.textContent;
+  btn.textContent = '✓ カートに追加しました';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }, 2000);
+}
+
+/* === 🎁 ギフトで贈る ===
+   カートに積んで checkout をギフトモード (のし・お届け先入力あり) で開く。
+   gift.html の orderGift と同じ導線。価格・決済処理は変更しない */
+function giftThisProduct() {
+  if (!pdpPushToCart()) return;
+  location.href = 'checkout.html?mode=gift';
 }
 </script>
 <script src="public/js/products-loader.js?v=001" defer></script>
