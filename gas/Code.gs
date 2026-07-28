@@ -2012,10 +2012,13 @@ function decrementStockAfterOrder(session, meta) {
     unitsByTitle[t] = (unitsByTitle[t] || 0) + u;
   });
 
+  // 🧩 BOM: セット商品はセット行ではなく構成品の stock を減らす
+  const consumedByTitle = expandBundles_(unitsByTitle, data, headers);
+
   // products シートの該当行を減算
   for (let i = 1; i < data.length; i++) {
     const title = data[i][titleIdx];
-    const consumed = unitsByTitle[title];
+    const consumed = consumedByTitle[title];
     if (consumed > 0) {
       const cur = Number(data[i][stockIdx]) || 0;
       const next = Math.max(0, cur - consumed);
@@ -2953,11 +2956,14 @@ function validateStockBeforeCheckout(items) {
       cartUnitsByTitle[t] = (cartUnitsByTitle[t] || 0) + units;
     });
 
+    // 🧩 BOM: セット商品は構成品に展開してから在庫を見る
+    const needByTitle = expandBundles_(cartUnitsByTitle, data, headers);
+
     // products シートの stock と比較
     for (let i = 1; i < data.length; i++) {
       const title = data[i][titleIdx];
       const stock = Number(data[i][stockIdx]) || 0;
-      const needed = cartUnitsByTitle[title] || 0;
+      const needed = needByTitle[title] || 0;
       if (needed > 0 && needed > stock) {
         errors.push(`「${title}」: 在庫 ${stock} 点 / 注文 ${needed} 点 (${needed - stock} 点 不足)`);
       }
@@ -4167,8 +4173,79 @@ const PRODUCTS_HEADERS = [
   'productId','variantId','sku','stripePriceId',
   'name','variant','price','weight','stock','temp',
   'category','categoryLabel','tagEn','description',
-  'image','isOrganic','comingSoon','published'
+  'image','isOrganic','comingSoon','published','components'
 ];
+
+/* ============================================================
+   BOM (調合) — セット商品を構成品に展開して在庫を管理する
+   ------------------------------------------------------------
+   セット商品は「自分の stock」ではなく「構成品の stock」で
+   在庫チェック(validateStockBeforeCheckout)と
+   在庫減算(decrementStockAfterOrder)を行う。
+   → セットが1つ売れたら構成品がそれぞれ減る＝二重販売しない。
+
+   定義場所は2つ。両方あればシートが優先。
+     1. products シートの components 列 (JSON文字列・列は任意)
+        [{"name":"ミスジステーキ","qty":1},{"name":"切り落とし","qty":1}]
+     2. 下の PRODUCT_BOM 定数 (列を足さずに使える)
+   name は products シートの name と完全一致させること
+   (在庫の突合は全て name 一致で動いているため)。
+   ============================================================ */
+const PRODUCT_BOM = {
+  '肉の日限定セット': [
+    { name: 'ミスジステーキ', qty: 1 },
+    { name: '切り落とし',     qty: 1 }
+  ]
+};
+
+/* 商品名 → 構成品 の対応表を作る (シート列 > 定数 の優先順) */
+function bomMap_(data, headers) {
+  const map = {};
+  Object.keys(PRODUCT_BOM).forEach(k => { map[k] = PRODUCT_BOM[k]; });
+
+  const nameIdx = headers.indexOf('name');
+  const compIdx = headers.indexOf('components');
+  if (nameIdx === -1 || compIdx === -1) return map;
+
+  for (let i = 1; i < data.length; i++) {
+    const raw = data[i][compIdx];
+    if (!raw) continue;
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) map[data[i][nameIdx]] = parsed;
+    } catch (e) {
+      log('bom_parse_error', { name: data[i][nameIdx], raw: String(raw).slice(0, 120) });
+    }
+  }
+  return map;
+}
+
+/* {商品名: 必要数} を受け取り、セットを構成品に置き換えた {商品名: 必要数} を返す。
+   入れ子セットにも対応。循環参照は深さ5で打ち切る (無限ループ防止)。 */
+function expandBundles_(unitsByTitle, data, headers) {
+  const bom = bomMap_(data, headers);
+  if (!Object.keys(bom).length) return unitsByTitle;
+
+  let cur = unitsByTitle;
+  for (let depth = 0; depth < 5; depth++) {
+    let expanded = false;
+    const next = {};
+    Object.keys(cur).forEach(title => {
+      const units = cur[title];
+      const comps = bom[title];
+      if (!comps) { next[title] = (next[title] || 0) + units; return; }
+      expanded = true;
+      comps.forEach(c => {
+        const n = c.name || c.title;
+        if (!n) return;
+        next[n] = (next[n] || 0) + units * (Number(c.qty) || 1);
+      });
+    });
+    cur = next;
+    if (!expanded) break;
+  }
+  return cur;
+}
 
 function productsSheet() {
   return sheet('products', PRODUCTS_HEADERS);
@@ -4240,6 +4317,9 @@ function staffProductSave(body) {
       if (h === 'isOrganic' || h === 'comingSoon' || h === 'published') {
         return (v === true || v === 'TRUE' || v === 'true') ? 'TRUE' : 'FALSE';
       }
+      /* components など配列/オブジェクトは JSON 文字列で保存
+         (String() だと "[object Object]" になり BOM が壊れる) */
+      if (typeof v === 'object') return JSON.stringify(v);
       return String(v);
     });
 

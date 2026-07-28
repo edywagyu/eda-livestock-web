@@ -282,6 +282,18 @@
       isOrganic: true, comingSoon: true,
       description: '希少部位のヒレ、有機JAS認証。当牧場を代表する一品。',
       images: []
+    },
+
+    /* ===== 肉の日限定セット (2026-07-29) ===== */
+    {
+      productId: 'P027', variantId: 'NIKUNOHI-SET', sku: 'EDA-NIKUNOHI-SET',
+      stripePriceId: '',
+      name: '肉の日限定セット', variant: 'ミスジ150g + 切り落とし200g',
+      price: 4500, weight: 350, stock: 12, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
+      limitedTag: 'nikunohi', listPrice: 5100,
+      description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',
+      images: ['public/images/products/drive/misuji-steak.jpg']
     }
   ];
 
