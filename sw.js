@@ -3,7 +3,7 @@
    - Strategy: stale-while-revalidate for HTML, cache-first for assets
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-07-28-152-nikunohi-no-sub';
+const CACHE_VERSION = 'eda-v2026-07-28-153-gift-card-restyle';
 const CORE_ASSETS = [
   './',
   'index.html',
