@@ -9736,6 +9736,50 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 </section>
 
+<!-- ========= 肉の日限定バナー（2026-07-29 / 終了後はこのセクションごと削除） ========= -->
+<section class="nikunohi-bar reveal">
+ <div class="container">
+ <a class="nikunohi-inner" href="#products" onclick="var t=document.querySelector('.tab[data-filter=&quot;nikunohi&quot;]'); if(t){t.click(); return false;}">
+ <span class="nikunohi-badge">肉の日限定</span>
+ <span class="nikunohi-copy">
+ <strong>ミスジステーキ × 切り落とし セット</strong>
+ <span class="nikunohi-price"><s>¥5,100</s> → <b>¥4,500</b></span>
+ </span>
+ <span class="nikunohi-meta">7/29（水）23:59まで ／ <b>12セット限定</b> なくなり次第終了</span>
+ <span class="nikunohi-cta">見る →</span>
+ </a>
+ </div>
+</section>
+<style>
+.nikunohi-bar{padding:0 0 18px;}
+.nikunohi-inner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 22px;border-radius:14px;
+ background:linear-gradient(100deg,#7A1F1F 0%,#A02B2B 55%,#C0392B 100%);
+ border:1px solid rgba(212,169,59,0.55);box-shadow:0 6px 20px rgba(122,31,31,0.22);
+ text-decoration:none;color:#fff;transition:transform .18s ease,box-shadow .18s ease;}
+.nikunohi-inner:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(122,31,31,0.3);}
+.nikunohi-badge{flex:none;font-family:var(--font-jp-serif);font-size:13px;font-weight:700;letter-spacing:.08em;
+ background:var(--color-gold,#D4A93B);color:#3A1A0C;padding:6px 14px;border-radius:999px;}
+.nikunohi-copy{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;flex:1;min-width:0;}
+.nikunohi-copy strong{font-family:var(--font-jp-serif);font-size:clamp(15px,2vw,19px);font-weight:700;}
+.nikunohi-price s{opacity:.65;font-size:13px;}
+.nikunohi-price b{color:var(--color-gold,#D4A93B);font-size:clamp(17px,2.4vw,22px);}
+.nikunohi-meta{font-size:12px;opacity:.92;}
+.nikunohi-meta b{color:var(--color-gold,#D4A93B);}
+.nikunohi-cta{flex:none;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.55);padding:7px 16px;border-radius:999px;}
+.tab--nikunohi{color:#A02B2B;border-color:rgba(160,43,43,.45);font-weight:700;}
+.tab--nikunohi.active{background:#A02B2B;border-color:#A02B2B;color:#fff;}
+.product-card--nikunohi{border:1.5px solid rgba(160,43,43,.4);box-shadow:0 4px 16px rgba(160,43,43,.12);}
+.product-card--nikunohi .product-price s{opacity:.55;font-size:12px;margin-right:4px;}
+.nikunohi-ribbon{position:absolute;top:10px;left:10px;z-index:2;background:#A02B2B;color:#fff;
+ font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;}
+.product-card--nikunohi .product-card-img{position:relative;}
+@media(max-width:720px){
+ .nikunohi-inner{gap:10px;padding:14px 16px;}
+ .nikunohi-meta{width:100%;}
+ .nikunohi-cta{margin-left:auto;}
+}
+</style>
+
 <!-- ========= Why Eda — ご家族向けに、選ばれる理由 ========= -->
 <section class="shop-snippet section" id="products">
  <div class="container">
@@ -9757,11 +9801,33 @@ body.is-member .product-card--organic .org-chk-lock {
  style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;color:var(--color-ink-muted);padding:4px 8px;display:none;">×</button>
  </div>
 
- <!-- カテゴリフィルタ（牛肉・鶏肉。ギフトは「贈答用」セクションで） -->
+ <!-- カテゴリフィルタ（肉の日・牛肉・鶏肉。ギフトは「贈答用」セクションで） -->
  <div class="tab-row reveal" style="margin-bottom: 14px;">
  <button class="tab active" data-filter="all">すべて</button>
+ <button class="tab tab--nikunohi" data-filter="nikunohi">肉の日</button>
  <button class="tab" data-filter="beef">牛肉</button>
  <button class="tab" data-filter="chicken">鶏肉</button>
+ </div>
+
+ <!-- ===== 肉の日限定（2026-07-29 / 終了後はこのブロックとタブを削除） ===== -->
+ <div class="shop-cat-head reveal" data-cat="nikunohi">
+ <h2 class="shop-cat-title">肉の日限定 <span>/ Nikunohi Special</span></h2>
+ <p class="shop-cat-desc">毎月29日は「肉の日」。<strong>7/29（水）23:59まで／12セット限定</strong>で、希少部位ミスジのステーキと万能な切り落としをセットの特別価格でご用意しました。</p>
+ </div>
+
+ <div class="product-grid cols-4 reveal" data-cat="nikunohi">
+ <div class="product-card product-card--nikunohi" data-sub="set" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
+ <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set · Misuji &amp; Kiriotoshi</span><span class="product-price"><s>¥5,100</s> ¥4,500</span></div>
+ <p class="product-name">肉の日限定セット</p>
+ <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。<strong>12セット限定</strong>、なくなり次第終了。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">ミスジ <strong>150g</strong></div>
+ <div class="product-stat-item">切落 <strong>200g</strong></div>
+ <div class="product-stat-item wide">通常 ¥5,100 → <strong>¥600 お得</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
  </div>
 
 
@@ -9781,6 +9847,9 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
+ <!-- 肉の日限定セットは shop.html では独立した data-cat="nikunohi" セクションで表示。
+      ここ(牛肉グリッド)は productPreviewInit の LIMIT=2 プレビューなので転載しない。
+      全件表示の products.html 側では牛肉グリッドの先頭に転載済み。 -->
  <!-- ステーキ系 -->
  <div class="product-card" data-sub="steak" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
  <div class="product-card-img" data-label="SIRLOIN"></div>
