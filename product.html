@@ -756,7 +756,20 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   document.getElementById('pdpCategory').textContent = product.tagEn || product.categoryLabel || '';
   document.getElementById('pdpTitle').textContent = product.name;
   document.getElementById('pdpVariant').textContent = product.variant || '';
-  document.getElementById('pdpPrice').textContent = '¥' + (product.price || 0).toLocaleString();
+  /* 価格: listPrice (通常価格) が売価より高ければ、取り消し線つきで併記 */
+  (function renderPrice() {
+    const price = product.price || 0;
+    const listPrice = Number(product.listPrice) || 0;
+    const el = document.getElementById('pdpPrice');
+    if (listPrice > price) {
+      el.innerHTML =
+        '<span style="font-size:0.62em;color:var(--color-ink-muted);text-decoration:line-through;font-weight:400;margin-right:12px">¥' + listPrice.toLocaleString() + '</span>' +
+        '<span style="color:var(--color-red)">¥' + price.toLocaleString() + '</span>' +
+        '<span style="display:inline-block;margin-left:12px;padding:3px 10px;background:var(--color-red);color:#fff;border-radius:14px;font-size:0.36em;font-weight:700;letter-spacing:0.06em;vertical-align:middle">−¥' + (listPrice - price).toLocaleString() + '</span>';
+    } else {
+      el.textContent = '¥' + price.toLocaleString();
+    }
+  })();
   document.getElementById('pdpDescription').textContent = product.description;
   document.getElementById('stickyName').textContent = product.name;
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
