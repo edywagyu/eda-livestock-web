@@ -9738,7 +9738,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= 肉の日限定バナー（2026-07-29 / 終了後はこのセクションごと削除） ========= -->
-<section class="nikunohi-bar reveal">
+<section class="nikunohi-bar">
  <div class="container">
  <a class="nikunohi-inner" href="#products" onclick="var t=document.querySelector('.tab[data-filter=&quot;nikunohi&quot;]'); if(t){t.click(); return false;}">
  <span class="nikunohi-badge">肉の日限定</span>
@@ -9752,7 +9752,8 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 </section>
 <style>
-.nikunohi-bar{padding:0 0 18px;}
+/* ファーストビュー内なので reveal(スクロール表示)は使わない。常時表示させる */
+.nikunohi-bar{padding:0 0 18px;opacity:1;}
 .nikunohi-inner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 22px;border-radius:14px;
  background:linear-gradient(100deg,#7A1F1F 0%,#A02B2B 55%,#C0392B 100%);
  border:1px solid rgba(212,169,59,0.55);box-shadow:0 6px 20px rgba(122,31,31,0.22);
