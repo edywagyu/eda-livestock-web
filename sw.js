@@ -1,9 +1,9 @@
 /* ============================================================
    EDA-LIVESTOCK Service Worker
-   - Strategy: stale-while-revalidate for HTML, cache-first for assets
+   - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-07-28-154-noshi-ochugen';
+const CACHE_VERSION = 'eda-v2026-07-28-155-sw-html-network-first';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -55,17 +55,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  /* HTML: stale-while-revalidate */
+  /* HTML: network-first (更新が1回の読み込みで反映される。キャッシュはオフライン時の予備)
+     旧: stale-while-revalidate → 更新後1回目は必ず古い画面が出ていたため変更 (2026-07-28) */
   if (req.destination === 'document' || req.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
-      caches.match(req).then((cached) => {
-        const fetchPromise = fetch(req).then((res) => {
+      fetch(req).then((res) => {
+        if (res.ok) {
           const clone = res.clone();
           caches.open(CACHE_VERSION).then((c) => c.put(req, clone));
-          return res;
-        }).catch(() => cached);
-        return cached || fetchPromise;
-      })
+        }
+        return res;
+      }).catch(() => caches.match(req).then((cached) => cached || caches.match('index.html')))
     );
     return;
   }
