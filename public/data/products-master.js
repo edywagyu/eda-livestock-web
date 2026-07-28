@@ -293,7 +293,7 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
       limitedTag: 'nikunohi', listPrice: 5100,
       description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',
-      images: ['public/images/products/drive/misuji-steak.jpg']
+      images: ['public/images/products/drive/nikunohi-set.jpg']
     }
   ];
 
