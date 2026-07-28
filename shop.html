@@ -6044,6 +6044,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap { display: flex; flex-direction: column; }
 .shop-main-wrap > section { order: 99; } /* デフォルト 末尾寄り */
 .shop-main-wrap > .ship-countdown-bar { order: 1; }
+/* 肉の日バナーはお届けバー(order:1)の直下。order 未指定だと既定の 99 に落ちて
+   ページ最下部へ飛ぶため、必ず明示すること。 */
+.shop-main-wrap > .nikunohi-bar { order: 2; }
 .shop-main-wrap > .freezer-band { order: 12; } /* 冷凍庫イメージ（2026-07-03 商品前倒しで products 後へ） */
 .shop-main-wrap > .unboxing-section { order: 13; } /* 開封動画（同上） */
 .shop-main-wrap > #products { order: 10; } /* All Products 最上 */
