@@ -764,8 +764,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     if (listPrice > price) {
       el.innerHTML =
         '<span style="font-size:0.62em;color:var(--color-ink-muted);text-decoration:line-through;font-weight:400;margin-right:12px">¥' + listPrice.toLocaleString() + '</span>' +
-        '<span style="color:var(--color-red)">¥' + price.toLocaleString() + '</span>' +
-        '<span style="display:inline-block;margin-left:12px;padding:3px 10px;background:var(--color-red);color:#fff;border-radius:14px;font-size:0.36em;font-weight:700;letter-spacing:0.06em;vertical-align:middle">−¥' + (listPrice - price).toLocaleString() + '</span>';
+        '<span style="color:var(--color-red)">¥' + price.toLocaleString() + '</span>';
     } else {
       el.textContent = '¥' + price.toLocaleString();
     }
