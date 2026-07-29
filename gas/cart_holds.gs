@@ -128,6 +128,69 @@ function cartHoldsByTitle_(excludeSession) {
 }
 
 /* ------------------------------------------------------------
+   決済前チェック: 他のお客様が確保中で買えない分がないか。
+   createCheckout / createBankOrder から「追記だけ」で呼べるように独立させてある
+   （既存の validateStockBeforeCheckout は一切変更しない）。
+
+   ・在庫そのものが足りないケースは既存チェックが返すので、ここでは
+     「在庫はあるが確保中で買えない」分だけをエラーにする（二重表示の防止）。
+   ・BOM(expandBundles_) がある環境では構成品に展開してから引く。無い環境では
+     在庫管理自体がセット行単位なので、確保もセット行単位で見る＝挙動が一貫する。
+   ------------------------------------------------------------ */
+function cartHoldErrors_(items, sessionId) {
+  var errors = [];
+  if (!cartHoldEnforced_()) return errors;
+
+  var held = cartHoldsByTitle_(sessionId);
+  if (!Object.keys(held).length) return errors;
+
+  var sh = ss().getSheetByName('products');
+  if (!sh) return errors;
+  var data = sh.getDataRange().getValues();
+  if (data.length < 2) return errors;
+  var headers = data[0];
+  var titleIdx = headers.indexOf('name');
+  var stockIdx = headers.indexOf('stock');
+  if (titleIdx === -1 || stockIdx === -1) return errors;
+
+  /* 既存の在庫チェックと同じ換算（1つ=1 / 2つ=2 / 3つ=3） */
+  function variantUnits(variant) {
+    if (!variant) return 1;
+    if (String(variant).indexOf('3つ') >= 0) return 3;
+    if (String(variant).indexOf('2つ') >= 0) return 2;
+    return 1;
+  }
+  var needByTitle = {};
+  (items || []).forEach(function (it) {
+    var t = it.title || it.name || '';
+    needByTitle[t] = (needByTitle[t] || 0) + variantUnits(it.variant) * (it.qty || 1);
+  });
+
+  if (typeof expandBundles_ === 'function') {
+    try {
+      needByTitle = expandBundles_(needByTitle, data, headers);
+      held = expandBundles_(held, data, headers);
+    } catch (e) { log('cart_hold_expand_warn', { error: e.message }); }
+  }
+
+  for (var i = 1; i < data.length; i++) {
+    var title = data[i][titleIdx];
+    var need = needByTitle[title] || 0;
+    if (need <= 0) continue;
+    var stock = Number(data[i][stockIdx]) || 0;
+    var h = Math.min(held[title] || 0, stock);   /* 確保は在庫を超えない */
+    if (h <= 0) continue;
+    var available = Math.max(0, stock - h);
+    /* 在庫不足そのものは既存チェックの担当。確保が原因のときだけ返す */
+    if (need <= stock && need > available) {
+      errors.push('「' + title + '」: 残り ' + available + ' 点 / ご注文 ' + need + ' 点 — '
+        + h + ' 点は他のお客様がカートに確保中です（最大' + cartHoldMinutes_() + '分で解放されます）');
+    }
+  }
+  return errors;
+}
+
+/* ------------------------------------------------------------
    GET ?action=cart_holds&session_id=<自分のセッション>
    → { ok, holds: {"商品名": 確保数}, hold_minutes, enforced, ts }
    在庫そのものは public_catalog が返すので、ここは差分だけ返す。
