@@ -161,6 +161,7 @@ function doGet(e) {
       case 'public_gifts':      return publicGifts();
       case 'public_subscriptions': return publicSubscriptionPlans();
       case 'public_catalog':    return publicCatalog();
+      case 'cart_holds':        return cartHoldsPublic(e.parameter);   /* カート確保数 (gas/cart_holds.gs) */
       case 'dashboard':         return dashboardSummary(e.parameter);
       case 'line_friends':      return lineFriends();
       /* ===== Customer Segmentation (LINE 配信用) ===== */
@@ -330,10 +331,10 @@ function createCheckout(body) {
   const lineItems = [];
   const items = collectItems(body);
 
-  // ★ 在庫上限チェック (在庫切れ → 注文受付拒否)
+  // ★ 在庫上限チェック (在庫切れ・他のお客様の確保中 → 注文受付拒否)
   // products シートから現在在庫を取得して、各 cart item を検証
   try {
-    const stockErrors = validateStockBeforeCheckout(items);
+    const stockErrors = validateStockBeforeCheckout(items, body.analytics_session_id);
     if (stockErrors.length > 0) {
       return jsonResponse({
         ok: false,
@@ -524,7 +525,7 @@ function createBankOrder(body) {
 
   // 在庫上限チェック（createCheckout と同一）
   try {
-    const stockErrors = validateStockBeforeCheckout(items);
+    const stockErrors = validateStockBeforeCheckout(items, body.analytics_session_id);
     if (stockErrors.length > 0) {
       return jsonResponse({
         ok: false, error: 'OUT_OF_STOCK',
@@ -2929,7 +2930,10 @@ function collectItems(body) {
    カート内の各 item が在庫を超えないかチェック
    返り値: error メッセージ配列 (空 = OK, 非空 = 在庫不足)
    ============================================================ */
-function validateStockBeforeCheckout(items) {
+/* sessionId = 購入者自身の analytics セッション。自分の確保分は自分をブロックしない。
+   表示側（cart-holds.js）が「残り○」から他人の確保分を引いている以上、
+   ここでも同じ分を押さえないと表示が嘘になる。必ず両方セットで動かすこと。 */
+function validateStockBeforeCheckout(items, sessionId) {
   const errors = [];
   try {
     const sh = ss().getSheetByName('products');
@@ -2959,13 +2963,28 @@ function validateStockBeforeCheckout(items) {
     // 🧩 BOM: セット商品は構成品に展開してから在庫を見る
     const needByTitle = expandBundles_(cartUnitsByTitle, data, headers);
 
-    // products シートの stock と比較
+    /* 🔒 他のお客様のカート確保分（gas/cart_holds.gs）。セット商品の確保も
+       構成品に展開してから引く＝在庫の見え方と同じ計算にする。 */
+    let heldByTitle = {};
+    try {
+      heldByTitle = expandBundles_(cartHoldsByTitle_(sessionId), data, headers);
+    } catch (e) {
+      log('cart_hold_expand_warn', { error: e.message });   /* 確保が取れなければ従来どおり stock だけで判定 */
+    }
+
+    // products シートの stock（− 確保中）と比較
     for (let i = 1; i < data.length; i++) {
       const title = data[i][titleIdx];
       const stock = Number(data[i][stockIdx]) || 0;
       const needed = needByTitle[title] || 0;
-      if (needed > 0 && needed > stock) {
-        errors.push(`「${title}」: 在庫 ${stock} 点 / 注文 ${needed} 点 (${needed - stock} 点 不足)`);
+      if (needed <= 0) continue;
+
+      const held = Math.min(heldByTitle[title] || 0, stock);   /* 確保は在庫を超えない */
+      const available = Math.max(0, stock - held);
+      if (needed > available) {
+        errors.push(held > 0 && needed <= stock
+          ? `「${title}」: 残り ${available} 点 / 注文 ${needed} 点 — ${held} 点は他のお客様がカート確保中です（${cartHoldMinutes_()}分で解放されます）`
+          : `「${title}」: 在庫 ${available} 点 / 注文 ${needed} 点 (${needed - available} 点 不足)`);
       }
     }
   } catch (e) {
