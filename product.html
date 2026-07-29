@@ -1105,6 +1105,10 @@ function giftThisProduct() {
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
 <script src="public/js/nikunohi-left.js?v=002" defer></script>
+<!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得（通常ブラウザは無処理）。
+     カート投入イベントに line_uid が付き、カゴ落ちリマインドの宛先が特定できる。 -->
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="public/js/liff-uid.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script>
