@@ -36,6 +36,21 @@
     }
   }
 
+  /* LINE 連携済みなら line_uid を返す (LINE内ブラウザ = LIFF で public/js/liff-uid.js が保存)。
+     通常ブラウザ・未連携は空文字。 */
+  function getLineUid() {
+    try {
+      const raw = localStorage.getItem('eda-mypage-session');
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s && s.line_uid) return s.line_uid;
+      }
+      return localStorage.getItem('eda-member-line-uid') || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
   function send(event_type, props) {
     if (!GAS_URL) return;
     const payload = Object.assign({
@@ -45,6 +60,11 @@
       referrer: document.referrer || '',
       ua: navigator.userAgent.slice(0, 200)
     }, props || {});
+
+    /* 全イベントに line_uid を自動添付。カゴ落ちリマインド (CartRecovery.gs) が
+       「カートに入れて離脱したのが誰か」を特定するために使う。未連携なら付けない。 */
+    const uid = getLineUid();
+    if (uid) payload.meta = Object.assign({}, payload.meta || {}, { line_uid: uid });
 
     /* fire and forget — UX に影響しないよう非同期 */
     try {
