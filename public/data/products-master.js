@@ -293,8 +293,13 @@
          なので、実残数（2026-07-29 時点 9 / 限定12のうち3売れ）に合わせておく */
       price: 4500, weight: 350, stock: 9, temp: '冷凍',
       /* 限定品カウント (public/js/limited-stock.js)。正は products シートの
-         limitedTotal / limitedUntil / limitedUnit 列。ここは取得失敗時のフォールバック */
-      limitedTotal: 12, limitedUntil: '2026/07/29 23:59', limitedUnit: 'セット',
+         limitedTotal / limitedSoldOutAt / limitedUntil / limitedUnit 列。ここは取得失敗時のフォールバック。
+         2026-07-29 たろ指示: 23:59 でサイト販売は止める（残りは自分で売る）が、
+         告知は翌 12:00 まで「完売しました」で残す */
+      limitedTotal: 12,
+      limitedSoldOutAt: '2026/07/29 23:59',   /* これ以降＝販売停止＋「完売しました」 */
+      limitedUntil:     '2026/07/30 12:00',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
       limitedTag: 'nikunohi', listPrice: 5100,
       description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',

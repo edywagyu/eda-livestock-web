@@ -83,9 +83,10 @@
       comingSoon:    p.comingSoon === true || p.comingSoon === 'TRUE' || p.comingSoon === 'true',
       published:     p.published !== false && p.published !== 'FALSE' && p.published !== 'false',
       /* 限定品カウント (public/js/limited-stock.js) */
-      limitedTotal:  keep(p, 'limitedTotal'),
-      limitedUntil:  keep(p, 'limitedUntil'),
-      limitedUnit:   keep(p, 'limitedUnit') || ''
+      limitedTotal:     keep(p, 'limitedTotal'),
+      limitedSoldOutAt: keep(p, 'limitedSoldOutAt'),
+      limitedUntil:     keep(p, 'limitedUntil'),
+      limitedUnit:      keep(p, 'limitedUnit') || ''
     }));
 
     /* window.EDA_PRODUCTS_MASTER を更新 (products-master.js の構造に合わせる) */
