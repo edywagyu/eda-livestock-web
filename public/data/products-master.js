@@ -292,6 +292,9 @@
       /* stock は GAS(products シート)のライブ在庫で上書きされる。ここは取得失敗時のフォールバック
          なので、実残数（2026-07-29 時点 9 / 限定12のうち3売れ）に合わせておく */
       price: 4500, weight: 350, stock: 9, temp: '冷凍',
+      /* 限定品カウント (public/js/limited-stock.js)。正は products シートの
+         limitedTotal / limitedUntil / limitedUnit 列。ここは取得失敗時のフォールバック */
+      limitedTotal: 12, limitedUntil: '2026/07/29 23:59', limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
       limitedTag: 'nikunohi', listPrice: 5100,
       description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',

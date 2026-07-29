@@ -48,6 +48,20 @@
   function applyProducts(products) {
     if (!Array.isArray(products) || products.length === 0) return;
 
+    /* 限定品カウント(limited-stock.js)の3列は products シートに未追加でも動くようにする。
+       GAS が値を返さない場合は products-master.js のフォールバックを引き継ぐ。
+       ＝ シートに列を足せばシートが正、足すまでは同梱マスターが正。 */
+    var prev = {};
+    ((window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || []).forEach(function (p) {
+      if (p.productId) prev[p.productId] = p;
+    });
+    function keep(p, key) {
+      var v = p[key];
+      if (v !== undefined && v !== null && String(v) !== '') return v;
+      var old = prev[p.productId];
+      return old ? old[key] : undefined;
+    }
+
     /* 型整形: スプシは文字列で返るので数値カラムを変換 */
     const normalized = products.map(p => ({
       productId:     p.productId || '',
@@ -67,7 +81,11 @@
       images:        p.image ? [p.image] : [],
       isOrganic:     p.isOrganic === true || p.isOrganic === 'TRUE' || p.isOrganic === 'true',
       comingSoon:    p.comingSoon === true || p.comingSoon === 'TRUE' || p.comingSoon === 'true',
-      published:     p.published !== false && p.published !== 'FALSE' && p.published !== 'false'
+      published:     p.published !== false && p.published !== 'FALSE' && p.published !== 'false',
+      /* 限定品カウント (public/js/limited-stock.js) */
+      limitedTotal:  keep(p, 'limitedTotal'),
+      limitedUntil:  keep(p, 'limitedUntil'),
+      limitedUnit:   keep(p, 'limitedUnit') || ''
     }));
 
     /* window.EDA_PRODUCTS_MASTER を更新 (products-master.js の構造に合わせる) */

@@ -573,25 +573,24 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <div class="pdp-price" id="pdpPrice">¥3,400</div>
       <p class="pdp-price-note">税込価格 / ¥11,000 以上のご注文で送料無料（北海道のみ +¥500）</p>
 
-      <!-- 肉の日限定セットの締切・残数（P027のときだけ表示 / フェア終了後はこのブロックごと削除） -->
-      <div class="pdp-nikunohi" id="pdpNikunohi" style="display:none">
-        <span class="pdp-nikunohi-badge">肉の日限定</span>
-        <span class="pdp-nikunohi-text">7/29（水）23:59まで ／ <b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b> なくなり次第終了</span>
-      </div>
+      <!-- 限定品の締切・残数。中身は public/js/limited-stock.js が products シートの
+           limitedTotal / limitedUntil から組み立てる。キャンペーンごとの編集も、
+           終了後の削除も不要（締切を過ぎたら自動で消える）。 -->
+      <div class="limited-banner" id="limitedBanner" style="display:none"></div>
       <style>
-        .pdp-nikunohi{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px;padding:12px 16px;
+        .limited-banner{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px;padding:12px 16px;
           border-radius:12px;color:#fff;background:linear-gradient(100deg,#7A1F1F 0%,#A02B2B 55%,#C0392B 100%);
           border:1px solid rgba(212,169,59,0.55);box-shadow:0 4px 14px rgba(122,31,31,.2);}
-        .pdp-nikunohi-badge{flex:none;font-family:var(--font-jp-serif,serif);font-size:12px;font-weight:700;letter-spacing:.08em;
+        .limited-banner-badge{flex:none;font-family:var(--font-jp-serif,serif);font-size:12px;font-weight:700;letter-spacing:.08em;
           background:var(--color-gold,#D4A93B);color:#3A1A0C;padding:5px 12px;border-radius:999px;}
         /* PDP側のグローバル span 色指定に負けるので色は明示する */
-        .pdp-nikunohi .pdp-nikunohi-text{color:#fff;font-size:12.5px;letter-spacing:.02em;line-height:1.9;}
-        .pdp-nikunohi .nikunohi-left{display:inline-block;background:#fff;color:#A02B2B;font-weight:800;white-space:nowrap;
+        .limited-banner .limited-banner-text{color:#fff;font-size:12.5px;letter-spacing:.02em;line-height:1.9;}
+        .limited-banner .limited-left{display:inline-block;background:#fff;color:#A02B2B;font-weight:800;white-space:nowrap;
           padding:3px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.14);}
-        .pdp-nikunohi .nikunohi-left.is-low{animation:nikunohiPulse 1.9s ease-in-out infinite;}
-        .pdp-nikunohi .nikunohi-left.is-soldout{background:rgba(255,255,255,.75);color:#6B7280;animation:none;}
+        .limited-banner .limited-left.is-low{animation:nikunohiPulse 1.9s ease-in-out infinite;}
+        .limited-banner .limited-left.is-soldout{background:rgba(255,255,255,.75);color:#6B7280;animation:none;}
         @keyframes nikunohiPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
-        @media(prefers-reduced-motion:reduce){.pdp-nikunohi .nikunohi-left{animation:none!important;}}
+        @media(prefers-reduced-motion:reduce){.limited-banner .limited-left{animation:none!important;}}
       </style>
 
       <p class="pdp-description" id="pdpDescription">
@@ -790,11 +789,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       el.textContent = '¥' + price.toLocaleString();
     }
   })();
-  /* 肉の日限定セット(P027)だけ、締切＋残数バナーを出す */
-  (function renderNikunohiBanner() {
-    const el = document.getElementById('pdpNikunohi');
-    if (el) el.style.display = (product.productId === 'P027') ? 'flex' : 'none';
-  })();
+  /* 限定品バナーは public/js/limited-stock.js が products シートを見て自動で出す
+     （商品ごとの分岐は不要。マスターの読み込み後に refreshLimitedStock が走る） */
+  if (typeof window.refreshLimitedStock === 'function') window.refreshLimitedStock();
   document.getElementById('pdpDescription').textContent = product.description;
   document.getElementById('stickyName').textContent = product.name;
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
@@ -1033,8 +1030,9 @@ function pdpApplyStock() {
     if (sticky) sticky.textContent = '確保中';
   } else {
     if (note) {
-      /* 肉の日セットは専用バナー(pdpNikunohi)が「残り◯セット」を出すので、点数表記は重複させない */
-      if (avail <= 8 && cur.productId !== 'P027') {
+      /* 限定品は専用バナー(limitedBanner)が「残り◯セット」を出すので、点数表記は重複させない */
+      const isLimited = !!document.querySelector('#limitedBanner .limited-left');
+      if (avail <= 8 && !isLimited) {
         note.style.display = 'block'; note.style.color = '#B45309';
         note.textContent = '残りわずか — あと ' + avail + ' 点'
           + (held > 0 ? '（ほかに ' + held + ' 点が他のお客様のカートに入っています）' : '');
@@ -1100,11 +1098,11 @@ function giftThisProduct() {
   location.href = 'checkout.html?mode=gift';
 }
 </script>
-<script src="public/js/products-loader.js?v=001" defer></script>
-<!-- 肉の日フェアの残数表示（フェア終了後はこの1行ごと削除） -->
+<script src="public/js/products-loader.js?v=002" defer></script>
+<!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/nikunohi-left.js?v=002" defer></script>
+<script src="public/js/limited-stock.js?v=001" defer></script>
 <!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得（通常ブラウザは無処理）。
      カート投入イベントに line_uid が付き、カゴ落ちリマインドの宛先が特定できる。 -->
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
