@@ -9706,14 +9706,14 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <!-- ========= 肉の日限定バナー（2026-07-29 / 終了後はこのブロックごと削除） ========= -->
- <div class="nikunohi-bar">
+ <div class="nikunohi-bar" data-limited-scope="肉の日限定セット">
  <a class="nikunohi-inner" href="#products" onclick="var t=document.querySelector('.tab[data-filter=&quot;nikunohi&quot;]'); if(t){t.click(); return false;}">
  <span class="nikunohi-badge">肉の日限定</span>
  <span class="nikunohi-copy">
  <strong>ミスジステーキ × 切り落とし セット</strong>
  <span class="nikunohi-price"><s>¥5,100</s> → <b>¥4,500</b></span>
  </span>
- <span class="nikunohi-meta">7/29（水）23:59まで ／ <b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b></span>
+ <span class="nikunohi-meta">7/29（水）23:59まで ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b></span>
  <span class="nikunohi-cta">見る →</span>
  </a>
  </div>
@@ -9741,7 +9741,7 @@ body.is-member .product-card--organic .org-chk-lock {
  .nikunohi-ribbon{position:absolute;top:10px;left:10px;z-index:2;background:#A02B2B;color:#fff;
   font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;}
  .product-card--nikunohi .product-card-img{position:relative;}
- /* 残数カウンタ（public/js/nikunohi-left.js がライブ在庫で書き換える） */
+ /* 旧・肉の日専用の残数スタイル（.limited-left 系に統合済み。CSSは互換のため残置） */
  .nikunohi-left{font-weight:800;white-space:nowrap;}
  .nikunohi-meta .nikunohi-left{display:inline-block;background:#fff;color:#A02B2B;font-size:12px;
   padding:3px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.14);}
@@ -9758,7 +9758,21 @@ body.is-member .product-card--organic .org-chk-lock {
   color:#A02B2B;font-size:12px;font-weight:700;letter-spacing:.02em;}
  .nikunohi-urgency .nikunohi-left{font-size:13px;}
  .nikunohi-urgency .nikunohi-left.is-soldout{color:#6B7280;}
- @keyframes nikunohiPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+ /* 限定品カウント（public/js/limited-stock.js が全キャンペーン共通で使う。
+   キャンペーンごとに書き足す必要はない） */
+.limited-left{font-weight:800;white-space:nowrap;}
+.nikunohi-meta .limited-left{display:inline-block;background:#fff;color:#A02B2B;font-size:12px;
+ padding:3px 12px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.14);}
+.shop-cat-desc .limited-left,.product-desc .limited-left{color:#A02B2B;}
+.nikunohi-urgency .limited-left{font-size:13px;}
+.limited-left-ribbon{position:absolute;top:10px;right:10px;z-index:2;background:#fff;color:#A02B2B;
+ border:1.5px solid #A02B2B;font-size:11px;font-weight:800;letter-spacing:.04em;padding:4px 10px;
+ border-radius:999px;box-shadow:0 2px 10px rgba(160,43,43,.2);white-space:nowrap;}
+.limited-left.is-low,.limited-left-ribbon.is-low{animation:nikunohiPulse 1.9s ease-in-out infinite;}
+.limited-left.is-soldout,.limited-left-ribbon.is-soldout{background:rgba(255,255,255,.75);
+ color:#6B7280;border-color:#9CA3AF;animation:none;}
+@media(prefers-reduced-motion:reduce){.limited-left,.limited-left-ribbon{animation:none!important;}}
+@keyframes nikunohiPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
  @media(prefers-reduced-motion:reduce){.nikunohi-left{animation:none!important;}}
  @media(max-width:720px){
   .nikunohi-inner{gap:10px;padding:14px 16px;}
@@ -9770,29 +9784,29 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- カテゴリフィルタ（肉の日・牛肉・鶏肉。ギフトは「贈答用」セクションで） -->
  <div class="tab-row reveal" style="margin-bottom: 14px;">
  <button class="tab active" data-filter="all">すべて</button>
- <button class="tab tab--nikunohi" data-filter="nikunohi">肉の日</button>
+ <button class="tab tab--nikunohi" data-filter="nikunohi" data-limited-scope="肉の日限定セット">肉の日</button>
  <button class="tab" data-filter="beef">牛肉</button>
  <button class="tab" data-filter="chicken">鶏肉</button>
  </div>
 
  <!-- ===== 肉の日限定（2026-07-29 / 終了後はこのブロックとタブを削除） ===== -->
- <div class="shop-cat-head reveal" data-cat="nikunohi">
+ <div class="shop-cat-head reveal" data-cat="nikunohi" data-limited-scope="肉の日限定セット">
  <h2 class="shop-cat-title">肉の日限定 <span>/ Nikunohi Special</span></h2>
- <p class="shop-cat-desc">毎月29日は「肉の日」。<strong>7/29（水）23:59まで</strong>、12セット限定のうち<b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b>。希少部位ミスジのステーキと万能な切り落としをセットの特別価格でご用意しました。</p>
+ <p class="shop-cat-desc">毎月29日は「肉の日」。<strong>7/29（水）23:59まで</strong>、12セット限定のうち<b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b>。希少部位ミスジのステーキと万能な切り落としをセットの特別価格でご用意しました。</p>
  </div>
 
- <div class="product-grid cols-4 reveal" data-cat="nikunohi">
- <div class="product-card product-card--nikunohi" data-sub="set" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
- <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span><span class="nikunohi-left-ribbon nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</span></div>
+ <div class="product-grid cols-4 reveal" data-cat="nikunohi" data-limited-scope="肉の日限定セット">
+ <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
+ <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span></div>
  <div class="product-tag-row"><span class="product-tag">Set · Misuji &amp; Kiriotoshi</span><span class="product-price"><s>¥5,100</s> ¥4,500</span></div>
  <p class="product-name">肉の日限定セット</p>
- <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。12セット限定のうち<b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b>、なくなり次第終了。</p>
+ <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。12セット限定のうち<b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b>、なくなり次第終了。</p>
  <div class="product-stats">
  <div class="product-stat-item">ミスジ <strong>150g</strong></div>
  <div class="product-stat-item">切落 <strong>200g</strong></div>
  <div class="product-stat-item wide">通常 ¥5,100 → <strong>¥600 お得</strong></div>
  </div>
- <div class="nikunohi-urgency"><b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b><span>7/29（水）23:59まで</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b><span>7/29（水）23:59まで</span></div>
  <div class="product-buy"></div>
  </div>
  </div>
@@ -9816,17 +9830,17 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
  <!-- 肉の日限定セット（牛肉「すべて」の先頭に転載。data-sub="set" なので部位サブタブでは非表示） -->
- <div class="product-card product-card--nikunohi" data-sub="set" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
- <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span><span class="nikunohi-left-ribbon nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</span></div>
+ <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
+ <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span></div>
  <div class="product-tag-row"><span class="product-tag">Set · Misuji &amp; Kiriotoshi</span><span class="product-price"><s>¥5,100</s> ¥4,500</span></div>
  <p class="product-name">肉の日限定セット</p>
- <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。12セット限定のうち<b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b>、なくなり次第終了。</p>
+ <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。12セット限定のうち<b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b>、なくなり次第終了。</p>
  <div class="product-stats">
  <div class="product-stat-item">ミスジ <strong>150g</strong></div>
  <div class="product-stat-item">切落 <strong>200g</strong></div>
  <div class="product-stat-item wide">通常 ¥5,100 → <strong>¥600 お得</strong></div>
  </div>
- <div class="nikunohi-urgency"><b class="nikunohi-left" data-nikunohi-left>残り<span data-nikunohi-n>9</span>セット</b><span>7/29（水）23:59まで</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b><span>7/29（水）23:59まで</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -12986,12 +13000,12 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-06-08-priceunify" defer></script>
-<script src="public/js/products-loader.js?v=001" defer></script>
-<!-- 肉の日フェアの残数表示（フェア終了後はこの1行ごと削除） -->
+<script src="public/data/products-master.js?v=2026-07-29-limited" defer></script>
+<script src="public/js/products-loader.js?v=002" defer></script>
+<!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/nikunohi-left.js?v=002" defer></script>
+<script src="public/js/limited-stock.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/member-gate.js" defer></script>
