@@ -18,13 +18,22 @@
   var LOW_AT       = 10;   /* これ以下で強調表示 */
   var UNIT         = 'セット';
 
+  /* { stock: 実在庫, available: 実在庫 − 他のお客様の確保中 } を返す */
   function liveStock() {
     var master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
     for (var i = 0; i < master.length; i++) {
       var p = master[i];
       if (p.productId === PRODUCT_ID || p.name === PRODUCT_NAME) {
         var s = Number(p.stock);
-        return isFinite(s) ? s : null;
+        if (!isFinite(s)) return null;
+        /* 他のお客様がカート確保中の分を引く（cart-holds.js）。
+           確保中の分は決済側でも押さえているので、これが本当の「買える数」。 */
+        var avail = s;
+        if (typeof window.edaAvailable === 'function') {
+          var a = window.edaAvailable(PRODUCT_NAME, s);
+          if (a !== null) avail = a;
+        }
+        return { stock: s, available: avail };
       }
     }
     return null;
@@ -33,13 +42,16 @@
   function apply() {
     var els = document.querySelectorAll('[data-nikunohi-left]');
     if (!els.length) return false;
-    var n = liveStock();
-    if (n === null) return false;
+    var live = liveStock();
+    if (!live) return false;
+    var n = live.available;
 
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       if (n <= 0) {
-        el.textContent = '完売しました';
+        /* 完売（在庫ゼロ）と、他のお客様が確保中で一時的に買えない状態は区別する。
+           後者は 30 分で解放されるので「完売しました」と書くと嘘になる。 */
+        el.textContent = live.stock > 0 ? 'ただいま他のお客様が確保中' : '完売しました';
         el.classList.add('is-soldout');
         el.classList.remove('is-low');
       } else {

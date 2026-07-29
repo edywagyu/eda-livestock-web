@@ -1009,25 +1009,41 @@ function pdpApplyStock() {
   const note = document.getElementById('pdpStockNote');
   const btn = document.getElementById('addToCartBtn');
   const sticky = document.getElementById('stickyCtaBtn');
+
+  /* 🔒 他のお客様がカートに確保中の分を引いた「いま買える数」(public/js/cart-holds.js)。
+     確保中の分は GAS 側の決済検証でも押さえているので、表示と実態は一致している。 */
+  const held = (typeof window.edaHeldCount === 'function') ? window.edaHeldCount(live.name) : 0;
+  const avail = Math.max(0, live.stock - held);
+  const holdMin = window.EDA_CART_HOLD_MINUTES || 30;
+
   /* 売り切れ時はギフト導線も止める（表示条件は本体側と揃える） */
   const giftEl = document.getElementById('pdpGiftOption');
   if (giftEl) {
     const giftEligible = !cur.comingSoon && (cur.price || 0) > 0 && cur.category !== 'gift';
-    giftEl.style.display = (giftEligible && live.stock > 0) ? 'block' : 'none';
+    giftEl.style.display = (giftEligible && avail > 0) ? 'block' : 'none';
   }
   if (live.stock <= 0) {
     if (note) { note.style.display = 'block'; note.style.color = '#9B1C1C'; note.textContent = '申し訳ございません — ただいま売り切れです（再入荷までお待ちください）'; }
     [btn, sticky].forEach(b => { if (b) { b.disabled = true; b.textContent = '売り切れ — 再入荷待ち'; b.style.opacity = '0.5'; b.style.cursor = 'not-allowed'; } });
     if (sticky) sticky.textContent = '売り切れ';
+  } else if (avail <= 0) {
+    /* 在庫はあるが全部が確保中。完売とは書かない（最大 holdMin 分で解放される） */
+    if (note) { note.style.display = 'block'; note.style.color = '#B45309'; note.textContent = 'ただいま他のお客様がカートに確保中です（最大 ' + holdMin + ' 分で解放されます）'; }
+    [btn, sticky].forEach(b => { if (b) { b.disabled = true; b.textContent = 'ただいま確保中'; b.style.opacity = '0.5'; b.style.cursor = 'not-allowed'; } });
+    if (sticky) sticky.textContent = '確保中';
   } else {
     if (note) {
       /* 肉の日セットは専用バナー(pdpNikunohi)が「残り◯セット」を出すので、点数表記は重複させない */
-      if (live.stock <= 8 && cur.productId !== 'P027') { note.style.display = 'block'; note.style.color = '#B45309'; note.textContent = '残りわずか — あと ' + live.stock + ' 点'; }
+      if (avail <= 8 && cur.productId !== 'P027') {
+        note.style.display = 'block'; note.style.color = '#B45309';
+        note.textContent = '残りわずか — あと ' + avail + ' 点'
+          + (held > 0 ? '（ほかに ' + held + ' 点が他のお客様のカートに入っています）' : '');
+      }
       else { note.style.display = 'none'; }
     }
     [btn, sticky].forEach(b => { if (b && b.disabled) { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; } });
-    if (btn && /売り切れ/.test(btn.textContent)) btn.textContent = '追加する';
-    if (sticky && /売り切れ/.test(sticky.textContent)) sticky.textContent = '追加';
+    if (btn && /売り切れ|確保中/.test(btn.textContent)) btn.textContent = '追加する';
+    if (sticky && /売り切れ|確保中/.test(sticky.textContent)) sticky.textContent = '追加';
   }
 }
 window.refreshStockBadges = pdpApplyStock;
@@ -1086,7 +1102,9 @@ function giftThisProduct() {
 </script>
 <script src="public/js/products-loader.js?v=001" defer></script>
 <!-- 肉の日フェアの残数表示（フェア終了後はこの1行ごと削除） -->
-<script src="public/js/nikunohi-left.js?v=001" defer></script>
+<!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
+<script src="public/js/cart-holds.js?v=001" defer></script>
+<script src="public/js/nikunohi-left.js?v=002" defer></script>
 <!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得（通常ブラウザは無処理）。
      カート投入イベントに line_uid が付き、カゴ落ちリマインドの宛先が特定できる。 -->
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>

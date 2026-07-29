@@ -161,6 +161,7 @@ function doGet(e) {
       case 'public_gifts':      return publicGifts();
       case 'public_subscriptions': return publicSubscriptionPlans();
       case 'public_catalog':    return publicCatalog();
+      case 'cart_holds':        return cartHoldsPublic(e.parameter);   /* カート確保数 (gas/cart_holds.gs) */
       case 'dashboard':         return dashboardSummary(e.parameter);
       case 'line_friends':      return lineFriends();
       /* ===== Customer Segmentation (LINE 配信用) ===== */
@@ -346,6 +347,19 @@ function createCheckout(body) {
     // 在庫検証エラーは fail-open (シート未作成時など) → ログだけ
     log('stock_check_warn', { error: e.message });
   }
+
+  /* 🔒 他のお客様がカート確保中の分 (gas/cart_holds.gs)。表示側の「残り○」と同じ数字を
+     ここでも押さえる ＝ 表示だけ減らして実際は売る、をやらないための対。 */
+  try {
+    const heldErrors = cartHoldErrors_(items, body.analytics_session_id);
+    if (heldErrors.length > 0) {
+      return jsonResponse({
+        ok: false, error: 'CART_HELD',
+        message: '以下の商品は他のお客様がカートに確保中です:\n' + heldErrors.join('\n'),
+        out_of_stock: heldErrors
+      });
+    }
+  } catch (e) { log('cart_hold_check_warn', { error: e.message }); }
 
   // 🎟️ 顧客クーポン: 正規化 → 許可リスト照合 → LINE10 は「1人1回」ガード。
   //    🔴 Stripe には渡さない（値引きはフロントが単価を書き換え済み＝渡すと二重割引）。
@@ -533,6 +547,19 @@ function createBankOrder(body) {
       });
     }
   } catch (e) { log('stock_check_warn', { error: e.message }); }
+
+  /* 🔒 他のお客様がカート確保中の分 (gas/cart_holds.gs)。表示側の「残り○」と同じ数字を
+     ここでも押さえる ＝ 表示だけ減らして実際は売る、をやらないための対。 */
+  try {
+    const heldErrors = cartHoldErrors_(items, body.analytics_session_id);
+    if (heldErrors.length > 0) {
+      return jsonResponse({
+        ok: false, error: 'CART_HELD',
+        message: '以下の商品は他のお客様がカートに確保中です:\n' + heldErrors.join('\n'),
+        out_of_stock: heldErrors
+      });
+    }
+  } catch (e) { log('cart_hold_check_warn', { error: e.message }); }
 
   const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
 

@@ -87,6 +87,10 @@
   /* グローバル API */
   window.edaAnalytics = {
     track: send,
+    /* 現在のセッションID。読み取り専用（最終アクティブ時刻を更新しない＝
+       これを呼んでもセッションが延命されない）。cart-holds.js / checkout.html が
+       「自分のカート確保」を識別するために使う。 */
+    sessionId: function() { try { return localStorage.getItem(SESSION_KEY) || ''; } catch (e) { return ''; } },
     /* よく使うイベント用ショートカット */
     pageView: function() { send('page_view', {}); },
     viewItem: function(productId, value) { send('view_item', { product_id: productId, value: value }); },

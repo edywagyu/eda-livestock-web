@@ -2634,6 +2634,9 @@ async function placeOrder() {
  // 注文ペイロード組み立て
  const orderPayload = {
  mode: mode,
+ /* 🔒 自分のカート確保を自分でブロックしないための識別子 (gas/cart_holds.gs)。
+    add_to_cart を送ったのと同じ analytics セッション。 */
+ analytics_session_id: (window.edaAnalytics && window.edaAnalytics.sessionId) ? window.edaAnalytics.sessionId() : '',
  customer: {
  name: destinations[0].name,
  email: contactMethod === 'email' ? destinations[0].email : (destinations[0].email || ''),
@@ -2760,7 +2763,8 @@ async function placeOrder() {
  const result = await window.EDA_API.post(action, orderPayload);
 
  if (!result.ok || !result.url) {
- throw new Error(result.error || '決済セッション作成に失敗しました。お手数ですが LINE までお問い合わせください。');
+ /* 在庫切れ・他のお客様のカート確保中は message に商品名と点数が入る（error はコード） */
+ throw new Error(result.message || result.error || '決済セッション作成に失敗しました。お手数ですが LINE までお問い合わせください。');
  }
 
  // ローカルに pending 状態保存 (Stripe から戻ったとき表示用)
@@ -2843,7 +2847,7 @@ init();
 initCouponFromStorage();
 </script>
 
-<script src="public/js/analytics.js?v=001" defer></script>
+<script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 
