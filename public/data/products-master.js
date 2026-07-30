@@ -295,10 +295,11 @@
       /* 限定品カウント (public/js/limited-stock.js)。正は products シートの
          limitedTotal / limitedSoldOutAt / limitedUntil / limitedUnit 列。ここは取得失敗時のフォールバック。
          2026-07-29 たろ指示: 23:59 でサイト販売は止める（残りは自分で売る）が、
-         告知は翌 12:00 まで「完売しました」で残す */
+         告知は翌 12:00 まで「完売しました」で残す
+         → 2026-07-30 たろ指示で掲示終了を前倒し（12:00 を待たずに今すぐ消す） */
       limitedTotal: 12,
       limitedSoldOutAt: '2026/07/29 23:59',   /* これ以降＝販売停止＋「完売しました」 */
-      limitedUntil:     '2026/07/30 12:00',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedUntil:     '2026/07/29 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
       limitedTag: 'nikunohi', listPrice: 5100,
