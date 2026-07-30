@@ -236,7 +236,9 @@
   /* ④ 商品詳細ページの帯（P027 のようなベタ書きを不要にする） */
   function applyPdp(active, ended) {
     var cur = window.__pdpProduct;
-    if (cur && cur.name && ended[cur.name]) closePdpSales(cur);
+    /* 渡すのは商品そのものではなく endedLimited() の判定（hidden を見るため）。
+       商品を渡すと state.hidden が常に undefined＝表示終了後も「完売しました」のままになる */
+    if (cur && cur.name && ended[cur.name]) closePdpSales(ended[cur.name]);
 
     var host = document.getElementById('limitedBanner');
     if (!host) return;
