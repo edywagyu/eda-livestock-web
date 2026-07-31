@@ -2655,6 +2655,13 @@ function edaVariantLabel(v) {
   t = t.replace(/^[（(]\s*/, '').replace(/\s*[）)]$/, '').trim(); // 残りの内側カッコを外す
   return t ? '（' + t + '）' : '';
 }
+/* 表示直前の保険：どの経路（サーバー整形済み文字列・旧キャッシュ・GAS由来）で来た
+   商品文字列でも「（1つ）」を確実に消す。「（1つ (200g)）」は「（200g）」に畳む。 */
+function cleanItemsText(s) {
+  return String(s == null ? '' : s)
+    .replace(/（\s*1つ\s*[（(]\s*([^（）()]*?)\s*[）)]\s*）/g, '（$1）') // （1つ (200g)）→（200g）
+    .replace(/（\s*1つ\s*）/g, '');                                  // （1つ）→ 除去
+}
 function normalizeStaffOrder(o) {
   if (!o || o._normalized) return o;
   var dests = [];
@@ -2720,7 +2727,7 @@ function renderOrders() {
         <div class="order-body">
           <div class="order-id">${escapeHtml(o.id || '')}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}</div>
-          <div class="order-meta">${escapeHtml((o.items || '').slice(0, 32))}${(o.items || '').length > 32 ? '...' : ''}</div>
+          <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
         <svg class="order-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
@@ -2756,7 +2763,7 @@ function renderShipDetail() {
       <div class="detail-row"><span class="label">電話</span><span class="value">${escapeHtml(o.phone || '')}</span></div>
       <div class="detail-row"><span class="label">郵便番号</span><span class="value">${escapeHtml(o.zip || '')}</span></div>
       <div class="detail-row"><span class="label">住所</span><span class="value">${escapeHtml((o.address || '') + ' ' + (o.address2 || ''))}</span></div>
-      <div class="detail-row"><span class="label">商品</span><span class="value">${escapeHtml(o.items || '')}</span></div>
+      <div class="detail-row"><span class="label">商品</span><span class="value">${escapeHtml(cleanItemsText(o.items))}</span></div>
       <div class="detail-row"><span class="label">合計</span><span class="value">¥${Number(o.total || 0).toLocaleString()}</span></div>
       <div class="detail-row"><span class="label">💳 決済方法</span><span class="value" style="font-family:'SF Mono',Menlo,monospace;font-size:13px">${escapeHtml(o.paymentMethod || '-')}</span></div>
       <div class="detail-row"><span class="label">📅 お客様ご希望</span><span class="value" style="color:var(--green);font-weight:700">${escapeHtml((fmtDeliveryDate(o.reqDeliveryDate) || '指定なし（最短でお届け）') + (o.reqDeliveryTime ? ' ／ ' + o.reqDeliveryTime : ''))}</span></div>
