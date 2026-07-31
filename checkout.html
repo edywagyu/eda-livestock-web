@@ -1596,9 +1596,10 @@ function init() {
     ダッシュボード集計(Stripe実額ベース)まで割引が確実に反映される。冪等。 */
  cartItems = cartItems.map(function (it) {
  if (it && it.baseUnit != null) {
- var q = it.qty || 1;
- var r = q >= 3 ? ((it.tiers && it.tiers.r3) || 0) : (q === 2 ? ((it.tiers && it.tiers.r2) || 0) : 0);
- it.price = Math.round(it.baseUnit * (1 - r));
+ /* 2026-07-31: まとめ買い割引(2個5%/3個10%)を廃止。旧 localStorage に tiers が
+    残っていても割引を効かせず、常に定価(baseUnit)に固定する。 */
+ it.price = it.baseUnit;
+ it.tiers = { r2: 0, r3: 0 };
  }
  return it;
  });
