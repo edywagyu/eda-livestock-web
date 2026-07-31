@@ -2645,6 +2645,16 @@ async function loadOrders() {
    旧コードは DEMO_ORDERS の形(id/customerName/items/address)で描画していたため、
    実APIの形(order_number/customer_name/items_json/destinations_json)では全項目が
    空欄になっていた（＝届け先が見えず発送できない）。ここで吸収する。 */
+/* バリアント表記の整形：単品を表す「1つ」は数量（×N）と重複し紛らわしいので出さない。
+   例）'1つ'→（表示なし） / '1つ (200g)'→'（200g）' / '2つセット【5%オフ】'→そのまま */
+function edaVariantLabel(v) {
+  var t = (v == null ? '' : String(v)).trim();
+  if (!t) return '';
+  t = t.replace(/^1つ\s*/, '').trim();                        // 先頭の「1つ」を除去
+  if (!t) return '';
+  t = t.replace(/^[（(]\s*/, '').replace(/\s*[）)]$/, '').trim(); // 残りの内側カッコを外す
+  return t ? '（' + t + '）' : '';
+}
 function normalizeStaffOrder(o) {
   if (!o || o._normalized) return o;
   var dests = [];
@@ -2656,7 +2666,7 @@ function normalizeStaffOrder(o) {
   // 上位 items_json が空なら、届け先(destinations[].items)から商品を導出
   if (!items.length) { dests.forEach(function (d) { (Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); }); }); }
   var itemsText = items.map(function (it) {
-    return (it.title || it.name || '商品') + (it.variant ? '（' + it.variant + '）' : '') + ' ×' + (it.qty || it.quantity || 1);
+    return (it.title || it.name || '商品') + edaVariantLabel(it.variant) + ' ×' + (it.qty || it.quantity || 1);
   }).join(' / ');
   var d0 = dests[0] || {};
   var addrFull = dests.length ? dests.map(function (d) {

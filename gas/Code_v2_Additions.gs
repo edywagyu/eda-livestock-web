@@ -44,12 +44,22 @@ function _safeParse(s, dflt) {
   try { return JSON.parse(s); } catch (e) { return dflt; }
 }
 
+/* バリアント表記の整形：単品を表す「1つ」は数量（×N）と重複し紛らわしいので出さない。
+   例）'1つ'→（表示なし） / '1つ (200g)'→'（200g）' / '2つセット【5%オフ】'→そのまま */
+function _variantLabel(v) {
+  var t = (v == null ? '' : String(v)).trim();
+  if (!t) return '';
+  t = t.replace(/^1つ\s*/, '').trim();
+  if (!t) return '';
+  t = t.replace(/^[（(]\s*/, '').replace(/\s*[）)]$/, '').trim();
+  return t ? '（' + t + '）' : '';
+}
+
 function _itemsText(itemsArr) {
   if (!Array.isArray(itemsArr)) return '';
   return itemsArr.map(function (it) {
     var t = it.title || it.name || '商品';
-    var v = it.variant ? '（' + it.variant + '）' : '';
-    return t + v + ' ×' + (it.qty || 1);
+    return t + _variantLabel(it.variant) + ' ×' + (it.qty || 1);
   }).join(' / ');
 }
 
