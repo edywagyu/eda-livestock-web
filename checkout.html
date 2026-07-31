@@ -1965,6 +1965,15 @@ function assignItemToDest(itemIdx, destIdx) {
 }
 
 /* ギフト導線の配送先描画: ②ご依頼主(dest[0]) を #destinationGroups、③お届け先(dest[1+]) を #recipientGroups へ */
+/* バリアント表記の整形：単品を表す「1つ」は数量（×N）と重複し紛らわしいので出さない。 */
+function edaVariantLabel(v) {
+ var t = (v == null ? '' : String(v)).trim();
+ if (!t) return '';
+ t = t.replace(/^1つ\s*/, '').trim();
+ if (!t) return '';
+ t = t.replace(/^[（(]\s*/, '').replace(/\s*[）)]$/, '').trim();
+ return t ? '（' + t + '）' : '';
+}
 function renderGiftDestinations() {
  const s = destinations[0] || {};
  const senderWrap = document.getElementById('destinationGroups');
@@ -2004,7 +2013,7 @@ function renderGiftDestinations() {
   const canRemove = recipients.length > 1;
   const itemsHtml = cartItems.map((it, ci) => {
    const checked = (d.itemIds || []).includes(ci) ? 'checked' : '';
-   return `<label style="display:flex;align-items:center;gap:8px;padding:7px 4px;font-size:13px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04)"><input type="checkbox" ${checked} onchange="assignItemToDest(${ci}, ${dIdx})" style="width:18px;height:18px;accent-color:var(--color-forest);flex-shrink:0"> <span>${it.title}${it.variant ? '（' + it.variant + '）' : ''} <span style="color:var(--color-ink-muted)">×${it.qty}</span></span></label>`;
+   return `<label style="display:flex;align-items:center;gap:8px;padding:7px 4px;font-size:13px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04)"><input type="checkbox" ${checked} onchange="assignItemToDest(${ci}, ${dIdx})" style="width:18px;height:18px;accent-color:var(--color-forest);flex-shrink:0"> <span>${it.title}${edaVariantLabel(it.variant)} <span style="color:var(--color-ink-muted)">×${it.qty}</span></span></label>`;
   }).join('');
   html += `
   <div class="dest-group">
