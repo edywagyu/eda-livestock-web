@@ -350,6 +350,14 @@ ul { list-style: none; padding: 0; margin: 0; }
 .detail-row:last-child { border-bottom: none; }
 .detail-row .label { color: var(--muted); font-size: 12px; }
 .detail-row .value { font-weight: 600; color: var(--ink); text-align: right; max-width: 60%; }
+/* 商品欄：商品名／個数の2列リスト（括弧・スラッシュなし） */
+.detail-row--items { align-items: flex-start; }
+.detail-row--items .value { max-width: 70%; text-align: left; font-weight: 600; }
+.items-list { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.item-line { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.item-line .item-name { color: var(--ink); text-align: left; }
+.item-line .item-qty { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.detail-row--items .value-muted { color: var(--muted); font-weight: 400; }
 
 .tracking-input {
   width: 100%;
@@ -2672,9 +2680,12 @@ function normalizeStaffOrder(o) {
   if (!Array.isArray(items)) items = [];
   // 上位 items_json が空なら、届け先(destinations[].items)から商品を導出
   if (!items.length) { dests.forEach(function (d) { (Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); }); }); }
-  var itemsText = items.map(function (it) {
-    return (it.title || it.name || '商品') + edaVariantLabel(it.variant) + ' ×' + (it.qty || it.quantity || 1);
-  }).join(' / ');
+  // 商品名は括弧のバリアント表記（（1つ）/（200g）等）を一切付けず、商品名＋個数だけにする。
+  var itemsList = items.map(function (it) {
+    return { name: (it.title || it.name || '商品'), qty: (it.qty || it.quantity || 1) };
+  });
+  // 一覧プレビュー用の短い文字列（スラッシュではなく読点区切り・括弧なし）
+  var itemsText = itemsList.map(function (x) { return x.name + ' ×' + x.qty; }).join('、');
   var d0 = dests[0] || {};
   var addrFull = dests.length ? dests.map(function (d) {
     return (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') +
@@ -2688,7 +2699,8 @@ function normalizeStaffOrder(o) {
     awaitingPayment: ps === 'awaiting_payment',  // 🏦 銀行振込・入金前（発送ゲート）
     customerName: o.customer_name || '',
     total: Number(o.total) || 0,
-    items: itemsText || '（商品情報なし）',
+    items: itemsText || '商品情報なし',
+    itemsList: itemsList,
     shipStatus: statusMap[ps] || '未発送',
     phone: d0.tel || o.customer_phone || '',
     zip: d0.zip || '',
@@ -2755,6 +2767,19 @@ function renderShipDetail() {
   const isAwaitingBank = !!o.awaitingPayment;  // 🏦 銀行振込・入金前は発送フォームを出さない
 
   document.getElementById('shipLabel').textContent = '発送処理 ' + o.id;
+  // 商品欄：括弧のバリアント表記・スラッシュをなくし「商品名 ／ 個数」の2列リストで表示
+  var _list = (o.itemsList && o.itemsList.length)
+    ? o.itemsList
+    : String(cleanItemsText(o.items) || '').split(/[、\/]/).map(function (s) {
+        s = s.trim(); var m = s.match(/^(.*?)\s*×\s*(\d+)\s*$/);
+        return m ? { name: m[1].trim(), qty: m[2] } : { name: s, qty: '' };
+      }).filter(function (x) { return x.name; });
+  var itemsHtml = _list.length
+    ? '<div class="items-list">' + _list.map(function (x) {
+        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) +
+               '</span><span class="item-qty">' + (x.qty !== '' && x.qty != null ? '×' + x.qty : '') + '</span></div>';
+      }).join('') + '</div>'
+    : '<span class="value-muted">商品情報なし</span>';
   document.getElementById('shipContent').innerHTML = `
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
@@ -2763,7 +2788,7 @@ function renderShipDetail() {
       <div class="detail-row"><span class="label">電話</span><span class="value">${escapeHtml(o.phone || '')}</span></div>
       <div class="detail-row"><span class="label">郵便番号</span><span class="value">${escapeHtml(o.zip || '')}</span></div>
       <div class="detail-row"><span class="label">住所</span><span class="value">${escapeHtml((o.address || '') + ' ' + (o.address2 || ''))}</span></div>
-      <div class="detail-row"><span class="label">商品</span><span class="value">${escapeHtml(cleanItemsText(o.items))}</span></div>
+      <div class="detail-row detail-row--items"><span class="label">商品</span><span class="value">${itemsHtml}</span></div>
       <div class="detail-row"><span class="label">合計</span><span class="value">¥${Number(o.total || 0).toLocaleString()}</span></div>
       <div class="detail-row"><span class="label">💳 決済方法</span><span class="value" style="font-family:'SF Mono',Menlo,monospace;font-size:13px">${escapeHtml(o.paymentMethod || '-')}</span></div>
       <div class="detail-row"><span class="label">📅 お客様ご希望</span><span class="value" style="color:var(--green);font-weight:700">${escapeHtml((fmtDeliveryDate(o.reqDeliveryDate) || '指定なし（最短でお届け）') + (o.reqDeliveryTime ? ' ／ ' + o.reqDeliveryTime : ''))}</span></div>
