@@ -182,6 +182,7 @@ function doGet(e) {
       case 'diag_dedupe_orders': return diagDedupeOrders(e.parameter);
       case 'diag_bank_reminders': return jsonResponse(remindPendingBankTransfers(true));   /* ドライラン: 候補一覧のみ・送信なし */
       case 'setup_bank_reminder': return jsonResponse(setupBankReminderTrigger());          /* 日次10時トリガー設置(冪等) */
+      case 'diag_ship_reminders': return ContentService.createTextOutput(alertUnshippedOrders(true)); /* 発送リマインドのドライラン(送信せず本文表示) */
       /* ===== STAFF ===== */
       case 'staff_login':       return staffLogin(e.parameter);
       case 'staff_dashboard':   return staffDashboard();
@@ -1690,21 +1691,55 @@ function dispatchWebhookEvent_(verified) {
 /* 🔧 デプロイ後に1回だけ実行: processWebhookQueue の1分毎トリガーを登録（重複登録防止）。
    GAS エディタでこの関数を選んで Run する（裏で処理を回すために必須・1回だけ）。 */
 /* ============================================================
-   🚨 未発送アラート (#1 主因対策 2026-06)
-   入金済(paid)なのに UNSHIPPED_ALERT_DAYS 日以上 未発送の実注文を毎朝検知し
-   backoffice にメール通知。今回クレーム(6日未発送・無通知)の再発を防ぐ。
-   ============================================================ */
-var UNSHIPPED_ALERT_DAYS = 2; // 入金からこの日数以上 未発送ならアラート
+   🚚 発送リマインド（着日基準・2026-08 田崎指示で「入金からN日」方式を刷新）
+   ------------------------------------------------------------
+   狙い: 「入金から2日で発送漏れアラート」だと、お届け希望日が先の注文でも即鳴り、
+   逆に希望日直前でも輸送日数を織り込めず“間に合わない”。→ お届け着日(T)から逆算して
+   「明日発送してください」を出す方式に変更。
 
-function alertUnshippedOrders() {
+   着日 T の決め方（お届け先ごと）:
+     ・希望日あり … destinations[].delivery.date（無ければ注文共通 delivery_date）。buffer=1日
+     ・希望日なし … 最短お届け日＝注文日+3日（checkout の min=+3 と一致）。buffer=0日
+   地域（宮崎発ヤマト実測・県庁所在地基準）:
+     ・西日本＝翌日着（近畿・中国・四国・九州の22県）→ 輸送1日
+     ・東日本＝翌々日着（東海以東＋北海道＋沖縄本島の25県）→ 輸送2日（不明県も東扱い＝長い方で安全）
+   発送すべき日  shipDeadline = T − 輸送日数 − buffer
+   「明日発送」日 alertDay     = shipDeadline − 1
+     → 希望日あり: 東=T−4 / 西=T−3（1日余裕で前日着）
+     → 希望日なし: 東=T−3 / 西=T−2（最短日はギリギリなので余裕0でジャスト着）
+   毎朝8時トリガーで today>=alertDay かつ未発送を検知（＝発送するまで鳴り続ける安全網）。
+   定期便(mode=subscription*)は毎月1日発送の別運用のため従来どおり対象外。
+   ============================================================ */
+// 宮崎発ヤマト「翌日着」＝西日本の22県（これ以外＝東日本＝翌々日着。空欄/不明も東扱い）。
+var WEST_NEXTDAY_PREFS = [
+  '福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県',   // 九州
+  '岡山県','広島県','鳥取県','島根県','山口県',                     // 中国
+  '徳島県','香川県','愛媛県','高知県',                             // 四国
+  '大阪府','兵庫県','京都府','滋賀県','奈良県','和歌山県'            // 近畿（三重は東海=翌々日=東）
+];
+// JST暦日を整数(日番号)へ。Date型と 'YYYY-MM-DD' 文字列で同じ基準に揃える。
+function _jstDayNum(d) { return Math.floor((d.getTime() + 9 * 3600000) / 86400000); }
+function _ymdDayNum(s) {
+  var m = String(s || '').slice(0, 10).replace(/\//g, '-').split('-');
+  if (m.length < 3 || !m[0] || !m[1] || !m[2]) return null;
+  var n = Date.UTC(+m[0], +m[1] - 1, +m[2]);
+  return isNaN(n) ? null : Math.floor(n / 86400000);
+}
+function _dayNumLabel(n) {
+  var d = new Date(n * 86400000); // UTC正午境界ではなくUTC 0時＝_ymdDayNum/_jstDayNumと整合
+  return (d.getUTCMonth() + 1) + '/' + d.getUTCDate() + '(' + ['日','月','火','水','木','金','土'][d.getUTCDay()] + ')';
+}
+
+/* dryRun=true でメール送信せず本文だけ返す（?action 経由の下見/デバッグ用・Tomの diag_bank_reminders と同様）。 */
+function alertUnshippedOrders(dryRun) {
   try {
     var sh = sheet('orders');
     var data = sh.getDataRange().getValues();
     if (data.length < 2) return 'no_orders';
     var headers = data[0];
     var get = function (row, name) { var k = headers.indexOf(name); return k >= 0 ? row[k] : ''; };
-    var now = new Date();
-    var stale = [];
+    var todayNum = _jstDayNum(new Date());
+    var hits = [];
     for (var i = 1; i < data.length; i++) {
       var row = data[i];
       var ps = String(get(row, 'payment_status') || '').toLowerCase();
@@ -1712,30 +1747,55 @@ function alertUnshippedOrders() {
       if (String(get(row, 'tracking_number') || '').trim()) continue; // 発送済(伝票あり)は対象外
       var em = String(get(row, 'customer_email') || '').toLowerCase();
       if (em.indexOf('@eda-livestock.com') >= 0) continue;            // 社内/テスト除外
+      if (String(get(row, 'mode') || '').indexOf('subscription') === 0) continue; // 定期便は別運用
       var placed = get(row, 'placed_at');
-      var pd = placed ? new Date(placed) : null;
-      var days = pd ? Math.floor((now - pd) / 86400000) : 0;
-      if (pd && days < UNSHIPPED_ALERT_DAYS) continue;                // 猶予内はまだOK
-      // 🔴 定期便はアラート対象外（毎月1日発送の確定運用＝「2日以上未発送」で毎日鳴るのはノイズ。
-      //   定期便の発送管理は「🔁定期便リスト」タブ/Stripe で別管理。2026-06-17 Tom指示）。
-      //   単品（通常注文）の発送漏れアラートは従来どおり継続。継続課金分も mode=subscription_renewal で除外される。
-      if (String(get(row, 'mode') || '').indexOf('subscription') === 0) continue;
-      // 出荷物のある注文のみ（配送対象明細なしは対象外・誤検知防止）。
+      var placedNum = placed ? _jstDayNum(new Date(placed)) : null;
+      var orderDate = _ymdDayNum(get(row, 'delivery_date'));          // 注文共通の希望日（フォールバック）
       var ds; try { ds = JSON.parse(get(row, 'destinations_json') || '[]'); } catch (e) { ds = []; }
-      var hasShippable = ds.some(function (a) { return Array.isArray(a.items) && a.items.length > 0; });
-      if (!hasShippable) continue;
-      stale.push({ on: get(row, 'order_number'), name: get(row, 'customer_name'), days: days, items: get(row, 'items_json'), total: get(row, 'total') });
+      var dests = ds.filter(function (a) { return a && Array.isArray(a.items) && a.items.length > 0; });
+      if (!dests.length) continue;                                    // 配送対象明細なし（ギフト差出人等）は対象外
+      dests.forEach(function (a) {
+        var pref = String(a.pref || '').trim();
+        var isWest = WEST_NEXTDAY_PREFS.indexOf(pref) >= 0;           // 空欄/不明は false＝東（長い方で安全）
+        var transit = isWest ? 1 : 2;                                 // 西=翌日着 / 東=翌々日着
+        // 着日 T：希望日（宛先→注文共通）。無ければ 最短＝注文日+3。
+        var wishNum = _ymdDayNum((a.delivery || {}).date) || orderDate;
+        var hasWish = !!wishNum;
+        var T = hasWish ? wishNum : (placedNum != null ? placedNum + 3 : null);
+        if (T == null) return;                                        // 着日を確定できない（placed も希望日も無い）
+        var buffer = hasWish ? 1 : 0;                                 // 希望日は1日余裕 / 最短日は余裕0
+        var shipDeadline = T - transit - buffer;                      // この日までに発送
+        var alertDay = shipDeadline - 1;                              // 「明日発送」を出す日
+        if (todayNum < alertDay) return;                             // まだ早い（希望日が先＝鳴らさない）
+        var untilShip = shipDeadline - todayNum;                      // 発送期限まで（日）
+        var status = untilShip >= 1 ? '🚚 明日発送' : (untilShip === 0 ? '🚨 本日発送' : '🔴 発送期限超過(' + (-untilShip) + '日遅れ)');
+        hits.push({
+          on: get(row, 'order_number'), name: a.name || get(row, 'customer_name'),
+          region: isWest ? '西' : '東', pref: pref, wish: hasWish,
+          arrive: T, ship: shipDeadline, until: untilShip, status: status,
+          items: a.items.map(function (it) { return (it.title || '') + (it.variant ? ' ' + it.variant : '') + (it.qty ? '×' + it.qty : ''); }).join(' / ')
+        });
+      });
     }
-    if (!stale.length) { log('unshipped_alert', { count: 0 }); return 'none'; }
-    var to = cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com';
-    var body = '【未発送アラート】入金済なのに ' + UNSHIPPED_ALERT_DAYS + '日以上 発送されていない注文が ' + stale.length + ' 件あります。\n\n';
-    stale.forEach(function (o) {
-      body += '・' + o.on + '（' + (o.name || '') + '）… 入金から ' + o.days + '日経過 / ¥' + o.total + '\n  ' + o.items + '\n\n';
+    if (!hits.length) { if (!dryRun) log('unshipped_alert', { count: 0 }); return 'none'; }
+    hits.sort(function (a, b) { return a.ship - b.ship; });           // 期限が近い/超過を上に
+    var overdue = hits.filter(function (h) { return h.until < 0; }).length;
+    var body = '【発送リマインド】着日から逆算して「そろそろ発送」の注文が ' + hits.length + ' 件あります' +
+      (overdue ? '（うち発送期限超過 ' + overdue + ' 件）' : '') + '。\n' +
+      '※東日本=翌々日着・西日本=翌日着で計算。希望日ありは1日余裕、希望日なしは最短(注文+3日)着で算出。\n\n';
+    hits.forEach(function (h) {
+      body += '・' + h.on + '（' + (h.name || '') + '）' + h.status + '\n' +
+        '   ' + h.region + '日本[' + (h.pref || '?') + '] / 着日 ' + _dayNumLabel(h.arrive) +
+        '（' + (h.wish ? '希望日' : '最短') + '）→ 発送期限 ' + _dayNumLabel(h.ship) + '\n' +
+        '   ' + h.items + '\n\n';
     });
     body += 'STAFFポータルで発送処理してください: https://www.eda-livestock.com/staff.html\n';
-    MailApp.sendEmail({ to: to, subject: '🚨【未発送 ' + stale.length + '件】' + UNSHIPPED_ALERT_DAYS + '日以上 発送漏れ', body: body });
-    log('unshipped_alert', { count: stale.length, orders: stale.map(function (o) { return o.on; }) });
-    return 'alerted:' + stale.length;
+    var subject = (overdue ? '🔴' : '🚚') + '【発送リマインド ' + hits.length + '件】' + (overdue ? '期限超過' + overdue + '件あり' : '着日から逆算');
+    if (dryRun) return body;
+    var to = cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com';
+    MailApp.sendEmail({ to: to, subject: subject, body: body });
+    log('unshipped_alert', { count: hits.length, overdue: overdue, orders: hits.map(function (h) { return h.on; }) });
+    return 'alerted:' + hits.length;
   } catch (e) { log('unshipped_alert_error', { error: e.message }); return 'error:' + e.message; }
 }
 
