@@ -2678,6 +2678,37 @@ function normalizeStaffOrder(o) {
     address: addrFull,
     address2: '',
     destCount: dests.length,
+    // ── 「購入者の住所」と「配送先の住所」を発送画面で分けて出すための構造化データ ──
+    // destinations_json は [dest0=ご購入者(type:self), dest1..=お届け先(type:gift)] の並び。
+    // ・通常注文: dest0 が購入者かつ配送先（商品を持つ）→ 同一住所。
+    // ・ギフト注文: dest0=購入者(itemsなし) / dest1..=お届け先(itemsあり)。
+    purchaser: (function () {
+      var p = dests.find(function (d) { return d && d.type === 'self'; }) || dests[0] || {};
+      return {
+        name: p.name || o.customer_name || '',
+        tel: p.tel || o.customer_phone || '',
+        email: p.email || o.customer_email || '',
+        zip: p.zip || '',
+        address: (p.pref || '') + (p.address || '')
+      };
+    })(),
+    shipTargets: (function () {
+      var purchaser = dests.find(function (d) { return d && d.type === 'self'; }) || dests[0] || {};
+      var withItems = dests.filter(function (d) {
+        return (Array.isArray(d.items) && d.items.length) || (Array.isArray(d.itemIds) && d.itemIds.length);
+      });
+      var targets = withItems.length ? withItems
+        : (dests.length > 1 ? dests.filter(function (d) { return d !== purchaser; }) : dests);
+      if (!targets.length) targets = dests.length ? dests : [purchaser];
+      return targets.map(function (d) {
+        return {
+          name: d.name || '',
+          tel: d.tel || '',
+          zip: d.zip || '',
+          address: (d.pref || '') + (d.address || '')
+        };
+      });
+    })(),
     lineUid: o.line_uid || '',
     paymentMethod: o.payment_method || '',
     orderDate: o.placed_at ? String(o.placed_at).replace('T', ' ').slice(0, 16) : '',
@@ -2738,14 +2769,53 @@ function renderShipDetail() {
   const isAwaitingBank = !!o.awaitingPayment;  // 🏦 銀行振込・入金前は発送フォームを出さない
 
   document.getElementById('shipLabel').textContent = '発送処理 ' + o.id;
+
+  // ── 「購入者の住所」と「配送先の住所」を一目で分けて出す ──────────────────
+  const norm = s => String(s || '').replace(/[\s　〒-]/g, '');
+  const buyer = o.purchaser || { name: o.customerName || '', tel: o.phone || '', email: o.email || '', zip: o.zip || '', address: o.address || '' };
+  const targets = (Array.isArray(o.shipTargets) && o.shipTargets.length)
+    ? o.shipTargets
+    : [{ name: buyer.name, tel: buyer.tel, zip: buyer.zip, address: buyer.address }];
+  const buyerAddrKey = norm(buyer.zip) + norm(buyer.address);
+  const multiDest = targets.length > 1;
+
+  const destBlocks = targets.map((d, i) => {
+    const sameAsBuyer = !multiDest && (norm(d.zip) + norm(d.address)) === buyerAddrKey && buyerAddrKey;
+    return `
+    <div style="padding:10px 12px;${i ? 'border-top:1px dashed #E3DCC9;' : ''}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:2px">
+        <span style="font-size:11px;color:var(--muted);font-weight:700">${multiDest ? 'お届け先 ' + (i + 1) + '／' + targets.length : 'お届け先'}</span>
+        ${sameAsBuyer ? '<span style="font-size:10px;font-weight:700;color:#1E5C3A">＝ 購入者と同じ住所</span>'
+                      : '<span style="font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 7px">別住所へお届け</span>'}
+      </div>
+      <div style="font-size:15px;font-weight:800;color:var(--forest,#0F3D2E)">${escapeHtml(d.name || buyer.name || '（宛名なし）')} 様</div>
+      <div style="font-size:14px;color:#111;margin-top:3px;line-height:1.55;font-weight:600">${escapeHtml((d.zip ? '〒' + d.zip + '　' : '') + (d.address || '（住所未登録）'))}</div>
+      ${d.tel ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">📞 ${escapeHtml(d.tel)}</div>` : ''}
+    </div>`;
+  }).join('');
+
   document.getElementById('shipContent').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      <!-- 購入者（注文・お支払い） -->
+      <div style="border:1px solid #E3DCC9;border-radius:12px;overflow:hidden;background:#fff">
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#F4EFE2;font-size:11px;font-weight:800;letter-spacing:.04em;color:#6B5B2E">🧾 ご購入者（注文した方）${o.purchaseCount ? ' <span style="font-weight:700;color:var(--gold-soft)">' + o.purchaseCount + '回目</span>' : ''}</div>
+        <div style="padding:10px 12px">
+          <div style="font-size:15px;font-weight:800;color:var(--forest,#0F3D2E)">${escapeHtml(buyer.name || '（名前なし）')}</div>
+          <div style="font-size:14px;color:#111;margin-top:3px;line-height:1.55;font-weight:600">${escapeHtml((buyer.zip ? '〒' + buyer.zip + '　' : '') + (buyer.address || '（住所の登録なし）'))}</div>
+          ${buyer.tel ? `<div style="font-size:12px;color:var(--muted);margin-top:2px">📞 ${escapeHtml(buyer.tel)}</div>` : ''}
+          ${buyer.email ? `<div style="font-size:12px;color:var(--muted);margin-top:1px">✉️ ${escapeHtml(buyer.email)}</div>` : ''}
+        </div>
+      </div>
+      <!-- 配送先（実際に商品を送る先） -->
+      <div style="border:2px solid #CFE3D6;border-radius:12px;overflow:hidden;background:#fff">
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#EAF3EC;font-size:11px;font-weight:800;letter-spacing:.04em;color:#1E5C3A">📦 配送先（お届け先）</div>
+        ${destBlocks}
+      </div>
+    </div>
+
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
       <div class="detail-row"><span class="label">受注日</span><span class="value">${escapeHtml(o.orderDate || '')}</span></div>
-      <div class="detail-row"><span class="label">顧客名</span><span class="value">${escapeHtml(o.customerName || '')}${o.purchaseCount ? ' <span style="font-size:11px;color:var(--gold-soft)">' + o.purchaseCount + '回目</span>' : ''}</span></div>
-      <div class="detail-row"><span class="label">電話</span><span class="value">${escapeHtml(o.phone || '')}</span></div>
-      <div class="detail-row"><span class="label">郵便番号</span><span class="value">${escapeHtml(o.zip || '')}</span></div>
-      <div class="detail-row"><span class="label">住所</span><span class="value">${escapeHtml((o.address || '') + ' ' + (o.address2 || ''))}</span></div>
       <div class="detail-row"><span class="label">商品</span><span class="value">${escapeHtml(o.items || '')}</span></div>
       <div class="detail-row"><span class="label">合計</span><span class="value">¥${Number(o.total || 0).toLocaleString()}</span></div>
       <div class="detail-row"><span class="label">💳 決済方法</span><span class="value" style="font-family:'SF Mono',Menlo,monospace;font-size:13px">${escapeHtml(o.paymentMethod || '-')}</span></div>
