@@ -1815,7 +1815,7 @@ function setupUnshippedAlertTrigger() {
    新しい自動化を足したら AUTOMATION_REGISTRY に1行足すだけ→毎朝6時に自動反映。
    書き出し先=Drive作成のシート(所有 r.tasaki@)。setupは r.tasaki@ で実行すること。
    ============================================================ */
-var AUTOMATION_CATALOG_SHEET_ID = '1zcynJMmszxfzG2N0zcuWlCouUPdebdF-wQCKILtlz24';
+var AUTOMATION_CATALOG_SHEET_ID = '189axg2iFwQcZn6hNc64QJnag8lB_nn4MqCuvdGR2xXo';
 // [分類, 機能, いつ動く, 状態, 何をする]。状態=稼働中/停止中(オフ)/手動/未反映/裏方。
 var AUTOMATION_REGISTRY = [
   ['公式LINE', '買った人を自動でLINE連携', '注文された瞬間', '稼働中', 'LINE経由で買った人のLINEと注文を自動でひも付け（次から個別に連絡できる）'],
