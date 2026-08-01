@@ -1809,6 +1809,60 @@ function setupUnshippedAlertTrigger() {
   return 'created';
 }
 
+/* ============================================================
+   📋 自動化一覧スプレッドの自動更新 (2026-08-01 田崎要望)
+   公式LINE/ECの自動処理を「誰が見ても分かる」言葉で1枚のスプレッドに保つ。
+   新しい自動化を足したら AUTOMATION_REGISTRY に1行足すだけ→毎朝6時に自動反映。
+   書き出し先=Drive作成のシート(所有 r.tasaki@)。setupは r.tasaki@ で実行すること。
+   ============================================================ */
+var AUTOMATION_CATALOG_SHEET_ID = '1zcynJMmszxfzG2N0zcuWlCouUPdebdF-wQCKILtlz24';
+// [分類, 機能, いつ動く, 状態, 何をする]。状態=稼働中/停止中(オフ)/手動/未反映/裏方。
+var AUTOMATION_REGISTRY = [
+  ['公式LINE', '買った人を自動でLINE連携', '注文された瞬間', '稼働中', 'LINE経由で買った人のLINEと注文を自動でひも付け（次から個別に連絡できる）'],
+  ['公式LINE', '連携で10%OFFクーポンを配布', 'LINE連携した瞬間', '稼働中', '連携してくれた人に割引クーポンを自動で送る'],
+  ['公式LINE', '発送をLINEでお知らせ', '発送処理した時', '稼働中', '「発送しました＋お届け予定日」をLINEに自動送信（未連携の人にはメール）'],
+  ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
+  ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '停止中（オフ）', 'カートに入れて離脱した人へ催促。今は送信オフで記録だけ取っている'],
+  ['公式LINE', 'LINE成績を毎日自動記録', '毎日', '未反映（動いていない）', '友だち数や配信成績を表に自動記録。仕組みは完成済みだが本番に入れていない'],
+  ['EC', '発送リマインド', '毎朝8時', '稼働中', 'お客様の到着希望日から逆算して「そろそろ発送して」を社内に通知（東日本は4日前・西日本は3日前）'],
+  ['EC', '振込のお願い催促', '毎朝10時', '稼働中', '銀行振込を選んだのに未入金の人を見つけてリマインドを送る'],
+  ['EC', '発送リストを自動更新', '30分ごと', '稼働中', '発送すべき注文を、伝票印刷用の一覧に常に最新化する'],
+  ['EC', '在庫の自動引き算', '商品が売れた時', '稼働中', '売れると在庫数が自動で減る'],
+  ['EC', '注文確認メール', '注文が入った時', '稼働中', 'お客様に確認メールを自動送信'],
+  ['EC', '振込案内メール', '銀行振込を選んだ時', '稼働中', '振込先の案内を自動送信'],
+  ['EC', '限定品の自動終了', '締切が来た時', '稼働中', '「〇日まで」の限定商品を、締切で表示ごと自動で消す'],
+  ['EC', 'カートの残り個数表示', '常時', '稼働中', '在庫の残りをリアルタイムで見せる'],
+  ['EC', '決済の取りこぼし防止', '1分ごと・6時間ごと', '裏方（お客様には見えない）', '支払い情報を二重チェックして注文の記録漏れを防ぐ']
+];
+
+/* 一覧スプレッドを AUTOMATION_REGISTRY の内容で書き換える（毎朝トリガー＋setupから呼ばれる）。 */
+function syncAutomationCatalog() {
+  try {
+    var ss = SpreadsheetApp.openById(AUTOMATION_CATALOG_SHEET_ID);
+    var sh = ss.getSheets()[0];
+    sh.clear();
+    var head = ['分類', '機能', 'いつ動く', '状態', '何をする'];
+    sh.getRange(1, 1, 1, 5).setValues([head]).setFontWeight('bold').setBackground('#0F3D2E').setFontColor('#FFFFFF');
+    sh.getRange(2, 1, AUTOMATION_REGISTRY.length, 5).setValues(AUTOMATION_REGISTRY);
+    var stamp = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+    sh.getRange(AUTOMATION_REGISTRY.length + 3, 1).setValue('最終更新: ' + stamp + '（毎日自動更新。自動化を追加・変更するとこの表に反映されます）');
+    sh.setFrozenRows(1);
+    try { sh.autoResizeColumns(1, 5); } catch (e) {}
+    log('automation_catalog_sync', { rows: AUTOMATION_REGISTRY.length });
+    return 'synced ' + AUTOMATION_REGISTRY.length + ' rows @' + stamp;
+  } catch (e) { log('automation_catalog_error', { error: e.message }); return 'error:' + e.message; }
+}
+
+/* 1回だけ実行(r.tasaki@で): 毎朝6時トリガーを設置＋即時反映。 */
+function setupAutomationCatalog() {
+  var ts = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < ts.length; i++) {
+    if (ts[i].getHandlerFunction() === 'syncAutomationCatalog') return 'already_exists / ' + syncAutomationCatalog();
+  }
+  ScriptApp.newTrigger('syncAutomationCatalog').timeBased().everyDays(1).atHour(6).create();
+  return 'created / ' + syncAutomationCatalog();
+}
+
 function setupWebhookQueueTrigger() {
   const ts = ScriptApp.getProjectTriggers();
   for (let i = 0; i < ts.length; i++) {
