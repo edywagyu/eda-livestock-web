@@ -1110,13 +1110,21 @@ function giftThisProduct() {
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script>
-/* PDP: view_item イベント送信 */
+/* PDP: view_item イベント送信
+   以前は master に一致しないと発火せず、商品ID/商品名が空のまま記録される穴があった。
+   ここでは pid が取れなくても、画面に出ている商品名(#pdpTitle)を必ず meta.title に載せて送る＝
+   「何の商品を見たか」を後から必ず追える。閲覧の複合スコア(人気順)の素になる。 */
 window.addEventListener('load', () => {
+  if (!window.edaAnalytics) return;
   const params = new URLSearchParams(location.search);
   const pid = params.get('id') || '';
   const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
-  const p = all.find(x => x.productId === pid);
-  if (window.edaAnalytics && p) window.edaAnalytics.viewItem(pid, p.price);
+  const p = all.find(x => String(x.productId) === String(pid))
+        || all.find(x => (x.variants || []).some(v => String(v.id) === String(pid)));
+  const titleEl = document.getElementById('pdpTitle') || document.querySelector('.pdp-title, .product-name, h1');
+  const title = (p && (p.name || p.title)) || (titleEl && titleEl.textContent.trim()) || '';
+  const price = (p && p.price) || 0;
+  window.edaAnalytics.viewItem(pid, price, { title: title });
 });
 </script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>

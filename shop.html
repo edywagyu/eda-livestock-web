@@ -6044,9 +6044,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .shop-main-wrap { display: flex; flex-direction: column; }
 .shop-main-wrap > section { order: 99; } /* デフォルト 末尾寄り */
 .shop-main-wrap > .ship-countdown-bar { order: 1; }
+.shop-main-wrap > .popular-bar { order: 2; } /* 今売れている人気商品バナー(お届けバー直下・2026-08-02) */
 /* 肉の日バナーはお届けバー(order:1)の直下。order 未指定だと既定の 99 に落ちて
    ページ最下部へ飛ぶため、必ず明示すること。 */
-.shop-main-wrap > .nikunohi-bar { order: 2; }
+.shop-main-wrap > .nikunohi-bar { order: 3; }
 .shop-main-wrap > .freezer-band { order: 12; } /* 冷凍庫イメージ（2026-07-03 商品前倒しで products 後へ） */
 .shop-main-wrap > .unboxing-section { order: 13; } /* 開封動画（同上） */
 .shop-main-wrap > #products { order: 10; } /* All Products 最上 */
@@ -9757,6 +9758,26 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+
+<!-- ========= 今売れている人気商品バナー（2026-08-02 / popular.js が popular.json から自動描画・空なら非表示） ========= -->
+<section class="popular-bar" id="popularBar" hidden></section>
+<style>
+/* ファーストビュー付近なので reveal(スクロール表示)は使わない＝常時表示。flex order はお届けバー(1)の直下(2)。 */
+.popular-bar { padding: 0 0 14px; }
+.pop-bar-inner { background: linear-gradient(135deg,#0F3D2E 0%,#14503b 100%); border:1px solid rgba(212,169,59,.45); border-radius:14px; padding:14px 16px; box-shadow:0 8px 24px rgba(15,61,46,.14); }
+.pop-bar-head { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.pop-fire { font-size:16px; }
+.pop-bar-title { color:#FAF7F0; font-weight:700; font-size:15px; letter-spacing:.02em; }
+.pop-bar-note { color:rgba(250,247,240,.6); font-size:11px; }
+.pop-bar-list { display:flex; gap:10px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+.pop-bar-list::-webkit-scrollbar { height:5px; }
+.pop-bar-list::-webkit-scrollbar-thumb { background:rgba(212,169,59,.5); border-radius:3px; }
+.pop-chip { flex:0 0 auto; display:flex; align-items:center; gap:8px; background:rgba(250,247,240,.06); border:1px solid rgba(212,169,59,.35); border-radius:10px; padding:8px 12px; text-decoration:none; transition:background .2s,transform .2s; }
+.pop-chip:hover { background:rgba(250,247,240,.12); transform:translateY(-2px); }
+.pop-rank { flex:0 0 auto; width:22px; height:22px; border-radius:50%; background:#D4A93B; color:#0F3D2E; font-weight:800; font-size:12px; display:flex; align-items:center; justify-content:center; }
+.pop-name { color:#FAF7F0; font-weight:600; font-size:13px; white-space:nowrap; }
+.pop-price { color:#D4A93B; font-weight:700; font-size:13px; white-space:nowrap; }
+</style>
 
 <!-- ========= 肉の日限定バナー（2026-07-29 / 終了後はこのセクションごと削除） ========= -->
 <section class="nikunohi-bar" data-limited-scope="肉の日限定セット">
@@ -14598,6 +14619,7 @@ function copyPopCoupon() {
 <script src="public/js/limited-stock.js?v=006" defer></script>
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/popular.js?v=1" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 
