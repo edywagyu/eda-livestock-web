@@ -55,6 +55,16 @@
     return parseUntil(p.limitedSoldOutAt) || parseUntil(p.limitedUntil);
   }
 
+  /* 販売開始時刻（省略可）。指定があり、まだ来ていなければ「発売前」＝表示も購入もさせない。
+     省略時は従来どおり（開始ゲートなし＝すぐ販売）。 */
+  function startAtOf(p) {
+    return parseUntil(p.limitedStartAt);
+  }
+  function notStarted(p) {
+    var s = startAtOf(p);
+    return !!(s && new Date() < s);
+  }
+
   /* 販売停止時刻を過ぎた限定品は stock を 0 に落とす。
      こうすると在庫切れバッジ・カートボタン無効化・カート追加時の上限チェックといった
      既存の在庫切れ処理がそのまま効く（限定品専用の販売停止コードを増やさない）。
@@ -78,6 +88,7 @@
     products().forEach(function (p) {
       var total = Number(p.limitedTotal);
       if (!isFinite(total) || total <= 0) return;
+      if (notStarted(p)) return;                 /* 発売前＝まだ出さない（limitedStartAt） */
       var until = parseUntil(p.limitedUntil);
       if (until && now > until) return;          /* 表示終了＝もう出さない */
       if (!p.name) return;
@@ -114,6 +125,27 @@
       out[p.name] = { product: p, hidden: !!(until && now > until) };
     });
     return out;
+  }
+
+  /* まだ発売前の限定品を { 商品名: {product, upcoming, startAt} } で返す。
+     product.html?id=… の直リンクを発売前に踏んでも購入させないための判定。 */
+  function upcomingLimited() {
+    var out = {};
+    products().forEach(function (p) {
+      var total = Number(p.limitedTotal);
+      if (!isFinite(total) || total <= 0 || !p.name) return;
+      if (!notStarted(p)) return;
+      out[p.name] = { product: p, upcoming: true, startAt: startAtOf(p) };
+    });
+    return out;
+  }
+
+  /* 「◯月◯日（曜）◯:◯◯」表記（発売予定の告知に使う） */
+  function fmtDateTime(d) {
+    if (!d) return '';
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日'
+      + '（' + '日月火水木金土'.charAt(d.getDay()) + '）'
+      + d.getHours() + ':' + ('0' + d.getMinutes()).slice(-2);
   }
 
   /* 「残り◯セット」/「完売しました」/「ただいま他のお客様が確保中」 */
@@ -221,11 +253,20 @@
     note.style.cssText = 'margin:18px 0 4px;padding:16px 18px;border-radius:12px;'
       + 'background:#F3F1EC;border:1px solid rgba(15,61,46,.14);'
       + 'font-size:13.5px;line-height:1.9;letter-spacing:.02em;color:#3E4A44;';
-    /* 販売停止直後は「完売」、表示終了後（＝一覧からも消えたあと）は「販売終了」 */
-    var head = state.hidden ? 'この商品の販売は終了しました' : '完売しました';
-    var body = state.hidden
-      ? '期間限定のご案内でした。ありがとうございました。'
-      : 'ご好評につき完売しました。たくさんのご注文をありがとうございました。';
+    /* 発売前は「発売予定」、販売停止直後は「完売」、表示終了後は「販売終了」 */
+    var head, body;
+    if (state.upcoming) {
+      head = state.startLabel
+        ? (state.startLabel + ' 発売予定です')
+        : 'まもなく発売予定です';
+      body = '数量限定でのご案内です。発売までもうしばらくお待ちください。';
+    } else if (state.hidden) {
+      head = 'この商品の販売は終了しました';
+      body = '期間限定のご案内でした。ありがとうございました。';
+    } else {
+      head = '完売しました';
+      body = 'ご好評につき完売しました。たくさんのご注文をありがとうございました。';
+    }
     note.innerHTML = '<b style="display:block;font-weight:800;color:#0F3D2E;margin-bottom:4px">'
       + head + '</b>' + body
       + '<a href="shop.html" style="display:inline-block;margin-top:10px;font-weight:700;color:#0F3D2E;'
@@ -234,11 +275,16 @@
   }
 
   /* ④ 商品詳細ページの帯（P027 のようなベタ書きを不要にする） */
-  function applyPdp(active, ended) {
+  function applyPdp(active, ended, upcoming) {
     var cur = window.__pdpProduct;
     /* 渡すのは商品そのものではなく endedLimited() の判定（hidden を見るため）。
        商品を渡すと state.hidden が常に undefined＝表示終了後も「完売しました」のままになる */
-    if (cur && cur.name && ended[cur.name]) closePdpSales(ended[cur.name]);
+    if (cur && cur.name && upcoming && upcoming[cur.name]) {
+      var up = upcoming[cur.name];
+      closePdpSales({ upcoming: true, startLabel: fmtDateTime(up.startAt) });
+    } else if (cur && cur.name && ended[cur.name]) {
+      closePdpSales(ended[cur.name]);
+    }
 
     var host = document.getElementById('limitedBanner');
     if (!host) return;
@@ -276,7 +322,7 @@
     applyScopes(active);
     applyInline(active);
     applyCards(active);
-    applyPdp(active, endedLimited());
+    applyPdp(active, endedLimited(), upcomingLimited());
     return true;
   }
 

@@ -305,6 +305,26 @@
       limitedTag: 'nikunohi', listPrice: 5100,
       description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',
       images: ['public/images/products/drive/nikunohi-set.jpg']
+    },
+
+    /* ===== イチボステーキ 3日間 数量限定 (2026-08-03〜08-05) ===== */
+    {
+      productId: 'P028', variantId: 'ICHIBO-STEAK', sku: 'EDA-ICHIBO-200',
+      stripePriceId: '',
+      name: 'イチボステーキ', variant: '1枚 200g',
+      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここは取得失敗時のフォールバック */
+      price: 3800, weight: 200, stock: 9, temp: '冷凍',
+      /* 限定品カウント (public/js/limited-stock.js)。
+         limitedStartAt を過ぎるまでは表示も購入もされない＝「3日から販売開始」を自動化。
+         普段は企業向け(B2B)の希少部位。今回だけ在庫が回った単発の数量限定。 */
+      limitedTotal: 9,
+      limitedStartAt:   '2026/08/03 00:00',   /* これ以前＝発売前（非表示・購入不可） */
+      limitedSoldOutAt: '2026/08/05 23:59',   /* これ以降＝販売停止＋「完売しました」 */
+      limitedUntil:     '2026/08/05 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedUnit: '枚',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Ichibo Steak',
+      description: 'サーロインに続く、尻の一枚。赤身のうまみに、ほどよい霜降り。塩で、ステーキに。',
+      images: ['public/images/products/drive/ichibo-steak.jpg']
     }
   ];
 

@@ -7067,6 +7067,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="HIRE STEAK"] { background-image: url('public/images/products/drive/hire-steak.jpg'); }
 .product-card-img[data-label="AKAMI YAKINIKU"] { background-image: url('public/images/products/drive/akami-yakiniku.jpg'); }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
+.product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
 .product-card-img[data-label="CHICKEN BREAST"] { background-image: image-set(url('public/images/products/drive/chicken-breast.webp') type('image/webp'), url('public/images/products/drive/chicken-breast.jpg')); }
 .product-card-img[data-label="CHICKEN THIGH"] { background-image: image-set(url('public/images/products/drive/chicken-thigh.webp') type('image/webp'), url('public/images/products/drive/chicken-thigh.jpg')); }
 .product-card-img[data-label="CHICKEN MINCED"] { background-image: image-set(url('public/images/products/drive/chicken-minced.webp') type('image/webp'), url('public/images/products/drive/chicken-minced.jpg')); }
@@ -9841,6 +9842,22 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item wide">通常 ¥5,100 → <strong>¥600 お得</strong></div>
  </div>
  <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b><span>7/29（水）23:59まで</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <!-- イチボステーキ 3日間 数量限定 (2026-08-03〜08-05)。牛肉「すべて」の先頭に転載。
+      表示/購入は limitedStartAt/SoldOutAt/Until で自動制御(発売前・終了後は data-limited-scope で非表示)。 -->
+ <div class="product-card" data-sub="steak" data-limited-scope="イチボステーキ" data-variants='[{"id":50831003800201,"t":"1枚","p":3800}]'>
+ <div class="product-card-img" data-label="ICHIBO STEAK"></div>
+ <div class="product-tag-row"><span class="product-tag">Steak · Ichibo</span><span class="product-price">¥3,800</span></div>
+ <p class="product-name">イチボステーキ</p>
+ <p class="product-desc">サーロインに続く、尻の一枚。赤身のうまみに、ほどよい霜降り。<strong>普段は企業向け</strong>の希少部位を、今回だけ数量限定で。塩で、ステーキに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g <strong>¥1,900</strong></div>
+ <div class="product-stat-item">真空 <strong>1枚 200g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
+ </div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="イチボステーキ">残り9枚</b><span>8/5（火）23:59まで</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -12999,12 +13016,12 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-07-30-hide" defer></script>
-<script src="public/js/products-loader.js?v=003" defer></script>
+<script src="public/data/products-master.js?v=2026-08-02-ichibo" defer></script>
+<script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/limited-stock.js?v=004" defer></script>
+<script src="public/js/limited-stock.js?v=005" defer></script>
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/member-gate.js" defer></script>
