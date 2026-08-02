@@ -84,6 +84,7 @@
       published:     p.published !== false && p.published !== 'FALSE' && p.published !== 'false',
       /* 限定品カウント (public/js/limited-stock.js) */
       limitedTotal:     keep(p, 'limitedTotal'),
+      limitedStartAt:   keep(p, 'limitedStartAt'),
       limitedSoldOutAt: keep(p, 'limitedSoldOutAt'),
       limitedUntil:     keep(p, 'limitedUntil'),
       limitedUnit:      keep(p, 'limitedUnit') || ''
