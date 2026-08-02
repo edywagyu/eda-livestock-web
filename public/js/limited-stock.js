@@ -88,10 +88,13 @@
     products().forEach(function (p) {
       var total = Number(p.limitedTotal);
       if (!isFinite(total) || total <= 0) return;
-      if (notStarted(p)) return;                 /* 発売前＝まだ出さない（limitedStartAt） */
       var until = parseUntil(p.limitedUntil);
       if (until && now > until) return;          /* 表示終了＝もう出さない */
       if (!p.name) return;
+      /* 発売前(limitedStartAt 未到来)は「予告」として扱う＝カードは見せるが購入は不可。
+         upcoming フラグでラベル・購入導線を切り替える。 */
+      var start = startAtOf(p);
+      var upcoming = !!(start && now < start);
 
       var stock = Number(p.stock);
       if (!isFinite(stock)) stock = 0;
@@ -104,6 +107,7 @@
       out[p.name] = {
         product: p, until: until, soldOutAt: at, total: total, unit: unitOf(p),
         stock: stock, available: avail,
+        upcoming: upcoming, startAt: start,      /* 発売前＝予告表示 */
         closed: !!(at && now > at)               /* 販売停止済み（表示は残っている） */
       };
     });
@@ -148,8 +152,16 @@
       + d.getHours() + ':' + ('0' + d.getMinutes()).slice(-2);
   }
 
-  /* 「残り◯セット」/「完売しました」/「ただいま他のお客様が確保中」 */
+  /* 「◯/◯（曜）」短縮表記（カードの予告リボン用） */
+  function fmtDateShort(d) {
+    if (!d) return '';
+    return (d.getMonth() + 1) + '/' + d.getDate()
+      + '（' + '日月火水木金土'.charAt(d.getDay()) + '）';
+  }
+
+  /* 「残り◯セット」/「◯/◯発売」/「完売しました」/「ただいま他のお客様が確保中」 */
   function labelFor(info) {
+    if (info.upcoming) return fmtDateShort(info.startAt) + '発売';  /* 発売前＝予告 */
     if (info.closed) return '完売しました';       /* 販売停止＝在庫が残っていても完売表示 */
     if (info.available > 0) return '残り' + info.available + info.unit;
     /* 在庫はあるが全部が確保中 → 30分で解放されるので「完売」とは書かない */
@@ -158,8 +170,9 @@
 
   function applyState(el, info) {
     el.textContent = labelFor(info);
-    el.classList.toggle('is-soldout', info.available <= 0);
-    el.classList.toggle('is-low', info.available > 0 && info.available <= LOW_AT);
+    el.classList.toggle('is-upcoming', !!info.upcoming);
+    el.classList.toggle('is-soldout', !info.upcoming && info.available <= 0);
+    el.classList.toggle('is-low', !info.upcoming && info.available > 0 && info.available <= LOW_AT);
   }
 
   /* ① 期間外のブロックを丸ごと隠す（販促バナーを囲っておけば終了後に自動で消える）
@@ -218,6 +231,18 @@
         host.appendChild(ribbon);
       }
       applyState(ribbon, info);
+
+      /* 発売前(予告)＝カードは見せるが購入は不可。product-buy を CSS で隠し、
+         代わりに「◯/◯（曜）発売予定」ラベルを ::after で出す（data 属性で文言を渡す）。
+         購入ボタンは他JSが後から生成しうるので、クラス＋CSSで確実に上書きする。 */
+      var buy = card.querySelector('.product-buy');
+      if (info.upcoming) {
+        card.classList.add('limited-upcoming');
+        if (buy) buy.setAttribute('data-upcoming-label', fmtDateShort(info.startAt) + '発売予定');
+      } else {
+        card.classList.remove('limited-upcoming');
+        if (buy) buy.removeAttribute('data-upcoming-label');
+      }
 
       /* 販売停止中の見え方を整える。ボタン無効化そのものは stock=0 で自動的に効いている。
          ・既存の「在庫切れ」オーバーレイは外す（左上の「肉の日限定」リボンを覆い隠すうえ、
@@ -294,7 +319,8 @@
     /* 帯に出す締切は「買える最後の時刻」＝ soldOutAt。limitedUntil は表示を消す時刻なので、
        完売後も告知を残すキャンペーンではこれを出すと購入期限を誤って伝えてしまう。
        販売停止後は締切も「なくなり次第終了」も出さない（もう買えないので誤解を招く）。 */
-    var deadlineAt = info.closed ? null : info.soldOutAt;
+    /* 発売前(予告)は締切も「なくなり次第終了」も出さない（まだ買えないので誤解を招く）。 */
+    var deadlineAt = (info.closed || info.upcoming) ? null : info.soldOutAt;
     var deadline = deadlineAt
       ? (deadlineAt.getMonth() + 1) + '/' + deadlineAt.getDate()
         + '（' + '日月火水木金土'.charAt(deadlineAt.getDay()) + '）'
@@ -305,7 +331,7 @@
     host.innerHTML = '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>'
       + '<span class="limited-banner-text">' + deadline
       + '<b class="limited-left" data-limited-left="' + info.product.name.replace(/"/g, '&quot;') + '"></b>'
-      + (info.closed ? '' : ' なくなり次第終了') + '</span>';
+      + (info.closed || info.upcoming ? '' : ' なくなり次第終了') + '</span>';
     applyState(host.querySelector('.limited-left'), info);
   }
 
