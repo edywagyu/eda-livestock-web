@@ -1307,6 +1307,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* Tappable coupon stat (header) */
+/* 上部カード: 選ばれた商品 TOP3 */
+.welcome-top3-wrap { display: block; padding: 18px 20px 20px; }
+.top3-head { font-family: var(--font-jp); font-size: 11px; letter-spacing: 0.1em; color: rgba(255,255,255,0.72); text-transform: none; margin: 0 0 12px; font-weight: 600; }
+.top3-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.top3-row { display: flex; align-items: center; gap: 12px; }
+.top3-rank { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #3a2f10; background: #FFD773; }
+.top3-rank-2 { background: #E6E1D4; color: #4a4a44; }
+.top3-rank-3 { background: #D9B48A; color: #3a2b18; }
+.top3-name { flex: 1; font-family: var(--font-jp); font-size: 14px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.top3-count { flex-shrink: 0; font-family: var(--font-jp); font-size: 12px; color: rgba(255,255,255,0.7); }
+.top3-empty { font-family: var(--font-jp); font-size: 12.5px; color: rgba(255,255,255,0.72); line-height: 1.6; }
 .welcome-stat-tappable { cursor: pointer; border-radius: 12px; transition: background 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; }
 .welcome-stat-tappable:hover { background: rgba(212, 169, 59, 0.10); transform: translateY(-1px); }
 .welcome-stat-tappable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
@@ -2914,20 +2925,12 @@ button:focus-visible, a:focus-visible {
  </div>
  <p class="welcome-member-since" id="memberSince"></p>
  </div>
- <div class="welcome-card-bottom has-3-stats">
- <div class="welcome-stat">
-  <span class="welcome-stat-num" id="totalOrders">0</span>
-  <span class="welcome-stat-label">ご注文回数</span>
- </div>
- <div class="welcome-stat">
-  <span class="welcome-stat-num" id="totalSpent">-</span>
-  <span class="welcome-stat-label">累計お買い上げ</span>
- </div>
- <div class="welcome-stat welcome-stat-tappable" id="couponStat" role="button" tabindex="0" aria-label="利用可能クーポンを表示" onclick="openCouponDetail()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCouponDetail();}">
-  <span class="welcome-stat-num" id="availableCoupons">-</span>
-  <span class="welcome-stat-label">利用可能クーポン<span class="welcome-stat-hint" id="couponStatHint"></span></span>
- </div>
- </div>
+ <div class="welcome-card-bottom welcome-top3-wrap" id="welcomeTop3"></div>
+ <!-- 旧: ご注文回数/累計お買い上げ/利用可能クーポン。集計は保持のため隠しノードで残す -->
+ <span id="totalOrders" hidden>0</span>
+ <span id="totalSpent" hidden>-</span>
+ <span id="availableCoupons" hidden>-</span>
+ <span id="couponStatHint" hidden></span>
  </div>
 
  <!-- Gold divider -->
@@ -3764,6 +3767,59 @@ function getTimeGreeting() {
 }
 /* 会員ランク（スタンダード/ゴールド/プラチナ）機能は廃止 — ランク付けしない */
 
+/* お付き合い起点日: eda-member-linked-at → customer.created_at → 最古の注文日 → 今 */
+function getRelationshipStart(customer, orders) {
+ try { var l = localStorage.getItem('eda-member-linked-at'); if (l) { var dl = new Date(l); if (!isNaN(dl)) return dl; } } catch(e) {}
+ if (customer && customer.created_at) { var c = new Date(customer.created_at); if (!isNaN(c)) return c; }
+ var earliest = null;
+ (orders || []).forEach(function(o){
+  var ds = o.date || o.created_at || o.order_date || o.ts || o.timestamp;
+  if (ds) { var d = new Date(ds); if (!isNaN(d) && (!earliest || d < earliest)) earliest = d; }
+ });
+ return earliest || new Date();
+}
+
+/* 「2年3ヶ月」形式（呼び出し側で「目」を付ける） */
+function formatRelationship(start) {
+ var now = new Date();
+ var months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+ if (now.getDate() < start.getDate()) months -= 1;
+ if (months < 0) months = 0;
+ var y = Math.floor(months / 12), m = months % 12;
+ if (y > 0 && m > 0) return y + '年' + m + 'ヶ月';
+ if (y > 0) return y + '年';
+ return Math.max(m, 1) + 'ヶ月';
+}
+
+/* 注文明細を集計して「選ばれた商品 TOP3」を描画 */
+function renderTop3(custName, orders) {
+ var el = document.getElementById('welcomeTop3');
+ if (!el) return;
+ var counts = {};
+ (orders || []).forEach(function(o){
+  (o.items || []).forEach(function(it){
+   var name = (it.title || it.name || '').toString().trim();
+   if (!name) return;
+   counts[name] = (counts[name] || 0) + (Number(it.qty) || 1);
+  });
+ });
+ var ranked = Object.keys(counts).map(function(k){ return { name: k, qty: counts[k] }; })
+  .sort(function(a, b){ return b.qty - a.qty; }).slice(0, 3);
+ if (!ranked.length) {
+  el.innerHTML = '<div class="top3-empty">ご注文が増えると、' + escapeHtml(custName) + '様に選ばれた商品トップ3を表示します</div>';
+  return;
+ }
+ var rows = ranked.map(function(r, i){
+  return '<li class="top3-row">' +
+   '<span class="top3-rank top3-rank-' + (i + 1) + '">' + (i + 1) + '</span>' +
+   '<span class="top3-name">' + escapeHtml(r.name) + '</span>' +
+   '<span class="top3-count">' + r.qty + '回</span>' +
+  '</li>';
+ }).join('');
+ el.innerHTML = '<div class="top3-head">' + escapeHtml(custName) + '様に選ばれた商品 TOP3</div>' +
+  '<ol class="top3-list">' + rows + '</ol>';
+}
+
 function renderDashboard(customer, orders) {
  // ★ 認証完了後のルーティング
  var _rp = new URLSearchParams(location.search);
@@ -3793,18 +3849,15 @@ function renderDashboard(customer, orders) {
  var spent = customer.total_spent || 0;
  document.getElementById('totalSpent').textContent = spent > 0 ? formatYen(spent) : '-';
 
- /* ★ Premium: Member since date */
+ /* ★ お付き合い年数（入会日 or 初回注文日を起点に「〇年〇ヶ月目」） */
  var sinceEl = document.getElementById('memberSince');
  if (sinceEl) {
-  var linkedAt = '';
-  try { linkedAt = localStorage.getItem('eda-member-linked-at') || ''; } catch(e) {}
-  if (linkedAt) {
-   var d = new Date(linkedAt);
-   sinceEl.textContent = 'ご入会  ' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月';
-  } else {
-   sinceEl.textContent = 'ご入会  ' + new Date().getFullYear() + '年' + (new Date().getMonth() + 1) + '月';
-  }
+  var startDate = getRelationshipStart(customer, orders);
+  sinceEl.textContent = custName + '様とのお付き合い ' + formatRelationship(startDate) + '目';
  }
+
+ /* ★ お客様に選ばれた商品 TOP3（注文明細を集計） */
+ renderTop3(custName, orders);
 
  /* ★ Premium: Available coupons count（下カード/一覧と同じ判定に統一） */
  var coupons = customer.coupons || generateDemoCoupons(orderCount);
