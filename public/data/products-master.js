@@ -325,18 +325,6 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Ichibo Steak',
       description: 'サーロインに続く、尻の一枚。赤身のうまみに、ほどよい霜降り。塩で、ステーキに。',
       images: ['public/images/products/drive/ichibo-steak.jpg']
-    },
-
-    /* ===== 江田畜産 あったら便利3種セット (2026-08-02) ===== */
-    {
-      productId: 'P029', variantId: 'BENRI-SET-3', sku: 'EDA-BENRI-SET',
-      stripePriceId: '',
-      name: '江田畜産 あったら便利3種セット', variant: '和牛ハンバーグ130g + 平飼い鶏モモ200g + 和牛切り落とし200g',
-      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここは取得失敗時のフォールバック */
-      price: 3340, weight: 530, stock: 15, temp: '冷凍',
-      category: 'beef', categoryLabel: '牛肉', tagEn: 'Everyday Set',
-      description: '無投薬で育てた和牛と、平飼い鶏。焼くだけで一品になる、毎日使いの3種セット。前の日に解凍しておけば、忙しい日の「あって助かる」に。',
-      images: ['public/images/products/drive/benri-set.jpg']
     }
   ];
 

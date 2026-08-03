@@ -7068,7 +7068,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="AKAMI YAKINIKU"] { background-image: url('public/images/products/drive/akami-yakiniku.jpg'); }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
-.product-card-img[data-label="BENRI SET"] { background-image: url('public/images/products/drive/benri-set.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
    購入ボタンは `.product-card:not(...):not(...):not(...) .btn-add-cart{display:block!important}`(特異度0,5,0)で強制表示されているため、
    `.limited-upcoming` を足して特異度(0,6,0)にした !important で確実に上書きする。 */
@@ -9844,19 +9843,6 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
- <!-- 江田畜産 あったら便利3種セット (2026-08-02) 日常使いセット。data-sub="set" なので部位サブタブでは非表示、「すべて」の先頭に表示。price/stock は GAS ライブ値で上書き。 -->
- <div class="product-card" data-sub="set" data-variants='[{"id":50831003340901,"t":"1セット","p":3340}]'>
- <div class="product-card-img" data-label="BENRI SET"></div>
- <div class="product-tag-row"><span class="product-tag">Set · Everyday</span><span class="product-price">¥3,340</span></div>
- <p class="product-name">江田畜産 あったら便利3種セット</p>
- <p class="product-desc">無投薬で育てた和牛と、平飼い鶏。焼くだけで一品になる、毎日使いの3種セット。前の日に解凍しておけば、忙しい日の「あって助かる」に。</p>
- <div class="product-stats">
- <div class="product-stat-item">和牛ハンバーグ <strong>130g</strong></div>
- <div class="product-stat-item">平飼い鶏モモ <strong>200g</strong></div>
- <div class="product-stat-item wide">和牛切り落とし <strong>200g</strong></div>
- </div>
- <div class="product-buy"></div>
- </div>
 
  <!-- 肉の日限定セット（牛肉「すべて」の先頭に転載。data-sub="set" なので部位サブタブでは非表示） -->
  <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
@@ -13044,7 +13030,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-03-ichibo-hold" defer></script>
+<script src="public/data/products-master.js?v=2026-08-03-benri-remove" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
