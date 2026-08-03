@@ -2551,6 +2551,9 @@ button:focus-visible, a:focus-visible {
  letter-spacing: 0.06em;
  padding: 3px 10px;
  border-radius: 10px;
+ white-space: nowrap;
+ flex-shrink: 0;
+ margin-left: 8px;
 }
 .coupon-status.active { background: var(--color-success-bg); color: var(--color-success-fg); }
 .coupon-status.expiring { background: var(--color-warning-bg); color: var(--color-warning-fg); animation: pulse 2s infinite; }
@@ -2563,6 +2566,18 @@ button:focus-visible, a:focus-visible {
  color: var(--color-ink);
  margin: 4px 0 6px;
 }
+/* 「初回購入特典」直下の使い方説明（やわらかい緑・濃すぎない） */
+.coupon-howto {
+ font-family: var(--font-jp);
+ font-size: 11.5px;
+ line-height: 1.7;
+ color: #6f8a79;
+ margin: 2px 0 4px;
+}
+/* クーポンカード全体を押せるように（有効時のみ付与） */
+.coupon-card-clickable { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.coupon-card-clickable:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15, 61, 46, 0.12); }
+.coupon-card-clickable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
 .coupon-meta {
  font-size: 12px;
  color: var(--color-ink-muted);
@@ -3969,7 +3984,7 @@ function renderRewardJourney(count) {
  } else if (count === 0) {
  // ★ 矛盾解消: 0回時は エダチク10 が既に「お持ちのクーポン」にあるので、
  //    初回ご注文時の使い方を案内 (あと1回… ではなく)
- bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用OK</small></p></div>';
+ bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用不可</small></p></div>';
  } else {
  // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
  var next = REWARD_STAGES[Math.min(count, 3)];
@@ -4522,25 +4537,30 @@ function renderCoupons(coupons) {
  const stCls = status;
  const stLabel = { active: '有効', expiring: '期限間近', used: '使用済', expired: '失効' }[status] || '有効';
  const cardCls = (status === 'expired' || status === 'used') ? 'coupon-card expired' : 'coupon-card';
- const conditionsHtml = (c.conditions && (status === 'active' || status === 'expiring')) ?
+ const isActive = (status === 'active' || status === 'expiring');
+ const conditionsHtml = (c.conditions && isActive) ?
   `<div class="coupon-conditions">${escapeHtml(c.conditions)}</div>` : '';
+ const clickAttrs = isActive
+  ? ` class="${cardCls} coupon-card-clickable" role="button" tabindex="0" onclick="goShopWithCoupon('${escapeHtml(c.code)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goShopWithCoupon('${escapeHtml(c.code)}');}"`
+  : ` class="${cardCls}"`;
  return `
- <div class="${cardCls}">
+ <div${clickAttrs}>
  <div class="coupon-head">
  <div>
  <div class="coupon-value">${escapeHtml(c.value || '')}</div>
  <div class="coupon-name">${escapeHtml(c.name || '')}</div>
+ ${isActive ? `<div class="coupon-howto">・押すと商品一覧へ進み、お会計でクーポンが自動で入ります<br>・「コピー」でコードを控えて手入力してもOK（どちらでも使えます）</div>` : ''}
  </div>
  <span class="coupon-status ${stCls}">${stLabel}</span>
  </div>
  <div class="coupon-meta">${escapeHtml(c.description || '')}<br>${escapeHtml(c.expires || '')}</div>
  ${conditionsHtml}
- ${(status === 'active' || status === 'expiring') ? `
+ ${isActive ? `
  <div class="coupon-code-row">
  <span class="coupon-code-text" id="cpn-${escapeHtml(c.code)}">${escapeHtml(c.code)}</span>
- <button class="coupon-copy-btn" onclick="copyCoupon('${escapeHtml(c.code)}', this)">コピー</button>
+ <button class="coupon-copy-btn" onclick="event.stopPropagation();copyCoupon('${escapeHtml(c.code)}', this)">コピー</button>
  </div>
- <button class="coupon-shop-btn" onclick="goShopWithCoupon('${escapeHtml(c.code)}')">
+ <button class="coupon-shop-btn" onclick="event.stopPropagation();goShopWithCoupon('${escapeHtml(c.code)}')">
  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
  このクーポンで商品へ進む
  </button>
@@ -4584,7 +4604,7 @@ function generateDemoCoupons(orderCount) {
  var all = [];
  var conditions = '※ 5,000円（税込）以上のご注文で利用可能・他クーポン併用不可';
  if (orderCount === 0) {
- all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポンと併用可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
+ all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポン併用不可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
  }
  if (orderCount >= 1 && orderCount < 2) {
  all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
