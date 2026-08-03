@@ -4546,7 +4546,7 @@ function renderCoupons(coupons) {
  <div>
  <div class="coupon-value">${escapeHtml(c.value || '')}</div>
  <div class="coupon-name">${escapeHtml(c.name || '')}</div>
- ${isActive ? `<div class="coupon-howto">・押すと商品一覧ページへ進みます<br>・お会計時にクーポンが自動で入ります</div>` : ''}
+ ${isActive ? `<div class="coupon-howto">・押すと商品一覧へ進み、お会計でクーポンが自動で入ります<br>・「コピー」でコードを控えて手入力してもOK（どちらでも使えます）</div>` : ''}
  </div>
  <span class="coupon-status ${stCls}">${stLabel}</span>
  </div>
