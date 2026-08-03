@@ -1029,6 +1029,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .home-info-item--tap { cursor: pointer; }
 .home-info-item--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
 .home-info-value--sm { font-size: 20px !important; }
+.home-info-value--reward { font-size: 16px !important; line-height: 1.4 !important; }
 .home-info-sub {
  font-family: var(--font-jp);
  font-size: 11.5px;
@@ -4414,11 +4415,8 @@ function renderHomeTab(orderCount, orders, customer) {
   var activeCoupons = coupons.filter(function(c) { return !c.used && c.status !== 'used' && c.status !== 'expired'; });
   var nr = getNextReward(orderCount);
   var nextTile;
-  if (nr && !nr.locked) {
-   nextTile = '<div class="home-info-item home-info-item--tap" role="button" tabindex="0" onclick="switchTab(\'rewards\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchTab(\'rewards\');}"><p class="home-info-label">次回特典</p><p class="home-info-value">あと' + nr.remaining + '<small>回</small></p><p class="home-info-sub">' + escapeHtml(nr.reward) + '</p></div>';
-  } else {
-   nextTile = '<div class="home-info-item home-info-item--tap" role="button" tabindex="0" onclick="switchTab(\'rewards\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchTab(\'rewards\');}"><p class="home-info-label">次回特典</p><p class="home-info-value home-info-value--sm">お楽しみに</p><p class="home-info-sub">次の特典を準備中です</p></div>';
-  }
+  var nextRewardText = (nr && !nr.locked) ? nr.reward : 'お楽しみに';
+  nextTile = '<div class="home-info-item home-info-item--tap" role="button" tabindex="0" onclick="switchTab(\'rewards\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchTab(\'rewards\');}"><p class="home-info-label">次回特典</p><p class="home-info-value home-info-value--reward">' + escapeHtml(nextRewardText) + '</p></div>';
   igEl.innerHTML = '<div class="home-info-grid two-cols">' + nextTile +
    '<div class="home-info-item"><p class="home-info-label">クーポン</p><p class="home-info-value">' + activeCoupons.length + '<small>枚</small></p></div>' +
    '</div>';
