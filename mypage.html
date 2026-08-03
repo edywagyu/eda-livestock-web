@@ -3984,7 +3984,7 @@ function renderRewardJourney(count) {
  } else if (count === 0) {
  // ★ 矛盾解消: 0回時は エダチク10 が既に「お持ちのクーポン」にあるので、
  //    初回ご注文時の使い方を案内 (あと1回… ではなく)
- bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用OK</small></p></div>';
+ bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用不可</small></p></div>';
  } else {
  // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
  var next = REWARD_STAGES[Math.min(count, 3)];
@@ -4604,7 +4604,7 @@ function generateDemoCoupons(orderCount) {
  var all = [];
  var conditions = '※ 5,000円（税込）以上のご注文で利用可能・他クーポン併用不可';
  if (orderCount === 0) {
- all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポンと併用可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
+ all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポン併用不可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
  }
  if (orderCount >= 1 && orderCount < 2) {
  all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
