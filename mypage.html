@@ -1306,6 +1306,27 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  box-shadow: 0 4px 16px rgba(15, 61, 46, 0.2);
 }
 
+/* Tappable coupon stat (header) */
+.welcome-stat-tappable { cursor: pointer; border-radius: 12px; transition: background 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; }
+.welcome-stat-tappable:hover { background: rgba(212, 169, 59, 0.10); transform: translateY(-1px); }
+.welcome-stat-tappable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+.welcome-stat-hint { display: block; margin-top: 3px; font-size: 10px; letter-spacing: 0.04em; color: var(--color-gold-text); opacity: 0.9; }
+
+/* Coupon "商品へ進む" CTA (inside coupon card) */
+.coupon-shop-btn {
+ display: flex; align-items: center; justify-content: center; gap: 8px;
+ width: 100%; margin-top: 12px; padding: 12px 14px;
+ background: var(--color-forest); color: #fff;
+ border: none; border-radius: 10px; cursor: pointer;
+ font-family: var(--font-display); font-size: 13px; letter-spacing: var(--tracking-wider);
+ transition: all 0.25s;
+}
+.coupon-shop-btn:hover { background: var(--color-forest-deep); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(15, 61, 46, 0.2); }
+
+/* Highlight pulse when jumping to coupon */
+@keyframes couponFlash { 0%,100% { box-shadow: 0 0 0 0 rgba(212,169,59,0); } 30% { box-shadow: 0 0 0 4px rgba(212,169,59,0.55); } }
+.coupon-card.flash { animation: couponFlash 1.2s ease-in-out 1; }
+
 /* Section Titles */
 .dash-section-title {
  font-family: var(--font-display);
@@ -2887,9 +2908,9 @@ button:focus-visible, a:focus-visible {
   <span class="welcome-stat-num" id="totalSpent">-</span>
   <span class="welcome-stat-label">累計お買い上げ</span>
  </div>
- <div class="welcome-stat">
+ <div class="welcome-stat welcome-stat-tappable" id="couponStat" role="button" tabindex="0" aria-label="利用可能クーポンを表示" onclick="openCouponDetail()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCouponDetail();}">
   <span class="welcome-stat-num" id="availableCoupons">-</span>
-  <span class="welcome-stat-label">利用可能クーポン</span>
+  <span class="welcome-stat-label">利用可能クーポン<span class="welcome-stat-hint" id="couponStatHint"></span></span>
  </div>
  </div>
  </div>
@@ -3770,11 +3791,15 @@ function renderDashboard(customer, orders) {
   }
  }
 
- /* ★ Premium: Available coupons count */
+ /* ★ Premium: Available coupons count（下カード/一覧と同じ判定に統一） */
  var coupons = customer.coupons || generateDemoCoupons(orderCount);
- var activeCoupons = coupons.filter(function(c) { return !c.used; });
+ var activeCoupons = coupons.filter(function(c) { return !c.used && c.status !== 'used' && c.status !== 'expired'; });
  var couponEl = document.getElementById('availableCoupons');
  if (couponEl) couponEl.textContent = activeCoupons.length > 0 ? activeCoupons.length : '-';
+ var couponHintEl = document.getElementById('couponStatHint');
+ var couponStatEl = document.getElementById('couponStat');
+ if (couponHintEl) couponHintEl.textContent = activeCoupons.length > 0 ? 'タップで表示 ›' : '';
+ if (couponStatEl) couponStatEl.style.display = ''; // 常に表示（0でもタップで特典タブへ）
 
  /* Subscription badge */
  var badgeArea = document.getElementById('subBadgeArea');
@@ -4297,7 +4322,7 @@ function renderHomeTab(orderCount, orders, customer) {
  var igEl = document.getElementById('homeInfoGrid');
  if (igEl) {
   var coupons = customer.coupons || generateDemoCoupons(orderCount);
-  var activeCoupons = coupons.filter(function(c) { return c.status === 'active' || c.status === 'expiring'; });
+  var activeCoupons = coupons.filter(function(c) { return !c.used && c.status !== 'used' && c.status !== 'expired'; });
   igEl.innerHTML = '<div class="home-info-grid two-cols">' +
    '<div class="home-info-item"><p class="home-info-label">ご注文回数</p><p class="home-info-value">' + orderCount + '<small>回</small></p></div>' +
    '<div class="home-info-item"><p class="home-info-label">クーポン</p><p class="home-info-value">' + activeCoupons.length + '<small>枚</small></p></div>' +
@@ -4308,7 +4333,7 @@ function renderHomeTab(orderCount, orders, customer) {
  var cpEl = document.getElementById('homeCouponsPreview');
  if (cpEl) {
   var coupons2 = customer.coupons || generateDemoCoupons(orderCount);
-  var active2 = coupons2.filter(function(c) { return c.status === 'active' || c.status === 'expiring'; });
+  var active2 = coupons2.filter(function(c) { return !c.used && c.status !== 'used' && c.status !== 'expired'; });
   if (active2.length > 0) {
    var c = active2[0];
    cpEl.innerHTML = '<div class="home-next-reward" onclick="switchTab(\'rewards\')">' +
@@ -4515,6 +4540,10 @@ function renderCoupons(coupons) {
  <span class="coupon-code-text" id="cpn-${escapeHtml(c.code)}">${escapeHtml(c.code)}</span>
  <button class="coupon-copy-btn" onclick="copyCoupon('${escapeHtml(c.code)}', this)">コピー</button>
  </div>
+ <button class="coupon-shop-btn" onclick="goShopWithCoupon('${escapeHtml(c.code)}')">
+ <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+ このクーポンで商品へ進む
+ </button>
  ` : ''}
  </div>
  `;
@@ -4531,6 +4560,24 @@ function copyCoupon(code, btn) {
  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
  });
  }
+}
+
+/* ホーム「利用可能クーポン」タップ → 特典タブのクーポンカードを開いて強調表示 */
+function openCouponDetail() {
+ switchTab('rewards');
+ setTimeout(function() {
+  var sec = document.getElementById('couponsSection');
+  var card = sec ? sec.querySelector('.coupon-card') : null;
+  var target = card || sec;
+  if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (card) { card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+ }, 220);
+}
+
+/* クーポンを保持して商品ページへ（checkout が localStorage['eda-coupon'] / ?coupon= を読んで自動適用） */
+function goShopWithCoupon(code) {
+ try { localStorage.setItem('eda-coupon', code); } catch (e) {}
+ window.location.href = 'shop.html?coupon=' + encodeURIComponent(code);
 }
 
 function generateDemoCoupons(orderCount) {
