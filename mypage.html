@@ -1026,6 +1026,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  transform: translateY(-2px);
  border-color: rgba(212,169,59,0.15);
 }
+.home-info-item--tap { cursor: pointer; }
+.home-info-item--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+.home-info-value--sm { font-size: 20px !important; }
+.home-info-sub {
+ font-family: var(--font-jp);
+ font-size: 11.5px;
+ color: var(--color-forest);
+ opacity: 0.75;
+ margin: 6px 0 0;
+ line-height: 1.4;
+ font-weight: 600;
+}
 .home-info-label {
  font-family: var(--font-display); font-size: 10px;
  letter-spacing: var(--tracking-widest); color: var(--color-copper);
@@ -3996,6 +4008,15 @@ var REWARD_STAGES = [
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true }
 ];
 
+/* 次に獲得できる特典（注文回数から算出）: {remaining, reward, locked} / 全達成なら null */
+function getNextReward(count) {
+ for (var i = 0; i < REWARD_STAGES.length; i++) {
+  var s = REWARD_STAGES[i];
+  if (s.num > count) return { remaining: s.num - count, reward: s.reward, locked: !!s.locked };
+ }
+ return null;
+}
+
 /* Common reward/coupon conditions text */
 var REWARD_CONDITIONS = '※ 全特典・クーポンは 5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可';
 
@@ -4386,13 +4407,19 @@ function renderHomeTab(orderCount, orders, customer) {
   }
  }
 
- /* Info grid — 2 tiles (ご注文回数 + クーポン) */
+ /* Info grid — 2 tiles (次回特典 + クーポン) ※ご注文回数は撤去 */
  var igEl = document.getElementById('homeInfoGrid');
  if (igEl) {
   var coupons = customer.coupons || generateDemoCoupons(orderCount);
   var activeCoupons = coupons.filter(function(c) { return !c.used && c.status !== 'used' && c.status !== 'expired'; });
-  igEl.innerHTML = '<div class="home-info-grid two-cols">' +
-   '<div class="home-info-item"><p class="home-info-label">ご注文回数</p><p class="home-info-value">' + orderCount + '<small>回</small></p></div>' +
+  var nr = getNextReward(orderCount);
+  var nextTile;
+  if (nr && !nr.locked) {
+   nextTile = '<div class="home-info-item home-info-item--tap" role="button" tabindex="0" onclick="switchTab(\'rewards\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchTab(\'rewards\');}"><p class="home-info-label">次回特典</p><p class="home-info-value">あと' + nr.remaining + '<small>回</small></p><p class="home-info-sub">' + escapeHtml(nr.reward) + '</p></div>';
+  } else {
+   nextTile = '<div class="home-info-item home-info-item--tap" role="button" tabindex="0" onclick="switchTab(\'rewards\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();switchTab(\'rewards\');}"><p class="home-info-label">次回特典</p><p class="home-info-value home-info-value--sm">お楽しみに</p><p class="home-info-sub">次の特典を準備中です</p></div>';
+  }
+  igEl.innerHTML = '<div class="home-info-grid two-cols">' + nextTile +
    '<div class="home-info-item"><p class="home-info-label">クーポン</p><p class="home-info-value">' + activeCoupons.length + '<small>枚</small></p></div>' +
    '</div>';
  }
