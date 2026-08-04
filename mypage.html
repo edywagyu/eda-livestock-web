@@ -4472,11 +4472,11 @@ function renderHomeTab(orderCount, orders, customer) {
  if (subEl) {
   var sub = customer.subscription;
   if (sub && sub.active) {
-   var nextTxt = sub.next_delivery ? formatDate(sub.next_delivery) : '';
+   var cadenceTxt = sub.next_delivery ? ('毎月1日お届け・次回 ' + formatDate(sub.next_delivery)) : '毎月1日お届け';
    subEl.innerHTML = '<div class="home-sub-card">' +
     '<div class="home-sub-head">' +
      '<span class="home-sub-eyebrow"><span class="home-sub-dot"></span>定期便 ご利用中</span>' +
-     (nextTxt ? '<span class="home-sub-next">次回お届け ' + escapeHtml(nextTxt) + '</span>' : '') +
+     '<span class="home-sub-next">' + escapeHtml(cadenceTxt) + '</span>' +
     '</div>' +
     '<div class="home-sub-actions">' +
      '<button type="button" class="home-sub-btn" onclick="subSkip()">スキップ</button>' +
