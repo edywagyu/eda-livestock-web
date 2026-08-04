@@ -1030,6 +1030,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .home-info-item--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
 .home-info-value--sm { font-size: 20px !important; }
 .home-info-value--reward { font-size: 16px !important; line-height: 1.4 !important; }
+/* TOP3 もう一度買う */
+.top3-row--tap { cursor: pointer; border-radius: 8px; margin: -4px -6px; padding: 4px 6px; transition: background 0.2s; }
+.top3-row--tap:hover { background: rgba(212,169,59,0.12); }
+.top3-row--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+.top3-reorder { flex-shrink: 0; margin-left: 10px; color: #FFD773; display: flex; align-items: center; }
+/* 注文履歴 もう一度買う */
+.order-reorder-btn {
+ display: flex; align-items: center; justify-content: center; gap: 8px;
+ width: 100%; margin-top: 12px; padding: 11px 14px;
+ background: var(--color-forest); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+ font-family: var(--font-jp); font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+ transition: all 0.25s;
+}
+.order-reorder-btn:hover { background: var(--color-forest-deep); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(15,61,46,0.2); }
+/* 定期便セルフ操作カード（ホーム） */
+.home-sub-card { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid rgba(15,61,46,0.08); box-shadow: 0 2px 8px rgba(15,61,46,0.04); }
+.home-sub-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.home-sub-eyebrow { font-family: var(--font-jp); font-size: 12.5px; font-weight: 700; color: var(--color-forest); display: flex; align-items: center; gap: 6px; }
+.home-sub-dot { width: 7px; height: 7px; border-radius: 50%; background: #2fa36b; display: inline-block; }
+.home-sub-next { font-family: var(--font-jp); font-size: 11.5px; color: var(--color-ink-muted); font-weight: 500; }
+.home-sub-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.home-sub-btn { flex: 1; min-width: 92px; padding: 10px 8px; border-radius: 10px; border: 1px solid var(--color-forest); background: #fff; color: var(--color-forest); font-family: var(--font-jp); font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.home-sub-btn:hover { background: var(--color-forest); color: #fff; }
+.home-sub-btn--ghost { border-color: rgba(15,61,46,0.18); color: var(--color-ink-muted); }
+.home-sub-btn--ghost:hover { background: rgba(15,61,46,0.06); color: var(--color-forest); }
 .home-info-sub {
  font-family: var(--font-jp);
  font-size: 11.5px;
@@ -2982,6 +3007,7 @@ button:focus-visible, a:focus-visible {
  <!-- ====== TAB: HOME ====== -->
  <div class="dash-tab-panel active" id="panel-home">
  <div id="homeDelivery" class="home-full"></div>
+ <div id="homeSubscription" class="home-full"></div>
  <div id="homeMemberCard" class="home-full"></div>
  <div id="homeInfoGrid" class="home-full"></div>
  <div id="homeCouponsPreview" class="home-full"></div>
@@ -3780,6 +3806,29 @@ function getTimeGreeting() {
 }
 /* 会員ランク（スタンダード/ゴールド/プラチナ）機能は廃止 — ランク付けしない */
 
+/* ---- ワンタップ再注文（Buy it again）: 明細を eda-cart に積んで商品一覧のカートへ ---- */
+function reorderItems(items) {
+ var added = 0;
+ try {
+  var cart = JSON.parse(localStorage.getItem('eda-cart') || '[]');
+  (items || []).forEach(function(it){
+   if (!it) return;
+   var vid = it.variantId || it.id;
+   if (!vid) return;
+   var q = Number(it.qty) || 1;
+   var ex = null;
+   for (var i = 0; i < cart.length; i++) { if ((cart[i].variantId || cart[i].id) === vid) { ex = cart[i]; break; } }
+   if (ex) ex.qty = (Number(ex.qty) || 1) + q;
+   else cart.push({ variantId: vid, price: Number(it.price) || 0, title: it.title || it.name || '', variant: it.variant || '', img: it.img || '', qty: q });
+   added++;
+  });
+  if (added > 0) localStorage.setItem('eda-cart', JSON.stringify(cart));
+ } catch (e) {}
+ window.location.href = added > 0 ? 'shop.html?cart=1' : 'shop.html';
+}
+function reorderOrder(oi) { var o = (window._edaOrders || [])[oi]; if (o) reorderItems(o.items || []); }
+function reorderProduct(pi) { var s = (window._edaTop3Samples || [])[pi]; if (s) reorderItems([s]); }
+
 /* お付き合い起点日: eda-member-linked-at → customer.created_at → 最古の注文日 → 今 */
 function getRelationshipStart(customer, orders) {
  try { var l = localStorage.getItem('eda-member-linked-at'); if (l) { var dl = new Date(l); if (!isNaN(dl)) return dl; } } catch(e) {}
@@ -3808,25 +3857,31 @@ function formatRelationship(start) {
 function renderTop3(custName, orders) {
  var el = document.getElementById('welcomeTop3');
  if (!el) return;
- var counts = {};
+ var counts = {}, samples = {};
  (orders || []).forEach(function(o){
   (o.items || []).forEach(function(it){
    var name = (it.title || it.name || '').toString().trim();
    if (!name) return;
    counts[name] = (counts[name] || 0) + (Number(it.qty) || 1);
+   if (!samples[name] || ((it.variantId || it.id) && !(samples[name].variantId || samples[name].id))) samples[name] = it;
   });
  });
- var ranked = Object.keys(counts).map(function(k){ return { name: k, qty: counts[k] }; })
+ var ranked = Object.keys(counts).map(function(k){ return { name: k, qty: counts[k], sample: samples[k] }; })
   .sort(function(a, b){ return b.qty - a.qty; }).slice(0, 3);
  if (!ranked.length) {
   el.innerHTML = '<div class="top3-empty">ご注文が増えると、' + escapeHtml(custName) + '様に選ばれた商品トップ3を表示します</div>';
   return;
  }
+ window._edaTop3Samples = ranked.map(function(r){ return r.sample; });
+ var cartSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>';
  var rows = ranked.map(function(r, i){
-  return '<li class="top3-row">' +
+  var canRe = r.sample && (r.sample.variantId || r.sample.id);
+  var attrs = canRe ? ' class="top3-row top3-row--tap" role="button" tabindex="0" onclick="reorderProduct(' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();reorderProduct(' + i + ');}"' : ' class="top3-row"';
+  return '<li' + attrs + '>' +
    '<span class="top3-rank top3-rank-' + (i + 1) + '">' + (i + 1) + '</span>' +
    '<span class="top3-name">' + escapeHtml(r.name) + '</span>' +
    '<span class="top3-count">' + r.qty + '回</span>' +
+   (canRe ? '<span class="top3-reorder" aria-label="もう一度買う">' + cartSvg + '</span>' : '') +
   '</li>';
  }).join('');
  el.innerHTML = '<div class="top3-head">' + escapeHtml(custName) + '様に選ばれた商品 TOP3</div>' +
@@ -3939,9 +3994,11 @@ function renderOrders(orders) {
  'delivered': { label: '配達完了', class: 'delivered' }
  };
 
+ window._edaOrders = orders;
  let html = '';
- orders.forEach(order => {
+ orders.forEach((order, oi) => {
  const st = statusMap[order.status] || statusMap['pending'];
+ const canReorder = (order.items || []).some(function(x){ return x && (x.variantId || x.id); });
 
  let itemsHtml = '';
  if (order.items && order.items.length) {
@@ -3992,6 +4049,8 @@ function renderOrders(orders) {
  '</div>' +
  deliveryHtml +
  trackingHtml +
+ (canReorder ? '<button type="button" class="order-reorder-btn" onclick="reorderOrder(' + oi + ')">' +
+   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> もう一度買う</button>' : '') +
  '</div>';
  });
 
@@ -4405,6 +4464,28 @@ function renderHomeTab(orderCount, orders, customer) {
     '<p class="home-delivery-empty-sub">ご注文いただくとこちらに<br>お届け日や追跡番号、商品が表示されます</p>' +
     '<a href="shop.html" class="home-delivery-empty-cta">商品を見る</a>' +
     '</div>';
+  }
+ }
+
+ /* 定期便セルフ操作カード（ご利用中のみ・スキップ/停止をホームで即操作） */
+ var subEl = document.getElementById('homeSubscription');
+ if (subEl) {
+  var sub = customer.subscription;
+  if (sub && sub.active) {
+   var nextTxt = sub.next_delivery ? formatDate(sub.next_delivery) : '';
+   subEl.innerHTML = '<div class="home-sub-card">' +
+    '<div class="home-sub-head">' +
+     '<span class="home-sub-eyebrow"><span class="home-sub-dot"></span>定期便 ご利用中</span>' +
+     (nextTxt ? '<span class="home-sub-next">次回お届け ' + escapeHtml(nextTxt) + '</span>' : '') +
+    '</div>' +
+    '<div class="home-sub-actions">' +
+     '<button type="button" class="home-sub-btn" onclick="subSkip()">スキップ</button>' +
+     '<button type="button" class="home-sub-btn" onclick="subPause()">一時停止</button>' +
+     '<button type="button" class="home-sub-btn home-sub-btn--ghost" onclick="switchTab(\'subscription\')">管理する</button>' +
+    '</div>' +
+   '</div>';
+  } else {
+   subEl.innerHTML = '';
   }
  }
 
