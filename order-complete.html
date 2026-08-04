@@ -1107,42 +1107,54 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <!-- ★ SURVEY (optional) ★ -->
  <div class="survey-card" id="surveyCard">
  <div class="survey-header">
- <h3 class="survey-title">教えてください</h3>
- <span class="survey-badge">30秒・任意</span>
+ <h3 class="survey-title">アンケートにご協力ください</h3>
+ <span class="survey-badge">ご回答で鶏むね1個プレゼント🎁</span>
  </div>
 
  <div id="surveyForm">
- <!-- Q1: オーガニック -->
+ <!-- Q1: きっかけ（複数選択） -->
  <div class="survey-q">
- <label class="survey-label">無添加・オーガニックに気を使っていますか？</label>
- <div class="survey-toggle" data-name="organic">
- <button type="button" class="survey-toggle-btn" data-value="YES">はい</button>
- <button type="button" class="survey-toggle-btn" data-value="NO">いいえ</button>
- </div>
- </div>
-
- <!-- Q2: きっかけ -->
- <div class="survey-q">
- <label class="survey-label">江田畜産を知ったきっかけ</label>
- <div class="survey-tags" data-name="source" data-multi="false">
+ <label class="survey-label">江田畜産を知ったきっかけ（複数選択OK）</label>
+ <div class="survey-tags" data-name="source" data-multi="true">
  <button type="button" class="survey-tag" data-value="Instagram">Instagram</button>
- <button type="button" class="survey-tag" data-value="友人・知人">友人・知人</button>
- <button type="button" class="survey-tag" data-value="Google検索">Google検索</button>
- <button type="button" class="survey-tag" data-value="テレビ・メディア">テレビ・メディア</button>
- <button type="button" class="survey-tag" data-value="ふるさと納税">ふるさと納税</button>
+ <button type="button" class="survey-tag" data-value="TikTok">TikTok</button>
+ <button type="button" class="survey-tag" data-value="LINE">LINE</button>
+ <button type="button" class="survey-tag" data-value="ご紹介">ご紹介</button>
+ <button type="button" class="survey-tag" data-value="ネット検索">ネット検索</button>
+ <button type="button" class="survey-tag" data-value="テレビ・雑誌">テレビ・雑誌</button>
+ <button type="button" class="survey-tag" data-value="お取扱店・イベント">お取扱店・イベント</button>
  <button type="button" class="survey-tag" data-value="その他">その他</button>
  </div>
  </div>
 
- <!-- Q3: よく使うお肉 -->
+ <!-- Q2: 健康の動機（複数選択） -->
  <div class="survey-q">
- <label class="survey-label">よく使うお肉（複数選択OK）</label>
- <div class="survey-tags" data-name="meats" data-multi="true">
- <button type="button" class="survey-tag" data-value="とりむね">とりむね</button>
- <button type="button" class="survey-tag" data-value="鶏もも">鶏もも</button>
- <button type="button" class="survey-tag" data-value="手羽先">手羽先</button>
- <button type="button" class="survey-tag" data-value="牛もも">牛もも</button>
- <button type="button" class="survey-tag" data-value="牛サーロイン">牛サーロイン</button>
+ <label class="survey-label">どなたの健康のために選ばれましたか？（複数選択OK）</label>
+ <div class="survey-tags" data-name="scene" data-multi="true">
+ <button type="button" class="survey-tag" data-value="自分の健康のため">自分の健康のため</button>
+ <button type="button" class="survey-tag" data-value="子どもの健康のため">子どもの健康のため</button>
+ <button type="button" class="survey-tag" data-value="配偶者・パートナーの健康のため">配偶者・パートナーの健康のため</button>
+ <button type="button" class="survey-tag" data-value="ご両親・親世代の健康のため">ご両親・親世代の健康のため</button>
+ <button type="button" class="survey-tag" data-value="妊娠・授乳期／育ち盛りの栄養のため">妊娠・授乳期／育ち盛りの栄養のため</button>
+ <button type="button" class="survey-tag" data-value="体づくり・スポーツのため">体づくり・スポーツのため</button>
+ <button type="button" class="survey-tag" data-value="病後・体力回復のため">病後・体力回復のため</button>
+ <button type="button" class="survey-tag" data-value="自分へのご褒美">自分へのご褒美</button>
+ <button type="button" class="survey-tag" data-value="その他">その他</button>
+ </div>
+ </div>
+
+ <!-- Q3: 普段の購入先（複数選択） -->
+ <div class="survey-q">
+ <label class="survey-label">普段こだわりの食材はどこで買いますか？（複数選択OK）</label>
+ <div class="survey-tags" data-name="shop" data-multi="true">
+ <button type="button" class="survey-tag" data-value="自然派・無添加系スーパー">自然派・無添加系スーパー（ビオラル・ビオセボン・15/e organic など）</button>
+ <button type="button" class="survey-tag" data-value="スーパーマーケット">スーパーマーケット（ライフ など）</button>
+ <button type="button" class="survey-tag" data-value="生協・食材宅配">生協・食材宅配（コープ・オイシックス など）</button>
+ <button type="button" class="survey-tag" data-value="農家直送サービス">農家直送サービス（食べチョク・ポケットマルシェ など）</button>
+ <button type="button" class="survey-tag" data-value="こだわり食材の専門EC">こだわり食材の専門EC（ホライズンファーム など）</button>
+ <button type="button" class="survey-tag" data-value="ネット通販">ネット通販（Amazon・楽天 など）</button>
+ <button type="button" class="survey-tag" data-value="産直・道の駅・ふるさと納税">産直・道の駅・ふるさと納税</button>
+ <button type="button" class="survey-tag" data-value="その他">その他</button>
  </div>
  </div>
 
@@ -1156,7 +1168,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>
  </div>
  <p class="survey-done-text">ありがとうございます！</p>
- <p class="survey-done-sub">今後の商品開発の参考にさせていただきます</p>
+ <p class="survey-done-sub">お礼に、次回のお届けへ<strong>鶏むね1個</strong>を同梱いたします</p>
  </div>
  </div>
  </div>
@@ -1537,42 +1549,50 @@ function submitSurvey() {
  btn.disabled = true;
  btn.textContent = '送信中...';
 
- /* Collect answers */
- var organic = '';
- var organicSel = document.querySelector('.survey-toggle[data-name="organic"] .selected');
- if (organicSel) organic = organicSel.getAttribute('data-value');
-
- var source = '';
- var sourceSel = document.querySelector('.survey-tags[data-name="source"] .selected');
- if (sourceSel) source = sourceSel.getAttribute('data-value');
-
- var meats = [];
- document.querySelectorAll('.survey-tags[data-name="meats"] .selected').forEach(function(t) {
- meats.push(t.getAttribute('data-value'));
+ /* Collect answers（全問 複数選択・カンマ区切り） */
+ function collectMulti(name) {
+ var vals = [];
+ document.querySelectorAll('.survey-tags[data-name="' + name + '"] .selected').forEach(function(t) {
+ vals.push(t.getAttribute('data-value'));
  });
+ return vals.join(', ');
+ }
+ var source = collectMulti('source');
+ var scene = collectMulti('scene');
+ var shop = collectMulti('shop');
 
- /* Get session_id from URL */
+ /* 1つも選ばれていなければ送らせない（鶏むね特典の空回答防止） */
+ if (!source && !scene && !shop) {
+ alert('1つ以上お選びください');
+ btn.disabled = false;
+ btn.textContent = '送信する';
+ return;
+ }
+
+ /* session_id / 注文番号 */
  var params = new URLSearchParams(window.location.search);
  var sessionId = params.get('session_id') || '';
+ var orderNumber = '';
+ try { orderNumber = (document.getElementById('orderNumber').textContent || '').replace('#', '').trim(); } catch (e) {}
+ if (orderNumber === '----') orderNumber = '';
 
- /* POST to GAS */
- fetch(GAS_API_URL + '?action=submit_survey', {
+ /* 専用アンケートGASへ送信（注文・決済の本番GASとは別。text/plainでCORSプリフライト回避） */
+ var SURVEY_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzt2FnoJYO9XtJztZzuMKC5I4he4EQyQ6l0sAOvg5ZH_lf47dKknJvOcEvW7Hoi3H3Ekg/exec';
+ function done() {
+ document.getElementById('surveyForm').style.display = 'none';
+ document.getElementById('surveyDone').style.display = '';
+ }
+ fetch(SURVEY_ENDPOINT, {
  method: 'POST',
- headers: { 'Content-Type': 'application/json' },
+ headers: { 'Content-Type': 'text/plain;charset=utf-8' },
  body: JSON.stringify({
  session_id: sessionId,
- organic: organic,
+ order_number: orderNumber,
  source: source,
- meats: meats.join(', ')
+ scene: scene,
+ shop: shop
  })
- }).then(function() {
- document.getElementById('surveyForm').style.display = 'none';
- document.getElementById('surveyDone').style.display = '';
- }).catch(function() {
- /* 送信失敗してもUI上は成功表示（データ損失は許容） */
- document.getElementById('surveyForm').style.display = 'none';
- document.getElementById('surveyDone').style.display = '';
- });
+ }).then(done).catch(done); /* 送信失敗してもUI上は成功表示（データ損失は許容） */
 }
 
 </script>
