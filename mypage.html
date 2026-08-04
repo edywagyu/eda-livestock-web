@@ -1030,6 +1030,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .home-info-item--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
 .home-info-value--sm { font-size: 20px !important; }
 .home-info-value--reward { font-size: 16px !important; line-height: 1.4 !important; }
+/* 解約・理由必須モーダル */
+.cancel-reason-list { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 12px; text-align: left; }
+.cancel-reason-opt { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: 1px solid var(--color-bone); border-radius: 10px; cursor: pointer; font-family: var(--font-jp); font-size: 13.5px; color: var(--color-ink); transition: border-color 0.15s, background 0.15s; }
+.cancel-reason-opt:hover { border-color: var(--color-forest); background: rgba(15,61,46,0.03); }
+.cancel-reason-opt input { accent-color: var(--color-forest); width: 17px; height: 17px; flex-shrink: 0; }
+.cancel-reason-comment { width: 100%; box-sizing: border-box; border: 1px solid var(--color-bone); border-radius: 10px; padding: 10px; font-family: var(--font-jp); font-size: 13px; resize: vertical; margin-bottom: 4px; }
+.cancel-reason-comment:focus { outline: none; border-color: var(--color-forest); }
+.eda-modal-btn.danger[disabled] { opacity: 0.45; cursor: not-allowed; }
 /* TOP3 もう一度買う */
 .top3-row--tap { cursor: pointer; border-radius: 8px; margin: -4px -6px; padding: 4px 6px; transition: background 0.2s; }
 .top3-row--tap:hover { background: rgba(212,169,59,0.12); }
@@ -4819,15 +4827,51 @@ async function subPause() {
  toast('通信エラーが発生しました', 'error');
  }
 }
+/* 解約は「理由必須」モーダル。理由を選ぶまで申請ボタンは押せない（誤タップ解約も防止） */
+function subCancelReasonModal() {
+ return new Promise(function(resolve){
+  var reasons = ['価格が高い', '量が多い／少ない', '一時的に休みたい', '味・品質が期待と違った', '引っ越し・生活の変化', 'その他'];
+  var overlay = document.createElement('div');
+  overlay.className = 'eda-modal-overlay';
+  var optsHtml = reasons.map(function(r){
+   return '<label class="cancel-reason-opt"><input type="radio" name="cancelReason" value="' + escapeHtml(r) + '"><span>' + escapeHtml(r) + '</span></label>';
+  }).join('');
+  overlay.innerHTML = '<div class="eda-modal">' +
+   '<h3 class="eda-modal-title">定期便の解約</h3>' +
+   '<p class="eda-modal-body" style="text-align:left">差し支えなければ、解約の理由をお聞かせください<strong>（必須）</strong>。<br><span style="color:var(--color-ink-muted);font-size:12px">・3ヶ月未満は事務手数料3,300円 ／ スタッフから最終確認のご連絡をいたします</span></p>' +
+   '<div class="cancel-reason-list">' + optsHtml + '</div>' +
+   '<textarea id="cancelReasonComment" class="cancel-reason-comment" rows="2" placeholder="ご意見・詳細（任意）"></textarea>' +
+   '<div class="eda-modal-actions vertical">' +
+    '<button class="eda-modal-btn danger" id="cancelReasonSubmit" disabled>解約を申請する</button>' +
+    '<button class="eda-modal-btn secondary" id="cancelReasonClose">やめる</button>' +
+   '</div></div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.classList.add('show'); }); });
+  var submit = overlay.querySelector('#cancelReasonSubmit');
+  overlay.addEventListener('change', function(e){ if (e.target && e.target.name === 'cancelReason') submit.disabled = false; });
+  function close(val){ overlay.classList.remove('show'); setTimeout(function(){ overlay.remove(); }, 300); resolve(val); }
+  overlay.addEventListener('click', function(e){
+   if (e.target === overlay) return; /* 外側クリックでは閉じない（誤操作防止） */
+   if (e.target.closest('#cancelReasonClose')) { close(null); return; }
+   if (e.target.closest('#cancelReasonSubmit')) {
+    var sel = overlay.querySelector('input[name="cancelReason"]:checked');
+    if (!sel) return; /* 理由未選択なら申請不可 */
+    var comment = (overlay.querySelector('#cancelReasonComment').value || '').trim();
+    close({ reason: sel.value, comment: comment });
+   }
+  });
+ });
+}
+
 async function subCancel() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
- var ok = await edaConfirm('定期便の解約', '本当に定期便を解約しますか？\n\n・継続利用で得られる年間特典が失効します\n・3ヶ月未満の場合は事務手数料3,300円が発生します\n・スタッフから最終確認のご連絡をいたします', { ok: '解約申請する', danger: true });
- if (!ok) return;
- const reason = '';
+ var res = await subCancelReasonModal();
+ if (!res) return;
+ var reasonFull = res.reason + (res.comment ? '（' + res.comment + '）' : '');
  try {
  const result = await window.EDA_API.post('cancel_subscription', {
  email: currentSession.email,
- reason: reason || '理由未記入'
+ reason: reasonFull
  });
  if (result.ok) toast('解約申請を受け付けました。担当者からご連絡します');
  else toast('申請に失敗しました: ' + (result.error || ''));
