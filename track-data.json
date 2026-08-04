@@ -430,5 +430,83 @@
         "est": true
       }
     ]
+  },
+  "otto-0731": {
+    "order": "Order 102118",
+    "buyer": "OTTO GOURMET · Heinsberg, Germany",
+    "awb": "131-25402230",
+    "airline": "Japan Airlines Cargo",
+    "exporter": "Eda Livestock Co., Ltd. · Japan",
+    "importer": "Otto Gourmet GmbH · Heinsberg, Germany",
+    "product": "Eda Wagyu A5 (chilled)",
+    "boxes": 40,
+    "temp": "0–4°C",
+    "etd": "NRT · 5 Aug",
+    "eta": "FRA · 5 Aug, 22:01",
+    "demoT": "2026-08-05T14:30:34Z",
+    "route": [
+      "NRT",
+      "FRA"
+    ],
+    "legs": [
+      {
+        "flight": "JL407",
+        "carrier": "Japan Airlines",
+        "from": "NRT",
+        "to": "FRA",
+        "dep": "2026-08-05T09:00:00Z",
+        "arr": "2026-08-05T20:01:08Z",
+        "depDisp": "5 Aug 18:00 (JST)",
+        "arrDisp": "5 Aug 22:01 (CEST)",
+        "track": "https://www.flightradar24.com/data/flights/jl407",
+        "callsign": "JAL407"
+      }
+    ],
+    "steps": [
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "Kagoshima · K-2 plant",
+        "t": "2026-07-29T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-07-30T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Jul 31",
+        "t": "2026-07-31T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Aug 3",
+        "t": "2026-08-03T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Aug 5",
+        "t": "2026-08-05T02:00:00Z"
+      },
+      {
+        "lab": "In flight · JL407",
+        "sub": "Tokyo → Frankfurt",
+        "t": "2026-08-05T09:00:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Frankfurt",
+        "sub": "FRA",
+        "t": "2026-08-05T20:01:08Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Aug 6",
+        "t": "2026-08-06T20:01:08Z",
+        "est": true
+      }
+    ]
   }
 }
