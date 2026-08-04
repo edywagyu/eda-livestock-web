@@ -688,6 +688,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 4px 12px;
  border-radius: 12px;
 }
+.survey-reward-banner {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 10px;
+ background: var(--color-gold);
+ color: var(--color-forest-deep);
+ border: 1px solid var(--color-gold-soft);
+ border-radius: 12px;
+ padding: 14px 16px;
+ margin-bottom: 16px;
+ font-family: var(--font-jp);
+ font-size: 15px;
+ font-weight: 700;
+ text-align: center;
+ line-height: 1.4;
+}
+.survey-reward-banner .srb-icon { font-size: 22px; line-height: 1; }
+.survey-reward-banner strong { font-weight: 800; }
 .survey-q {
  margin-bottom: 24px;
 }
@@ -1106,9 +1125,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <!-- ★ SURVEY (optional) ★ -->
  <div class="survey-card" id="surveyCard">
+ <div class="survey-reward-banner">
+ <span class="srb-icon" aria-hidden="true">🎁</span>
+ <span class="srb-text">ご回答で <strong>鶏むね1個</strong> プレゼント</span>
+ </div>
  <div class="survey-header">
  <h3 class="survey-title">アンケートにご協力ください</h3>
- <span class="survey-badge">ご回答で鶏むね1個プレゼント🎁</span>
+ <span class="survey-badge">30秒・任意</span>
  </div>
 
  <div id="surveyForm">
