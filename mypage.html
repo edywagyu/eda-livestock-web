@@ -1035,6 +1035,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .cancel-reason-opt { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border: 1px solid var(--color-bone); border-radius: 10px; cursor: pointer; font-family: var(--font-jp); font-size: 13.5px; color: var(--color-ink); transition: border-color 0.15s, background 0.15s; }
 .cancel-reason-opt:hover { border-color: var(--color-forest); background: rgba(15,61,46,0.03); }
 .cancel-reason-opt input { accent-color: var(--color-forest); width: 17px; height: 17px; flex-shrink: 0; }
+.cancel-reason-comment-wrap { text-align: left; margin: 0 0 4px; }
+.cancel-reason-comment-label { display: block; font-family: var(--font-jp); font-size: 11.5px; font-weight: 600; color: var(--color-ink-muted); margin: 0 0 6px; }
 .cancel-reason-comment { width: 100%; box-sizing: border-box; border: 1px solid var(--color-bone); border-radius: 10px; padding: 10px; font-family: var(--font-jp); font-size: 13px; resize: vertical; margin-bottom: 4px; }
 .cancel-reason-comment:focus { outline: none; border-color: var(--color-forest); }
 .eda-modal-btn.danger[disabled] { opacity: 0.45; cursor: not-allowed; }
@@ -4830,17 +4832,26 @@ async function subPause() {
 /* 解約は「理由必須」モーダル。理由を選ぶまで申請ボタンは押せない（誤タップ解約も防止） */
 function subCancelReasonModal() {
  return new Promise(function(resolve){
-  var reasons = ['価格が高い', '量が多い／少ない', '一時的に休みたい', '味・品質が期待と違った', '引っ越し・生活の変化', 'その他'];
+  var reasons = [
+   { v: '価格が高い', mode: 'none' },
+   { v: '量が多い／少ない', mode: 'none' },
+   { v: '一時的に休みたい', mode: 'none' },
+   { v: '味・品質が期待と違った', mode: 'optional', ph: 'どの点が期待と違いましたか？（任意でご記入ください）' },
+   { v: 'その他', mode: 'required', ph: '差し支えなければ理由をご記入ください（必須）' }
+  ];
   var overlay = document.createElement('div');
   overlay.className = 'eda-modal-overlay';
   var optsHtml = reasons.map(function(r){
-   return '<label class="cancel-reason-opt"><input type="radio" name="cancelReason" value="' + escapeHtml(r) + '"><span>' + escapeHtml(r) + '</span></label>';
+   return '<label class="cancel-reason-opt"><input type="radio" name="cancelReason" value="' + escapeHtml(r.v) + '"><span>' + escapeHtml(r.v) + '</span></label>';
   }).join('');
   overlay.innerHTML = '<div class="eda-modal">' +
    '<h3 class="eda-modal-title">定期便の解約</h3>' +
    '<p class="eda-modal-body" style="text-align:left">差し支えなければ、解約の理由をお聞かせください<strong>（必須）</strong>。<br><span style="color:var(--color-ink-muted);font-size:12px">・3ヶ月未満は事務手数料3,300円 ／ スタッフから最終確認のご連絡をいたします</span></p>' +
    '<div class="cancel-reason-list">' + optsHtml + '</div>' +
-   '<textarea id="cancelReasonComment" class="cancel-reason-comment" rows="2" placeholder="ご意見・詳細（任意）"></textarea>' +
+   '<div id="cancelReasonCommentWrap" class="cancel-reason-comment-wrap" style="display:none">' +
+     '<label id="cancelReasonCommentLabel" class="cancel-reason-comment-label"></label>' +
+     '<textarea id="cancelReasonComment" class="cancel-reason-comment" rows="2"></textarea>' +
+   '</div>' +
    '<div class="eda-modal-actions vertical">' +
     '<button class="eda-modal-btn danger" id="cancelReasonSubmit" disabled>解約を申請する</button>' +
     '<button class="eda-modal-btn secondary" id="cancelReasonClose">やめる</button>' +
@@ -4848,16 +4859,39 @@ function subCancelReasonModal() {
   document.body.appendChild(overlay);
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.classList.add('show'); }); });
   var submit = overlay.querySelector('#cancelReasonSubmit');
-  overlay.addEventListener('change', function(e){ if (e.target && e.target.name === 'cancelReason') submit.disabled = false; });
+  var wrap = overlay.querySelector('#cancelReasonCommentWrap');
+  var label = overlay.querySelector('#cancelReasonCommentLabel');
+  var ta = overlay.querySelector('#cancelReasonComment');
+  function currentReason(){
+   var sel = overlay.querySelector('input[name="cancelReason"]:checked');
+   if (!sel) return null;
+   for (var i = 0; i < reasons.length; i++) { if (reasons[i].v === sel.value) return reasons[i]; }
+   return null;
+  }
+  function refresh(){
+   var r = currentReason();
+   if (!r) { submit.disabled = true; return; }
+   if (r.mode === 'none') { wrap.style.display = 'none'; }
+   else {
+    wrap.style.display = '';
+    ta.placeholder = r.ph || '';
+    label.textContent = (r.mode === 'required') ? '詳細をご記入ください（必須）' : '詳細をご記入ください（任意）';
+   }
+   var commentOk = (r.mode !== 'required') || (ta.value.trim().length > 0);
+   submit.disabled = !commentOk;
+  }
+  overlay.addEventListener('change', function(e){ if (e.target && e.target.name === 'cancelReason') refresh(); });
+  ta.addEventListener('input', refresh);
   function close(val){ overlay.classList.remove('show'); setTimeout(function(){ overlay.remove(); }, 300); resolve(val); }
   overlay.addEventListener('click', function(e){
    if (e.target === overlay) return; /* 外側クリックでは閉じない（誤操作防止） */
    if (e.target.closest('#cancelReasonClose')) { close(null); return; }
    if (e.target.closest('#cancelReasonSubmit')) {
-    var sel = overlay.querySelector('input[name="cancelReason"]:checked');
-    if (!sel) return; /* 理由未選択なら申請不可 */
-    var comment = (overlay.querySelector('#cancelReasonComment').value || '').trim();
-    close({ reason: sel.value, comment: comment });
+    var r = currentReason();
+    if (!r) return; /* 理由未選択なら申請不可 */
+    var comment = (ta.value || '').trim();
+    if (r.mode === 'required' && !comment) return; /* その他は詳細必須 */
+    close({ reason: r.v, comment: (r.mode === 'none') ? '' : comment });
    }
   });
  });
