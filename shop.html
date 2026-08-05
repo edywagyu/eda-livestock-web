@@ -12917,22 +12917,78 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 <script>
 /* ============ ステータスフィルタ ============ */
 /* ============ 商品並び：HTMLソース順を維持（プレミアム→普及）。
-   有機JAS の coming-soon カードのみ末尾に押し出す ============ */
-(function sortBeefByPrice() {
- document.querySelectorAll('.product-grid[data-cat="beef"], .product-grid[data-cat="chicken"]').forEach(grid => {
+   ただし在庫0（売り切れ）は末尾へ、COMING SOON はさらにその後ろへ押し出す。
+
+   狙い（2026-08-06）：売り切れが一等地に居座ると、買えない商品を最初に見た客が
+   離脱する（Baymard: 品切れ遭遇者の30%が他店へ）。定番の欠品は人気の証明にならないので
+   静かに後ろへ下げる。完売を誇るのは限定品だけ（limited-stock.js が「完売しました」を出す）。
+
+   在庫は GAS(products シート)から products-loader.js が非同期で入れるため、
+   到着後に window.refreshProductOrder() で並べ直す（stockBadgeInit の末尾から呼ばれる）。
+   在庫が取れるまでは HTML 記述順のまま＝安全側に倒す。 ============ */
+(function sortProductCards() {
+ const GRID_SEL = '.product-grid[data-cat="beef"], .product-grid[data-cat="chicken"]';
+
+ /* 並び順の基準は「最初のHTML記述順」。一度並べ替えると DOM 順が変わるので、
+    初回の位置を data 属性に焼いておかないと2回目以降の再ソートで基準が崩れる。 */
+ function srcIndex(card, fallbackIdx) {
+ if (card.dataset.srcIdx === undefined) card.dataset.srcIdx = String(fallbackIdx);
+ return parseInt(card.dataset.srcIdx, 10);
+ }
+
+ function stockMap() {
+ const master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+ const byName = {};
+ master.forEach(p => {
+ if (!p.name) return;
+ const s = Number(p.stock);
+ if (!isNaN(s)) byName[p.name] = s;
+ });
+ return byName;
+ }
+
+ function sortAll() {
+ const stockByName = stockMap();
+
+ document.querySelectorAll(GRID_SEL).forEach(grid => {
+ /* そのグリッドに今いるカードだけを対象にする。
+    フィルタ中のカードは mergedFilterGrid へ移動済みなので、ここでは触らない。 */
  const cards = Array.from(grid.querySelectorAll('.product-card'));
+
  cards.forEach((c, idx) => {
- // data-sort-price 指定（有機JAS COMING SOON）→ 末尾固定
- if (c.dataset.sortPrice) {
- c._sortKey = 900000 + parseInt(c.dataset.sortPrice);
+ const base = srcIndex(c, idx);
+
+ /* 1. COMING SOON（有機JAS）＝まだ売っていない → 最後尾 */
+ if (c.querySelector('.organic-wagyu-overlay')) {
+ c._sortKey = 2000000 + base;
  return;
  }
- // それ以外は HTML 記述順を維持（サーロイン→赤身→...の意図された並び）
- c._sortKey = idx;
+ /* 2. data-sort-price 指定があれば従来通り末尾寄せ（互換のため残す） */
+ if (c.dataset.sortPrice) {
+ c._sortKey = 900000 + parseInt(c.dataset.sortPrice, 10);
+ return;
+ }
+ /* 3. 在庫0＝売り切れ → 生きている商品の後ろへ。
+       在庫が取れない商品（マスタに名前が無い）は通常扱いのままにする。 */
+ const nameEl = c.querySelector('.product-name');
+ const name = nameEl ? nameEl.textContent.trim() : '';
+ const stock = stockByName[name];
+ if (stock === 0) {
+ c._sortKey = 1000000 + base;
+ return;
+ }
+ /* 4. それ以外は HTML 記述順を維持（サーロイン→赤身→...の意図された並び） */
+ c._sortKey = base;
  });
+
  cards.sort((a, b) => a._sortKey - b._sortKey);
  cards.forEach(c => grid.appendChild(c));
  });
+ }
+
+ sortAll();
+ /* 在庫が GAS から届いた後に呼ばれる（stockBadgeInit → refreshStockBadges 経由） */
+ window.refreshProductOrder = sortAll;
 })();
 
 /* ============ 在庫バッジ装飾 ============
@@ -12974,6 +13030,10 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  } /* 残り◯点バッジは Tom 指示(2026-06)で非表示 — タグ整理・重なり解消。在庫切れ表示は維持 */
  });
+
+ /* 在庫が確定したこのタイミングで並びも直す（売り切れを末尾へ）。
+    GAS からの上書き後にも呼ばれるので、在庫が動けば並びも追従する。 */
+ if (typeof window.refreshProductOrder === 'function') window.refreshProductOrder();
  }
  if (document.readyState === 'loading') {
  document.addEventListener('DOMContentLoaded', tryDecorate);
