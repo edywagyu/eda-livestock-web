@@ -1,0 +1,275 @@
+{
+ "updated": "2026-08-02",
+ "basis": "直近14日: 購入×3 + カート×2 (閲覧×1は view_item 修正の反映後に加算)",
+ "excluded": [
+  "肉の日限定セット"
+ ],
+ "ranking": [
+  {
+   "id": 50831002400101,
+   "name": "赤身焼肉",
+   "price": 2400,
+   "purchase": 9,
+   "cart": 4,
+   "score": 35,
+   "rank": 0
+  },
+  {
+   "id": 50830250475818,
+   "name": "平飼い鶏 ムネ",
+   "price": 920,
+   "purchase": 8,
+   "cart": 3,
+   "score": 30,
+   "rank": 1
+  },
+  {
+   "id": 50830137655594,
+   "name": "バラ焼肉",
+   "price": 1500,
+   "purchase": 8,
+   "cart": 3,
+   "score": 30,
+   "rank": 2
+  },
+  {
+   "id": 50830187200810,
+   "name": "赤身スライス",
+   "price": 2600,
+   "purchase": 8,
+   "cart": 1,
+   "score": 26,
+   "rank": 3
+  },
+  {
+   "id": 50830191427882,
+   "name": "ハンバーグ",
+   "price": 760,
+   "purchase": 0,
+   "cart": 6,
+   "score": 12,
+   "rank": 4
+  },
+  {
+   "id": 50831004750301,
+   "name": "ヒレステーキ",
+   "price": 4750,
+   "purchase": 4,
+   "cart": 0,
+   "score": 12,
+   "rank": 5
+  },
+  {
+   "id": 50830132314410,
+   "name": "サイコロステーキ",
+   "price": 1800,
+   "purchase": 3,
+   "cart": 1,
+   "score": 11,
+   "rank": 6
+  },
+  {
+   "id": 50830303822122,
+   "name": "切り落とし",
+   "price": 1600,
+   "purchase": 2,
+   "cart": 2,
+   "score": 10,
+   "rank": 7
+  },
+  {
+   "id": 50830287143210,
+   "name": "ホルモン",
+   "price": 840,
+   "purchase": 2,
+   "cart": 1,
+   "score": 8,
+   "rank": 8
+  },
+  {
+   "id": 50830190379306,
+   "name": "赤身ステーキ",
+   "price": 3400,
+   "purchase": 2,
+   "cart": 1,
+   "score": 8,
+   "rank": 9
+  },
+  {
+   "id": 50831003500201,
+   "name": "ミスジステーキ",
+   "price": 3500,
+   "purchase": 2,
+   "cart": 1,
+   "score": 8,
+   "rank": 10
+  },
+  {
+   "id": 50830293172522,
+   "name": "平飼い鶏 モモ",
+   "price": 980,
+   "purchase": 1,
+   "cart": 2,
+   "score": 7,
+   "rank": 11
+  },
+  {
+   "id": "organic-chicken-breast",
+   "name": "オーガニックチキン ムネ",
+   "price": 2760,
+   "purchase": 1,
+   "cart": 1,
+   "score": 5,
+   "rank": 12
+  },
+  {
+   "id": 50830210793770,
+   "name": "平飼い鶏 ミンチ",
+   "price": 800,
+   "purchase": 1,
+   "cart": 0,
+   "score": 3,
+   "rank": 13
+  },
+  {
+   "id": 50831003700401,
+   "name": "霜降スライス",
+   "price": 3700,
+   "purchase": 0,
+   "cart": 1,
+   "score": 2,
+   "rank": 14
+  },
+  {
+   "id": 50877844750634,
+   "name": "生ハム",
+   "price": 1250,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 15
+  },
+  {
+   "id": 50831001234567,
+   "name": "ミンチ",
+   "price": 1350,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 16
+  },
+  {
+   "id": "organic-chicken-minced",
+   "name": "オーガニックチキン ミンチ",
+   "price": 2400,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 17
+  },
+  {
+   "id": "organic-chicken-thigh",
+   "name": "オーガニックチキン モモ",
+   "price": 2940,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 18
+  },
+  {
+   "id": 50831003340901,
+   "name": "江田畜産 あったら便利3種セット",
+   "price": 3340,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 19
+  },
+  {
+   "id": 50830136082730,
+   "name": "サーロインステーキ",
+   "price": 3400,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 20
+  },
+  {
+   "id": 50831003800201,
+   "name": "イチボステーキ",
+   "price": 3800,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 21
+  },
+  {
+   "id": "organic-wagyu-sirloin",
+   "name": "有機JAS サーロイン",
+   "price": 6800,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 22
+  },
+  {
+   "id": "organic-wagyu-ribeye",
+   "name": "有機JAS リブアイ",
+   "price": 7200,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 23
+  },
+  {
+   "id": 50982670532906,
+   "name": "ローストビーフ (300g)",
+   "price": 7400,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 24
+  },
+  {
+   "id": "organic-wagyu-fillet",
+   "name": "有機JAS ヒレ",
+   "price": 8800,
+   "purchase": 0,
+   "cart": 0,
+   "score": 0,
+   "rank": 25
+  }
+ ],
+ "banner": [
+  {
+   "rank": 1,
+   "id": 50831002400101,
+   "name": "赤身焼肉",
+   "price": 2400
+  },
+  {
+   "rank": 2,
+   "id": 50830250475818,
+   "name": "平飼い鶏 ムネ",
+   "price": 920
+  },
+  {
+   "rank": 3,
+   "id": 50830137655594,
+   "name": "バラ焼肉",
+   "price": 1500
+  },
+  {
+   "rank": 4,
+   "id": 50830187200810,
+   "name": "赤身スライス",
+   "price": 2600
+  },
+  {
+   "rank": 5,
+   "id": 50830191427882,
+   "name": "ハンバーグ",
+   "price": 760
+  }
+ ]
+}
