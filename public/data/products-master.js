@@ -319,12 +319,47 @@
          普段は企業向け(B2B)の希少部位。今回だけ在庫が回った単発の数量限定。 */
       limitedTotal: 20,
       limitedStartAt:   '2026/08/03 17:30',   /* 17:30に自動で購入可＆「残り◯」表示へ。それまでは「発売予定」 */
-      limitedSoldOutAt: '2026/08/05 23:59',   /* これ以降＝販売停止＋「完売しました」 */
-      limitedUntil:     '2026/08/05 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedSoldOutAt: '2026/08/04 23:59',   /* 2026-08-05 たろ指示で即非表示（過去日にして掲示を消す） */
+      limitedUntil:     '2026/08/04 23:59',   /* これ以降＝バナー・タブ・カードごと消える（前倒し終了） */
       limitedUnit: '枚',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Ichibo Steak',
       description: 'サーロインに続く、尻の一枚。赤身のうまみに、ほどよい霜降り。塩で、ステーキに。',
       images: ['public/images/products/drive/ichibo-steak.jpg']
+    },
+
+    /* ===== 訳あり 焼肉2種セット (2026-08-05〜08-06 数量限定) ===== */
+    {
+      productId: 'P030', variantId: 'WAKEARI-YAKINIKU-2', sku: 'EDA-WAKEARI-YAKINIKU',
+      stripePriceId: '',
+      name: '訳あり 焼肉2種セット', variant: '赤身焼肉200g + バラ焼肉200g',
+      price: 3870, weight: 400, stock: 20, temp: '冷凍',
+      published: false,   /* 公開はスタッフが products シートの published=TRUE で。まだ非公開 */
+      /* 限定品カウント (public/js/limited-stock.js)。残数=在庫−カート確保で自動。 */
+      limitedTotal: 20,
+      limitedSoldOutAt: '2026/08/06 23:59',   /* これ以降＝販売停止＋「完売しました」 */
+      limitedUntil:     '2026/08/06 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedUnit: 'セット',
+      listPrice: 4300,                         /* 定価（単品合計）。限定価格 3,870 との対比表示用 */
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Yakiniku Set',
+      description: '訳あり品だからお得な焼肉2種セット。赤身焼肉200g＋バラ焼肉200g。ご家庭の焼肉・BBQに。（形が不揃いなどの訳あり品で、味は通常品と同じです）',
+      images: ['public/images/products/drive/wakeari-yakiniku-set.jpg']
+    },
+
+    /* ===== 訳あり スライス2種セット (2026-08-05〜08-06 数量限定) ===== */
+    {
+      productId: 'P031', variantId: 'WAKEARI-SLICE-2', sku: 'EDA-WAKEARI-SLICE',
+      stripePriceId: '',
+      name: '訳あり スライス2種セット', variant: '霜降スライス200g + 切り落とし200g',
+      price: 4770, weight: 400, stock: 20, temp: '冷凍',
+      published: false,
+      limitedTotal: 20,
+      limitedSoldOutAt: '2026/08/06 23:59',
+      limitedUntil:     '2026/08/06 23:59',
+      limitedUnit: 'セット',
+      listPrice: 5300,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Slice Set',
+      description: '訳あり品だからお得なスライス2種セット。霜降スライス200g＋切り落とし200g。すき焼き・しゃぶしゃぶ・普段の炒め物に。（形が不揃いなどの訳あり品で、味は通常品と同じです）',
+      images: ['public/images/products/drive/wakeari-slice-set.jpg']
     }
   ];
 
