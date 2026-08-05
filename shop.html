@@ -7012,6 +7012,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="MISUJI STEAK"] { background-image: url('public/images/products/drive/misuji-steak.jpg'); }
 .product-card-img[data-label="NIKUNOHI SET"] { background-image: url('public/images/products/drive/nikunohi-set.jpg'); }
 .product-card-img[data-label="HIRE STEAK"] { background-image: url('public/images/products/drive/hire-steak.jpg'); }
+.product-card-img[data-label="HIRE CUBE"] { background-color: var(--color-cream); } /* 画像未用意（2026-08-06） */
 .product-card-img[data-label="AKAMI YAKINIKU"] { background-image: url('public/images/products/drive/akami-yakiniku.jpg'); }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
@@ -9992,8 +9993,21 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-name">ヒレステーキ</p>
  <p class="product-desc">一頭から約3%しか取れない、最もやわらかい部位。脂は控えめで、赤身の甘みが上品に立つ。<strong>記念日の一枚</strong>に。</p>
  <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥3,167</strong></div>
- <div class="product-stat-item">真空 <strong>1枚 150g</strong></div>
+ <div class="product-stat-item">100g <strong>¥2,375</strong></div>
+ <div class="product-stat-item">真空 <strong>1枚 200g</strong></div>
+ <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="steak" data-variants='[{"id":50832002500301,"t":"1つ","p":2500}]'>
+ <div class="product-card-img" data-label="HIRE CUBE"></div>
+ <div class="product-tag-row"><span class="product-tag">Steak · Fillet Cube</span><span class="product-price">¥2,500</span></div>
+ <p class="product-name">ヒレサイコロステーキ</p>
+ <p class="product-desc">一頭から約3%しか取れないヒレを、ステーキにできない部分まで一口大に。<strong>希少部位を気軽に</strong>、転がすだけで。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g <strong>¥1,250</strong></div>
+ <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
  <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
@@ -12166,6 +12180,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '50831001234567': { title: 'ミンチ', price: 1350 },
  '50831003500201': { title: 'ミスジステーキ', price: 3500 },
  '50831004750301': { title: 'ヒレステーキ', price: 4750 },
+ '50832002500301': { title: 'ヒレサイコロステーキ', price: 2500 },
  '50831002400101': { title: '赤身焼肉', price: 2400 },
  '50831003700401': { title: '霜降スライス', price: 3700 },
  'organic-chicken-thigh': { title: 'オーガニックチキン モモ', price: 2940 },
@@ -14576,7 +14591,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-03-ichibo-20" defer></script>
+<script src="public/data/products-master.js?v=2026-08-06-hire-cube" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

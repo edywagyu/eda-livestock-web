@@ -138,10 +138,19 @@
       images: ['public/images/products/drive/misuji-steak.jpg']
     },
     {
+      productId: 'P032', variantId: 'HIRE-CUBE', sku: 'EDA-HIRECUBE-200',
+      stripePriceId: '',
+      name: 'ヒレサイコロステーキ', variant: '1袋 200g',
+      price: 2500, weight: 200, stock: 3, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Fillet Steak Cubes',
+      description: '一頭から約3%だけのヒレを、ステーキにできない部分までサイコロカットに。希少部位を気軽に。',
+      images: []
+    },
+    {
       productId: 'P024', variantId: 'HIRE-STEAK', sku: 'EDA-HIRE-150',
       stripePriceId: '',
-      name: 'ヒレステーキ', variant: '1枚 150g',
-      price: 4750, weight: 150, stock: 10, temp: '冷凍',
+      name: 'ヒレステーキ', variant: '1枚 200g',
+      price: 4750, weight: 200, stock: 16, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Fillet Steak',
       description: '一頭から約3%だけの、最もやわらかい部位。記念日の一枚に。',
       images: ['public/images/products/drive/hire-steak.jpg']
