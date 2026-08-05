@@ -12960,25 +12960,25 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* 1. COMING SOON（有機JAS）＝まだ売っていない → 最後尾 */
  if (c.querySelector('.organic-wagyu-overlay')) {
- c._sortKey = 2000000 + base;
+ c._sortKey = 3000000 + base;
  return;
  }
- /* 2. data-sort-price 指定があれば従来通り末尾寄せ（互換のため残す） */
- if (c.dataset.sortPrice) {
- c._sortKey = 900000 + parseInt(c.dataset.sortPrice, 10);
- return;
- }
- /* 3. 在庫0＝売り切れ → 生きている商品の後ろへ。
+ /* 2. 在庫0＝売り切れ → 買える商品の後ろへ。
        在庫が取れない商品（マスタに名前が無い）は通常扱いのままにする。 */
  const nameEl = c.querySelector('.product-name');
  const name = nameEl ? nameEl.textContent.trim() : '';
- const stock = stockByName[name];
- if (stock === 0) {
- c._sortKey = 1000000 + base;
+ if (stockByName[name] === 0) {
+ c._sortKey = 2000000 + base;
  return;
  }
- /* 4. それ以外は HTML 記述順を維持（サーロイン→赤身→...の意図された並び） */
- c._sortKey = base;
+ /* 3. data-sort-price 指定があれば従来通り末尾寄せ（互換のため残す） */
+ if (c.dataset.sortPrice) {
+ c._sortKey = 1500000 + parseInt(c.dataset.sortPrice, 10);
+ return;
+ }
+ /* 4. それ以外は HTML 記述順を維持（サーロイン→赤身→...の意図された並び）。
+       キー体系は products.html の sortProductCards と揃えてある。 */
+ c._sortKey = 1000000 + base;
  });
 
  cards.sort((a, b) => a._sortKey - b._sortKey);

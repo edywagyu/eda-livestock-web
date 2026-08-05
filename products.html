@@ -9613,7 +9613,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
-<body>
+<body data-popular-sort="on">
 <a href="#main" class="skip-link">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
  <div class="container nav">
@@ -11475,17 +11475,24 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
 <script>
 /* ============ ステータスフィルタ ============ */
-/* ============ 商品並び：HTMLソース順を維持（プレミアム→普及）。
-   ただし在庫0（売り切れ）は末尾へ、COMING SOON はさらにその後ろへ押し出す。
+/* ============ 商品並び：買える商品を売れ行き順、売り切れは末尾、COMING SOON は最後尾。
 
    ここ(products.html)が全商品を並べる本体。shop.html は各カテゴリ2件のティザーなので、
-   お客が売り切れの列を実際に目にするのはこのページ。
-   狙い（2026-08-06）：買えない商品が上に居座ると離脱を生む（Baymard: 品切れ遭遇者の30%が他店へ）。
-   定番の欠品は人気の証明にならないので静かに後ろへ下げる。完売を誇るのは限定品だけ。
+   お客が商品の列を実際に目にするのはこのページ。
 
-   在庫は GAS(products シート)から products-loader.js が非同期で入れるため、
-   到着後に window.refreshProductOrder() で並べ直す（stockBadgeInit の末尾から呼ばれる）。
-   在庫が取れるまでは HTML 記述順のまま＝安全側に倒す。 ============ */
+   優先順位（2026-08-06）：
+     1. 買える商品（在庫>0）を売れ行き順  … popular.js が popular.json から配るランク
+     2. 買えるがランキング外            … HTML記述順を維持
+     3. 売り切れ（在庫0）               … 静かに後ろへ
+     4. COMING SOON（有機JAS）          … 最後尾
+
+   売れ行き順より在庫を優先するのが要点。売れた商品ほど在庫が尽きるので、
+   売れ行きだけで並べると買えない商品が一等地に居座る（Baymard: 品切れ遭遇者の30%が他店へ）。
+   定番の欠品は人気の証明にならないので後ろへ下げる。完売を誇るのは限定品だけ。
+
+   在庫は GAS(products シート)から products-loader.js が、ランクは popular.js が
+   それぞれ非同期で届けるため、到着のたびに window.refreshProductOrder() で並べ直す。
+   どちらも取れないうちは HTML 記述順のまま＝安全側に倒す。 ============ */
 (function sortProductCards() {
  const GRID_SEL = '.product-grid[data-cat="beef"], .product-grid[data-cat="chicken"]';
 
@@ -11520,25 +11527,26 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* 1. COMING SOON（有機JAS）＝まだ売っていない → 最後尾 */
  if (c.querySelector('.organic-wagyu-overlay')) {
- c._sortKey = 2000000 + base;
+ c._sortKey = 3000000 + base;
  return;
  }
- /* 2. data-sort-price 指定があれば従来通り末尾寄せ（互換のため残す） */
- if (c.dataset.sortPrice) {
- c._sortKey = 900000 + parseInt(c.dataset.sortPrice, 10);
- return;
- }
- /* 3. 在庫0＝売り切れ → 生きている商品の後ろへ。
+ /* 2. 在庫0＝売り切れ → 買える商品の後ろへ。売れ行き順より在庫を優先する。
        在庫が取れない商品（マスタに名前が無い）は通常扱いのままにする。 */
  const nameEl = c.querySelector('.product-name');
  const name = nameEl ? nameEl.textContent.trim() : '';
- const stock = stockByName[name];
- if (stock === 0) {
- c._sortKey = 1000000 + base;
+ if (stockByName[name] === 0) {
+ c._sortKey = 2000000 + base;
  return;
  }
- /* 4. それ以外は HTML 記述順を維持（サーロイン→赤身→...の意図された並び） */
- c._sortKey = base;
+ /* 3. data-sort-price 指定があれば従来通り末尾寄せ（互換のため残す） */
+ if (c.dataset.sortPrice) {
+ c._sortKey = 1500000 + parseInt(c.dataset.sortPrice, 10);
+ return;
+ }
+ /* 4. 買える商品は売れ行き順（0が最上位）。ランキングに載っていない商品は
+       ランク済みの後ろへ、HTML記述順のままで。 */
+ const rank = (typeof window.EDA_POPULAR_RANK_OF === 'function') ? window.EDA_POPULAR_RANK_OF(c) : null;
+ c._sortKey = (rank != null) ? rank : (1000000 + base);
  });
 
  cards.sort((a, b) => a._sortKey - b._sortKey);
@@ -13099,6 +13107,8 @@ function copyPopCoupon() {
 <script src="public/js/limited-stock.js?v=006" defer></script>
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<!-- 売れ行き順（popular.json のランクを配る。並べ替え本体は上の sortProductCards） -->
+<script src="public/js/popular.js?v=2" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 
