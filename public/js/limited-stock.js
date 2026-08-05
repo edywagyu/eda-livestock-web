@@ -159,6 +159,65 @@
       + '（' + '日月火水木金土'.charAt(d.getDay()) + '）';
   }
 
+  /* ===== 動くカウントダウン（残り時間を1秒ごとに更新） =====================
+     [.limited-countdown-eda data-eda-deadline="<epoch ms>"] の中身を
+     「残り 1日 03:12:45」のように毎秒書き換える。1時間を切ったら .is-urgent。
+     設置は applyPdp（PDPの帯）と applyCards（一覧カード）が行う。 */
+  function pad2(n) { return ('0' + n).slice(-2); }
+  function fmtRemain(ms) {
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s -= d * 86400;
+    var h = Math.floor(s / 3600);  s -= h * 3600;
+    var m = Math.floor(s / 60);    s -= m * 60;
+    var hms = pad2(h) + ':' + pad2(m) + ':' + pad2(s);
+    return d > 0 ? (d + '日 ' + hms) : hms;
+  }
+  function tickCountdowns() {
+    var now = Date.now();
+    document.querySelectorAll('.limited-countdown-eda[data-eda-deadline]').forEach(function (el) {
+      var dl = Number(el.getAttribute('data-eda-deadline'));
+      if (!isFinite(dl)) { el.textContent = ''; return; }
+      var rem = dl - now;
+      if (rem <= 0) { el.textContent = '受付終了'; el.classList.remove('is-urgent'); return; }
+      el.textContent = '残り ' + fmtRemain(rem);
+      el.classList.toggle('is-urgent', rem <= 3600000);   /* 残り1時間以内で強調 */
+    });
+  }
+  var _cdTimer = null;
+  function ensureCountdownTicker() {
+    ensureCountdownCss();
+    if (!_cdTimer) _cdTimer = setInterval(tickCountdowns, 1000);
+  }
+  function ensureCountdownCss() {
+    if (document.getElementById('limited-countdown-css')) return;
+    var s = document.createElement('style');
+    s.id = 'limited-countdown-css';
+    s.textContent =
+      '.limited-countdown-eda{display:inline-block;font-variant-numeric:tabular-nums;'
+      + 'font-weight:800;letter-spacing:.02em;color:#C8102E;white-space:nowrap}'
+      + '.limited-banner-text .limited-countdown-eda{margin-left:6px;padding:1px 9px;'
+      + 'border-radius:999px;background:rgba(200,16,46,.10);font-size:.95em}'
+      + '.limited-countdown-eda.is-urgent{animation:edaCdPulse 1s steps(2,start) infinite}'
+      + '@keyframes edaCdPulse{50%{opacity:.5}}'
+      + '.product-card-img .limited-countdown-eda{position:absolute;left:8px;bottom:8px;'
+      + 'z-index:3;padding:2px 9px;border-radius:999px;font-size:11px;'
+      + 'background:rgba(17,17,17,.78);color:#fff}'
+      + '.product-card-img .limited-countdown-eda.is-urgent{background:rgba(200,16,46,.94);color:#fff}';
+    (document.head || document.documentElement).appendChild(s);
+  }
+  /* カード/帯にカウントダウン要素を用意して締切(soldOutAt)をセット。null で撤去。 */
+  function setCountdownEl(host, deadlineAt) {
+    if (!host) return;
+    var el = host.querySelector(':scope > .limited-countdown-eda');
+    if (!deadlineAt) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement('span');
+      el.className = 'limited-countdown-eda';
+      host.appendChild(el);
+    }
+    el.setAttribute('data-eda-deadline', String(deadlineAt.getTime()));
+  }
+
   /* 「残り◯セット」/「◯/◯発売」/「完売しました」/「ただいま他のお客様が確保中」 */
   function labelFor(info) {
     if (info.upcoming) return fmtDateShort(info.startAt) + '発売';  /* 発売前＝予告 */
@@ -231,6 +290,11 @@
         host.appendChild(ribbon);
       }
       applyState(ribbon, info);
+
+      /* 動く残り時間をカード画像に（販売中のみ／発売前・完売時は出さない） */
+      var cardImg = card.querySelector('.product-card-img') || card;
+      cardImg.style.position = cardImg.style.position || 'relative';
+      setCountdownEl(cardImg, (!info.closed && !info.upcoming) ? info.soldOutAt : null);
 
       /* 発売前(予告)＝カードは見せるが購入は不可。product-buy を CSS で隠し、
          代わりに「◯/◯（曜）発売予定」ラベルを ::after で出す（data 属性で文言を渡す）。
@@ -333,6 +397,7 @@
       + '<b class="limited-left" data-limited-left="' + info.product.name.replace(/"/g, '&quot;') + '"></b>'
       + (info.closed || info.upcoming ? '' : ' なくなり次第終了') + '</span>';
     applyState(host.querySelector('.limited-left'), info);
+    setCountdownEl(host.querySelector('.limited-banner-text'), deadlineAt);   /* 動く残り時間 */
   }
 
   function apply() {
@@ -349,6 +414,8 @@
     applyInline(active);
     applyCards(active);
     applyPdp(active, endedLimited(), upcomingLimited());
+    ensureCountdownTicker();   /* 動く残り時間の毎秒更新を開始（初回のみ） */
+    tickCountdowns();          /* 1秒待たずに即描画 */
     return true;
   }
 
