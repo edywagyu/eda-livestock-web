@@ -72,9 +72,9 @@
     /* ===== 牛肉 焼肉系 ===== */
     {
       productId: 'P006', variantId: 'YAKINIKU-BRISKET', sku: 'EDA-YAKI-200',
-      stripePriceId: 'price_1TW74oGSkhU1UEciOHnR8RAf',
+      stripePriceId: '',   /* 2026-08-06 ¥1,500→¥1,900。旧Price IDは¥1,500固定で請求されるため外す */
       name: 'バラ焼肉', variant: '1袋 200g',
-      price: 1500, weight: 200, stock: 11, temp: '冷凍',
+      price: 1900, weight: 200, stock: 11, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
       description: 'バラ肉を焼肉用に。赤身と脂が交互に重なる、三枚肉の構造。塩で、タレで。',
       images: ['public/images/products/drive/yakiniku-brisket.jpg']

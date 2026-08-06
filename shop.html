@@ -10068,13 +10068,13 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <!-- 焼肉系 -->
- <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830137655594,"t":"1つ","p":1500},{"id":50830137688362,"t":"2つセット【5%オフ】","p":2850},{"id":50830137721130,"t":"3つセット【10%オフ】","p":4050}]'>
+ <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830137655594,"t":"1つ","p":1900},{"id":50830137688362,"t":"2つセット【5%オフ】","p":3610},{"id":50830137721130,"t":"3つセット【10%オフ】","p":5130}]'>
  <div class="product-card-img" data-label="YAKINIKU BRISKET"></div>
- <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,500〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,900〜</span></div>
  <p class="product-name">バラ焼肉</p>
  <p class="product-desc">バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。網焼きで脂を落とせば外カリッ、中ジューシー。タレでも塩レモンでも。</p>
  <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥750</strong></div>
+ <div class="product-stat-item">100g <strong>¥950</strong></div>
  <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
  <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
@@ -12174,7 +12174,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '50830191427882': { title: 'ハンバーグ', price: 760 },
  '50830187200810': { title: '赤身スライス', price: 2600 },
  '50830303822122': { title: '切り落とし', price: 1600 },
- '50830137655594': { title: 'バラ焼肉', price: 1500 },
+ '50830137655594': { title: 'バラ焼肉', price: 1900 },
  '50830132314410': { title: 'サイコロステーキ', price: 1800 },
  '50982670532906': { title: 'ローストビーフ',price: 7400 },
  '50831001234567': { title: 'ミンチ', price: 1350 },
@@ -12374,7 +12374,9 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '赤身スライス:1つ': 'price_1TW74nGSkhU1UEcibaOeMrwf',
  '切り落とし:1つ': 'price_1TW74nGSkhU1UEcigrD4ATBJ',
  'ミンチ:1つ': 'price_1TW74sGSkhU1UEci63HCdIsL',
- 'バラ焼肉:1つ': 'price_1TW74oGSkhU1UEciOHnR8RAf',
+ /* バラ焼肉は Price ID を外す（2026-08-06 ¥1,500→¥1,900）。Stripe の Price は
+    金額を後から変えられないため、旧ID(price_1TW74o…=¥1,500)を残すと表示¥1,900でも
+    請求が¥1,500になる。外せば ad-hoc price_data でカート価格がそのまま請求される。 */
  'ホルモン:1つ': 'price_1TW74pGSkhU1UEcizY8WlJPz',
  'ハンバーグ:1つ': 'price_1TW74qGSkhU1UEciphBYGBDO',
  'ローストビーフ:1つ (300g)': 'price_1Tcbx9GSkhU1UEcik9aUn4RT',
@@ -13309,7 +13311,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  'CUBE STEAK': { meals: '1〜2人前', perMeal: '¥500', per100g: '¥1,000', portions: '真空 1袋', thaw: '流水で約15分', tag: '子ども人気・時短' },
  'WAGYU SLICE': { meals: '3〜4人前', perMeal: '¥650', per100g: '¥1,300', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: 'しゃぶしゃぶ・すき焼き' },
  'KIRIOTOSHI': { meals: '3〜4人前', perMeal: '¥400', per100g: '¥800', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: '子ども人気・時短料理' },
- 'YAKINIKU BRISKET': { meals: '2〜3人前', perMeal: '¥500', per100g: '¥750', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: '焼肉・週末ごちそう' },
+ 'YAKINIKU BRISKET': { meals: '2〜3人前', perMeal: '¥633', per100g: '¥950', portions: '脱気 1袋 200g', thaw: '冷蔵庫で約2時間', tag: '焼肉・週末ごちそう' },
  'RAW HAM': { meals: '2人前', perMeal: '¥625', per100g: '¥3,125', portions: '個包装 40g', thaw: '冷蔵庫で30分', tag: 'ワインに' },
  'HAMBURG': { meals: '1人前', perMeal: '¥760', per100g: '¥760', portions: '個包装 1個 100g', thaw: '冷蔵庫で約3時間', tag: '子ども人気' },
  'ROAST BEEF': { meals: '3〜4人前', perMeal: '¥750', per100g: '¥3,000', portions: '真空 100g', thaw: '流水で約20分', tag: 'パーティー前菜' },
@@ -13360,7 +13362,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '無投薬チキンカレー': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 920, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
  '和牛の肉じゃが': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
- '焼肉プレート': { id: 50830137655594, price: 1500, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
+ '焼肉プレート': { id: 50830137655594, price: 1900, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
  '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
  '赤身ステーキ': { id: 50830190379306, price: 3400, title: '赤身ステーキ', img: 'public/images/products/drive/red-meat-2026.jpg' },
  '親子丼': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
@@ -14651,7 +14653,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-06-hire-cube" defer></script>
+<script src="public/data/products-master.js?v=2026-08-06-bara-1900" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
