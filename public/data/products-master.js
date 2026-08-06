@@ -350,7 +350,7 @@
       limitedUnit: 'セット',
       listPrice: 4300,                         /* 定価（単品合計）。限定価格 3,870 との対比表示用 */
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Yakiniku Set',
-      description: '冷凍焼けにより表面が黒っぽく変色しているため、お安くしています。赤身焼肉200g＋バラ焼肉200gの計400g。ご家庭の焼肉・BBQに。牛脂つき。※画像はイメージです。',
+      description: '冷凍焼けにより表面が黒っぽく変色しています。見た目のぶんだけお得にしました。赤身焼肉200g＋バラ焼肉200gの計400g。ご家庭の焼肉・BBQに。牛脂つき。※画像はイメージです。',
       images: ['public/images/products/drive/wakeari-yakiniku-set.jpg']
     },
 
@@ -367,7 +367,7 @@
       limitedUnit: 'セット',
       listPrice: 5300,
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Slice Set',
-      description: '冷凍焼けにより表面が黒っぽく変色しているため、お安くしています。霜降スライス200g＋切り落とし200gの計400g。すき焼き・しゃぶしゃぶ・普段の炒め物に。牛脂つき。※画像はイメージです。',
+      description: '冷凍焼けにより表面が黒っぽく変色しています。見た目のぶんだけお得にしました。霜降スライス200g＋切り落とし200gの計400g。すき焼き・しゃぶしゃぶ・普段の炒め物に。牛脂つき。※画像はイメージです。',
       images: ['public/images/products/drive/wakeari-slice-set.jpg']
     }
   ];
