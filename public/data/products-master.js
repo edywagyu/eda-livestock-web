@@ -336,7 +336,7 @@
       images: ['public/images/products/drive/ichibo-steak.jpg']
     },
 
-    /* ===== 訳あり 焼肉2種セット (2026-08-05〜08-06 数量限定) ===== */
+    /* ===== 訳あり 焼肉2種セット (〜2026-08-07 23:59 数量限定) ===== */
     {
       productId: 'P030', variantId: 'WAKEARI-YAKINIKU-2', sku: 'EDA-WAKEARI-YAKINIKU',
       stripePriceId: '',
@@ -345,16 +345,16 @@
       published: false,   /* 公開はスタッフが products シートの published=TRUE で。まだ非公開 */
       /* 限定品カウント (public/js/limited-stock.js)。残数=在庫−カート確保で自動。 */
       limitedTotal: 20,
-      limitedSoldOutAt: '2026/08/06 23:59',   /* これ以降＝販売停止＋「完売しました」 */
-      limitedUntil:     '2026/08/06 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedSoldOutAt: '2026/08/07 23:59',   /* これ以降＝販売停止＋「完売しました」 */
+      limitedUntil:     '2026/08/07 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
       limitedUnit: 'セット',
       listPrice: 4300,                         /* 定価（単品合計）。限定価格 3,870 との対比表示用 */
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Yakiniku Set',
-      description: '訳あり品だからお得な焼肉2種セット。赤身焼肉200g＋バラ焼肉200g。ご家庭の焼肉・BBQに。（形が不揃いなどの訳あり品で、味は通常品と同じです）',
+      description: '冷凍焼けにより表面が黒っぽく変色しているため、お安くしています。赤身焼肉200g＋バラ焼肉200gの計400g。ご家庭の焼肉・BBQに。牛脂つき。※画像はイメージです。',
       images: ['public/images/products/drive/wakeari-yakiniku-set.jpg']
     },
 
-    /* ===== 訳あり スライス2種セット (2026-08-05〜08-06 数量限定) ===== */
+    /* ===== 訳あり スライス2種セット (〜2026-08-07 23:59 数量限定) ===== */
     {
       productId: 'P031', variantId: 'WAKEARI-SLICE-2', sku: 'EDA-WAKEARI-SLICE',
       stripePriceId: '',
@@ -362,12 +362,12 @@
       price: 4770, weight: 400, stock: 20, temp: '冷凍',
       published: false,
       limitedTotal: 20,
-      limitedSoldOutAt: '2026/08/06 23:59',
-      limitedUntil:     '2026/08/06 23:59',
+      limitedSoldOutAt: '2026/08/07 23:59',
+      limitedUntil:     '2026/08/07 23:59',
       limitedUnit: 'セット',
       listPrice: 5300,
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Slice Set',
-      description: '訳あり品だからお得なスライス2種セット。霜降スライス200g＋切り落とし200g。すき焼き・しゃぶしゃぶ・普段の炒め物に。（形が不揃いなどの訳あり品で、味は通常品と同じです）',
+      description: '冷凍焼けにより表面が黒っぽく変色しているため、お安くしています。霜降スライス200g＋切り落とし200gの計400g。すき焼き・しゃぶしゃぶ・普段の炒め物に。牛脂つき。※画像はイメージです。',
       images: ['public/images/products/drive/wakeari-slice-set.jpg']
     }
   ];
