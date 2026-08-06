@@ -195,8 +195,12 @@
     s.textContent =
       '.limited-countdown-eda{display:inline-block;font-variant-numeric:tabular-nums;'
       + 'font-weight:800;letter-spacing:.02em;color:#C8102E;white-space:nowrap}'
-      + '.limited-banner-text .limited-countdown-eda{margin-left:6px;padding:1px 9px;'
-      + 'border-radius:999px;background:rgba(200,16,46,.10);font-size:.95em}'
+      /* PDPの帯は濃い赤地。赤文字＋薄赤背景だと沈んで読めなかったので、
+         「残り◯セット」と同じ白ピルにして視認性を確保する（2026-08-06）。 */
+      + '.limited-banner-text .limited-countdown-eda{margin-left:6px;padding:2px 10px;'
+      + 'border-radius:999px;background:#fff;color:#C8102E;font-size:.95em;'
+      + 'box-shadow:0 1px 3px rgba(0,0,0,.18)}'
+      + '.limited-banner-text .limited-countdown-eda.is-urgent{background:#C8102E;color:#fff}'
       + '.limited-countdown-eda.is-urgent{animation:edaCdPulse 1s steps(2,start) infinite}'
       + '@keyframes edaCdPulse{50%{opacity:.5}}'
       + '.product-card-img .limited-countdown-eda{position:absolute;left:8px;bottom:8px;'
