@@ -16,10 +16,14 @@
 (function () {
   'use strict';
 
-  /* GAS Web App。eda-config.js を読むページではそれを優先し、
-     読まないページ(products.html 等)では products-loader.js と同じ URL を使う。 */
-  var GAS_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL)
-    || 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
+  /* GAS Web App。⚠️ 同じ GAS プロジェクトに **デプロイが複数** 存在し、
+     それぞれ別のコードバージョンで固定されている。
+       ・このURL(AKfycbx7…)  … products-loader.js が商品/在庫に使っている方。public_popular はここに入っている
+       ・EDA_CONFIG.GAS_URL(AKfycbxFfdz…) … 別デプロイ。更新されておらず public_popular を知らない
+     そのため window.EDA_CONFIG.GAS_URL を優先してはいけない（2026-08-06、
+     優先した結果 products.html で毎回 GAS が空振りし、古い popular.json に落ちていた）。
+     商品と在庫を取っているのと同じデプロイを見る、で固定する。 */
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
 
   function firstVariantId(card) {
     try {
