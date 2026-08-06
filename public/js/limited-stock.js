@@ -201,6 +201,12 @@
       + 'border-radius:999px;background:#fff;color:#0F3D2E;font-size:.95em;'
       + 'box-shadow:0 1px 3px rgba(0,0,0,.18)}'
       + '.limited-banner-text .limited-countdown-eda.is-urgent{background:#0F3D2E;color:#fff}'
+      /* 帯の3行構成（見出し＋値を縦積み） */
+      + '.limited-banner-text{display:block}'
+      + '.limited-banner-text .lb-row{display:block;line-height:1.9}'
+      + '.limited-banner-text .lb-row-head{margin-bottom:2px}'
+      + '.limited-banner-text .lb-deadline{margin-left:8px;font-weight:700}'
+      + '.limited-banner-text .lb-label{opacity:.85}'
       + '.limited-countdown-eda.is-urgent{animation:edaCdPulse 1s steps(2,start) infinite}'
       + '@keyframes edaCdPulse{50%{opacity:.5}}'
       + '.product-card-img .limited-countdown-eda{position:absolute;left:8px;bottom:8px;'
@@ -226,17 +232,19 @@
     el.setAttribute('data-eda-deadline', String(deadlineAt.getTime()));
   }
 
-  /* 「残り◯セット」/「◯/◯発売」/「完売しました」/「ただいま他のお客様が確保中」 */
-  function labelFor(info) {
+  /* 「残り◯セット」/「◯/◯発売」/「完売しました」/「ただいま他のお客様が確保中」
+     bare=true は PDPの帯用。見出し「残りセット数：」が別に付くので
+     「残り」を重ねず数量だけ返す（残りセット数：残り20セット を防ぐ）。 */
+  function labelFor(info, bare) {
     if (info.upcoming) return fmtDateShort(info.startAt) + '発売';  /* 発売前＝予告 */
     if (info.closed) return '完売しました';       /* 販売停止＝在庫が残っていても完売表示 */
-    if (info.available > 0) return '残り' + info.available + info.unit;
+    if (info.available > 0) return (bare ? '' : '残り') + info.available + info.unit;
     /* 在庫はあるが全部が確保中 → 30分で解放されるので「完売」とは書かない */
     return info.stock > 0 ? 'ただいま他のお客様が確保中' : '完売しました';
   }
 
-  function applyState(el, info) {
-    el.textContent = labelFor(info);
+  function applyState(el, info, bare) {
+    el.textContent = labelFor(info, bare);
     el.classList.toggle('is-upcoming', !!info.upcoming);
     el.classList.toggle('is-soldout', !info.upcoming && info.available <= 0);
     el.classList.toggle('is-low', !info.upcoming && info.available > 0 && info.available <= LOW_AT);
@@ -397,15 +405,25 @@
       ? (deadlineAt.getMonth() + 1) + '/' + deadlineAt.getDate()
         + '（' + '日月火水木金土'.charAt(deadlineAt.getDay()) + '）'
         + deadlineAt.getHours() + ':' + ('0' + deadlineAt.getMinutes()).slice(-2)
-        + 'まで ／ '
+        + 'まで'
       : '';
+    /* 帯は3行構成（2026-08-06 たろ指定）:
+         1行目: [20セット限定] 8/7（金）23:59まで
+         2行目: 残りセット数：20セット
+         3行目: 残り時間：1日と05:35:59
+       1行に詰めると折り返して読みにくかったため、見出し付きで縦に並べる。 */
     host.style.display = 'flex';
-    host.innerHTML = '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>'
-      + '<span class="limited-banner-text">' + deadline
-      + '<b class="limited-left" data-limited-left="' + info.product.name.replace(/"/g, '&quot;') + '"></b>'
-      + (info.closed || info.upcoming ? '' : ' なくなり次第終了') + '</span>';
-    applyState(host.querySelector('.limited-left'), info);
-    setCountdownEl(host.querySelector('.limited-banner-text'), deadlineAt);   /* 動く残り時間 */
+    host.innerHTML = '<span class="limited-banner-text">'
+      + '<span class="lb-row lb-row-head">'
+      + '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>'
+      + (deadline ? '<span class="lb-deadline">' + deadline + '</span>' : '')
+      + '</span>'
+      + '<span class="lb-row"><span class="lb-label">残りセット数：</span>'
+      + '<b class="limited-left" data-limited-left="' + info.product.name.replace(/"/g, '&quot;') + '"></b></span>'
+      + (deadlineAt ? '<span class="lb-row lb-row-time"><span class="lb-label">残り時間：</span></span>' : '')
+      + '</span>';
+    applyState(host.querySelector('.limited-left'), info, true);   /* bare＝「残り」を重ねない */
+    setCountdownEl(host.querySelector('.lb-row-time'), deadlineAt);   /* 動く残り時間 */
   }
 
   function apply() {
