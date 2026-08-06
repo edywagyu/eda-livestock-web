@@ -179,7 +179,10 @@
       if (!isFinite(dl)) { el.textContent = ''; return; }
       var rem = dl - now;
       if (rem <= 0) { el.textContent = '受付終了'; el.classList.remove('is-urgent'); return; }
-      el.textContent = '残り ' + fmtRemain(rem);
+      /* 見出し「残り時間：」が別に付く場所（PDPの帯）では「残り」を重ねない。
+         カード上など見出しが無い場所では従来どおり「残り 〜」と書く。 */
+      var bare = !!el.closest('.lb-row-time');
+      el.textContent = (bare ? '' : '残り ') + fmtRemain(rem);
       el.classList.toggle('is-urgent', rem <= 3600000);   /* 残り1時間以内で強調 */
     });
   }
@@ -203,10 +206,12 @@
       + '.limited-banner-text .limited-countdown-eda.is-urgent{background:#0F3D2E;color:#fff}'
       /* 帯の3行構成（見出し＋値を縦積み） */
       + '.limited-banner-text{display:block}'
-      + '.limited-banner-text .lb-row{display:block;line-height:1.9}'
-      + '.limited-banner-text .lb-row-head{margin-bottom:2px}'
-      + '.limited-banner-text .lb-deadline{margin-left:8px;font-weight:700}'
-      + '.limited-banner-text .lb-label{opacity:.85}'
+      /* 行が詰まって重なって見えたので、行間と行の間隔を広げる（2026-08-06 たろ指摘） */
+      + '.limited-banner-text .lb-row{display:block;line-height:1.6;margin-top:8px}'
+      + '.limited-banner-text .lb-row:first-child{margin-top:0}'
+      + '.limited-banner-text .lb-row-head{margin-bottom:4px}'
+      + '.limited-banner-text .lb-deadline{margin-left:10px;font-weight:700}'
+      + '.limited-banner-text .lb-label{opacity:.85;margin-right:2px}'
       + '.limited-countdown-eda.is-urgent{animation:edaCdPulse 1s steps(2,start) infinite}'
       + '@keyframes edaCdPulse{50%{opacity:.5}}'
       + '.product-card-img .limited-countdown-eda{position:absolute;left:8px;bottom:8px;'
