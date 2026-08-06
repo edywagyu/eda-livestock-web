@@ -170,7 +170,7 @@
     var h = Math.floor(s / 3600);  s -= h * 3600;
     var m = Math.floor(s / 60);    s -= m * 60;
     var hms = pad2(h) + ':' + pad2(m) + ':' + pad2(s);
-    return d > 0 ? (d + '日 ' + hms) : hms;
+    return d > 0 ? (d + '日と' + hms) : hms;
   }
   function tickCountdowns() {
     var now = Date.now();
@@ -195,12 +195,12 @@
     s.textContent =
       '.limited-countdown-eda{display:inline-block;font-variant-numeric:tabular-nums;'
       + 'font-weight:800;letter-spacing:.02em;color:#C8102E;white-space:nowrap}'
-      /* PDPの帯は濃い赤地。赤文字＋薄赤背景だと沈んで読めなかったので、
-         「残り◯セット」と同じ白ピルにして視認性を確保する（2026-08-06）。 */
+      /* PDPの帯は濃い赤地。赤文字＋薄赤背景だと沈んで読めなかったので白ピルにする。
+         色はブランドの森緑(#0F3D2E)で、赤い「残り◯セット」と役割を色分けする（2026-08-06）。 */
       + '.limited-banner-text .limited-countdown-eda{margin-left:6px;padding:2px 10px;'
-      + 'border-radius:999px;background:#fff;color:#C8102E;font-size:.95em;'
+      + 'border-radius:999px;background:#fff;color:#0F3D2E;font-size:.95em;'
       + 'box-shadow:0 1px 3px rgba(0,0,0,.18)}'
-      + '.limited-banner-text .limited-countdown-eda.is-urgent{background:#C8102E;color:#fff}'
+      + '.limited-banner-text .limited-countdown-eda.is-urgent{background:#0F3D2E;color:#fff}'
       + '.limited-countdown-eda.is-urgent{animation:edaCdPulse 1s steps(2,start) infinite}'
       + '@keyframes edaCdPulse{50%{opacity:.5}}'
       + '.product-card-img .limited-countdown-eda{position:absolute;left:8px;bottom:8px;'
@@ -217,7 +217,11 @@
     if (!el) {
       el = document.createElement('span');
       el.className = 'limited-countdown-eda';
-      host.appendChild(el);
+      /* 「残り◯セット」がある帯では、その直後に置いて同じ行に並べる。
+         末尾(=「なくなり次第終了」の後ろ)だと折り返して別行に落ちるため。 */
+      var left = host.querySelector(':scope > .limited-left');
+      if (left && left.parentNode === host) left.insertAdjacentElement('afterend', el);
+      else host.appendChild(el);
     }
     el.setAttribute('data-eda-deadline', String(deadlineAt.getTime()));
   }
