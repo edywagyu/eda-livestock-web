@@ -76,7 +76,7 @@
       name: 'バラ焼肉', variant: '1袋 200g',
       price: 1900, weight: 200, stock: 11, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
-      description: 'バラ肉を焼肉用に。赤身と脂が交互に重なる、三枚肉の構造。塩で、タレで。',
+      description: 'トモバラを使用。焼肉用にカット。赤身と脂が交互に重なる、三枚肉の構造。塩で、タレで。',
       /* 2026-08-15 写真差し替え。yakiniku-brisket.jpg は厚切りの霜降りで
          バラ焼肉の実物と違うため、店頭カードが使っている -2026 に統一。 */
       images: ['public/images/products/drive/yakiniku-brisket-2026.jpg']
