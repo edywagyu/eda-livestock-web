@@ -77,7 +77,7 @@
       price: 1900, weight: 200, stock: 11, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
       description: 'バラ肉を焼肉用に。赤身と脂が交互に重なる、三枚肉の構造。塩で、タレで。',
-      images: ['public/images/products/drive/yakiniku-brisket.jpg']
+      images: ['public/images/products/drive/yakiniku-brisket-2026.jpg']
     },
     {
       productId: 'P007', variantId: 'OFFAL', sku: 'EDA-OFFAL-200',
