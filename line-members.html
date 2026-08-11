@@ -338,7 +338,9 @@ body{
 
   /* ---------- ライブ在庫・価格 ---------- */
   function syncCatalog() {
-    fetch(CATALOG_URL).then(function (r) { return r.json(); }).then(function (list) {
+    fetch(CATALOG_URL).then(function (r) { return r.json(); }).then(function (res) {
+      /* public_catalog は {ok:true, products:[...]} を返す。素の配列で来る場合にも備える。 */
+      var list = Array.isArray(res) ? res : (res && res.products);
       if (!Array.isArray(list)) return;
       var changed = false;
       ITEMS.forEach(function (it) {
