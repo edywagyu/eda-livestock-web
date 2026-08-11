@@ -165,8 +165,9 @@ body{
     <h2 class="section-title">会員限定</h2>
 
     <div class="deadline">
-      <strong>本日 23:59 まで</strong>
-      <span>お届けは 8月14日以降のご指定になります</span>
+      <strong>並ぶ品は、そのつど入れ替わります</strong>
+      <span>いまご覧いただけるものが、今回ご用意できた分です。<br>売り切れ次第、次の品と入れ替わります。</span>
+      <span id="shipNote"></span>
     </div>
 
     <div id="cards"></div>
@@ -351,6 +352,15 @@ body{
     }).catch(function () {});
   }
 
+  /* 最短お届け日は checkout.html と同じ「3日後から」。固定で書くと必ず古くなるので毎回計算する。 */
+  function paintShipNote() {
+    var el = document.getElementById('shipNote');
+    if (!el) return;
+    var d = new Date();
+    d.setDate(d.getDate() + 3);
+    el.textContent = 'お届けはご注文から中2日以降（最短 ' + (d.getMonth() + 1) + '月' + d.getDate() + '日）のご指定になります。';
+  }
+
   /* ---------- 起動 ---------- */
   function init() {
     var on = memberOn();
@@ -366,6 +376,7 @@ body{
       } catch (e) {}
     }
     paintCartBar();
+    paintShipNote();
     var rl = document.getElementById('reloadLink');
     if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); location.reload(); });
   }
