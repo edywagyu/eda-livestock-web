@@ -429,13 +429,14 @@ def main():
         {"text": "信頼をデータで証明する。", "font": FONT_JP, "size": 24, "color": GOLD, "bold": True},
     ])
     certs = [
-        ("☪", "HALAL", "マレーシア · インドネシア\nイスラム圏への輸出対応"),
         ("🇺🇸", "USDA ORGANIC", "アメリカ農務省\n有機認証（申請中）"),
         ("🇪🇺", "EU LEAF 同等性", "欧州連合オーガニック\n同等性承認済み"),
         ("🍀", "有機JAS", "世界初 オーガニック認証\n黒毛和牛（2026年1月取得）"),
     ]
+    # カード枚数に応じて横中央寄せ（HALAL 削除で 4→3 枚になったため）
+    cert_x0 = (13.333 - (len(certs) * 2.9 + (len(certs) - 1) * 0.2)) / 2
     for i, (icon, name, desc) in enumerate(certs):
-        x = Inches(0.6 + i * 3.1)
+        x = Inches(cert_x0 + i * 3.1)
         add_rect(s, x, Inches(1.9), Inches(2.9), Inches(1.7), WHITE, BONE, Pt(1))
         add_text(s, x, Inches(2.0), Inches(2.9), Inches(0.5), icon,
                  FONT_BODY, 24, FOREST, alignment=PP_ALIGN.CENTER)
@@ -450,7 +451,6 @@ def main():
         ("飼料", "循環型飼料", "有機認証飼料100%", "輸入配合飼料"),
         ("オーガニック認証", "—", "✓ 世界唯一", "—"),
         ("アニマルウェルフェア", "✓ 対応", "✓ 有機規格準拠", "基準なし"),
-        ("HALAL対応", "✓ 対応", "✓ 対応", "一部のみ"),
     ]
     col_widths = [Inches(3.0), Inches(3.0), Inches(3.0), Inches(3.0)]
     for row_i, row in enumerate(compare):
@@ -607,7 +607,7 @@ def main():
         ("2025", "YEAR 3 — ACCELERATION", [
             "輸出先 7→13カ国に拡大",
             "EU圏（独·芬·西·伊）本格展開",
-            "Malaysia · Indonesia HALAL対応",
+            "Malaysia · Indonesia 向け出荷",
             "Ritz-Carlton Hong Kong · New York 採用",
         ], False),
         ("2026", "NOW — WORLD'S FIRST", [

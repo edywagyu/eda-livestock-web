@@ -3599,10 +3599,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css">
-<link rel="stylesheet" href="public/css/jp-typography.css">
-<link rel="stylesheet" href="public/css/a11y.css">
-<link rel="stylesheet" href="public/css/mobile-modern.css">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
@@ -3635,22 +3635,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </button>
  <div class="lang-dropdown" hidden>
  <a href="#" data-lang="ja">日本語</a>
- <a href="#" data-lang="en">English</a>
- <a href="#" data-lang="de">Deutsch</a>
- <a href="#" data-lang="it">Italiano</a>
- <a href="#" data-lang="es">Español</a>
- <a href="#" data-lang="fr">Français</a>
- <a href="#" data-lang="yue">廣東話</a>
- <a href="#" data-lang="zh">中文（简体）</a>
- <a href="#" data-lang="th">ไทย</a>
- <a href="#" data-lang="ms">Bahasa Melayu</a>
- <a href="#" data-lang="vi">Tiếng Việt</a>
- <a href="#" data-lang="fil">Filipino</a>
- <a href="#" data-lang="ar">العربية</a>
+ <a href="buyer-deck.html" data-lang="en">English</a>
  </div>
  </div>
  <script>
- (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;e.preventDefault();d.hidden=true;if(a.dataset.lang==='ja')return;alert('「'+a.textContent.trim()+'」への翻訳は近日対応予定です。');});})();
+ (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;d.hidden=true;if(a.dataset.lang==='ja'){e.preventDefault();}});})();
  </script>
  <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

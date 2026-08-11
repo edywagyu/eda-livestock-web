@@ -222,6 +222,58 @@
     border-radius: 2px;
     margin: 12px auto 8px;
   }
+
+  /* ---- 「レジに進む」を常に画面内に (Tom 2026-08-11 実測修正) ----
+     修正前: 商品1点でも .cart-drawer-items が min-height:30vh(=243px) を確保し、
+     さらに .cart-drawer-foot(max-height:46vh) が内部スクロールするため、
+     CTA が画面下端より 75px 外に押し出されて「押せない」状態だった。
+     → リストは中身なりの高さにし、CTA は foot 内で sticky 固定する。 */
+  .cart-drawer-items { min-height: 0 !important; }
+  /* foot を抑えて商品行の可視領域を確保（62vh だと商品が見切れた） */
+  .cart-drawer-foot {
+    max-height: 44vh;
+    padding-bottom: 12px;
+  }
+  .cart-drawer-foot .btn-checkout {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    box-shadow: 0 6px 20px rgba(15,61,46,0.28);
+  }
+}
+
+/* ---------- タップ領域の底上げ (2026-08-11 実測: 幅26px/5pxで押しにくい) ----------
+   🔴 見た目は変えない。Tom 2026-06-20 の「ヘッダーアイコンの見た目は実寸26pxで
+   間隔を均等に」という決定を壊さないため、::after の透明な当たり判定だけ広げる。 */
+@media (max-width: 1024px) {
+  .site-header .nav-icon,
+  .site-header .lang-switch-btn,
+  .site-header .eda-mm-burger { position: relative; }
+  .site-header .nav-icon::after,
+  .site-header .lang-switch-btn::after,
+  .site-header .eda-mm-burger::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 44px; height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+@media (max-width: 720px) {
+  /* 世界地図のピンは 5x5px で指では押せない。
+     東南アジアのピンが密集しているので 26px までに留める（誤タップ防止）。 */
+  .map-pin::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 26px; height: 26px;
+    transform: translate(-50%, -50%);
+  }
+  /* 規約・プライバシー等の細いリンク（高さ13〜15px）をタップしやすく */
+  .checkout-agree a,
+  .footer-legal a,
+  .sub-legal a,
+  .legal-links a { display: inline-block; padding: 6px 2px; }
 }
 
 /* ---------- iOS Safe Area Support ---------- */

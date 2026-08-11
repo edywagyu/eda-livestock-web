@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
 <link rel="apple-touch-icon" href="public/images/favicon.svg">
-<meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ご注文確認｜江田畜産 オンラインショップ</title>
@@ -1218,12 +1217,18 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 960px) {
- .checkout-body { grid-template-columns: 1fr; gap: 16px; }
+ /* minmax(0,1fr)：1fr のままだと中身の min-content(361px) に負けて
+    画面幅を 6px 超え、モバイルで横スクロールしていた (2026-08-11) */
+ .checkout-body { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+ .checkout-main, .checkout-sidebar, .checkout-block { min-width: 0; }
  .checkout-sidebar { position: static; order: 2; }
  .checkout-main { order: 1; }
 }
 
 @media (max-width: 640px) {
+ /* .hide-sp はマークアップで使われていたのに定義が無く、スマホでも
+    ヘッダーの電話番号が出て「← 買い物に戻る」が2行に折り返していた (2026-08-11) */
+ .hide-sp { display: none !important; }
  .checkout-hero { padding: 20px 0 16px; }
  .checkout-hero h1 { font-size: 20px; }
  .checkout-stepper {
@@ -1243,7 +1248,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  .checkout-block-head { margin-bottom: 14px; padding-bottom: 12px; }
  .checkout-block-title { font-size: 14px; }
  .dest-form-row.cols2 { grid-template-columns: 1fr; }
- .order-item { grid-template-columns: 48px 1fr auto; gap: 10px; padding: 10px 0; }
+ /* minmax(0,…)：数量ボタン群が 1fr を押し広げて価格がカード右端で
+    切れていた（2026-08-11）。情報列を縮ませ、価格は折らずに右寄せ。 */
+ .order-item { grid-template-columns: 48px minmax(0, 1fr) auto; gap: 10px; padding: 10px 0; }
+ .order-item-price { white-space: nowrap; }
  .order-item-img { width: 48px; height: 48px; }
  .order-item-info strong { font-size: 12.5px; }
  .order-item-info span { font-size: 12px; }
@@ -1280,9 +1288,9 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css">
-<link rel="stylesheet" href="public/css/jp-typography.css">
-<link rel="stylesheet" href="public/css/a11y.css">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
@@ -1299,7 +1307,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <span class="checkout-brand-name">CHECKOUT</span>
  </a>
  <div style="display:flex;align-items:center;gap:16px;">
- <a href="shop.html" onclick="return confirmLeaveCheckout();" style="display:inline-flex;align-items:center;gap:4px;color:var(--color-forest);font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;">
+ <a href="shop.html" onclick="return confirmLeaveCheckout();" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;color:var(--color-forest);font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;">
  ← 買い物に戻る
  </a>
  <a href="tel:09047241063" style="display:inline-flex;align-items:center;gap:4px;color:var(--color-forest);font-size:13px;text-decoration:none;opacity:0.85;font-family:var(--font-display);letter-spacing:0.06em;" class="hide-sp">
@@ -1793,7 +1801,7 @@ function renderOrderList() {
  html += `
  <div class="order-card ${isGift ? 'order-card--gift' : ''}">
   <div class="order-item" data-id="${i}">
-  <div class="order-item-img" style="background-image:url('public/images/products/drive/premium-slice.jpg')"></div>
+  <div class="order-item-img" style="background-image:url('${String(item.img || 'public/images/products/drive/premium-slice.jpg').replace(/'/g, '%27')}')"></div>
   <div class="order-item-info">
   <strong>${item.title}</strong>
   <span>${item.variant}</span>

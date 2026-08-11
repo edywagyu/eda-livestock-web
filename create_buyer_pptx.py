@@ -380,7 +380,6 @@ def main():
         ("Fattening Period", "28+ months", "31+ months", "24–26 months"),
         ("Regions", "Miyazaki · Kagoshima · Tohoku", "Miyazaki only (Eda Farm)", "Single prefecture"),
         ("Organic Certification", "—", "✓ JAS + EU Leaf + USDA", "—"),
-        ("HALAL", "✓ Available", "Not available", "Limited"),
         ("Animal Welfare", "✓ Compliant", "✓ Organic standard", "No standard"),
         ("Traceability", "✓ Full (birth–table)", "✓ Full (birth–table)", "Partial"),
     ]
@@ -429,7 +428,7 @@ def main():
         ("PHASE 1 — ORDER", "Order Confirmation",
          ["Purchase order confirmed", "Invoice issued (JPY)", "30% deposit received", "Slaughter scheduled"]),
         ("PHASE 2 — PREPARATION", "Documents & Shipping",
-         ["Health Certificate issued", "Packing List prepared", "Commercial Invoice finalized", "HALAL cert (if applicable)", "70% balance payment received"]),
+         ["Health Certificate issued", "Packing List prepared", "Commercial Invoice finalized", "70% balance payment received"]),
         ("PHASE 3 — DELIVERY", "Shipment & Arrival",
          ["AWB (Air Waybill) issued", "EQC (Export Quarantine Cert)", "Certificate of Origin", "Freight to designated port", "Arrival confirmation"]),
     ]
@@ -542,15 +541,16 @@ def main():
 
     certs = [
         ("Eda Wagyu", "BOTH BRANDS", "Proprietary brand cert.\nAntibiotic-free, hormone-free.", True, "goods/logo-sticker-transparent.png"),
-        ("HALAL", "EDA WAGYU ONLY", "Certified for Malaysia, Indonesia,\nand Islamic markets.", False, None),
         ("USDA Organic", "PREMIUM ONLY", "Application in progress.\nTargeting US organic market.", False, None),
         ("EU Leaf", "PREMIUM ONLY", "Approved. Organic-labeled\nexport to all EU states.", False, None),
         ("JAS Organic", "PREMIUM ONLY", "World's first organic-certified\nKuroge Wagyu. Jan 2026.", True, None),
     ]
 
     card_w = Inches(2.2)
+    # カード枚数に応じて横中央寄せ（HALAL 削除で 5→4 枚になったため）
+    cert_x0 = Inches((13.333 - (len(certs) * 2.2 + (len(certs) - 1) * 0.2)) / 2)
     for i, (name, tag, desc, gold_bdr, img) in enumerate(certs):
-        x = Inches(0.7) + i * (card_w + Inches(0.2))
+        x = cert_x0 + i * (card_w + Inches(0.2))
         border_c = GOLD if gold_bdr else RGBColor(0x1A, 0x55, 0x40)
         bg_c = RGBColor(0x14, 0x3A, 0x2A) if gold_bdr else RGBColor(0x0D, 0x30, 0x22)
         add_rect(s, x, Inches(1.8), card_w, Inches(2.2), fill_color=bg_c, border_color=border_c, border_width=Pt(1))
@@ -577,7 +577,7 @@ def main():
     callouts = [
         ("For Your Menu", "\"Antibiotic-free,\" \"Hormone-free,\" \"Organic-certified\" — menu claims your guests actively seek."),
         ("For Your Brand", "Sustainability, traceability, and animal welfare are expected by luxury consumers."),
-        ("For Your Compliance", "EU import regulations, HALAL requirements, organic labeling — we handle the paperwork."),
+        ("For Your Compliance", "EU import regulations, organic labeling, export documentation — we handle the paperwork."),
     ]
     for i, (title, desc) in enumerate(callouts):
         x = Inches(0.9) + i * Inches(3.9)

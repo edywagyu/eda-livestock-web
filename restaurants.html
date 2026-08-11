@@ -1685,9 +1685,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-forest);
 }
 .restaurant-loc { font-size: 13px; color: var(--color-ink-muted); margin: 0 0 20px; }
-.restaurant-actions { display: flex; gap: 12px; border-top: 1px solid var(--color-bone); padding-top: 20px; }
+.restaurant-note { font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 12px 0 0; }
+.restaurant-actions { display: flex; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--color-bone); padding-top: 20px; }
 .restaurant-action {
- flex: 1;
+ flex: 1 1 110px;
  padding: 12px 0;
  font-family: var(--font-display);
  font-size: 11px;
@@ -3722,10 +3723,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css">
-<link rel="stylesheet" href="public/css/jp-typography.css">
-<link rel="stylesheet" href="public/css/a11y.css">
-<link rel="stylesheet" href="public/css/mobile-modern.css">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
@@ -3758,22 +3759,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </button>
  <div class="lang-dropdown" hidden>
  <a href="#" data-lang="ja">日本語</a>
- <a href="#" data-lang="en">English</a>
- <a href="#" data-lang="de">Deutsch</a>
- <a href="#" data-lang="it">Italiano</a>
- <a href="#" data-lang="es">Español</a>
- <a href="#" data-lang="fr">Français</a>
- <a href="#" data-lang="yue">廣東話</a>
- <a href="#" data-lang="zh">中文（简体）</a>
- <a href="#" data-lang="th">ไทย</a>
- <a href="#" data-lang="ms">Bahasa Melayu</a>
- <a href="#" data-lang="vi">Tiếng Việt</a>
- <a href="#" data-lang="fil">Filipino</a>
- <a href="#" data-lang="ar">العربية</a>
+ <a href="buyer-deck.html" data-lang="en">English</a>
  </div>
  </div>
  <script>
- (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;e.preventDefault();d.hidden=true;if(a.dataset.lang==='ja')return;alert('「'+a.textContent.trim()+'」への翻訳は近日対応予定です。');});})();
+ (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;d.hidden=true;if(a.dataset.lang==='ja'){e.preventDefault();}});})();
  </script>
  <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -3869,7 +3859,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p class="restaurant-loc">鉄板焼 ひのきざか / タワーズ · 六本木 · 港区</p>
  <div class="restaurant-actions">
   <a href="https://www.ritzcarlton.com/en/hotels/tyorz-the-ritz-carlton-tokyo/dining/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://hinokizaka.ritzcarltontokyo.com/en/" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
+  <a href="https://www.tablecheck.com/ja/shops/ritzcarlton-tokyo-hinokizaka/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
@@ -3892,7 +3882,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p class="restaurant-loc">鉄板焼 幻珠 · 福岡市中央区</p>
  <div class="restaurant-actions">
   <a href="https://www.ritzcarlton.com/en/hotels/fukrz-the-ritz-carlton-fukuoka/dining/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://www.tablecheck.com/en/genjyu-ritzcarltonfukuoka" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
+  <a href="https://www.tablecheck.com/en/genjyu-ritzcarltonfukuoka/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
  </div>
  </div>
  </article>
@@ -3959,7 +3949,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p class="restaurant-loc">オチェーアノ Oceano · 浦安市 · 千葉県</p>
  <div class="restaurant-actions">
   <a href="https://www.tokyodisneyresort.jp/hotel/dhm/restaurant/oceano.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://reserve.tokyodisneyresort.jp/" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
+  <a href="https://www.tokyodisneyresort.jp/hotel/dhm/restaurant/reservation_menu.html" target="_blank" rel="noopener" class="restaurant-action primary">予約案内</a>
  </div>
  </div>
  </article>
@@ -3978,7 +3968,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   <span class="restaurant-tag">Department Store · Pop-up（月1週間）</span>
  </div>
  <h3 class="restaurant-name">Mitsukoshi Ginza</h3>
- <p class="restaurant-desc">銀座三越にて、月に約1週間の食品催事（ポップアップ）で江田和牛の各部位を限定販売。次回は2026年7月1日〜7日「江田和牛フェア」を開催。ご贈答にも。</p>
+ <p class="restaurant-desc">銀座三越にて、月に約1週間の食品催事（ポップアップ）で江田和牛の各部位を限定販売。開催日程は催事カレンダーをご確認ください。ご贈答にも。</p>
  <p class="restaurant-loc">本館 食品催事 · 銀座 · 中央区</p>
  <div class="restaurant-actions">
   <a href="https://www.mistore.jp/store/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
@@ -4005,8 +3995,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p class="restaurant-desc">皇居を望む大手町39階。フレンチ「est」、イタリアン「PIGNETO」にて江田和牛をご提供。</p>
  <p class="restaurant-loc">est / PIGNETO · 大手町 · 千代田区</p>
  <div class="restaurant-actions">
-  <a href="https://www.fourseasons.com/otemachi/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
+  <a href="https://www.fourseasons.com/otemachi/dining/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://www.tablecheck.com/en/shops/four-seasons-hotel-tokyo-otemachi-est/reserve" target="_blank" rel="noopener" class="restaurant-action primary">est を予約</a>
+  <a href="https://www.tablecheck.com/en/shops/four-seasons-hotel-tokyo-otemachi-pigneto/reserve" target="_blank" rel="noopener" class="restaurant-action primary">PIGNETO を予約</a>
  </div>
  </div>
  </article>
@@ -4028,7 +4019,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p class="restaurant-loc">西麻布4丁目 NTビル1-2F · 広尾駅徒歩7分</p>
  <div class="restaurant-actions">
   <a href="https://www.la-terre-tokyo.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://www.la-terre-tokyo.jp/" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
+  <a href="https://www.la-terre-tokyo.jp/contact?hsLang=ja" target="_blank" rel="noopener" class="restaurant-action primary">予約フォーム</a>
  </div>
  </div>
  </article>
@@ -4051,6 +4042,51 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-actions">
   <a href="https://www.withthestyle.com/restaurant/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/en/shops/withthestyle-mediumrare/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
+ </div>
+ </div>
+ </article>
+
+ <!-- サロン覺 salon KAKU（表参道・完全紹介制） -->
+ <article class="restaurant-card">
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 45%, #2e2418 100%);">
+ <span class="restaurant-city-badge">TOKYO</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-main" style="font-size: clamp(18px, 2vw, 26px);">サロン覺</span>
+  <span class="brand-sub">salon KAKU · Omotesando</span>
+ </div>
+ </div>
+ <div class="restaurant-card-body">
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Italian · 完全紹介制</span> </div>
+ <h3 class="restaurant-name">サロン覺 salon KAKU</h3>
+ <p class="restaurant-desc">ザ・ギャラリー表参道の1階、アートと食を融合させた完全紹介制のサロン。ソムリエでもあるシェフによる新解釈のイタリアンで、江田和牛をご提供。カウンター8席・個室6席。</p>
+ <p class="restaurant-loc">SIX原宿テラス S棟 1F · 神宮前 · 渋谷区</p>
+ <div class="restaurant-actions">
+  <a href="https://www.salon-kaku.jp/" target="_blank" rel="noopener" class="restaurant-action primary">Website</a>
+ </div>
+ <p class="restaurant-note">※ 完全紹介制です。ご予約はご紹介者さまへお伝えください。</p>
+ </div>
+ </article>
+
+ <!-- HINATA 大島（宮崎・日南／レジャークリエイトHD＝わらしべグループ） -->
+ <article class="restaurant-card">
+ <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #041c1a 0%, #0f3d2e 50%, #1b4d5a 100%);">
+ <span class="restaurant-city-badge">MIYAZAKI</span>
+ <div class="restaurant-brand-logo">
+  <span class="brand-icon">&#10022;</span>
+  <span class="brand-main">HINATA 大島</span>
+  <span class="brand-sub">Nichinan · Private Island</span>
+ </div>
+ </div>
+ <div class="restaurant-card-body">
+ <div class="restaurant-meta">
+  <span class="restaurant-tag">Resort · Private Island</span> </div>
+ <h3 class="restaurant-name">HINATA 大島</h3>
+ <p class="restaurant-desc">宮崎県日南市の沖合に浮かぶ無人島の高級プライベートリゾート（全7棟）。島のダイニングにて江田和牛をご提供します。2026年10月1日グランドオープン。</p>
+ <p class="restaurant-loc">日南市南郷町 · 指定港より船で約10分</p>
+ <div class="restaurant-actions">
+  <a href="https://lchd-hinataohshima.com/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
+  <a href="https://reserve.489ban.net/client/hinataohshima/0/plan" target="_blank" rel="noopener" class="restaurant-action primary">宿泊予約</a>
  </div>
  </div>
  </article>

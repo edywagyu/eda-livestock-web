@@ -3621,22 +3621,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </button>
  <div class="lang-dropdown" hidden>
  <a href="#" data-lang="ja">日本語</a>
- <a href="#" data-lang="en">English</a>
- <a href="#" data-lang="de">Deutsch</a>
- <a href="#" data-lang="it">Italiano</a>
- <a href="#" data-lang="es">Español</a>
- <a href="#" data-lang="fr">Français</a>
- <a href="#" data-lang="yue">廣東話</a>
- <a href="#" data-lang="zh">中文（简体）</a>
- <a href="#" data-lang="th">ไทย</a>
- <a href="#" data-lang="ms">Bahasa Melayu</a>
- <a href="#" data-lang="vi">Tiếng Việt</a>
- <a href="#" data-lang="fil">Filipino</a>
- <a href="#" data-lang="ar">العربية</a>
+ <a href="buyer-deck.html" data-lang="en">English</a>
  </div>
  </div>
  <script>
- (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;e.preventDefault();d.hidden=true;if(a.dataset.lang==='ja')return;alert('「'+a.textContent.trim()+'」への翻訳は近日対応予定です。');});})();
+ (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;d.hidden=true;if(a.dataset.lang==='ja'){e.preventDefault();}});})();
  </script>
       <div class="lang-toggle">
         <span class="active">JA</span> / <span>EN</span>
@@ -3761,7 +3750,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
           <li><a href="organic.html">3 Brands</a></li>
           <li><a href="global.html">Global Export</a></li>
           <li><a href="journey.html">Our Journey</a></li>
-          <li><a href="index.html#members">Members</a></li>
         </ul>
       </div>
       <div class="footer-col">

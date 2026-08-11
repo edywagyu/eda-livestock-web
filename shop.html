@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
 <link rel="apple-touch-icon" href="public/images/favicon.svg">
-<meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>オンラインショップ｜江田畜産 — 無投薬 和牛・平飼い鶏</title>
@@ -9551,15 +9550,46 @@ body.is-member .product-card--organic .org-chk-lock {
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css">
-<link rel="stylesheet" href="public/css/jp-typography.css">
-<link rel="stylesheet" href="public/css/a11y.css">
-<link rel="stylesheet" href="public/css/mobile-modern.css">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<script>
+/* 商品カード画像の遅延読み込み (2026-08-11)
+   背景は CSS の .product-card-img[data-label] で指定されているため、
+   放置すると画面外の商品も含めて全枚数を初回に取得していた（shop で画像だけ5.4MB）。
+   JS が動く時だけ「まだ見えていないカードの背景」を止め、近づいたら出す。
+   → JS 無効・IntersectionObserver 非対応の環境では何もしない＝従来どおり全部表示。 */
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  var st = document.createElement('style');
+  st.textContent = '.product-card-img:not(.lazy-in){background-image:none!important}';
+  document.head.appendChild(st);
+  function boot() {
+    var els = document.querySelectorAll('.product-card-img');
+    if (!els.length) return;
+    var fired = false;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { fired = true; en.target.classList.add('lazy-in'); io.unobserve(en.target); }
+      });
+    }, { rootMargin: '600px 0px' });
+    els.forEach(function (el) { io.observe(el); });
+    /* 保険：監視が一度も発火しなかった時だけ全部出す（画像が消えたままにしない） */
+    setTimeout(function () {
+      if (fired) return;
+      els.forEach(function (el) { el.classList.add('lazy-in'); });
+    }, 3000);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
 </head>
 <body>
 <a href="#main" class="skip-link">本文へスキップ</a>
@@ -9588,22 +9618,11 @@ body.is-member .product-card--organic .org-chk-lock {
  </button>
  <div class="lang-dropdown" hidden>
  <a href="#" data-lang="ja">日本語</a>
- <a href="#" data-lang="en">English</a>
- <a href="#" data-lang="de">Deutsch</a>
- <a href="#" data-lang="it">Italiano</a>
- <a href="#" data-lang="es">Español</a>
- <a href="#" data-lang="fr">Français</a>
- <a href="#" data-lang="yue">廣東話</a>
- <a href="#" data-lang="zh">中文（简体）</a>
- <a href="#" data-lang="th">ไทย</a>
- <a href="#" data-lang="ms">Bahasa Melayu</a>
- <a href="#" data-lang="vi">Tiếng Việt</a>
- <a href="#" data-lang="fil">Filipino</a>
- <a href="#" data-lang="ar">العربية</a>
+ <a href="buyer-deck.html" data-lang="en">English</a>
  </div>
  </div>
  <script>
- (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;e.preventDefault();d.hidden=true;if(a.dataset.lang==='ja')return;alert('「'+a.textContent.trim()+'」への翻訳は近日対応予定です。');});})();
+ (function(){var sw=document.querySelector('.lang-switch');if(!sw)return;var b=sw.querySelector('.lang-switch-btn'),d=sw.querySelector('.lang-dropdown');b.addEventListener('click',function(e){e.stopPropagation();d.hidden=!d.hidden;});document.addEventListener('click',function(){d.hidden=true;});d.addEventListener('click',function(e){var a=e.target.closest('a[data-lang]');if(!a)return;d.hidden=true;if(a.dataset.lang==='ja'){e.preventDefault();}});})();
  </script>
  <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
