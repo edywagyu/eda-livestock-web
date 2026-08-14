@@ -1158,7 +1158,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260812k">
 </head>
 <body>
 
@@ -3017,7 +3017,7 @@ function renderShipDetail() {
         <div style="margin-top:14px;padding:10px;background:#E8FAF0;border-radius:8px;font-size:12px;color:#065F46;line-height:1.6">
           <div style="font-weight:700;margin-bottom:4px">📦 「発送完了として記録」すると</div>
           <div>・伝票番号と「発送済」がシステムに保存されます</div>
-          <div>・お客様の<strong>マイページ</strong>に「発送済」と追跡番号が表示されます</div>
+          <div>・お客様の<strong data-en="My Page">マイページ</strong>に「発送済」と追跡番号が表示されます</div>
           <div>・お客様へ<strong>${o.lineUid ? 'LINE' : 'メール'}で発送通知</strong>（配送番号・お届け予定）が<strong>自動送信</strong>されます</div>
           <div style="margin-top:4px;color:#065F46">※ ${o.lineUid ? 'このお客様はLINE連携済 → LINEで自動通知。' : 'このお客様はLINE未連携 → メールで自動通知。'}</div>
         </div>
@@ -4798,5 +4798,6 @@ function enterDemoQuick() {
 })();
 </script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 </body>
 </html>

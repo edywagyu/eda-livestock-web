@@ -9603,10 +9603,10 @@ body.is-member .product-card--organic .org-chk-lock {
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
-<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
-<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
-<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260812k">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260812k">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -9645,7 +9645,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </script>
 </head>
 <body data-popular-sort="on">
-<a href="#main" class="skip-link">本文へスキップ</a>
+<a href="#main" class="skip-link" data-en="Skip to main content">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
  <div class="container nav">
  <a href="index.html" class="brand-mark">
@@ -9653,25 +9653,25 @@ body.is-member .product-card--organic .org-chk-lock {
  </a>
  <nav class="primary-nav">
   <ul class="nav-list">
-    <li><a href="shop.html">ショップ</a></li>
-    <li><a href="organic.html">オーガニック</a></li>
-    <li><a href="about.html">会社案内</a></li>
-    <li><a href="global.html">海外展開</a></li>
-    <li><a href="restaurants.html">お取扱店</a></li>
-    <li><a href="journal.html">記事</a></li>
-    <li><a href="contact.html">お問い合わせ</a></li>
-    <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
+    <li><a href="shop.html" data-en="Shop">ショップ</a></li>
+    <li><a href="organic.html" data-en="Organic">オーガニック</a></li>
+    <li><a href="about.html" data-en="About">会社案内</a></li>
+    <li><a href="global.html" data-en="Global">海外展開</a></li>
+    <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a href="journal.html" data-en="Journal">記事</a></li>
+    <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
+    <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
   </nav>
  <div class="nav-utils">
-  <a href="subscription.html" class="nav-subscribe-cta">定期便</a>
+  <a href="subscription.html" class="nav-subscribe-cta" data-en="Subscription">定期便</a>
  <div class="lang-switch">
  <button class="lang-switch-btn" aria-label="言語 / Language" aria-haspopup="true">
  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 3.6 5.8 3.6 9s-1 6.3-3.6 9c-2.6-2.7-3.6-5.8-3.6-9s1-6.3 3.6-9z"/></svg>
  </button>
  <div class="lang-dropdown" hidden>
- <a href="#" data-lang="ja">日本語</a>
- <a href="buyer-deck.html" data-lang="en">English</a>
+ <a href="?lang=ja" data-lang="ja">日本語</a>
+ <a href="?lang=en" data-lang="en">English</a>
  </div>
  </div>
  <script>
@@ -9849,7 +9849,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- ===== 牛肉（ステーキ・スライス・加工品すべて統合） ===== -->
  <div class="shop-cat-head reveal" data-cat="beef">
  <h2 class="shop-cat-title">牛肉 <span>/ Wagyu Beef</span></h2>
- <p class="shop-cat-desc">すべて<strong>抗生物質・ホルモン剤 不使用</strong>、<strong>長期肥育で育てた</strong>江田和牛。ステーキ・スライス・ひき肉・加工品まで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
+ <p class="shop-cat-desc">すべて<strong data-en="No antibiotics or hormones">抗生物質・ホルモン剤 不使用</strong>、<strong>長期肥育で育てた</strong>江田和牛。ステーキ・スライス・ひき肉・加工品まで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
  </div>
 
  <!-- 牛肉 サブタブ（部位・調理スタイル別） -->
@@ -9859,7 +9859,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
  <button class="sub-tab" data-sub="yakiniku">焼肉</button>
  <button class="sub-tab" data-sub="processed">加工品</button>
- <button class="sub-tab sub-tab--organic" data-sub="organic">オーガニック</button>
+ <button class="sub-tab sub-tab--organic" data-sub="organic" data-en="Organic">オーガニック</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
@@ -9899,7 +9899,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card" data-sub="steak" data-variants='[{"id":50830136082730,"t":"1つ","p":3400},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6460},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9180}]'>
  <div class="product-card-img" data-label="SIRLOIN"></div>
  <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,400〜</span></div>
- <p class="product-name">サーロインステーキ</p>
+ <p class="product-name" data-en="Sirloin steak">サーロインステーキ</p>
  <p class="product-desc">背中のロース芯の最上部。きめ細かなサシが赤身と脂のバランスを生む部位。焼くだけで完結。家庭の食卓に、家庭用の主役ステーキ。</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,700</strong></div>
@@ -9912,7 +9912,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card" data-sub="steak" data-variants='[{"id":50830190379306,"t":"1つ","p":3400},{"id":50830190412074,"t":"2つセット【5%オフ】","p":6460},{"id":50830190444842,"t":"3つセット【10%オフ】","p":9180}]'>
  <div class="product-card-img" data-label="RED MEAT"></div>
  <div class="product-tag-row"><span class="product-tag">Steak · Red Meat</span><span class="product-price">¥3,400〜</span></div>
- <p class="product-name">赤身ステーキ</p>
+ <p class="product-name" data-en="Lean steak">赤身ステーキ</p>
  <p class="product-desc">モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、<strong>鉄分・たんぱく質</strong>がしっかり摂れる。お子さま、健康志向、筋トレ層に。</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,700</strong></div>
@@ -10072,7 +10072,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card" data-sub="processed" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191460650,"t":"2つセット【5%オフ】","p":1444},{"id":50830191493418,"t":"3つセット【10%オフ】","p":2052}]'>
  <div class="product-card-img" data-label="HAMBURG"></div>
  <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760〜</span></div>
- <p class="product-name">ハンバーグ</p>
+ <p class="product-name" data-en="Hamburg steak">ハンバーグ</p>
  <p class="product-desc">和牛100%のシンプル配合。冷蔵庫で数時間解凍してから、フライパンで両面を焼くだけ。平日の夕食に。</p>
  <div class="product-stats">
  <div class="product-stat-item">100g換算 <strong>¥585</strong></div>
@@ -10166,7 +10166,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-tab-row reveal" data-parent-cat="chicken">
  <button class="sub-tab active" data-sub="all">すべて</button>
  <button class="sub-tab" data-sub="standard">平飼い（標準）</button>
- <button class="sub-tab sub-tab--organic" data-sub="organic">オーガニック</button>
+ <button class="sub-tab sub-tab--organic" data-sub="organic" data-en="Organic">オーガニック</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
@@ -10265,17 +10265,17 @@ body.is-member .product-card--organic .org-chk-lock {
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/></picture>
  <span>
  <span class="footer-brand">EDA-LIVESTOCK</span>
- <span class="footer-brand-jp">江田畜産株式会社</span>
+ <span class="footer-brand-jp" data-en="Eda Livestock Co., Ltd.">江田畜産株式会社</span>
  </span>
  </a>
  <p class="footer-tagline">
- <strong>100年続く畜産を、創造する。</strong><br/>
+ <strong data-en="Building a livestock business made to last a century.">100年続く畜産を、創造する。</strong><br/>
  Sustainable Japanese Wagyu —<br/>
  Livestock for the Next Century.
  </p>
  <div class="footer-meta">
- <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
- <p>事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
+ <p data-en="Eda Livestock Co., Ltd.">江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
+ <p data-en="Business: Kuroge Wagyu breeding, fattening, retail, export and smart livestock">事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
  <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
  </div>
  </div>
@@ -10283,28 +10283,28 @@ body.is-member .product-card--organic .org-chk-lock {
  <h4>Shop</h4>
  <ul>
  <li><a href="shop.html">Online Shop</a></li>
- <li><a href="subscription.html">月の定期便</a></li>
- <li><a href="restaurants.html">お取扱店（一部）</a></li>
+ <li><a href="subscription.html" data-en="Monthly subscription">月の定期便</a></li>
+ <li><a href="restaurants.html" data-en="Selected stockists">お取扱店（一部）</a></li>
  </ul>
  </div>
  <div class="footer-col">
  <h4>Company</h4>
  <ul>
- <li><a href="about.html">江田畜産について</a></li>
- <li><a href="contact.html">お問い合わせ</a></li>
+ <li><a href="about.html" data-en="About Eda Livestock">江田畜産について</a></li>
+ <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
  </ul>
  </div>
  <div class="footer-col">
  <h4>Legal</h4>
  <ul>
- <li><a href="terms.html">利用規約</a></li>
- <li><a href="privacy.html">プライバシーポリシー</a></li>
- <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
+ <li><a href="terms.html" data-en="Terms of Service">利用規約</a></li>
+ <li><a href="privacy.html" data-en="Privacy Policy">プライバシーポリシー</a></li>
+ <li><a href="tokushoho.html" data-en="Legal notice (Specified Commercial Transactions Act)">特定商取引法に基づく表記</a></li>
  </ul>
  </div>
  </div>
  <div class="footer-bottom">
- <span>© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
+ <span data-en="© 2026 EDA-LIVESTOCK CO., LTD.">© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
  </div>
  </div>
 </footer>
@@ -10328,7 +10328,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
  </div>
  <div class="cart-shipping-note">
- ¥11,000以上で<strong>送料無料</strong>。冷凍便でお届け。
+ ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
  </div>
  <div class="cart-delivery-note" id="cartDelivery"></div>
 
@@ -10336,16 +10336,16 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="delivery-picker">
  <div class="delivery-picker-head">
  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
- <span>お届け日時を指定（任意）</span>
+ <span data-en="Delivery date and time (optional)">お届け日時を指定（任意）</span>
  </div>
  <div class="delivery-picker-row">
- <label>お届け日</label>
+ <label data-en="Delivery date">お届け日</label>
  <select id="deliveryDate" onchange="updateDeliveryNote()">
  <option value="">指定なし（最短）</option>
  </select>
  </div>
  <div class="delivery-picker-row">
- <label>時間帯</label>
+ <label data-en="Time slot">時間帯</label>
  <select id="deliveryTime">
  <option value="">指定なし</option>
  <option value="0812">午前中（〜12:00）</option>
@@ -10355,11 +10355,11 @@ body.is-member .product-card--organic .org-chk-lock {
  <option value="1921">19:00 - 21:00</option>
  </select>
  </div>
- <p class="delivery-picker-note" id="deliveryPickerNote">指定なしの場合、最短日でお届けします</p>
+ <p class="delivery-picker-note" id="deliveryPickerNote" data-en="If you have no preference, we ship on the earliest date.">指定なしの場合、最短日でお届けします</p>
  </div>
 
- <button class="btn-checkout" id="cartCheckout">レジに進む — Checkout</button>
- <button class="cart-continue" id="cartContinue">買い物を続ける</button>
+ <button class="btn-checkout" id="cartCheckout" data-en="Proceed to checkout">レジに進む — Checkout</button>
+ <button class="cart-continue" id="cartContinue" data-en="Continue shopping">買い物を続ける</button>
  </div>
 </aside>
 
@@ -10573,7 +10573,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  <span class="sticky-cart-total" id="stickyCartTotal">¥0</span>
  <span id="stickyShipNote" style="font-size:10px;color:#fff;opacity:0.85;display:block;margin-top:2px;"></span>
  </div>
- <button class="sticky-cart-btn" id="stickyCartBtn">カートを見る</button>
+ <button class="sticky-cart-btn" id="stickyCartBtn" data-en="View cart">カートを見る</button>
 </div>
 
 <script>
@@ -10885,7 +10885,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  if (remaining > 0) {
  noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料`;
  } else {
- noteEl.innerHTML = '<strong>送料無料</strong>でお届けします！';
+ noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！';
  }
  }
 
@@ -11150,7 +11150,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
    + '</div>'
    + '<span class="qty-disc"></span>'
    + '</div>'
-   + '<button class="btn-add-cart" type="button">カートに追加</button>';
+   + '<button class="btn-add-cart" type="button" data-en="Add to cart">カートに追加</button>';
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
  const QMAX = 10;
@@ -11367,7 +11367,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  : '<div class="dyn-card-desc"></div>')
  + '<div class="dyn-card-foot">'
  + '<span class="dyn-card-price">¥' + Number(p.price || 0).toLocaleString() + '</span>'
- + '<button class="dyn-card-add" onclick="window.__dynAdd(' + i + ', this)">カートに追加</button>'
+ + '<button class="dyn-card-add" onclick="window.__dynAdd(' + i + ', this)" data-en="Add to cart">カートに追加</button>'
  + '</div>'
  + '</div>'
  + '</div>';
@@ -11439,7 +11439,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
         + '      <span class="gift-product-vol">' + servings + '</span>'
         + '      <span class="gift-product-price">¥' + price.toLocaleString() + '<small>送料込み・税込</small></span>'
         + '    </div>'
-        + '    <button onclick="orderGift(\'' + escAttr(giftId) + '\', ' + price + ', \'' + escAttr(onclickArg) + '\')" class="gift-product-cta">贈答用に注文する →</button>'
+        + '    <button onclick="orderGift(\'' + escAttr(giftId) + '\', ' + price + ', \'' + escAttr(onclickArg) + '\')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>'
         + '  </div>'
         + '</div>';
     }).join('');
@@ -13143,6 +13143,7 @@ function copyPopCoupon() {
 <script src="public/js/limited-stock.js?v=010" defer></script>
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <!-- 売れ行き順（popular.json のランクを配る。並べ替え本体は上の sortProductCards） -->
 <script src="public/js/popular.js?v=3" defer></script>
 <script src="public/js/member-gate.js" defer></script>

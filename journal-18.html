@@ -3604,13 +3604,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <nav class="primary-nav">
   <ul class="nav-list">
     <li><a href="shop.html">ショップ</a></li>
-    <li><a href="organic.html">オーガニック</a></li>
-    <li><a href="about.html">会社案内</a></li>
-    <li><a href="global.html">海外展開</a></li>
-    <li><a href="restaurants.html">お取扱店</a></li>
-    <li><a class="current" href="journal.html">記事</a></li>
-    <li><a href="contact.html">お問い合わせ</a></li>
-    <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
+    <li><a href="organic.html" data-en="Organic">オーガニック</a></li>
+    <li><a href="about.html" data-en="About">会社案内</a></li>
+    <li><a href="global.html" data-en="Global">海外展開</a></li>
+    <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a class="current" href="journal.html" data-en="Journal">記事</a></li>
+    <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
+    <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
   </nav>
     <div class="nav-utils">
@@ -3620,8 +3620,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 3.6 5.8 3.6 9s-1 6.3-3.6 9c-2.6-2.7-3.6-5.8-3.6-9s1-6.3 3.6-9z"/></svg>
  </button>
  <div class="lang-dropdown" hidden>
- <a href="#" data-lang="ja">日本語</a>
- <a href="buyer-deck.html" data-lang="en">English</a>
+ <a href="?lang=ja" data-lang="ja">日本語</a>
+ <a href="?lang=en" data-lang="en">English</a>
  </div>
  </div>
  <script>
@@ -4241,7 +4241,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         });
         html += '</select>';
       }
-      html += '<button class="btn-add-cart">カートに追加</button>';
+      html += '<button class="btn-add-cart" data-en="Add to cart">カートに追加</button>';
       buyEl.innerHTML = html;
 
       const addBtn = buyEl.querySelector('.btn-add-cart');

@@ -307,6 +307,55 @@
   }
   .site-header .nav-utils .lang-switch { min-width: 0 !important; }
 }
+
+/* ---------- 改行の乱れ対策（2026-08-12 Tom指摘「改行エラーが目立つ」）----------
+   実測（iPhone 375px・トップページ）:
+   ・最終行に1文字だけ落ちる「泣き別れ」が12箇所
+   ・原因の代表が .philosophy-grid で、2カラム=幅140px・文字11px＝1行12文字しか入らず
+     60文字の説明が5行になり最後に1文字余っていた
+   text-wrap は非対応ブラウザでは無視されるだけなので安全に入れられる。 */
+@media (max-width: 720px) {
+  p, li, dd, figcaption, small,
+  .pillar-text, .product-desc-mini, .restaurant-loc, .restaurant-desc,
+  .timeline-items, .year-summary, .cert-card p {
+    text-wrap: pretty;          /* 最終行が1文字だけ残るのを避ける */
+    /* 日本語は text-wrap:pretty だけでは足りない（英単語向けの機能のため）。
+       文節単位で折り返す auto-phrase を併用する。
+       実測: トップの本文40件で泣き別れ 9件 → 2件。
+       未対応ブラウザは無視するだけなので副作用なし。 */
+    word-break: auto-phrase;
+  }
+  h1, h2, h3, h4, h5,
+  .btn, button, .restaurant-name, .cert-card h4 {
+    text-wrap: balance;         /* 見出し・ボタンの行を均す */
+  }
+}
+@media (max-width: 480px) {
+  /* 2カラムだと1行12文字しか入らない。1カラムにして幅を倍にする */
+  .philosophy-grid { grid-template-columns: 1fr !important; }
+  .pillar-text { font-size: 12.5px !important; line-height: 1.85 !important; }
+}
+
+/* ---------- ヘッダーのアイコンを縦位置・大きさとも揃える ----------
+   2026-08-12 Tom指摘「高さがバラバラ」。実測すると
+   ・言語(地球儀)だけ中心Yが 23px（他は 34px）＝ 11px 上にずれていた
+     → .lang-switch-btn が display:flex のみで align-items 未指定だったため
+   ・アイコンの実寸が 20/21/22/24px とバラバラだった
+   幅26px・タップ高44px（2026-06-20 の決定）はそのまま維持する。 */
+.site-header .lang-switch-btn,
+.site-header .nav-icon,
+.site-header .eda-mm-burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.site-header .lang-switch-btn > svg,
+.site-header .nav-icon > svg,
+.site-header .eda-mm-burger > svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
 @media (max-width: 380px) {
   .site-header .nav { gap: 12px; }
   .site-header .nav-utils { gap: 16px; }

@@ -3723,17 +3723,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
-<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
-<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
-<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260812k">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260812k">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
-<a href="#main" class="skip-link">本文へスキップ</a>
+<a href="#main" class="skip-link" data-en="Skip to main content">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
  <div class="container nav">
  <a href="index.html" class="brand-mark">
@@ -3741,25 +3741,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </a>
  <nav class="primary-nav">
   <ul class="nav-list">
-    <li><a href="shop.html">ショップ</a></li>
-    <li><a href="organic.html">オーガニック</a></li>
-    <li><a href="about.html">会社案内</a></li>
-    <li><a href="global.html">海外展開</a></li>
-    <li><a class="current" href="restaurants.html">お取扱店</a></li>
-    <li><a href="journal.html">記事</a></li>
-    <li><a href="contact.html">お問い合わせ</a></li>
-    <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
+    <li><a href="shop.html" data-en="Shop">ショップ</a></li>
+    <li><a href="organic.html" data-en="Organic">オーガニック</a></li>
+    <li><a href="about.html" data-en="About">会社案内</a></li>
+    <li><a href="global.html" data-en="Global">海外展開</a></li>
+    <li><a class="current" href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a href="journal.html" data-en="Journal">記事</a></li>
+    <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
+    <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
   </nav>
  <div class="nav-utils">
-  <a href="shop.html" class="nav-subscribe-cta">ショップ</a>
+  <a href="shop.html" class="nav-subscribe-cta" data-en="Shop">ショップ</a>
  <div class="lang-switch">
  <button class="lang-switch-btn" aria-label="言語 / Language" aria-haspopup="true">
  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 3.6 5.8 3.6 9s-1 6.3-3.6 9c-2.6-2.7-3.6-5.8-3.6-9s1-6.3 3.6-9z"/></svg>
  </button>
  <div class="lang-dropdown" hidden>
- <a href="#" data-lang="ja">日本語</a>
- <a href="buyer-deck.html" data-lang="en">English</a>
+ <a href="?lang=ja" data-lang="ja">日本語</a>
+ <a href="?lang=en" data-lang="en">English</a>
  </div>
  </div>
  <script>
@@ -3791,10 +3791,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <h1 class="page-title">
  Where to<span class="accent">Taste It.</span>
  </h1>
- <p class="page-subtitle">
- 江田和牛をお取り扱いいただいているホテル・レストラン・百貨店の一部をご紹介します。<br/>
- 各店舗の予約ページ・公式サイトに直接アクセスできます。
- </p>
+ <p class="page-subtitle" data-en="A selection of the hotels, restaurants and department stores that serve or sell Eda Wagyu.&lt;br&gt;
+ Each listing links straight to the venue&#x27;s reservation page or website.">江田和牛をお取り扱いいただいているホテル・レストラン・百貨店の一部をご紹介します。<br/>
+ 各店舗の予約ページ・公式サイトに直接アクセスできます。</p>
  </div>
 </section>
 
@@ -3832,8 +3831,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · Signature Dining</span> </div>
  <h3 class="restaurant-name">Tokyo EDITION Ginza</h3>
- <p class="restaurant-desc">マリオット最高峰ライフスタイルブランド。2024年開業、隈研吾デザインの銀座の新ランドマーク。14階のシグネチャーダイニング「Sophie at EDITION」にて、江田和牛をお愉しみいただけます。</p>
- <p class="restaurant-loc">Sophie at EDITION · 銀座 · 中央区</p>
+ <p class="restaurant-desc" data-en="Marriott&#x27;s flagship lifestyle brand, opened in 2024 and designed by Kengo Kuma. Eda Wagyu is served at Sophie at EDITION, the signature dining room on the 14th floor.">マリオット最高峰ライフスタイルブランド。2024年開業、隈研吾デザインの銀座の新ランドマーク。14階のシグネチャーダイニング「Sophie at EDITION」にて、江田和牛をお愉しみいただけます。</p>
+ <p class="restaurant-loc" data-en="Sophie at EDITION · Ginza, Tokyo">Sophie at EDITION · 銀座 · 中央区</p>
  <div class="restaurant-actions">
   <a href="https://www.editionhotels.com/tokyo-ginza/restaurants-and-bars/sophie-at-edition/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/en/shops/editionhotels-ginza-sophie/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -3855,8 +3854,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · Teppanyaki</span> </div>
  <h3 class="restaurant-name">The Ritz-Carlton, Tokyo</h3>
- <p class="restaurant-desc">東京ミッドタウン45階、都心を一望する日本料理「ひのきざか」。鉄板焼カウンターで、目の前で焼き上げる江田和牛のコースを。グリル「タワーズ」でもご提供。</p>
- <p class="restaurant-loc">鉄板焼 ひのきざか / タワーズ · 六本木 · 港区</p>
+ <p class="restaurant-desc" data-en="Hinokizaka, the Japanese restaurant on the 45th floor of Tokyo Midtown. Eda Wagyu is grilled in front of you at the teppanyaki counter, and also served at the grill, Towers.">東京ミッドタウン45階、都心を一望する日本料理「ひのきざか」。鉄板焼カウンターで、目の前で焼き上げる江田和牛のコースを。グリル「タワーズ」でもご提供。</p>
+ <p class="restaurant-loc" data-en="Teppanyaki Hinokizaka / Towers · Roppongi, Tokyo">鉄板焼 ひのきざか / タワーズ · 六本木 · 港区</p>
  <div class="restaurant-actions">
   <a href="https://www.ritzcarlton.com/en/hotels/tyorz-the-ritz-carlton-tokyo/dining/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/ja/shops/ritzcarlton-tokyo-hinokizaka/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -3878,8 +3877,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · Teppanyaki</span> </div>
  <h3 class="restaurant-name">The Ritz-Carlton, Fukuoka</h3>
- <p class="restaurant-desc">福岡大名ガーデンシティ18階、日本料理「幻珠（げんじゅ）」。鉄板焼のカウンターにて、九州の食材と江田和牛を主役にしたスペシャルコースを展開。</p>
- <p class="restaurant-loc">鉄板焼 幻珠 · 福岡市中央区</p>
+ <p class="restaurant-desc" data-en="Genjyu, the Japanese restaurant on the 18th floor of Fukuoka Daimyo Garden City. Its teppanyaki counter serves a special course built around Kyushu produce and Eda Wagyu.">福岡大名ガーデンシティ18階、日本料理「幻珠（げんじゅ）」。鉄板焼のカウンターにて、九州の食材と江田和牛を主役にしたスペシャルコースを展開。</p>
+ <p class="restaurant-loc" data-en="Teppanyaki Genjyu · Chuo-ku, Fukuoka">鉄板焼 幻珠 · 福岡市中央区</p>
  <div class="restaurant-actions">
   <a href="https://www.ritzcarlton.com/en/hotels/fukrz-the-ritz-carlton-fukuoka/dining/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/en/genjyu-ritzcarltonfukuoka/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -3900,8 +3899,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · French</span> </div>
  <h3 class="restaurant-name">The Tokyo Station Hotel</h3>
- <p class="restaurant-desc">重要文化財・丸の内駅舎内、1915年創業の歴史的ホテル。フレンチ「ブラン ルージュ」にて、クラシカルな空間で江田和牛の料理をご堪能ください。</p>
- <p class="restaurant-loc">Blanc Rouge · 東京駅丸の内駅舎内 · 千代田区</p>
+ <p class="restaurant-desc" data-en="A historic hotel founded in 1915, inside the Marunouchi station building — a designated Important Cultural Property. Eda Wagyu is served at the French restaurant Blanc Rouge.">重要文化財・丸の内駅舎内、1915年創業の歴史的ホテル。フレンチ「ブラン ルージュ」にて、クラシカルな空間で江田和牛の料理をご堪能ください。</p>
+ <p class="restaurant-loc" data-en="Blanc Rouge · Tokyo Station, Marunouchi">Blanc Rouge · 東京駅丸の内駅舎内 · 千代田区</p>
  <div class="restaurant-actions">
   <a href="https://www.tokyostationhotel.jp/restaurants/blancrouge/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/ja/shops/blancrouge/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -3922,8 +3921,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · Bar &amp; Grill</span> </div>
  <h3 class="restaurant-name">Fairmont Tokyo</h3>
- <p class="restaurant-desc">2025年開業、日本初のフェアモント。芝浦「BLUE FRONT SHIBAURA」43階のグリル「DRIFTWOOD Bar &amp; Grill」にて、プレミアム和牛・希少部位を炭火で焼き上げます。</p>
- <p class="restaurant-loc">DRIFTWOOD Bar &amp; Grill · 43F · 芝浦 · 港区</p>
+ <p class="restaurant-desc" data-en="Japan&#x27;s first Fairmont, opened in 2025. At DRIFTWOOD Bar &amp;amp; Grill on the 43rd floor of BLUE FRONT SHIBAURA, premium and rare cuts are finished over charcoal.">2025年開業、日本初のフェアモント。芝浦「BLUE FRONT SHIBAURA」43階のグリル「DRIFTWOOD Bar &amp; Grill」にて、プレミアム和牛・希少部位を炭火で焼き上げます。</p>
+ <p class="restaurant-loc" data-en="DRIFTWOOD Bar &amp;amp; Grill · 43F · Shibaura, Tokyo">DRIFTWOOD Bar &amp; Grill · 43F · 芝浦 · 港区</p>
  <div class="restaurant-actions">
   <a href="https://www.fairmont.com/en/hotels/tokyo/fairmont-tokyo/dining/driftwood.restaurant.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/en/shops/fairmont-tokyo-driftwood/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -3945,11 +3944,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · Course Dining</span> </div>
  <h3 class="restaurant-name">Hotel MiraCosta</h3>
- <p class="restaurant-desc">東京ディズニーシー内、ホテルミラコスタ。地中海料理「オチェーアノ」のコースディナーにて、和牛を用いたメインディッシュをご用意。特別な一日のお食事に。</p>
- <p class="restaurant-loc">オチェーアノ Oceano · 浦安市 · 千葉県</p>
+ <p class="restaurant-desc" data-en="Hotel MiraCosta, inside Tokyo DisneySea. The Mediterranean restaurant Oceano serves a Wagyu main course as part of its dinner menu.">東京ディズニーシー内、ホテルミラコスタ。地中海料理「オチェーアノ」のコースディナーにて、和牛を用いたメインディッシュをご用意。特別な一日のお食事に。</p>
+ <p class="restaurant-loc" data-en="Oceano · Urayasu, Chiba">オチェーアノ Oceano · 浦安市 · 千葉県</p>
  <div class="restaurant-actions">
   <a href="https://www.tokyodisneyresort.jp/hotel/dhm/restaurant/oceano.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://www.tokyodisneyresort.jp/hotel/dhm/restaurant/reservation_menu.html" target="_blank" rel="noopener" class="restaurant-action primary">予約案内</a>
+  <a href="https://www.tokyodisneyresort.jp/hotel/dhm/restaurant/reservation_menu.html" target="_blank" rel="noopener" class="restaurant-action primary" data-en="Reservation info">予約案内</a>
  </div>
  </div>
  </article>
@@ -3965,14 +3964,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
  <div class="restaurant-card-body">
  <div class="restaurant-meta">
-  <span class="restaurant-tag">Department Store · Pop-up（月1週間）</span>
+  <span class="restaurant-tag" data-en="Department store · pop-up (about one week a month)">Department Store · Pop-up（月1週間）</span>
  </div>
  <h3 class="restaurant-name">Mitsukoshi Ginza</h3>
- <p class="restaurant-desc">銀座三越にて、月に約1週間の食品催事（ポップアップ）で江田和牛の各部位を限定販売。開催日程は催事カレンダーをご確認ください。ご贈答にも。</p>
- <p class="restaurant-loc">本館 食品催事 · 銀座 · 中央区</p>
+ <p class="restaurant-desc" data-en="A pop-up at Ginza Mitsukoshi for roughly one week each month, selling a limited selection of Eda Wagyu cuts. Check the event calendar for dates. Also suitable as a gift.">銀座三越にて、月に約1週間の食品催事（ポップアップ）で江田和牛の各部位を限定販売。開催日程は催事カレンダーをご確認ください。ご贈答にも。</p>
+ <p class="restaurant-loc" data-en="Main building, food event floor · Ginza, Tokyo">本館 食品催事 · 銀座 · 中央区</p>
  <div class="restaurant-actions">
   <a href="https://www.mistore.jp/store/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://www.mistore.jp/store/ginza/event_calendar.html" target="_blank" rel="noopener" class="restaurant-action primary">催事カレンダー</a>
+  <a href="https://www.mistore.jp/store/ginza/event_calendar.html" target="_blank" rel="noopener" class="restaurant-action primary" data-en="Event calendar">催事カレンダー</a>
  </div>
  </div>
  </article>
@@ -3992,12 +3991,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · French / Italian</span> </div>
  <h3 class="restaurant-name">Four Seasons Hotel, Tokyo</h3>
- <p class="restaurant-desc">皇居を望む大手町39階。フレンチ「est」、イタリアン「PIGNETO」にて江田和牛をご提供。</p>
- <p class="restaurant-loc">est / PIGNETO · 大手町 · 千代田区</p>
+ <p class="restaurant-desc" data-en="On the 39th floor at Otemachi, overlooking the Imperial Palace. Eda Wagyu is served at the French restaurant est and the Italian restaurant PIGNETO.">皇居を望む大手町39階。フレンチ「est」、イタリアン「PIGNETO」にて江田和牛をご提供。</p>
+ <p class="restaurant-loc" data-en="est / PIGNETO · Otemachi, Tokyo">est / PIGNETO · 大手町 · 千代田区</p>
  <div class="restaurant-actions">
   <a href="https://www.fourseasons.com/otemachi/dining/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://www.tablecheck.com/en/shops/four-seasons-hotel-tokyo-otemachi-est/reserve" target="_blank" rel="noopener" class="restaurant-action primary">est を予約</a>
-  <a href="https://www.tablecheck.com/en/shops/four-seasons-hotel-tokyo-otemachi-pigneto/reserve" target="_blank" rel="noopener" class="restaurant-action primary">PIGNETO を予約</a>
+  <a href="https://www.tablecheck.com/en/shops/four-seasons-hotel-tokyo-otemachi-est/reserve" target="_blank" rel="noopener" class="restaurant-action primary" data-en="Reserve at est">est を予約</a>
+  <a href="https://www.tablecheck.com/en/shops/four-seasons-hotel-tokyo-otemachi-pigneto/reserve" target="_blank" rel="noopener" class="restaurant-action primary" data-en="Reserve at PIGNETO">PIGNETO を予約</a>
  </div>
  </div>
  </article>
@@ -4015,11 +4014,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">French · Reservation Only</span> </div>
  <h3 class="restaurant-name">LA TERRE</h3>
- <p class="restaurant-desc">西麻布の隠れ家フレンチ。江田畜産との共催イベント「一期一食」にてオーガニック和牛&times;発酵海藻のスペシャルコースを提供。完全予約制。</p>
- <p class="restaurant-loc">西麻布4丁目 NTビル1-2F · 広尾駅徒歩7分</p>
+ <p class="restaurant-desc" data-en="A quiet French restaurant in Nishi-Azabu. At Ichigo-Isshoku, an event held together with Eda Livestock, it serves a special course pairing organic Wagyu with fermented seaweed. Reservations only.">西麻布の隠れ家フレンチ。江田畜産との共催イベント「一期一食」にてオーガニック和牛&times;発酵海藻のスペシャルコースを提供。完全予約制。</p>
+ <p class="restaurant-loc" data-en="NT Building 1-2F, Nishi-Azabu 4-chome · 7 min from Hiroo Station">西麻布4丁目 NTビル1-2F · 広尾駅徒歩7分</p>
  <div class="restaurant-actions">
   <a href="https://www.la-terre-tokyo.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://www.la-terre-tokyo.jp/contact?hsLang=ja" target="_blank" rel="noopener" class="restaurant-action primary">予約フォーム</a>
+  <a href="https://www.la-terre-tokyo.jp/contact?hsLang=ja" target="_blank" rel="noopener" class="restaurant-action primary" data-en="Reservation form">予約フォーム</a>
  </div>
  </div>
  </article>
@@ -4037,8 +4036,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-meta">
   <span class="restaurant-tag">Hotel · Steakhouse / Teppanyaki</span> </div>
  <h3 class="restaurant-name">WITH THE STYLE FUKUOKA</h3>
- <p class="restaurant-desc">博多駅徒歩圏のアーバンリゾート。鉄板焼ステーキハウス「Medium Rare」のカウンターにて、シェフが目の前で焼き上げる江田和牛をご堪能いただけます。</p>
- <p class="restaurant-loc">Steakhouse Medium Rare · 博多 · 福岡市博多区</p>
+ <p class="restaurant-desc" data-en="An urban resort within walking distance of Hakata Station. At the teppanyaki steakhouse Medium Rare, the chef grills Eda Wagyu in front of you.">博多駅徒歩圏のアーバンリゾート。鉄板焼ステーキハウス「Medium Rare」のカウンターにて、シェフが目の前で焼き上げる江田和牛をご堪能いただけます。</p>
+ <p class="restaurant-loc" data-en="Steakhouse Medium Rare · Hakata, Fukuoka">Steakhouse Medium Rare · 博多 · 福岡市博多区</p>
  <div class="restaurant-actions">
   <a href="https://www.withthestyle.com/restaurant/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
   <a href="https://www.tablecheck.com/en/shops/withthestyle-mediumrare/reserve" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -4051,20 +4050,20 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <div class="restaurant-card-hero" style="background: linear-gradient(155deg, #0a0a0a 0%, #1a1a1a 45%, #2e2418 100%);">
  <span class="restaurant-city-badge">TOKYO</span>
  <div class="restaurant-brand-logo">
-  <span class="brand-main" style="font-size: clamp(18px, 2vw, 26px);">サロン覺</span>
+  <span class="brand-main" style="font-size: clamp(18px, 2vw, 26px);" data-en="Salon KAKU">サロン覺</span>
   <span class="brand-sub">salon KAKU · Omotesando</span>
  </div>
  </div>
  <div class="restaurant-card-body">
  <div class="restaurant-meta">
-  <span class="restaurant-tag">Italian · 完全紹介制</span> </div>
- <h3 class="restaurant-name">サロン覺 salon KAKU</h3>
- <p class="restaurant-desc">ザ・ギャラリー表参道の1階、アートと食を融合させた完全紹介制のサロン。ソムリエでもあるシェフによる新解釈のイタリアンで、江田和牛をご提供。カウンター8席・個室6席。</p>
- <p class="restaurant-loc">SIX原宿テラス S棟 1F · 神宮前 · 渋谷区</p>
+  <span class="restaurant-tag" data-en="Italian · by introduction only">Italian · 完全紹介制</span> </div>
+ <h3 class="restaurant-name" data-en="Salon KAKU">サロン覺 salon KAKU</h3>
+ <p class="restaurant-desc" data-en="A salon on the ground floor of tHE GALLERY OMOTESANDO, where art and food meet — open by introduction only. The chef, also a sommelier, serves Eda Wagyu in a reinterpreted Italian menu. Eight counter seats and a six-seat private room.">ザ・ギャラリー表参道の1階、アートと食を融合させた完全紹介制のサロン。ソムリエでもあるシェフによる新解釈のイタリアンで、江田和牛をご提供。カウンター8席・個室6席。</p>
+ <p class="restaurant-loc" data-en="SIX Harajuku Terrace, Building S, 1F · Jingumae, Shibuya">SIX原宿テラス S棟 1F · 神宮前 · 渋谷区</p>
  <div class="restaurant-actions">
   <a href="https://www.salon-kaku.jp/" target="_blank" rel="noopener" class="restaurant-action primary">Website</a>
  </div>
- <p class="restaurant-note">※ 完全紹介制です。ご予約はご紹介者さまへお伝えください。</p>
+ <p class="restaurant-note" data-en="Note: by introduction only. Please arrange your booking through the person who introduced you.">※ 完全紹介制です。ご予約はご紹介者さまへお伝えください。</p>
  </div>
  </article>
 
@@ -4074,19 +4073,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="restaurant-city-badge">MIYAZAKI</span>
  <div class="restaurant-brand-logo">
   <span class="brand-icon">&#10022;</span>
-  <span class="brand-main">HINATA 大島</span>
+  <span class="brand-main" data-en="HINATA Oshima">HINATA 大島</span>
   <span class="brand-sub">Nichinan · Private Island</span>
  </div>
  </div>
  <div class="restaurant-card-body">
  <div class="restaurant-meta">
   <span class="restaurant-tag">Resort · Private Island</span> </div>
- <h3 class="restaurant-name">HINATA 大島</h3>
- <p class="restaurant-desc">宮崎県日南市の沖合に浮かぶ無人島の高級プライベートリゾート（全7棟）。島のダイニングにて江田和牛をご提供します。2026年10月1日グランドオープン。</p>
- <p class="restaurant-loc">日南市南郷町 · 指定港より船で約10分</p>
+ <h3 class="restaurant-name" data-en="HINATA Oshima">HINATA 大島</h3>
+ <p class="restaurant-desc" data-en="A private luxury resort of seven villas on an uninhabited island off Nichinan, Miyazaki. Eda Wagyu is served at the island&#x27;s dining room. Grand opening 1 October 2026.">宮崎県日南市の沖合に浮かぶ無人島の高級プライベートリゾート（全7棟）。島のダイニングにて江田和牛をご提供します。2026年10月1日グランドオープン。</p>
+ <p class="restaurant-loc" data-en="Nango, Nichinan · about 10 minutes by boat from the designated port">日南市南郷町 · 指定港より船で約10分</p>
  <div class="restaurant-actions">
   <a href="https://lchd-hinataohshima.com/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
-  <a href="https://reserve.489ban.net/client/hinataohshima/0/plan" target="_blank" rel="noopener" class="restaurant-action primary">宿泊予約</a>
+  <a href="https://reserve.489ban.net/client/hinataohshima/0/plan" target="_blank" rel="noopener" class="restaurant-action primary" data-en="Book a stay">宿泊予約</a>
  </div>
  </div>
  </article>
@@ -4103,17 +4102,17 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/></picture>
  <span>
  <span class="footer-brand">EDA-LIVESTOCK</span>
- <span class="footer-brand-jp">江田畜産株式会社</span>
+ <span class="footer-brand-jp" data-en="Eda Livestock Co., Ltd.">江田畜産株式会社</span>
  </span>
  </a>
  <p class="footer-tagline">
- <strong>100年続く畜産を、創造する。</strong><br/>
+ <strong data-en="Building a livestock business made to last a century.">100年続く畜産を、創造する。</strong><br/>
  Sustainable Japanese Wagyu —<br/>
  Livestock for the Next Century.
  </p>
  <div class="footer-meta">
- <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
- <p>事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
+ <p data-en="Eda Livestock Co., Ltd.">江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
+ <p data-en="Business: Kuroge Wagyu breeding, fattening, retail, export and smart livestock">事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
  <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
  </div>
  </div>
@@ -4121,28 +4120,28 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <h4>Shop</h4>
  <ul>
  <li><a href="shop.html">Online Shop</a></li>
- <li><a href="subscription.html">月の定期便</a></li>
- <li><a href="restaurants.html">お取扱店（一部）</a></li>
+ <li><a href="subscription.html" data-en="Monthly subscription">月の定期便</a></li>
+ <li><a href="restaurants.html" data-en="Selected stockists">お取扱店（一部）</a></li>
  </ul>
  </div>
  <div class="footer-col">
  <h4>Company</h4>
  <ul>
- <li><a href="about.html">江田畜産について</a></li>
- <li><a href="contact.html">お問い合わせ</a></li>
+ <li><a href="about.html" data-en="About Eda Livestock">江田畜産について</a></li>
+ <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
  </ul>
  </div>
  <div class="footer-col">
  <h4>Legal</h4>
  <ul>
- <li><a href="terms.html">利用規約</a></li>
- <li><a href="privacy.html">プライバシーポリシー</a></li>
- <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
+ <li><a href="terms.html" data-en="Terms of Service">利用規約</a></li>
+ <li><a href="privacy.html" data-en="Privacy Policy">プライバシーポリシー</a></li>
+ <li><a href="tokushoho.html" data-en="Legal notice (Specified Commercial Transactions Act)">特定商取引法に基づく表記</a></li>
  </ul>
  </div>
  </div>
  <div class="footer-bottom">
- <span>© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
+ <span data-en="© 2026 EDA-LIVESTOCK CO., LTD.">© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
  </div>
  </div>
 </footer>
@@ -4166,11 +4165,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
  </div>
  <div class="cart-shipping-note">
- ¥11,000以上で<strong>送料無料</strong>。冷凍便でお届け。
+ ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
  </div>
  <div class="cart-delivery-note" id="cartDelivery"></div>
- <button class="btn-checkout" id="cartCheckout">レジに進む — Checkout</button>
- <button class="cart-continue" id="cartContinue">買い物を続ける</button>
+ <button class="btn-checkout" id="cartCheckout" data-en="Proceed to checkout">レジに進む — Checkout</button>
+ <button class="cart-continue" id="cartContinue" data-en="Continue shopping">買い物を続ける</button>
  </div>
 </aside>
 
@@ -4180,7 +4179,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="sticky-cart-count" id="stickyCartCount">0 items</span>
  <span class="sticky-cart-total" id="stickyCartTotal">¥0</span>
  </div>
- <button class="sticky-cart-btn" id="stickyCartBtn">カートを見る</button>
+ <button class="sticky-cart-btn" id="stickyCartBtn" data-en="View cart">カートを見る</button>
 </div>
 
 <script>
@@ -4432,7 +4431,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  if (remaining > 0) {
  noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料`;
  } else {
- noteEl.innerHTML = '<strong>送料無料</strong>でお届けします！';
+ noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！';
  }
  }
 
@@ -4521,7 +4520,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  });
  html += '</select>';
  }
- html += '<button class="btn-add-cart">カートに追加</button>';
+ html += '<button class="btn-add-cart" data-en="Add to cart">カートに追加</button>';
  buyEl.innerHTML = html;
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
@@ -4569,6 +4568,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 </script>
 
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>

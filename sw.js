@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-08-11-179-mobile-ux';
+const CACHE_VERSION = 'eda-v2026-08-12-180-english';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -13,9 +13,9 @@ const CORE_ASSETS = [
   'public/data/products-master.js',
   'public/js/eda-bundle.js',
   'public/js/error-tracker.js',
-  'public/css/a11y.css?v=20260811',
-  'public/css/jp-typography.css?v=20260811',
-  'public/css/mobile-modern.css?v=20260811',
+  'public/css/a11y.css?v=20260812k',
+  'public/css/jp-typography.css?v=20260812k',
+  'public/css/mobile-modern.css?v=20260812k',
 ];
 
 self.addEventListener('install', (event) => {

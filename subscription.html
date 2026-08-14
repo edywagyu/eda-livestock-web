@@ -1996,10 +1996,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .lang-dropdown a { padding: 9px 14px; font-size: 13px; color: #1a1a1a; border-radius: 6px; white-space: nowrap; text-align: left; }
 .lang-dropdown a:hover { background: #FAF7F0; color: var(--color-forest); }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
-<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
-<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
-<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260812k">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260812k">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2007,7 +2007,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 </head>
 <body>
-<a href="#main" class="skip-link">本文へスキップ</a>
+<a href="#main" class="skip-link" data-en="Skip to main content">本文へスキップ</a>
 
 <!-- ========= HEADER ========= -->
 <header class="site-header" id="siteHeader">
@@ -2017,25 +2017,25 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </a>
  <nav class="primary-nav">
   <ul class="nav-list">
-    <li><a href="shop.html">ショップ</a></li>
-    <li><a href="organic.html">オーガニック</a></li>
-    <li><a href="about.html">会社案内</a></li>
-    <li><a href="global.html">海外展開</a></li>
-    <li><a href="restaurants.html">お取扱店</a></li>
-    <li><a href="journal.html">記事</a></li>
-    <li><a href="contact.html">お問い合わせ</a></li>
-    <li><a class="nav-mypage-link" href="mypage.html">マイページ</a></li>
+    <li><a href="shop.html" data-en="Shop">ショップ</a></li>
+    <li><a href="organic.html" data-en="Organic">オーガニック</a></li>
+    <li><a href="about.html" data-en="About">会社案内</a></li>
+    <li><a href="global.html" data-en="Global">海外展開</a></li>
+    <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a href="journal.html" data-en="Journal">記事</a></li>
+    <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
+    <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
   </nav>
  <div class="nav-utils">
-  <a href="shop.html" class="nav-subscribe-cta">ショップ</a>
+  <a href="shop.html" class="nav-subscribe-cta" data-en="Shop">ショップ</a>
  <div class="lang-switch">
  <button class="lang-switch-btn" aria-label="言語 / Language" aria-haspopup="true">
  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 3.6 5.8 3.6 9s-1 6.3-3.6 9c-2.6-2.7-3.6-5.8-3.6-9s1-6.3 3.6-9z"/></svg>
  </button>
  <div class="lang-dropdown" hidden>
- <a href="#" data-lang="ja">日本語</a>
- <a href="buyer-deck.html" data-lang="en">English</a>
+ <a href="?lang=ja" data-lang="ja">日本語</a>
+ <a href="?lang=en" data-lang="en">English</a>
  </div>
  </div>
  <script>
@@ -2231,7 +2231,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 
  <div class="sub-hero-trust">
- <span class="sub-hero-trust-item">送料無料</span>
+ <span class="sub-hero-trust-item" data-en="Free shipping">送料無料</span>
  <span class="sub-hero-trust-item">いつでもスキップ</span>
  <span class="sub-hero-trust-item">3ヶ月から解約可</span>
  <span class="sub-hero-trust-item">カスタマイズ可</span>
@@ -3635,8 +3635,8 @@ function toggleSubUnboxingSound() {
  </dl>
 
  <p style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(0,0,0,0.08);font-size:11px;color:#888;letter-spacing:0.02em;line-height:1.8;">
- 詳細は <a href="terms.html" style="color:#0F3D2E;text-decoration:underline;">ご利用規約</a>、<a href="privacy.html" style="color:#0F3D2E;text-decoration:underline;">プライバシーポリシー</a> および <a href="tokushoho.html" style="color:#0F3D2E;text-decoration:underline;">特定商取引法に基づく表記</a> をご確認ください。<br>
- ご不明な点は <a href="contact.html" style="color:#0F3D2E;text-decoration:underline;">お問い合わせ</a> またはLINE公式アカウントまで。
+ 詳細は <a href="terms.html" style="color:#0F3D2E;text-decoration:underline;">ご利用規約</a>、<a href="privacy.html" style="color:#0F3D2E;text-decoration:underline;" data-en="Privacy Policy">プライバシーポリシー</a> および <a href="tokushoho.html" style="color:#0F3D2E;text-decoration:underline;" data-en="Legal notice (Specified Commercial Transactions Act)">特定商取引法に基づく表記</a> をご確認ください。<br>
+ ご不明な点は <a href="contact.html" style="color:#0F3D2E;text-decoration:underline;" data-en="Contact">お問い合わせ</a> またはLINE公式アカウントまで。
  </p>
  </div>
 </section>
@@ -3647,13 +3647,13 @@ function toggleSubUnboxingSound() {
  <div class="footer-grid">
  <div>
  <div class="footer-brand-name">EDA LIVESTOCK</div>
- <span class="footer-brand-jp">江田畜産株式会社</span>
+ <span class="footer-brand-jp" data-en="Eda Livestock Co., Ltd.">江田畜産株式会社</span>
  </div>
  <div class="footer-list">
  <h4>SHOP</h4>
- <a href="shop.html">オンラインショップ</a>
- <a href="subscription.html">定期便</a>
- <a href="mypage.html">マイページ</a>
+ <a href="shop.html" data-en="Online shop">オンラインショップ</a>
+ <a href="subscription.html" data-en="Subscription">定期便</a>
+ <a href="mypage.html" data-en="My Page">マイページ</a>
  </div>
  <div class="footer-list">
  <h4>COMPANY</h4>
@@ -4287,6 +4287,7 @@ selectPlan(currentPlan);
 <script>(function(){var bar=document.getElementById('subStickyCta'),plans=document.getElementById('plans');if(!bar||!plans)return;var t;function u(){var r=plans.getBoundingClientRect();var show=window.scrollY>500&&(r.top>window.innerHeight*0.7||r.bottom<120);bar.style.display=show?'flex':'none';}window.addEventListener('scroll',function(){if(t)return;t=requestAnimationFrame(function(){u();t=null;});},{passive:true});u();})();</script>
 
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>

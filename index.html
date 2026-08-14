@@ -4153,10 +4153,10 @@ section.featured {
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260811">
-<link rel="stylesheet" href="public/css/jp-typography.css?v=20260811">
-<link rel="stylesheet" href="public/css/a11y.css?v=20260811">
-<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260811">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260812k">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260812k">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap">
@@ -4179,7 +4179,7 @@ section.featured {
 </script>
 </head>
 <body>
-<a href="#main" class="skip-link">本文へスキップ</a>
+<a href="#main" class="skip-link" data-en="Skip to main content">本文へスキップ</a>
 <header class="site-header" id="siteHeader">
  <div class="container nav">
  <a href="index.html" class="brand-mark">
@@ -4187,25 +4187,25 @@ section.featured {
  </a>
  <nav class="primary-nav">
  <ul class="nav-list">
- <li><a href="shop.html">ショップ</a></li>
- <li><a href="organic.html">オーガニック</a></li>
- <li><a href="about.html">会社案内</a></li>
- <li><a href="global.html">海外展開</a></li>
- <li><a href="restaurants.html">お取扱店</a></li>
- <li><a href="journal.html">記事</a></li>
- <li><a href="contact.html">お問い合わせ</a></li>
- <li><a href="mypage.html" class="nav-mypage-link">マイページ</a></li>
+ <li><a href="shop.html" data-en="Shop">ショップ</a></li>
+ <li><a href="organic.html" data-en="Organic">オーガニック</a></li>
+ <li><a href="about.html" data-en="About">会社案内</a></li>
+ <li><a href="global.html" data-en="Global">海外展開</a></li>
+ <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+ <li><a href="journal.html" data-en="Journal">記事</a></li>
+ <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
+ <li><a href="mypage.html" class="nav-mypage-link" data-en="My Page">マイページ</a></li>
  </ul>
  </nav>
  <div class="nav-utils">
- <a href="shop.html" class="nav-subscribe-cta">ショップ</a>
+ <a href="shop.html" class="nav-subscribe-cta" data-en="Shop">ショップ</a>
  <div class="lang-switch">
  <button class="lang-switch-btn" aria-label="言語 / Language" aria-haspopup="true">
  <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.7 3.6 5.8 3.6 9s-1 6.3-3.6 9c-2.6-2.7-3.6-5.8-3.6-9s1-6.3 3.6-9z"/></svg>
  </button>
  <div class="lang-dropdown" hidden>
- <a href="#" data-lang="ja">日本語</a>
- <a href="buyer-deck.html" data-lang="en">English</a>
+ <a href="?lang=ja" data-lang="ja">日本語</a>
+ <a href="?lang=en" data-lang="en">English</a>
  </div>
  </div>
  <a href="https://www.instagram.com/eda_livestock/" target="_blank" rel="noopener" aria-label="Instagram" class="nav-icon">
@@ -4238,19 +4238,17 @@ section.featured {
  <div class="container hero-content">
  <div class="hero-meta">
  <span class="hero-meta-line"></span>
- <span class="eyebrow text-gold">江田畜産株式会社 — Since 2023, Miyazaki</span>
+ <span class="eyebrow text-gold" data-en="Eda Livestock Co., Ltd. — Since 2023, Miyazaki">江田畜産株式会社 — Since 2023, Miyazaki</span>
  </div>
  <h1 class="hero-title">
  Livestock for<span class="accent">The Next Century.</span>
  </h1>
- <p class="hero-subtitle">
+ <p class="hero-subtitle" data-en="Livestock for the next generation&#x27;s table. Antibiotic-free Wagyu and free-range chicken, from Miyazaki.">
  畜産は、次の世代の食卓のために。無投薬で育てた、和牛と平飼い鶏を、宮崎から。
  </p>
 
  <div class="hero-actions">
- <a href="shop.html" class="btn btn-primary">
- 商品を見る <span class="btn-arrow"></span>
- </a>
+ <a href="shop.html" class="btn btn-primary" data-en="View products &lt;span class=&quot;btn-arrow&quot;&gt;&lt;/span&gt;">商品を見る <span class="btn-arrow"></span></a>
  <a href="organic.html" class="btn btn-ghost hide-sp">
  私たちの哲学 <span class="btn-arrow"></span>
  </a>
@@ -4269,14 +4267,16 @@ section.featured {
  <div class="about-grid reveal">
  <div>
  <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Our Manifesto</span>
- <h2 class="about-jp">
- 牛・生産者・消費者、<em>三方よし</em>を、和牛で。
+ <h2 class="about-jp" data-en="Wagyu that is &lt;em&gt;good for all three&lt;/em&gt; — the cattle, the farmer and the customer.">
+ 牛・生産者・消費者、<em data-en="Good for all three">三方よし</em>を、和牛で。
  </h2>
  </div>
  <div>
- <p class="about-en">
- 日本の和牛は、長年の生産者の努力により、世界に誇る食文化に育ちました。私たちはその先輩方が築いてきた知恵に敬意を払いつつ、新しい世代だからこそ提示できる<strong>もう一つの選択肢</strong>を、消費者にお届けしたいと考えています。<br/><br/>
- 私たちの立ち位置はシンプルです。<strong>牛・生産者・消費者、三方が幸せになる仕組み</strong>を、一つずつ積み上げる。飼料の国産比率を高めながら、世界の食卓へ直接届ける。その循環を、一つずつ丁寧に積み上げていく。<br/><br/>
+ <p class="about-en" data-en="Japanese Wagyu has become a food culture the country can be proud of, built by generations of farmers. We respect that inherited knowledge, and we want to offer customers &lt;strong&gt;another way&lt;/strong&gt; — one that only a newer generation can put forward.&lt;br/&gt;&lt;br/&gt;
+ Our position is simple: to build, one step at a time, &lt;strong&gt;a way of farming that works for the cattle, the farmer and the customer&lt;/strong&gt;. Raising the share of domestic feed, and delivering directly to tables around the world.&lt;br/&gt;&lt;br/&gt;
+ Reaching the world&#x27;s first Organic JAS Wagyu (recognised as equivalent to EU Leaf) within three years of founding was possible because of that.">
+ 日本の和牛は、長年の生産者の努力により、世界に誇る食文化に育ちました。私たちはその先輩方が築いてきた知恵に敬意を払いつつ、新しい世代だからこそ提示できる<strong data-en="Another way">もう一つの選択肢</strong>を、消費者にお届けしたいと考えています。<br/><br/>
+ 私たちの立ち位置はシンプルです。<strong data-en="A way of farming that works for the cattle, the farmer and the customer">牛・生産者・消費者、三方が幸せになる仕組み</strong>を、一つずつ積み上げる。飼料の国産比率を高めながら、世界の食卓へ直接届ける。その循環を、一つずつ丁寧に積み上げていく。<br/><br/>
  創業3年で世界初の有機JAS和牛（EU Leaf 同等性承認）を実現できたのは、その小さな証明です。
  </p>
  <a href="about.html" class="btn btn-dark" style="margin-top: 40px;">
@@ -4295,7 +4295,7 @@ section.featured {
  <h2 class="philosophy-title">
  Not the Rank,<span class="em">But How They're Raised.</span>
  </h2>
- <p class="lead" style="max-width: 760px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
+ <p class="lead" style="max-width: 760px; margin: 32px auto 0; color: rgba(255,255,255,0.75);" data-en="A5, BMS, prefecture names — Wagyu has always been described in numbers and labels. What matters to us comes before that: how the animal was raised.">
  A5・BMS・産地名 ーー これまで和牛は数字とラベルで語られてきました。私たちが大切にするのは、その手前にある「どう育てたか」です。
  </p>
  </div>
@@ -4309,8 +4309,8 @@ section.featured {
  <circle cx="32" cy="32" r="6" />
  </svg>
  <h3 class="pillar-title">Circular Feed</h3>
- <p class="pillar-title-jp">循環農業飼料</p>
- <p class="pillar-text">
+ <p class="pillar-title-jp" data-en="Circular feed">循環農業飼料</p>
+ <p class="pillar-text" data-en="We grow part of our feed from our own compost and return it to the cattle, reducing our reliance on imported feed.">
  自社の堆肥から飼料を一部育て、再び牛に与える。輸入依存を減らす、国産循環型への取り組みを続けています。
  </p>
  </div>
@@ -4322,8 +4322,8 @@ section.featured {
  <path d="M14 18 L50 50" stroke-width="2" />
  </svg>
  <h3 class="pillar-title">No Chemical</h3>
- <p class="pillar-title-jp">化学物質ゼロ</p>
- <p class="pillar-text">
+ <p class="pillar-title-jp" data-en="Zero chemicals">化学物質ゼロ</p>
+ <p class="pillar-text" data-en="No antibiotics, no growth promoters, no hormones. Very few farms in Japan hold to this.">
  抗生物質・成長促進剤・ホルモン剤、いずれも一切不使用。日本でこれを徹底する農家は、ごくわずかです。
  </p>
  </div>
@@ -4334,8 +4334,8 @@ section.featured {
  <path d="M32 14 C24 14 18 20 18 28 C18 36 26 42 32 50 C38 42 46 36 46 28 C46 20 40 14 32 14 Z" />
  </svg>
  <h3 class="pillar-title">Animal Welfare</h3>
- <p class="pillar-title-jp">アニマルウェルフェア</p>
- <p class="pillar-text">
+ <p class="pillar-title-jp" data-en="Animal welfare">アニマルウェルフェア</p>
+ <p class="pillar-text" data-en="Spacious barns built to organic standards, designed to keep stress low so the cattle can grow at their own pace.">
  有機規格に準じた広い牛舎。ストレスの少ない環境づくりを徹底し、牛をのびのびと育てています。
  </p>
  </div>
@@ -4346,17 +4346,15 @@ section.featured {
  <path d="M32 12 C24 24 20 32 20 40 C20 48 26 52 32 52 C38 52 44 48 44 40 C44 32 40 24 32 12 Z" />
  </svg>
  <h3 class="pillar-title">Mineral Water</h3>
- <p class="pillar-title-jp">天然水</p>
- <p class="pillar-text">
+ <p class="pillar-title-jp" data-en="Natural spring water">天然水</p>
+ <p class="pillar-text" data-en="Every animal drinks underground water from the Kirishima mountains. Its minerals lift the flavour of the beef.">
  霧島連山の伏流水を、全頭の飲み水に使用。ミネラルが、肉の旨みを底上げします。
  </p>
  </div>
  </div>
 
  <div style="text-align: center; margin-top: 80px;" class="reveal">
- <a href="organic.html" class="btn btn-gold">
- 世界初オーガニック認証和牛 — 2026年夏 出荷開始へ <span class="btn-arrow"></span>
- </a>
+ <a href="organic.html" class="btn btn-gold" data-en="Organic-certified Wagyu — from summer 2026 &lt;span class=&quot;btn-arrow&quot;&gt;&lt;/span&gt;">世界初オーガニック認証和牛 — 2026年夏 出荷開始へ <span class="btn-arrow"></span></a>
  </div>
  </div>
 </section>
@@ -4370,8 +4368,11 @@ section.featured {
  <h2 class="global-headline">
  Farm to<span class="accent">The World.</span>
  </h2>
- <p class="global-text">
- 創業1年で<strong>1カ国</strong>、2年で<strong>7カ国</strong>、3年で<strong>13カ国</strong>へ。<br/>
+ <p class="global-text" data-en="From one country in our first year, to seven in the second and thirteen in the third.&lt;br/&gt;
+ We work without a trading house, taking our Wagyu to the world ourselves.&lt;br/&gt;&lt;br/&gt;
+ city&#x27;super in Hong Kong, luxury hotels in New York, restaurants in Berlin, Helsinki and Barcelona.&lt;br/&gt;
+ Eda Wagyu is enjoyed at tables across four continents.">
+ 創業1年で<strong data-en="1 country">1カ国</strong>、2年で<strong data-en="7 countries">7カ国</strong>、3年で<strong data-en="13 countries">13カ国</strong>へ。<br/>
  私たちは商社を介さず、自分たちの手で世界へ和牛を届けています。<br/><br/>
  香港のcity'super、ニューヨークの高級ホテル、ベルリン・ヘルシンキ・バルセロナのレストラン。<br/>
  4大陸の食卓で、江田和牛は日々愛されています。</strong>
@@ -4404,7 +4405,7 @@ section.featured {
  <!-- 日本 (本拠地・宮崎) ☆ -->
  <button class="map-pin map-pin-home" data-country="Japan / 宮崎" style="left:85.0%;top:37.0%;" aria-label="本拠地 宮崎">
  <span class="pin-home-star">★</span>
- <span class="pin-tooltip">本拠地 · 宮崎 (日本)</span>
+ <span class="pin-tooltip" data-en="Home · Miyazaki, Japan">本拠地 · 宮崎 (日本)</span>
  </button>
  <!-- Hong Kong: Year 1 -->
  <button class="map-pin pin-y1" data-country="Hong Kong" style="left:82.0%;top:42.5%;" aria-label="Hong Kong"><span class="pin-tooltip">Hong Kong · Year 1</span></button>
@@ -4436,10 +4437,10 @@ section.featured {
 
  <!-- 凡例 -->
  <div class="world-map-legend">
- <span class="legend-item"><span class="legend-dot legend-home">★</span>本拠地</span>
- <span class="legend-item"><span class="legend-dot legend-y1"></span>1年目 (1カ国)</span>
- <span class="legend-item"><span class="legend-dot legend-y2"></span>2年目 (7カ国)</span>
- <span class="legend-item"><span class="legend-dot legend-y3"></span>3年目 (13カ国)</span>
+ <span class="legend-item" data-en="&lt;span class=&quot;legend-dot legend-home&quot;&gt;★&lt;/span&gt;Home"><span class="legend-dot legend-home">★</span>本拠地</span>
+ <span class="legend-item" data-en="&lt;span class=&quot;legend-dot legend-y1&quot;&gt;&lt;/span&gt;Year 1 (1 country)"><span class="legend-dot legend-y1"></span>1年目 (1カ国)</span>
+ <span class="legend-item" data-en="&lt;span class=&quot;legend-dot legend-y2&quot;&gt;&lt;/span&gt;Year 2 (7 countries)"><span class="legend-dot legend-y2"></span>2年目 (7カ国)</span>
+ <span class="legend-item" data-en="&lt;span class=&quot;legend-dot legend-y3&quot;&gt;&lt;/span&gt;Year 3 (13 countries)"><span class="legend-dot legend-y3"></span>3年目 (13カ国)</span>
  </div>
  </div>
  </div>
@@ -4456,7 +4457,7 @@ section.featured {
  <h2>Where toTaste It.</h2>
  </div>
  <div style="max-width: 380px;">
- <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
+ <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;" data-en="A selection of the hotels and restaurants serving Eda Wagyu, including The Ritz-Carlton Tokyo and Fukuoka, Four Seasons Tokyo and The Tokyo Station Hotel.">
  ザ・リッツ・カールトン東京・福岡、フォーシーズンズ東京、東京ステーションホテルなど、お取扱店の一部をご紹介します。
  </p>
  </div>
@@ -4474,7 +4475,7 @@ section.featured {
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Hotel · French</span>
  <h3 class="restaurant-name">Tokyo Station Hotel</h3>
- <p class="restaurant-loc">「ブラン ルージュ」「カメリア」 · 東京駅丸の内駅舎内</p>
+ <p class="restaurant-loc" data-en="Blanc Rouge / Camellia · Tokyo Station Marunouchi Building">「ブラン ルージュ」「カメリア」 · 東京駅丸の内駅舎内</p>
  <div class="restaurant-actions">
  <a href="https://www.tokyostationhotel.jp/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
  <a href="https://www.tokyostationhotel.jp/restaurants/" target="_blank" rel="noopener" class="restaurant-action primary">Reserve</a>
@@ -4493,10 +4494,10 @@ section.featured {
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Theme Park · Hotel</span>
  <h3 class="restaurant-name">Tokyo DisneySea</h3>
- <p class="restaurant-loc">Fantasy Springs Hotel · 千葉県浦安市</p>
+ <p class="restaurant-loc" data-en="Fantasy Springs Hotel · Urayasu, Chiba">Fantasy Springs Hotel · 千葉県浦安市</p>
  <div class="restaurant-actions">
  <a href="https://www.tokyodisneyresort.jp/tds/" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="restaurants.html" class="restaurant-action primary">お取扱店（一部）</a>
+ <a href="restaurants.html" class="restaurant-action primary" data-en="Selected stockists">お取扱店（一部）</a>
  </div>
  </div>
  </article>
@@ -4511,18 +4512,18 @@ section.featured {
  </div>
  <div class="restaurant-card-body">
  <span class="restaurant-tag">Department Store</span>
- <h3 class="restaurant-name">三越 銀座</h3>
- <p class="restaurant-loc">銀座三越 地下催事 · 中央区銀座</p>
+ <h3 class="restaurant-name" data-en="Mitsukoshi Ginza">三越 銀座</h3>
+ <p class="restaurant-loc" data-en="Ginza Mitsukoshi, food event floor · Ginza, Tokyo">銀座三越 地下催事 · 中央区銀座</p>
  <div class="restaurant-actions">
  <a href="https://www.mistore.jp/store/ginza.html" target="_blank" rel="noopener" class="restaurant-action">Website</a>
- <a href="restaurants.html" class="restaurant-action primary">お取扱店（一部）</a>
+ <a href="restaurants.html" class="restaurant-action primary" data-en="Selected stockists">お取扱店（一部）</a>
  </div>
  </div>
  </article>
  </div>
 
  <div style="text-align: center; margin-top: 64px;" class="reveal">
- <a href="restaurants.html" class="btn btn-dark">お取扱店（一部）を見る <span class="btn-arrow"></span></a>
+ <a href="restaurants.html" class="btn btn-dark" data-en="See where to find us &lt;span class=&quot;btn-arrow&quot;&gt;&lt;/span&gt;">お取扱店（一部）を見る <span class="btn-arrow"></span></a>
  </div>
  </div>
 </section>
@@ -4535,10 +4536,12 @@ section.featured {
  <h2>Farm toYour Table.</h2>
  </div>
  <div style="max-width: 380px;">
- <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
- <strong style="color:var(--color-forest)">単品ご注文：</strong>ご注文から最短3日でお届け<br/>
- <strong style="color:var(--color-forest)">定期便：</strong>毎月1日にお届け（決済は20日）<br/>
- <small style="opacity:0.85">¥11,000以上のご購入で送料無料</small>
+ <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;" data-en="&lt;strong style=&quot;color:var(--color-forest)&quot;&gt;Single orders:&lt;/strong&gt; delivered in as little as 3 days&lt;br/&gt;
+ &lt;strong style=&quot;color:var(--color-forest)&quot;&gt;Subscription:&lt;/strong&gt; delivered on the 1st of each month (charged on the 20th)&lt;br/&gt;
+ &lt;small style=&quot;opacity:0.85&quot;&gt;Free shipping on orders over ¥11,000&lt;/small&gt;">
+ <strong style="color:var(--color-forest)" data-en="Single orders:">単品ご注文：</strong>ご注文から最短3日でお届け<br/>
+ <strong style="color:var(--color-forest)" data-en="Subscription:">定期便：</strong>毎月1日にお届け（決済は20日）<br/>
+ <small style="opacity:0.85" data-en="Free shipping on orders over ¥11,000">¥11,000以上のご購入で送料無料</small>
  </p>
  </div>
  </div>
@@ -4553,8 +4556,8 @@ section.featured {
  <span class="product-tag">Wagyu · Slice</span>
  <span class="product-price">¥2,600</span>
  </div>
- <p class="product-name">江田和牛 赤身スライス</p>
- <p class="product-desc-mini">しゃぶしゃぶ・すき焼きに。和牛の旨みをダイレクトに。</p>
+ <p class="product-name" data-en="Eda Wagyu lean slices">江田和牛 赤身スライス</p>
+ <p class="product-desc-mini" data-en="For shabu-shabu and sukiyaki. The taste of Wagyu, straight.">しゃぶしゃぶ・すき焼きに。和牛の旨みをダイレクトに。</p>
  <div class="product-buy"></div>
  </div>
 
@@ -4567,8 +4570,8 @@ section.featured {
  <span class="product-tag">Steak · Sirloin</span>
  <span class="product-price">¥3,400〜</span>
  </div>
- <p class="product-name">サーロインステーキ</p>
- <p class="product-desc-mini">家庭用ステーキの主役。きめ細かなサシと赤身のバランス。</p>
+ <p class="product-name" data-en="Sirloin steak">サーロインステーキ</p>
+ <p class="product-desc-mini" data-en="The centrepiece steak at home. Fine marbling balanced with lean meat.">家庭用ステーキの主役。きめ細かなサシと赤身のバランス。</p>
  <div class="product-buy"></div>
  </div>
 
@@ -4581,14 +4584,14 @@ section.featured {
  <span class="product-tag">Hamburg</span>
  <span class="product-price">¥760〜</span>
  </div>
- <p class="product-name">ハンバーグ</p>
- <p class="product-desc-mini">解凍してフライパンで焼くだけ。平日の夕食に。</p>
+ <p class="product-name" data-en="Hamburg steak">ハンバーグ</p>
+ <p class="product-desc-mini" data-en="Thaw and pan-fry. For a weeknight dinner.">解凍してフライパンで焼くだけ。平日の夕食に。</p>
  <div class="product-buy"></div>
  </div>
  </div>
 
  <div style="text-align: center; margin-top: 64px;" class="reveal">
- <a href="shop.html" class="btn btn-dark">すべての商品を見る <span class="btn-arrow"></span></a>
+ <a href="shop.html" class="btn btn-dark" data-en="View all products &lt;span class=&quot;btn-arrow&quot;&gt;&lt;/span&gt;">すべての商品を見る <span class="btn-arrow"></span></a>
  </div>
  </div>
 </section>
@@ -4604,10 +4607,9 @@ section.featured {
  <h2>Stories fromThe Farm.</h2>
  </div>
  <div style="max-width: 380px;">
- <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;">
- 創業者の言葉、農場の四季、シェフとの対話。<br/>
- 江田畜産が綴る、食と畜産のジャーナル。
- </p>
+ <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;" data-en="Notes from the founder, the seasons on the farm, conversations with chefs.&lt;br&gt;
+ A journal on food and livestock, written by Eda Livestock.">創業者の言葉、農場の四季、シェフとの対話。<br/>
+ 江田畜産が綴る、食と畜産のジャーナル。</p>
  </div>
  </div>
 
@@ -4662,45 +4664,45 @@ section.featured {
  <li><a>
    <span class="jl-num">01</span>
    <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat">創業者の言葉</span><span class="jl-date">2026.04.20</span></span>
-     <span class="jl-title">3年目を終えて</span>
-     <span class="jl-excerpt">創業から丸3年。江田畜産の軌跡と、次の3年への展望。</span>
+     <span class="jl-meta"><span class="jl-cat" data-en="From the founder">創業者の言葉</span><span class="jl-date">2026.04.20</span></span>
+     <span class="jl-title" data-en="Closing our third year">3年目を終えて</span>
+     <span class="jl-excerpt" data-en="Three full years since founding — where we have come from, and where the next three years lead.">創業から丸3年。江田畜産の軌跡と、次の3年への展望。</span>
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
  <li><a>
    <span class="jl-num">02</span>
    <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat">お知らせ</span><span class="jl-date">2026.01.15</span></span>
-     <span class="jl-title">世界初 — 有機JAS認証黒毛和牛</span>
-     <span class="jl-excerpt">世界で初めて有機JAS認証を取得した黒毛和牛「Premium EdaWagyu」が誕生。</span>
+     <span class="jl-meta"><span class="jl-cat" data-en="News">お知らせ</span><span class="jl-date">2026.01.15</span></span>
+     <span class="jl-title" data-en="A world first — Organic JAS certified Kuroge Wagyu">世界初 — 有機JAS認証黒毛和牛</span>
+     <span class="jl-excerpt" data-en="Premium EdaWagyu, the world&#x27;s first Kuroge Wagyu to earn Organic JAS certification.">世界で初めて有機JAS認証を取得した黒毛和牛「Premium EdaWagyu」が誕生。</span>
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
  <li><a>
    <span class="jl-num">03</span>
    <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat">イベント</span><span class="jl-date">2025.12.10</span></span>
-     <span class="jl-title">JFEX 2025 — 2年連続、幕張メッセへ</span>
-     <span class="jl-excerpt">「日本の食品」輸出EXPO 2025 Winter に2年連続出展。1年前とは違う景色があった。</span>
+     <span class="jl-meta"><span class="jl-cat" data-en="Events">イベント</span><span class="jl-date">2025.12.10</span></span>
+     <span class="jl-title" data-en="JFEX 2025 — a second year at Makuhari Messe">JFEX 2025 — 2年連続、幕張メッセへ</span>
+     <span class="jl-excerpt" data-en="Our second year exhibiting at Japan&#x27;s Food Export EXPO 2025 Winter. The view was different from a year before.">「日本の食品」輸出EXPO 2025 Winter に2年連続出展。1年前とは違う景色があった。</span>
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
  <li><a>
    <span class="jl-num">04</span>
    <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat">シェフとの対話</span><span class="jl-date">2025.09.01</span></span>
-     <span class="jl-title">フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</span>
-     <span class="jl-excerpt">フォーシーズンズホテル東京大手町のフレンチ「est」で江田和牛の提供を開始。</span>
+     <span class="jl-meta"><span class="jl-cat" data-en="In conversation with chefs">シェフとの対話</span><span class="jl-date">2025.09.01</span></span>
+     <span class="jl-title" data-en="Four Seasons Hotel Tokyo at Otemachi — the Wagyu est was looking for">フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</span>
+     <span class="jl-excerpt" data-en="est, the French restaurant at Four Seasons Hotel Tokyo at Otemachi, now serves Eda Wagyu.">フォーシーズンズホテル東京大手町のフレンチ「est」で江田和牛の提供を開始。</span>
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
  <li><a>
    <span class="jl-num">05</span>
    <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat">シェフとの対話</span><span class="jl-date">2025.07.29</span></span>
-     <span class="jl-title">ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</span>
-     <span class="jl-excerpt">永田町のキャピトルホテル東急でサーロインと有機卵が同時採用。宴席の夜の記録。</span>
+     <span class="jl-meta"><span class="jl-cat" data-en="In conversation with chefs">シェフとの対話</span><span class="jl-date">2025.07.29</span></span>
+     <span class="jl-title" data-en="The Capitol Hotel Tokyu — Wagyu, organic eggs and a banquet evening">ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</span>
+     <span class="jl-excerpt" data-en="The Capitol Hotel Tokyu in Nagatacho adopted both our sirloin and our organic eggs. A record of that evening.">永田町のキャピトルホテル東急でサーロインと有機卵が同時採用。宴席の夜の記録。</span>
    </span>
    <span class="jl-arrow">→</span>
  </a></li>
@@ -4708,7 +4710,7 @@ section.featured {
  </div>
 
  <div style="text-align: center; margin-top: 48px;" class="reveal">
- <span style="font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; color: var(--color-gold-soft);">新しい記事を準備中です</span>
+ <span style="font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; color: var(--color-gold-soft);" data-en="New articles are on the way">新しい記事を準備中です</span>
  </div>
  </div>
 </section>
@@ -4718,33 +4720,33 @@ section.featured {
  <div class="container">
  <div class="reveal" style="text-align: center; margin-bottom: 64px;">
  <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Awards & Recognition</span>
- <h2 style="margin-top: 24px;">受賞・認証・採用実績</h2>
+ <h2 style="margin-top: 24px;" data-en="Awards, certifications and adoptions">受賞・認証・採用実績</h2>
  </div>
 
  <div class="reveal awards-swipe" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 1280px; margin: 0 auto;">
 
  <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
  <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— World's First —</div>
- <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;">世界初有機JAS認証 黒毛和牛</h3>
- <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">2026.1 取得 / 鹿児島有機農業協会 No.1002</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;" data-en="World&#x27;s first Organic JAS certified Kuroge Wagyu">世界初有機JAS認証 黒毛和牛</h3>
+ <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;" data-en="Certified January 2026 / Kagoshima Organic Agriculture Association No.1002">2026.1 取得 / 鹿児島有機農業協会 No.1002</p>
  </article>
 
  <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
  <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— Global Export —</div>
- <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;">海外輸出13カ国 取引実績</h3>
- <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">EU・米州・アジア・中東 13カ国の海外バイヤーへ継続出荷</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;" data-en="Exporting to 13 countries">海外輸出13カ国 取引実績</h3>
+ <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;" data-en="Ongoing shipments to buyers in 13 countries across the EU, the Americas, Asia and the Middle East">EU・米州・アジア・中東 13カ国の海外バイヤーへ継続出荷</p>
  </article>
 
  <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
  <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— Smart Livestock —</div>
- <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;">スマート畜産 共同実証</h3>
- <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">2023年〜 ソフトバンク × TTDC × 江田畜産 / AI画像解析・IoT (農水省採択事業)</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;" data-en="Smart livestock joint trial">スマート畜産 共同実証</h3>
+ <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;" data-en="From 2023: SoftBank × TTDC × Eda Livestock / AI image analysis and IoT (a MAFF-selected project)">2023年〜 ソフトバンク × TTDC × 江田畜産 / AI画像解析・IoT (農水省採択事業)</p>
  </article>
 
  <article style="background: white; padding: 32px; border-top: 3px solid var(--color-gold); text-align: center;">
  <div style="font-family: var(--font-display); font-size: 11px; letter-spacing: var(--tracking-widest); color: var(--color-gold-soft); margin-bottom: 12px;">— MAFF —</div>
- <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;">農林水産省輸出人材確保事業 採択</h3>
- <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;">2025.2 / 政府公式プロジェクト採択企業</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; color: var(--color-forest); margin: 0 0 12px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere;" data-en="Selected for MAFF&#x27;s export talent programme">農林水産省輸出人材確保事業 採択</h3>
+ <p style="font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 0;" data-en="February 2025 / selected for an official government project">2025.2 / 政府公式プロジェクト採択企業</p>
  </article>
 
  </div>
@@ -4759,10 +4761,9 @@ section.featured {
  <h2 class="philosophy-title">
  Three Years,<span class="em">Of Building.</span>
  </h2>
- <p class="lead" style="max-width: 640px; margin: 32px auto 0; color: rgba(255,255,255,0.75);">
- 2023年4月の創業から、世界初オーガニック認証取得まで。<br/>
- 江田畜産の歩みを年次でご紹介します。
- </p>
+ <p class="lead" style="max-width: 640px; margin: 32px auto 0; color: rgba(255,255,255,0.75);" data-en="From founding in April 2023 to the world&#x27;s first organic certification.&lt;br&gt;
+ Our story, year by year.">2023年4月の創業から、世界初オーガニック認証取得まで。<br/>
+ 江田畜産の歩みを年次でご紹介します。</p>
  </div>
 
  <div class="reveal timeline-grid" style="max-width: 880px; margin: 0 auto; position: relative;">
@@ -4772,8 +4773,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2023.04</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">江田畜産株式会社 設立</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">代表 江田友輝（27歳）が宮崎県高原町で創業。20代主導の畜産スタートアップとして始動。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Eda Livestock Co., Ltd. founded">江田畜産株式会社 設立</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Founded in Takaharu, Miyazaki by Tomoki Eda, then 27 — a livestock startup led by people in their twenties.">代表 江田友輝（27歳）が宮崎県高原町で創業。20代主導の畜産スタートアップとして始動。</p>
  </div>
  </article>
 
@@ -4781,8 +4782,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2023</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">海外輸出スタート — 1カ国へ</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">創業1年目で香港への直接輸出を開始。商社を介さない独自ルートを確立。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Exports begin — one country">海外輸出スタート — 1カ国へ</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Direct exports to Hong Kong in our first year, on our own route without a trading house.">創業1年目で香港への直接輸出を開始。商社を介さない独自ルートを確立。</p>
  </div>
  </article>
 
@@ -4790,8 +4791,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2024.01</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">SoftBank × TTDC とスマート畜産 共同実証実験 開始</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">AI画像解析・IoTセンシング技術を活用した畜産DXに挑戦。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Smart livestock trial begins with SoftBank and TTDC">SoftBank × TTDC とスマート畜産 共同実証実験 開始</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Applying AI image analysis and IoT sensing to livestock operations.">AI画像解析・IoTセンシング技術を活用した畜産DXに挑戦。</p>
  </div>
  </article>
 
@@ -4799,8 +4800,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2024.01</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">東京ステーションホテル 採用</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">日本重要文化財・東京ステーションホテルの2レストランで無添加飼育の江田和牛の提供がスタート。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Adopted by The Tokyo Station Hotel">東京ステーションホテル 採用</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Two restaurants at The Tokyo Station Hotel, a designated Important Cultural Property, began serving Eda Wagyu.">日本重要文化財・東京ステーションホテルの2レストランで無添加飼育の江田和牛の提供がスタート。</p>
  </div>
  </article>
 
@@ -4808,8 +4809,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2024</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">輸出 7カ国へ拡大（Year 2）</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">2年目で1→7カ国（HK・SG・TH・VN・TW・DE・US）。city'super香港全店展開、NY高級ホテル等。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Exports grow to seven countries (Year 2)">輸出 7カ国へ拡大（Year 2）</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="From one country to seven (HK, SG, TH, VN, TW, DE, US), including every city&#x27;super store in Hong Kong and luxury hotels in New York.">2年目で1→7カ国（HK・SG・TH・VN・TW・DE・US）。city'super香港全店展開、NY高級ホテル等。</p>
  </div>
  </article>
 
@@ -4817,8 +4818,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2025.02</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">農林水産省「輸出人材確保事業」採択</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">日本の畜産輸出を支える次世代企業として、政府プロジェクトに採択。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Selected for MAFF&#x27;s export talent programme">農林水産省「輸出人材確保事業」採択</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Selected by the government as a next-generation company supporting Japan&#x27;s livestock exports.">日本の畜産輸出を支える次世代企業として、政府プロジェクトに採択。</p>
  </div>
  </article>
 
@@ -4826,8 +4827,8 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2025</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 10px; height: 10px; background: var(--color-gold); border-radius: 50%;"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;">三越・京王百貨店・大丸・リッツ福岡 全国展開</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">三越銀座・日本橋フェア、京王60周年記念選定、大丸東京催事、リッツ福岡スペシャルディナー。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px;" data-en="Nationwide: Mitsukoshi, Keio, Daimaru and The Ritz-Carlton Fukuoka">三越・京王百貨店・大丸・リッツ福岡 全国展開</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Fairs at Mitsukoshi Ginza and Nihonbashi, selection for Keio&#x27;s 60th anniversary, an event at Daimaru Tokyo and a special dinner at The Ritz-Carlton Fukuoka.">三越銀座・日本橋フェア、京王60周年記念選定、大丸東京催事、リッツ福岡スペシャルディナー。</p>
  </div>
  </article>
 
@@ -4835,15 +4836,15 @@ section.featured {
  <div style="font-family: var(--font-display); font-size: 22px; color: var(--color-gold); text-align: right; padding-right: 16px;">2026.01</div>
  <div style="position: relative; padding-left: 32px;">
  <span style="position: absolute; left: -5px; top: 8px; width: 12px; height: 12px; background: var(--color-gold); border-radius: 50%; box-shadow: 0 0 0 4px rgba(212,169,59,0.2);"></span>
- <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px; color: var(--color-gold);">世界初・有機JAS認証黒毛和牛 ローンチ</h3>
- <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;">鹿児島有機農業協会の認証（No.1002）を取得。Premium EdaWagyu として世界へ。</p>
+ <h3 style="font-family: var(--font-display); font-size: 18px; margin: 0 0 6px; color: var(--color-gold);" data-en="Launch of the world&#x27;s first Organic JAS certified Kuroge Wagyu">世界初・有機JAS認証黒毛和牛 ローンチ</h3>
+ <p style="font-size: 13px; line-height: 1.7; opacity: 0.8; margin: 0;" data-en="Certified by the Kagoshima Organic Agriculture Association (No.1002) and taken worldwide as Premium EdaWagyu.">鹿児島有機農業協会の認証（No.1002）を取得。Premium EdaWagyu として世界へ。</p>
  </div>
  </article>
 
  </div>
 
  <div style="text-align: center; margin-top: clamp(64px, 8vw, 96px);" class="reveal">
- <a href="press.html" class="btn btn-gold">プレス・受賞歴を見る <span class="btn-arrow"></span></a>
+ <a href="press.html" class="btn btn-gold" data-en="Press and awards &lt;span class=&quot;btn-arrow&quot;&gt;&lt;/span&gt;">プレス・受賞歴を見る <span class="btn-arrow"></span></a>
  </div>
  </div>
 </section>
@@ -4856,17 +4857,17 @@ section.featured {
  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img loading="lazy" decoding="async" src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="footer-brand-img"/></picture>
  <span>
  <span class="footer-brand">EDA-LIVESTOCK</span>
- <span class="footer-brand-jp">江田畜産株式会社</span>
+ <span class="footer-brand-jp" data-en="Eda Livestock Co., Ltd.">江田畜産株式会社</span>
  </span>
  </a>
  <p class="footer-tagline">
- <strong>100年続く畜産を、創造する。</strong><br/>
+ <strong data-en="Building a livestock business made to last a century.">100年続く畜産を、創造する。</strong><br/>
  Sustainable Japanese Wagyu —<br/>
  Livestock for the Next Century.
  </p>
  <div class="footer-meta">
- <p>江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
- <p>事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
+ <p data-en="Eda Livestock Co., Ltd.">江田畜産株式会社 / Eda Livestock Co., Ltd.</p>
+ <p data-en="Business: Kuroge Wagyu breeding, fattening, retail, export and smart livestock">事業内容：黒毛和牛 繁殖・肥育・小売・輸出・スマート畜産</p>
  <p><a href="mailto:backoffice@eda-livestock.com" style="color:inherit">backoffice@eda-livestock.com</a></p>
  </div>
  </div>
@@ -4874,28 +4875,28 @@ section.featured {
  <h4>Shop</h4>
  <ul>
  <li><a href="shop.html">Online Shop</a></li>
- <li><a href="subscription.html">月の定期便</a></li>
- <li><a href="restaurants.html">お取扱店（一部）</a></li>
+ <li><a href="subscription.html" data-en="Monthly subscription">月の定期便</a></li>
+ <li><a href="restaurants.html" data-en="Selected stockists">お取扱店（一部）</a></li>
  </ul>
  </div>
  <div class="footer-col">
  <h4>Company</h4>
  <ul>
- <li><a href="about.html">江田畜産について</a></li>
- <li><a href="contact.html">お問い合わせ</a></li>
+ <li><a href="about.html" data-en="About Eda Livestock">江田畜産について</a></li>
+ <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
  </ul>
  </div>
  <div class="footer-col">
  <h4>Legal</h4>
  <ul>
- <li><a href="terms.html">利用規約</a></li>
- <li><a href="privacy.html">プライバシーポリシー</a></li>
- <li><a href="tokushoho.html">特定商取引法に基づく表記</a></li>
+ <li><a href="terms.html" data-en="Terms of Service">利用規約</a></li>
+ <li><a href="privacy.html" data-en="Privacy Policy">プライバシーポリシー</a></li>
+ <li><a href="tokushoho.html" data-en="Legal notice (Specified Commercial Transactions Act)">特定商取引法に基づく表記</a></li>
  </ul>
  </div>
  </div>
  <div class="footer-bottom">
- <span>© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
+ <span data-en="© 2026 EDA-LIVESTOCK CO., LTD.">© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社</span>
  </div>
  </div>
 </footer>
@@ -4910,9 +4911,9 @@ section.featured {
  <div class="cart-drawer-items" id="cartItems">
  <div class="cart-empty" id="cartEmpty">
  <div class="cart-empty-icon"></div>
- <p class="cart-empty-text">カートはまだ空です</p>
- <p class="cart-empty-sub">まずは人気の和牛からどうぞ。</p>
- <a href="shop.html" class="cart-empty-cta">商品を見る</a>
+ <p class="cart-empty-text" data-en="Your cart is empty">カートはまだ空です</p>
+ <p class="cart-empty-sub" data-en="Start with one of our popular cuts.">まずは人気の和牛からどうぞ。</p>
+ <a href="shop.html" class="cart-empty-cta" data-en="View products">商品を見る</a>
  </div>
  </div>
  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
@@ -4921,11 +4922,11 @@ section.featured {
  <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
  </div>
  <div class="cart-shipping-note">
- ¥11,000以上で<strong>送料無料</strong>。冷凍便でお届け。
+ ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
  </div>
  <div class="cart-delivery-note" id="cartDelivery"></div>
- <button class="btn-checkout" id="cartCheckout">レジに進む — Checkout</button>
- <button class="cart-continue" id="cartContinue">買い物を続ける</button>
+ <button class="btn-checkout" id="cartCheckout" data-en="Proceed to checkout">レジに進む — Checkout</button>
+ <button class="cart-continue" id="cartContinue" data-en="Continue shopping">買い物を続ける</button>
  </div>
 </aside>
 
@@ -4935,7 +4936,7 @@ section.featured {
  <span class="sticky-cart-count" id="stickyCartCount">0 items</span>
  <span class="sticky-cart-total" id="stickyCartTotal">¥0</span>
  </div>
- <button class="sticky-cart-btn" id="stickyCartBtn">カートを見る</button>
+ <button class="sticky-cart-btn" id="stickyCartBtn" data-en="View cart">カートを見る</button>
 </div>
 
 <script>
@@ -5198,7 +5199,7 @@ section.featured {
  if (remaining > 0) {
  noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料`;
  } else {
- noteEl.innerHTML = '<strong>送料無料</strong>でお届けします！';
+ noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！';
  }
  }
 
@@ -5290,7 +5291,7 @@ section.featured {
  const v = variants[0];
  html += `<div class="variant-select variant-select--static">${v.t} — ¥${v.p.toLocaleString()}</div>`;
  }
- html += '<button class="btn-add-cart">カートに追加</button>';
+ html += '<button class="btn-add-cart" data-en="Add to cart">カートに追加</button>';
  buyEl.innerHTML = html;
 
  const addBtn = buyEl.querySelector('.btn-add-cart');
@@ -5341,6 +5342,7 @@ section.featured {
 
 <script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>
