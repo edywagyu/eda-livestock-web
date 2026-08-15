@@ -205,6 +205,14 @@ body{
       desc: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得です。ご家庭の焼肉・BBQに。'
     },
     {
+      productId: 'P023', variantId: 'MISUJI-STEAK',
+      name: 'ミスジステーキ',
+      variant: '1枚 150g',
+      price: 3500, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/misuji-steak.jpg',
+      desc: '肩甲骨の内側にある、一頭からわずかしか取れない希少部位。細かなサシと赤身の旨みが同居します。厚めのレア焼きで。'
+    },
+    {
       productId: 'P032', variantId: 'HIRE-CUBE',
       name: 'ヒレサイコロステーキ',
       variant: '1袋 200g',
@@ -250,6 +258,9 @@ body{
       : '<p class="stock-line">残り ' + it.stock + ' セット</p>';
     if (!soldOut && it.productId === 'P032') {
       stockLine = '<p class="stock-line">残り ' + it.stock + ' 袋</p>';
+    }
+    if (!soldOut && it.productId === 'P023') {
+      stockLine = '<p class="stock-line">残り ' + it.stock + ' 枚</p>';
     }
     return '' +
       '<div class="card" data-i="' + i + '">' +
