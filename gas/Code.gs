@@ -2122,7 +2122,7 @@ function finalizeOrder(session) {
 /* ============================================================
    注文確定後に products シートの stock を減算
    ・metadata に items_json があれば使う (未保存の場合は line_items から取得)
-   ・1つ=1, 2つセット=2, 3つセット=3 のユニット換算
+   ・1つ=1, 2つセット=2, 3つセット=3 …「Nつセット/N個セット」を N として換算
    ============================================================ */
 function decrementStockAfterOrder(session, meta) {
   const sh = ss().getSheetByName('products');
@@ -2136,6 +2136,13 @@ function decrementStockAfterOrder(session, meta) {
 
   function variantUnits(variant) {
     if (!variant) return 1;
+    /* 「3つセット【5%オフ】」「5つセット【10%オフ】」「6個セット」など、
+       数字＋(つ|個)＋セット を N 口として読む。会員限定ページの
+       5つセットを ×1 でしか減らさない取りこぼしを防ぐ。
+       「5個 / 100g×5」(ギフト箱=1点)のようにセットが続かない表記は
+       従来どおり 1 のまま。 */
+    var m = String(variant).match(/([2-9])\s*(?:つ|個)\s*セット/);
+    if (m) return Number(m[1]);
     if (String(variant).indexOf('3つ') >= 0) return 3;
     if (String(variant).indexOf('2つ') >= 0) return 2;
     return 1;
@@ -3183,9 +3190,13 @@ function validateStockBeforeCheckout(items) {
     const stockIdx = headers.indexOf('stock');
     if (titleIdx === -1 || stockIdx === -1) return errors;
 
-    // 商品ごとの「ユニット消費」を集計 (1つ=1, 2つセット=2, 3つセット=3)
+    // 商品ごとの「ユニット消費」を集計 (1つ=1, 2つセット=2 …「Nつ/N個セット」= N)
     function variantUnits(variant) {
       if (!variant) return 1;
+      /* decrementStockAfterOrder の variantUnits と同じ規則。片方だけ直すと
+         カート確保(残り◯表示)と実際の減算がズレるので必ず両方そろえる。 */
+      var m = String(variant).match(/([2-9])\s*(?:つ|個)\s*セット/);
+      if (m) return Number(m[1]);
       if (String(variant).indexOf('3つ') >= 0) return 3;
       if (String(variant).indexOf('2つ') >= 0) return 2;
       return 1;
