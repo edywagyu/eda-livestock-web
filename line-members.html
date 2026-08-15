@@ -209,7 +209,7 @@ body{
 (function () {
   'use strict';
 
-  /* 会員限定の2品。price / stock は public_catalog のライブ値で上書きされる
+  /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
     {
@@ -243,6 +243,24 @@ body{
       price: 2500, listPrice: 0, stock: 3, limitedTotal: 3,
       img: 'public/images/products/drive/cube-red.jpg',
       desc: '一頭から約3%だけのヒレを、ステーキにできない部分までサイコロカットに。希少部位を気軽に。'
+    },
+    {
+      productId: 'P008', variantId: 'HAMBURG',
+      name: 'ハンバーグ',
+      variant: '1個 100g',
+      price: 760, listPrice: 0, stock: 38, limitedTotal: 0,
+      img: 'public/images/products/drive/hamburg.jpg',
+      desc: '和牛100%のシンプル配合。冷蔵庫で数時間解凍してから、フライパンで両面を焼くだけ。平日の夕食に。',
+      /* まとめ買い割引は【この会員限定ページだけ】。shop.html の店頭カードは
+         1つ/2つセット/3つセットのまま＝据え置き。
+         ラベルの「3つ」「5つ」は GAS の在庫減算(variantUnits)が読む文字列。
+         5つセットは variantUnits の一般化(N つ/N 個 + セット)が本番GASに
+         入っていないと ×1 でしか減らないので、GAS 反映前に公開しないこと。 */
+      variants: [
+        { t: '1つ',                  p:  760, n: 1 },
+        { t: '3つセット【5%オフ】',   p: 2166, n: 3, off: 114 },
+        { t: '5つセット【10%オフ】',  p: 3420, n: 5, off: 380 }
+      ]
     }
   ];
 
@@ -298,6 +316,9 @@ body{
     }
     if (!soldOut && it.productId === 'P023') {
       stockLine = '<p class="stock-line">残り ' + it.stock + ' 枚</p>';
+    }
+    if (!soldOut && it.productId === 'P008') {
+      stockLine = '<p class="stock-line">残り ' + it.stock + ' 個</p>';
     }
     return '' +
       '<div class="card" data-i="' + i + '">' +
