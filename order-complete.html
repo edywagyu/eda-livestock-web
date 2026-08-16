@@ -1122,8 +1122,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <p class="timeline-line-note">各ステップをLINEで通知します</p>
  </div>
 
- <!-- ★ SURVEY (optional) ★ -->
- <div class="survey-card" id="surveyCard">
+ <!-- ★ SURVEY (optional・定期便の購入者のみ表示 / renderOrder で出し分け) ★ -->
+ <div class="survey-card" id="surveyCard" style="display:none;">
  <div class="survey-reward-banner">
  <span class="srb-icon" aria-hidden="true">🎁</span>
  <span class="srb-text">ご回答で <strong>鶏むね1個</strong> プレゼント</span>
@@ -1450,6 +1450,11 @@ function renderOrder(order) {
  let estDate = order.estimated_delivery ? new Date(order.estimated_delivery) : null;
  let subTxt = '発送後2〜3日でお届けします';
  const isSubscription = (order.mode || '').indexOf('subscription') === 0;
+
+ /* ★ アンケート(回答で鶏むね1個)は定期便の購入者だけに表示する */
+ var surveyCardEl = document.getElementById('surveyCard');
+ if (surveyCardEl) surveyCardEl.style.display = isSubscription ? '' : 'none';
+
  if (isSubscription) {
    // 決済日の翌月1日にお届け
    const paid = order.date ? new Date(order.date) : new Date();
