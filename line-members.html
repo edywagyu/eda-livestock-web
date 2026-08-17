@@ -336,8 +336,10 @@ body{
     if (!soldOut && it.productId === 'P008') {
       stockLine = '<p class="stock-line">残り ' + it.stock + ' 個</p>';
     }
+    /* P034 は締切のある数量限定。締切は日時で書き、数量も添える（LINE本文の確定ルールと同じ）。
+       残数は在庫連動なので、売れれば自動で減り 0 で「完売しました」に切り替わる。 */
     if (!soldOut && it.productId === 'P034') {
-      stockLine = '<p class="stock-line">残り ' + it.stock + ' 袋</p>';
+      stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定 残り ' + it.stock + ' 袋</p>';
     }
     return '' +
       '<div class="card" data-i="' + i + '">' +
