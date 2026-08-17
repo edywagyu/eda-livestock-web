@@ -2860,7 +2860,11 @@ function normalizeStaffOrder(o) {
           name: d.name || '',
           tel: d.tel || '',
           zip: d.zip || '',
-          address: (d.pref || '') + (d.address || '')
+          address: (d.pref || '') + (d.address || ''),
+          // 🎀 のし: 決済ページの選択肢は 御中元 / 御祝 / 御歳暮 / 内祝 / none(のし不要)。
+          //    未選択・旧注文は空文字で来るのでこれも「不要」扱いにする。
+          noshi: (!d.noshi || d.noshi === 'none') ? '' : String(d.noshi),
+          fromName: d.fromName || ''   // のしに刷る贈り主名（注文者名と違うことがある）
         };
       });
     })(),
@@ -2871,6 +2875,16 @@ function normalizeStaffOrder(o) {
     tracking: o.tracking_number || '',
     email: o.customer_email || '',
     mode: o.mode || 'single',
+    // 🎁 ギフト注文かどうか。checkout の mode(gift=送り先1件 / multi=送り先複数)を第一の根拠にし、
+    //    mode 列が空の旧注文でも「購入者(self)以外の宛先に商品が付いている」形から拾えるようにする。
+    isGift: (function () {
+      var m = String(o.mode || '').toLowerCase();
+      if (m === 'gift' || m === 'multi') return true;
+      return dests.some(function (d) {
+        return d && d.type === 'gift' &&
+          ((Array.isArray(d.items) && d.items.length) || (Array.isArray(d.itemIds) && d.itemIds.length));
+      });
+    })(),
     reqDeliveryDate: String(o.delivery_date || '').slice(0, 10),   // 顧客の配送希望日 (ISO YYYY-MM-DD・空=指定なし)。万一日時で来ても先頭10字で日付化
     reqDeliveryTime: o.delivery_time || '',                        // 配送希望時間帯ラベル
     _raw: o
@@ -2894,7 +2908,7 @@ function renderOrders() {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}</div>
           <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
@@ -2934,6 +2948,16 @@ function renderShipDetail() {
   const buyerAddrKey = norm(buyer.zip) + norm(buyer.address);
   const multiDest = targets.length > 1;
 
+  // 🎀 のし（ギフト行の中に出す）。宛先ごとに違いうるので、複数宛先なら「宛名: のし種別」で並べる。
+  //    のし不要でも贈り主名が入っていることがあるため、fromName は種別に関係なく添える。
+  const noshiOf = d => {
+    const kind = d.noshi ? d.noshi : 'のし不要';
+    return kind + (d.fromName ? '（贈り主 ' + d.fromName + '）' : '');
+  };
+  const noshiText = multiDest
+    ? '🎀 のし ' + targets.map(d => escapeHtml((d.name || '宛名なし') + '様 ' + noshiOf(d))).join(' ／ ')
+    : '🎀 のし ' + escapeHtml(noshiOf(targets[0] || {}));
+
   // 明細リスト（受注ID…配送STS）の中に差し込む「購入者」「配送先」の行。
   const buyerRows = `
       <div class="detail-row"><span class="label">🧾 ご購入者</span><span class="value">${escapeHtml(buyer.name || '（名前なし）')}${o.purchaseCount ? ' <span style="font-size:11px;color:var(--gold-soft)">' + o.purchaseCount + '回目</span>' : ''}</span></div>
@@ -2970,6 +2994,7 @@ function renderShipDetail() {
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
       <div class="detail-row"><span class="label">受注日</span><span class="value">${escapeHtml(o.orderDate || '')}</span></div>
+      ${o.isGift ? `<div class="detail-row"><span class="label">🎁 ご注文区分</span><span class="value"><span style="display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:2px 10px">ギフト</span><span style="font-size:11px;color:var(--muted);margin-left:8px">${multiDest ? '複数の方へお届け' : 'ご購入者とは別の方へお届け'}</span><div style="font-size:12px;font-weight:700;color:#111;margin-top:6px">${noshiText}</div></span></div>` : ''}
       ${buyerRows}
       ${destRows}
       <div class="detail-row detail-row--items"><span class="label">商品</span><span class="value">${itemsHtml}</span></div>
