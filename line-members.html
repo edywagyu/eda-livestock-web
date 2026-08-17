@@ -210,6 +210,24 @@ body{
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
     {
+      productId: 'P034', variantId: 'SHIMOFURI-MEMBER',
+      name: 'LINE会員限定 霜降スライス まとめ買い',
+      variant: '200g×2袋 ／ 200g×3袋',
+      price: 6280, listPrice: 7400, stock: 43, limitedTotal: 43,
+      img: 'public/images/products/drive/shimofuri-slice.jpg',
+      desc: '肩ロースの霜降りを約2mm厚の薄切りに。夏は冷しゃぶで、たれを変えるだけで最後まで飽きません。1袋ずつ買うより2袋で1,120円、3袋で2,720円お得です。',
+      /* 会員限定のまとめ買い割引。shop.html / products.html の通常カード
+         (1つ¥3,700 / 2つセット【5%オフ】 / 3つセット【10%オフ】) は据え置き＝触らない。
+         ラベルの「2つ」「3つ」は GAS の在庫減算(variantUnits)が読む文字列なので変更禁止。
+         1kg(5つセット ¥12,480 / 32%オフ / off:6020) は variantUnits が「5つ」を
+         ×1 と数えるため本番GASの一般化が入るまで出さない
+         （2026-08-17 ryotaro判断: 初回は 400g / 600g の2択で公開）。 */
+      variants: [
+        { t: '2つセット【15%オフ】',  p: 6280, n: 2, off: 1120, mem: true },
+        { t: '3つセット【24%オフ】',  p: 8380, n: 3, off: 2720, mem: true }
+      ]
+    },
+    {
       productId: 'P033', variantId: 'YAKINIKU-SET-2',
       name: 'LINE会員限定 焼肉2種セット',
       variant: '赤身焼肉200g ＋ バラ焼肉200g',
@@ -317,6 +335,9 @@ body{
     }
     if (!soldOut && it.productId === 'P008') {
       stockLine = '<p class="stock-line">残り ' + it.stock + ' 個</p>';
+    }
+    if (!soldOut && it.productId === 'P034') {
+      stockLine = '<p class="stock-line">残り ' + it.stock + ' 袋</p>';
     }
     return '' +
       '<div class="card" data-i="' + i + '">' +
