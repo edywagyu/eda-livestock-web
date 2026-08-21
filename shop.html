@@ -12472,6 +12472,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  };
  items.push(giftItem);
  save();
+ /* 📊 Analytics: ギフトのカート追加イベント (カゴ落ち検知 gas/cart_holds.gs の入力) */
+ if (window.edaAnalytics) window.edaAnalytics.addToCart(giftItem.variantId, price, { title: title, variant: 'ギフトセット' });
  location.href = 'checkout.html?mode=gift';
  };
 
