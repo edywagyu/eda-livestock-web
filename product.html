@@ -1110,13 +1110,25 @@ function giftThisProduct() {
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script>
-/* PDP: view_item イベント送信 */
+/* PDP: view_item イベント送信
+
+   meta.title を必ず載せる。add_to_cart 側は meta.title（商品名）で記録されており、
+   閲覧とカートを突き合わせられる共通キーは商品名しかない
+   （product_id 列は閲覧=P0xx / カート=規格ID で体系が違う。cart_holds.gs も
+   pdp-link.js も商品名で照合している）。これが無いと「見られたのにカートに
+   入らなかった商品」が出せない。
+
+   商品は URL の id ではなく「実際に描画された商品」(window.__pdpProduct) を正とする。
+   このページは未知の id を渡されると all[0]（サーロイン）にフォールバックして
+   描画するため、URL の id をそのまま信じると見ていない商品を記録してしまう。 */
 window.addEventListener('load', () => {
-  const params = new URLSearchParams(location.search);
-  const pid = params.get('id') || '';
-  const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
-  const p = all.find(x => x.productId === pid);
-  if (window.edaAnalytics && p) window.edaAnalytics.viewItem(pid, p.price);
+  if (!window.edaAnalytics) return;
+  const p = window.__pdpProduct;
+  if (!p) return;
+  window.edaAnalytics.viewItem(p.productId || '', p.price || 0, {
+    title: p.name || '',
+    variant: p.variant || ''
+  });
 });
 </script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>

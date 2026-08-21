@@ -488,7 +488,7 @@ body{
       syncCatalog();
       try {
         ITEMS.forEach(function (it) {
-          if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price);
+          if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
         });
       } catch (e) {}
     }
