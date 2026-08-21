@@ -1450,6 +1450,8 @@ function handleLineFollow_(ev) {
   for (var i = 1; i < data.length; i++) {
     if (String(data[i][lineIdx]) === String(uid)) {
       if (displayName) sh.getRange(i + 1, lineNameIdx + 1).setValue(displayName);
+      // ブロック後に再追加された人の「ブロック」印を外す (印が残ると永久にブロック中扱いになる)
+      if (String(data[i][sourceIdx]) === 'ブロック') sh.getRange(i + 1, sourceIdx + 1).setValue('LINE友だち追加');
       log('line_follow_existing', { uid: uid });
       sendLinePush(uid, [buildFollowWelcomeMessage(displayName)]);
       return;
@@ -3326,8 +3328,10 @@ function upsertCustomer(c) {
       // line_uid を併せて保存 (チェックアウト時にLINEセッションから取得)
       if (c.line_uid && lineIdx >= 0) {
         sh.getRange(i+1, lineIdx+1).setValue(c.line_uid);
-        if (lineNameIdx >= 0) sh.getRange(i+1, lineNameIdx+1).setValue(c.line_name || '');
-        if (linkedAtIdx >= 0) sh.getRange(i+1, linkedAtIdx+1).setValue(new Date());
+        // 表示名は「空で上書きしない」(注文時にLINE表示名が取れないケースがある)
+        if (lineNameIdx >= 0 && c.line_name) sh.getRange(i+1, lineNameIdx+1).setValue(c.line_name);
+        // linked_at は「LINEと連携した日」。買うたびに今日へ書き換えない (流入元分析が壊れる)
+        if (linkedAtIdx >= 0 && !data[i][linkedAtIdx]) sh.getRange(i+1, linkedAtIdx+1).setValue(new Date());
       }
       return;
     }
@@ -3666,8 +3670,9 @@ function lineLinkAccount(body) {
     if (foundRow > 0) {
       // 既存 row の line_uid を更新
       sh.getRange(foundRow, lineIdx + 1).setValue(body.line_uid);
-      sh.getRange(foundRow, nameIdx + 1).setValue(body.display_name || '');
-      sh.getRange(foundRow, linkedAtIdx + 1).setValue(new Date());
+      if (body.display_name) sh.getRange(foundRow, nameIdx + 1).setValue(body.display_name);
+      // 初回連携日を残す (再連携で上書きしない)
+      if (!data[foundRow - 1][linkedAtIdx]) sh.getRange(foundRow, linkedAtIdx + 1).setValue(new Date());
     } else {
       // 新規 row 追加（注文がなくても会員登録する）
       const row = new Array(headers.length).fill('');
