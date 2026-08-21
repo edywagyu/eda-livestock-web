@@ -3895,7 +3895,7 @@ function linkCouponCode_() {
 function normalizeCustomerCoupon_(body) {
   var raw = String((body && (body.couponCode || body.coupon_code)) || '').trim().toUpperCase();
   if (!raw) return '';
-  var allowed = { 'エダチク10': true };
+  var allowed = { 'エダチク10': true, 'EDA10': true };   // EDA10=全商品10%OFF（2026-08-21 追加）
   allowed[linkCouponCode_()] = true;         // 既定 LINE10（LINK_COUPON_CODE で変更可）
   if (!allowed[raw]) {
     log('coupon_unknown_code', { code: raw.slice(0, 32) });

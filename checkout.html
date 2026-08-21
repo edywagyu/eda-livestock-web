@@ -2274,7 +2274,8 @@ function removeDestination(idx) {
    値引きは下の discountedUnit() が単価を書き換えて実現する（Stripe coupon は使わない）。 */
 var COUPONS = {
  'エダチク10': { type: 'percent', value: 10, label: '初回購入10%OFF' },
- 'LINE10':     { type: 'percent', value: 10, label: 'LINE連携特典 全品10%OFF' }
+ 'LINE10':     { type: 'percent', value: 10, label: 'LINE連携特典 全品10%OFF' },
+ 'EDA10':      { type: 'percent', value: 10, label: '全商品10%OFF' }
 };
 var appliedCoupon = null;
 var gShipping = 0;
