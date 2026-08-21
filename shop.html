@@ -6046,6 +6046,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 /* 肉の日バナーはお届けバー(order:1)の直下。order 未指定だと既定の 99 に落ちて
    ページ最下部へ飛ぶため、必ず明示すること。 */
 .shop-main-wrap > .nikunohi-bar { order: 2; }
+/* 人気商品バナーは肉の日バナー(order:2)の直下・商品一覧(order:10)の上。
+   order 未指定だと既定の 99 に落ちてページ最下部へ飛ぶ */
+.shop-main-wrap > .popular-bar { order: 3; }
 .shop-main-wrap > .freezer-band { order: 12; } /* 冷凍庫イメージ（2026-07-03 商品前倒しで products 後へ） */
 .shop-main-wrap > .unboxing-section { order: 13; } /* 開封動画（同上） */
 .shop-main-wrap > #products { order: 10; } /* All Products 最上 */
@@ -9852,6 +9855,37 @@ body.is-member .product-card--organic .org-chk-lock {
  .nikunohi-inner{gap:10px;padding:14px 16px;}
  .nikunohi-meta{width:100%;}
  .nikunohi-cta{margin-left:auto;}
+}
+</style>
+
+<!-- ========= 今売れている人気商品バナー（中身は public/js/popular.js が描く） =========
+     直近14日の 購入×3＋カート×2 の上位を出す。データは GAS(public_popular)＝毎回最新、
+     落ちたら同梱 public/data/popular.json。両方だめなら hidden のまま＝何も出ない。
+     売り切れ・非公開・期間切れ・このページに無い商品は popular.js 側で外している。 -->
+<section class="popular-bar" id="popularBar" hidden></section>
+<style>
+/* ファーストビュー内なので reveal(スクロール表示)は使わない。常時表示させる */
+.popular-bar{padding:0 0 18px;opacity:1;}
+.pop-bar-inner{padding:14px 20px 16px;border-radius:14px;
+ background:linear-gradient(100deg,#0F3D2E 0%,#175A43 60%,#1E7355 100%);
+ border:1px solid rgba(212,169,59,0.45);box-shadow:0 6px 20px rgba(15,61,46,0.18);color:#fff;}
+.pop-bar-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 10px;}
+.pop-fire{font-size:16px;line-height:1;}
+.pop-bar-title{font-family:var(--font-jp-serif);font-size:clamp(15px,2vw,18px);font-weight:700;letter-spacing:.04em;}
+.pop-bar-note{font-size:11px;opacity:.72;letter-spacing:.02em;}
+.pop-bar-list{display:flex;gap:10px;flex-wrap:wrap;}
+.pop-chip{display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:999px;
+ background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+ text-decoration:none;color:#fff;transition:background .18s ease,transform .18s ease;}
+.pop-chip:hover{background:rgba(255,255,255,.18);transform:translateY(-2px);}
+.pop-rank{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+ background:var(--color-gold,#D4A93B);color:#23331F;font-size:12px;font-weight:800;}
+.pop-name{font-size:13px;font-weight:600;white-space:nowrap;}
+.pop-price{font-size:12px;color:var(--color-gold,#D4A93B);font-weight:700;white-space:nowrap;}
+@media (max-width:600px){
+ .pop-bar-list{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
+ .pop-bar-list::-webkit-scrollbar{display:none;}
+ .pop-chip{flex:none;}
 }
 </style>
 
@@ -14667,6 +14701,8 @@ function copyPopCoupon() {
 <script src="public/js/limited-stock.js?v=010" defer></script>
 <script src="public/js/analytics.js?v=003" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
+<!-- 売れ行きランキング（#popularBar のバナーを描く。products.html は並べ替えにも使う） -->
+<script src="public/js/popular.js?v=4" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>

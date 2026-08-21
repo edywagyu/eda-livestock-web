@@ -41,10 +41,78 @@
     try { return '¥' + Number(n).toLocaleString('ja-JP'); } catch (e) { return '¥' + n; }
   }
 
+  /* ---- バナー（shop.html の #popularBar） ----------------------------------
+     バナーに出す品の作り方。ranking（商品名＋ランクだけ）から毎回組み立てる。
+
+     なぜ data.banner をそのまま使わないか（2026-08-21）:
+       ・GAS の public_popular は ranking しか返さない＝banner が無い。
+       ・同梱 popular.json の banner は id が数値バリアントID（50831002400101）で、
+         PDP は product.html?id=P034 の productId しか解さない＝リンクが必ず外れる。
+     どちらの経路でも商品名からマスターを引き直し、productId・価格・在庫を取り直す。
+
+     出さない品: 除外指定（肉の日限定セット等）／マスターに無い／非公開・COMING SOON／
+     在庫0／販売期間切れ／shop.html にカードが無い（＝そのページで買えない）。
+     売り切れを一等地に出さないのは #85（売り切れは末尾）と同じ理由。 */
+  var BANNER_MAX = 5;
+
+  function shopCardNames() {
+    var names = {};
+    document.querySelectorAll('.product-card .product-name').forEach(function (el) {
+      var n = el.textContent.trim();
+      if (n) names[n] = true;
+    });
+    return names;
+  }
+
+  function sellableByName() {
+    var master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+    var now = Date.now();
+    var byName = {};
+    master.forEach(function (p) {
+      if (!p.name) return;
+      if (p.published === false) return;
+      if (p.comingSoon) return;
+      if (Number(p.stock) <= 0) return;
+      if (p.limitedUntil) {
+        var until = new Date(String(p.limitedUntil).replace(/-/g, '/')).getTime();
+        if (until && until < now) return;         /* 販売期間が終わっている限定品 */
+      }
+      if (!byName[p.name]) byName[p.name] = p;
+    });
+    return byName;
+  }
+
+  function buildBanner(data) {
+    var excluded = {};
+    (data.excluded || ['肉の日限定セット']).forEach(function (n) { excluded[String(n).trim()] = true; });
+    var sellable = sellableByName();
+    var onPage = shopCardNames();
+    var out = [];
+    (data.ranking || []).forEach(function (it) {
+      if (out.length >= BANNER_MAX) return;
+      var name = String(it.name == null ? '' : it.name).trim();
+      if (!name || excluded[name] || !onPage[name]) return;
+      var p = sellable[name];
+      if (!p) return;
+      out.push({ rank: out.length + 1, name: p.name, price: p.price, id: p.productId });
+    });
+    return out;
+  }
+
   function renderBanner(data) {
     var bar = document.getElementById('popularBar');
-    if (!bar || !data.banner || !data.banner.length) return;
-    var chips = data.banner.map(function (b) {
+    if (!bar) return;
+    /* マスターは products-loader.js が非同期で入れる。届く前は組み立てられないので待つ
+       （最大 約3秒。それでも来なければバナーは出さない＝画面は元のまま） */
+    if (!(window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products)) {
+      if ((renderBanner.tries = (renderBanner.tries || 0) + 1) <= 15) {
+        setTimeout(function () { renderBanner(data); }, 200);
+      }
+      return;
+    }
+    var items = buildBanner(data);
+    if (!items.length) return;
+    var chips = items.map(function (b) {
       return '<a class="pop-chip" href="product.html?id=' + encodeURIComponent(b.id) + '">'
            +   '<span class="pop-rank">' + b.rank + '</span>'
            +   '<span class="pop-name">' + b.name + '</span>'
