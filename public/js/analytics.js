@@ -107,6 +107,31 @@
   function autoFire() {
     window.edaAnalytics.pageView();
 
+    /* src 付き流入の計測 (2026-07-27)
+       リッチメニュー等のリンクに ?src=richmenu&l=A を付けると、遷移先の
+       このページで src_click を記録。誰が(連携済uid)・いつ(曜日/時刻)・
+       どのメニューから来たかが分かる。LIFF リンクを壊さずに計測できる
+       (c.html を挟まないので liff.line.me の自動ログイン/会員価格は無事)。*/
+    try {
+      var _p = new URLSearchParams(location.search);
+      var _src = _p.get('src');
+      if (_src) {
+        var _now = new Date();
+        send('src_click', {
+          product_id: _p.get('l') || '',   // ボタン名(A..F 等)を product_id 列へ
+          meta: {
+            src: _src,                      // 例 richmenu
+            l: _p.get('l') || '',
+            dow: _now.getDay(),             // 0=日 … 6=土 (JST)
+            hour: _now.getHours()          // 0-23
+          }
+        });
+        /* 「誰が」は send() が meta.line_uid を全イベントに自動添付する（getLineUid）。
+           ここで自前に持たない。旧実装は localStorage の 'eda-line-uid' を読んでいたが、
+           liff-uid.js が実際に書くキーは 'eda-member-line-uid' で、常に空だった。 */
+      }
+    } catch (e) {}
+
     /* LINE 友だち追加リンクのクリック自動計測 */
     document.addEventListener('click', function(e) {
       const a = e.target && e.target.closest && e.target.closest('a[href*="line.me"]');
