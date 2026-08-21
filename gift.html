@@ -4564,6 +4564,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  stripePriceId: stripePriceId
  });
  localStorage.setItem(CART_KEY, JSON.stringify(items));
+ /* 📊 Analytics: ギフトのカート追加イベント (カゴ落ち検知の対象にする) */
+ if (window.edaAnalytics) window.edaAnalytics.addToCart('gift-' + giftId, price, { title: title, variant: 'ギフトセット' });
  location.href = 'checkout.html?mode=gift';
  };
 })();
@@ -5077,6 +5079,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  }
  save();
  renderCart();
+ /* 📊 Analytics: カート追加イベント (shop.html と同一。カゴ落ち検知 gas/cart_holds.gs の入力) */
+ if (window.edaAnalytics) window.edaAnalytics.addToCart(variantId, price, { title: title, variant: variant });
  openCart();
  }
 
@@ -5148,6 +5152,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  })();
 </script>
 
+<script src="public/js/analytics.js?v=002" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
