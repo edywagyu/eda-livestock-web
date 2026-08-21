@@ -93,7 +93,7 @@
     sessionId: function() { try { return localStorage.getItem(SESSION_KEY) || ''; } catch (e) { return ''; } },
     /* よく使うイベント用ショートカット */
     pageView: function() { send('page_view', {}); },
-    viewItem: function(productId, value) { send('view_item', { product_id: productId, value: value }); },
+    viewItem: function(productId, value, meta) { send('view_item', { product_id: productId, value: value, meta: meta }); },
     addToCart: function(productId, value, meta) { send('add_to_cart', { product_id: productId, value: value, meta: meta }); },
     removeFromCart: function(productId, value) { send('remove_from_cart', { product_id: productId, value: value }); },
     viewCart: function(value) { send('view_cart', { value: value }); },
