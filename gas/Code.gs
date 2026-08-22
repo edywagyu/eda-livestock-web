@@ -3244,21 +3244,46 @@ function upsertCustomer(c) {
   const lineNameIdx = headers.indexOf('line_name');
   const linkedAtIdx = headers.indexOf('linked_at');
 
+  /* 🔴 同一人物の二重登録を防ぐ (2026-08-21)
+     旧実装は email 一致のみで探しており、次の2ケースで別レコードを作っていた:
+       ① 友だち追加(line_follow)で先に作られた行は email が空 → 見つからず新規作成
+       ② 同じ人が別メールで注文 → 見つからず新規作成
+     → email で見つからなければ line_uid でも探す。line_uid は本人性が最も固いキー。
+     ②(別メール)は「別の連絡先」として意図的に1行にまとめる方針 (ryotaro 2026-08-21)。 */
+  let hit = -1;
   for (let i = 1; i < data.length; i++) {
-    if (data[i][emailIdx] === c.email) {
-      sh.getRange(i+1, headers.indexOf('last_order')+1).setValue(c.last_order);
-      sh.getRange(i+1, headers.indexOf('total_spent')+1).setValue((Number(data[i][headers.indexOf('total_spent')]) || 0) + (c.last_order_total || 0));
-      sh.getRange(i+1, headers.indexOf('order_count')+1).setValue((Number(data[i][headers.indexOf('order_count')]) || 0) + 1);
-      // line_uid を併せて保存 (チェックアウト時にLINEセッションから取得)
-      if (c.line_uid && lineIdx >= 0) {
-        sh.getRange(i+1, lineIdx+1).setValue(c.line_uid);
-        // 表示名は「空で上書きしない」(注文時にLINE表示名が取れないケースがある)
-        if (lineNameIdx >= 0 && c.line_name) sh.getRange(i+1, lineNameIdx+1).setValue(c.line_name);
-        // linked_at は「LINEと連携した日」。買うたびに今日へ書き換えない (流入元分析が壊れる)
-        if (linkedAtIdx >= 0 && !data[i][linkedAtIdx]) sh.getRange(i+1, linkedAtIdx+1).setValue(new Date());
-      }
-      return;
+    if (data[i][emailIdx] === c.email) { hit = i; break; }
+  }
+  if (hit === -1 && c.line_uid && lineIdx >= 0) {
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][lineIdx]) === String(c.line_uid)) { hit = i; break; }
     }
+  }
+
+  if (hit >= 0) {
+    const i = hit;
+    // line_uid で拾った行は email が空のことがある → 空のときだけ埋める (既存の別メールは潰さない)
+    if (!String(data[i][emailIdx] || '').trim()) sh.getRange(i+1, emailIdx+1).setValue(c.email);
+    // 初回注文日が未設定の行 (友だち追加だけの行) は、この注文を初回として記録する
+    const firstIdx = headers.indexOf('first_order');
+    if (firstIdx >= 0 && !String(data[i][firstIdx] || '').trim()) sh.getRange(i+1, firstIdx+1).setValue(c.last_order);
+    // 氏名・電話も空のときだけ補完する
+    const nameIdx2 = headers.indexOf('name'), phoneIdx2 = headers.indexOf('phone');
+    if (nameIdx2  >= 0 && c.name  && !String(data[i][nameIdx2]  || '').trim()) sh.getRange(i+1, nameIdx2+1).setValue(c.name);
+    if (phoneIdx2 >= 0 && c.phone && !String(data[i][phoneIdx2] || '').trim()) sh.getRange(i+1, phoneIdx2+1).setValue(c.phone);
+
+    sh.getRange(i+1, headers.indexOf('last_order')+1).setValue(c.last_order);
+    sh.getRange(i+1, headers.indexOf('total_spent')+1).setValue((Number(data[i][headers.indexOf('total_spent')]) || 0) + (c.last_order_total || 0));
+    sh.getRange(i+1, headers.indexOf('order_count')+1).setValue((Number(data[i][headers.indexOf('order_count')]) || 0) + 1);
+    // line_uid を併せて保存 (チェックアウト時にLINEセッションから取得)
+    if (c.line_uid && lineIdx >= 0) {
+      sh.getRange(i+1, lineIdx+1).setValue(c.line_uid);
+      // 表示名は「空で上書きしない」(注文時にLINE表示名が取れないケースがある)
+      if (lineNameIdx >= 0 && c.line_name) sh.getRange(i+1, lineNameIdx+1).setValue(c.line_name);
+      // linked_at は「LINEと連携した日」。買うたびに今日へ書き換えない (流入元分析が壊れる)
+      if (linkedAtIdx >= 0 && !data[i][linkedAtIdx]) sh.getRange(i+1, linkedAtIdx+1).setValue(new Date());
+    }
+    return;
   }
   // 新規 row
   const row = new Array(headers.length).fill('');
@@ -3582,9 +3607,17 @@ function lineLinkAccount(body) {
       linkedAtIdx = headers.length + 2;
     }
 
+    /* 🔴 同一人物の二重登録を防ぐ (2026-08-21)
+       旧実装は email 一致のみ。友だち追加(line_follow)で先に作られた行は email が空なので
+       ここで見つからず、同じ人の2行目を作っていた。→ email で外したら line_uid でも探す。 */
     let foundRow = -1;
     for (let i = 1; i < data.length; i++) {
       if (data[i][emailIdx] === body.email) { foundRow = i + 1; break; }
+    }
+    if (foundRow === -1 && lineIdx >= 0) {
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][lineIdx]) === String(body.line_uid)) { foundRow = i + 1; break; }
+      }
     }
 
     // 名前: 注文履歴から取得 → LINE 表示名 → メール先頭
@@ -3594,6 +3627,8 @@ function lineLinkAccount(body) {
     if (foundRow > 0) {
       // 既存 row の line_uid を更新
       sh.getRange(foundRow, lineIdx + 1).setValue(body.line_uid);
+      // line_uid で拾った行は email が空のことがある → 空のときだけ埋める (既存の別メールは潰さない)
+      if (!String(data[foundRow - 1][emailIdx] || '').trim()) sh.getRange(foundRow, emailIdx + 1).setValue(body.email);
       if (body.display_name) sh.getRange(foundRow, nameIdx + 1).setValue(body.display_name);
       // 初回連携日を残す (再連携で上書きしない)
       if (!data[foundRow - 1][linkedAtIdx]) sh.getRange(foundRow, linkedAtIdx + 1).setValue(new Date());
