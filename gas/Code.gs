@@ -1835,7 +1835,7 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '発送をLINEでお知らせ', '発送処理した時', '稼働中', '「発送しました＋お届け予定日」をLINEに自動送信（未連携の人にはメール）'],
   ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
   ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '稼働中', 'カートに入れて離脱した人へLINEで催促。購入済みの人には送らないよう修正済み'],
-  ['公式LINE', 'LINE数値（友だち数・属性）を毎朝記録', '毎朝7時', '未設置（動いていない）', 'LINEから友だち数・ターゲットリーチ・ブロック数を取り「友達推移」タブの手入力列を自動で埋める。性別/年代/地域は「LINE属性」タブへ。コードは入ったがトリガー未設置（setupLineInsights を1回実行すると動き出す）'],
+  ['公式LINE', 'LINE数値（友だち数・属性）を毎朝記録', '毎朝7時', '稼働中', 'LINEから友だち数・ターゲットリーチ・ブロック数を取り「友達推移」タブの手入力列を自動で埋める。性別/年代/地域は「LINE属性」タブへ、配信種別ごとの件数は「LINE配信実績_日別API」タブへ。2026-08-22に setupLineInsights を実行してトリガー設置済み（初回で抜けていた8/20が埋まった）'],
   ['公式LINE', '顧客名簿（LINE連携）の自動更新', '毎日 朝7時', '稼働中', 'LINE連携した顧客を重複整理し、購入額の多い順に名簿シートへ毎日作り直す（GASが正・手編集は消える）'],
   ['公式LINE', '配信ごとの開封率・クリックを毎朝記録', '毎朝7時', '稼働中', 'LINEマネージャー画面から配信ごとの開封率・ECクリック・売上を取り「LINE開封_自動」タブに毎朝まとめる（ブラウザ操作のためPC/アプリ起動中に実行するローカル定期タスク）'],
   ['EC', '発送リマインド', '毎朝8時', '稼働中', 'お客様の到着希望日から逆算して「そろそろ発送して」を社内に通知（東日本は4日前・西日本は3日前）'],
@@ -2899,104 +2899,6 @@ function publicCatalog() {
       }).filter(p => p.published === true || p.published === 'TRUE' || p.published === 'true');
     }
   } catch (e) {}
-  return jsonResponse(out);
-}
-
-/* GET ?action=public_popular&days=14
-   商品一覧を「売れている順」に並べるためのランキング。
-   スコア = 購入数×3 + カート投入×2（popular.json の手動データと同じ基準）。
-
-   なぜ公開APIか: 返すのは商品名・件数・スコアだけで個人情報を含まない。
-   顧客名・メール・注文番号は一切載せないため認証不要で出せる。
-
-   なぜ商品名がキーか: orders の items_json は title、events(add_to_cart) の
-   meta_json も title を持つ。products シートの variantId('RED-MEAT'等)や
-   HTML の data-variants の数値IDとは体系が違うので、両方に共通する商品名で束ねる。
-
-   キャッシュ: 1時間（CacheService）。毎リクエストで orders/events を
-   全走査すると重いため。在庫と違い分単位の鮮度は不要。 */
-function publicPopular(params) {
-  var days = parseInt((params && params.days) || '14', 10);
-  if (!(days > 0)) days = 14;
-  days = Math.min(days, 90);
-
-  var cache = CacheService.getScriptCache();
-  var cacheKey = 'public_popular_v1_' + days;
-  try {
-    var hit = cache.get(cacheKey);
-    if (hit) return jsonResponse(JSON.parse(hit));
-  } catch (e) {}
-
-  var since = Date.now() - days * 24 * 3600 * 1000;
-  var byName = {};
-  function bump(name, field, n) {
-    var k = String(name == null ? '' : name).trim();
-    if (!k) return;
-    if (!byName[k]) byName[k] = { purchase: 0, cart: 0 };
-    byName[k][field] += n;
-  }
-
-  /* 1) 購入 — orders.items_json。入金前・キャンセルを人気に混ぜないため paid 以降のみ数える */
-  try {
-    var od = sheet('orders').getDataRange().getValues();
-    var OH = od[0] || [];
-    var cPlaced = OH.indexOf('placed_at');
-    var cItems  = OH.indexOf('items_json');
-    var cStatus = OH.indexOf('payment_status');
-    if (cPlaced >= 0 && cItems >= 0) {
-      for (var i = 1; i < od.length; i++) {
-        var t = new Date(od[i][cPlaced]).getTime();
-        if (!(t >= since)) continue;
-        var st = String(cStatus >= 0 ? od[i][cStatus] : 'paid').toLowerCase();
-        if (st !== 'paid' && st !== 'shipped' && st !== 'delivered') continue;
-        var items = [];
-        try { items = JSON.parse(od[i][cItems] || '[]'); } catch (e2) {}
-        if (!items || !items.length) continue;
-        for (var k = 0; k < items.length; k++) {
-          var it = items[k] || {};
-          bump(it.title || it.name, 'purchase', Number(it.qty) || 1);
-        }
-      }
-    }
-  } catch (e) { log('public_popular_orders_error', { error: String(e) }); }
-
-  /* 2) カート投入 — events の add_to_cart。商品名は meta_json.title に入る */
-  try {
-    var ed = eventsSheet().getDataRange().getValues();
-    var EH = ed[0] || [];
-    var cTs = EH.indexOf('ts'), cType = EH.indexOf('event_type'), cMeta = EH.indexOf('meta_json');
-    if (cTs >= 0 && cType >= 0 && cMeta >= 0) {
-      for (var j = 1; j < ed.length; j++) {
-        if (String(ed[j][cType]) !== 'add_to_cart') continue;
-        var et = new Date(ed[j][cTs]).getTime();
-        if (!(et >= since)) continue;
-        var meta = {};
-        try { meta = JSON.parse(ed[j][cMeta] || '{}'); } catch (e3) {}
-        bump(meta && (meta.title || meta.name), 'cart', 1);
-      }
-    }
-  } catch (e) { log('public_popular_events_error', { error: String(e) }); }
-
-  var ranking = [];
-  Object.keys(byName).forEach(function (name) {
-    var s = byName[name];
-    var score = s.purchase * 3 + s.cart * 2;
-    if (score > 0) ranking.push({ name: name, purchase: s.purchase, cart: s.cart, score: score });
-  });
-  ranking.sort(function (a, b) {
-    if (b.score !== a.score) return b.score - a.score;
-    return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0);   /* 同点は名前順＝並びが日替わりでブレない */
-  });
-  ranking.forEach(function (r, i) { r.rank = i; });
-
-  var out = {
-    ok: true,
-    updated: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd HH:mm'),
-    basis: '直近' + days + '日: 購入×3 + カート×2',
-    days: days,
-    ranking: ranking
-  };
-  try { cache.put(cacheKey, JSON.stringify(out), 3600); } catch (e) {}
   return jsonResponse(out);
 }
 

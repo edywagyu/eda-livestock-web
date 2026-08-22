@@ -24,9 +24,9 @@ push するときは必ず `clasp clone` で本番を落としてきて、
 | `appsscript.json` | `gas/appsscript.json` | 差分あり |
 | `CartRecovery.js` | `gas/CartRecovery.gs` | ← 2026-08-22 に取り込み |
 | `CustomerRoster.js` | `gas/CustomerRoster.gs` | ← 2026-08-22 に取り込み |
-| `Popular.js` | （無し・下記参照） | 中身は `gas/Code.gs` の `publicPopular()` と**バイト一致** |
+| `Popular.js` | `gas/Popular.gs` | ← 2026-08-22 に取り込み。本番とバイト一致 |
 | `Set_Staff_Pin.js` | **意図的に置かない** | スタッフPINが平文。このリポジトリは public のため入れない |
-| （無し） | `gas/LineInsights.gs` | PR #13 でマージ済みだが**本番に未 push** |
+| `LineInsights.js` | `gas/LineInsights.gs` | 2026-08-22 push 済み。毎朝7時トリガー稼働中 |
 | （無し） | `gas/click_dashboard.gs` | 別プロジェクト（SNS管理シートのバインドGAS）用。ここには push しない |
 
 ## 地雷
@@ -34,9 +34,9 @@ push するときは必ず `clasp clone` で本番を落としてきて、
 1. **`Set_Staff_Pin.js` は絶対にコミットしない。** `STAFF_PIN` を平文で持っている。
    このリポジトリは public。PIN は Script Properties に入っていれば動くので、
    ファイル自体は本番プロジェクトにも残さなくてよい。
-2. **`publicPopular()` が二重定義になりうる。** いま本番では `Popular.js` にだけ在り、
-   リポジトリでは `gas/Code.gs` にだけ在る。`Code.gs` を本番へ push するときは、
-   同時に `Popular.js` を消すこと。両方残すと同名関数が2つになる。
+2. ~~`publicPopular()` が二重定義になりうる~~ → **2026-08-22 に解消済み。**
+   `gas/Code.gs` から切り出して `gas/Popular.gs` に移した（本番の `Popular.js` とバイト一致）。
+   これでリポジトリと本番のファイル構成が一致し、`Code.gs` を push しても二重定義にならない。
 3. **本番の Web App 2本はバージョン固定** (`@105` staff系 / `@107` mypage系)。
    `clasp push` はコードを HEAD に置くだけで、この2本の挙動は変わらない。
    本番に反映したい時だけ `clasp redeploy <deploymentId>` で版を上げる。
