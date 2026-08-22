@@ -139,7 +139,7 @@ function dryRunLineInsights() {
       blocks: res && res.blocks,
       action: (!res || res.status !== 'ready') ? 'skip(未確定)'
             : (findDateRow_(sh, L, key) > 0 ? '既存行を上書き(row ' + findDateRow_(sh, L, key) + ')'
-                                            : '新規行を ' + (L.headerRow + 1) + ' 行目に挿入')
+                                            : '新規行を挿入(降順の正しい位置。日付順で決まる)')
     });
   }
   return out;
@@ -224,18 +224,7 @@ function upsertLineFollowers_(book, ymd) {
   var key = followersDateKey_(sh, L, d);
 
   var row = findDateRow_(sh, L, key);
-  if (!row) {
-    /* この表は降順（最新が一番上）。ヘッダー直下に1行差し込み、
-       数式の列（当日純増・ブロック率・月など）は直下の行から引き継ぐ。 */
-    row = L.headerRow + 1;
-    sh.insertRowBefore(row);
-    var srcRow = row + 1;   // 押し下げられた「今までの最新行」
-    if (srcRow <= sh.getLastRow()) {
-      sh.getRange(srcRow, 1, 1, sh.getLastColumn())
-        .copyTo(sh.getRange(row, 1, 1, sh.getLastColumn()), SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
-    }
-    sh.getRange(row, L.dateCol).setValue(d).setNumberFormat('yyyy/mm/dd');
-  }
+  if (!row) row = insertRowForDate_(sh, L, d);
 
   /* API が持つ列だけを上書き。1セルずつ書く＝間の数式列を巻き込まない。 */
   L.cols.forEach(function (c) {
@@ -243,6 +232,48 @@ function upsertLineFollowers_(book, ymd) {
     if (typeof v === 'number') sh.getRange(row, c.col).setValue(v);
   });
   return true;
+}
+
+/* 新しい日付の行を「降順の正しい位置」に差し込み、その行番号を返す。
+
+   ⚠️ ヘッダー直下に固定で挿すのは間違い。BACKFILL で数日分を遡って埋めるため、
+   埋めようとしている日付が「今の最新より古い」ことがある（実際 2026-08-20 が
+   手入力から抜けており、固定挿入だと 08/20 が 08/21 の上に来て降順が壊れた）。
+   既存の日付を上から見て、最初に「自分より古い日付」が現れた行の前に入れる。
+   どれより古ければ最下部へ。
+
+   数式の列（当日純増・ブロック率・月）は自分では書かないので、隣接するデータ行から
+   copyTo(PASTE_FORMULA) で引き継ぐ。相対参照なので行がずれても正しく効く。 */
+function insertRowForDate_(sh, L, d) {
+  var last = sh.getLastRow();
+  var target = last + 1;                 // 既定＝最下部（どの既存行より古い）
+  if (last > L.headerRow) {
+    var vals = sh.getRange(L.headerRow + 1, L.dateCol, last - L.headerRow, 1).getValues();
+    for (var i = 0; i < vals.length; i++) {
+      var t = toTime_(vals[i][0]);
+      if (t !== null && t < d.getTime()) { target = L.headerRow + 1 + i; break; }
+    }
+  }
+  sh.insertRowBefore(target);
+
+  /* 数式の引き継ぎ元は隣接するデータ行。上に行が無い（=先頭に挿した）なら下から、
+     下に行が無い（=最下部に足した）なら上から。 */
+  var src = 0;
+  if (target + 1 <= sh.getLastRow()) src = target + 1;
+  else if (target - 1 > L.headerRow) src = target - 1;
+  if (src) {
+    sh.getRange(src, 1, 1, sh.getLastColumn())
+      .copyTo(sh.getRange(target, 1, 1, sh.getLastColumn()), SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
+  }
+  sh.getRange(target, L.dateCol).setValue(d).setNumberFormat('yyyy/mm/dd');
+  return target;
+}
+
+/* セルの日付を時刻(ms)に。Date でも '2026/08/21' でも '2026-08-21' でも読む。読めなければ null。 */
+function toTime_(v) {
+  if (v instanceof Date) return v.getTime();
+  var t = new Date(String(v == null ? '' : v).trim().replace(/-/g, '/')).getTime();
+  return isNaN(t) ? null : t;
 }
 
 /* ---------- 新規タブ（既存に相当なし） ---------- */
