@@ -2,10 +2,28 @@
    📊 LINE Insights → SNS運用管理スプレッド 自動書き出し
    ------------------------------------------------------------
    公式LINEの数値(友だち数/配信実績/属性)を Messaging API Insight から取得し、
-   既存の「SNS運用管理シート」へ日次で書き出す（SNS運用の数値をそこに集約）。
+   既存の「SNS運用管理シート」へ日次で書き出す。
    本番注文DBには一切書かない（別ブックへ書き込む）。
 
-   書き込み先:
+   書き込み先タブ（2026-08-21 変更）:
+     ・「友達推移」    … 既存タブに直接書く。新規タブは作らない。
+                        手入力で運用していた 友達数(累計)/ターゲットリーチ/ブロック数 を
+                        API の値で埋める。当日純増・ブロック率・月 は既存の数式のまま。
+     ・「LINE属性」    … 新規タブ（既存に相当タブが無い）。性別/年代/地域/OS/登録期間。
+     ・「LINE配信実績_日別API」… 新規タブ。**手管理の「LINE配信ログ」とは別物**なので
+                        名前で区別する。あちらは 1配信=1行（本文・狙い・開封率つき）、
+                        こちらは LINE API が返す「その日に何通送ったか」の日別カウント。
+
+   ⚠️ 「友達推移」は384行の履歴を手で育ててきた実データ。壊さないための約束:
+        1. 自分が持つ列（日付・友達数(累計)・ターゲットリーチ・ブロック数）だけを書く。
+           当日純増/ブロック率/月 など数式の列には触れない。
+        2. 行の一括クリア・並べ替えはしない。
+        3. 新しい日付は「一番上（ヘッダーの直下）」に行を挿入する（この表は降順）。
+           挿入した行の数式列は、直下の行から copyTo(FORMULA) で引き継ぐ。
+        4. ヘッダー行の位置と列順は決め打ちせず、実行時に '日付' を探して特定する。
+           列を足したり並べ替えても壊れない。
+
+   書き込み先ブック:
      Script Property LINE_INSIGHTS_SHEET_ID があればそれ、無ければ下記デフォルト
      （= SNS運用管理シート）。将来別ブックに移すならプロパティを設定するだけ。
    ⚠️ 前提: GAS を実行するアカウント(トリガー作成者/デプロイ所有者)が、この
@@ -13,6 +31,9 @@
 
    セットアップ(反映後1回だけ実行):
      setupLineInsights()  → 日次7時トリガー設置＋初回書出。返り値=対象スプシURL。
+   下見(書き込まない):
+     dryRunLineInsights() → API から取れる値と、書き込み先の行・列を返すだけ。
+                            本番シートに触る前にこれで確認する。
    手動更新(いつでも):
      GET ?action=line_insights_now&token=... (STAFF_PROTECTED)
    自動更新:
@@ -27,9 +48,20 @@ var LINE_INSIGHTS_SHEET_ID_DEFAULT = '1KKCIYgWr2rvESSXTcsuqlAFDs0WlRX0j9A79l2iZu
 
 var LINE_INSIGHTS_TZ = 'Asia/Tokyo';
 var LINE_INSIGHTS_BACKFILL = 4;   // 何日前まで遡って埋め直すか
-var LINE_INSIGHTS_TAB_FOLLOWERS = 'LINE友だち推移';
-var LINE_INSIGHTS_TAB_DELIVERY  = 'LINE配信実績';
+
+/* 既存タブ。名前を変えない＝ここを間違えると別タブを汚す。 */
+var LINE_INSIGHTS_TAB_FOLLOWERS = '友達推移';
+/* 新規タブ（既存に相当なし）。配信実績は手管理の「LINE配信ログ」と紛れないよう別名。 */
+var LINE_INSIGHTS_TAB_DELIVERY  = 'LINE配信実績_日別API';
 var LINE_INSIGHTS_TAB_DEMO      = 'LINE属性';
+
+/* 「友達推移」でこのスクリプトが書いてよい列。ヘッダー文字列で引く。
+   ここに無い列（当日純増・ブロック率・月）は既存の数式なので触らない。 */
+var LINE_FOLLOWERS_COLS = [
+  { header: 'ターゲットリーチ(アクティブ)', key: 'targetedReaches' },
+  { header: '友達数(累計)',                 key: 'followers' },
+  { header: 'ブロック数',                   key: 'blocks' }
+];
 
 /* 書き込み先ブックのID（プロパティ優先・無ければSNS運用管理シート）。 */
 function lineInsightsBookId_() {
@@ -72,6 +104,47 @@ function setupLineInsights() {
   return book.getUrl();
 }
 
+/* 下見。**一切書き込まない**。本番の「友達推移」に触る前にこれで確認する。
+   ・API から実際に返ってくる値
+   ・「友達推移」のヘッダー行が何行目で、どの列に書くつもりか
+   ・その日付が既存行の上書きになるのか、新規挿入になるのか */
+function dryRunLineInsights() {
+  var out = { book: lineInsightsBookId_(), token: !!cfg('LINE_CHANNEL_TOKEN'), days: [] };
+  if (!out.token) { out.error = 'LINE_CHANNEL_TOKEN 未設定'; return out; }
+
+  var book = SpreadsheetApp.openById(lineInsightsBookId_());
+  var sh = book.getSheetByName(LINE_INSIGHTS_TAB_FOLLOWERS);
+  if (!sh) { out.error = '「' + LINE_INSIGHTS_TAB_FOLLOWERS + '」タブが見つからない'; return out; }
+
+  var L = followersLayout_(sh);
+  out.layout = {
+    tab: LINE_INSIGHTS_TAB_FOLLOWERS,
+    headerRow: L.headerRow,
+    dateCol: L.dateCol,
+    writeCols: L.cols.map(function (c) { return c.header + '=' + c.col; }),
+    skipped: L.missing
+  };
+
+  var today = new Date();
+  for (var i = LINE_INSIGHTS_BACKFILL; i >= 1; i--) {
+    var d = new Date(today.getTime() - i * 86400000);
+    var ymd = Utilities.formatDate(d, LINE_INSIGHTS_TZ, 'yyyyMMdd');
+    var res = lineInsightFetch_('/v2/bot/insight/followers?date=' + ymd);
+    var key = followersDateKey_(sh, L, d);
+    out.days.push({
+      date: key,
+      status: res ? res.status : 'fetch_failed',
+      followers: res && res.followers,
+      targetedReaches: res && res.targetedReaches,
+      blocks: res && res.blocks,
+      action: (!res || res.status !== 'ready') ? 'skip(未確定)'
+            : (findDateRow_(sh, L, key) > 0 ? '既存行を上書き(row ' + findDateRow_(sh, L, key) + ')'
+                                            : '新規行を ' + (L.headerRow + 1) + ' 行目に挿入')
+    });
+  }
+  return out;
+}
+
 /* GET ?action=line_insights_now — その場で最新取得(手動更新ボタン用)。 */
 function lineInsightsNow() {
   var r = writeLineInsights();
@@ -79,21 +152,103 @@ function lineInsightsNow() {
   return jsonResponse({ ok: r.indexOf('ok') === 0, result: r, url: url });
 }
 
-/* ---------- 各数値の書き込み ---------- */
+/* ---------- 「友達推移」への書き込み ---------- */
 
-/* 友だち数(日別) GET /v2/bot/insight/followers?date=yyyyMMdd */
+/* ヘッダー行・列位置を実行時に特定する。決め打ちしない＝列を足されても壊れない。
+   ヘッダー行 = 先頭10行のうち '日付' を含む最初の行。 */
+function followersLayout_(sh) {
+  var probe = sh.getRange(1, 1, Math.min(10, sh.getLastRow()), sh.getLastColumn()).getDisplayValues();
+  var headerRow = -1, dateCol = -1;
+  for (var r = 0; r < probe.length && headerRow < 0; r++) {
+    for (var c = 0; c < probe[r].length; c++) {
+      if (String(probe[r][c]).trim() === '日付') { headerRow = r + 1; dateCol = c + 1; break; }
+    }
+  }
+  if (headerRow < 0) throw new Error('「' + LINE_INSIGHTS_TAB_FOLLOWERS + '」に「日付」列が見つからない（レイアウト変更?）');
+
+  var headers = probe[headerRow - 1];
+  var cols = [], missing = [];
+  LINE_FOLLOWERS_COLS.forEach(function (spec) {
+    var idx = -1;
+    for (var c = 0; c < headers.length; c++) {
+      if (normHeader_(headers[c]) === normHeader_(spec.header)) { idx = c + 1; break; }
+    }
+    if (idx > 0) cols.push({ header: spec.header, key: spec.key, col: idx });
+    else missing.push(spec.header);   // 見つからない列は黙って飛ばす（勝手に作らない）
+  });
+  return { headerRow: headerRow, dateCol: dateCol, cols: cols, missing: missing };
+}
+
+/* ヘッダー照合用の正規化。全角/半角のカッコ差・空白・改行を吸収する
+   （「ターゲットリーチ(アクティブ)」が全角カッコで書き直されても拾えるように）。 */
+function normHeader_(s) {
+  return String(s == null ? '' : s)
+    .replace(/[（）]/g, function (m) { return m === '（' ? '(' : ')'; })
+    .replace(/\s+/g, '')
+    .trim();
+}
+
+/* 既存行の日付表記に合わせたキー文字列を作る（この表は 2026/08/19 形式）。
+   1行目のデータの見た目から書式を推定し、合わなければ yyyy/MM/dd を使う。 */
+function followersDateKey_(sh, L, dateObj) {
+  var fmt = 'yyyy/MM/dd';
+  if (sh.getLastRow() > L.headerRow) {
+    var sample = String(sh.getRange(L.headerRow + 1, L.dateCol).getDisplayValue()).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(sample)) fmt = 'yyyy-MM-dd';
+  }
+  return Utilities.formatDate(dateObj, LINE_INSIGHTS_TZ, fmt);
+}
+
+/* 同じ日付の行番号。無ければ 0。 */
+function findDateRow_(sh, L, dateKey) {
+  var last = sh.getLastRow();
+  if (last <= L.headerRow) return 0;
+  var vals = sh.getRange(L.headerRow + 1, L.dateCol, last - L.headerRow, 1).getDisplayValues();
+  for (var i = 0; i < vals.length; i++) {
+    if (String(vals[i][0]).trim() === dateKey) return L.headerRow + 1 + i;
+  }
+  return 0;
+}
+
+/* 友だち数(日別) GET /v2/bot/insight/followers?date=yyyyMMdd
+   → 既存「友達推移」に upsert。自分の列だけを書き、数式列は触らない。 */
 function upsertLineFollowers_(book, ymd) {
   var res = lineInsightFetch_('/v2/bot/insight/followers?date=' + ymd);
   if (!res || res.status !== 'ready') return false;    // 未確定の日はスキップ
-  var sh = getInsightSheet_(book, LINE_INSIGHTS_TAB_FOLLOWERS,
-    ['日付', '友だち数(targetedReaches)', '累計(followers)', 'ブロック(blocks)', '更新']);
-  upsertByDate_(sh, fmtYmd_(ymd), [
-    fmtYmd_(ymd), num_(res.targetedReaches), num_(res.followers), num_(res.blocks), nowStamp_()
-  ]);
+
+  var sh = book.getSheetByName(LINE_INSIGHTS_TAB_FOLLOWERS);
+  if (!sh) { log('line_insights_no_tab', { tab: LINE_INSIGHTS_TAB_FOLLOWERS }); return false; }
+
+  var L = followersLayout_(sh);
+  var d = new Date(Number(ymd.slice(0, 4)), Number(ymd.slice(4, 6)) - 1, Number(ymd.slice(6, 8)));
+  var key = followersDateKey_(sh, L, d);
+
+  var row = findDateRow_(sh, L, key);
+  if (!row) {
+    /* この表は降順（最新が一番上）。ヘッダー直下に1行差し込み、
+       数式の列（当日純増・ブロック率・月など）は直下の行から引き継ぐ。 */
+    row = L.headerRow + 1;
+    sh.insertRowBefore(row);
+    var srcRow = row + 1;   // 押し下げられた「今までの最新行」
+    if (srcRow <= sh.getLastRow()) {
+      sh.getRange(srcRow, 1, 1, sh.getLastColumn())
+        .copyTo(sh.getRange(row, 1, 1, sh.getLastColumn()), SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
+    }
+    sh.getRange(row, L.dateCol).setValue(d).setNumberFormat('yyyy/mm/dd');
+  }
+
+  /* API が持つ列だけを上書き。1セルずつ書く＝間の数式列を巻き込まない。 */
+  L.cols.forEach(function (c) {
+    var v = res[c.key];
+    if (typeof v === 'number') sh.getRange(row, c.col).setValue(v);
+  });
   return true;
 }
 
-/* 配信実績(日別) GET /v2/bot/insight/message/delivery?date=yyyyMMdd */
+/* ---------- 新規タブ（既存に相当なし） ---------- */
+
+/* 配信実績(日別) GET /v2/bot/insight/message/delivery?date=yyyyMMdd
+   ※手管理の「LINE配信ログ」(1配信=1行)とは別物。日別の送信通数カウント。 */
 function upsertLineDelivery_(book, ymd) {
   var res = lineInsightFetch_('/v2/bot/insight/message/delivery?date=' + ymd);
   if (!res || res.status !== 'ready') return false;
@@ -148,7 +303,7 @@ function lineInsightFetch_(path) {
   try { return JSON.parse(res.getContentText() || '{}'); } catch (e) { return null; }
 }
 
-/* 対象スプシ内のタブ取得(無ければヘッダー付きで作成)。既存の他タブには一切触れない。 */
+/* 新規タブ専用。既存タブ（友達推移）にはこれを使わない＝勝手にヘッダーを書かないため。 */
 function getInsightSheet_(book, name, headers) {
   var sh = book.getSheetByName(name);
   if (!sh) {
@@ -159,7 +314,8 @@ function getInsightSheet_(book, name, headers) {
   return sh;
 }
 
-/* 同じ日付の行があれば上書き、無ければ追記(日別データが後日確定するため)。 */
+/* 同じ日付の行があれば上書き、無ければ追記(日別データが後日確定するため)。
+   新規タブ用（1行目がヘッダー・昇順追記）。 */
 function upsertByDate_(sh, dateKey, row) {
   var last = sh.getLastRow();
   if (last >= 2) {
