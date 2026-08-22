@@ -48,7 +48,7 @@ case 'shipments':         return shipmentsOverview(e.parameter);
 ### 確認
 ターミナルで以下を実行（curlで生存確認）:
 ```bash
-GAS="https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec"
+GAS="https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec"
 for a in orders subscriptions customers survey_responses quiz_responses shipments; do
   echo "--- $a ---"
   curl -sL "$GAS?action=$a" | head -c 200

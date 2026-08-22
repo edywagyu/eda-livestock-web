@@ -195,7 +195,7 @@ URL: https://script.google.com → プロジェクト一覧から選択
 
 ### Web App デプロイ URL (公開・認証無し)
 ```
-https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec
+https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec
 ```
 
 ### スクリプトプロパティ
@@ -245,7 +245,7 @@ URL: https://dashboard.stripe.com
 2. それでも NG → sessionStorage クリア (F12 → Application → Storage Clear)
 3. それでも NG → GAS URL 動作確認:
    ```
-   https://script.google.com/macros/s/AKfycbyeq8to-87YAGhCvrOr_4whJehcWZAXchq4tMo4ec-zkIvrlqfhWWtd4J5ZtaV84gs/exec?action=public_catalog
+   https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog
    ```
    → `{ok:true, products:[...], ...}` が返れば GAS OK
 
