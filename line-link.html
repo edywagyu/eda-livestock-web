@@ -600,8 +600,30 @@ function submitRegistration() {
 
   _lineUid = profile.userId;
   _displayName = profile.displayName || '';
-  /* c.html のクリック計測で本人を特定できるよう uid を保存 (2026-07-27) */
-  try { if (_lineUid) localStorage.setItem('eda-line-uid', _lineUid); } catch (e) {}
+  /* 🔴 uid は「サイト共通のキー」で保存する (2026-08-22 修正)
+     ここは以前 'eda-line-uid' だけに保存していたが、このキーを読む所は一つも無い。
+     決済ページ checkout.html の会員判定 getLineUid() が見るのは
+       ① eda-mypage-session.line_uid  ② eda-member-line-uid
+     の2つだけ。そのため「連携完了画面で LINE10 を受け取った直後の人」が
+     決済ページでコードを入れても『会員限定クーポンです』で弾かれていた
+     (LINE内ブラウザで shop/checkout を開き直して LIFF が再取得できた時だけ
+      たまたま通る＝再現しづらい形で起きていた)。
+     → public/js/liff-uid.js の save() と同じ2キーへ必ず書く。
+       'eda-line-uid' は c.html の旧実装が読むため後方互換で残す。 */
+  try {
+    if (_lineUid) {
+      localStorage.setItem('eda-line-uid', _lineUid);          // 旧キー(後方互換)
+      localStorage.setItem('eda-member-line-uid', _lineUid);   // 会員ゲート用
+      var _mk = 'eda-mypage-session', _ms = {};
+      try { _ms = JSON.parse(localStorage.getItem(_mk) || '{}') || {}; } catch (e) {}
+      if (!_ms.line_uid) {
+        _ms.line_uid = _lineUid;
+        _ms.display_name = _displayName || '';
+        _ms.picture_url = profile.pictureUrl || '';
+        localStorage.setItem(_mk, JSON.stringify(_ms));
+      }
+    }
+  } catch (e) {}
 
   if (!_lineUid) {
     showError('LINE の認証情報が取得できませんでした。');

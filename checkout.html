@@ -1558,6 +1558,11 @@ function getLineUid() {
    if (raw) { const s = JSON.parse(raw); if (s && s.line_uid) return s.line_uid; }
    const uid = localStorage.getItem('eda-member-line-uid');
    if (uid) return uid;
+   /* 🔴 2026-08-22: line-link.html(連携完了画面) が昔 'eda-line-uid' にしか
+      保存していなかった時期があり、その頃に会員登録した人は上の2キーを持たない。
+      その人たちが LINE10 を弾かれないよう、旧キーも会員の証拠として認める。 */
+   const legacy = localStorage.getItem('eda-line-uid');
+   if (legacy) return legacy;
  } catch (_) {}
  return '';
 }
@@ -2882,6 +2887,10 @@ initCouponFromStorage();
    try{s=JSON.parse(localStorage.getItem(k)||'{}')||{}}catch(e){}
    if(!s.line_uid){s.line_uid=p.userId;s.display_name=p.displayName||'';s.picture_url=p.pictureUrl||'';localStorage.setItem(k,JSON.stringify(s));}
    localStorage.setItem('eda-member-line-uid',p.userId);
+   /* 🔴 2026-08-22: liff.init は非同期で、ページ読み込み時の initCouponFromStorage()
+      の方が先に走る。その時点では uid がまだ無いので会員ゲートに引っかかり、
+      保存しておいたクーポンが黙って外れていた。uid が取れた今、適用し直す。 */
+   try{ if(!appliedCoupon && typeof initCouponFromStorage==='function') initCouponFromStorage(); }catch(e){}
   }catch(e){}
  }
  function init(){
