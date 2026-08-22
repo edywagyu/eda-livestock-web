@@ -87,7 +87,9 @@ function buildClickDashboard() {
     var kind = (type === 'msg_click') ? '配信' : 'メニュー';
     var campaign = (type === 'msg_click') ? (meta.msg || data[r][iPage] || '') : (meta.src || '');
     var link = meta.l || data[r][iPid] || '';
-    var uid = meta.uid || '';
+    /* uid のキーは経路で違う。c.html(msg_click) は meta.uid、
+       analytics.js(src_click) は send() が自動添付する meta.line_uid。両方見る。 */
+    var uid = meta.line_uid || meta.uid || '';
     var name = uid ? (nameMap[uid] || '(名前未取得)') : '(未連携)';
     var dow = ts.getDay();
     var hour = ts.getHours();
