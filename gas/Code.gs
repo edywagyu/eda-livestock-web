@@ -144,6 +144,7 @@ var STAFF_PROTECTED = {
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
   staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
   staff_ship: 1, staff_confirm_payment: 1,
+  line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1
 };
@@ -165,6 +166,10 @@ function doGet(e) {
       case 'cart_holds':        return cartHoldsPublic(e.parameter);   /* カート確保数 (gas/cart_holds.gs) */
       case 'dashboard':         return dashboardSummary(e.parameter);
       case 'line_friends':      return lineFriends();
+      /* ===== 📊 LINE数値→専用スプレッド (gas/LineInsights.gs) ===== */
+      case 'line_insights_now':   return lineInsightsNow();                          /* その場で最新取得(手動更新) */
+      case 'line_insights_setup': return jsonResponse({ ok:true, url: setupLineInsights() }); /* 初回: 日次トリガー設置+初回書出(冪等) */
+      case 'line_insights_dryrun': return jsonResponse({ ok:true, dryRun: dryRunLineInsights() }); /* 下見: 一切書き込まない。既存「友達推移」に触る前の確認用 */
       /* ===== Customer Segmentation (LINE 配信用) ===== */
       case 'customers_segment': return customersSegment(e.parameter);
       case 'customers_csv':     return customersCsv(e.parameter);

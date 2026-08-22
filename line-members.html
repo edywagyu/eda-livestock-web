@@ -324,20 +324,11 @@ body{
                '</div>';
       }).join('') + '</div>';
     }
-    var stockLine = soldOut
-      ? '<p class="stock-line">完売しました</p>'
-      : '<p class="stock-line">残り ' + it.stock + ' セット</p>';
-    if (!soldOut && it.productId === 'P032') {
-      stockLine = '<p class="stock-line">残り ' + it.stock + ' 袋</p>';
-    }
-    if (!soldOut && it.productId === 'P023') {
-      stockLine = '<p class="stock-line">残り ' + it.stock + ' 枚</p>';
-    }
-    if (!soldOut && it.productId === 'P008') {
-      stockLine = '<p class="stock-line">残り ' + it.stock + ' 個</p>';
-    }
-    /* P034 は締切のある数量限定。締切は日時で書き、数量も添える（LINE本文の確定ルールと同じ）。
-       残数は在庫連動なので、売れれば自動で減り 0 で「完売しました」に切り替わる。 */
+    /* 残数（残り◯セット／袋／枚／個）は出さない（2026-08-22 ryotaro指示）。
+       出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
+       完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
+    var stockLine = soldOut ? '<p class="stock-line">完売しました</p>' : '';
+    /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
     if (!soldOut && it.productId === 'P034') {
       stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
     }
