@@ -75,8 +75,20 @@
     } catch (e) { return 's' + Date.now().toString(36); }
   }
 
+  /* LINE連携済みの uid。public/js/analytics.js の getLineUid と同じ順序・同じキーで引く。
+     2026-08-21 修正: 'eda-line-uid' という存在しないキーを読んでいたため、msg_click の
+     uid はこれまで常に空だった＝「誰が配信のリンクを押したか」が一切残っていなかった。
+     実際に書かれるキーは liff-uid.js の 'eda-member-line-uid'（マイページ経由は
+     'eda-mypage-session' の line_uid）。 */
   function lineUid() {
-    try { return localStorage.getItem('eda-line-uid') || ''; } catch (e) { return ''; }
+    try {
+      var raw = localStorage.getItem('eda-mypage-session');
+      if (raw) {
+        var sess = JSON.parse(raw);
+        if (sess && sess.line_uid) return sess.line_uid;
+      }
+      return localStorage.getItem('eda-member-line-uid') || '';
+    } catch (e) { return ''; }
   }
 
   var target = safeTarget(qs('to'));
