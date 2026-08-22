@@ -1028,16 +1028,9 @@ function pdpApplyStock() {
     [btn, sticky].forEach(b => { if (b) { b.disabled = true; b.textContent = 'ただいま確保中'; b.style.opacity = '0.5'; b.style.cursor = 'not-allowed'; } });
     if (sticky) sticky.textContent = '確保中';
   } else {
-    if (note) {
-      /* 限定品は専用バナー(limitedBanner)が「残り◯セット」を出すので、点数表記は重複させない */
-      const isLimited = !!document.querySelector('#limitedBanner .limited-left');
-      if (avail <= 8 && !isLimited) {
-        note.style.display = 'block'; note.style.color = '#B45309';
-        note.textContent = '残りわずか — あと ' + avail + ' 点'
-          + (held > 0 ? '（ほかに ' + held + ' 点が他のお客様のカートに入っています）' : '');
-      }
-      else { note.style.display = 'none'; }
-    }
+    /* 残数（残りわずか — あと◯点）は出さない（2026-08-22 ryotaro指示）。
+       売り切れ・確保中の案内は上の分岐で従来どおり出る。 */
+    if (note) { note.style.display = 'none'; }
     [btn, sticky].forEach(b => { if (b && b.disabled) { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; } });
     if (btn && /売り切れ|確保中/.test(btn.textContent)) btn.textContent = '追加する';
     if (sticky && /売り切れ|確保中/.test(sticky.textContent)) sticky.textContent = '追加';
