@@ -1615,7 +1615,34 @@ ul { list-style: none; padding: 0; margin: 0; }
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         更新する
       </div>
-      <div id="orderList"></div>
+      <div class="pills">
+        <div class="pill active" data-sub="single" onclick="switchSub('orders','single')">単品</div>
+        <div class="pill" data-sub="teiki" onclick="switchSub('orders','teiki')">📅 定期便</div>
+      </div>
+
+      <!-- 単品 -->
+      <div class="subsection active" id="sub-single">
+        <div onclick="downloadB2('single')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,#0F3D2E,#14563F);color:#fff;border-radius:10px;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(15,61,46,.25);margin-bottom:14px;cursor:pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <div style="flex:1">
+            <div style="font-size:13px;line-height:1.3">ヤマトラベルCSV（今日発送する分）</div>
+            <div style="font-size:10px;opacity:.85;font-weight:400;margin-top:2px">B2クラウド → 外部データ発行 → このファイルを取込</div>
+          </div>
+        </div>
+        <div id="orderListSingle"></div>
+      </div>
+
+      <!-- 定期便 -->
+      <div class="subsection" id="sub-teiki">
+        <div onclick="downloadB2('sub')" style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,#0F3D2E,#14563F);color:#fff;border-radius:10px;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(15,61,46,.25);margin-bottom:14px;cursor:pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <div style="flex:1">
+            <div style="font-size:13px;line-height:1.3">ヤマトラベルCSV（次回発送する分）</div>
+            <div style="font-size:10px;opacity:.85;font-weight:400;margin-top:2px">未発送の定期便すべて。B2クラウド → 外部データ発行 → 取込</div>
+          </div>
+        </div>
+        <div id="orderListTeiki"></div>
+      </div>
     </section>
 
     <!-- ============ SHIP (sub-section, accessed via order tap) ============ -->
@@ -2745,16 +2772,20 @@ async function saveStock(variantId, btn) {
 }
 
 /* ================ ORDERS ================ */
+/* 注文一覧は「単品」「定期便」の2タブに分かれる。読み込み中/失敗の表示は両方へ出す。 */
+function setOrderListsHtml(html) {
+  ['orderListSingle', 'orderListTeiki'].forEach(function (id) {
+    var el = document.getElementById(id); if (el) el.innerHTML = html;
+  });
+}
 async function loadOrders() {
-  const list = document.getElementById('orderList');
-
   if (isDemoMode()) {
     ordersCache = JSON.parse(JSON.stringify(DEMO_ORDERS));
     renderOrders();
     return;
   }
 
-  list.innerHTML = '<div class="empty">読み込み中...</div>';
+  setOrderListsHtml('<div class="empty">読み込み中...</div>');
   try {
     const res = await fetch(GAS_URL + '?action=staff_orders&_cb=' + Date.now() + authQS(), { cache: 'no-store' });
     const data = await res.json();
@@ -2770,7 +2801,7 @@ async function loadOrders() {
     ordersCache = _uniq.map(normalizeStaffOrder);
     renderOrders();
   } catch (e) {
-    list.innerHTML = '<div class="empty">読み込み失敗: ' + e.message + '</div>';
+    setOrderListsHtml('<div class="empty">読み込み失敗: ' + escapeHtml(e.message) + '</div>');
   }
 }
 
@@ -2891,14 +2922,23 @@ function normalizeStaffOrder(o) {
   };
 }
 
-function renderOrders() {
-  const list = document.getElementById('orderList');
-  if (ordersCache.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">注文がありません</div></div>';
-    return;
-  }
+/* mode が subscription* の注文＝定期便。単品タブ/定期便タブの振り分けはこの1箇所で判定する。 */
+function isSubOrder(o) { return String((o && o.mode) || '').indexOf('subscription') === 0; }
 
-  list.innerHTML = ordersCache.map(o => {
+function renderOrders() {
+  [
+    { id: 'orderListSingle', rows: ordersCache.filter(function (o) { return !isSubOrder(o); }), empty: '単品の注文がありません' },
+    { id: 'orderListTeiki',  rows: ordersCache.filter(function (o) { return  isSubOrder(o); }), empty: '定期便の注文がありません' }
+  ].forEach(function (g) {
+    const el = document.getElementById(g.id); if (!el) return;
+    el.innerHTML = g.rows.length
+      ? g.rows.map(orderRowHtml).join('')
+      : '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">' + g.empty + '</div></div>';
+  });
+}
+
+function orderRowHtml(o) {
+  return (function (o) {
     const isShipped = o.shipStatus === '発送済' || o.shipStatus === '配達完了';
     const cls = isShipped ? 'shipped' : 'pending';
     const icon = isShipped
@@ -2915,7 +2955,7 @@ function renderOrders() {
         <svg class="order-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
     `;
-  }).join('');
+  })(o);
 }
 
 /* ================ SHIP ================ */
@@ -3207,10 +3247,15 @@ async function confirmShip() {
 }
 
 /* ================ CSV ================ */
-function downloadCSV() {
+/* ヤマトB2クラウド取込CSV(95列テンプレ形式)。
+   kind='single' … 単品のうち「今日発送する分」(着日から逆算した発送期限が今日以前)
+   kind='sub'    … 定期便のうち未発送の全件(=次回発送する分) */
+function downloadB2(kind) {
   if (!GAS_URL) { toast('GAS URLが未設定', 'error'); return; }
-  window.open(GAS_URL + '?action=b2_csv' + authQS(), '_blank');
+  const k = (kind === 'sub') ? 'sub' : 'single';
+  window.open(GAS_URL + '?action=b2_csv&kind=' + k + authQS(), '_blank');
 }
+function downloadCSV() { downloadB2('single'); }   /* ホームの「配送ラベルCSV」= 単品・今日発送分 */
 
 /* ================ HELPERS ================ */
 function escapeHtml(str) {

@@ -195,7 +195,7 @@ function doGet(e) {
       case 'staff_inventory':   return staffInventory();
       case 'staff_orders':      return staffOrders();
       case 'staff_analytics':   return staffAnalytics(e.parameter);
-      case 'b2_csv':            return b2CsvExport();
+      case 'b2_csv':            return b2CsvExport(e.parameter);
       /* ===== 経営ダッシュボード追加アクション (Code_v2_Additions.gs に実装) ===== */
       case 'orders':            return ordersOverview(e.parameter);
       case 'subscriptions':     return subscriptionsOverview(e.parameter);
@@ -4851,13 +4851,20 @@ function staffConfirmPayment(body) {
 }
 
 /* GET b2_csv (ヤマト B2 形式の CSV ダウンロード) */
-/* 🟢 ヤマトB2クラウド「基本レイアウト」標準フォーマット(送り状発行データレイアウト 公式 No.1〜28順)の行を構築する共有ヘルパー。
+/* 🟢 ヤマトB2クラウド「外部データ取り込み基本レイアウト」95列フォーマット。
+   ヘッダー行は公式テンプレ(newb2web_template1.xls)の説明文をそのまま1行目に出す(B2の取込み開始行=2で読み飛ばされる)。
    CSV出力(b2CsvExport)と発送スプシ(writeShippingSheet)の両方が使う＝ロジック一元化。
-   固定値→送り状種類=0発払い / クール区分=1冷凍 / 出荷予定日=当日(JST) / 敬称=様 / 依頼主(19-26列)=空欄=B2アカウント既定(江田畜産)補完。
-   配達時間帯(7列)はヤマトコード(0812午前/1416/1618/1820/1921)のみ。1宛先=1ラベル。未発送の実注文のみ(発送済/社内テスト除外)。 */
-const B2_HEADER = ['お客様管理番号','送り状種類','クール区分','伝票番号','出荷予定日','お届け予定（指定）日','配達時間帯','お届け先コード','お届け先電話番号','お届け先電話番号枝番','お届け先郵便番号','お届け先住所','お届け先住所（アパートマンション名）','お届け先会社・部門名１','お届け先会社・部門名２','お届け先名','お届け先名略称カナ','敬称','ご依頼主コード','ご依頼主電話番号','ご依頼主電話番号枝番','ご依頼主郵便番号','ご依頼主住所','ご依頼主住所（アパートマンション名）','ご依頼主名','ご依頼主略称カナ','品名コード１','品名１'];
+   固定値→送り状種類=0発払い / クール区分=1冷凍 / 出荷予定日=当日(JST) / 敬称=様 /
+           ご依頼主=江田畜産の実値を明記(19-25列) / 請求先顧客コード=運賃管理番号込みの実値(40列)。
+   配達時間帯(7列)はヤマトコード(0812午前/1416/1618/1820/1921)のみ。1宛先=1ラベル。未発送の実注文のみ(発送済/社内テスト除外)。
+   品名は 品名１=「肉」固定 / 品名２=代表商品名+「 他N点」(25全角制限に収めるため。定期便は品名２=ボックス名)。 */
+const B2_HEADER = ["お客様管理番号\n半角英数字50文字", "送り状種類\n半角数字1文字\n 0 : 発払い\n 2 : コレクト\n 3 : クロネコゆうメール\n 4 : タイム\n 5 : 着払い\n 6 : 発払い（複数口）\n 7 : クロネコゆうパケット\n 8 : 宅急便コンパクト\n 9 : 宅急便コンパクトコレクト\n A : ネコポス\n\n(※宅急便_必須項目)\n(※クロネコゆうメール_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "クール区分\n半角数字1文字\n0または空白 : 通常\n 1 : クール冷凍\n 2 : クール冷蔵\n\n※「0:発払い」、「2:コレクト」、「5:着払い」のみ、ご利用頂けます。上記以外の送り状の場合、空白扱いで取り込みます。", "伝票番号\n半角数字12文字\n\n※B2クラウドにて付与", "出荷予定日\n半角10文字\n｢YYYY/MM/DD｣で入力してください。\n\n(※宅急便_必須項目)\n(※クロネコゆうメール_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "お届け予定日\n半角10文字\n｢YYYY/MM/DD｣で入力してください。\n\n※入力なしの場合、印字されません。\n※「最短日」と入力可", "配達時間帯\n半角4文字\n発払・コレクト・着払・宅急便コンパクト・宅急便コンパクトコレクト・発払（複数口）　の場合\n 空白 : 指定なし\n 0812 : 午前中\n 1416 : 14～16時\n 1618 : 16～18時\n 1820 : 18～20時\n 1921 : 19～21時\n\nタイム\n 0010 : 午前10時まで\n 0017 : 午後5時まで", "お届け先コード\n半角英数字20文字", "お届け先電話番号\n半角数字15文字ハイフン含む\n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "お届け先電話番号枝番\n半角数字2文字", "お届け先郵便番号\n半角数字8文字\nハイフンなし7文字も可\n\n(※宅急便_必須項目)\n(※クロネコゆうメール_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "お届け先住所\n全角/半角\n都道府県（４文字）\n市区郡町村（１２文字）\n町・番地（１６文字）\n\n(※宅急便_必須項目)\n(※クロネコゆうメール_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "お届け先アパートマンション名\n全角/半角 \n16文字/32文字 ", "お届け先会社・部門１\n全角/半角\n25文字/50文字 ", "お届け先会社・部門２\n全角/半角 \n25文字/50文字 ", "お届け先名\n全角/半角\n16文字/32文字 \n\n(※宅急便_必須項目)\n(※クロネコゆうメール_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "お届け先名(ｶﾅ)\n半角カタカナ 50文字 ", "敬称\n全角/半角 2文字/4文字\nクロネコゆうメールの場合に指定可能\n【入力例】\n様・御中・殿・行・係・宛・先生・なし", "ご依頼主コード\n半角英数字 20文字 ", "ご依頼主電話番号\n半角数字15文字ハイフン含む\n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "ご依頼主電話番号枝番\n半角数字 2文字 ", "ご依頼主郵便番号\n半角数字8文字\nハイフンなし半角7文字も可 \n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "ご依頼主住所\n全角/半角32文字/64文字\n都道府県（４文字）\n市区郡町村（１２文字）\n町・番地（１６文字）\n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "ご依頼主アパートマンション\n全角/半角 16文字/32文字 ", "ご依頼主名\n全角/半角 16文字/32文字 \n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "ご依頼主名(ｶﾅ)\n半角カタカナ 50文字", "品名コード１\n半角英数字 30文字 ", "品名１\n全角/半角 25文字/50文字 \n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "品名コード２\n半角英数字 30文字", "品名２\n全角/半角 25文字/50文字 ", "荷扱い１\n全角/半角 10文字/20文字 ", "荷扱い２\n全角/半角 10文字/20文字 ", "記事\n全角/半角 22文字/44文字 ", "ｺﾚｸﾄ代金引換額（税込)\n半角数字 7文字\n\n※コレクトの場合は必須\n300,000円以下　1円以上\n※但し、宅急便コンパクトコレクトの場合は\n30,000円以下　　1円以上", "内消費税額等\n半角数字 7文字\n\n※コレクトの場合は必須 \n※コレクト代金引換額（税込)以下", "止置き\n半角数字 1文字\n0 : 利用しない\n1 : 利用する ", "営業所コード\n半角数字 6文字\n\n※止置きを利用する場合は必須 ", "発行枚数\n半角数字 2文字\n\n※発払い、タイム、着払い、クロネコゆうパケット、発払い（複数口）、ネコポスのみ指定可能", "個数口表示フラグ\n半角数字 1文字\n1 : 印字する\n2 : 印字しない \n3 : 枠と口数を印字する\n\n※宅急便コンパクト、宅急便コンパクトコレクトは対象外\n※複数口の場合、本項目の指定に関係なく、3 : 枠と口数を印字する扱いとする", "請求先顧客コード\n半角数字10～12文字\n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "請求先分類コード\n空白または半角数字3文字\n", "運賃管理番号\n半角数字2文字\n\n(※宅急便_必須項目)\n(※クロネコゆうパケット_必須項目)\n(※ネコポス_必須項目)", "クロネコwebコレクトデータ登録\n半角数字 1文字\n0 : 無し\n1 : 有り ", "クロネコwebコレクト加盟店番号\n半角英数字 9文字 \n\n※クロネコwebコレクトデータ有りの場合は必須 ", "クロネコwebコレクト申込受付番号１\n半角英数字 23文字\n\n※クロネコwebコレクトデータ有りの場合は必須 ", "クロネコwebコレクト申込受付番号２\n半角英数字 23文字\n\n※発払い（複数口）の場合は、設定不可", "クロネコwebコレクト申込受付番号３\n半角英数字 23文字\n\n※発払い（複数口）の場合は、設定不可", "お届け予定ｅメール利用区分\n半角数字 1文字\n0 : 利用しない\n1 : 利用する ", "お届け予定ｅメールe-mailアドレス\n半角英数字＆記号 60文字\n\n※お届け予定eメールを利用する場合は必須 ", "入力機種\n半角数字 1文字\n1 : ＰＣ\n2 : 携帯電話\n\n※お届け予定eメールを利用する場合は必須", "お届け予定ｅメールメッセージ\n全角 74文字\n\n\n※お届け予定eメールを利用する場合は必須", "お届け完了ｅメール利用区分\n半角数字 1文字\n0 : 利用しない\n1 : 利用する ", "お届け完了ｅメールe-mailアドレス\n半角英数字 60文字\n\n※お届け完了eメールを利用する場合は必須 ", "お届け完了ｅメールメッセージ\n全角 159文字 \n\n※お届け完了eメールを利用する場合は必須 ", "クロネコ収納代行利用区分\n半角数字１文字\n0 : 利用しない\n1 : 利用する ", "予備\n半角数字１文字", "収納代行請求金額(税込)\n半角数字７文字", "収納代行内消費税額等\n半角数字７文字", "収納代行請求先郵便番号\n半角数字＆ハイフン8文字\nハイフンなし半角7文字も可 ", "収納代行請求先住所\n全角/半角　32文字/64文字\n都道府県（４文字）\n市区郡町村（１２文字）\n町・番地（１６文字）\"", "収納代行請求先住所（アパートマンション名）\n全角/半角　16文字/32文字", "収納代行請求先会社・部門名１\n全角/半角　25文字/50文字", "収納代行請求先会社・部門名２\n全角/半角　25文字/50文字", "収納代行請求先名(漢字)\n全角/半角　16文字/32文字", "収納代行請求先名(カナ)\n半角カタカナ50文字", "収納代行問合せ先名(漢字)\n全角/半角　16文字/32文字", "収納代行問合せ先郵便番号\n半角数字＆ハイフン8文字\nハイフンなし半角7文字も可 ", "収納代行問合せ先住所\n全角/半角　32文字/64文字\n都道府県（４文字）\n市区郡町村（１２文字）\n町・番地（１６文字）", "収納代行問合せ先住所（アパートマンション名）\n全角/半角　16文字/32文字", "収納代行問合せ先電話番号\n半角数字＆ハイフン15文字", "収納代行管理番号\n半角英数字20文字", "収納代行品名\n全角/半角　25文字/50文字", "収納代行備考\n全角/半角　14文字/28文字", "複数口くくりキー\n半角英数字20文字\n\n※「出荷予定個数」が2以上で「個数口枠の印字」で 「3 : 枠と口数を印字する」を選択し、且つ「複数口くくりキー」が空白の場合は、送り状発行時に「B2」という文言を自動補完する。\n※送り状種類6：発払い（複数口）を選択時、お届け日時とお届け先が同じ荷物に対し、同一の複数口くくりキーを設定してください。1度のデータ取込で、異なるお届け日時・お届け先に対して同一の複数口くくりキーは使用できません。なお、発払い（複数口）に限り、データ取込後に複数口くくりキーは親伝票番号（数字12桁）に置き換わります。", "検索キータイトル1\n全角/半角 \n10文字/20文字 ", "検索キー1\n半角英数字\n20文字", "検索キータイトル2\n全角/半角 \n10文字/20文字 ", "検索キー2\n半角英数字\n20文字", "検索キータイトル3\n全角/半角 \n10文字/20文字 ", "検索キー3\n半角英数字\n20文字", "検索キータイトル4\n全角/半角 \n10文字/20文字 ", "検索キー4\n半角英数字\n20文字", "検索キータイトル5\n\n※入力時は不要。出力時に自動反映。\n※「ユーザーID」という文言を送り状発行時に固定で自動補完する。", "検索キー5\n\n※入力時は不要。出力時に自動反映。\n※送り状発行時のユーザーIDを固定で自動補完する。", "予備", "予備", "投函予定メール利用区分\n半角数字\n1文字\n0 : 利用しない\n1 : 利用する PC宛て\n2 : 利用する モバイル宛て", "投函予定メールe-mailアドレス\n半角英数字＆記号\n60文字", "投函予定メールメッセージ\n全角/半角\n74文字/148文字\n\n※半角カタカナ及び半角スペースは使えません。", "投函完了メール（お届け先宛）利用区分\n半角数字\n1文字\n0 : 利用しない\n1 : 利用する PC宛て\n2 : 利用する モバイル宛て", "投函完了メール（お届け先宛）e-mailアドレス\n半角英数字＆記号\n60文字", "投函完了メール（お届け先宛）メールメッセージ\n全角/半角\n159文字/318文字\n\n※半角カタカナ及び半角スペースは使えません。", "投函完了メール（ご依頼主宛）利用区分\n半角数字\n1文字\n0 : 利用しない\n1 : 利用する PC宛て\n2 : 利用する モバイル宛て", "投函完了メール（ご依頼主宛）e-mailアドレス\n半角英数字＆記号\n60文字", "投函完了メール（ご依頼主宛）メールメッセージ\n全角/半角\n159文字/318文字\n\n※半角カタカナ及び半角スペースは使えません。"];
+/* 発送スプシ用の短いヘッダー(テンプレ説明文の1行目だけ)。列数・並びはB2_HEADERと完全同一。 */
+const B2_HEADER_SHORT = B2_HEADER.map(function (h) { return String(h).split('\n')[0].trim(); });
+/* 請求先顧客コード(お客様コード+運賃管理番号)。全角/NBSP空白まで含めて実物を丸ごと継承すること。 */
+const B2_BILLING_CODE = '080579307081-\u00a0\u00a0\u00a0 01';
 
-function b2Rows_() {
+function b2Rows_(opts) {
   const sh = sheet('orders');
   const data = sh.getDataRange().getValues();
   if (data.length < 2) return { header: B2_HEADER, rows: [], excluded: 0 };
@@ -4877,6 +4884,21 @@ function b2Rows_() {
     return '';
   };
   const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd'); // 出荷予定日=実行当日(JST)
+  // 🔴 opts.dueOnly=true で「今日出す分だけ」に絞る。判定は発送リマインド(alertUnshippedOrders)と同じ逆算式。
+  const dueOnly = !!(opts && opts.dueOnly);
+  // 🔴 kind: 'single'=単品のみ / 'sub'=定期便のみ / 未指定=全部。STAFF画面の2タブがそれぞれ指定して呼ぶ。
+  const kind = (opts && opts.kind) || '';
+  const todayNum = _jstDayNum(new Date());
+  // 🔴 定期便は前払い制: 毎月20日に引き落とし → 翌月1日着で発送。
+  //    よって「次回発送する分」= 直近の20日以降に課金された未発送の定期便。お届け予定日は一律「翌月1日」。
+  const _jstNow = new Date(Date.now() + 9 * 3600000);
+  let _billY = _jstNow.getUTCFullYear(), _billM = _jstNow.getUTCMonth();          // 直近の締め(20日)の年月
+  if (_jstNow.getUTCDate() < 20) { _billM -= 1; if (_billM < 0) { _billM = 11; _billY -= 1; } }
+  const _pad2 = (n) => (n < 10 ? '0' + n : '' + n);
+  const SUB_CUTOFF = _ymdDayNum(_billY + '-' + _pad2(_billM + 1) + '-20');        // この日以降の課金分が次回発送対象
+  let _arrY = _billY, _arrM = _billM + 1;                                          // 着日=翌月1日
+  if (_arrM > 11) { _arrM = 0; _arrY += 1; }
+  const SUB_ARRIVE = _arrY + '/' + _pad2(_arrM + 1) + '/01';
   const rows = [];
   let excluded = 0;
   data.slice(1).forEach(row => {
@@ -4887,27 +4909,37 @@ function b2Rows_() {
     const name = get(row, 'customer_name');
     const orderNo = get(row, 'order_number');
     const orderDDate = String(get(row, 'delivery_date') || '').slice(0, 10).replace(/-/g, '/');  // ISO→YYYY/MM/DD (注文共通=フォールバック)
+    const orderWishNum = _ymdDayNum(get(row, 'delivery_date'));                                   // 注文共通の希望着日(日番号)
+    const placedNum = get(row, 'placed_at') ? _jstDayNum(new Date(get(row, 'placed_at'))) : null; // 注文日(日番号)
     const orderTCode = timeCode(get(row, 'delivery_time'));
     // 1宛先=1送り状(1ラベル)。複数個口は発行枚数/複数口で別管理(現状1箱運用)。お届け予定日(dd)/時間帯(tc)は宛先ごと。
     const pushRow = (tel, zip, addr, nm, hinmei, dd, tc) => {
-      const r = new Array(28).fill('');
+      const r = new Array(95).fill('');
       r[0]  = clean(orderNo);  // 1 お客様管理番号
       r[1]  = '0';             // 2 送り状種類=発払い
       r[2]  = '1';             // 3 クール区分=クール冷凍(全商品冷凍・冷蔵追加時はproducts.temp連動に要変更)
       r[4]  = today;           // 5 出荷予定日=当日(JST)
-      r[5]  = dd || '';        // 6 お届け予定（指定）日(宛先ごと)
+      r[5]  = dd || '';        // 6 お届け予定日(宛先ごと)
       r[6]  = tc || '';        // 7 配達時間帯(コード・宛先ごと)
       r[8]  = clean(tel);      // 9 お届け先電話番号
       r[10] = clean(zip);      // 11 お届け先郵便番号
       r[11] = clean(addr);     // 12 お届け先住所
       r[15] = clean(nm);       // 16 お届け先名
       r[17] = '様';            // 18 敬称
-      r[27] = clean(hinmei);   // 28 品名１
+      r[19] = '9047241063';                  // 20 ご依頼主電話番号
+      r[21] = '889-4412';                    // 22 ご依頼主郵便番号
+      r[22] = '宮崎県西諸県郡高原町西麓840';  // 23 ご依頼主住所
+      r[24] = '江田畜産株式会社';            // 25 ご依頼主名
+      r[27] = '肉';            // 28 品名１(固定)
+      r[29] = clean(hinmei);   // 30 品名２(代表商品名+他N点)
+      r[39] = B2_BILLING_CODE; // 40 請求先顧客コード(運賃管理番号込み)
       rows.push(r);
     };
     // 🔴 定期便は items が空でも初回/毎月のボックスを必ず出荷する（2026-06-11 松本様の初回ボックスが
     //   発送リスト/B2 から漏れた対策）。品名は「定期便ボックス（プラン）」を合成する。
     const isSub = String(get(row, 'mode') || '').indexOf('subscription') === 0;
+    if (kind === 'single' && isSub) return;   // 単品タブ: 定期便は出さない
+    if (kind === 'sub' && !isSub) return;     // 定期便タブ: 単品は出さない
     let subPlan = '';
     if (isSub) { try { subPlan = JSON.parse(get(row, 'metadata_json') || '{}').plan || ''; } catch (e) {} }
     const dest = get(row, 'destinations_json');
@@ -4918,13 +4950,27 @@ function b2Rows_() {
         // ただし定期便は items 空が正常形＝ボックスとして出荷対象に含める。
         const its = Array.isArray(addr.items) ? addr.items : [];
         if (its.length === 0 && !isSub) return;
+        // 🔴 定期便タブ: 直近の20日引き落とし分だけ＝次回発送する方々。前回までの回は出さない。
+        if (kind === 'sub' && (placedNum == null || !isFinite(placedNum) || placedNum < SUB_CUTOFF)) return;
+        // 🔴 今日出す分だけ: 着日T − 輸送日数(西1/東2) − 余裕(希望日1/最短0) = 発送期限。今日より先の宛先は出さない。
+        //    期限を過ぎたもの(まだ未発送)は今日出すべきなので残す＝リストから消えて出し忘れるのを防ぐ。
+        if (dueOnly) {
+          const _wish = _ymdDayNum((addr.delivery || {}).date) || orderWishNum;
+          const _T = _wish || (placedNum != null ? placedNum + 3 : null);
+          if (!isFinite(_T)) return;                                                               // 着日を確定できない(日付が壊れている行)
+          const _transit = WEST_NEXTDAY_PREFS.indexOf(String(addr.pref || '').trim()) >= 0 ? 1 : 2; // 空欄/不明は東(長い方で安全)
+          if (_T - _transit - (_wish ? 1 : 0) > todayNum) return;                                   // まだ先＝今日は出さない
+        }
+        // 品名２は25全角文字制限。商品を全部つなぐと超えて取込エラーになるため代表1点+「他N点」に圧縮。
         const hinmei = its.length
-          ? its.map(function (it) { return (it.title || '') + (it.variant ? (' ' + it.variant) : ''); }).join(' / ')
+          ? ((its[0].title || '') + (its.length > 1 ? (' 他' + (its.length - 1) + '点') : ''))
           : ('定期便ボックス' + (subPlan ? '（' + subPlan + '）' : ''));
         // 🔴 お届け先ごとの希望日/時間（destinations[].delivery）を優先。無ければ注文共通(order-level)へフォールバック。
         const _dv = addr.delivery || {};
-        const _dd = _dv.date ? String(_dv.date).slice(0, 10).replace(/-/g, '/') : orderDDate;
-        const _tc = _dv.time ? timeCode(_dv.time) : orderTCode;
+        const _dd = (kind === 'sub') ? SUB_ARRIVE                                              // 定期便は翌月1日着で固定
+                  : (_dv.date ? String(_dv.date).slice(0, 10).replace(/-/g, '/') : orderDDate);
+        const _tc = (kind === 'sub') ? '0812'                                                  // 定期便は午前中着で固定
+                  : (_dv.time ? timeCode(_dv.time) : orderTCode);
         pushRow(addr.tel || addr.phone || get(row, 'customer_phone') || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, hinmei, _dd, _tc);
       });
     } catch (e) {
@@ -4935,22 +4981,27 @@ function b2Rows_() {
 }
 
 /* スタッフがB2クラウドへ取り込むCSV(?action=b2_csv)。取込パターン=「基本レイアウト(csv)」・取込み開始行=2。 */
-function b2CsvExport() {
+function b2CsvExport(params) {
   try {
-    const b = b2Rows_();
+    // 単品(既定)=今日出す分だけ / 定期便=未発送の全件(課金され次第すぐ出す運用のため期限で絞らない)
+    const kind = (params && params.kind) === 'sub' ? 'sub' : 'single';
+    const b = b2Rows_({ kind: kind, dueOnly: kind === 'single' });
     if (b.excluded) log('b2_csv_excluded', { count: b.excluded, note: '発送済み/社内テストを除外' });
     const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
-    const csv = [b.header.join(',')].concat(b.rows.map(function (r) { return r.join(','); }));
-    return ContentService.createTextOutput(csv.join('\n'))
+    // B2は全項目ダブルクォート囲み・UTF-8(BOM付き)で取り込む。ヘッダー行に改行/カンマを含むため素のjoinは不可。
+    const q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+    const csv = [b.header.map(q).join(',')].concat(b.rows.map(function (r) { return r.map(q).join(','); }));
+    return ContentService.createTextOutput('\ufeff' + csv.join('\r\n'))
       .setMimeType(ContentService.MimeType.CSV)
-      .downloadAsFile('b2-' + today.replace(/\//g, '-') + '.csv');
+      .downloadAsFile('b2-' + (kind === 'sub' ? 'teikibin' : 'single') + '-' + today.replace(/\//g, '-') + '.csv');
   } catch (e) {
     return ContentService.createTextOutput('error: ' + e.message);
   }
 }
 
 /* 🟢 専用「EC発送」スプシ(スタッフPC用)へ未発送注文を自動書き出し。30分ごとの時刻トリガー(setupShippingSheet で設置)で実行＝常に最新。
-   書き出し先IDは Script Property SHIPPING_SHEET_ID。「発送リスト」タブ(基本レイアウト28列・ファイル→ダウンロード→CSVでB2取込)＋「使い方」タブ。
+   ※こちらは絞り込みなし＝未発送の全件(作業バックログ)。「今日出す分だけ」はSTAFF画面の配送ラベルCSVボタン(b2CsvExport)。
+   書き出し先IDは Script Property SHIPPING_SHEET_ID。「発送リスト」タブ(外部データ取り込み基本レイアウト95列・ファイル→ダウンロード→CSVでB2取込)＋「使い方」タブ。
    注文確定等の重要処理には一切割り込まない(独立トリガー)＝安全。 */
 function writeShippingSheet() {
   try {
@@ -4961,8 +5012,8 @@ function writeShippingSheet() {
     // --- 発送リスト(B2取込用・先頭タブ) ---
     const list = ss.getSheetByName('発送リスト') || ss.insertSheet('発送リスト', 0);
     list.clear();
-    const all = [b.header].concat(b.rows);
-    list.getRange(1, 1, all.length, b.header.length).setValues(all);
+    const all = [B2_HEADER_SHORT].concat(b.rows);   // 画面で読めるよう短いヘッダー(列並びはB2_HEADERと同一)
+    list.getRange(1, 1, all.length, B2_HEADER_SHORT.length).setValues(all);
     list.setFrozenRows(1);
     ss.setActiveSheet(list); ss.moveActiveSheet(1);
     // --- 使い方 ---
