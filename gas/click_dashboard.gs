@@ -81,8 +81,14 @@ function buildClickDashboard() {
     var meta = _parseMeta(data[r][iMeta]);
     var sid = String(data[r][iSid] || '');
 
-    // dev/テスト行は除外
+    /* dev/テスト行は除外。events 側の生ログは残したまま、集計表にだけ出さない。
+       この表は1時間ごとに events から作り直すので、表の行を手で消しても復活する＝
+       除外はここで行うのが唯一効く場所。
+       2026-08-22: 動作確認で叩いた行を追加（配信ID test0821 / uid Utest_*）。 */
+    var mMsg = String(meta.msg || '');
+    var mUid = String(meta.line_uid || meta.uid || '');
     if (meta.src === 'trial-curl' || meta.src === 'browser-trial' || sid.indexOf('trial') === 0) continue;
+    if (/^test/i.test(mMsg) || /^Utest/i.test(mUid)) continue;
 
     var kind = (type === 'msg_click') ? '配信' : 'メニュー';
     var campaign = (type === 'msg_click') ? (meta.msg || data[r][iPage] || '') : (meta.src || '');
