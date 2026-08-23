@@ -399,7 +399,8 @@ function submitInquiry(body) {
       '</div></div>'
     ].join('');
     MailApp.sendEmail({
-      to: 'tomoki@eda-livestock.com',
+      /* 問い合わせは田崎(EC運用)にも届ける。ここは他の社内通知と違い宛先がべた書き */
+      to: 'tomoki@eda-livestock.com,r.tasaki@eda-livestock.com',
       subject: subject,
       htmlBody: html,
       replyTo: body.email

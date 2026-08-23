@@ -2342,6 +2342,7 @@ function recordSubscriptionRenewalOrder_(inv) {
       try {
         MailApp.sendEmail({
           to: custEmail,
+          name: '江田畜産',   /* 指定しないと差出人が実行者の個人名で出る */
           subject: '【江田畜産】定期便のお届け準備を開始しました',
           body: custName + ' 様\n\n定期便（' + boxTitle + '）のお届け準備を開始しました。\n注文番号: ' + newOrderNum + '\n\n発送まで今しばらくお待ちください。\n\n江田畜産｜EDA WAGYU'
         });
