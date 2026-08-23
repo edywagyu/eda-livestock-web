@@ -3095,6 +3095,17 @@ function renderShipDetail() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           発送完了として記録する
         </button>
+        <div style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--bone)">
+          <div style="font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:8px">
+            <strong>すでに発送済みで、伝票番号が分からない場合</strong><br>
+            下のボタンは<strong>お客様に一切通知を送らず</strong>、記録だけ「発送済」にします（伝票番号は空のまま）。
+            発送リストとヤマトラベルCSVから消えます。
+          </div>
+          <button id="shipNoNotifyBtn" onclick="markShippedNoNotify()"
+                  style="width:100%;padding:12px;border-radius:10px;background:#fff;color:var(--forest);border:1.5px solid var(--forest);font-weight:700;font-size:13px;cursor:pointer">
+            通知せず「発送済み」にする（伝票番号なし）
+          </button>
+        </div>
       </div>
     `}
   `;
@@ -3186,6 +3197,44 @@ async function confirmPayment() {
   } catch (e) {
     resetBtn();
     toast('エラー: ' + e.message, 'error');
+  }
+}
+
+/* 過去分の記録漏れ用: お客様への通知を一切送らず、記録だけ「発送済」にする。
+   伝票番号は空のまま（B2の履歴から番号が拾えないケース）。GAS側 staff_ship は
+   tracking_number が空でも payment_status='shipped' を立てるので、発送リスト/
+   ヤマトラベルCSVの対象から外れる。notify:false で LINE/メール通知は送らない。 */
+async function markShippedNoNotify() {
+  const o = selectedOrder;
+  if (!o) return;
+  if (!confirm('【' + o.id + '】' + (o.customerName || '') + ' 様\n\n' +
+               'お客様には通知を送らず、記録だけ「発送済」にします。\n' +
+               '伝票番号は空のままです（あとから入力し直せます）。\n\nよろしいですか？')) return;
+
+  const btn = document.getElementById('shipNoNotifyBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '記録中...'; }
+
+  if (isDemoMode()) {
+    setTimeout(() => { toast('🎭 デモ: 通知せず発送済みにしました', 'success'); o.shipStatus = '発送済'; renderShipDetail(); }, 400);
+    return;
+  }
+
+  try {
+    const res = await fetch(GAS_URL + '?action=staff_ship' + authQS(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ order_number: o.id, tracking_number: '', notify: false })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || '記録に失敗しました');
+    toast('通知を送らず「発送済」にしました', 'success');
+    o.shipStatus = '発送済'; o.tracking = '';
+    const idx = ordersCache.findIndex(x => x.id === o.id);
+    if (idx >= 0) ordersCache[idx] = o;
+    renderShipDetail();
+  } catch (e) {
+    toast('失敗: ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = '通知せず「発送済み」にする（伝票番号なし）'; }
   }
 }
 
