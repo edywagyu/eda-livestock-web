@@ -4076,8 +4076,8 @@ var REWARD_STAGES = [
  { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '3' },
  { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '4' },
  { num: 5, label: '5回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '5' },
- { num: 6, label: '6回目のご注文', reward: '？？？', desc: '6回目以降の特典はお楽しみに', code: '', icon: '6', locked: true },
- { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true },
+ { num: 6, label: '6回目のご注文', reward: '限定部位を買える権利', desc: 'イチボ・シンシンなど、通常は店頭に出さない希少部位をご購入いただけます', code: '', icon: '6', member: true },
+ { num: 7, label: '7回目のご注文', reward: '？？？', desc: '7回目以降の特典はお楽しみに', code: '', icon: '7', locked: true },
  { num: 8, label: '8回目のご注文', reward: '？？？', desc: '', code: '', icon: '8', locked: true }
 ];
 
@@ -4126,15 +4126,15 @@ function renderRewardJourney(count) {
  });
 
  var bannerHtml = '';
- if (count >= 5) {
- bannerHtml = '<div class="rj-next-banner"><p>5ステップ達成 &#x1F389; &#8212; 6回目以降の特典は <strong>お楽しみに</strong></p></div>';
+ if (count >= 6) {
+ bannerHtml = '<div class="rj-next-banner"><p>6ステップ達成 &#x1F389; &#8212; 7回目以降の特典は <strong>お楽しみに</strong></p></div>';
  } else if (count === 0) {
  // ★ 矛盾解消: 0回時は エダチク10 が既に「お持ちのクーポン」にあるので、
  //    初回ご注文時の使い方を案内 (あと1回… ではなく)
  bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用不可</small></p></div>';
  } else {
  // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
- var next = REWARD_STAGES[Math.min(count, 4)];   /* 中身が入っているのは5段目まで */
+ var next = REWARD_STAGES[Math.min(count, 5)];   /* 中身が入っているのは6段目まで */
  var remaining = next.num - count;
  bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong></p></div>';
  }
