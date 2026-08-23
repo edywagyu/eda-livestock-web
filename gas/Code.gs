@@ -4895,7 +4895,8 @@ function b2Rows_(opts) {
         const _dv = addr.delivery || {};
         const _dd = (kind === 'sub') ? SUB_ARRIVE                                              // 定期便は翌月1日着で固定
                   : (_dv.date ? String(_dv.date).slice(0, 10).replace(/-/g, '/') : orderDDate);
-        const _tc = _dv.time ? timeCode(_dv.time) : orderTCode;
+        const _tc = (kind === 'sub') ? '0812'                                                  // 定期便は午前中着で固定
+                  : (_dv.time ? timeCode(_dv.time) : orderTCode);
         pushRow(addr.tel || addr.phone || get(row, 'customer_phone') || '', addr.zip || '', (addr.pref || '') + (addr.address || ''), addr.name || name, hinmei, _dd, _tc);
       });
     } catch (e) {
