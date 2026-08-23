@@ -1552,6 +1552,53 @@ let destinations = [
    LINE 連携済みなら placeOrder 時に 'line+email' に切替 */
 let contactMethod = 'email';
 
+/* ============================================================
+   🚚 リピート送料半額（2026-08-23 田崎さん決定）
+   ------------------------------------------------------------
+   前回の「お届け日」から40日以内の再注文は、自宅分の送料を半額で表示する。
+   🔴 ここは**表示だけ**。実際の課金は GAS の calcShipping(subtotal, pref, halfOff) が決める。
+      判定ロジックを両方に書くと必ずズレるので、真偽は GAS の ?action=repeat_shipping に聞き、
+      ここはその答えを表示するだけにする（LINE10 でフロントとバックがズレた事故の再発防止）。
+   🔴 対象外は GAS 側で担保: 定期便・未入金/キャンセル注文・¥11,000以上（元から無料）。
+   ============================================================ */
+var repeatShipHalf = false;    // GAS が「半額対象」と答えたか
+var repeatShipInfo = null;     // { daysLeft, limit } 表示用
+var _repeatShipKey = '';       // 同じ相手を何度も問い合わせない
+var _repeatShipTimer = null;
+
+/* メール入力のたびに叩かないよう 600ms 待ってから1回だけ問い合わせる */
+function scheduleRepeatShipCheck() {
+  if (_repeatShipTimer) clearTimeout(_repeatShipTimer);
+  _repeatShipTimer = setTimeout(runRepeatShipCheck, 600);
+}
+
+async function runRepeatShipCheck() {
+  const email = String((destinations[0] && destinations[0].email) || '').trim();
+  const uid = getLineUid() || '';
+  if (!email && !uid) {
+    if (repeatShipHalf) { repeatShipHalf = false; repeatShipInfo = null; renderSummary(); }
+    _repeatShipKey = '';
+    return;
+  }
+  /* メール欄が途中（@ の前など）のうちは叩かない */
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return;
+
+  const key = email.toLowerCase() + '|' + uid;
+  if (key === _repeatShipKey) return;
+  if (!window.EDA_API) return;   // bundle 未ロード。次の入力でまた来る
+  _repeatShipKey = key;
+
+  const params = {};
+  if (email) params.email = email;
+  if (uid) params.line_uid = uid;
+  const r = await window.EDA_API.get('repeat_shipping', params);
+  const half = !!(r && r.ok && r.half);
+  if (half === repeatShipHalf && !half) return;
+  repeatShipHalf = half;
+  repeatShipInfo = half ? { daysLeft: r.daysLeft, limit: r.limit } : null;
+  renderSummary();
+}
+
 function getLineUid() {
  try {
    const raw = localStorage.getItem('eda-mypage-session');
@@ -2212,6 +2259,10 @@ function updateDestField(idx, key, value) {
  if (key === 'pref') {
    renderSummary();
  }
+ // 🚚 自宅(自分用)のメールが確定したら、リピート送料半額の対象か GAS に聞く
+ if (key === 'email' && idx === 0) {
+   scheduleRepeatShipCheck();
+ }
 }
 
 /* 郵便番号→住所 自動補完 (zipcloud) — 7桁入力で都道府県+市区町村+町域を入れる */
@@ -2389,7 +2440,10 @@ function renderSummary() {
  const _selfSubtotal = ((destinations[0] && destinations[0].itemIds) || []).reduce(function (s, i) {
    const it = cartItems[i]; return it ? s + discountedUnit(it.price || 0) * (it.qty || 1) : s;
  }, 0);
- const shipping = (subscription || _selfSubtotal === 0) ? 0 : (_selfSubtotal >= 11000 ? 0 : (_remoteArea ? 2200 : 1100));
+ const _shipBase = _remoteArea ? 2200 : 1100;
+ // 🚚 リピート送料半額: 定期便は対象外（プランに送料込）。¥11,000以上は元から無料なので影響しない。
+ const _shipHalfApplied = repeatShipHalf && !subscription && _selfSubtotal > 0 && _selfSubtotal < 11000;
+ const shipping = (subscription || _selfSubtotal === 0) ? 0 : (_selfSubtotal >= 11000 ? 0 : (_shipHalfApplied ? _shipBase / 2 : _shipBase));
  const _hasGift = destinations.some(d => d.type === 'gift' && (d.itemIds || []).length > 0);
  const giftShipping = 0; // ★ ギフトは全部送料無料
  // 50% off if subscription only
@@ -2422,6 +2476,10 @@ function renderSummary() {
  <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
  </div>
  `;
+ // 🚚 前回のお届けから40日以内 → 送料半額。適用されたことが分かるように1行出す。
+ if (_shipHalfApplied && shipping > 0) {
+ rowsHtml += `<div class="summary-row discount"><span>前回から${repeatShipInfo && repeatShipInfo.limit ? repeatShipInfo.limit : 40}日以内 送料半額</span><strong>−¥${(_shipBase - shipping).toLocaleString()}</strong></div>`;
+ }
  if (_hasGift) {
  rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料</span><strong>無料</strong></div>`;
  }
@@ -2868,6 +2926,7 @@ window.addEventListener('focus', () => {
 /* ---- 初期化実行 ---- */
 init();
 initCouponFromStorage();
+try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
 <script src="public/js/analytics.js?v=004" defer></script>
