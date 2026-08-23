@@ -4067,14 +4067,18 @@ function renderOrders(orders) {
 }
 
 /* ---- Reward Stages Definition ---- */
+/* 🔴 2026-08-23: 2回目に「送料半額」を新設し、旧2〜4回目を1つずつ後ろへ送った（田崎さん指示）。
+   ここを触ったら generateDemoCoupons の orderCount しきい値も必ず一緒に動かすこと（表示だけズレる）。
+   送料半額はクーポンコードではなく自動適用（決済時に GAS が判定）。code は空。 */
 var REWARD_STAGES = [
  { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
- { num: 2, label: '2回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '2' },
- { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '3' },
- { num: 4, label: '4回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '4' },
- { num: 5, label: '5回目のご注文', reward: '？？？', desc: '5回目以降の特典はお楽しみに', code: '', icon: '5', locked: true },
- { num: 6, label: '6回目のご注文', reward: '？？？', desc: '', code: '', icon: '6', locked: true },
- { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true }
+ { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
+ { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '3' },
+ { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '4' },
+ { num: 5, label: '5回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '5' },
+ { num: 6, label: '6回目のご注文', reward: '？？？', desc: '6回目以降の特典はお楽しみに', code: '', icon: '6', locked: true },
+ { num: 7, label: '7回目のご注文', reward: '？？？', desc: '', code: '', icon: '7', locked: true },
+ { num: 8, label: '8回目のご注文', reward: '？？？', desc: '', code: '', icon: '8', locked: true }
 ];
 
 /* 次に獲得できる特典（注文回数から算出）: {remaining, reward, locked} / 全達成なら null */
@@ -4087,7 +4091,7 @@ function getNextReward(count) {
 }
 
 /* Common reward/coupon conditions text */
-var REWARD_CONDITIONS = '※ 全特典・クーポンは 5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可';
+var REWARD_CONDITIONS = '※ クーポン特典は 5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可（送料半額は自動適用・金額条件なし）';
 
 /* ---- Render Reward Journey (特典タブ) ---- */
 function renderRewardJourney(count) {
@@ -4122,15 +4126,15 @@ function renderRewardJourney(count) {
  });
 
  var bannerHtml = '';
- if (count >= 4) {
- bannerHtml = '<div class="rj-next-banner"><p>4ステップ達成 &#x1F389; &#8212; 5回目以降の特典は <strong>お楽しみに</strong></p></div>';
+ if (count >= 5) {
+ bannerHtml = '<div class="rj-next-banner"><p>5ステップ達成 &#x1F389; &#8212; 6回目以降の特典は <strong>お楽しみに</strong></p></div>';
  } else if (count === 0) {
  // ★ 矛盾解消: 0回時は エダチク10 が既に「お持ちのクーポン」にあるので、
  //    初回ご注文時の使い方を案内 (あと1回… ではなく)
  bannerHtml = '<div class="rj-next-banner"><p>クーポン <strong>エダチク10</strong> を初回ご注文時にご利用ください<br/><small style="opacity:0.8">全商品 10%OFF・併用不可</small></p></div>';
  } else {
  // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
- var next = REWARD_STAGES[Math.min(count, 3)];
+ var next = REWARD_STAGES[Math.min(count, 4)];   /* 中身が入っているのは5段目まで */
  var remaining = next.num - count;
  bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong></p></div>';
  }
@@ -4148,7 +4152,8 @@ function renderRewardJourney(count) {
   '<div><strong>ご利用条件</strong><br>' +
    '・ <strong>5,000円（税込）以上</strong>のご注文で利用可能<br>' +
    '・ 他のクーポンとの<strong>併用不可</strong><br>' +
-   '・ ご注文1回につき1点まで' +
+   '・ ご注文1回につき1点まで<br>' +
+   '・ <strong>送料半額</strong>はクーポン不要・金額条件なしで自動適用' +
   '</div>' +
  '</div>' +
  '</div>';
@@ -4774,14 +4779,16 @@ function generateDemoCoupons(orderCount) {
  if (orderCount === 0) {
  all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポン併用不可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
  }
- if (orderCount >= 1 && orderCount < 2) {
- all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '2回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
- }
+ /* 🔴 2026-08-23: 2回目に送料半額を入れたぶん、現物特典は1つずつ後ろへ。
+    送料半額はコードが要らない自動適用なので、このクーポン一覧には出さない。 */
  if (orderCount >= 2 && orderCount < 3) {
- all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(130g×2)', description: '3回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '3回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 3 && orderCount < 4) {
- all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '4回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(130g×2)', description: '4回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
+ }
+ if (orderCount >= 4 && orderCount < 5) {
+ all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '5回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
  if (orderCount >= 1) {
  all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
