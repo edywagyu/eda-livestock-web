@@ -310,9 +310,27 @@ body{
     } catch (e) { return false; }
   }
 
+  /* ---------- P034 の販売終了・表示終了（2026-08-23 ryotaro指示） ----------
+     8/24 00:00 に販売終了（「販売は終了しました」を出して購入不可）、
+     8/24 20:00 で会員限定ページから消す。端末のタイムゾーンに左右されないよう
+     +09:00 付きの絶対時刻で比較する。 */
+  var P034_SALE_END = new Date('2026-08-24T00:00:00+09:00');
+  var P034_HIDE_AT  = new Date('2026-08-24T20:00:00+09:00');
+
+  function p034Phase() {
+    var now = Date.now();
+    if (now < P034_SALE_END.getTime()) return 'onsale';
+    if (now < P034_HIDE_AT.getTime())  return 'ended';
+    return 'hidden';
+  }
+
   /* ---------- 描画 ---------- */
   function cardHtml(it, i) {
+    var phase = (it.productId === 'P034') ? p034Phase() : 'onsale';
+    if (phase === 'hidden') return '';
+    var ended = phase === 'ended';
     var soldOut = it.stock <= 0;
+    var closed = soldOut || ended;
     var off = (it.listPrice && it.listPrice > it.price)
       ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
     var was = (it.listPrice && it.listPrice > it.price)
@@ -320,7 +338,7 @@ body{
     var varHtml = '';
     if (it.variants && it.variants.length) {
       varHtml = '<div class="var-row">' + it.variants.map(function (v, vi) {
-        var can = it.stock >= v.n;
+        var can = !closed && it.stock >= v.n;
         return '<div class="var-opt' + (vi === (it.sel || 0) ? ' sel' : '') + '"' +
                ' data-v="' + vi + '"' + (can ? '' : ' style="opacity:.45;pointer-events:none"') + '>' +
                  '<span class="dot"></span>' +
@@ -334,9 +352,13 @@ body{
     /* 残数（残り◯セット／袋／枚／個）は出さない（2026-08-22 ryotaro指示）。
        出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
-    var stockLine = soldOut ? '<p class="stock-line">完売しました</p>' : '';
-    /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
-    if (!soldOut && it.productId === 'P034') {
+    var stockLine = '';
+    if (ended) {
+      stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
+    } else if (soldOut) {
+      stockLine = '<p class="stock-line">完売しました</p>';
+    } else if (it.productId === 'P034') {
+      /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
       stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
     }
     return '' +
@@ -360,8 +382,8 @@ body{
               '<button type="button" data-act="plus">＋</button>' +
             '</div>' +
           '</div>' +
-          '<button class="btn-add" type="button" data-act="add"' + (soldOut ? ' disabled' : '') + '>' +
-            (soldOut ? '完売しました' : 'カートに追加') +
+          '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
+            (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加')) +
           '</button>' +
         '</div>' +
       '</div>';
@@ -370,6 +392,20 @@ body{
   function render() {
     document.getElementById('cards').innerHTML = ITEMS.map(cardHtml).join('');
     bind();
+    scheduleP034Refresh();
+  }
+
+  /* 境界の時刻に描き直す。タブを開いたままでも 0:00 / 20:00 ちょうどで切り替わる。 */
+  var p034Timer = null;
+  function scheduleP034Refresh() {
+    if (p034Timer) { clearTimeout(p034Timer); p034Timer = null; }
+    var now = Date.now();
+    var next = [P034_SALE_END.getTime(), P034_HIDE_AT.getTime()]
+      .filter(function (t) { return t > now; })[0];
+    if (!next) return;
+    var wait = next - now + 500;
+    if (wait > 86400000) return;   /* 1日以上先なら張らない（次のページ読み込みで拾う） */
+    p034Timer = setTimeout(render, wait);
   }
 
   function bind() {
