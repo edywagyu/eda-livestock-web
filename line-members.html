@@ -292,7 +292,13 @@ body{
   }
 
   /* ---------- 会員判定 ---------- */
+  /* 2026-08-23 ゲート開放: 判定が端末の localStorage しか見ておらず、
+     連携済みの人でもブラウザが変わると鍵がかかって配信導線が切れていた。
+     鍵を戻すときは REQUIRE_MEMBER を true にするだけでよい。 */
+  var REQUIRE_MEMBER = false;
+
   function memberOn() {
+    if (!REQUIRE_MEMBER) return true;
     /* member-gate.js が未読込でも落ちないよう自前でも判定 */
     if (typeof window.isMember === 'function') return window.isMember();
     try {
