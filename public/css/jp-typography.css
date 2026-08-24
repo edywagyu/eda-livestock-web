@@ -6,7 +6,10 @@
    DESIGN RATIONALE:
    CJK 文字は Latin より画数が多く、同じ px でも視覚的に小さい。
    英語 13px で読めるテキストも日本語だと潰れる。
-   --color-ink-muted (#444) は cream (#FAF7F0) 上で 7.2:1 (WCAG AAA)。
+   --color-ink-muted (#5C5C5C) は cream (#FAF7F0) 上で 6.25:1 (WCAG AA)。
+   ⚠️ 2026-08-24 修正: 旧 `font-size: max(15px, inherit)` は inherit を
+   max() 内に書けず無効（CSS.supports 実測 false）＝最低サイズ強制が
+   一度も効いていなかった。インライン小サイズ狙い撃ち方式に変更。
    ============================================================ */
 
 /* ── 禁則処理 ── */
@@ -44,13 +47,20 @@ h1, h2, h3, h4, .hero-title, .page-title, .section-title,
 
 /* ── 日本語テキスト可読性強化 ── */
 
-/* 段落・説明文: 最低 15px, ゆったり行間 (レイアウトのみ !important) */
+/* 段落・説明文: ゆったり行間 (レイアウトのみ !important) */
 p, .desc, .lead, .product-desc,
 .restaurant-desc, .faq-a, .news-body p,
 .article-body p, .philosophy-text,
 [class*="-desc"], [class*="-text"]:not(input):not(textarea):not(button) {
-  font-size: max(15px, inherit) !important;
   line-height: 1.9 !important;
+}
+
+/* 最低サイズ強制: インラインで 11〜13px を直書きした段落だけを 15px に底上げ。
+   設計サイズ (.lead の clamp 等) には触らない。 */
+p[style*="font-size: 11px"], p[style*="font-size:11px"],
+p[style*="font-size: 12px"], p[style*="font-size:12px"],
+p[style*="font-size: 13px"], p[style*="font-size:13px"] {
+  font-size: 15px !important;
 }
 
 /* 色は specificity 0 で指定 → ローカル CSS の color: white 等が容易に上書き可能 */
@@ -112,19 +122,10 @@ p, .desc, .lead, .product-desc,
   opacity: 0.85 !important;
 }
 
-/* メタ情報・タグ: 最低 12px, 英語ラベル系OK */
-[class*="-tag"], [class*="-meta"],
-[class*="-loc"], [class*="-badge"],
-.eyebrow {
-  font-size: max(12px, inherit);
-}
-
-/* ボタン・リンク: 最低 14px */
-.btn, [class*="-action"], [class*="-cta"],
-button[type="submit"],
-a[class*="-link"] {
-  font-size: max(14px, inherit);
-}
+/* メタ情報・タグ / ボタンの最低サイズ:
+   旧 max(12px, inherit)/max(14px, inherit) は無効CSSだった上、有効化すると
+   1em=親サイズに跳ねて設計を壊すため撤去。12px未満の実例は各ページ側で
+   ソース修正する方針 (2026-08-24 shop.html の 8px タグ群を修正済み)。 */
 
 /* フッター内テキスト */
 .site-footer, .site-footer a,
@@ -140,7 +141,7 @@ p, li, td, dd, .desc, .lead,
 [class*="-desc"], [class*="-text"]:not(input):not(textarea):not(button),
 [class*="-card"] p, [class*="-block"] p {
   font-weight: 450;
-  -webkit-font-smoothing: antialiased;
+  /* 明背景の細字化を避けるため antialiased はここでは指定しない (2026-08-24) */
 }
 
 /* ── ダーク背景上のテキスト ──
