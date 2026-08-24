@@ -112,11 +112,12 @@
     }
     var items = buildBanner(data);
     if (!items.length) return;
+    /* チップに価格は出さない（2026-08-24 田崎さん指示）。値段は商品カード／PDP で見せる。
+       b.price と yen() は残してあるので、戻すなら pop-price の span を足すだけでよい。 */
     var chips = items.map(function (b) {
       return '<a class="pop-chip" href="product.html?id=' + encodeURIComponent(b.id) + '">'
            +   '<span class="pop-rank">' + b.rank + '</span>'
            +   '<span class="pop-name">' + b.name + '</span>'
-           +   '<span class="pop-price">' + yen(b.price) + '</span>'
            + '</a>';
     }).join('');
     bar.innerHTML =
