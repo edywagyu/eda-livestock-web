@@ -4538,14 +4538,31 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  const key = title + ':' + (variant || '1つ');
  return STRIPE_PRICE_BY_TITLE[key] || null;
  }
+ /* 🔴 products シートの name と「完全一致」でないと在庫が動かない。
+    GAS の validateStockBeforeCheckout / decrementStockAfterOrder は
+    どちらも products の name 列とカート item の title を突き合わせる方式で、
+    一致しない品は素通り = 在庫上限も効かず、売れても stock が減らない。
+    カードの表示名はサイズ付き(例「ヒレステーキ ギフト【松】 450g」)で
+    name(「ヒレステーキ ギフト【松】」)と一致していなかったため、
+    ギフト注文だけ在庫が引かれていなかった(2026-08-24 修正)。
+    → カートに積む title は下記のカタログ名に揃え、サイズは variant 側へ逃がす。
+    ⚠ ここを書き換えるときは products シートの name と1文字ずつ照合すること。 */
+ const GIFT_CATALOG = {
+ matsu: { name: 'ヒレステーキ ギフト【松】', variant: '450g' },
+ take: { name: '赤身ステーキ ギフト【竹】', variant: '600g' },
+ ume: { name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5' }
+ };
  window.orderGift = function (giftId, price, title) {
  const stripePriceId = lookupStripePriceId(title, '') || null;
+ const cat = GIFT_CATALOG[giftId];
+ const cartTitle = cat ? cat.name : title;
+ const cartVariant = cat ? cat.variant : 'ギフトセット';
  const items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
  items.push({
  variantId: 'gift-' + giftId,
  price: price,
- title: title,
- variant: 'ギフトセット',
+ title: cartTitle,
+ variant: cartVariant,
  img: 'public/images/products/drive/gift-box.jpg',
  qty: 1,
  gift: true,
@@ -4553,7 +4570,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  });
  localStorage.setItem(CART_KEY, JSON.stringify(items));
  /* 📊 Analytics: ギフトのカート追加イベント (カゴ落ち検知の対象にする) */
- if (window.edaAnalytics) window.edaAnalytics.addToCart('gift-' + giftId, price, { title: title, variant: 'ギフトセット' });
+ if (window.edaAnalytics) window.edaAnalytics.addToCart('gift-' + giftId, price, { title: cartTitle, variant: cartVariant });
  location.href = 'checkout.html?mode=gift';
  };
 })();
