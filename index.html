@@ -4192,7 +4192,6 @@ section.featured {
  <li><a href="about.html" data-en="About">会社案内</a></li>
  <li><a href="global.html" data-en="Global">海外展開</a></li>
  <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
- <li><a href="journal.html" data-en="Journal">記事</a></li>
  <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
  <li><a href="mypage.html" class="nav-mypage-link" data-en="My Page">マイページ</a></li>
  </ul>
@@ -4597,123 +4596,6 @@ section.featured {
 </section>
 
 <!-- ========= SUBSCRIPTION BANNER (削除) ========= -->
-
-<!-- ========= JOURNAL ========= -->
-<section class="journal-section section" id="journal">
- <div class="container">
- <div class="section-head-row reveal">
- <div class="section-head-title">
- <span class="eyebrow has-dash" style="color: var(--color-gold-soft);">Journal</span>
- <h2>Stories fromThe Farm.</h2>
- </div>
- <div style="max-width: 380px;">
- <p style="color: var(--color-ink-muted); line-height: 1.8; margin: 0;" data-en="Notes from the founder, the seasons on the farm, conversations with chefs.&lt;br&gt;
- A journal on food and livestock, written by Eda Livestock.">創業者の言葉、農場の四季、シェフとの対話。<br/>
- 江田畜産が綴る、食と畜産のジャーナル。</p>
- </div>
- </div>
-
- <div class="journal-list-wrap reveal">
- <style>
-   .journal-list { list-style: none; margin: 0; padding: 0; }
-   .journal-list li { border-bottom: 1px solid var(--color-bone); }
-   .journal-list li:first-child { border-top: 1px solid var(--color-bone); }
-   .journal-list a {
-     display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 22px;
-     padding: 26px 8px; text-decoration: none;
-     pointer-events: none; cursor: default; /* 記事準備中: 遷移先なし */
-     transition: background .3s var(--ease-out-expo), padding .3s var(--ease-out-expo);
-   }
-   .journal-list a:hover { background: rgba(15,61,46,0.035); padding-left: 16px; }
-   .jl-num {
-     font-family: var(--font-display); font-size: 26px; font-weight: 500;
-     color: var(--color-gold-soft); line-height: 1; letter-spacing: 0.04em;
-     align-self: start; padding-top: 4px; transition: color .3s;
-   }
-   .journal-list a:hover .jl-num { color: var(--color-gold); }
-   .jl-body { min-width: 0; }
-   .jl-meta { display: flex; align-items: center; gap: 11px; margin-bottom: 9px; flex-wrap: wrap; }
-   .jl-cat {
-     font-family: var(--font-display); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
-     color: var(--color-forest); background: rgba(15,61,46,0.07); padding: 4px 11px; border-radius: 20px; font-weight: 600;
-   }
-   .jl-date { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.1em; color: var(--color-gold-soft); }
-   .jl-title {
-     display: block; font-family: var(--font-jp-serif); font-size: clamp(18px, 2vw, 23px);
-     color: var(--color-forest); line-height: 1.45; transition: color .25s;
-   }
-   .journal-list a:hover .jl-title { color: var(--color-gold); }
-   .jl-excerpt {
-     display: block; margin-top: 8px; font-family: var(--font-jp); font-size: 15px;
-     line-height: 1.75; color: var(--color-ink-muted); max-width: 62ch;
-   }
-   .jl-arrow {
-     color: var(--color-gold-soft); font-size: 18px;
-     opacity: 0; transform: translateX(-8px); transition: opacity .3s, transform .3s;
-   }
-   .journal-list a:hover .jl-arrow { opacity: 1; transform: translateX(0); }
-   @media (max-width: 640px) {
-     .journal-list a { grid-template-columns: 30px 1fr; gap: 14px; padding: 22px 4px; }
-     .journal-list a:hover { padding-left: 8px; }
-     .jl-num { font-size: 19px; padding-top: 2px; }
-     .jl-arrow { display: none; }
-     .jl-excerpt { font-size: 14px; -webkit-line-clamp: 2; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden; }
-   }
- </style>
- <ol class="journal-list">
- <li><a>
-   <span class="jl-num">01</span>
-   <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat" data-en="From the founder">創業者の言葉</span><span class="jl-date">2026.04.20</span></span>
-     <span class="jl-title" data-en="Closing our third year">3年目を終えて</span>
-     <span class="jl-excerpt" data-en="Three full years since founding — where we have come from, and where the next three years lead.">創業から丸3年。江田畜産の軌跡と、次の3年への展望。</span>
-   </span>
-   <span class="jl-arrow">→</span>
- </a></li>
- <li><a>
-   <span class="jl-num">02</span>
-   <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat" data-en="News">お知らせ</span><span class="jl-date">2026.01.15</span></span>
-     <span class="jl-title" data-en="A world first — Organic JAS certified Kuroge Wagyu">世界初 — 有機JAS認証黒毛和牛</span>
-     <span class="jl-excerpt" data-en="Premium EdaWagyu, the world&#x27;s first Kuroge Wagyu to earn Organic JAS certification.">世界で初めて有機JAS認証を取得した黒毛和牛「Premium EdaWagyu」が誕生。</span>
-   </span>
-   <span class="jl-arrow">→</span>
- </a></li>
- <li><a>
-   <span class="jl-num">03</span>
-   <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat" data-en="Events">イベント</span><span class="jl-date">2025.12.10</span></span>
-     <span class="jl-title" data-en="JFEX 2025 — a second year at Makuhari Messe">JFEX 2025 — 2年連続、幕張メッセへ</span>
-     <span class="jl-excerpt" data-en="Our second year exhibiting at Japan&#x27;s Food Export EXPO 2025 Winter. The view was different from a year before.">「日本の食品」輸出EXPO 2025 Winter に2年連続出展。1年前とは違う景色があった。</span>
-   </span>
-   <span class="jl-arrow">→</span>
- </a></li>
- <li><a>
-   <span class="jl-num">04</span>
-   <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat" data-en="In conversation with chefs">シェフとの対話</span><span class="jl-date">2025.09.01</span></span>
-     <span class="jl-title" data-en="Four Seasons Hotel Tokyo at Otemachi — the Wagyu est was looking for">フォーシーズンズホテル東京大手町 — 「est」が求めた和牛</span>
-     <span class="jl-excerpt" data-en="est, the French restaurant at Four Seasons Hotel Tokyo at Otemachi, now serves Eda Wagyu.">フォーシーズンズホテル東京大手町のフレンチ「est」で江田和牛の提供を開始。</span>
-   </span>
-   <span class="jl-arrow">→</span>
- </a></li>
- <li><a>
-   <span class="jl-num">05</span>
-   <span class="jl-body">
-     <span class="jl-meta"><span class="jl-cat" data-en="In conversation with chefs">シェフとの対話</span><span class="jl-date">2025.07.29</span></span>
-     <span class="jl-title" data-en="The Capitol Hotel Tokyu — Wagyu, organic eggs and a banquet evening">ザ・キャピトルホテル 東急 — 和牛と有機卵、宴席の夜</span>
-     <span class="jl-excerpt" data-en="The Capitol Hotel Tokyu in Nagatacho adopted both our sirloin and our organic eggs. A record of that evening.">永田町のキャピトルホテル東急でサーロインと有機卵が同時採用。宴席の夜の記録。</span>
-   </span>
-   <span class="jl-arrow">→</span>
- </a></li>
- </ol>
- </div>
-
- <div style="text-align: center; margin-top: 48px;" class="reveal">
- <span style="font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; color: var(--color-gold-soft);" data-en="New articles are on the way">新しい記事を準備中です</span>
- </div>
- </div>
-</section>
 
 <!-- ========= AWARDS & RECOGNITION ========= -->
 <section class="article-body" style="background: var(--color-cream); padding: clamp(80px, 12vw, 140px) 0;">
