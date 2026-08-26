@@ -335,7 +335,7 @@ function submitInquiry(body) {
       }
     }
     if (sheet) {
-      sheet.appendRow([
+      var vals = [
         new Date(), body.inquiry_type || 'general',
         body.name, body.company || '', body.title || '',
         body.email, body.phone || '', body.country || '', body.city || '',
@@ -344,7 +344,17 @@ function submitInquiry(body) {
         judge.verdict === 'spam' ? 'spam(' + judge.score + ':' + judge.reasons.join(',') + ')'
           : judge.verdict === 'suspicious' ? 'review(' + judge.score + ':' + judge.reasons.join(',') + ')'
           : 'new'
-      ]);
+      ];
+      /* 🔽 新しい問い合わせを「一番上」に入れる（田崎さんの表示ルール：日付を持つ表は必ず降順）。
+         appendRow だと古い順に積まれ、最新を見るのに毎回一番下までスクロールすることになる。 */
+      if (sheet.getLastRow() < 1) {
+        sheet.appendRow([
+          'timestamp','inquiry_type','name','company','title','email','phone',
+          'country','city','message','source','referrer','status'
+        ]);
+      }
+      sheet.insertRowBefore(2);
+      sheet.getRange(2, 1, 1, vals.length).setValues([vals]);
     }
   } catch (sheetErr) {
     log('submit_inquiry_sheet_error', { error: sheetErr.message });
