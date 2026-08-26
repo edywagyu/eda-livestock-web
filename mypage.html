@@ -1537,6 +1537,19 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  border-radius: 10px;
 }
 .rj-step.current .rj-step-desc { color: var(--color-forest); font-weight: 500; }
+/* ⏳ 送料半額(2回目)の期限。見落とされないよう金色で1行立てる */
+.rj-deadline {
+ display: inline-block;
+ margin-top: 4px;
+ padding: 2px 10px;
+ border-radius: 999px;
+ background: rgba(212,169,59,.14);
+ color: #8A6A1F;
+ font-size: 12px;
+ font-weight: 700;
+ white-space: nowrap;
+}
+.rj-deadline--over { background: rgba(120,120,120,.12); color: #7c8a83; font-weight: 500; }
 .rj-next-banner {
  background: linear-gradient(135deg, rgba(212, 169, 59, 0.08), rgba(212, 169, 59, 0.03));
  border-top: 1px solid var(--color-line);
@@ -3966,6 +3979,7 @@ function renderDashboard(customer, orders) {
 
  /* Rewards tab — journey + coupons */
  renderRewardJourney(orderCount);
+ mpLoadRepeatShip(orderCount);   /* 🚚 送料半額の残り日数。返事が来たら上を描き直す */
  renderCoupons(coupons);
 
  /* Orders tab */
@@ -4075,6 +4089,48 @@ function renderOrders(orders) {
 /* 🔴 2026-08-23: 2回目に「送料半額」を新設し、旧2〜4回目を1つずつ後ろへ送った（田崎さん指示）。
    ここを触ったら generateDemoCoupons の orderCount しきい値も必ず一緒に動かすこと（表示だけズレる）。
    送料半額はクーポンコードではなく自動適用（決済時に GAS が判定）。code は空。 */
+/* ============================================================
+   🚚 2回目の送料半額は「前回のお届けから40日」の期限つき。
+   残り日数と期日をここに出す（お客様が一番見る場所）。
+   🔴 日数も可否も **GAS の ?action=repeat_shipping の答えをそのまま出す**。
+      マイページで独自に計算すると、請求の判定(isRepeatShipHalf_)とズレて
+      「あと5日と書いてあったのに半額にならない」が起きる。
+   🔴 対象は「次のご注文が2回目の人」だけ。3回目以降の人には出さない
+      （eligible が false で返る）。
+   ============================================================ */
+var mpRepeatShip = null;      // { enabled, eligible, half, daysLeft, deadline } / 未取得は null
+
+function mpFmtDeadline(ymd) {
+  var m = String(ymd || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return '';
+  return Number(m[2]) + '月' + Number(m[3]) + '日';
+}
+
+/* 2回目の行に出す一言。対象外・未取得なら空文字（何も出さない）。 */
+function mpRepeatShipNote() {
+  var r = mpRepeatShip;
+  if (!r || !r.enabled || !r.eligible) return '';
+  if (r.half) {
+    var d = mpFmtDeadline(r.deadline);
+    return '<span class="rj-deadline">\u23F3 ' + d + 'まで（あと' + Number(r.daysLeft) + '日）</span>';
+  }
+  return '<span class="rj-deadline rj-deadline--over">期限が過ぎました</span>';
+}
+
+async function mpLoadRepeatShip(orderCount) {
+  try {
+    if (!window.EDA_API || !currentSession) return;
+    var em  = currentSession.email || '';
+    var uid = currentSession.line_uid || '';
+    if (!em && !uid) return;
+    var r = await window.EDA_API.get('repeat_shipping', { email: em, line_uid: uid });
+    mpRepeatShip = (r && r.ok && r.enabled) ? r : null;
+    if (mpRepeatShip) renderRewardJourney(orderCount);   /* answers が来てから描き直す */
+  } catch (e) {
+    mpRepeatShip = null;
+  }
+}
+
 var REWARD_STAGES = [
  { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
  { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
@@ -4120,6 +4176,11 @@ function renderRewardJourney(count) {
  var descContent = isDone
   ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 獲得済み</span>'
   : (isLocked ? '' : escapeHtml(s.desc));
+ /* \u23F3 送料半額(2回目)だけは期限がある。まだ獲得していない人に残り日数と期日を出す。 */
+ if (s.num === 2 && !isDone) {
+  var _note = mpRepeatShipNote();
+  if (_note) descContent = (descContent ? descContent + '<br>' : '') + _note;
+ }
 
  stepsHtml += '<div class="rj-step ' + cls + '">' +
   '<div class="rj-step-rail"><div class="rj-step-dot">' + dotContent + '</div><div class="rj-step-line"></div></div>' +
@@ -4141,7 +4202,10 @@ function renderRewardJourney(count) {
  // 1回以上注文済 → 次のマイルストーン (count+1 番目のステージ) を案内
  var next = REWARD_STAGES[Math.min(count, 5)];   /* 中身が入っているのは6段目まで */
  var remaining = next.num - count;
- bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong></p></div>';
+ /* 次が2回目の人には、いつまでに頼めば半額になるかを同じ行で伝える */
+ var _bnote = (next.num === 2) ? mpRepeatShipNote() : '';
+ bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong>' +
+  (_bnote ? '<br/><small style="opacity:0.9">' + _bnote + '</small>' : '') + '</p></div>';
  }
 
  sec.innerHTML = '<div class="rj-card">' +
