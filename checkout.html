@@ -675,6 +675,24 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  outline: none;
  border-color: var(--color-gold);
 }
+/* 🔴 未入力の必須欄を赤で示す（2026-08-26 田崎さん指示）。
+   注文ボタンの警告文だけでは「どこが空か」が分からず、スマホでは
+   空欄が2画面ぶん上にあって探せない＝支払い直前の離脱要因だった。
+
+   🔴 セレクタの頭に .dest-group を付けているのは飾りではない。
+      public/css/a11y.css が後から
+        input:not([type="checkbox"]):not([type="radio"]) { border: …; background: white }
+        label:not(.checkout-consent):not(.payment-option) { color: … }
+      を当てており、詳細度が同点だと後勝ちで赤が消える（2026-08-26 実測）。
+      .dest-group を1つ足して詳細度で上回る。border は color だけでなく
+      一括指定で書く（a11y 側が border 一括で上書きしてくるため）。 */
+.dest-group .dest-field.field-error input,
+.dest-group .dest-field.field-error select,
+.dest-group .dest-field.field-error textarea {
+ border: 1px solid #C8102E;
+ background: #FFF6F6;
+}
+.dest-group .dest-field.field-error label { color: #C8102E; }
 .dest-field textarea {
  resize: vertical;
  min-height: 70px;
@@ -2226,7 +2244,7 @@ function renderGiftDestinations() {
 }
 
 function renderDestinations() {
- if (isGiftFlow) { renderGiftDestinations(); return; }
+ if (isGiftFlow) { renderGiftDestinations(); tagDestFields(); return; }
  const wrap = document.getElementById('destinationGroups');
  let html = '';
  destinations.forEach((dest, dIdx) => {
@@ -2355,6 +2373,7 @@ function renderDestinations() {
  `;
  });
  wrap.innerHTML = html;
+ tagDestFields();
 }
 
 function prefOptions(selected) {
@@ -2366,8 +2385,59 @@ function prefOptions(selected) {
  return html;
 }
 
+/* ============================================================
+   入力欄の特定と、未入力の赤表示（2026-08-26 田崎さん指示）
+   ------------------------------------------------------------
+   お届け先の入力欄は通常用(renderDestinations)とギフト用
+   (renderGiftDestinations)の2つが別々に組み立てていて、
+   updateDestField(...) の書き方（カンマ後の空白）まで違う。
+   両方の input に data 属性を足して回ると片方だけ直して壊すので、
+   描画後に oninput/onchange の中身から番号と項目名を読み取って印を付ける。
+   ============================================================ */
+function tagDestFields() {
+ try {
+  document.querySelectorAll('#destinationGroups [oninput],#destinationGroups [onchange],#recipientGroups [oninput],#recipientGroups [onchange]').forEach(function (el) {
+   var a = el.getAttribute('oninput') || el.getAttribute('onchange') || '';
+   var m = a.match(/updateDestField\(\s*(\d+)\s*,\s*'([a-zA-Z]+)'/);
+   if (m) { el.setAttribute('data-dest', m[1]); el.setAttribute('data-field', m[2]); }
+  });
+ } catch (e) {}
+}
+function destFieldEl(dIdx, key) {
+ return document.querySelector('[data-dest="' + dIdx + '"][data-field="' + key + '"]');
+}
+function fieldBox(dIdx, key) {
+ var el = destFieldEl(dIdx, key);
+ return (el && el.closest) ? el.closest('.dest-field') : null;
+}
+function clearAllFieldErrors() {
+ document.querySelectorAll('.dest-field.field-error').forEach(function (b) { b.classList.remove('field-error'); });
+}
+function markFieldErrors(list) {
+ list.forEach(function (pair) {
+  var box = fieldBox(pair[0], pair[1]);
+  if (box) box.classList.add('field-error');
+ });
+}
+/* 最初の空欄まで画面を動かしてカーソルを入れる（2026-08-26 田崎さん指示）。
+   スマホではページ全長が約3,400px、注文ボタンは最下部で、空欄はそこから
+   2画面ぶん上にある。赤くするだけでは目に入らないため、その欄まで運ぶ。
+   🔴 alert() は画面を止めるので、必ず alert を閉じた後に呼ぶこと。
+      閉じる前に動かしても、描画されずに終わる。 */
+function focusFirstError(list) {
+ if (!list || !list.length) return;
+ var el = destFieldEl(list[0][0], list[0][1]);
+ if (!el) return;
+ try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { try { el.scrollIntoView(); } catch (e2) {} }
+ /* スクロールが落ち着いてから当てる（動かしている最中に focus すると
+    端末側の自動スクロールと喧嘩して、変な位置で止まる） */
+ setTimeout(function () { try { el.focus({ preventScroll: true }); } catch (e) { try { el.focus(); } catch (e2) {} } }, 350);
+}
+
 function updateDestField(idx, key, value) {
  destinations[idx][key] = value;
+ /* 入れ直したら赤を消す（消えないと直したのに赤いまま＝直っていないように見える） */
+ if (String(value || '').trim()) { var _box = fieldBox(idx, key); if (_box) _box.classList.remove('field-error'); }
  if (key === 'noshi') {
  renderDestinations(); // ラジオの selected 表示再描画
  }
@@ -2404,13 +2474,58 @@ function autoFillFromZip(inputEl, dIdx) {
  }
  }).catch(() => {});
 }
+/* 郵便番号から住所を反映する（2026-08-26 田崎さん指示で全面差し替え）
+
+   🔴 renderDestinations() を呼んではいけない。
+      あれはお届け先ブロックを innerHTML で丸ごと作り直すため、
+      いま郵便番号を打っている入力欄そのものが別物に差し替わり、
+      カーソルが外れる＝スマホではキーボードが閉じる。住所入力の
+      3番目の欄で毎回起きていた（2026-08-26 実測）。
+      → 変わるのは「都道府県」と「住所」の2つだけなので、その2つの値を
+        直接書き換える。作り直さないのでカーソルは飛ばない。
+
+   🔴 打ち直しへの対応。
+      前は「今の住所に町名が含まれていなければ頭に足す」だけだったので、
+      150-0001 → 100-0001 と直すと
+      「千代田区千代田 渋谷区神宮前」と前の町名が残った（同上・実測）。
+      → 自動で入れた町名を _autoTown に覚えておき、次に入れ直すときは
+        まずそれを剥がしてから入れ直す。お客様が自分で打った文字は消さない。 */
 function applyZipResult(r, dIdx) {
- destinations[dIdx].pref = r.address1;
+ const d = destinations[dIdx];
+ if (!d) return;
  const cityTown = (r.address2 || '') + (r.address3 || '');
- if (cityTown && !(destinations[dIdx].address || '').includes(cityTown)) {
- destinations[dIdx].address = cityTown + (destinations[dIdx].address ? ' ' + destinations[dIdx].address : '');
+ d.pref = r.address1;
+
+ let rest = d.address || '';
+ if (d._autoTown && rest.slice(0, d._autoTown.length) === d._autoTown) {
+  rest = rest.slice(d._autoTown.length).replace(/^\s+/, '');   // 前回こちらが入れた町名だけを剥がす
  }
- renderDestinations(); // 反映
+ d._autoTown = '';
+ if (cityTown && rest.indexOf(cityTown) < 0) {
+  d.address = cityTown + (rest ? ' ' + rest : '');
+  d._autoTown = cityTown;                                      // 次の打ち直しで剥がす目印
+ } else {
+  d.address = rest;                                            // 自分で町名を打っている人には足さない
+ }
+
+ // 画面は作り直さず、変わった2欄だけ書き換える
+ const prefEl = destFieldEl(dIdx, 'pref');
+ if (prefEl) prefEl.value = d.pref;
+ const addrEl = destFieldEl(dIdx, 'address');
+ if (addrEl) addrEl.value = d.address;
+ const _pb = fieldBox(dIdx, 'pref'); if (_pb && d.pref) _pb.classList.remove('field-error');
+ const _ab = fieldBox(dIdx, 'address'); if (_ab && d.address) _ab.classList.remove('field-error');
+
+ renderSummary();   // 北海道・沖縄で送料が変わるため
+
+ /* 続きの番地をそのまま打てるように、住所欄の末尾にカーソルを移す。
+    郵便番号欄にいる（＝打ち終えた直後）ときだけ動かす。住所欄を編集中に
+    通信の返事が届いた場合に横取りしないため。 */
+ const ae = document.activeElement;
+ const zipEl = destFieldEl(dIdx, 'zip');
+ if (addrEl && (!ae || ae === document.body || ae === zipEl)) {
+  try { addrEl.focus(); const n = addrEl.value.length; addrEl.setSelectionRange(n, n); } catch (e) {}
+ }
 }
 
 function addDestination() {
@@ -2785,23 +2900,38 @@ document.querySelectorAll('.payment-option input').forEach(input => {
 
 /* ---- 注文確定 (Stripe Checkout 連携) ---- */
 async function placeOrder() {
- // バリデーション
- for (const d of destinations) {
- if (d.itemIds.length === 0 && d.type === 'gift') continue;
- if (!d.name || !d.tel || !d.zip || !d.pref || !d.address) {
- alert('配送先の必須項目を入力してください。');
- return;
+ /* バリデーション
+    🔴 空欄は「警告文を1つ出す」だけでなく、その欄自体を赤くする（2026-08-26 田崎さん指示）。
+       文言だけだと、どこが空かが分からない。1件目で return せず全部の空欄を
+       洗い出してから赤を付ける＝直すたびに押し直させない。
+       赤は updateDestField 側で、入れ直した欄から消える。 */
+ clearAllFieldErrors();
+ const MAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ const missingAddr = [];
+ const missingMail = [];
+ destinations.forEach(function (d, i) {
+  if ((d.itemIds || []).length === 0 && d.type === 'gift') return;
+  ['name', 'tel', 'zip', 'pref', 'address'].forEach(function (k) {
+   if (!d[k]) missingAddr.push([i, k]);
+  });
+  // メール必須 (注文確認・配送通知の primary 経路) — ご依頼主/自宅のみ
+  if (i === 0 && (!d.email || !MAIL_RE.test(d.email))) missingMail.push([0, 'email']);
+ });
+ if (missingAddr.length) {
+  var _all = missingAddr.concat(missingMail);
+  markFieldErrors(_all);
+  alert('配送先の必須項目を入力してください。');
+  focusFirstError(_all);
+  return;
  }
- if (d === destinations[0]) {
-   // メール必須 (注文確認・配送通知の primary 経路)
-   if (!d.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) {
-     alert('メールアドレスをご入力ください。ご注文確認をこちらにお送りします。');
-     return;
-   }
-   // LINE 連携済みなら自動で LINE 通知も併用 (任意・購入を妨げない)
-   contactMethod = getLineUid() ? 'line+email' : 'email';
+ if (missingMail.length) {
+  markFieldErrors(missingMail);
+  alert('メールアドレスをご入力ください。ご注文確認をこちらにお送りします。');
+  focusFirstError(missingMail);
+  return;
  }
- }
+ // LINE 連携済みなら自動で LINE 通知も併用 (任意・購入を妨げない)
+ contactMethod = getLineUid() ? 'line+email' : 'email';
  // 規約同意チェック
  const consent = document.getElementById('checkoutConsent');
  if (consent && !consent.checked) {
