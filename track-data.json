@@ -792,5 +792,83 @@
         "est": true
       }
     ]
+  },
+  "neatmeat-0904": {
+    "order": "ETNZ260731B",
+    "buyer": "NEAT MEAT · Auckland, New Zealand",
+    "awb": "086-60121246",
+    "airline": "Air New Zealand Cargo",
+    "exporter": "Eda Livestock Co., Ltd. · Japan",
+    "importer": "The Neat Meat Company Limited · Auckland, New Zealand",
+    "product": "Eda Wagyu A5+ (chilled)",
+    "boxes": 48,
+    "temp": "0–4°C",
+    "etd": "Narita · 8 Sep, 20:00",
+    "eta": "Auckland · 9 Sep, 09:25",
+    "demoT": "2026-09-08T11:00:00Z",
+    "route": [
+      "NRT",
+      "AKL"
+    ],
+    "legs": [
+      {
+        "flight": "NZ0090",
+        "carrier": "Air New Zealand",
+        "from": "NRT",
+        "to": "AKL",
+        "dep": "2026-09-08T11:00:00Z",
+        "arr": "2026-09-08T21:25:00Z",
+        "depDisp": "8 Sep 20:00 (JST)",
+        "arrDisp": "9 Sep 09:25 (NZST)",
+        "track": "https://www.flightradar24.com/data/flights/nz90",
+        "callsign": "ANZ90"
+      }
+    ],
+    "steps": [
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "Kagoshima · K-2 plant",
+        "t": "2026-08-05T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-08-21T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Sep 4",
+        "t": "2026-09-04T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Sep 8",
+        "t": "2026-09-08T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Sep 8",
+        "t": "2026-09-08T02:00:00Z"
+      },
+      {
+        "lab": "In flight · NZ0090",
+        "sub": "Tokyo → Auckland",
+        "t": "2026-09-08T11:00:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Auckland",
+        "sub": "AKL",
+        "t": "2026-09-08T21:25:00Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Sep 9",
+        "t": "2026-09-09T02:00:00Z",
+        "est": true
+      }
+    ]
   }
 }
