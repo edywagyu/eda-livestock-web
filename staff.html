@@ -357,6 +357,11 @@ ul { list-style: none; padding: 0; margin: 0; }
 .item-line { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .item-line .item-name { color: var(--ink); text-align: left; }
 .item-line .item-qty { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.reward-badge {
+  display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 4px;
+  background: rgba(199,154,59,.14); color: #8A6A1F;
+  font-size: 11px; font-weight: 800; white-space: nowrap;
+}
 .detail-row--items .value-muted { color: var(--muted); font-weight: 400; }
 /* 📦 本日発送する顧客 */
 .count-pill { display:inline-block; min-width:18px; padding:1px 7px; margin-left:4px; border-radius:10px; background:var(--forest); color:#fff; font-size:12px; font-weight:700; vertical-align:middle; }
@@ -2837,11 +2842,21 @@ function normalizeStaffOrder(o) {
   // 上位 items_json が空なら、届け先(destinations[].items)から商品を導出
   if (!items.length) { dests.forEach(function (d) { (Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); }); }); }
   // 商品名は括弧のバリアント表記（（1つ）/（200g）等）を一切付けず、商品名＋個数だけにする。
+  /* 🎁 購入回数特典(¥0で自動同梱)は checkout が variant に「／🎁◯回目ご注文特典」を
+     入れて送ってくる。orders の items_json は title/variant/qty しか残さないので、
+     特典かどうかの判定はこの variant の目印だけが頼り。 */
   var itemsList = items.map(function (it) {
-    return { name: (it.title || it.name || '商品'), qty: (it.qty || it.quantity || 1) };
+    var v = String(it.variant || '');
+    var mk = v.indexOf('🎁');
+    return {
+      name: (it.title || it.name || '商品'),
+      qty: (it.qty || it.quantity || 1),
+      isReward: mk >= 0,
+      rewardLabel: mk >= 0 ? v.slice(mk + 2).trim() : ''
+    };
   });
   // 一覧プレビュー用の短い文字列（スラッシュではなく読点区切り・括弧なし）
-  var itemsText = itemsList.map(function (x) { return x.name + ' ×' + x.qty; }).join('、');
+  var itemsText = itemsList.map(function (x) { return (x.isReward ? '🎁' : '') + x.name + ' ×' + x.qty; }).join('、');
   var d0 = dests[0] || {};
   var addrFull = dests.length ? dests.map(function (d) {
     return (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') +
@@ -3026,7 +3041,11 @@ function renderShipDetail() {
       }).filter(function (x) { return x.name; });
   var itemsHtml = _list.length
     ? '<div class="items-list">' + _list.map(function (x) {
-        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) +
+        /* 🎁 無料同梱の特典は、有料の商品と取り違えないよう金色のバッジで分ける */
+        var badge = x.isReward
+          ? '<span class="reward-badge">🎁 ' + escapeHtml(x.rewardLabel || '特典') + '・無料</span>'
+          : '';
+        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) + badge +
                '</span><span class="item-qty">' + (x.qty !== '' && x.qty != null ? '×' + x.qty : '') + '</span></div>';
       }).join('') + '</div>'
     : '<span class="value-muted">商品情報なし</span>';
