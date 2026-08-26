@@ -1578,6 +1578,8 @@ async function runRepeatShipCheck() {
   if (!email && !uid) {
     if (repeatShipHalf) { repeatShipHalf = false; repeatShipInfo = null; renderSummary(); }
     _repeatShipKey = '';
+    /* 🎁 相手が分からなくなったら特典も取り下げる */
+    if (rewardStage) { rewardStage = 0; _rewardKey = ''; renderOrderList(); renderSummary(); }
     return;
   }
   /* メール欄が途中（@ の前など）のうちは叩かない */
@@ -1588,6 +1590,8 @@ async function runRepeatShipCheck() {
   if (!window.EDA_API) return;   // bundle 未ロード。次の入力でまた来る
   _repeatShipKey = key;
 
+  runRewardCheck(email, uid);   /* 🎁 同じ「相手が確定した」タイミングで購入回数特典も判定する */
+
   const params = {};
   if (email) params.email = email;
   if (uid) params.line_uid = uid;
@@ -1597,6 +1601,95 @@ async function runRepeatShipCheck() {
   repeatShipHalf = half;
   repeatShipInfo = half ? { daysLeft: r.daysLeft, limit: r.limit } : null;
   renderSummary();
+}
+
+/* ============================================================
+   🎁 購入回数特典の自動同梱（2026-08-26 田崎さん指示）
+   ------------------------------------------------------------
+   マイページには「3回目=鶏モモ」等と出しているのに、実体はクーポンコード方式で
+   ここの COUPONS に未登録＝打っても「正しくありません」になっていた。
+   コードを配るのをやめ、条件を満たす注文に ¥0 の行を自動で足す。
+
+   🔴 title は products シートの name と1文字も変えない。
+      決済後の在庫減算(decrementStockAfterOrder)は商品名の完全一致でしか引かないため、
+      「(特典)」等を足した瞬間に在庫が減らなくなる。目印は variant 側に入れる。
+   🔴 回数の数え方はマイページ(customer_lookup の total_orders)と同じにする。
+      別の数え方にすると「あと1回で◯◯」の表示と実際に付く特典がズレる。
+   🔴 5回目(牛焼肉200g)は現物の割当が未決のため未登録。決まったら1行足すだけ。
+   ============================================================ */
+var REWARD_MARK = '🎁';          // staff.html / 注文明細で特典行を見分ける目印
+var REWARD_MIN_SUBTOTAL = 5000;   // マイページに書いてある「5,000円(税込)以上」と同じ条件
+var REWARD_BY_STAGE = {
+  3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
+  4: { title: 'ハンバーグ',       variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' }
+};
+var rewardStage = 0;        // 今回の注文が何回目か（customer_lookup の答え + 1）
+var rewardStock = {};       // { 商品名: 在庫 } 在庫を割った特典は付けない
+var rewardDropped = false;  // 在庫で弾かれて一度落としたら、その場では二度と足さない
+var _rewardKey = '';
+
+/* いま付ける特典（無ければ null）。条件は都度評価する＝カートを減らして
+   5,000円を割ったら消える／ギフトだけの注文には付かない。 */
+function currentReward() {
+  if (rewardDropped || subscription) return null;              // 定期便はプランに込みなので対象外
+  var r = REWARD_BY_STAGE[rewardStage];
+  if (!r) return null;
+  var selfIds = (destinations[0] && destinations[0].itemIds) || [];
+  if (!selfIds.length) return null;                            // 自宅に届く荷物が無い注文には付けない
+  var selfSubtotal = selfIds.reduce(function (sum, i) {
+    var it = cartItems[i]; return it ? sum + discountedUnit(it.price || 0) * (it.qty || 1) : sum;
+  }, 0);
+  if (selfSubtotal < REWARD_MIN_SUBTOTAL) return null;
+  var stock = rewardStock[r.title];
+  if (typeof stock === 'number' && stock < r.qty) return null;  // 在庫割れの特典を混ぜると注文ごと弾かれる
+  return {
+    title: r.title,
+    variant: r.variant + ' ／' + REWARD_MARK + r.label,
+    qty: r.qty, price: 0, baseUnit: 0, img: r.img, label: r.label, reward: true
+  };
+}
+
+/* 注文回数と特典商品の在庫を1回だけ取りに行く（メール確定のたび・相手が変わったときだけ） */
+/* 注文を投げる。🎁 特典が在庫切れ/他のお客様のカート確保で弾かれたときだけ、
+   特典を落として1回だけ投げ直す＝無料の1品のせいで有料の注文を落とさない。 */
+async function postOrderWithRewardFallback(action, payload) {
+  var res = await window.EDA_API.post(action, payload);
+  var rw = currentReward();
+  var blocked = res && !res.ok && (res.error === 'OUT_OF_STOCK' || res.error === 'CART_HELD');
+  if (blocked && rw && String(res.message || '').indexOf(rw.title) >= 0) {
+    rewardDropped = true;
+    payload.items = buildPayloadItems();
+    (payload.destinations || []).forEach(function (d) {
+      d.items = (d.items || []).filter(function (it) { return String(it.variant || '').indexOf(REWARD_MARK) < 0; });
+    });
+    res = await window.EDA_API.post(action, payload);
+    try { renderOrderList(); renderSummary(); } catch (e) {}
+  }
+  return res;
+}
+
+async function runRewardCheck(email, uid) {
+  var key = String(email || '').toLowerCase() + '|' + (uid || '');
+  if (key === _rewardKey) return;
+  if (!window.EDA_API) return;
+  _rewardKey = key;
+  try {
+    var d = await window.EDA_API.get('customer_lookup', { email: email, line_uid: uid || '' });
+    var count = (d && d.customer && Number(d.customer.total_orders)) || (d && d.orders && d.orders.length) || 0;
+    rewardStage = count + 1;                                   // 今出そうとしている注文が何回目か
+    var r = REWARD_BY_STAGE[rewardStage];
+    if (!r) { renderOrderList(); renderSummary(); return; }
+    /* 在庫は products の実数を見る。0 の特典を足すと GAS の在庫検証で
+       注文まるごと OUT_OF_STOCK になり、払う気の客を無料の1品で止めてしまう。 */
+    try {
+      var cat = await window.EDA_API.get('public_catalog', {});
+      var list = (cat && (cat.products || cat.data)) || [];
+      list.forEach(function (p) { if (p && p.name) rewardStock[p.name] = Number(p.stock); });
+    } catch (e) {}
+    renderOrderList(); renderSummary();
+  } catch (e) {
+    rewardStage = 0;                                           // 分からないときは付けない(fail-closed)
+  }
 }
 
 function getLineUid() {
@@ -1877,6 +1970,24 @@ function renderOrderList() {
  </div>
  `;
  });
+
+ /* 🎁 購入回数特典（¥0・お客様は増減も削除もできない） */
+ const _rw = currentReward();
+ if (_rw) {
+ html += `
+ <div class="order-card" style="border:1px dashed var(--color-gold,#D4A93B);background:rgba(212,169,59,.06)">
+  <div class="order-item">
+  <div class="order-item-img" style="background-image:url('${_rw.img}')"></div>
+  <div class="order-item-info">
+  <strong>${_rw.title}</strong>
+  <span>${_rw.variant}</span>
+  <div style="font-size:11px;font-weight:700;color:var(--color-gold,#D4A93B);margin-top:4px">${REWARD_MARK} ${_rw.label}（${_rw.qty}点・無料でお付けします）</div>
+  </div>
+  <div class="order-item-price">¥0<small>特典</small></div>
+  </div>
+ </div>
+ `;
+ }
 
  if (!html) {
  html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
@@ -2347,6 +2458,9 @@ function couponDiscountAmount() {
 }
 function buildPayloadItems() {
  var arr = (discountRate() === 0) ? cartItems.slice() : cartItems.map(function(it){ return Object.assign({}, it, { price: discountedUnit(it.price || 0) }); });
+ /* 🎁 購入回数特典を ¥0 の1行として混ぜる。クーポンの%は掛けない(0円は0円)。 */
+ var _rwPay = currentReward();
+ if (_rwPay) arr = arr.concat([_rwPay]);
  // 送料は GAS 側 (calcShipping → "送料" line item) でサーバー計算・課金する（改ざん不可・
  // 規約通り ¥1,100 / 北海道・沖縄 ¥2,200 / ¥11,000以上 無料）。
  // ここで配送料を line item に含めると GAS の「送料」と二重課金になるため、含めない。
@@ -2426,6 +2540,12 @@ function renderSummary() {
  itemsHtml += `<div class="summary-line-item"><span>${item.title}<span class="qty">×${item.qty}</span></span><span>¥${line.toLocaleString()}</span></div>`;
  subTotal += line;
  });
+
+ /* 🎁 購入回数特典は ¥0 なので小計・送料判定・税額のどれも動かさない */
+ const _rwSum = currentReward();
+ if (_rwSum) {
+ itemsHtml += `<div class="summary-line-item" style="color:var(--color-gold,#D4A93B);font-weight:700"><span>${REWARD_MARK} ${_rwSum.title}<span class="qty">×${_rwSum.qty}</span></span><span>¥0</span></div>`;
+ }
 
  if (!itemsHtml) {
  itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
@@ -2738,6 +2858,8 @@ async function placeOrder() {
  // 🔴 お届け先ごとの希望日時（定期便と一緒=毎月1日固定／ギフト・単品=指定日）。裏側 b2Rows_ がこれを優先。
  delivery: resolveDestDelivery(d, i),
  items: d.itemIds.map(i2 => cartItems[i2]).filter(Boolean).map(it => ({ title: it.title, variant: it.variant, qty: it.qty }))
+  /* 🎁 特典は自宅(dest[0])に同梱する。発送リスト・B2伝票の品名にも出る。 */
+  .concat((i === 0 && currentReward()) ? [(function (r) { return { title: r.title, variant: r.variant, qty: r.qty }; })(currentReward())] : [])
  })),
  items: buildPayloadItems(),
  couponCode: appliedCoupon ? appliedCoupon.code : null,
@@ -2816,13 +2938,15 @@ async function placeOrder() {
  /* 🏦 銀行振込: Stripe を経由せず注文を記録し、振込先案内ページへ。
     入金は Tom が GMOあおぞらで実額照合（アナログ）→ STAFF で「入金確認」→ 伝票発行。 */
  if (payment === 'bank') {
-   const bankRes = await window.EDA_API.post('create_bank_order', orderPayload);
+   const bankRes = await postOrderWithRewardFallback('create_bank_order', orderPayload);
    if (!bankRes.ok || !bankRes.order_number) {
      throw new Error(bankRes.message || bankRes.error || 'ご注文の登録に失敗しました。お手数ですが LINE 公式 (@706sgiuq) までお問い合わせください。');
    }
    /* order-complete のサマリー（小計/送料/合計）が一致するよう、
       割引後単価で items を作り、送料は「配送料」ラインとして含める。 */
    const _bankItems = cartItems.map(it => ({ title: it.title, variant: it.variant, qty: it.qty, price: discountedUnit(it.price || 0) }));
+   const _rwBank = currentReward();
+   if (_rwBank) _bankItems.push({ title: _rwBank.title, variant: _rwBank.variant, qty: _rwBank.qty, price: 0 });
    if (gShipping > 0) _bankItems.push({ title: '配送料', qty: 1, price: gShipping, variantId: 'shipping' });
    localStorage.setItem('eda-last-order', JSON.stringify({
      num: bankRes.order_number,
@@ -2841,7 +2965,7 @@ async function placeOrder() {
    return;
  }
 
- const result = await window.EDA_API.post(action, orderPayload);
+ const result = await postOrderWithRewardFallback(action, orderPayload);
 
  if (!result.ok || !result.url) {
  /* 在庫切れ・他のお客様のカート確保中は message に商品名と点数が入る（error はコード） */
