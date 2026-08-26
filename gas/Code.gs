@@ -138,7 +138,7 @@ function generateOrderNumber() {
 /* 🔒 staff トークン必須アクション（router で一括ガード）。
    staff_login は token 発行の入口なので除外。token は GET/POST とも e.parameter.token で受ける。 */
 var STAFF_PROTECTED = {
-  staff_dashboard: 1, staff_inventory: 1, staff_orders: 1, staff_analytics: 1, b2_csv: 1,
+  staff_dashboard: 1, staff_month_summary: 1, staff_inventory: 1, staff_orders: 1, staff_analytics: 1, b2_csv: 1,
   customers: 1, customers_csv: 1, customers_segment: 1, segment_stats: 1,
   orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
@@ -193,6 +193,7 @@ function doGet(e) {
       /* ===== STAFF ===== */
       case 'staff_login':       return staffLogin(e.parameter);
       case 'staff_dashboard':   return staffDashboard();
+      case 'staff_month_summary': return staffMonthSummary(e.parameter);  /* 📅 今月の売上/注文数/仕入れ額/粗利 (gas/MonthSummary.gs) */
       case 'staff_inventory':   return staffInventory();
       case 'staff_orders':      return staffOrders();
       case 'staff_perks':       return staffPerks();          /* 🐔 鶏ムネ特典・未同梱の一覧 */
