@@ -261,7 +261,7 @@ function quizResponsesOverview(params) {
 }
 
 /* ====== お問い合わせフォーム受信 (contact.html → POST submit_inquiry) ======
-   - Inquiries シートに行追加 (なければ自動作成)
+   - 「問い合わせ」シートに行追加 (なければ自動作成。旧名 Inquiries も読む)
    - Tom にメール通知
    - 顧客に自動返信（予約への誘導つき）
    ====== */
@@ -314,16 +314,20 @@ function submitInquiry(body) {
   }
   var judge = classifyInquiry_(body);
   try { log('inquiry_classified', { verdict: judge.verdict, score: judge.score, reasons: judge.reasons.join(','), email: body.email }); } catch (e) {}
-  // 1. Inquiries シートに行追加 (なければ作成) — spam も記録は残す (誤判定の救済用)
+  // 1. 「問い合わせ」シートに行追加 (なければ作成) — spam も記録は残す (誤判定の救済用)
   try {
-    var sheet = getSheet('Inquiries') || getSheet('inquiries');
+    /* タブ名は「問い合わせ」。旧名 Inquiries / inquiries も引き続き拾う（改名前の環境・
+       手で戻した場合の保険）。ここを名前で探しているので、シート名を変えるときは
+       必ずこの行を先に直すこと。見つからないと下で新しいタブを作ってしまい、
+       過去の問い合わせと新しい問い合わせが別々のタブに分かれる。 */
+    var sheet = getSheet('問い合わせ') || getSheet('Inquiries') || getSheet('inquiries');
     if (!sheet) {
       // 自動作成
       var ssId = (typeof PROPS !== 'undefined' && PROPS.getProperty)
                    ? PROPS.getProperty('SPREADSHEET_ID') : null;
       if (ssId) {
         var ss = SpreadsheetApp.openById(ssId);
-        sheet = ss.insertSheet('Inquiries');
+        sheet = ss.insertSheet('問い合わせ');
         sheet.appendRow([
           'timestamp','inquiry_type','name','company','title','email','phone',
           'country','city','message','source','referrer','status'
