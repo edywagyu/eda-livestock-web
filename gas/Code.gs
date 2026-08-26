@@ -195,7 +195,7 @@ function doGet(e) {
       case 'staff_month_summary': return staffMonthSummary(e.parameter);  /* 📅 今月の売上/注文数/仕入れ額/粗利 (gas/MonthSummary.gs) */
       /* 🔁 定期便損益タブの当月行づくり (gas/SubscriptionMonthRows.gs)。?dry=1 で下見・?month=9 で月指定 */
       case 'staff_sub_month_rows': return jsonResponse(
-        buildSubscriptionMonthRows(e.parameter.month, String(e.parameter.dry || '') === '1'));
+        buildSubscriptionMonthRows(e.parameter.month, String(e.parameter.dry || '') === '1', e.parameter.names));
       case 'setup_sub_month_rows': return jsonResponse(setupSubscriptionMonthRowsTrigger());  /* 初回1回: 毎月1日7時トリガー設置(冪等) */
       case 'staff_inventory':   return staffInventory();
       case 'staff_orders':      return staffOrders();
