@@ -2350,6 +2350,9 @@ function shipDateFor(arrival, offset) {
   return _ymd(d);
 }
 function _isShipped(o) { return o && (o.shipStatus === '発送済' || o.shipStatus === '配達完了'); }
+/* 🐔 鶏ムネ特典：この注文に無料の鶏ムネ1個を入れる必要があるか */
+function _perkTodo(o) { return !!(o && String(o.chickenPerk || '').indexOf('要同梱') === 0); }
+function _perkDone(o) { return !!(o && String(o.chickenPerk || '').indexOf('同梱済') === 0); }
 function _mmdd(s) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || '')); return m ? (+m[2]) + '/' + (+m[3]) : ''; }
 
 /* デモ用：常に本日発送になる注文を合成 */
@@ -2858,6 +2861,9 @@ function normalizeStaffOrder(o) {
     items: itemsText || '商品情報なし',
     itemsList: itemsList,
     shipStatus: statusMap[ps] || '未発送',
+    // 🐔 鶏ムネ特典（購入時アンケート回答者への次回同梱）。GAS が orders の
+    //    chicken_perk 列 or ライブ判定で '要同梱（鶏ムネ1個）' / '同梱済…' / '特典発生元…' を返す。
+    chickenPerk: String(o.chicken_perk || '').trim(),
     phone: d0.tel || o.customer_phone || '',
     zip: d0.zip || '',
     pref: d0.pref || '',
@@ -2948,7 +2954,7 @@ function orderRowHtml(o) {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}</div>
           <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
@@ -2956,6 +2962,37 @@ function orderRowHtml(o) {
       </div>
     `;
   })(o);
+}
+
+/* 🐔 鶏ムネ特典を「同梱済み」にする（回答シートと orders の両方を更新） */
+async function markPerkDone() {
+  const o = selectedOrder;
+  if (!o) return;
+  if (!confirm('この発送分に鶏ムネ1個を入れましたか？\n「同梱済み」として記録します。')) return;
+  if (isDemoMode()) {
+    o.chickenPerk = '同梱済（デモ）';
+    toast('🎭 デモ: 鶏ムネを同梱済みにしました', 'success');
+    renderShipDetail();
+    return;
+  }
+  try {
+    const res = await fetch(GAS_URL + '?action=staff_perk_done' + authQS(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ order_number: o.id })
+    });
+    const data = await res.json();
+    if (handleAuthError(data)) return;
+    if (!data.ok) throw new Error(data.error || '記録に失敗しました');
+    o.chickenPerk = '同梱済（' + o.id + '）';
+    const idx = ordersCache.findIndex(x => x.id === o.id);
+    if (idx >= 0) ordersCache[idx] = o;
+    toast('🐔 鶏ムネを同梱済みとして記録しました', 'success');
+    renderShipDetail();
+    if (typeof renderOrders === 'function') renderOrders();
+  } catch (e) {
+    toast(e.message || '記録に失敗しました', 'error');
+  }
 }
 
 /* ================ SHIP ================ */
@@ -3030,7 +3067,23 @@ function renderShipDetail() {
                '</span><span class="item-qty">' + (x.qty !== '' && x.qty != null ? '×' + x.qty : '') + '</span></div>';
       }).join('') + '</div>'
     : '<span class="value-muted">商品情報なし</span>';
-  document.getElementById('shipContent').innerHTML = `
+  // 🐔 鶏ムネ特典バナー（購入時アンケートに答えた方への次回同梱ぶん）
+  const perkBanner = _perkTodo(o) ? `
+    <div class="card" style="border:2px solid #E24B4A;background:#FDE7E7;padding:14px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;color:#B91C1C;margin-bottom:6px">🐔 鶏ムネ1個（無料）を同梱してください</div>
+      <div style="font-size:12px;color:#7F1D1D;line-height:1.6">
+        購入完了ページのアンケートにご回答いただいたお客様です。<br>
+        この発送分に <strong>平飼い鶏 ムネ 200g × 1</strong> をお礼として無料同梱します。
+      </div>
+      <button class="btn-primary" style="margin-top:12px;background:#E24B4A" onclick="markPerkDone()">
+        🐔 鶏ムネを入れた（同梱済みにする）
+      </button>
+    </div>` : (_perkDone(o) ? `
+    <div class="card" style="border:1px solid #A7D9BE;background:#E8FAF0;padding:10px;margin-bottom:12px;font-size:13px;font-weight:700;color:#065F46">
+      ✓ 鶏ムネ特典は同梱済みとして記録されています
+    </div>` : '');
+
+  document.getElementById('shipContent').innerHTML = perkBanner + `
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
       <div class="detail-row"><span class="label">受注日</span><span class="value">${escapeHtml(o.orderDate || '')}</span></div>
