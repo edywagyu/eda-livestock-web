@@ -207,16 +207,27 @@ function msSubscriptionPart_(month) {
 
   var want = month + '月';
   var num = function (v) { return Number(String(v).replace(/[^0-9.-]/g, '')) || 0; };
-  var revenue = 0, cost = 0, rows = 0, months = {};
+  var revenue = 0, cost = 0, rows = 0, months = {}, noContent = [];
+
+  /* 中身(和牛1〜7 / 鶏1〜3)が全部空 かつ 原価0 の行 = 商品が未選定。
+     米プランは中身欄が空でも原価が入るので、原価0を条件に入れて誤検知を避ける。 */
+  var contentIdx = [];
+  ['和牛1','和牛2','和牛3','和牛4','和牛5','和牛6','和牛7','鶏1','鶏2','鶏3'].forEach(function (k) {
+    var i = h.indexOf(k);
+    if (i !== -1) contentIdx.push(i);
+  });
 
   for (var i = 1; i < data.length; i++) {
     var m = String(data[i][monthIdx] || '').trim();
     if (!m || !data[i][nameIdx]) continue;
     months[m] = true;
     if (m !== want) continue;
+    var c = num(data[i][costIdx]);
     revenue += num(data[i][priceIdx]);
-    cost    += num(data[i][costIdx]);
+    cost    += c;
     rows++;
+    var filled = contentIdx.some(function (ci) { return String(data[i][ci] || '').trim() !== ''; });
+    if (!filled && !c) noContent.push(String(data[i][nameIdx]).trim());
   }
 
   return {
@@ -225,6 +236,7 @@ function msSubscriptionPart_(month) {
     cost: Math.round(cost),
     profit: Math.round(revenue - cost),
     rows: rows,
+    noContent: noContent,              /* 中身が未選定で原価0の行 */
     sheetMonths: Object.keys(months)   /* タブに当月行が無いとき画面で気づけるように返す */
   };
 }
