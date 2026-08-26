@@ -4706,6 +4706,42 @@ function staffSubscriptionDelete(body) {
   return jsonResponse({ ok:false, error: 'planId not found' });
 }
 
+/* 単品の通算注文回数（＝その注文が、そのお客様の何本目か）を order_number ごとに返す。
+   管理画面で「今回で何回目か」と「同梱する特典用紙」を出すために使う。
+   数え方（staff.html の表示と揃えてある）:
+     ・customer_email を小文字化した単位でお客様を同一視する（別メールでの注文は別人扱い）
+     ・placed_at の古い順に 1,2,3… と振る
+     ・定期便(mode が subscription で始まる)は数えない
+     ・届け先が無い行（テスト・決済未完了）と、order_number の重複行（webhook多重発火）は数えない
+   注文DB全件を母数にするので、画面側の直近200件だけの概算より正確。 */
+function purchaseSeqMap_(data, headers) {
+  const map = {};
+  const iNo    = headers.indexOf('order_number');
+  const iEmail = headers.indexOf('customer_email');
+  if (iNo === -1 || iEmail === -1) return map;
+  const iAt   = headers.indexOf('placed_at');
+  const iMode = headers.indexOf('mode');
+  const iDest = headers.indexOf('destinations_json');
+  const rows = [], seen = {};
+  for (let i = 1; i < data.length; i++) {
+    const no = String(data[i][iNo] || '').trim();
+    if (!no || seen[no]) continue;
+    seen[no] = 1;
+    if (iMode !== -1 && String(data[i][iMode] || '').indexOf('subscription') === 0) continue;
+    if (iDest !== -1) {
+      const d = String(data[i][iDest] || '').trim();
+      if (!d || d === '[]') continue;
+    }
+    const email = String(data[i][iEmail] || '').trim().toLowerCase();
+    if (!email) continue;
+    rows.push({ no: no, email: email, at: iAt !== -1 ? String(data[i][iAt] || '') : '' });
+  }
+  rows.sort((a, b) => (a.at < b.at ? -1 : (a.at > b.at ? 1 : 0)));
+  const count = {};
+  rows.forEach(r => { count[r.email] = (count[r.email] || 0) + 1; map[r.no] = count[r.email]; });
+  return map;
+}
+
 /* GET staff_orders */
 function staffOrders() {
   try {
@@ -4713,8 +4749,10 @@ function staffOrders() {
     const data = sh.getDataRange().getValues();
     if (data.length < 2) return jsonResponse({ ok:true, orders: [] });
     const headers = data[0];
+    const seqMap = purchaseSeqMap_(data, headers);   /* 何回目か（全件から算出） */
     const orders = data.slice(1).map(row => {
       const o = {}; headers.forEach((h, i) => o[h] = row[i]);
+      o.purchase_seq = seqMap[String(o.order_number || '').trim()] || '';
       return o;
     }).reverse().slice(0, 200);
     /* 🐔 鶏ムネ特典（購入時アンケート回答者への次回同梱）を、シートの列が
