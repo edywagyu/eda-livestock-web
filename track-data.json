@@ -689,5 +689,108 @@
         "est": true
       }
     ]
+  },
+  "discarlux-0915": {
+    "order": "ETEU260811B",
+    "buyer": "DISCARLUX · Madrid, Spain",
+    "awb": "176-07470573",
+    "airline": "Emirates SkyCargo",
+    "exporter": "Eda Livestock Co., Ltd. · Japan",
+    "importer": "DISCARLUX",
+    "product": "Eda Wagyu A5 (chilled)",
+    "boxes": 83,
+    "temp": "0–4°C",
+    "etd": "NRT · 16 Sep",
+    "eta": "MAD · 17 Sep, 05:01",
+    "demoT": "2026-09-16T13:41:38Z",
+    "route": [
+      "NRT",
+      "DXB",
+      "MAD"
+    ],
+    "legs": [
+      {
+        "flight": "EK319",
+        "carrier": "Emirates",
+        "from": "NRT",
+        "to": "DXB",
+        "dep": "2026-09-16T09:00:00Z",
+        "arr": "2026-09-16T18:23:17Z",
+        "depDisp": "16 Sep 18:00 (JST)",
+        "arrDisp": "16 Sep 22:23 (GST)",
+        "track": "https://www.flightradar24.com/data/flights/ek319",
+        "callsign": "UAE319"
+      },
+      {
+        "flight": "EK143",
+        "carrier": "Emirates",
+        "from": "DXB",
+        "to": "MAD",
+        "dep": "2026-09-16T20:23:00Z",
+        "arr": "2026-09-17T03:01:45Z",
+        "depDisp": "17 Sep 00:23 (GST)",
+        "arrDisp": "17 Sep 05:01 (CEST)",
+        "track": "https://www.flightradar24.com/data/flights/ek143",
+        "callsign": "UAE143"
+      }
+    ],
+    "steps": [
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "MAFF-approved plant, Japan",
+        "t": "2026-09-12T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-09-13T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Sep 14",
+        "t": "2026-09-14T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Sep 15",
+        "t": "2026-09-15T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Sep 16",
+        "t": "2026-09-16T02:00:00Z"
+      },
+      {
+        "lab": "In flight · EK319",
+        "sub": "Tokyo → Dubai",
+        "t": "2026-09-16T09:00:00Z",
+        "air": true
+      },
+      {
+        "lab": "Transit at Dubai",
+        "sub": "DXB",
+        "t": "2026-09-16T18:23:17Z",
+        "air": true
+      },
+      {
+        "lab": "In flight · EK143",
+        "sub": "Dubai → Madrid",
+        "t": "2026-09-16T20:23:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Madrid",
+        "sub": "MAD",
+        "t": "2026-09-17T03:01:45Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Sep 18",
+        "t": "2026-09-18T03:01:45Z",
+        "est": true
+      }
+    ]
   }
 }
