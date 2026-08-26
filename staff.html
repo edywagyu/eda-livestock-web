@@ -366,6 +366,18 @@ ul { list-style: none; padding: 0; margin: 0; }
 /* 📦 本日発送する顧客 */
 .count-pill { display:inline-block; min-width:18px; padding:1px 7px; margin-left:4px; border-radius:10px; background:var(--forest); color:#fff; font-size:12px; font-weight:700; vertical-align:middle; }
 .ship-today-card { padding: 10px 12px; }
+.month-summary { padding: 14px 16px; }
+.ms-table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+.ms-table th, .ms-table td { padding:7px 4px; text-align:right; font-size:14px; }
+.ms-table thead th { font-size:11px; color:var(--muted); font-weight:700; border-bottom:1px solid var(--bone); padding-bottom:6px; }
+.ms-table tbody th { text-align:left; font-size:12px; color:var(--muted); font-weight:600; }
+.ms-table tbody tr + tr td, .ms-table tbody tr + tr th { border-top:1px solid var(--paper); }
+.ms-table .ms-total { font-weight:800; color:var(--forest); }
+.ms-table tr.ms-profit td, .ms-table tr.ms-profit th { font-weight:800; color:var(--forest); }
+.ms-table tr.ms-profit td.ms-total { color:var(--gold-soft); }
+.ms-table tr.ms-rate td, .ms-table tr.ms-rate th { font-size:11px; color:var(--muted); font-weight:600; padding-top:2px; }
+.ms-warn { margin-top:10px; padding:8px 10px; border-radius:8px; background:#FDF3E0; color:#8a6114; font-size:11px; line-height:1.6; }
+.ms-note { margin-top:10px; font-size:10px; color:var(--muted); line-height:1.6; }
 .ship-today-legend { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
 .ship-row { display:flex; flex-direction:column; gap:3px; padding:10px 8px; border-radius:10px; cursor:pointer; border:1px solid transparent; }
 .ship-row + .ship-row { border-top:1px solid var(--bone); border-radius:0; }
@@ -1237,6 +1249,28 @@ ul { list-style: none; padding: 0; margin: 0; }
       <div class="card ship-today-card">
         <div class="ship-today-legend">東日本＝到着の3日前 ／ 西日本＝到着の2日前に発送</div>
         <div id="shipTodayList"><div class="empty-sm">読み込み中…</div></div>
+      </div>
+
+      <!-- 📅 今月サマリー（売上 / 注文数 / 仕入れ額 / 粗利 × 単品・定期便） -->
+      <div class="section-label">📅 <span id="msTitle">今月</span>のまとめ <span id="msUpdated" style="float:right;text-transform:none;letter-spacing:0;font-weight:600">-</span></div>
+      <div class="card month-summary">
+        <table class="ms-table">
+          <thead>
+            <tr><th></th><th>単品</th><th>定期便</th><th class="ms-total">合計</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>売上</th>      <td id="msRevS">-</td><td id="msRevB">-</td><td class="ms-total" id="msRevT">-</td></tr>
+            <tr><th>注文数</th>    <td id="msOrdS">-</td><td id="msOrdB">-</td><td class="ms-total" id="msOrdT">-</td></tr>
+            <tr><th>仕入れ額</th>  <td id="msCostS">-</td><td id="msCostB">-</td><td class="ms-total" id="msCostT">-</td></tr>
+            <tr class="ms-profit"><th>粗利</th><td id="msProS">-</td><td id="msProB">-</td><td class="ms-total" id="msProT">-</td></tr>
+            <tr class="ms-rate"><th>粗利率</th><td id="msRateS">-</td><td id="msRateB">-</td><td class="ms-total" id="msRateT">-</td></tr>
+          </tbody>
+        </table>
+        <div id="msWarn" class="ms-warn" style="display:none"></div>
+        <div class="ms-note">
+          仕入れ額＝今月売れた分の原価。単品はロット台帳の「原価/パック」×販売数（ギフト含む）、定期便は「定期便損益」タブの当月行（WIX/Shopify含む23軒）。<br>
+          売上は税込・原価は税抜。送料/資材/決済手数料は原価に含めていません。
+        </div>
       </div>
 
       <div class="section-label">今日の状況</div>
@@ -2430,6 +2464,7 @@ async function loadDashboard() {
     document.getElementById('todayRevenue').textContent = '¥152k';
     document.getElementById('lowStock').textContent = '2';
     renderShipToday();
+    loadMonthSummary();
     loadAnalytics();
     startRealtime();
     return;
@@ -2447,8 +2482,75 @@ async function loadDashboard() {
     console.error(e);
   }
   renderShipToday();
+  loadMonthSummary();
   loadAnalytics();
   startRealtime();
+}
+
+/* ===== 📅 今月のまとめ — 売上/注文数/仕入れ額/粗利 を 単品・定期便 で分けて出す =====
+   数字は staff_month_summary (gas/MonthSummary.gs) が返す。
+   単品 = orders(single+gift) × ロット台帳の原価/パック、定期便 = 定期便損益タブの当月行。 */
+function _msYen(n) { return '\u00a5' + Math.round(Number(n) || 0).toLocaleString(); }
+function _msRate(profit, revenue) {
+  const r = Number(revenue) || 0;
+  if (!r) return '-';
+  return Math.round((Number(profit) || 0) / r * 1000) / 10 + '%';
+}
+function _msFill(part, suffix) {
+  document.getElementById('msRev'  + suffix).textContent = _msYen(part.revenue);
+  document.getElementById('msOrd'  + suffix).textContent = (Number(part.orders) || 0) + '\u4ef6';
+  document.getElementById('msCost' + suffix).textContent = _msYen(part.cost);
+  document.getElementById('msPro'  + suffix).textContent = _msYen(part.profit);
+  document.getElementById('msRate' + suffix).textContent = _msRate(part.profit, part.revenue);
+}
+function renderMonthSummary(d) {
+  const t = document.getElementById('msTitle');
+  if (t && d.monthLabel) t.textContent = d.monthLabel;
+  const u = document.getElementById('msUpdated');
+  if (u) u.textContent = d.updatedAt ? ('\u66f4\u65b0 ' + d.updatedAt) : '';
+
+  _msFill(d.single || {}, 'S');
+  _msFill(d.subscription || {}, 'B');
+  _msFill(d.total || {}, 'T');
+
+  /* 原価が引けなかった品目と、定期便タブに当月行が無いケースを隠さず出す */
+  const warn = [];
+  const un = (d.single && d.single.uncovered) || [];
+  if (un.length) {
+    warn.push('\u26a0\ufe0f \u539f\u4fa1\u672a\u767b\u9332\u306e\u5546\u54c1\u304c' + un.length + '\u54c1\u76ee\u3042\u308a\u3001\u305d\u306e\u5206\u306e\u4ed5\u5165\u308c\u984d\u304c0\u3067\u8a08\u4e0a\u3055\u308c\u3066\u3044\u307e\u3059\uff08\u7c97\u5229\u306f\u305d\u306e\u5206\u5927\u304d\u3081\uff09\uff1a'
+      + un.map(function (x) { return x.name + '\u00d7' + x.qty; }).join('\u3001'));
+  }
+  const sub = d.subscription || {};
+  if (!sub.orders && sub.sheetMonths && sub.sheetMonths.length) {
+    warn.push('\u26a0\ufe0f \u300c\u5b9a\u671f\u4fbf\u640d\u76ca\u300d\u30bf\u30d6\u306b' + (d.monthLabel || '') + '\u306e\u884c\u304c\u3042\u308a\u307e\u305b\u3093\uff08\u73fe\u5728\u306e\u30bf\u30d6\u306e\u6708\uff1a'
+      + sub.sheetMonths.join('\u3001') + '\uff09\u3002\u5b9a\u671f\u4fbf\u306e\u6570\u5b57\u306f0\u306e\u307e\u307e\u3067\u3059\u3002');
+  }
+  const box = document.getElementById('msWarn');
+  if (box) {
+    box.innerHTML = warn.join('<br>');
+    box.style.display = warn.length ? 'block' : 'none';
+  }
+}
+async function loadMonthSummary() {
+  if (isDemoMode()) {
+    renderMonthSummary({
+      monthLabel: (new Date().getMonth() + 1) + '\u6708', updatedAt: '--:--',
+      single:       { revenue: 181166, orders: 13, cost: 117632, profit:  63534, uncovered: [] },
+      subscription: { revenue: 315762, orders: 23, cost: 177434, profit: 138328 },
+      total:        { revenue: 496928, orders: 36, cost: 295066, profit: 201862 }
+    });
+    return;
+  }
+  try {
+    const res = await fetch(GAS_URL + '?action=staff_month_summary' + authQS());
+    const data = await res.json();
+    if (!data || !data.ok) throw new Error((data && data.error) || 'failed');
+    renderMonthSummary(data);
+  } catch (e) {
+    console.error('month_summary', e);
+    const box = document.getElementById('msWarn');
+    if (box) { box.textContent = '\u4eca\u6708\u306e\u307e\u3068\u3081\u3092\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f'; box.style.display = 'block'; }
+  }
 }
 
 /* 🔴 リアルタイム (LIVE) — staff_analytics(range=1d) を自動ポーリングして本日の数値を更新 */
