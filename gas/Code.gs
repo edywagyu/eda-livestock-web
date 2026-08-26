@@ -144,7 +144,6 @@ var STAFF_PROTECTED = {
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
   staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
   staff_ship: 1, staff_confirm_payment: 1,
-  staff_perks: 1, staff_perk_done: 1,
   line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1
@@ -200,7 +199,6 @@ function doGet(e) {
       case 'setup_sub_month_rows': return jsonResponse(setupSubscriptionMonthRowsTrigger());  /* 初回1回: 毎月1日7時トリガー設置(冪等) */
       case 'staff_inventory':   return staffInventory();
       case 'staff_orders':      return staffOrders();
-      case 'staff_perks':       return staffPerks();          /* 🐔 鶏ムネ特典・未同梱の一覧 */
       case 'staff_analytics':   return staffAnalytics(e.parameter);
       case 'b2_csv':            return b2CsvExport(e.parameter);
       /* ===== 経営ダッシュボード追加アクション (Code_v2_Additions.gs に実装) ===== */
@@ -288,7 +286,6 @@ function doPost(e) {
       case 'staff_subscription_save':      return staffSubscriptionSave(body);
       case 'staff_subscription_delete':    return staffSubscriptionDelete(body);
       case 'staff_ship':                   return staffShip(body);
-      case 'staff_perk_done':              return staffPerkDone(body);   /* 🐔 鶏ムネを同梱した */
       case 'staff_confirm_payment':        return staffConfirmPayment(body);
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
@@ -4722,19 +4719,8 @@ function staffOrders() {
       const o = {}; headers.forEach((h, i) => o[h] = row[i]);
       return o;
     }).reverse().slice(0, 200);
-    /* 🐔 鶏ムネ特典（購入時アンケート回答者への次回同梱）を、シートの列が
-       まだ同期されていなくても管理画面に出せるようライブで載せる。
-       回答スプレッドが開けない場合 cpPendingIndex_ は空を返すので発送業務は止まらない。 */
-    try {
-      const _perkIdx = cpPendingIndex_();
-      if (_perkIdx.list.length) {
-        orders.forEach(function (o) {
-          const st = String(o[CHICKEN_PERK_COL] || '').trim();
-          if (st.indexOf(CHICKEN_PERK_DONE) === 0) return;      /* 同梱済はそのまま */
-          o[CHICKEN_PERK_COL] = cpStateForOrder_(_perkIdx, o.order_number, o.customer_email, o.customer_phone, o.placed_at, o.payment_status);
-        });
-      }
-    } catch (_e) { log('chicken_perk_attach_error', { error: _e.message }); }
+    /* 🐔 chicken_perk 列は アンケートGAS(eda-survey-gas / Perk.gs)が書く。
+       staffOrders は orders の全列をそのまま返すので、ここでは何もしない。 */
     return jsonResponse({ ok:true, orders });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
@@ -5028,7 +5014,6 @@ function writeShippingSheet() {
   try {
     const id = PROPS.getProperty('SHIPPING_SHEET_ID');
     if (!id) return 'no_sheet_id';
-    syncChickenPerkColumn_();   /* 🐔 鶏ムネ特典の印を orders 側に反映（30分ごと） */
     const b = b2Rows_();
     const ss = SpreadsheetApp.openById(id);
     // --- 発送リスト(B2取込用・先頭タブ) ---
