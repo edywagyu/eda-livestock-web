@@ -4073,8 +4073,8 @@ function renderOrders(orders) {
 var REWARD_STAGES = [
  { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
  { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
- { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け', code: 'CHK-THIGH', icon: '3' },
- { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加の人気商品', code: 'BURGER-FREE', icon: '4' },
+ { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
+ { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
  { num: 5, label: '5回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '5' },
  { num: 6, label: '6回目のご注文', reward: '限定部位を買える権利', desc: 'イチボ・シンシンなど、通常は店頭に出さない希少部位をご購入いただけます', code: '', icon: '6', member: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '7回目以降の特典はお楽しみに', code: '', icon: '7', locked: true },
@@ -4781,12 +4781,10 @@ function generateDemoCoupons(orderCount) {
  }
  /* 🔴 2026-08-23: 2回目に送料半額を入れたぶん、現物特典は1つずつ後ろへ。
     送料半額はコードが要らない自動適用なので、このクーポン一覧には出さない。 */
- if (orderCount >= 2 && orderCount < 3) {
- all.push({ code: 'CHK-THIGH', value: '無料', name: '鶏モモ 200g', description: '3回目ご注文特典（平飼い鶏）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
- }
- if (orderCount >= 3 && orderCount < 4) {
- all.push({ code: 'BURGER-FREE', value: '無料', name: '無添加ハンバーグ 2個(130g×2)', description: '4回目購入特典', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
- }
+ /* 🔴 2026-08-26: 3回目(鶏モモ)・4回目(ハンバーグ)はクーポンコードをやめ、
+    checkout.html が注文へ ¥0 で自動同梱する方式に変えた(PR #145)。
+    ここに残すとコードと自動同梱が二重に見えるので、クーポン一覧には出さない。
+    特典そのものは「特典のあゆみ」(REWARD_STAGES)に auto:true で出ている。 */
  if (orderCount >= 4 && orderCount < 5) {
  all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '5回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
  }
