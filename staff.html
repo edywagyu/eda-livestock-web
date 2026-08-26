@@ -3168,37 +3168,6 @@ function orderRowHtml(o) {
   })(o);
 }
 
-/* 🐔 鶏ムネ特典を「同梱済み」にする（回答シートと orders の両方を更新） */
-async function markPerkDone() {
-  const o = selectedOrder;
-  if (!o) return;
-  if (!confirm('この発送分に鶏ムネ1個を入れましたか？\n「同梱済み」として記録します。')) return;
-  if (isDemoMode()) {
-    o.chickenPerk = '同梱済（デモ）';
-    toast('🎭 デモ: 鶏ムネを同梱済みにしました', 'success');
-    renderShipDetail();
-    return;
-  }
-  try {
-    const res = await fetch(GAS_URL + '?action=staff_perk_done' + authQS(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ order_number: o.id })
-    });
-    const data = await res.json();
-    if (handleAuthError(data)) return;
-    if (!data.ok) throw new Error(data.error || '記録に失敗しました');
-    o.chickenPerk = '同梱済（' + o.id + '）';
-    const idx = ordersCache.findIndex(x => x.id === o.id);
-    if (idx >= 0) ordersCache[idx] = o;
-    toast('🐔 鶏ムネを同梱済みとして記録しました', 'success');
-    renderShipDetail();
-    if (typeof renderOrders === 'function') renderOrders();
-  } catch (e) {
-    toast(e.message || '記録に失敗しました', 'error');
-  }
-}
-
 /* ================ SHIP ================ */
 function selectOrder(orderId) {
   selectedOrder = ordersCache.find(o => o.id === orderId);
@@ -3300,9 +3269,15 @@ function renderShipDetail() {
         購入完了ページのアンケートにご回答いただいたお客様です。<br>
         この発送分に <strong>平飼い鶏 ムネ 200g × 1</strong> をお礼として無料同梱します。
       </div>
-      <button class="btn-primary" style="margin-top:12px;background:#E24B4A" onclick="markPerkDone()">
-        🐔 鶏ムネを入れた（同梱済みにする）
-      </button>
+      <div style="font-size:12px;color:#7F1D1D;line-height:1.6;margin-top:10px">
+        入れ終わったら、回答シートの該当行の<strong>「鶏むね同梱」を『同梱済』</strong>に変えてください。<br>
+        30分以内にこの表示は自動で消えます。
+      </div>
+      <a class="btn-primary" style="margin-top:10px;background:#E24B4A;text-decoration:none;display:inline-flex"
+         href="https://docs.google.com/spreadsheets/d/1Eifjyac8zCqLNL8zRZoSQeGzUFlD0NVPUWA3SiN8vzc/edit"
+         target="_blank" rel="noopener">
+        🐔 回答シートを開く
+      </a>
     </div>` : (_perkDone(o) ? `
     <div class="card" style="border:1px solid #A7D9BE;background:#E8FAF0;padding:10px;margin-bottom:12px;font-size:13px;font-weight:700;color:#065F46">
       ✓ 鶏ムネ特典は同梱済みとして記録されています
