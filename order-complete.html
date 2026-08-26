@@ -1304,6 +1304,11 @@ if (header) {
  localStorage.removeItem('eda-cart');
  localStorage.removeItem('cart'); // 旧キー互換
  localStorage.removeItem('eda-subscription-pending');
+ /* 支払い画面の入力控え(氏名・住所・電話・メール)も片付ける。
+    🔴 消すのは「注文が終わったここ」であって、決済画面へ送り出す瞬間ではない。
+       Stripe で払うのをやめて戻ってきた人の住所まで消すと、
+       まさに拾いたいカゴ落ちの人に再入力させることになる（2026-08-26）。 */
+ localStorage.removeItem('eda-checkout-form');
  } catch(e) {}
  }
 
