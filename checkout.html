@@ -1636,8 +1636,11 @@ async function runRepeatShipCheck() {
    🔴 5回目(牛焼肉200g)は現物の割当が未決のため未登録。決まったら1行足すだけ。
    ============================================================ */
 var REWARD_MARK = '🎁';          // staff.html / 注文明細で特典行を見分ける目印
-var REWARD_MIN_SUBTOTAL = 5000;   // マイページに書いてある「5,000円(税込)以上」と同じ条件
-var REWARD_BY_STAGE = {
+/* 条件の正は public/js/gift-rules.js（右上の案内 gift-notice.js と同じものを見る＝
+   画面の案内と実際に入る特典がズレない）。読めなかったときだけ下の値を使う。 */
+var _GR = window.EDA_GIFT_RULES || null;
+var REWARD_MIN_SUBTOTAL = (_GR && _GR.REWARD_MIN_SUBTOTAL) || 5000;
+var REWARD_BY_STAGE = (_GR && _GR.REWARD_BY_STAGE) || {
   3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
   4: { title: 'ハンバーグ',       variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' }
 };
@@ -1677,16 +1680,23 @@ function currentReward() {
       (decrementStockAfterOrder) は商品名の完全一致でしか引かない。目印は variant 側。
    🔴 期間を過ぎたら勝手に付かなくなる。撤去作業は不要。
    ============================================================ */
-var CAMPAIGN_GIFT = {
-  title: '切り落とし',            // ← products の name と完全一致
-  variant: '1袋 200g',
-  qty: 1,
-  label: '肉の日キャンペーン特典',
-  img: 'public/images/products/drive/kiriotoshi.jpg',
-  minSubtotal: 10000,                              // 公式LINEに書いた「¥10,000以上のご注文で」
-  from:  new Date(2026, 7, 27, 0, 0, 0),
-  until: new Date(2026, 7, 30, 23, 59, 59)
-};
+var CAMPAIGN_GIFT = (function () {
+  var c = _GR && _GR.CAMPAIGN;
+  if (c) return {
+    title: c.title, variant: c.variant, qty: c.qty, label: c.label, img: c.img,
+    minSubtotal: c.minSubtotal, from: _GR.at(c.from), until: _GR.at(c.until)
+  };
+  return {                                          // gift-rules.js が読めなかったとき用
+    title: '切り落とし',            // ← products の name と完全一致
+    variant: '1袋 200g',
+    qty: 1,
+    label: '肉の日キャンペーン特典',
+    img: 'public/images/products/drive/kiriotoshi.jpg',
+    minSubtotal: 10000,                             // 公式LINEに書いた「¥10,000以上のご注文で」
+    from:  new Date(2026, 7, 27, 0, 0, 0),
+    until: new Date(2026, 7, 30, 23, 59, 59)
+  };
+})();
 var campaignGiftDropped = false;
 
 /* いま付くキャンペーン特典（無ければ null）。条件は都度評価する＝カートを減らして
@@ -3243,6 +3253,7 @@ initCouponFromStorage();
 try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
+<script src="public/js/gift-rules.js?v=001"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=004" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
