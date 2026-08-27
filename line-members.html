@@ -227,14 +227,21 @@ body{
         { t: '3つセット【24%オフ】',  p: 8380, n: 3, off: 2720, mem: true }
       ]
     },
-    {
+    /* ---------- 非表示（2026-08-27 たろ指示） ----------
+         肉の日 焼肉3袋セット(P027) と同じ 赤身焼肉・バラ焼肉 を使っており、
+         在庫を食い合っていたため下げた（15セット中2セット売れて残13）。
+         単品計¥4,300→¥3,800＝11.6%オフで、肉の日セット(6.5%オフ)より
+         割引率が高い状態でもあった。
+         商品データは products シートに残してある（published=FALSE / 在庫13は据え置き）。
+         戻すときはこのブロックのコメントを外し、published を TRUE に戻す。 */
+      /*{
       productId: 'P033', variantId: 'YAKINIKU-SET-2',
       name: 'LINE会員限定 焼肉2種セット',
       variant: '赤身焼肉200g ＋ バラ焼肉200g',
       price: 3800, listPrice: 4300, stock: 15, limitedTotal: 15,
       img: 'public/images/products/drive/yakiniku-set-2.jpg',
       desc: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得です。ご家庭の焼肉・BBQに。'
-    },
+    }*/
     {
       productId: 'P023', variantId: 'MISUJI-STEAK',
       name: 'ミスジステーキ',
