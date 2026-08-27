@@ -295,27 +295,24 @@
       images: []
     },
 
-    /* ===== 肉の日限定セット (2026-07-29) ===== */
+    /* ===== 肉の日限定セット（2026-08-27〜08-30 / 8/29 焼肉の日） ===== */
     {
       productId: 'P027', variantId: 'NIKUNOHI-SET', sku: 'EDA-NIKUNOHI-SET',
       stripePriceId: '',
-      name: '肉の日限定セット', variant: 'ミスジ150g + 切り落とし200g',
-      /* stock は GAS(products シート)のライブ在庫で上書きされる。ここは取得失敗時のフォールバック
-         なので、実残数（2026-07-29 時点 9 / 限定12のうち3売れ）に合わせておく */
-      price: 4500, weight: 350, stock: 9, temp: '冷凍',
-      /* 限定品カウント (public/js/limited-stock.js)。正は products シートの
-         limitedTotal / limitedSoldOutAt / limitedUntil / limitedUnit 列。ここは取得失敗時のフォールバック。
-         2026-07-29 たろ指示: 23:59 でサイト販売は止める（残りは自分で売る）が、
-         告知は翌 12:00 まで「完売しました」で残す
-         → 2026-07-30 たろ指示で掲示終了を前倒し（12:00 を待たずに今すぐ消す） */
-      limitedTotal: 12,
-      limitedSoldOutAt: '2026/07/29 23:59',   /* これ以降＝販売停止＋「完売しました」 */
-      limitedUntil:     '2026/07/29 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      name: '肉の日限定セット', variant: '赤身焼肉200g×1 + バラ焼肉200g×2',
+      /* stock は GAS(products シート)のライブ在庫で上書きされる。ここは取得失敗時のフォールバック。
+         上限15セットはバラ焼肉の在庫30袋÷2袋から。赤身焼肉は18袋あるので3袋余る */
+      price: 5800, weight: 600, stock: 15, temp: '冷凍',
+      /* 限定品カウント (public/js/limited-stock.js)。ここが限定設定の正。
+         8/30(日)23:59 で販売停止と掲示終了を同時に行う */
+      limitedTotal: 15,
+      limitedSoldOutAt: '2026/08/30 23:59',   /* これ以降＝販売停止＋「完売しました」 */
+      limitedUntil:     '2026/08/30 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
-      limitedTag: 'nikunohi', listPrice: 5100,
-      description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',
-      images: ['public/images/products/drive/nikunohi-set.jpg']
+      limitedTag: 'nikunohi', listPrice: 6200,
+      description: '赤身焼肉200g×1とバラ焼肉200g×2の3袋セット（合計600g）。8月29日の焼肉の日にあわせた特別価格。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
     },
 
     /* ===== イチボステーキ 3日間 数量限定 (2026-08-03〜08-05) ===== */
