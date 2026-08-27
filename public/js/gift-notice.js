@@ -11,6 +11,11 @@
    🔴 金額の判定はカート(eda-cart)の小計。checkout の「自宅ぶん小計」とは
       ギフト分の扱いが違うので、ギフトだけの注文では実際には付かない。
       そのため文面は必ず「〜が付きます」ではなく条件つきの言い方にする。
+
+   このファイルは2つ描く:
+     ① 右上の案内   … ログイン中の人だけ。決済画面には出さない
+     ② カートの1行 … ログイン不要。「あと¥◯◯で切り落とし」。既存の
+                      「あと¥◯◯で送料無料」の真下と、決済画面のサマリー末尾
    ============================================================ */
 (function () {
   'use strict';
@@ -113,10 +118,53 @@
     });
   }
 
+  /* ------------------------------------------------------------
+     カートの「あと¥◯◯で切り落としプレゼント」— こちらはログイン不要。
+     右上の案内はログイン中の人にしか出ないので、配信で来た初見のお客様には
+     こちらだけが見える（2026-08-27 たろ指示）。
+     ------------------------------------------------------------ */
+  function campaignState() {
+    var R = window.EDA_GIFT_RULES, C = R && R.CAMPAIGN;
+    if (!C) return null;
+    var now = new Date();
+    if (now < R.at(C.from) || now > R.at(C.until)) return null;   /* 期間外は何も出さない */
+    var sub = cartSubtotal();
+    if (sub <= 0) return null;                                    /* 空カートには出さない */
+    return sub >= C.minSubtotal
+      ? { on: true,  html: '🎁 <strong>' + esc(C.title) + ' ' + esc(C.variant) + '</strong> をお付けします' }
+      : { on: false, html: 'あと<strong>' + esc(yen(C.minSubtotal - sub)) + '</strong>で ' + esc(C.title) + ' ' + esc(C.variant) + ' をプレゼント' };
+  }
+
+  /* 既存の「あと¥◯◯で送料無料」の真下と、決済画面のサマリー末尾に1行足す。
+     各ページのカート描画関数には触らない（描き直されても次の refresh で戻る）。 */
+  function renderCartProgress() {
+    var st = campaignState();
+    var anchors = [].slice.call(document.querySelectorAll('.cart-shipping-note'));
+    var sum = document.getElementById('summaryRows');
+    if (sum) anchors.push(sum);
+
+    anchors.forEach(function (a) {
+      var isSummary = (a.id === 'summaryRows');
+      var line = isSummary ? a.querySelector(':scope > .egn-cart-line')
+                           : (a.nextElementSibling && a.nextElementSibling.classList.contains('egn-cart-line') ? a.nextElementSibling : null);
+      if (!st) { if (line) line.remove(); return; }
+      if (!line) {
+        line = document.createElement('div');
+        line.className = 'egn-cart-line';
+        if (isSummary) a.appendChild(line); else a.insertAdjacentElement('afterend', line);
+      }
+      line.classList.toggle('is-on', !!st.on);
+      if (line.innerHTML !== st.html) line.innerHTML = st.html;
+    });
+  }
+
   function refresh() {
     var hidden = false;
     try { hidden = localStorage.getItem(HIDE_KEY) === new Date().toDateString(); } catch (e) {}
-    render(hidden ? null : build());
+    /* 決済画面には右上の案内を出さない（サマリーに特典行がもう出ているため） */
+    var onCheckout = !!document.getElementById('summaryLineItems');
+    render((hidden || onCheckout) ? null : build());
+    renderCartProgress();
   }
 
   function start() {

@@ -191,3 +191,16 @@ h1, h2, h3 {
 @media (prefers-reduced-motion:reduce){
   #edaGiftNotice{animation:none}
 }
+
+/* カートの「あと¥◯◯で切り落としプレゼント」（ログイン不要 / gift-notice.js） */
+.egn-cart-line{
+  margin-top:8px; padding:8px 11px; border-radius:9px;
+  font-size:12px; line-height:1.45; text-align:center;
+  background:rgba(212,169,59,.10); border:1px dashed rgba(212,169,59,.55);
+  color:var(--color-ink,#1d1d1b);
+}
+.egn-cart-line strong{font-weight:700}
+.egn-cart-line.is-on{
+  background:rgba(15,61,46,.07); border-style:solid; border-color:rgba(15,61,46,.35);
+}
+#summaryRows .egn-cart-line{margin-top:10px}
