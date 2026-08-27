@@ -1667,18 +1667,75 @@ function currentReward() {
   };
 }
 
+/* ============================================================
+   🥩 肉の日キャンペーン特典（2026-08-27〜08-30 / たろ指示）
+   ------------------------------------------------------------
+   購入回数特典とまったく同じ「¥0 の1行を足す」方式。小計・送料判定・税額は
+   どれも動かさない（¥0 は ¥0）。購入回数特典とは併用できる。
+
+   🔴 title は products シートの name と1文字も変えない。決済後の在庫減算
+      (decrementStockAfterOrder) は商品名の完全一致でしか引かない。目印は variant 側。
+   🔴 期間を過ぎたら勝手に付かなくなる。撤去作業は不要。
+   ============================================================ */
+var CAMPAIGN_GIFT = {
+  title: '切り落とし',            // ← products の name と完全一致
+  variant: '1袋 200g',
+  qty: 1,
+  label: '肉の日キャンペーン特典',
+  img: 'public/images/products/drive/kiriotoshi.jpg',
+  minSubtotal: 10000,                              // 公式LINEに書いた「¥10,000以上のご注文で」
+  from:  new Date(2026, 7, 27, 0, 0, 0),
+  until: new Date(2026, 7, 30, 23, 59, 59)
+};
+var campaignGiftDropped = false;
+
+/* いま付くキャンペーン特典（無ければ null）。条件は都度評価する＝カートを減らして
+   1万円を割ったら消える／ギフトだけの注文には付かない／期間外は付かない。 */
+function currentCampaignGift() {
+  if (campaignGiftDropped || subscription) return null;        // 定期便はプランに込みなので対象外
+  var now = new Date();
+  if (now < CAMPAIGN_GIFT.from || now > CAMPAIGN_GIFT.until) return null;
+  var selfIds = (destinations[0] && destinations[0].itemIds) || [];
+  if (!selfIds.length) return null;                            // 自宅に届く荷物が無い注文には付けない
+  var selfSubtotal = selfIds.reduce(function (sum, i) {
+    var it = cartItems[i]; return it ? sum + discountedUnit(it.price || 0) * (it.qty || 1) : sum;
+  }, 0);
+  if (selfSubtotal < CAMPAIGN_GIFT.minSubtotal) return null;
+  var stock = rewardStock[CAMPAIGN_GIFT.title];
+  if (typeof stock === 'number' && stock < CAMPAIGN_GIFT.qty) return null;  // 在庫割れは混ぜない
+  return {
+    title: CAMPAIGN_GIFT.title,
+    variant: CAMPAIGN_GIFT.variant + ' ／' + REWARD_MARK + CAMPAIGN_GIFT.label,
+    qty: CAMPAIGN_GIFT.qty, price: 0, baseUnit: 0, img: CAMPAIGN_GIFT.img,
+    label: CAMPAIGN_GIFT.label, reward: true
+  };
+}
+
+/* いま付く ¥0 の特典すべて（購入回数特典 + キャンペーン特典）。表示・payload とも必ずこれを通す。 */
+function currentGifts() {
+  return [currentReward(), currentCampaignGift()].filter(Boolean);
+}
+
 /* 注文回数と特典商品の在庫を1回だけ取りに行く（メール確定のたび・相手が変わったときだけ） */
 /* 注文を投げる。🎁 特典が在庫切れ/他のお客様のカート確保で弾かれたときだけ、
    特典を落として1回だけ投げ直す＝無料の1品のせいで有料の注文を落とさない。 */
 async function postOrderWithRewardFallback(action, payload) {
   var res = await window.EDA_API.post(action, payload);
-  var rw = currentReward();
   var blocked = res && !res.ok && (res.error === 'OUT_OF_STOCK' || res.error === 'CART_HELD');
-  if (blocked && rw && String(res.message || '').indexOf(rw.title) >= 0) {
-    rewardDropped = true;
+  var hit = blocked ? currentGifts().filter(function (g) {
+    return String(res.message || '').indexOf(g.title) >= 0;
+  }) : [];
+  if (hit.length) {
+    hit.forEach(function (g) {
+      if (g.label === CAMPAIGN_GIFT.label) campaignGiftDropped = true; else rewardDropped = true;
+    });
     payload.items = buildPayloadItems();
-    (payload.destinations || []).forEach(function (d) {
+    var _keep = currentGifts();   /* 落ちなかった方の特典は残す */
+    (payload.destinations || []).forEach(function (d, di) {
       d.items = (d.items || []).filter(function (it) { return String(it.variant || '').indexOf(REWARD_MARK) < 0; });
+      if (di === 0) d.items = d.items.concat(_keep.map(function (g) {
+        return { title: g.title, variant: g.variant, qty: g.qty };
+      }));
     });
     res = await window.EDA_API.post(action, payload);
     try { renderOrderList(); renderSummary(); } catch (e) {}
@@ -1994,9 +2051,8 @@ function renderOrderList() {
  `;
  });
 
- /* 🎁 購入回数特典（¥0・お客様は増減も削除もできない） */
- const _rw = currentReward();
- if (_rw) {
+ /* 🎁 ¥0 の特典（購入回数特典・肉の日キャンペーン特典）。お客様は増減も削除もできない */
+ currentGifts().forEach(function (_rw) {
  html += `
  <div class="order-card" style="border:1px dashed var(--color-gold,#D4A93B);background:rgba(212,169,59,.06)">
   <div class="order-item">
@@ -2010,7 +2066,7 @@ function renderOrderList() {
   </div>
  </div>
  `;
- }
+ });
 
  if (!html) {
  html = '<p style="color: var(--color-ink-muted); text-align: center; padding: 32px 0; font-size: 13px;">カートは空です</p>';
@@ -2578,9 +2634,8 @@ function couponDiscountAmount() {
 }
 function buildPayloadItems() {
  var arr = (discountRate() === 0) ? cartItems.slice() : cartItems.map(function(it){ return Object.assign({}, it, { price: discountedUnit(it.price || 0) }); });
- /* 🎁 購入回数特典を ¥0 の1行として混ぜる。クーポンの%は掛けない(0円は0円)。 */
- var _rwPay = currentReward();
- if (_rwPay) arr = arr.concat([_rwPay]);
+ /* 🎁 ¥0 の特典を1行ずつ混ぜる。クーポンの%は掛けない(0円は0円)。 */
+ arr = arr.concat(currentGifts());
  // 送料は GAS 側 (calcShipping → "送料" line item) でサーバー計算・課金する（改ざん不可・
  // 規約通り ¥1,100 / 北海道・沖縄 ¥2,200 / ¥11,000以上 無料）。
  // ここで配送料を line item に含めると GAS の「送料」と二重課金になるため、含めない。
@@ -2661,11 +2716,10 @@ function renderSummary() {
  subTotal += line;
  });
 
- /* 🎁 購入回数特典は ¥0 なので小計・送料判定・税額のどれも動かさない */
- const _rwSum = currentReward();
- if (_rwSum) {
+ /* 🎁 ¥0 の特典は小計・送料判定・税額のどれも動かさない */
+ currentGifts().forEach(function (_rwSum) {
  itemsHtml += `<div class="summary-line-item" style="color:var(--color-gold,#D4A93B);font-weight:700"><span>${REWARD_MARK} ${_rwSum.title}<span class="qty">×${_rwSum.qty}</span></span><span>¥0</span></div>`;
- }
+ });
 
  if (!itemsHtml) {
  itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
@@ -2994,7 +3048,7 @@ async function placeOrder() {
  delivery: resolveDestDelivery(d, i),
  items: d.itemIds.map(i2 => cartItems[i2]).filter(Boolean).map(it => ({ title: it.title, variant: it.variant, qty: it.qty }))
   /* 🎁 特典は自宅(dest[0])に同梱する。発送リスト・B2伝票の品名にも出る。 */
-  .concat((i === 0 && currentReward()) ? [(function (r) { return { title: r.title, variant: r.variant, qty: r.qty }; })(currentReward())] : [])
+  .concat(i === 0 ? currentGifts().map(function (r) { return { title: r.title, variant: r.variant, qty: r.qty }; }) : [])
  })),
  items: buildPayloadItems(),
  couponCode: appliedCoupon ? appliedCoupon.code : null,
@@ -3080,8 +3134,9 @@ async function placeOrder() {
    /* order-complete のサマリー（小計/送料/合計）が一致するよう、
       割引後単価で items を作り、送料は「配送料」ラインとして含める。 */
    const _bankItems = cartItems.map(it => ({ title: it.title, variant: it.variant, qty: it.qty, price: discountedUnit(it.price || 0) }));
-   const _rwBank = currentReward();
-   if (_rwBank) _bankItems.push({ title: _rwBank.title, variant: _rwBank.variant, qty: _rwBank.qty, price: 0 });
+   currentGifts().forEach(function (_rwBank) {
+     _bankItems.push({ title: _rwBank.title, variant: _rwBank.variant, qty: _rwBank.qty, price: 0 });
+   });
    if (gShipping > 0) _bankItems.push({ title: '配送料', qty: 1, price: gShipping, variantId: 'shipping' });
    localStorage.setItem('eda-last-order', JSON.stringify({
      num: bankRes.order_number,
