@@ -1304,11 +1304,21 @@ if (header) {
  localStorage.removeItem('eda-cart');
  localStorage.removeItem('cart'); // 旧キー互換
  localStorage.removeItem('eda-subscription-pending');
- /* 支払い画面の入力控え(氏名・住所・電話・メール)も片付ける。
-    🔴 消すのは「注文が終わったここ」であって、決済画面へ送り出す瞬間ではない。
-       Stripe で払うのをやめて戻ってきた人の住所まで消すと、
-       まさに拾いたいカゴ落ちの人に再入力させることになる（2026-08-26）。 */
- localStorage.removeItem('eda-checkout-form');
+ /* 支払い画面の入力控え(eda-checkout-form)の後始末。
+    🔴 ご自身の住所は消さない（2026-08-26 田崎さん判断で無期限保持）。
+       次に買うときも入れ直さずに済む＝2回目の注文の障害を1つ減らす。
+    🔴 ただし「贈り先」は必ず消す。前回の贈り先が次の注文に残っていると、
+       気づかないまま別の人へ送ってしまう（誤配送）ため。
+    🔴 消すのは注文が終わったここだけ。決済画面へ送り出す瞬間に消すと、
+       Stripe で払うのをやめて戻ってきた人に再入力させることになる。 */
+ try {
+ const _f = JSON.parse(localStorage.getItem('eda-checkout-form') || 'null');
+ if (_f && Array.isArray(_f.rows)) {
+ const _keep = _f.rows.filter(function (r) { return r && r.type !== 'gift'; });
+ if (_keep.length) localStorage.setItem('eda-checkout-form', JSON.stringify({ ts: Date.now(), rows: _keep }));
+ else localStorage.removeItem('eda-checkout-form');
+ }
+ } catch (_e) { localStorage.removeItem('eda-checkout-form'); }
  } catch(e) {}
  }
 

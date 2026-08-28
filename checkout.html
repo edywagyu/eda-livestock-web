@@ -1853,7 +1853,10 @@ function trackBlocked(reason, meta) {
       商品(itemIds)は保存しない。カートの中身が変わると番号がずれて事故るため。
    ============================================================ */
 const FORM_KEY = 'eda-checkout-form';
-const FORM_TTL_MS = 24 * 60 * 60 * 1000;
+/* 🔴 期限は付けない（2026-08-26 田崎さん判断で 24時間 → 無期限に変更）。
+   一度ご住所を入れた方は、次に買うときも入れ直さずに済む。
+   消えるのは「注文が完了したとき」（order-complete.html）だけ。
+   置き場所はそのお客様自身の端末の中で、他の人からは見えない。 */
 const FORM_FIELDS = ['name', 'tel', 'email', 'zip', 'pref', 'address', 'fromName', 'noshi'];
 function saveCheckoutForm() {
  try {
@@ -1869,14 +1872,12 @@ function saveCheckoutForm() {
   localStorage.setItem(FORM_KEY, JSON.stringify({ ts: Date.now(), rows: rows }));
  } catch (e) {}
 }
-function clearCheckoutForm() { try { localStorage.removeItem(FORM_KEY); } catch (e) {} }
 function restoreCheckoutForm() {
  try {
   const raw = localStorage.getItem(FORM_KEY);
   if (!raw) return false;
   const saved = JSON.parse(raw);
-  if (!saved || !saved.rows || !saved.ts) return false;
-  if (Date.now() - saved.ts > FORM_TTL_MS) { clearCheckoutForm(); return false; }
+  if (!saved || !saved.rows) return false;
   let filled = false;
   saved.rows.forEach(function (o, i) {
    const d = destinations[i];
@@ -3364,8 +3365,8 @@ async function placeOrder() {
  email: destinations[0].email || ''
  }));
 
- /* 🔴 ここで clearCheckoutForm() はしない。Stripe で払うのをやめて戻ってきた人の
-    住所まで消えてしまう。控えは注文完了ページ(order-complete.html)で片付ける。 */
+ /* 🔴 ここで控えを消さない。Stripe で払うのをやめて戻ってきた人の住所まで
+    消えてしまう。控えを片付けるのは注文完了ページ(order-complete.html)だけ。 */
  // Stripe Checkout 画面へリダイレクト
  window.location.href = result.url;
 
