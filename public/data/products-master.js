@@ -370,6 +370,36 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Slice Set',
       description: '冷凍焼けにより表面が黒っぽく変色しています。見た目のぶんだけお得にしました。霜降スライス200g＋切り落とし200gの計400g。すき焼き・しゃぶしゃぶ・普段の炒め物に。牛脂つき。※画像はイメージです。',
       images: ['public/images/products/drive/wakeari-slice-set.jpg']
+    },
+
+    /* ===== カメノコ焼肉 / シンシン焼肉 (2026-08-30 18:30 販売開始・数量限定) =====
+       シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 8/30 18:30 に自動解禁。
+       limitedStartAt を過ぎるまでカード・PDPともに「発売予定」で購入不可。
+       限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。 */
+    {
+      productId: 'P035', variantId: 'KAMENOKO-YAKINIKU', sku: 'EDA-KAMENOKO-200',
+      stripePriceId: '',
+      name: 'カメノコ焼肉', variant: '1袋 200g',
+      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
+      price: 2700, weight: 200, stock: 8, temp: '冷凍',
+      limitedTotal: 8,
+      limitedStartAt: '2026/08/30 18:30',
+      limitedUnit: '袋',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
+      description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。※画像はイメージです。',
+      images: ['public/images/products/drive/yakiniku-red.jpg']
+    },
+    {
+      productId: 'P036', variantId: 'SHINSHIN-YAKINIKU', sku: 'EDA-SHINSHIN-200',
+      stripePriceId: '',
+      name: 'シンシン焼肉', variant: '1袋 200g',
+      price: 2700, weight: 200, stock: 6, temp: '冷凍',
+      limitedTotal: 6,
+      limitedStartAt: '2026/08/30 18:30',
+      limitedUnit: '袋',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
+      description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。※画像はイメージです。',
+      images: ['public/images/products/drive/harami.jpg']
     }
   ];
 
