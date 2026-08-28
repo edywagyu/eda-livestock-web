@@ -1385,6 +1385,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 
  <div id="orderModeBannerArea"></div>
+ <!-- 売り切れ商品の警告。renderModeBanner が #orderModeBannerArea を毎回上書きするので別枠。 -->
+ <div id="stockAlertArea"></div>
  <div class="order-list" id="orderList"></div>
  </div>
 
@@ -1797,6 +1799,174 @@ function getLineUid() {
  return '';
 }
 
+/* ============================================================
+   🎟️ クーポンを使える「会員」の判定（2026-08-26 田崎さん指示で拡張）
+   ------------------------------------------------------------
+   🔴 以前は getLineUid()＝「LINEアプリの中で開いた人の印」だけで判定していた。
+      そのため
+        ・LINEのリンクを Safari / Chrome で開いた人
+        ・機種変更・履歴削除でLINEの印が消えた人
+        ・マイページにメール認証(6桁コード)でログイン済みの会員
+      が全員「会員限定クーポンです」で弾かれていた（2026-08-26 実測）。
+      マイページのログインを促す文言なのに、ログインしても弾かれる状態だった。
+      とくに エダチク10 は初回購入向けで、LINE連携がまだ済んでいない層が主対象。
+   → LINEの印に加えて、マイページのログイン（メール認証／注文メール照合）も会員と認める。
+   🔴 LINE10 の「お一人様1回」は裏側 assertLinkCouponUnused_() が
+      注文のメールアドレスで見ている。メールで認証した人を通しても二重取りにはならない。
+   ============================================================ */
+function memberEmail() {
+ try {
+  const raw = localStorage.getItem('eda-mypage-session');
+  if (raw) { const s = JSON.parse(raw); if (s && s.email) return s.email; }
+  return localStorage.getItem('eda-member-email') || '';
+ } catch (_) { return ''; }
+}
+function isCouponMember() { return !!(getLineUid() || memberEmail()); }
+
+/* ============================================================
+   📊 「押したのに進めなかった」を記録する（2026-08-26 田崎さん指示）
+   ------------------------------------------------------------
+   begin_checkout はバリデーションを通過した後にしか飛んでいなかったため、
+   離脱の数字では「何もせず去った人」と「押したのに弾かれた人」が
+   区別できなかった。弾いた瞬間に理由を1行残す。
+   events シートに event_type='checkout_blocked' で入る（理由は product_id 列）。
+   🔴 meta は裏側で 500 文字に切られる。長い文章をそのまま入れない。
+   ============================================================ */
+function trackBlocked(reason, meta) {
+ try {
+  if (!window.edaAnalytics || !window.edaAnalytics.track) return;
+  window.edaAnalytics.track('checkout_blocked', {
+   product_id: reason,                       // 集計しやすいよう理由を product_id 列に置く
+   meta: Object.assign({ reason: reason }, meta || {})
+  });
+ } catch (e) {}
+}
+
+/* ============================================================
+   ✍️ 入力途中の内容を保存して、戻ってきたら復元する（2026-08-26 田崎さん指示）
+   ------------------------------------------------------------
+   🔴 「編集」「← 商品を追加」で買い物に戻ると、氏名・電話・住所・メールが
+      全部消えて戻ってこなかった（このページは何も保存していなかった）。
+      送料無料まであと少しと言われて買い足しに戻った人が、住所を打ち直す羽目に
+      なっていた＝支払い直前の離脱要因（2026-08-26 実測）。
+   🔴 中身は個人情報なので、24時間で自動的に捨てる。注文が通った時点でも消す。
+      商品(itemIds)は保存しない。カートの中身が変わると番号がずれて事故るため。
+   ============================================================ */
+const FORM_KEY = 'eda-checkout-form';
+/* 🔴 期限は付けない（2026-08-26 田崎さん判断で 24時間 → 無期限に変更）。
+   一度ご住所を入れた方は、次に買うときも入れ直さずに済む。
+   消えるのは「注文が完了したとき」（order-complete.html）だけ。
+   置き場所はそのお客様自身の端末の中で、他の人からは見えない。 */
+const FORM_FIELDS = ['name', 'tel', 'email', 'zip', 'pref', 'address', 'fromName', 'noshi'];
+function saveCheckoutForm() {
+ try {
+  const rows = destinations.map(function (d) {
+   const o = { type: d.type };
+   FORM_FIELDS.forEach(function (k) { if (d[k]) o[k] = d[k]; });
+   if (d._autoTown) o._autoTown = d._autoTown;
+   if (d.delivery) o.delivery = d.delivery;
+   return o;
+  });
+  const any = rows.some(function (o) { return FORM_FIELDS.some(function (k) { return o[k]; }); });
+  if (!any) { localStorage.removeItem(FORM_KEY); return; }
+  localStorage.setItem(FORM_KEY, JSON.stringify({ ts: Date.now(), rows: rows }));
+ } catch (e) {}
+}
+function restoreCheckoutForm() {
+ try {
+  const raw = localStorage.getItem(FORM_KEY);
+  if (!raw) return false;
+  const saved = JSON.parse(raw);
+  if (!saved || !saved.rows) return false;
+  let filled = false;
+  saved.rows.forEach(function (o, i) {
+   const d = destinations[i];
+   if (!d) return;
+   if (o.type && d.type && o.type !== d.type) return;   // 自宅とギフトの取り違えを防ぐ
+   FORM_FIELDS.forEach(function (k) { if (o[k] && !d[k]) { d[k] = o[k]; filled = true; } });
+   if (o._autoTown && !d._autoTown) d._autoTown = o._autoTown;
+   if (o.delivery && !d.delivery) d.delivery = o.delivery;
+  });
+  return filled;
+ } catch (e) { return false; }
+}
+
+/* ============================================================
+   📦 カートの中身が今も買えるかを、開いた時点で確かめる（2026-08-26 田崎さん指示）
+   ------------------------------------------------------------
+   🔴 カートは端末に期限なく残る一方、この画面は注文ボタンを押すまで
+      在庫を見に行っていなかった。数日前にカートに入れた商品が売り切れていると、
+      住所も何もかも入力し終えた最後に「在庫不足」で弾かれていた（2026-08-26 実測。
+      その時点で在庫0の商品が15点あった）。
+   🔴 ここは「気づかせる」だけ。実際に売らせないのは裏側
+      (validateStockBeforeCheckout / cartHoldErrors_) の役目で、そこは触らない。
+      セット商品の構成品まではここでは見ないので、それは従来どおり裏側で弾かれる。
+   ============================================================ */
+var gStockBlocked = [];          // 買えない商品名の一覧（注文ボタンを止める根拠）
+var _stockCheckTries = 0;
+function _variantUnits(variant) {
+ // 裏側 validateStockBeforeCheckout の variantUnits と同じ規則にそろえる
+ if (!variant) return 1;
+ var m = String(variant).match(/([2-9])\s*(?:つ|個)\s*セット/);
+ if (m) return Number(m[1]);
+ if (String(variant).indexOf('3つ') >= 0) return 3;
+ if (String(variant).indexOf('2つ') >= 0) return 2;
+ return 1;
+}
+async function checkCartStock() {
+ if (!cartItems.length) { gStockBlocked = []; renderStockAlert(); return; }
+ if (!window.EDA_API) {                       // eda-bundle.js の読み込み待ち（最大5秒）
+  if (_stockCheckTries++ < 25) setTimeout(checkCartStock, 200);
+  return;
+ }
+ try {
+  const cat = await window.EDA_API.get('public_catalog', {});
+  const list = (cat && (cat.products || cat.data)) || [];
+  if (!list.length) return;                   // 取れなかったときは黙って従来どおり（買えなくしない）
+  const stock = {};
+  list.forEach(function (pr) { if (pr && pr.name) stock[pr.name] = Number(pr.stock); });
+  const need = {};
+  cartItems.forEach(function (it) {
+   const t = it.title || '';
+   need[t] = (need[t] || 0) + _variantUnits(it.variant) * (it.qty || 1);
+  });
+  gStockBlocked = Object.keys(need).filter(function (t) {
+   return (t in stock) && !isNaN(stock[t]) && stock[t] < need[t];   // 台帳に無い商品は判定しない
+  }).map(function (t) { return { title: t, need: need[t], stock: stock[t] }; });
+ } catch (e) { gStockBlocked = []; }
+ renderStockAlert();
+ renderSummary();                              // 注文ボタンの止め／解除を反映
+ if (gStockBlocked.length) {
+  trackBlocked('stock_preflight', { items: gStockBlocked.map(function (b) { return b.title; }).join(',').slice(0, 120) });
+ }
+}
+function renderStockAlert() {
+ const area = document.getElementById('stockAlertArea');
+ if (!area) return;
+ if (!gStockBlocked.length) { area.innerHTML = ''; return; }
+ const rows = gStockBlocked.map(function (b) {
+  const label = b.stock > 0 ? ('残り ' + b.stock + ' 点（ご注文 ' + b.need + ' 点）') : '売り切れ';
+  return '<li style="margin:2px 0"><strong>' + b.title + '</strong> — ' + label + '</li>';
+ }).join('');
+ area.innerHTML =
+  '<div style="margin:0 0 14px;padding:14px 16px;background:rgba(200,16,46,0.06);border:1px solid rgba(200,16,46,0.35);border-radius:10px;font-size:13px;line-height:1.6;color:var(--color-forest)">'
+  + '<strong style="display:block;margin-bottom:6px;color:#C8102E">⚠ 現在ご購入いただけない商品がカートに入っています</strong>'
+  + '<ul style="margin:0 0 10px;padding-left:18px">' + rows + '</ul>'
+  + '<button type="button" onclick="removeUnavailableItems()" style="padding:10px 16px;border:none;border-radius:8px;background:var(--color-forest);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">この商品をカートから外して進む</button>'
+  + '<p style="margin:8px 0 0;font-size:11px;color:var(--color-ink-muted)">在庫が戻り次第あらためて販売します。数量を減らしてご注文いただくこともできます。</p>'
+  + '</div>';
+}
+function removeUnavailableItems() {
+ const bad = {};
+ gStockBlocked.forEach(function (b) { bad[b.title] = true; });
+ for (let i = cartItems.length - 1; i >= 0; i--) {
+  if (bad[cartItems[i].title]) changeCartQty(i, -(cartItems[i].qty || 1));
+ }
+ gStockBlocked = [];
+ renderStockAlert();
+ renderSummary();
+}
+
 function setContactMethod(method) {
  contactMethod = method;
  // ラジオ UI 更新
@@ -1897,6 +2067,10 @@ function init() {
  destinations[0].itemIds = cartItems.map((_, i) => i);
  }
 
+ /* 入力途中で買い物に戻った人の内容を戻す（24時間以内）。
+    送り先の構成(自宅/ギフト)が決まった後に呼ぶ＝取り違えないため。 */
+ restoreCheckoutForm();
+
  // LINE 連携済みなら自動で併用通知 (購入は妨げない)
  if (getLineUid()) contactMethod = 'line+email';
 
@@ -1916,6 +2090,7 @@ function init() {
  renderSummary();
  lockPaymentMethodForSubscription();
  updatePaymentUI();
+ checkCartStock();   // カートの中身が今も買えるか、開いた時点で確かめる
 
  // subscription 経由の場合、プリフィル済の通知
  if (params.get('from') === 'subscription' && destinations[0].name) {
@@ -2515,6 +2690,7 @@ function updateDestField(idx, key, value) {
  if (key === 'email' && idx === 0) {
    scheduleRepeatShipCheck();
  }
+ saveCheckoutForm();   // 買い物に戻っても消えないように控えておく
 }
 
 /* 郵便番号→住所 自動補完 (zipcloud) — 7桁入力で都道府県+市区町村+町域を入れる */
@@ -2583,6 +2759,7 @@ function applyZipResult(r, dIdx) {
  const _ab = fieldBox(dIdx, 'address'); if (_ab && d.address) _ab.classList.remove('field-error');
 
  renderSummary();   // 北海道・沖縄で送料が変わるため
+ saveCheckoutForm(); // 自動で入った住所も控えておく（updateDestField を通らないため）
 
  /* 続きの番地をそのまま打てるように、住所欄の末尾にカーソルを移す。
     郵便番号欄にいる（＝打ち終えた直後）ときだけ動かす。住所欄を編集中に
@@ -2651,27 +2828,17 @@ function buildPayloadItems() {
  // ここで配送料を line item に含めると GAS の「送料」と二重課金になるため、含めない。
  return arr;
 }
-/* 🔴 2026-07-26: ヘッダーの「← 買い物に戻る」はブランドロゴのすぐ隣（幅48pxのタップ領域）で、
-   入力途中に誤タップすると 氏名・住所・電話・お届け先が全部消えて戻ってこない
-   （このページはフォームを保存していない＝再入力のやり直し）。
-   → 中身が入っている時だけ確認をはさむ。
+/* 🔴 2026-07-26: ヘッダーの「← 買い物に戻る」で入力が全部消えるため、確認をはさんでいた。
+   🔴 2026-08-26: 入力内容を saveCheckoutForm() で控えて戻ってきたら復元するようにしたので、
+      消える前提の確認そのものが要らなくなった。しかも確認が出ていたのは3つある
+      「戻る」導線のうちヘッダーの1本だけで、「編集」「← 商品を追加」は無警告だった。
+      → 確認はやめて、3本とも素通り＋復元でそろえる。
+        （この関数は onclick="return confirmLeaveCheckout();" から呼ばれているので消さない）
    🔴 beforeunload は使わない。決済ボタンから Stripe へリダイレクトする瞬間にも
-      「このサイトを離れますか」が出てしまい、いちばん落としたくない所で離脱を招くため。
-      戻るリンクのクリックだけを対象にする。 */
+      「このサイトを離れますか」が出てしまい、いちばん落としたくない所で離脱を招くため。 */
 function confirmLeaveCheckout() {
- var filled = false;
- try {
-   /* お名前・電話・郵便番号・住所・メール・お届け日 ＝ お届け先カードの入力欄。
-      クーポン欄は再入力が一瞬なので対象外にする（無駄な確認を出さない）。 */
-   var els = document.querySelectorAll('.dest-field input, .dest-field textarea, .dest-field-date input');
-   for (var i = 0; i < els.length; i++) {
-     var e = els[i];
-     if (e.type === 'hidden' || e.type === 'checkbox' || e.type === 'radio') continue;
-     if ((e.value || '').trim()) { filled = true; break; }
-   }
- } catch (_) { return true; }
- if (!filled) return true;
- return confirm('入力途中の内容は保存されません。買い物に戻りますか？\n（カートの中身はそのまま残ります）');
+ saveCheckoutForm();
+ return true;
 }
 
 function applyCoupon() {
@@ -2683,12 +2850,20 @@ function applyCoupon() {
  if (!c) {
    appliedCoupon = null;
    if(msg){ msg.textContent = 'クーポンコードが正しくありません'; msg.className='coupon-msg error'; }
+   trackBlocked('coupon_unknown', { code: code.slice(0, 24) });
    renderSummary(); return;
  }
- // 会員限定ゲート: LINE連携/会員登録済み(line_uid)でないと適用不可
- if (!getLineUid()) {
+ /* 会員限定ゲート。LINEアプリの中の印だけでなく、マイページのログインも会員と認める
+    （2026-08-26 田崎さん指示。詳細は isCouponMember() のコメント）。
+    弾くときは「どうすれば使えるか」を必ず出す。以前の文言は
+    「マイページから…ログインを」と言いながら、ログインしても弾いていた。 */
+ if (!isCouponMember()) {
    appliedCoupon = null;
-   if(msg){ msg.textContent = '会員限定クーポンです。マイページからLINE連携・会員登録のうえご利用ください。'; msg.className='coupon-msg error'; }
+   if(msg){
+     msg.innerHTML = '会員限定クーポンです。<a href="mypage.html" style="color:var(--color-forest);text-decoration:underline">マイページ</a>でLINE連携またはメール認証をすると、そのままお使いいただけます。';
+     msg.className='coupon-msg error';
+   }
+   trackBlocked('coupon_member_only', { code: code.slice(0, 24) });
    renderSummary(); return;
  }
  appliedCoupon = { code: code, type: c.type, value: c.value, label: c.label };
@@ -2836,9 +3011,9 @@ function renderSummary() {
  giftSpec.style.display = (mode === 'gift' || mode === 'multi') ? '' : 'none';
  }
 
- // ボタン状態
+ // ボタン状態（売り切れが混じっている間も押させない。理由は #stockAlertArea に出る）
  const btn = document.getElementById('btnPlaceOrder');
- btn.disabled = (cartItems.length === 0 && !subscription);
+ btn.disabled = (cartItems.length === 0 && !subscription) || gStockBlocked.length > 0;
 }
 
 /* ---- 配送日オプション（お届け先ごと）----
@@ -2927,6 +3102,7 @@ function updateDestDelivery(idx, key, value) {
  if (!destinations[idx].delivery) destinations[idx].delivery = { mode: '', date: '', time: DELIV_DEFAULT_TIME };
  destinations[idx].delivery[key] = value;
  if (key === 'mode') renderDestinations(); // 日付欄の表示切替
+ saveCheckoutForm();
 }
 
 /* ---- 支払いラジオ ---- */
@@ -2984,12 +3160,17 @@ async function placeOrder() {
  if (missingAddr.length) {
   var _all = missingAddr.concat(missingMail);
   markFieldErrors(_all);
+  trackBlocked('missing_fields', {
+   fields: _all.map(function (x) { return x[0] + ':' + x[1]; }).join(',').slice(0, 120),
+   count: _all.length
+  });
   alert('配送先の必須項目を入力してください。');
   focusFirstError(_all);
   return;
  }
  if (missingMail.length) {
   markFieldErrors(missingMail);
+  trackBlocked('invalid_email', {});
   alert('メールアドレスをご入力ください。ご注文確認をこちらにお送りします。');
   focusFirstError(missingMail);
   return;
@@ -2999,6 +3180,7 @@ async function placeOrder() {
  // 規約同意チェック
  const consent = document.getElementById('checkoutConsent');
  if (consent && !consent.checked) {
+ trackBlocked('consent_unchecked', {});
  alert('利用規約・プライバシーポリシーに同意のうえご注文ください。');
  consent.focus();
  return;
@@ -3161,6 +3343,8 @@ async function placeOrder() {
      payment_method: 'bank',
      bank: bankRes.bank || null
    }));
+   /* 銀行振込はここで注文が確定する（Stripe を通らない）。控えは遷移先の
+      order-complete.html が片付けるので、ここでは消さない。 */
    window.location.href = 'order-complete.html?order=' + encodeURIComponent(bankRes.order_number) + '&pay=bank';
    return;
  }
@@ -3181,11 +3365,16 @@ async function placeOrder() {
  email: destinations[0].email || ''
  }));
 
+ /* 🔴 ここで控えを消さない。Stripe で払うのをやめて戻ってきた人の住所まで
+    消えてしまう。控えを片付けるのは注文完了ページ(order-complete.html)だけ。 */
  // Stripe Checkout 画面へリダイレクト
  window.location.href = result.url;
 
  } catch (err) {
  if (btn) { btn.disabled = false; updatePaymentUI(); }
+ /* 在庫切れ・他のお客様のカート確保・通信断など、最後のボタンで止まった人を残す。
+    ここが記録されていなかったため「押したのに買えなかった」人が見えていなかった。 */
+ trackBlocked('order_error', { message: String(err && err.message || '').slice(0, 160) });
  alert('⚠ ' + err.message + '\n\nお手数ですが LINE 公式 (@706sgiuq) までお知らせください。');
  console.error('[placeOrder]', err);
  }
