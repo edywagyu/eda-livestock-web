@@ -295,27 +295,26 @@
       images: []
     },
 
-    /* ===== 肉の日限定セット (2026-07-29) ===== */
+    /* ===== 肉の日限定セット（2026-08-27〜08-30 / 8/29 焼肉の日） ===== */
     {
       productId: 'P027', variantId: 'NIKUNOHI-SET', sku: 'EDA-NIKUNOHI-SET',
       stripePriceId: '',
-      name: '肉の日限定セット', variant: 'ミスジ150g + 切り落とし200g',
-      /* stock は GAS(products シート)のライブ在庫で上書きされる。ここは取得失敗時のフォールバック
-         なので、実残数（2026-07-29 時点 9 / 限定12のうち3売れ）に合わせておく */
-      price: 4500, weight: 350, stock: 9, temp: '冷凍',
-      /* 限定品カウント (public/js/limited-stock.js)。正は products シートの
-         limitedTotal / limitedSoldOutAt / limitedUntil / limitedUnit 列。ここは取得失敗時のフォールバック。
-         2026-07-29 たろ指示: 23:59 でサイト販売は止める（残りは自分で売る）が、
-         告知は翌 12:00 まで「完売しました」で残す
-         → 2026-07-30 たろ指示で掲示終了を前倒し（12:00 を待たずに今すぐ消す） */
-      limitedTotal: 12,
-      limitedSoldOutAt: '2026/07/29 23:59',   /* これ以降＝販売停止＋「完売しました」 */
-      limitedUntil:     '2026/07/29 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      name: '肉の日限定セット', variant: '赤身焼肉200g×1 + バラ焼肉200g×2',
+      /* stock は GAS(products シート)のライブ在庫で上書きされる。ここは取得失敗時のフォールバック。
+         2026-08-27 たろ指示で 15→30セットに拡大（赤身焼肉の入荷を受けて）。
+         30セットには赤身焼肉30袋・バラ焼肉60袋が要る。上限の管理は
+         products シートの stock 側で行う（ここは取得失敗時のフォールバック）。 */
+      price: 5800, weight: 600, stock: 30, temp: '冷凍',
+      /* 限定品カウント (public/js/limited-stock.js)。ここが限定設定の正。
+         8/30(日)23:59 で販売停止と掲示終了を同時に行う */
+      limitedTotal: 30,
+      limitedSoldOutAt: '2026/08/30 23:59',   /* これ以降＝販売停止＋「完売しました」 */
+      limitedUntil:     '2026/08/30 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
-      limitedTag: 'nikunohi', listPrice: 5100,
-      description: '希少部位ミスジのステーキと、万能な切り落としのセット。肉の日だけの特別価格。',
-      images: ['public/images/products/drive/nikunohi-set.jpg']
+      limitedTag: 'nikunohi', listPrice: 6200,
+      description: '赤身焼肉200g×1とバラ焼肉200g×2の3袋セット（合計600g）。8月29日の焼肉の日にあわせた特別価格。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
     },
 
     /* ===== イチボステーキ 3日間 数量限定 (2026-08-03〜08-05) ===== */
@@ -371,6 +370,36 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Slice Set',
       description: '冷凍焼けにより表面が黒っぽく変色しています。見た目のぶんだけお得にしました。霜降スライス200g＋切り落とし200gの計400g。すき焼き・しゃぶしゃぶ・普段の炒め物に。牛脂つき。※画像はイメージです。',
       images: ['public/images/products/drive/wakeari-slice-set.jpg']
+    },
+
+    /* ===== カメノコ焼肉 / シンシン焼肉 (2026-08-30 18:30 販売開始・数量限定) =====
+       シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 8/30 18:30 に自動解禁。
+       limitedStartAt を過ぎるまでカード・PDPともに「発売予定」で購入不可。
+       限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。 */
+    {
+      productId: 'P035', variantId: 'KAMENOKO-YAKINIKU', sku: 'EDA-KAMENOKO-200',
+      stripePriceId: '',
+      name: 'カメノコ焼肉', variant: '1袋 200g',
+      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
+      price: 2700, weight: 200, stock: 8, temp: '冷凍',
+      limitedTotal: 8,
+      limitedStartAt: '2026/08/30 18:30',
+      limitedUnit: '袋',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
+      description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。※画像はイメージです。',
+      images: ['public/images/products/drive/yakiniku-red.jpg']
+    },
+    {
+      productId: 'P036', variantId: 'SHINSHIN-YAKINIKU', sku: 'EDA-SHINSHIN-200',
+      stripePriceId: '',
+      name: 'シンシン焼肉', variant: '1袋 200g',
+      price: 2700, weight: 200, stock: 6, temp: '冷凍',
+      limitedTotal: 6,
+      limitedStartAt: '2026/08/30 18:30',
+      limitedUnit: '袋',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
+      description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。※画像はイメージです。',
+      images: ['public/images/products/drive/harami.jpg']
     }
   ];
 

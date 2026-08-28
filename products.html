@@ -7062,12 +7062,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="ROAST BEEF"] { background-image: url('public/images/products/drive/roast-beef.jpg'); }
 .product-card-img[data-label="OFFAL"] { background-image: url('public/images/products/drive/offal-2026.jpg'); }
 .product-card-img[data-label="MISUJI STEAK"] { background-image: url('public/images/products/drive/misuji-steak.jpg'); }
-.product-card-img[data-label="NIKUNOHI SET"] { background-image: url('public/images/products/drive/nikunohi-set.jpg'); }
+.product-card-img[data-label="NIKUNOHI SET"] { background-image: url('public/images/products/drive/yakiniku-set-2.jpg'); }
 .product-card-img[data-label="HIRE STEAK"] { background-image: url('public/images/products/drive/hire-steak.jpg'); }
 .product-card-img[data-label="HIRE CUBE"] { background-color: var(--color-cream); } /* 画像未用意（2026-08-06） */
 .product-card-img[data-label="AKAMI YAKINIKU"] { background-image: url('public/images/products/drive/akami-yakiniku.jpg'); }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
+.product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/yakiniku-red.jpg'); }
+.product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/harami.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
    購入ボタンは `.product-card:not(...):not(...):not(...) .btn-add-cart{display:block!important}`(特異度0,5,0)で強制表示されているため、
    `.limited-upcoming` を足して特異度(0,6,0)にした !important で確実に上書きする。 */
@@ -9603,7 +9605,7 @@ body.is-member .product-card--organic .org-chk-lock {
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260824a">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
@@ -9738,15 +9740,15 @@ body.is-member .product-card--organic .org-chk-lock {
  style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;color:var(--color-ink-muted);padding:4px 8px;display:none;">×</button>
  </div>
 
- <!-- ========= 肉の日限定バナー（2026-07-29 / 終了後はこのブロックごと削除） ========= -->
+ <!-- ========= 肉の日限定バナー（2026-08-27〜08-30 / 8/29 焼肉の日。終了は limitedUntil で自動） ========= -->
  <div class="nikunohi-bar" data-limited-scope="肉の日限定セット">
  <a class="nikunohi-inner" href="#products" onclick="var t=document.querySelector('.tab[data-filter=&quot;nikunohi&quot;]'); if(t){t.click(); return false;}">
  <span class="nikunohi-badge">肉の日限定</span>
  <span class="nikunohi-copy">
- <strong>ミスジステーキ × 切り落とし セット</strong>
- <span class="nikunohi-price"><s>¥5,100</s> → <b>¥4,500</b></span>
+ <strong>焼肉3袋セット（赤身1・バラ2）</strong>
+ <span class="nikunohi-price"><s>¥6,200</s> → <b>¥5,800</b></span>
  </span>
- <span class="nikunohi-meta">7/29（水）23:59まで ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b></span>
+ <span class="nikunohi-meta">8/30（日）23:59まで ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り30セット</b></span>
  <span class="nikunohi-cta">見る →</span>
  </a>
  </div>
@@ -9774,6 +9776,12 @@ body.is-member .product-card--organic .org-chk-lock {
  .nikunohi-ribbon{position:absolute;top:10px;left:10px;z-index:2;background:#A02B2B;color:#fff;
   font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;}
  .product-card--nikunohi .product-card-img{position:relative;}
+/* 「限定商品」リボン（カメノコ/シンシン等の単発限定品）。左上＝品目の性格、
+   右上の .limited-left-ribbon＝残数（limited-stock.js が在庫から自動生成）で役割を分ける。 */
+.limited-ribbon{position:absolute;top:10px;left:10px;z-index:2;background:#0F3D2E;color:#fff;
+ font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;}
+.product-card--limited{border:1.5px solid rgba(15,61,46,.35);box-shadow:0 4px 16px rgba(15,61,46,.12);}
+.product-card--limited .product-card-img{position:relative;}
  /* 旧・肉の日専用の残数スタイル（.limited-left 系に統合済み。CSSは互換のため残置） */
  .nikunohi-left{font-weight:800;white-space:nowrap;}
  .nikunohi-meta .nikunohi-left{display:inline-block;background:#fff;color:#A02B2B;font-size:12px;
@@ -9822,24 +9830,24 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="tab" data-filter="chicken">鶏肉</button>
  </div>
 
- <!-- ===== 肉の日限定（2026-07-29 / 終了後はこのブロックとタブを削除） ===== -->
+ <!-- ===== 肉の日限定（2026-08-27〜08-30 / 終了は limitedUntil で自動非表示） ===== -->
  <div class="shop-cat-head reveal" data-cat="nikunohi" data-limited-scope="肉の日限定セット">
  <h2 class="shop-cat-title">肉の日限定 <span>/ Nikunohi Special</span></h2>
- <p class="shop-cat-desc">毎月29日は「肉の日」。<strong>7/29（水）23:59まで</strong>の12セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b>。希少部位ミスジのステーキと万能な切り落としをセットの特別価格でご用意しました。</p>
+ <p class="shop-cat-desc">8月29日は「焼肉の日」。<strong>8/30（日）23:59まで</strong>の30セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り30セット</b>。赤身焼肉200g×1とバラ焼肉200g×2の3袋セット（合計600g）を特別価格でご用意しました。</p>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="nikunohi" data-limited-scope="肉の日限定セット">
- <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
+ <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831005800901,"t":"1セット","p":5800}]'>
  <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span></div>
- <div class="product-tag-row"><span class="product-tag">Set · Misuji &amp; Kiriotoshi</span><span class="product-price"><s>¥5,100</s> ¥4,500</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set · Akami &amp; Bara</span><span class="product-price"><s>¥6,200</s> ¥5,800</span></div>
  <p class="product-name">肉の日限定セット</p>
- <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。12セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b>。</p>
+ <p class="product-desc">赤身焼肉200g×1と、バラ焼肉200g×2の3袋セット（合計600g）。8月29日の焼肉の日にあわせた特別価格です。30セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り30セット</b>。</p>
  <div class="product-stats">
- <div class="product-stat-item">ミスジ <strong>150g</strong></div>
- <div class="product-stat-item">切落 <strong>200g</strong></div>
- <div class="product-stat-item wide">通常 ¥5,100 → <strong>¥600 お得</strong></div>
+ <div class="product-stat-item">赤身焼肉 <strong>200g</strong></div>
+ <div class="product-stat-item">バラ焼肉 <strong>400g</strong></div>
+ <div class="product-stat-item wide">通常 ¥6,200 → <strong>¥400 お得</strong></div>
  </div>
- <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b><span>7/29（水）23:59まで</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り30セット</b><span>8/30（日）23:59まで</span></div>
  <div class="product-buy"></div>
  </div>
  </div>
@@ -9863,17 +9871,17 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-grid cols-4 reveal" data-cat="beef">
 
  <!-- 肉の日限定セット（牛肉「すべて」の先頭に転載。data-sub="set" なので部位サブタブでは非表示） -->
- <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831004500901,"t":"1セット","p":4500}]'>
+ <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831005800901,"t":"1セット","p":5800}]'>
  <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span></div>
- <div class="product-tag-row"><span class="product-tag">Set · Misuji &amp; Kiriotoshi</span><span class="product-price"><s>¥5,100</s> ¥4,500</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set · Akami &amp; Bara</span><span class="product-price"><s>¥6,200</s> ¥5,800</span></div>
  <p class="product-name">肉の日限定セット</p>
- <p class="product-desc">一頭から<strong>1％未満</strong>しか取れない希少部位ミスジのステーキ（150g）と、炒め物・丼に使える切り落とし（200g）のセット。12セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b>。</p>
+ <p class="product-desc">赤身焼肉200g×1と、バラ焼肉200g×2の3袋セット（合計600g）。8月29日の焼肉の日にあわせた特別価格です。30セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット">残り30セット</b>。</p>
  <div class="product-stats">
- <div class="product-stat-item">ミスジ <strong>150g</strong></div>
- <div class="product-stat-item">切落 <strong>200g</strong></div>
- <div class="product-stat-item wide">通常 ¥5,100 → <strong>¥600 お得</strong></div>
+ <div class="product-stat-item">赤身焼肉 <strong>200g</strong></div>
+ <div class="product-stat-item">バラ焼肉 <strong>400g</strong></div>
+ <div class="product-stat-item wide">通常 ¥6,200 → <strong>¥400 お得</strong></div>
  </div>
- <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り9セット</b><span>7/29（水）23:59まで</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="肉の日限定セット">残り30セット</b><span>8/30（日）23:59まで</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -9890,6 +9898,36 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="イチボステーキ">残り9枚</b><span>8/3（月）〜8/5（水）23:59</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <!-- ===== カメノコ焼肉 / シンシン焼肉 (2026-08-30 18:30 販売開始) =====
+      limitedStartAt を過ぎるまで data-limited-scope で自動的に非表示・購入不可。 -->
+ <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="カメノコ焼肉" data-variants='[{"id":50831002700401,"t":"1袋","p":2700}]'>
+ <div class="product-card-img" data-label="KAMENOKO YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
+ <div class="product-tag-row"><span class="product-tag">Yakiniku · Kamenoko</span><span class="product-price">¥2,700</span></div>
+ <p class="product-name">カメノコ焼肉</p>
+ <p class="product-desc">モモの中の「シンタマ」を4つに分けたうちの一つ。きめが細かく、脂は控えめ。<strong>普段は企業向け</strong>の部位を、今回だけ焼肉用にカットしました。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g <strong>¥1,350</strong></div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
+ </div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="カメノコ焼肉">残り8袋</b><span>数量限定・なくなり次第終了</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="シンシン焼肉" data-variants='[{"id":50831002700501,"t":"1袋","p":2700}]'>
+ <div class="product-card-img" data-label="SHINSHIN YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
+ <div class="product-tag-row"><span class="product-tag">Yakiniku · Shinshin</span><span class="product-price">¥2,700</span></div>
+ <p class="product-name">シンシン焼肉</p>
+ <p class="product-desc">シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。<strong>普段は企業向け</strong>の希少部位を、今回だけ焼肉用にカットしました。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g <strong>¥1,350</strong></div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
+ </div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="シンシン焼肉">残り6袋</b><span>数量限定・なくなり次第終了</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -13121,18 +13159,21 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-21-tomobara-desc" defer></script>
+<script src="public/data/products-master.js?v=2026-08-28-kamenoko-shinshin" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/limited-stock.js?v=010" defer></script>
+<script src="public/js/limited-stock.js?v=011" defer></script>
 <script src="public/js/analytics.js?v=004" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <!-- 売れ行き順（popular.json のランクを配る。並べ替え本体は上の sortProductCards） -->
 <script src="public/js/popular.js?v=5" defer></script>
 <script src="public/js/member-gate.js" defer></script>
+<script src="public/js/gift-rules.js?v=001"></script>
+<script src="public/js/reward-count.js?v=001" defer></script>
+<script src="public/js/gift-notice.js?v=002" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 
 <!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得し注文へ自動紐付け（通常ブラウザは無処理） -->

@@ -153,3 +153,54 @@ h1, h2, h3 {
   font-weight: 500;
   opacity: 0.85;
 }
+
+/* ============================================================
+   🎁 特典のお知らせ（右上・ログイン中のみ / public/js/gift-notice.js）
+   2026-08-27 たろ指示
+   ============================================================ */
+#edaGiftNotice{
+  position:fixed; top:84px; right:18px; z-index:900;
+  width:min(320px, calc(100vw - 36px));
+  padding:14px 16px 12px; border-radius:14px;
+  background:linear-gradient(150deg,#0F3D2E 0%,#14503B 100%);
+  border:1px solid rgba(212,169,59,.55);
+  box-shadow:0 10px 30px rgba(15,61,46,.28);
+  color:#fff; font-size:13px; line-height:1.5;
+  animation:egnIn .45s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes egnIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+#edaGiftNotice .egn-head{
+  margin:0 22px 8px 0; font-weight:700; font-size:12px;
+  letter-spacing:.04em; color:#D4A93B;
+}
+#edaGiftNotice .egn-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+#edaGiftNotice .egn-row{display:flex;gap:9px;align-items:flex-start}
+#edaGiftNotice .egn-row b{display:block;font-weight:600;font-size:13px}
+#edaGiftNotice .egn-row small{display:block;margin-top:2px;font-size:11px;opacity:.72}
+#edaGiftNotice .egn-row:not(.is-on) b{opacity:.85;font-weight:500}
+#edaGiftNotice .egn-dot{flex:none;width:20px;text-align:center;font-size:13px}
+#edaGiftNotice .egn-close{
+  position:absolute; top:8px; right:10px;
+  background:none;border:0;cursor:pointer;color:#fff;opacity:.55;
+  font-size:17px;line-height:1;padding:4px;
+}
+#edaGiftNotice .egn-close:hover{opacity:1}
+@media (max-width:768px){
+  #edaGiftNotice{top:auto;bottom:14px;right:12px;left:12px;width:auto}
+}
+@media (prefers-reduced-motion:reduce){
+  #edaGiftNotice{animation:none}
+}
+
+/* カートの「あと¥◯◯で切り落としプレゼント」（ログイン不要 / gift-notice.js） */
+.egn-cart-line{
+  margin-top:8px; padding:8px 11px; border-radius:9px;
+  font-size:12px; line-height:1.45; text-align:center;
+  background:rgba(212,169,59,.10); border:1px dashed rgba(212,169,59,.55);
+  color:var(--color-ink,#1d1d1b);
+}
+.egn-cart-line strong{font-weight:700}
+.egn-cart-line.is-on{
+  background:rgba(15,61,46,.07); border-style:solid; border-color:rgba(15,61,46,.35);
+}
+#summaryRows .egn-cart-line{margin-top:10px}

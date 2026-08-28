@@ -423,7 +423,8 @@
       + '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>'
       + (deadline ? '<span class="lb-deadline">' + deadline + '</span>' : '')
       + '</span>'
-      + '<span class="lb-row"><span class="lb-label">残りセット数：</span>'
+      + '<span class="lb-row"><span class="lb-label">残り'
+      + (info.unit === 'セット' ? 'セット数' : '') + '：</span>'
       + '<b class="limited-left" data-limited-left="' + info.product.name.replace(/"/g, '&quot;') + '"></b></span>'
       + (deadlineAt ? '<span class="lb-row lb-row-time"><span class="lb-label">残り時間：</span></span>' : '')
       + '</span>';
