@@ -9812,6 +9812,12 @@ body.is-member .product-card--organic .org-chk-lock {
 .nikunohi-ribbon{position:absolute;top:10px;left:10px;z-index:2;background:#A02B2B;color:#fff;
  font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;}
 .product-card--nikunohi .product-card-img{position:relative;}
+/* 「限定商品」リボン（カメノコ/シンシン等の単発限定品）。左上＝品目の性格、
+   右上の .limited-left-ribbon＝残数（limited-stock.js が在庫から自動生成）で役割を分ける。 */
+.limited-ribbon{position:absolute;top:10px;left:10px;z-index:2;background:#0F3D2E;color:#fff;
+ font-size:11px;font-weight:700;letter-spacing:.06em;padding:4px 10px;border-radius:999px;}
+.product-card--limited{border:1.5px solid rgba(15,61,46,.35);box-shadow:0 4px 16px rgba(15,61,46,.12);}
+.product-card--limited .product-card-img{position:relative;}
 /* 旧・肉の日専用の残数スタイル（.limited-left 系に統合済み。CSSは互換のため残置） */
 .nikunohi-left{font-weight:800;white-space:nowrap;}
 .nikunohi-meta .nikunohi-left{display:inline-block;background:#fff;color:#A02B2B;font-size:12px;
@@ -9968,8 +9974,8 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4" data-cat="beef" data-limited-scope="カメノコ焼肉">
- <div class="product-card" data-sub="yakiniku" data-limited-scope="カメノコ焼肉" data-variants='[{"id":50831002700401,"t":"1袋","p":2700}]'>
- <div class="product-card-img" data-label="KAMENOKO YAKINIKU"></div>
+ <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="カメノコ焼肉" data-variants='[{"id":50831002700401,"t":"1袋","p":2700}]'>
+ <div class="product-card-img" data-label="KAMENOKO YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
  <div class="product-tag-row"><span class="product-tag">Yakiniku · Kamenoko</span><span class="product-price">¥2,700</span></div>
  <p class="product-name">カメノコ焼肉</p>
  <p class="product-desc">モモの中の「シンタマ」を4つに分けたうちの一つ。きめが細かく、脂は控えめ。<strong>普段は企業向け</strong>の部位を、今回だけ焼肉用にカットしました。</p>
@@ -9982,8 +9988,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="yakiniku" data-limited-scope="シンシン焼肉" data-variants='[{"id":50831002700501,"t":"1袋","p":2700}]'>
- <div class="product-card-img" data-label="SHINSHIN YAKINIKU"></div>
+ <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="シンシン焼肉" data-variants='[{"id":50831002700501,"t":"1袋","p":2700}]'>
+ <div class="product-card-img" data-label="SHINSHIN YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
  <div class="product-tag-row"><span class="product-tag">Yakiniku · Shinshin</span><span class="product-price">¥2,700</span></div>
  <p class="product-name">シンシン焼肉</p>
  <p class="product-desc">シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。<strong>普段は企業向け</strong>の希少部位を、今回だけ焼肉用にカットしました。</p>
@@ -14744,7 +14750,7 @@ function copyPopCoupon() {
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/limited-stock.js?v=010" defer></script>
+<script src="public/js/limited-stock.js?v=011" defer></script>
 <script src="public/js/analytics.js?v=004" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <!-- 売れ行きランキング（#popularBar のバナーを描く。products.html は並べ替えにも使う） -->
