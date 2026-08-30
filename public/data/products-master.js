@@ -376,18 +376,19 @@
        シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 9/3(木) 18:30 に自動解禁。
        limitedStartAt を過ぎるまでカード・PDPともに「発売予定」で購入不可。
        限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。
-       🔴 原料は カメノコ8袋 / シンシン6袋 しかない。うち各4袋を公式LINE会員限定の
-          2種セット(P037・line-members.html)に取り分けたため、この店頭単品は
-          カメノコ4袋 / シンシン2袋 が上限（2026-08-30 ryotaro判断）。
-          セットが売れても単品の在庫は自動で減らない（在庫減算は商品名の完全一致のみ）
-          ので、どちらかの在庫を動かすときは必ずもう一方と合わせて調整すること。 */
+       🔴 同じ肉で 2種セット(P037) も売る。セットは products シートの components
+          (BOM) で カメノコ1 + シンシン1 に展開されるため、セットが売れると
+          この単品の在庫が自動で減る＝二重販売しない。だから在庫は取り分けず、
+          カメノコ8袋 / シンシン6袋 を単品とセットで共有する
+          (2026-08-30 ryotaro判断・案2)。
+       🔴 components を消すとセットが単品在庫を引かなくなり、売り越す。 */
     {
       productId: 'P035', variantId: 'KAMENOKO-YAKINIKU', sku: 'EDA-KAMENOKO-200',
       stripePriceId: '',
       name: 'カメノコ焼肉', variant: '1袋 200g',
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
-      price: 2700, weight: 200, stock: 4, temp: '冷凍',
-      limitedTotal: 4,
+      price: 2700, weight: 200, stock: 8, temp: '冷凍',
+      limitedTotal: 8,
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
@@ -398,13 +399,33 @@
       productId: 'P036', variantId: 'SHINSHIN-YAKINIKU', sku: 'EDA-SHINSHIN-200',
       stripePriceId: '',
       name: 'シンシン焼肉', variant: '1袋 200g',
-      price: 2700, weight: 200, stock: 2, temp: '冷凍',
-      limitedTotal: 2,
+      price: 2700, weight: 200, stock: 6, temp: '冷凍',
+      limitedTotal: 6,
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
       description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。',
       images: ['public/images/products/drive/shinshin-yakiniku.jpg']
+    },
+
+    /* ===== カメノコ・シンシン焼肉セット (2026-09-03 18:30 販売開始・4セット限定) =====
+       カメノコ200g + シンシン200g の2種セット。定価¥5,400 → ¥4,860 (10%オフ)。
+       🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
+          セット行そのものの stock は減らないため、カードに「残り◯セット」は
+          出さない (止まった数字を見せないため)。上限は数量セレクタ側で効く。
+       会員限定ページ(line-members.html)にも同じ商品を載せている。name は在庫減算と
+       決済の突合キーなので、両方で完全一致させること。 */
+    {
+      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET', sku: 'EDA-KAMESHIN-SET',
+      stripePriceId: '',
+      name: 'カメノコ・シンシン焼肉セット', variant: 'カメノコ200g ＋ シンシン200g',
+      price: 4860, listPrice: 5400, weight: 400, stock: 4, temp: '冷凍',
+      limitedTotal: 4,
+      limitedStartAt: '2026/09/03 18:30',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Shinshin Set',
+      description: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。',
+      images: ['public/images/products/drive/kamenoko-shinshin-set.jpg']
     }
   ];
 

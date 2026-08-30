@@ -7018,6 +7018,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="AKAMI YAKINIKU"] { background-image: url('public/images/products/drive/akami-yakiniku.jpg'); }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
+.product-card-img[data-label="KAMESHIN SET"] { background-image: url('public/images/products/drive/kamenoko-shinshin-set.jpg'); }
 .product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/kamenoko-yakiniku.jpg'); }
 .product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/shinshin-yakiniku.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
@@ -9974,6 +9975,22 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4" data-cat="beef" data-limited-scope="カメノコ焼肉">
+ <!-- カメノコ・シンシン焼肉セット (2026-09-03 18:30 販売開始・4セット限定)。
+      セット行の stock は BOM で減らないため「残り◯セット」は出さない。 -->
+ <div class="product-card product-card--limited" data-sub="set" data-limited-scope="カメノコ・シンシン焼肉セット" data-variants='[{"id":50903004860101,"t":"1セット","p":4860}]'>
+ <div class="product-card-img" data-label="KAMESHIN SET"><span class="limited-ribbon">限定商品</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Kamenoko &amp; Shinshin</span><span class="product-price"><s>&yen;5,400</s> &yen;4,860</span></div>
+ <p class="product-name">カメノコ・シンシン焼肉セット</p>
+ <p class="product-desc">カメノコ200gとシンシン200gの2種セット。1袋ずつ買うより<strong>540円お得</strong>です。<strong>普段は企業向け</strong>の部位を、今回だけ焼肉用にカットしました。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">カメノコ焼肉 <strong>200g</strong></div>
+ <div class="product-stat-item">シンシン焼肉 <strong>200g</strong></div>
+ <div class="product-stat-item wide">通常 &yen;5,400 &rarr; <strong>&yen;540 お得</strong></div>
+ </div>
+ <div class="nikunohi-urgency"><b>4セット限定</b><span>なくなり次第終了</span></div>
+ <div class="product-buy"></div>
+ </div>
+
  <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="カメノコ焼肉" data-variants='[{"id":50831002700401,"t":"1袋","p":2700}]'>
  <div class="product-card-img" data-label="KAMENOKO YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
  <div class="product-tag-row"><span class="product-tag">Yakiniku · Kamenoko</span><span class="product-price">¥2,700</span></div>
@@ -14745,7 +14762,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-30-set-p037" defer></script>
+<script src="public/data/products-master.js?v=2026-08-30-set-storefront" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

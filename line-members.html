@@ -244,15 +244,17 @@ body{
     }*/
     {
       /* 2026-09-03(木) 18:30 発売の数量限定セット。
-         🔴 カメノコ(P035)・シンシン(P036)と同じ肉を使うが、ECの在庫減算は
-            「注文の商品名 ↔ products の name 完全一致」でしか働かないため、
-            セットが売れても単品の在庫は減らない。二重販売を防ぐため、
-            原料14袋を セット4組(カメノコ4+シンシン4) / 単品(カメノコ4・シンシン2)
-            に切り分けてある（2026-08-30 ryotaro判断）。単品側の在庫を戻すときは
-            必ずこのセットの在庫と合わせて調整すること。 */
+         🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
+            セットが売れると単品(P035/P036)の在庫が自動で減る＝二重販売しない。
+            だから在庫は取り分けず、カメノコ8袋 / シンシン6袋 を単品と共有する
+            (2026-08-30 ryotaro判断・案2)。components を消すと売り越す。 */
       productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
-      name: 'LINE会員限定 カメノコ・シンシン焼肉セット',
-      variant: 'カメノコ焼肉200g ＋ シンシン焼肉200g',
+      /* 通常サイト(shop.html / products.html)にも同じ商品を出している。
+         name は在庫減算と決済の突合キーなので両方で完全一致させること。
+         会員限定ではないので memberOnly:false ＝「会員限定」バッジを出さない。 */
+      memberOnly: false,
+      name: 'カメノコ・シンシン焼肉セット',
+      variant: 'カメノコ200g ＋ シンシン200g',
       price: 4860, listPrice: 5400, stock: 4, limitedTotal: 4,
       startAt: '2026-09-03T18:30:00+09:00',
       startLabel: '9月3日（木）18:30',
@@ -404,7 +406,7 @@ body{
       '<div class="card" data-i="' + i + '">' +
         '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
         '<div class="card-body">' +
-          '<span class="card-tag">会員限定</span>' +
+          (it.memberOnly === false ? '' : '<span class="card-tag">会員限定</span>') +
           '<h3>' + it.name + '</h3>' +
           '<p class="card-variant">' + it.variant + '</p>' +
           '<p class="card-desc">' + it.desc + '</p>' +
