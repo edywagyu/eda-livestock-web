@@ -306,10 +306,11 @@
          products シートの stock 側で行う（ここは取得失敗時のフォールバック）。 */
       price: 5800, weight: 600, stock: 30, temp: '冷凍',
       /* 限定品カウント (public/js/limited-stock.js)。ここが限定設定の正。
-         8/30(日)23:59 で販売停止と掲示終了を同時に行う */
+         2026-08-30 たろ指示で「販売停止」と「掲示終了」を分けた。
+         8/30(日)23:59 で買えなくし、告知は 8/31(月)18:00 まで残す。 */
       limitedTotal: 30,
-      limitedSoldOutAt: '2026/08/30 23:59',   /* これ以降＝販売停止＋「完売しました」 */
-      limitedUntil:     '2026/08/30 23:59',   /* これ以降＝バナー・タブ・カードごと消える */
+      limitedSoldOutAt: '2026/08/30 23:59',   /* これ以降＝販売停止＋「完売しました」（表示は残る） */
+      limitedUntil:     '2026/08/31 18:00',   /* これ以降＝バナー・タブ・カードごと消える */
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Nikunohi Set',
       limitedTag: 'nikunohi', listPrice: 6200,
