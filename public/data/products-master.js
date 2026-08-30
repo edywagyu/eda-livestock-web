@@ -375,14 +375,19 @@
     /* ===== カメノコ焼肉 / シンシン焼肉 (2026-08-30 18:30 販売開始・数量限定) =====
        シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 9/3(木) 18:30 に自動解禁。
        limitedStartAt を過ぎるまでカード・PDPともに「発売予定」で購入不可。
-       限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。 */
+       限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。
+       🔴 原料は カメノコ8袋 / シンシン6袋 しかない。うち各4袋を公式LINE会員限定の
+          2種セット(P037・line-members.html)に取り分けたため、この店頭単品は
+          カメノコ4袋 / シンシン2袋 が上限（2026-08-30 ryotaro判断）。
+          セットが売れても単品の在庫は自動で減らない（在庫減算は商品名の完全一致のみ）
+          ので、どちらかの在庫を動かすときは必ずもう一方と合わせて調整すること。 */
     {
       productId: 'P035', variantId: 'KAMENOKO-YAKINIKU', sku: 'EDA-KAMENOKO-200',
       stripePriceId: '',
       name: 'カメノコ焼肉', variant: '1袋 200g',
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
-      price: 2700, weight: 200, stock: 8, temp: '冷凍',
-      limitedTotal: 8,
+      price: 2700, weight: 200, stock: 4, temp: '冷凍',
+      limitedTotal: 4,
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
@@ -393,8 +398,8 @@
       productId: 'P036', variantId: 'SHINSHIN-YAKINIKU', sku: 'EDA-SHINSHIN-200',
       stripePriceId: '',
       name: 'シンシン焼肉', variant: '1袋 200g',
-      price: 2700, weight: 200, stock: 6, temp: '冷凍',
-      limitedTotal: 6,
+      price: 2700, weight: 200, stock: 2, temp: '冷凍',
+      limitedTotal: 2,
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
