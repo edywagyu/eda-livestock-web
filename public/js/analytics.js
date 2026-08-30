@@ -51,8 +51,17 @@
     }
   }
 
+  /* 手元プレビュー(localhost:8137)からのイベントを本番 events に混ぜない。
+     これまでは referrer で除外していたが、直接 localhost を開くと referrer が空で
+     すり抜け、本番の数字に混ざっていた (2026-08-30)。 */
+  function isLocalPreview() {
+    var h = location.hostname;
+    return h === 'localhost' || h === '127.0.0.1' || h === '' || h === '0.0.0.0';
+  }
+
   function send(event_type, props) {
     if (!GAS_URL) return;
+    if (isLocalPreview()) return;
     const payload = Object.assign({
       event_type: event_type,
       session_id: getSessionId(),
@@ -84,6 +93,52 @@
     } catch (e) {}
   }
 
+  /* 商品IDの名寄せ (2026-08-30)
+     ------------------------------------------------------------
+     閲覧 / カート / 購入 を「同じ商品」として集計できるようにするための共通処理。
+
+     これまでは記録される product_id の体系がページごとに違っていた:
+       閲覧 (product.html)        → P0xx        (商品ID)
+       カート (shop/products)     → 50830…      (カート内キーの数値)
+       カート (line-members)      → P0xx
+       カート (gift)              → gift-xxx
+       購入 (Stripe webhook)      → 記録なし (orders の商品名で照合)
+     このため「見られたのにカートに入らなかった商品」を機械的に出せなかった。
+
+     ここで商品マスター (window.EDA_PRODUCTS_MASTER) を引いて
+     meta に pid(P0xx) / vid(SIRLOIN 等) / name(商品名) の3つを必ず載せる。
+     以後どのイベントも meta.pid で突合できる。マスター未ロード時は
+     meta.name だけ残る（商品名での突合は従来どおり可能）。 */
+  function resolveIds(productId, meta) {
+    var m = Object.assign({}, meta || {});
+    var id = String(productId == null ? '' : productId);
+    try {
+      var all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+      var hit = null;
+      /* ① P0xx がそのまま渡ってきた場合 */
+      if (/^P\d/.test(id)) {
+        hit = all.filter(function (p) { return p.productId === id; })[0] || null;
+        if (!m.pid) m.pid = id;
+      }
+      /* ② 商品名で引く（shop/products は数値キーを渡すのでこれが本命） */
+      if (!hit && m.title) {
+        hit = all.filter(function (p) { return p.name === m.title; })[0] || null;
+      }
+      /* ③ マスターの variantId と一致する場合 */
+      if (!hit && id) {
+        hit = all.filter(function (p) { return String(p.variantId) === id; })[0] || null;
+      }
+      if (hit) {
+        m.pid  = hit.productId || m.pid || '';
+        m.vid  = hit.variantId || '';
+        m.name = hit.name || m.title || '';
+      } else if (m.title && !m.name) {
+        m.name = m.title;
+      }
+    } catch (e) {}
+    return m;
+  }
+
   /* グローバル API */
   window.edaAnalytics = {
     track: send,
@@ -93,8 +148,8 @@
     sessionId: function() { try { return localStorage.getItem(SESSION_KEY) || ''; } catch (e) { return ''; } },
     /* よく使うイベント用ショートカット */
     pageView: function() { send('page_view', {}); },
-    viewItem: function(productId, value, meta) { send('view_item', { product_id: productId, value: value, meta: meta }); },
-    addToCart: function(productId, value, meta) { send('add_to_cart', { product_id: productId, value: value, meta: meta }); },
+    viewItem: function(productId, value, meta) { send('view_item', { product_id: productId, value: value, meta: resolveIds(productId, meta) }); },
+    addToCart: function(productId, value, meta) { send('add_to_cart', { product_id: productId, value: value, meta: resolveIds(productId, meta) }); },
     removeFromCart: function(productId, value) { send('remove_from_cart', { product_id: productId, value: value }); },
     viewCart: function(value) { send('view_cart', { value: value }); },
     beginCheckout: function(value, meta) { send('begin_checkout', { value: value, meta: meta }); },
