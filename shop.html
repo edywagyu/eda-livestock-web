@@ -7018,8 +7018,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="AKAMI YAKINIKU"] { background-image: url('public/images/products/drive/akami-yakiniku.jpg'); }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
-.product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/yakiniku-red.jpg'); }
-.product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/harami.jpg'); }
+.product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/kamenoko-yakiniku.jpg'); }
+.product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/shinshin-yakiniku.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
    購入ボタンは `.product-card:not(...):not(...):not(...) .btn-add-cart{display:block!important}`(特異度0,5,0)で強制表示されているため、
    `.limited-upcoming` を足して特異度(0,6,0)にした !important で確実に上書きする。 */
@@ -14745,7 +14745,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-30-start-0903" defer></script>
+<script src="public/data/products-master.js?v=2026-08-30-real-photos" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

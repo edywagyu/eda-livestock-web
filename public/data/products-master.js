@@ -386,8 +386,8 @@
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
-      description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。※画像はイメージです。',
-      images: ['public/images/products/drive/yakiniku-red.jpg']
+      description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。',
+      images: ['public/images/products/drive/kamenoko-yakiniku.jpg']
     },
     {
       productId: 'P036', variantId: 'SHINSHIN-YAKINIKU', sku: 'EDA-SHINSHIN-200',
@@ -398,8 +398,8 @@
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
-      description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。※画像はイメージです。',
-      images: ['public/images/products/drive/harami.jpg']
+      description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。',
+      images: ['public/images/products/drive/shinshin-yakiniku.jpg']
     }
   ];
 
