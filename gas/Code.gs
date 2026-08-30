@@ -162,6 +162,7 @@ function doGet(e) {
       case 'public_gifts':      return publicGifts();
       case 'public_subscriptions': return publicSubscriptionPlans();
       case 'public_catalog':    return publicCatalog();
+      case 'repeat_shipping':   return repeatShippingCheck(e.parameter);   /* 🚚 リピート送料半額の判定（真偽と日数だけ返す・個人情報なし） */
       case 'public_popular':    return publicPopular(e.parameter);   /* 売れ行きランキング(商品名ベース・個人情報なし) */
       case 'cart_holds':        return cartHoldsPublic(e.parameter);   /* カート確保数 (gas/cart_holds.gs) */
       case 'dashboard':         return dashboardSummary(e.parameter);
@@ -411,7 +412,11 @@ function createCheckout(body) {
   const _selfSubtotal = _hasDestItems
     ? items.reduce(function (s, it) { return _selfKeys[(it.title || '') + '|' + (it.variant || '')] ? s + it.price * it.qty : s; }, 0)
     : subtotal;
-  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref) : 0;
+  const _halfShip = isRepeatShipHalf_(
+    (body.customer && body.customer.email) || '',
+    (body.customer && body.customer.line_uid) || ''
+  );
+  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
   if (shipping > 0) {
     lineItems.push({
       price_data: {
@@ -584,7 +589,11 @@ function createBankOrder(body) {
   const _selfSubtotal = _hasDestItems
     ? items.reduce(function (s, it) { return _selfKeys[(it.title || '') + '|' + (it.variant || '')] ? s + it.price * it.qty : s; }, 0)
     : subtotal;
-  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref) : 0;
+  const _halfShip = isRepeatShipHalf_(
+    (body.customer && body.customer.email) || '',
+    (body.customer && body.customer.line_uid) || ''
+  );
+  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
 
   // 振込金額: クライアント計算済みの最終合計（クーポン適用後）を信頼。
   //   入金は Tom が実額照合（アナログ）するため、画面表示との一致を優先。無ければ subtotal+shipping。
@@ -3161,11 +3170,132 @@ function validateStockBeforeCheckout(items) {
   return errors;
 }
 
-function calcShipping(subtotal, pref) {
+/* ============================================================
+   🚚 リピート送料半額（2026-08-23 田崎さん決定）
+   ------------------------------------------------------------
+   前回の「お届け日」から REPEAT_SHIP_DAYS 日以内に再注文したら、自宅分の送料を半額にする。
+   参考にしたのは秋川牧園の「定期利用サポート」（前回配達から30日以内で送料が下がる）。
+   狙い＝定期便で縛らずに購入間隔だけ縮める。江田畜産の実測の再購入間隔は中央値52日なので、
+   既定 40 日にすると「放っておけば52日後に来る人」を前倒しできる。
+
+   🔴 フロント checkout.html の送料表示ロジック（renderSummary 内）と**必ず対で維持する**。
+      片方だけ変えると「画面は¥550・請求は¥1,100」になる。
+      LINE10 クーポンで実際に起きた事故（フロントとバックの片側だけ実装）と同じ形。
+   🔴 起点は orders の delivery_date（お届け日）。空の行は placed_at で代用する。
+      customers シートの last_order は**日付ではなく注文番号**（EDA-YYYYMMDD-XXXXXX）なので使わない。
+   🔴 対象外: 定期便（mode が subscription で始まる注文）／¥11,000以上（元から送料無料）／
+      未入金・キャンセル・失敗の注文（前回実績として数えない）。
+
+   スイッチ（Script Property）:
+     REPEAT_SHIP_HALF = 'true'  … 有効化。既定 'false'（＝従来どおり全額）。
+       フロントを本番反映する前に true にすると表示と請求がズレるので、
+       サイト側マージ → 動作確認 → true の順で入れること。
+     REPEAT_SHIP_DAYS = '40'    … 日数。既定 40。
+   ============================================================ */
+function repeatShipEnabled_() { return String(cfg('REPEAT_SHIP_HALF', 'false')) === 'true'; }
+function repeatShipDays_()    { return Number(cfg('REPEAT_SHIP_DAYS', '40')) || 40; }
+
+/* この人の直近の「お届け日」を day number で返す（無ければ null）。
+   email と line_uid のどちらか一致で本人とみなす（別メールで買われた場合は検知できない＝
+   normalizeCustomerCoupon_ の「1人1回」ガードと同じ限界）。 */
+function lastDeliveryDayNum_(email, lineUid) {
+  var em  = String(email  || '').trim().toLowerCase();
+  var uid = String(lineUid || '').trim();
+  if (!em && !uid) return null;
+
+  var sh = sheet('orders');
+  var rows = sh.getDataRange().getValues();
+  if (rows.length < 2) return null;
+  var h = rows[0];
+  var iMail = h.indexOf('customer_email');
+  var iUid  = h.indexOf('line_uid');
+  var iMode = h.indexOf('mode');
+  var iDd   = h.indexOf('delivery_date');
+  var iAt   = h.indexOf('placed_at');
+  var iPay  = h.indexOf('payment_status');
+
+  var best = null;
+  for (var r = 1; r < rows.length; r++) {
+    var row = rows[r];
+    var mine = (em  && iMail >= 0 && String(row[iMail] || '').trim().toLowerCase() === em) ||
+               (uid && iUid  >= 0 && String(row[iUid]  || '').trim() === uid);
+    if (!mine) continue;
+    if (iMode >= 0 && String(row[iMode] || '').indexOf('subscription') === 0) continue;  // 定期便は数えない
+    if (iPay >= 0) {
+      var st = String(row[iPay] || '').trim();
+      if (st === 'awaiting_payment' || st === 'canceled' || st === 'failed') continue;   // 未確定の注文は数えない
+    }
+    var n = iDd >= 0 ? _ymdDayNum(row[iDd]) : null;                       // お届け日（ISO文字列）
+    if (n === null && iAt >= 0 && row[iAt] instanceof Date) n = _jstDayNum(row[iAt]);  // 無ければ注文日で代用
+    if (n === null && iAt >= 0) n = _ymdDayNum(row[iAt]);
+    if (n === null) continue;
+    if (best === null || n > best) best = n;
+  }
+  return best;
+}
+
+/* 送料半額の対象か。決済作成（createCheckout / createBankOrder）と
+   表示用API（repeat_shipping）の両方がこの1本を呼ぶ＝判定を二重に書かない。 */
+function isRepeatShipHalf_(email, lineUid) {
+  if (!repeatShipEnabled_()) return false;
+  try {
+    /* 🚨 2026-08-26 田崎さん指示: 送料半額は「2回目のご注文」だけの特典。
+       1回目のお届けから40日以内に2回目を出さなければ**失効**し、以降の注文には付かない
+       （特典階段そのものは進むので、3回目は従来どおり鶏モモになる）。
+       実体の数え方は RepeatShipReminder.js の repeatShipPaidOrderCount_ 1本
+       ＝通知の対象者と請求の判定が必ず同じ人になるようにする。 */
+    if (repeatShipPaidOrderCount_(email, lineUid) !== 1) return false;
+    var last = lastDeliveryDayNum_(email, lineUid);
+    if (last === null) return false;
+    var days = _jstDayNum(new Date()) - last;
+    return days >= 0 && days <= repeatShipDays_();
+  } catch (e) {
+    log('repeat_ship_error', { error: e.message });
+    return false;   // 判定に失敗したら通常送料（fail-safe：勝手に値引きしない）
+  }
+}
+
+/* GET ?action=repeat_shipping&email=...&line_uid=...
+   決済ページが送料表示を決めるために叩く。返すのは真偽と日数だけで、
+   氏名・住所・注文履歴は一切返さない（customer_lookup と違い個人情報を出さない）。 */
+function repeatShippingCheck(params) {
+  var email = String((params && params.email)    || '').trim();
+  var uid   = String((params && params.line_uid) || '').trim();
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return jsonResponse({ ok: false, error: 'invalid email' });
+  }
+  if (!repeatShipEnabled_()) return jsonResponse({ ok: true, enabled: false, half: false });
+  var limit = repeatShipDays_();
+  /* 🔴 half は請求(isRepeatShipHalf_)と同じ条件で返す。「2回目だけ」の条件を
+     ここに入れ忘れると、3回目以降の人の画面に半額と出て請求は満額になる
+     （LINE10 でフロントとバックがズレた事故と同じ形）。 */
+  var count = repeatShipPaidOrderCount_(email, uid);
+  var eligible = (count === 1);                    // 次の注文が2回目の人か
+  var last = lastDeliveryDayNum_(email, uid);
+  if (last === null) {
+    return jsonResponse({ ok: true, enabled: true, half: false, limit: limit, orders: count, eligible: eligible });
+  }
+  var days = _jstDayNum(new Date()) - last;
+  var within = (days >= 0 && days <= limit);
+  var deadline = new Date((last + limit) * 86400000 - 9 * 3600000);
+  return jsonResponse({
+    ok: true, enabled: true,
+    half: (eligible && within),
+    eligible: eligible,
+    orders: count,
+    days: days, limit: limit,
+    daysLeft: Math.max(0, limit - days),
+    deadline: Utilities.formatDate(deadline, 'Asia/Tokyo', 'yyyy-MM-dd')
+  });
+}
+
+function calcShipping(subtotal, pref, halfOff) {
   if (subtotal >= 11000) return 0; // ¥11,000以上 送料無料
   // 北海道/沖縄は追加料金
-  if (pref === '北海道' || pref === '沖縄県') return 2200;
-  return 1100;
+  var base = (pref === '北海道' || pref === '沖縄県') ? 2200 : 1100;
+  // 🚚 リピート送料半額（2026-08-23）: 前回のお届け日から N 日以内の再注文は半額。
+  //    ¥11,000以上は上で 0 円になっているので、ここは「送料が発生する注文」だけが通る。
+  return halfOff ? base / 2 : base;
 }
 
 function flattenForm(obj, prefix) {
