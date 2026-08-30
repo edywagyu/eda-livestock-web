@@ -243,6 +243,23 @@ body{
       desc: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得です。ご家庭の焼肉・BBQに。'
     }*/
     {
+      /* 2026-09-03(木) 18:30 発売の数量限定セット。
+         🔴 カメノコ(P035)・シンシン(P036)と同じ肉を使うが、ECの在庫減算は
+            「注文の商品名 ↔ products の name 完全一致」でしか働かないため、
+            セットが売れても単品の在庫は減らない。二重販売を防ぐため、
+            原料14袋を セット4組(カメノコ4+シンシン4) / 単品(カメノコ4・シンシン2)
+            に切り分けてある（2026-08-30 ryotaro判断）。単品側の在庫を戻すときは
+            必ずこのセットの在庫と合わせて調整すること。 */
+      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
+      name: 'LINE会員限定 カメノコ・シンシン焼肉セット',
+      variant: 'カメノコ焼肉200g ＋ シンシン焼肉200g',
+      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 4,
+      startAt: '2026-09-03T18:30:00+09:00',
+      startLabel: '9月3日（木）18:30',
+      img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
+      desc: 'モモの中のシンタマを4つに分けた希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。'
+    },
+    {
       productId: 'P023', variantId: 'MISUJI-STEAK',
       name: 'ミスジステーキ',
       variant: '1枚 150g',
@@ -332,13 +349,25 @@ body{
     return 'hidden';
   }
 
+  /* ---------- 発売予約（startAt）----------
+     startAt を持つ品は、その時刻まで「◯月◯日 発売」の予告表示にして購入させない。
+     端末のタイムゾーンに左右されないよう +09:00 付きの絶対時刻で比較し、
+     画面に出す文言は startLabel をそのまま使う（端末側で日付を組み立てない）。 */
+  function startMs(it) {
+    return it.startAt ? new Date(it.startAt).getTime() : 0;
+  }
+  function isUpcoming(it) {
+    return !!it.startAt && Date.now() < startMs(it);
+  }
+
   /* ---------- 描画 ---------- */
   function cardHtml(it, i) {
     var phase = (it.productId === 'P034') ? p034Phase() : 'onsale';
     if (phase === 'hidden') return '';
     var ended = phase === 'ended';
+    var upcoming = isUpcoming(it);
     var soldOut = it.stock <= 0;
-    var closed = soldOut || ended;
+    var closed = soldOut || ended || upcoming;
     var off = (it.listPrice && it.listPrice > it.price)
       ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
     var was = (it.listPrice && it.listPrice > it.price)
@@ -361,7 +390,9 @@ body{
        出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
     var stockLine = '';
-    if (ended) {
+    if (upcoming) {
+      stockLine = '<p class="stock-line">' + it.startLabel + ' 発売 ／ 数量限定</p>';
+    } else if (ended) {
       stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
     } else if (soldOut) {
       stockLine = '<p class="stock-line">完売しました</p>';
@@ -391,7 +422,8 @@ body{
             '</div>' +
           '</div>' +
           '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
-            (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加')) +
+            (upcoming ? it.startLabel + ' 発売'
+                      : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加'))) +
           '</button>' +
         '</div>' +
       '</div>';
@@ -403,13 +435,16 @@ body{
     scheduleP034Refresh();
   }
 
-  /* 境界の時刻に描き直す。タブを開いたままでも 0:00 / 20:00 ちょうどで切り替わる。 */
+  /* 境界の時刻に描き直す。タブを開いたままでも 0:00 / 20:00 / 発売時刻
+     ちょうどで切り替わる。 */
   var p034Timer = null;
   function scheduleP034Refresh() {
     if (p034Timer) { clearTimeout(p034Timer); p034Timer = null; }
     var now = Date.now();
-    var next = [P034_SALE_END.getTime(), P034_HIDE_AT.getTime()]
-      .filter(function (t) { return t > now; })[0];
+    var bounds = [P034_SALE_END.getTime(), P034_HIDE_AT.getTime()];
+    ITEMS.forEach(function (it) { if (it.startAt) bounds.push(startMs(it)); });
+    var next = bounds.filter(function (t) { return t > now; })
+                     .sort(function (a, b) { return a - b; })[0];
     if (!next) return;
     var wait = next - now + 500;
     if (wait > 86400000) return;   /* 1日以上先なら張らない（次のページ読み込みで拾う） */
