@@ -317,6 +317,13 @@
          30セットには赤身焼肉30袋・バラ焼肉60袋が要る。上限の管理は
          products シートの stock 側で行う（ここは取得失敗時のフォールバック）。 */
       price: 5800, weight: 600, stock: 30, temp: '冷凍',
+      /* BOM。本番DBの components 列と gas/Code.gs の PRODUCT_BOM に同じ内容がある。
+         フロントはこれを使って「あと何セット作れるか」を出す
+         (products-loader.js の applyBomStock)。セット行の stock は減らないため。 */
+      components: [
+        { name: '赤身焼肉', qty: 1 },
+        { name: 'バラ焼肉', qty: 2 }
+      ],
       /* 限定品カウント (public/js/limited-stock.js)。ここが限定設定の正。
          2026-08-30 たろ指示で「販売停止」と「掲示終了」を分けた。
          8/30(日)23:59 で買えなくし、告知は 8/31(月)18:00 まで残す。 */
@@ -421,19 +428,31 @@
       images: ['public/images/products/drive/shinshin-yakiniku.jpg']
     },
 
-    /* ===== カメノコ・シンシン焼肉セット (2026-09-03 18:30 販売開始・4セット限定) =====
+    /* ===== カメノコ・シンシン焼肉セット (2026-09-03 18:30 販売開始・6セット限定) =====
        カメノコ200g + シンシン200g の2種セット。定価¥5,400 → ¥4,860 (10%オフ)。
        🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
-          セット行そのものの stock は減らないため、カードに「残り◯セット」は
-          出さない (止まった数字を見せないため)。上限は数量セレクタ側で効く。
+          セット行そのものの stock は GAS 側で減らないので、フロントは
+          products-loader.js の applyBomStock が構成品から
+            min(カメノコ, シンシン) ＝ あと何セット作れるか
+          を計算して stock を置き換える。これで「残り◯セット」も「在庫切れ」も
+          カートボタンの停止も、構成品の実在庫に追従する。
+          → 下の components を消すと計算できなくなり、また止まった数字に戻る。
+       🔴 限定数は「6セット」。カメノコ8袋・シンシン6袋の少ない方が上限
+          (2026-08-31)。単品と在庫を共有しているので、単品が売れれば
+          セットの残数も減る。カード側の文言も6で揃えること。
        会員限定ページ(line-members.html)にも同じ商品を載せている。name は在庫減算と
        決済の突合キーなので、両方で完全一致させること。 */
     {
       productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET', sku: 'EDA-KAMESHIN-SET',
       stripePriceId: '',
       name: 'カメノコ・シンシン焼肉セット', variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, weight: 400, stock: 4, temp: '冷凍',
-      limitedTotal: 4,
+      /* stock は applyBomStock が構成品から作り直すので、ここは取得失敗時の目安 */
+      price: 4860, listPrice: 5400, weight: 400, stock: 6, temp: '冷凍',
+      components: [
+        { name: 'カメノコ焼肉', qty: 1 },
+        { name: 'シンシン焼肉', qty: 1 }
+      ],
+      limitedTotal: 6,
       limitedStartAt: '2026/09/03 18:30',
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Shinshin Set',
