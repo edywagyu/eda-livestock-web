@@ -12701,6 +12701,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
    discEl.style.display = 'none';
    if (!addBtn.classList.contains('added')) addBtn.textContent = 'カートに追加 ¥' + total.toLocaleString();
  }
+ /* ⭐️ 在庫が 0 から戻ったときに、在庫バッジ側からボタン文言（数量・価格込み）を作り直させるために公開 */
+ addBtn._edaRefreshLabel = refresh;
  function setQ(n) { n = Math.min(QMAX, Math.max(1, n)); qtyValEl.textContent = n; decBtn.disabled = (n <= 1); incBtn.disabled = (n >= QMAX); refresh(); }
  decBtn.addEventListener('click', () => setQ(getQ() - 1));
  incBtn.addEventListener('click', () => setQ(getQ() + 1));
@@ -13155,6 +13157,22 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  btn.textContent = '在庫切れ';
  btn.style.opacity = '0.5';
  btn.style.cursor = 'not-allowed';
+ btn.dataset.stockDisabled = '1';   /* ここで止めた印。他の事情で止まったボタンを勝手に復活させないため */
+ }
+ } else if (stock > 0) {
+ /* ⭐️ 再入荷（在庫が 0 → 1以上に戻った）。
+    ページを開いたままの訪問者は products-loader.js が5分ごとに新しい在庫を取ってくるが、
+    ここで戻さないとバッジだけ消えてボタンは「在庫切れ」の disabled のままで、リロードするまで買えない。 */
+ const btn = card.querySelector('.btn-add-cart');
+ if (btn && btn.dataset.stockDisabled === '1') {
+ btn.disabled = false;
+ btn.style.opacity = '';
+ btn.style.cursor = '';
+ delete btn.dataset.stockDisabled;
+ /* 文言は選択中の数量と最新価格から作り直す（「カートに追加 ¥4,860」の形）。
+    購入UI側の refresh を当てられない古いカード向けに素の文言をフォールバックとして置く。 */
+ if (typeof btn._edaRefreshLabel === 'function') btn._edaRefreshLabel();
+ else if (btn.textContent.trim() === '在庫切れ') btn.textContent = 'カートに追加';
  }
  } /* 残り◯点バッジは Tom 指示(2026-06)で非表示 — タグ整理・重なり解消。在庫切れ表示は維持 */
  });
