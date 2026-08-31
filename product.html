@@ -756,9 +756,36 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   const params = new URLSearchParams(location.search);
   const productId = params.get('id') || 'P001';
   const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
-  const product = all.find(p => p.productId === productId) || all[0];
-  if (!product) {
-    document.querySelector('#pdpTitle').textContent = '商品が見つかりません';
+  /* お取り扱いを終了した商品 / 存在しない商品ID (2026-08-30 田崎さん指示)
+
+     🔴 これまでは `all.find(...) || all[0]` で、見つからない id は黙って
+        先頭商品(サーロインステーキ)を描画していた。実測(2026-08-30):
+        product.html?id=P029 を開くと「サーロインステーキ / 売り切れ — 再入荷待ち」
+        が出る＝撤去した商品の古いリンクを踏んだお客様が、買えない別商品の
+        ページに着地していた。フォールバックをやめ、終了案内に切り替える。
+
+     ENDED_PRODUCT_IDS はマスターに残したまま伏せたい商品を並べる欄。
+     ・P029 無投薬 あったら便利3種セット … 2026-08-03 に店頭から撤去
+       (本番DBは published=FALSE / stock=0。products-loader.js は非公開行も
+        含めて EDA_PRODUCTS_MASTER に載せるため、明示的に伏せておく) */
+  const ENDED_PRODUCT_IDS = ['P029'];
+  const product = all.find(p => p.productId === productId) || null;
+  if (!product || ENDED_PRODUCT_IDS.indexOf(product.productId) >= 0) {
+    document.title = 'お取り扱いを終了しました | 江田畜産';
+    const hide = (sel) => { const el = document.querySelector(sel); if (el) el.style.display = 'none'; };
+    ['.pdp-gallery', '.pdp-variant-section', '.pdp-qty-section', '.pdp-cta-section',
+     '#pdpSubscriptionUpsell', '#pdpGiftOption', '.pdp-meta', '.pdp-details',
+     '.pdp-price', '.pdp-price-note', '.pdp-variant-label', '#stickyCta'].forEach(hide);
+    const t = document.getElementById('pdpTitle');
+    if (t) t.textContent = 'お取り扱いを終了しました';
+    const d = document.getElementById('pdpDescription');
+    if (d) {
+      d.innerHTML = 'この商品は販売を終了しました。<br>' +
+        '<a href="products.html" style="color:var(--color-forest,#0F3D2E);text-decoration:underline">' +
+        '販売中の商品はこちら →</a>';
+    }
+    const bc = document.getElementById('bcName');
+    if (bc) bc.textContent = 'お取り扱い終了';
     return;
   }
 
@@ -1064,6 +1091,17 @@ function pdpPushToCart() {
       cart.push(item);
     }
     localStorage.setItem('eda-cart', JSON.stringify(cart));
+    /* 🔎 計測: 商品ページからのカート追加 (2026-08-30)
+       これまで PDP の「追加する」「ギフトで贈る」だけ add_to_cart を送っておらず、
+       商品ページ→カートの歩留まりが測れなかった（一覧・会員限定ページからの
+       カート追加しか events に残っていなかった）。source:'pdp' で経路も残す。 */
+    try {
+      if (window.edaAnalytics) {
+        window.edaAnalytics.addToCart(product.productId || product.variantId || '',
+          (product.price || 0) * qty,
+          { title: product.name || '', variant: product.variant || '', source: 'pdp', qty: qty });
+      }
+    } catch (e) {}
     return true;
   } catch (e) { console.error(e); return false; }
 }
@@ -1099,7 +1137,7 @@ function giftThisProduct() {
      カート投入イベントに line_uid が付き、カゴ落ちリマインドの宛先が特定できる。 -->
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="public/js/liff-uid.js?v=001" defer></script>
-<script src="public/js/analytics.js?v=004" defer></script>
+<script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script>
