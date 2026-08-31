@@ -9975,7 +9975,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4" data-cat="beef" data-limited-scope="カメノコ焼肉">
- <!-- カメノコ・シンシン焼肉セット (2026-09-03 18:30 販売開始・6セット限定)。
+ <!-- カメノコ・シンシン焼肉セット (2026-09-03 18:30 販売開始・数量限定)。
       セット行の stock は BOM で減らないので、残数は products-loader.js の
       applyBomStock が構成品(カメノコ/シンシン)の実在庫から計算する。
       単品が売れてもこの残数は減る。上限6＝シンシン6袋。 -->
@@ -9989,7 +9989,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">シンシン焼肉 <strong>200g</strong></div>
  <div class="product-stat-item wide">通常 &yen;5,400 &rarr; <strong>&yen;540 お得</strong></div>
  </div>
- <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="カメノコ・シンシン焼肉セット">残り6セット</b><span>6セット限定・なくなり次第終了</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="カメノコ・シンシン焼肉セット">残り6セット</b><span>なくなり次第終了</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -14782,12 +14782,12 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-31-set-rename" defer></script>
+<script src="public/data/products-master.js?v=2026-08-31-set-rename-234" defer></script>
 <script src="public/js/products-loader.js?v=005" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/limited-stock.js?v=012" defer></script>
+<script src="public/js/limited-stock.js?v=013" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=006" defer></script>
 <!-- 売れ行きランキング（#popularBar のバナーを描く。products.html は並べ替えにも使う） -->
