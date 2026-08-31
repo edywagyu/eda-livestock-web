@@ -12699,7 +12699,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
    /* まとめ買い割引を廃止したため割引ラベルは常に非表示（定価のみ） */
    discEl.textContent = '';
    discEl.style.display = 'none';
-   if (!addBtn.classList.contains('added')) addBtn.textContent = 'カートに追加 ¥' + total.toLocaleString();
+   /* 売り切れ中（在庫バッジ処理がボタンを止めている間）は文言を書き換えない。
+      数量の +/- は押せるままなので、ここを素通しすると灰色のボタンの文字だけが
+      「在庫切れ」→「カートに追加 ¥5,400」に戻り、買えるように見えて押せない状態になる。
+      在庫が戻るときは stockBadgeInit が disabled を外してから _edaRefreshLabel() を呼ぶので、
+      そこでは通常どおり価格つきの文言が入る。 */
+   if (!addBtn.classList.contains('added') && !addBtn.disabled) addBtn.textContent = 'カートに追加 ¥' + total.toLocaleString();
  }
  /* ⭐️ 在庫が 0 から戻ったときに、在庫バッジ側からボタン文言（数量・価格込み）を作り直させるために公開 */
  addBtn._edaRefreshLabel = refresh;
