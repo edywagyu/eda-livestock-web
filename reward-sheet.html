@@ -23,7 +23,8 @@
 <style>
   :root{
     --forest:#0F3D2E; --gold:#D4A93B; --cream:#FAF7F0; --ink:#1A1A1A; --muted:#6B7280;
-    --shift: 0mm;               /* 文字全体の上下位置。ツールバーで動かす */
+    --shift: 0mm;               /* 下書きのとき: 文字全体の上下位置 */
+    --name-top: 40mm;           /* 絵柄ありのとき: 「〇〇様」を上から何mmに置くか */
   }
   *{ box-sizing:border-box }
   body{ margin:0; background:#E9ECEF; color:var(--ink);
@@ -79,10 +80,11 @@
 
   /* Canvaの絵柄を置いたら、下書き用の飾り（背景色・ロゴ・罫線）は引っ込める */
   body.has-art .sheet{ background:transparent }
-  body.has-art .logo,
-  body.has-art .rule,
-  body.has-art .foot{ display:none }
-  body.has-art .card{ border:0; background:transparent; padding:0 }
+  /* 絵柄(Canva)を置いたら、文字は「〇〇様」の1行だけにする。
+     文言は絵柄の中に入っているので、二重に刷らない。 */
+  body.has-art .sheet{ background:transparent }
+  body.has-art .layer > *{ display:none }
+  body.has-art .greet-name{ display:block; position:absolute; left:0; right:0; top:var(--name-top); margin:0 }
 
   @media print{
     @page{ size:A4 portrait; margin:0 }
@@ -104,10 +106,11 @@
     <span style="font-weight:800">様</span>
   </label>
   <button class="btn" onclick="window.print()">🖨 印刷する</button>
-  <label style="margin-left:auto">文字の上下位置 <input type="number" id="shiftInput" min="-40" max="40" step="1"> mm</label>
+  <label style="margin-left:auto"><span id="shiftLabel">文字の上下位置</span> <input type="number" id="shiftInput" min="-40" max="200" step="1"> mm</label>
   <p class="hint">
     印刷設定は「用紙サイズ A4／余白なし（既定）／拡大縮小 100%／背景のグラフィックを印刷する」で刷ってください。<br>
-    文字の上下位置は、Canvaの絵柄を置いたあとに1回だけ合わせれば大丈夫です（このパソコンに記憶されます）。
+    Canvaの絵柄を置くと、この紙に刷る文字は「〇〇様」の1行だけになります（文言は絵柄の中にあるため）。<br>
+    その1行を上から何mmに置くかは、右の数字で1回だけ合わせてください（このパソコンに記憶されます）。
   </p>
 </div>
 
@@ -191,19 +194,44 @@ nameInput.value = name0;
 nameInput.addEventListener('input', renderName);
 renderName();
 
-/* ── 文字全体の上下位置（このPCに記憶する） ───────────────── */
+/* ── 位置の調整（このPCに記憶する） ─────────────────────────
+   下書きのとき   … 文字全体を上下にずらす（-40〜40mm）
+   絵柄があるとき … 「〇〇様」を上から何mmに置くか（0〜200mm）
+   ------------------------------------------------------------
+   Canva の絵柄で名前の1行を空ける位置は作る人次第なので、数字で合わせられるようにする。 */
 var SHIFT_KEY  = 'eda-reward-sheet-shift';
+var NAMETOP_KEY= 'eda-reward-sheet-nametop';
 var shiftInput = document.getElementById('shiftInput');
-var savedShift = 0;
-try { savedShift = Number(localStorage.getItem(SHIFT_KEY)) || 0; } catch (e) {}
-shiftInput.value = savedShift;
+var shiftLabel = document.getElementById('shiftLabel');
+var nameTopMode = false;
+
 function applyShift() {
-  var v = Math.max(-40, Math.min(40, Number(shiftInput.value) || 0));
-  document.documentElement.style.setProperty('--shift', v + 'mm');
-  try { localStorage.setItem(SHIFT_KEY, String(v)); } catch (e) {}
+  var raw = Number(shiftInput.value) || 0;
+  if (nameTopMode) {
+    var t = Math.max(0, Math.min(200, raw));
+    document.documentElement.style.setProperty('--name-top', t + 'mm');
+    try { localStorage.setItem(NAMETOP_KEY, String(t)); } catch (e) {}
+  } else {
+    var v = Math.max(-40, Math.min(40, raw));
+    document.documentElement.style.setProperty('--shift', v + 'mm');
+    try { localStorage.setItem(SHIFT_KEY, String(v)); } catch (e) {}
+  }
 }
+function useNameTopMode() {
+  nameTopMode = true;
+  shiftLabel.textContent = 'お名前の位置（上から）';
+  var saved = 40;
+  try { saved = Number(localStorage.getItem(NAMETOP_KEY)) || 40; } catch (e) {}
+  shiftInput.value = saved;
+  applyShift();
+}
+(function initShift() {
+  var saved = 0;
+  try { saved = Number(localStorage.getItem(SHIFT_KEY)) || 0; } catch (e) {}
+  shiftInput.value = saved;
+  applyShift();
+})();
 shiftInput.addEventListener('input', applyShift);
-applyShift();
 
 /* ── 画像を後から差し込む（無くても下書きとして印刷できる） ── */
 function swapIn(paths, onload) {
@@ -216,12 +244,16 @@ function swapIn(paths, onload) {
   })(0);
 }
 
-/* Canva の絵柄（全回共通の1枚）。置かれたら敷いて、下書きの飾りを引っ込める。 */
-swapIn(['public/rewards/base.png', 'public/rewards/base.jpg'], function (img) {
+/* Canva の絵柄（回ごとに1枚 / next-2.png 〜 next-6.png）。
+   絵柄には文言まで入っているので、置かれたらこのページの文字は
+   「〇〇様」の1行だけを残して全部引っ込め、絵柄の上にその1行だけを刷る。
+   置くまでは下書き（この画面の見た目）のまま印刷できる。 */
+swapIn(['public/rewards/next-' + stage + '.png', 'public/rewards/next-' + stage + '.jpg'], function (img) {
   img.className = 'art'; img.alt = '';
   var sheet = document.getElementById('sheet');
   sheet.insertBefore(img, sheet.firstChild);
   document.body.classList.add('has-art');
+  useNameTopMode();
 });
 
 /* 公式LINEの友だち追加QR。置かれたら点線の枠と差し替える。 */
