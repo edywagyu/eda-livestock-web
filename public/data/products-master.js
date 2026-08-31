@@ -132,21 +132,15 @@
     /* ===== 新商品 2026-07 (Stripe Price ID は友輝側で発行後に記入) ===== */
     /* ミスジステーキ (P023)
        🔴 商品一覧(shop.html / products.html)には出さない。PDP直リンクと
-          「今週のメニュー」だけで売る (2026-08-28 ryotaro確定)。一覧に出す提案をしない。
-       2026-08-31: 公式LINE配信に合わせて 9/2 23:59 締切の数量限定にした。
-       在庫は 2026/08/21 ウデロットの残り7枚を、食べ比べセット(P038)用に4枚・
-       単品用に3枚で物理的に分けている。BOM(components)は使っていない
-       ——セット行の stock は BOM では減らず「残り◯セット」が止まった数字に
-       なってしまうため (偽の希少性になる)。だから在庫を分ける方を採った。 */
+          公式LINE会員限定ページ(line-members.html)だけで売る (2026-08-28 ryotaro確定)。
+       2026-08-31: 本日限定の食べ比べ2種(P039/P040)が BOM でこの在庫を共有する。
+       セットが売れるとここの stock が減り、セット側の「残り◯セット」も
+       構成品から計算し直されるので連動する。だから在庫は分けない。 */
     {
       productId: 'P023', variantId: 'MISUJI-STEAK', sku: 'EDA-MISUJI-150',
       stripePriceId: '',
       name: 'ミスジステーキ', variant: '1枚 150g',
-      price: 3500, weight: 150, stock: 3, temp: '冷凍',
-      limitedTotal: 3,
-      limitedSoldOutAt: '2026/09/02 23:59',
-      limitedUntil:     '2026/09/03 12:00',
-      limitedUnit: '枚',
+      price: 3500, weight: 150, stock: 7, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Misuji Steak',
       description: '肩甲骨の内側の希少部位。細かなサシと赤身の旨みが同居。厚めのレア焼きで。',
       images: ['public/images/products/drive/misuji-steak.jpg']
@@ -460,29 +454,45 @@
       images: ['public/images/products/drive/kamenoko-shinshin-set.jpg']
     },
 
-    /* ===== 赤身ステーキ×ミスジ 食べ比べセット (2026-08-31 公開・9/2 23:59 締切) =====
-       同じ「フライパンで焼く1枚」で部位違いを食べ比べる構成。赤身(ウチモモ)と
-       サシ(ミスジ)の対比が主役。
-       🔴 値引きなし。単品 ¥3,400 + ¥3,500 = ¥6,900 をそのままセット価格にしている
-          (2026-08-31 ryotaro決定)。過去12配信の実測で「値引き幅が大きいセットほど
-          売れていない」ため、希少性は割引ではなく数量(ミスジ4枚)と締切で作る。
-          → listPrice は入れない。取り消し線を出さない。
-       🔴 components(BOM)は使わない。BOMだとセット行の stock が減らず、カードの
-          「残り◯セット」が止まった数字になる(偽の希少性)。ミスジ7枚を
-          セット4 / 単品(P023)3 に物理的に分けてある。片方が売り切れて配分を
-          変えるときは、products シートの stock を両方いじること。 */
+    /* ===== 本日限定 食べ比べ2種 (2026-08-31 23:59 締切) =====
+       公式LINE会員限定ページ(line-members.html)だけで売る。
+       shop.html / products.html にはカードを足していない＝店頭には出ない。
+       前身の P038(赤身ステーキ×ミスジ 食べ比べセット ¥6,900・2パック)は
+       2026-08-31 に取り下げた。実注文38件の82%が¥11,000以上で、単価の低いセットを
+       主役にすると注文単価が¥6,000台に落ちるため(8/28・8/30の実例)。
+       🔴 在庫は本番DBの components(BOM) で単品に展開される。
+          P039 = 赤身ステーキ×2 ＋ ミスジステーキ×1
+          P040 = ミスジステーキ×2 ＋ 赤身ステーキ×1
+          セット行の stock は売れても動かないので、残数は構成品から
+          min(在庫 ÷ 必要数) で出す(products-loader.js / line-members.html。PR#183)。
+          → A・B・ミスジ単品が同じミスジ在庫を共有し、残数が自動で連動する。
+          数量を変えるときは products の「ミスジステーキ」「赤身ステーキ」の stock を動かす。
+       10%オフ。単品合計 ¥10,300 → ¥9,270 ／ ¥10,400 → ¥9,360。 */
     {
-      productId: 'P038', variantId: 'STEAK-MISUJI-SET', sku: 'EDA-STEAK-MISUJI-SET',
+      productId: 'P039', variantId: 'TABEKURABE-A', sku: 'EDA-TABEKURABE-A',
       stripePriceId: '',
-      name: '赤身ステーキ×ミスジ 食べ比べセット', variant: '赤身ステーキ200g ＋ ミスジステーキ150g',
-      price: 6900, weight: 350, stock: 4, temp: '冷凍',
-      limitedTotal: 4,
-      limitedSoldOutAt: '2026/09/02 23:59',
-      limitedUntil:     '2026/09/03 12:00',
+      name: '食べ比べセット 赤身ステーキ2＋ミスジ1', variant: '赤身ステーキ200g×2 ＋ ミスジステーキ150g×1',
+      price: 9270, listPrice: 10300, weight: 550, stock: 7, temp: '冷凍',
+      limitedTotal: 7,
+      limitedSoldOutAt: '2026/08/31 23:59',
+      limitedUntil:     '2026/09/01 12:00',
       limitedUnit: 'セット',
-      category: 'beef', categoryLabel: '牛肉', tagEn: 'Steak Tasting Set',
-      description: '同じ焼き方で、赤身とサシを一度に。モモの中心から取った赤身ステーキ200gと、肩甲骨の内側からわずかしか取れないミスジ150g。フライパンで一枚ずつ焼いて、味の違いをそのまま比べられます。',
-      images: ['public/images/products/drive/steak-misuji-set.jpg']
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Tasting Set A',
+      description: '同じ焼き方で、赤身とサシを食べ比べ。モモの中心から取った赤身ステーキを2枚に、一頭からわずかしか取れないミスジを1枚。赤身をしっかり食べたい方はこちら。',
+      images: ['public/images/products/drive/tabekurabe-a.jpg']
+    },
+    {
+      productId: 'P040', variantId: 'TABEKURABE-B', sku: 'EDA-TABEKURABE-B',
+      stripePriceId: '',
+      name: '食べ比べセット ミスジ2＋赤身ステーキ1', variant: 'ミスジステーキ150g×2 ＋ 赤身ステーキ200g×1',
+      price: 9360, listPrice: 10400, weight: 500, stock: 3, temp: '冷凍',
+      limitedTotal: 3,
+      limitedSoldOutAt: '2026/08/31 23:59',
+      limitedUntil:     '2026/09/01 12:00',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Tasting Set B',
+      description: '同じ焼き方で、赤身とサシを食べ比べ。一頭からわずかしか取れないミスジを2枚に、赤身ステーキを1枚。希少部位を主役にしたい方はこちら。',
+      images: ['public/images/products/drive/tabekurabe-b.jpg']
     }
   ];
 
