@@ -357,7 +357,14 @@
       stripePriceId: '',
       name: '訳あり 焼肉2種セット', variant: '赤身焼肉200g + バラ焼肉200g',
       price: 3870, weight: 400, stock: 20, temp: '冷凍',
-      published: false,   /* 公開はスタッフが products シートの published=TRUE で。まだ非公開 */
+      published: false,
+      /* 🧩 中身(BOM)。本番DBの components 列が正で、ここは取得失敗時のフォールバック。
+         これが無いとセットが売れても赤身焼肉・バラ焼肉の在庫が減らず、
+         売り切れていても注文が通る(2026-08-31 登録)。 */
+      components: [
+        { name: '赤身焼肉', qty: 1 },
+        { name: 'バラ焼肉', qty: 1 }
+      ],   /* 公開はスタッフが products シートの published=TRUE で。まだ非公開 */
       /* 限定品カウント (public/js/limited-stock.js)。残数=在庫−カート確保で自動。 */
       limitedTotal: 20,
       limitedSoldOutAt: '2026/08/07 23:59',   /* これ以降＝販売停止＋「完売しました」 */
@@ -376,6 +383,13 @@
       name: '訳あり スライス2種セット', variant: '霜降スライス200g + 切り落とし200g',
       price: 4770, weight: 400, stock: 20, temp: '冷凍',
       published: false,
+      /* 🧩 中身(BOM)。本番DBの components 列が正で、ここは取得失敗時のフォールバック。
+         これが無いとセットが売れても霜降スライス・切り落としの在庫が減らず、
+         売り切れていても注文が通る(2026-08-31 登録)。 */
+      components: [
+        { name: '霜降スライス', qty: 1 },
+        { name: '切り落とし', qty: 1 }
+      ],
       limitedTotal: 20,
       limitedSoldOutAt: '2026/08/07 23:59',
       limitedUntil:     '2026/08/07 23:59',
