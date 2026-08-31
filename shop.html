@@ -7019,6 +7019,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
 .product-card-img[data-label="KAMESHIN SET"] { background-image: url('public/images/products/drive/kamenoko-shinshin-set.jpg'); }
+.product-card-img[data-label="STEAK MISUJI SET"] { background-image: url('public/images/products/drive/steak-misuji-set.jpg'); }
 .product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/kamenoko-yakiniku.jpg'); }
 .product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/shinshin-yakiniku.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
@@ -9964,6 +9965,36 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="イチボステーキ">残り9枚</b><span>8/3（月）〜8/5（水）23:59</span></div>
  <div class="product-buy"></div>
  </div>
+ </div>
+
+ <!-- ===== 赤身ステーキ×ミスジ 食べ比べセット 数量限定 (2026-08-31〜09-02 23:59) =====
+      公式LINE配信用。9/3 12:00 に data-limited-scope で丸ごと自動的に消える。
+      shop.html のグリッドは PREVIEW_PICKS で2件固定のため、独立セクションとして置く。 -->
+ <div class="shop-cat-head" data-cat="beef" data-limited-scope="赤身ステーキ×ミスジ 食べ比べセット">
+ <h2 class="shop-cat-title">数量限定 食べ比べ <span>/ Steak Tasting</span></h2>
+ <p class="shop-cat-desc">同じ焼き方で、赤身とサシを一度に。モモの中心の<strong>赤身ステーキ200g</strong>と、1頭からわずかしか取れない<strong>ミスジ150g</strong>のセットです。<b class="limited-left" data-limited-left="赤身ステーキ×ミスジ 食べ比べセット">残り4セット</b>／<strong>9/2（火）23:59</strong>まで。</p>
+ </div>
+
+ <div class="product-grid cols-4" data-cat="beef" data-limited-scope="赤身ステーキ×ミスジ 食べ比べセット">
+ <!-- ===== 赤身ステーキ×ミスジ 食べ比べセット (2026-08-31 公開・9/2 23:59 締切) =====
+      値引きなし。単品 ¥3,400 + ¥3,500 = ¥6,900 をそのままセット価格にしている。
+      希少性は割引ではなく「ミスジ4セット分」と締切で作る (取り消し線は出さない)。
+      BOM は使わず、ミスジ7枚を セット4 / 単品(P023)3 に分けてある。
+      data-limited-scope が付いた要素は 9/3 12:00 に自動で消える。 -->
+ <div class="product-card product-card--limited" data-sub="set" data-limited-scope="赤身ステーキ×ミスジ 食べ比べセット" data-variants='[{"id":50831006900101,"t":"1セット","p":6900}]'>
+ <div class="product-card-img" data-label="STEAK MISUJI SET"><span class="limited-ribbon">限定商品</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Steak Tasting</span><span class="product-price">&yen;6,900</span></div>
+ <p class="product-name">赤身ステーキ×ミスジ 食べ比べセット</p>
+ <p class="product-desc">同じ焼き方で、赤身とサシを一度に。モモの中心から取った<strong>赤身ステーキ200g</strong>と、肩甲骨の内側から<strong>1頭でわずかしか取れないミスジ150g</strong>。フライパンで一枚ずつ焼いて、味の違いをそのまま比べられます。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">赤身ステーキ <strong>200g</strong></div>
+ <div class="product-stat-item">ミスジステーキ <strong>150g</strong></div>
+ <div class="product-stat-item wide">合計 <strong>350g</strong>／100g &yen;1,971</div>
+ </div>
+ <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="赤身ステーキ×ミスジ 食べ比べセット">残り4セット</b><span>9/2（火）23:59まで</span></div>
+ <div class="product-buy"></div>
+ </div>
+
  </div>
 
  <!-- ===== カメノコ焼肉 / シンシン焼肉 数量限定 (2026-08-30 18:30 販売開始) =====
@@ -14762,7 +14793,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-30-nikunohi-extend" defer></script>
+<script src="public/data/products-master.js?v=2026-08-31-steak-misuji" defer></script>
 <script src="public/js/products-loader.js?v=004" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

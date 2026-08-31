@@ -130,11 +130,23 @@
     },
 
     /* ===== 新商品 2026-07 (Stripe Price ID は友輝側で発行後に記入) ===== */
+    /* ミスジステーキ (P023)
+       🔴 商品一覧(shop.html / products.html)には出さない。PDP直リンクと
+          「今週のメニュー」だけで売る (2026-08-28 ryotaro確定)。一覧に出す提案をしない。
+       2026-08-31: 公式LINE配信に合わせて 9/2 23:59 締切の数量限定にした。
+       在庫は 2026/08/21 ウデロットの残り7枚を、食べ比べセット(P038)用に4枚・
+       単品用に3枚で物理的に分けている。BOM(components)は使っていない
+       ——セット行の stock は BOM では減らず「残り◯セット」が止まった数字に
+       なってしまうため (偽の希少性になる)。だから在庫を分ける方を採った。 */
     {
       productId: 'P023', variantId: 'MISUJI-STEAK', sku: 'EDA-MISUJI-150',
       stripePriceId: '',
       name: 'ミスジステーキ', variant: '1枚 150g',
-      price: 3500, weight: 150, stock: 12, temp: '冷凍',
+      price: 3500, weight: 150, stock: 3, temp: '冷凍',
+      limitedTotal: 3,
+      limitedSoldOutAt: '2026/09/02 23:59',
+      limitedUntil:     '2026/09/03 12:00',
+      limitedUnit: '枚',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Misuji Steak',
       description: '肩甲骨の内側の希少部位。細かなサシと赤身の旨みが同居。厚めのレア焼きで。',
       images: ['public/images/products/drive/misuji-steak.jpg']
@@ -427,6 +439,31 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Shinshin Set',
       description: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。',
       images: ['public/images/products/drive/kamenoko-shinshin-set.jpg']
+    },
+
+    /* ===== 赤身ステーキ×ミスジ 食べ比べセット (2026-08-31 公開・9/2 23:59 締切) =====
+       同じ「フライパンで焼く1枚」で部位違いを食べ比べる構成。赤身(ウチモモ)と
+       サシ(ミスジ)の対比が主役。
+       🔴 値引きなし。単品 ¥3,400 + ¥3,500 = ¥6,900 をそのままセット価格にしている
+          (2026-08-31 ryotaro決定)。過去12配信の実測で「値引き幅が大きいセットほど
+          売れていない」ため、希少性は割引ではなく数量(ミスジ4枚)と締切で作る。
+          → listPrice は入れない。取り消し線を出さない。
+       🔴 components(BOM)は使わない。BOMだとセット行の stock が減らず、カードの
+          「残り◯セット」が止まった数字になる(偽の希少性)。ミスジ7枚を
+          セット4 / 単品(P023)3 に物理的に分けてある。片方が売り切れて配分を
+          変えるときは、products シートの stock を両方いじること。 */
+    {
+      productId: 'P038', variantId: 'STEAK-MISUJI-SET', sku: 'EDA-STEAK-MISUJI-SET',
+      stripePriceId: '',
+      name: '赤身ステーキ×ミスジ 食べ比べセット', variant: '赤身ステーキ200g ＋ ミスジステーキ150g',
+      price: 6900, weight: 350, stock: 4, temp: '冷凍',
+      limitedTotal: 4,
+      limitedSoldOutAt: '2026/09/02 23:59',
+      limitedUntil:     '2026/09/03 12:00',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Steak Tasting Set',
+      description: '同じ焼き方で、赤身とサシを一度に。モモの中心から取った赤身ステーキ200gと、肩甲骨の内側からわずかしか取れないミスジ150g。フライパンで一枚ずつ焼いて、味の違いをそのまま比べられます。',
+      images: ['public/images/products/drive/steak-misuji-set.jpg']
     }
   ];
 
