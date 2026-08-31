@@ -22,7 +22,14 @@
      [data-limited-left="商品名"]  … 中身を「残り◯セット」に置き換える。
                                      手書きのコピーの中に残数を埋め込みたいときに使う。
 
+   セット商品（components ＝ BOM を持つもの）だけは例外。GAS 側が構成品の在庫で
+   在庫チェックと減算をするためセット行の stock が動かず、そのまま出すと
+   売れても変わらない止まった数字になる。なので残数は構成品から
+     min( 構成品の残り ÷ 必要数 ) − セット自体のカート確保
+   で計算する（window.edaBomAvailable / public/js/products-loader.js）。
+
    関連: public/js/cart-holds.js（確保数）/ gas/cart_holds.gs
+         public/js/products-loader.js（BOM展開・セットの在庫算出）
    ============================================================ */
 (function () {
   'use strict';
@@ -72,6 +79,22 @@
   function closeSales() {
     var now = new Date();
     var changed = false;
+
+    /* 🧩 セット商品(BOM)の stock を構成品から作り直す。
+       products-loader.js の applyBomStock は GAS を取り直したときにしか走らない
+       ので、その間（最大5分）に構成品が売り切れても、セットの stock は古い値の
+       まま＝在庫バッジもカートボタンも「まだ買える」状態で残ってしまう。
+       在庫バッジ側(shop.html の stockBadgeInit)は p.stock しか見ないので、
+       ここで正しい値を書き戻しておく。 */
+    if (typeof window.edaBomStock === 'function') {
+      products().forEach(function (p) {
+        if (!p.name) return;
+        var n = window.edaBomStock(p.name);
+        if (n === null || n === undefined) return;      /* セットではない/判定不能 */
+        if (Number(p.stock) !== n) { p.stock = n; changed = true; }
+      });
+    }
+
     products().forEach(function (p) {
       var total = Number(p.limitedTotal);
       if (!isFinite(total) || total <= 0 || !p.name) return;
@@ -98,10 +121,24 @@
 
       var stock = Number(p.stock);
       if (!isFinite(stock)) stock = 0;
-      var avail = stock;
-      if (typeof window.edaAvailable === 'function') {
-        var a = window.edaAvailable(p.name, stock);
-        if (a !== null) avail = a;
+
+      /* 🧩 セット商品(BOM)は自分の stock が売れても減らない。構成品の残りから
+         「あと何セット作れるか」を出す(public/js/products-loader.js)。
+         セットでなければ null が返るので、従来どおり自分の在庫で数える。
+         在庫(stock)と残数(available)の両方をここで作り直すこと。片方だけだと
+         構成品が尽きたときに「完売しました」ではなく「確保中」と出てしまう。 */
+      var bomStock = (typeof window.edaBomStock === 'function')
+        ? window.edaBomStock(p.name) : null;
+      if (bomStock !== null && bomStock !== undefined) stock = bomStock;
+
+      var avail = (typeof window.edaBomAvailable === 'function')
+        ? window.edaBomAvailable(p.name) : null;
+      if (avail === null || avail === undefined) {
+        avail = stock;
+        if (typeof window.edaAvailable === 'function') {
+          var a = window.edaAvailable(p.name, stock);
+          if (a !== null) avail = a;
+        }
       }
       var at = soldOutAtOf(p);
       out[p.name] = {

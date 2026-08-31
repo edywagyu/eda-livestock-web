@@ -247,7 +247,10 @@ body{
          🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
             セットが売れると単品(P035/P036)の在庫が自動で減る＝二重販売しない。
             だから在庫は取り分けず、カメノコ8袋 / シンシン6袋 を単品と共有する
-            (2026-08-30 ryotaro判断・案2)。components を消すと売り越す。 */
+            (2026-08-30 ryotaro判断・案2)。components を消すと売り越す。
+         🔴 下の stock は取得失敗時の目安。実際は syncCatalog が構成品から
+            min(カメノコ, シンシン) で作り直す。セット行の stock は動かないので
+            そのまま使うと肉が無くなっても完売表示にならない (2026-08-31 修正)。 */
       productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
       /* 通常サイト(shop.html / products.html)にも同じ商品を出している。
          name は在庫減算と決済の突合キーなので両方で完全一致させること。
@@ -255,7 +258,7 @@ body{
       memberOnly: false,
       name: 'カメノコ・シンシン焼肉セット',
       variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 4,
+      price: 4860, listPrice: 5400, stock: 6, limitedTotal: 6,
       startAt: '2026-09-03T18:30:00+09:00',
       startLabel: '9月3日（木）18:30',
       img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
@@ -536,12 +539,38 @@ body{
       /* public_catalog は {ok:true, products:[...]} を返す。素の配列で来る場合にも備える。 */
       var list = Array.isArray(res) ? res : (res && res.products);
       if (!Array.isArray(list)) return;
+
+      /* 🧩 セット商品(components ＝ BOM)は、GAS が構成品の在庫で売買するため
+         セット行の stock が売れても動かない。そのまま使うと肉が無くなっても
+         「完売しました」に切り替わらず、決済の最後で弾かれる。
+         なので構成品から min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
+         構成品が1つでも見つからないときは判定不能として触らない(fail-open)。
+         ※入れ子セットは想定していない(このページの商品は1段のみ)。
+         同じ計算を通常サイト側は public/js/products-loader.js が持っている。 */
+      var stockByName = {};
+      list.forEach(function (p) { if (p && p.name) stockByName[p.name] = Number(p.stock) || 0; });
+      function bomStock(raw) {
+        var comps;
+        try { comps = JSON.parse(raw || ''); } catch (e) { return null; }
+        if (!Array.isArray(comps) || !comps.length) return null;
+        var min = Infinity;
+        for (var i = 0; i < comps.length; i++) {
+          var c = comps[i] || {}, n = c.name || c.title;
+          if (!n) continue;
+          if (!(n in stockByName)) return null;
+          min = Math.min(min, Math.floor(stockByName[n] / (Number(c.qty) || 1)));
+        }
+        return (min === Infinity) ? null : Math.max(0, min);
+      }
+
       var changed = false;
       ITEMS.forEach(function (it) {
         var live = list.filter(function (p) { return p.variantId === it.variantId; })[0];
         if (!live) return;
         if (typeof live.price === 'number' && live.price > 0) it.price = live.price;
-        if (typeof live.stock === 'number') it.stock = live.stock;
+        var bom = bomStock(live.components);
+        if (bom !== null) it.stock = bom;                          /* セット＝構成品から算出 */
+        else if (typeof live.stock === 'number') it.stock = live.stock;
         changed = true;
       });
       if (changed) render();
