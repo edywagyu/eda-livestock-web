@@ -471,7 +471,7 @@
     {
       productId: 'P039', variantId: 'TABEKURABE-A', sku: 'EDA-TABEKURABE-A',
       stripePriceId: '',
-      name: '食べ比べセット 赤身ステーキ2＋ミスジ1', variant: '赤身ステーキ200g×2 ＋ ミスジステーキ150g×1',
+      name: 'Aセット｜赤身ステーキ2枚＋ミスジ1枚', variant: '赤身ステーキ200g×2 ＋ ミスジステーキ150g×1',
       price: 9270, listPrice: 10300, weight: 550, stock: 7, temp: '冷凍',
       limitedTotal: 7,
       limitedSoldOutAt: '2026/08/31 23:59',
@@ -484,7 +484,7 @@
     {
       productId: 'P040', variantId: 'TABEKURABE-B', sku: 'EDA-TABEKURABE-B',
       stripePriceId: '',
-      name: '食べ比べセット ミスジ2＋赤身ステーキ1', variant: 'ミスジステーキ150g×2 ＋ 赤身ステーキ200g×1',
+      name: 'Bセット｜ミスジ2枚＋赤身ステーキ1枚', variant: 'ミスジステーキ150g×2 ＋ 赤身ステーキ200g×1',
       price: 9360, listPrice: 10400, weight: 500, stock: 3, temp: '冷凍',
       limitedTotal: 3,
       limitedSoldOutAt: '2026/08/31 23:59',
