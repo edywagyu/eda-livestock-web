@@ -209,6 +209,39 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
+    /* ===== 本日限定 食べ比べ2種（2026-08-31 23:59まで） =====
+       赤身(ウチモモ)とサシ(ミスジ)を、同じ「フライパンで焼く1枚」で比べる。
+       配分違いの2本立てにして、どちらが選ばれるかを見る。
+       🔴 在庫は本番DBの components(BOM) で単品に展開される。
+          A = 赤身ステーキ×2 ＋ ミスジステーキ×1 ／ B = ミスジステーキ×2 ＋ 赤身ステーキ×1
+          セット行の stock は売れても動かないので、下の syncCatalog が
+          min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
+          → A と B とミスジ単品が同じミスジ在庫を共有し、残数が自動で連動する。
+          数量を変えるときは products シートの「ミスジステーキ」「赤身ステーキ」の
+          stock を動かす（セット行の stock はフォールバック用の目安）。
+       10%オフ。単品合計 A ¥10,300 → ¥9,270 ／ B ¥10,400 → ¥9,360。 */
+    {
+      productId: 'P039', variantId: 'TABEKURABE-A',
+      name: '食べ比べセット 赤身ステーキ2＋ミスジ1',
+      variant: '赤身ステーキ200g×2 ＋ ミスジステーキ150g×1（計550g）',
+      price: 9270, listPrice: 10300, stock: 7, limitedTotal: 7,
+      showLeft: true, leftUnit: 'セット',
+      endAt: '2026-09-01T00:00:00+09:00',
+      endLabel: '本日 8月31日（月）23:59',
+      img: 'public/images/products/drive/tabekurabe-a.jpg',
+      desc: '同じ焼き方で、赤身とサシを食べ比べ。モモの中心から取った赤身ステーキを2枚に、一頭からわずかしか取れないミスジを1枚。赤身をしっかり食べたい方はこちら。'
+    },
+    {
+      productId: 'P040', variantId: 'TABEKURABE-B',
+      name: '食べ比べセット ミスジ2＋赤身ステーキ1',
+      variant: 'ミスジステーキ150g×2 ＋ 赤身ステーキ200g×1（計500g）',
+      price: 9360, listPrice: 10400, stock: 3, limitedTotal: 3,
+      showLeft: true, leftUnit: 'セット',
+      endAt: '2026-09-01T00:00:00+09:00',
+      endLabel: '本日 8月31日（月）23:59',
+      img: 'public/images/products/drive/tabekurabe-b.jpg',
+      desc: '同じ焼き方で、赤身とサシを食べ比べ。一頭からわずかしか取れないミスジを2枚に、赤身ステーキを1枚。希少部位を主役にしたい方はこちら。'
+    },
     {
       productId: 'P034', variantId: 'SHIMOFURI-MEMBER',
       name: 'LINE会員限定 霜降スライス まとめ買い',
@@ -365,11 +398,24 @@ body{
     return !!it.startAt && Date.now() < startMs(it);
   }
 
+  /* ---------- 販売終了（endAt）----------
+     endAt を持つ品は、その時刻を過ぎたら「販売終了」にして購入させない。
+     startAt と同じく +09:00 付きの絶対時刻で比較する（端末TZに左右されない）。
+     🔴 これは画面の話。GAS は products シートの実在庫を見るので、
+        締切前にカートに入れた人はそのまま決済できる。確実に止めるなら
+        products の published を FALSE にするか stock を 0 にすること。 */
+  function endMs(it) {
+    return it.endAt ? new Date(it.endAt).getTime() : 0;
+  }
+  function isEnded(it) {
+    return !!it.endAt && Date.now() >= endMs(it);
+  }
+
   /* ---------- 描画 ---------- */
   function cardHtml(it, i) {
     var phase = (it.productId === 'P034') ? p034Phase() : 'onsale';
     if (phase === 'hidden') return '';
-    var ended = phase === 'ended';
+    var ended = phase === 'ended' || isEnded(it);
     var upcoming = isUpcoming(it);
     var soldOut = it.stock <= 0;
     var closed = soldOut || ended || upcoming;
@@ -401,6 +447,13 @@ body{
       stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
     } else if (soldOut) {
       stockLine = '<p class="stock-line">完売しました</p>';
+    } else if (it.showLeft) {
+      /* 残数を出すのは showLeft を付けた品だけ（2026-08-31 ryotaro指示）。
+         他の品は従来どおり出さない（2026-08-22 指示は据え置き）。
+         BOMセットの it.stock は syncCatalog が構成品から作り直した実数なので、
+         ここに出す数字は在庫と連動する。 */
+      stockLine = '<p class="stock-line">残り' + it.stock + (it.leftUnit || '点')
+                + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + '</p>';
     } else if (it.productId === 'P034') {
       /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
       stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
@@ -448,6 +501,7 @@ body{
     var now = Date.now();
     var bounds = [P034_SALE_END.getTime(), P034_HIDE_AT.getTime()];
     ITEMS.forEach(function (it) { if (it.startAt) bounds.push(startMs(it)); });
+    ITEMS.forEach(function (it) { if (it.endAt) bounds.push(endMs(it)); });
     var next = bounds.filter(function (t) { return t > now; })
                      .sort(function (a, b) { return a - b; })[0];
     if (!next) return;
