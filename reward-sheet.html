@@ -6,64 +6,92 @@
 <title>次回特典の同梱用紙｜江田畜産</title>
 <meta name="robots" content="noindex,nofollow">
 <!-- ============================================================
-     📄 箱に入れる「次回の特典」A4用紙（お名前入り）
+     📄 箱に入れる「次回の特典」A4用紙（片面・お名前入り）
      ------------------------------------------------------------
      管理画面(staff.html)の発送処理から
        reward-sheet.html?stage=3&name=田崎
-     で開く。印刷するとお客様のお名前が入ったA4が1枚出る。
+     で開く。印刷するとお客様のお名前入りのA4が1枚出る。
 
-     絵柄は Canva で作った A4 の画像を public/rewards/next-N.png に置くだけ。
-     このページはその画像を原寸で敷き、上に「〇〇様 ご購入いただきありがとうございます」
-     の1行だけを重ねて刷る。＝絵柄の差し替えにコード修正は要らない。
+     🔴 デザインは5回ぶんとも同じ。変わるのは文言だけ（2026-08-31 田崎さん決定）。
+        文言の置き場は下の SHEET_TEXT ただ1つ。ここだけ直せば全部に効く。
 
-     🔴 Canva 側は「お名前の1行ぶんを空けて」書き出すこと（重なって読めなくなる）。
-     🔴 名前の位置と文字サイズは下のツールバーで合わせる。合わせた値はこのPCに
-        記憶されるので、最初の1回だけでよい。
+     絵柄（枠・飾り・ロゴ・QR）を Canva で作ったら public/rewards/base.png として
+     置く。置いた瞬間このページはそれを原寸で敷き、下書き用の飾りを引っ込めて
+     「文字だけ」を上に刷る。＝Canva側は文字を入れずに作ること。
+     置くまでは、下書き（この画面の見た目）のまま印刷できる。
      ============================================================ -->
 <style>
   :root{
-    --forest:#0F3D2E; --gold:#D4A93B; --cream:#FAF7F0; --muted:#6B7280;
-    /* 名前の位置（上から mm）と文字サイズ（pt）。ツールバーで上書きされる */
-    --name-top: 24mm;
-    --name-size: 15pt;
+    --forest:#0F3D2E; --gold:#D4A93B; --cream:#FAF7F0; --ink:#1A1A1A; --muted:#6B7280;
+    --shift: 0mm;               /* 文字全体の上下位置。ツールバーで動かす */
   }
   *{ box-sizing:border-box }
-  body{ margin:0; background:#E9ECEF; font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif; color:#111 }
+  body{ margin:0; background:#E9ECEF; color:var(--ink);
+        font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif }
 
   /* ── 画面だけのツールバー（印刷では消える） ───────────────── */
-  .bar{ position:sticky; top:0; z-index:10; background:var(--forest); color:#fff; padding:12px 16px; display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center }
-  .bar h1{ font-size:14px; font-weight:800; margin:0 8px 0 0; letter-spacing:.02em }
+  .bar{ position:sticky; top:0; z-index:10; background:var(--forest); color:#fff; padding:12px 16px;
+        display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center }
+  .bar h1{ font-size:14px; font-weight:800; margin:0 8px 0 0 }
   .bar label{ font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:6px }
   .bar input[type=text]{ width:180px; padding:7px 10px; border:0; border-radius:7px; font-size:14px; font-weight:700 }
   .bar input[type=number]{ width:64px; padding:7px 8px; border:0; border-radius:7px; font-size:13px; font-weight:700 }
   .bar .btn{ padding:9px 16px; border:0; border-radius:8px; background:var(--gold); color:#1a1a1a; font-weight:800; font-size:13px; cursor:pointer }
-  .bar .btn[disabled]{ opacity:.45; cursor:not-allowed }
   .bar .hint{ font-size:11px; color:#C8D8CE; flex-basis:100%; line-height:1.6 }
 
-  /* ── 用紙（A4 原寸） ───────────────────────────────────── */
+  /* ── 用紙（A4 原寸・片面） ─────────────────────────────── */
   .stage{ padding:24px; display:flex; justify-content:center }
-  .sheet{
-    position:relative; width:210mm; height:297mm; background:#fff; overflow:hidden;
-    box-shadow:0 6px 24px rgba(0,0,0,.18);
-  }
+  .sheet{ position:relative; width:210mm; height:297mm; background:var(--cream); overflow:hidden;
+          box-shadow:0 6px 24px rgba(0,0,0,.18) }
   .sheet img.art{ position:absolute; inset:0; width:210mm; height:297mm; object-fit:cover; display:block }
-  .sheet .name{
-    position:absolute; left:0; right:0; top:var(--name-top);
-    text-align:center; font-size:var(--name-size); font-weight:600; letter-spacing:.08em;
-    font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
-    color:var(--forest);
-  }
-  /* 絵柄がまだ無いとき：位置合わせだけできるように枠を出す（印刷はさせない） */
-  .placeholder{ position:absolute; inset:8mm; border:2px dashed #C9CED4; border-radius:4mm; display:flex; align-items:center; justify-content:center; text-align:center; padding:16mm }
-  .placeholder p{ font-size:13px; line-height:2; color:var(--muted); font-weight:700 }
-  .placeholder code{ font-family:"SF Mono",Menlo,monospace; font-size:12px; background:#F3F4F6; padding:2px 6px; border-radius:4px }
+
+  /* 文字の層。Canvaの絵柄を置いてもここはそのまま上に乗る */
+  .layer{ position:absolute; inset:0; padding:22mm 20mm; display:flex; flex-direction:column;
+          transform:translateY(var(--shift)) }
+
+  .logo{ height:16mm; margin:0 auto 8mm; display:block }
+  .greet-name{ text-align:center; font-size:15pt; font-weight:700; letter-spacing:.08em; color:var(--forest);
+          margin:0 0 3mm; font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif }
+  .greet{ text-align:center; font-size:12pt; font-weight:600; letter-spacing:.04em; color:var(--forest); margin:0;
+          font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif }
+  .lede{ text-align:center; font-size:11pt; font-weight:500; line-height:2; color:var(--ink); margin:7mm 0 0 }
+
+  .rule{ height:1px; background:var(--gold); opacity:.55; margin:9mm 0 }
+
+  /* 主役のかたまり。まわりを金の細枠で囲って、箱を開けた瞬間ここに目が行くようにする */
+  .card{ border:1.4px solid var(--gold); border-radius:4mm; background:#fff; padding:13mm 12mm 12mm }
+  .lead{ text-align:center; font-size:13pt; font-weight:800; color:var(--gold); letter-spacing:.10em }
+  .main{ text-align:center; font-size:26pt; font-weight:900; line-height:1.4; color:var(--forest);
+         margin:5mm 0 0; letter-spacing:.02em }
+  .sub{ text-align:center; font-size:12pt; font-weight:600; line-height:1.9; color:var(--ink); margin:7mm 0 0 }
+  .notes{ margin:0 0 8mm }
+  .notes p{ text-align:center; font-size:9.5pt; font-weight:500; line-height:1.9; color:var(--muted); margin:0 }
+
+  .spacer{ flex:1 }
+
+  .line-block{ text-align:center }
+  .line-sub{ font-size:9.5pt; font-weight:500; color:var(--muted); line-height:1.8; margin:3mm 0 0 }
+  .qr{ width:34mm; height:34mm; margin:5mm auto 3mm; display:block }
+  .qr-ph{ width:34mm; height:34mm; margin:5mm auto 3mm; border:2px dashed #C9CED4; border-radius:3mm;
+          display:flex; align-items:center; justify-content:center; font-size:8pt; font-weight:700; color:var(--muted); text-align:center; padding:3mm }
+  .line-cap{ font-size:10pt; font-weight:800; color:var(--forest); letter-spacing:.04em }
+  .foot{ text-align:center; font-size:8.5pt; color:var(--muted); margin-top:7mm; letter-spacing:.04em }
+
+  /* Canvaの絵柄を置いたら、下書き用の飾り（背景色・ロゴ・罫線）は引っ込める */
+  body.has-art .sheet{ background:transparent }
+  body.has-art .logo,
+  body.has-art .rule,
+  body.has-art .foot{ display:none }
+  body.has-art .card{ border:0; background:transparent; padding:0 }
 
   @media print{
     @page{ size:A4 portrait; margin:0 }
     body{ background:#fff }
-    .bar,.stage{ padding:0 }
     .bar{ display:none }
+    .stage{ padding:0 }
     .sheet{ box-shadow:none; margin:0 }
+    /* 背景色を必ず刷る（ブラウザの既定は背景を刷らない） */
+    .sheet{ -webkit-print-color-adjust:exact; print-color-adjust:exact }
   }
 </style>
 </head>
@@ -75,104 +103,133 @@
     <input type="text" id="nameInput" placeholder="お客様のお名前">
     <span style="font-weight:800">様</span>
   </label>
-  <button class="btn" id="printBtn" onclick="window.print()">🖨 印刷する</button>
-  <label style="margin-left:auto">上からの位置 <input type="number" id="posInput" min="0" max="200" step="1"> mm</label>
-  <label>文字の大きさ <input type="number" id="sizeInput" min="8" max="40" step="1"> pt</label>
+  <button class="btn" onclick="window.print()">🖨 印刷する</button>
+  <label style="margin-left:auto">文字の上下位置 <input type="number" id="shiftInput" min="-40" max="40" step="1"> mm</label>
   <p class="hint">
-    位置と大きさは最初の1回だけ合わせてください（このパソコンに記憶されます）。<br>
-    印刷設定は「用紙サイズ A4／余白なし（既定）／拡大縮小 100%」で刷ってください。
+    印刷設定は「用紙サイズ A4／余白なし（既定）／拡大縮小 100%／背景のグラフィックを印刷する」で刷ってください。<br>
+    文字の上下位置は、Canvaの絵柄を置いたあとに1回だけ合わせれば大丈夫です（このパソコンに記憶されます）。
   </p>
 </div>
 
 <div class="stage">
   <div class="sheet" id="sheet">
-    <div class="name" id="nameLine"></div>
+    <div class="layer">
+      <img class="logo" src="public/images/logo/eda-livestock-logo-transparent.png" alt="">
+
+      <p class="greet-name" id="greetName"></p>
+      <p class="greet">この度はご購入いただきありがとうございます。</p>
+      <p class="lede">無投薬で宮崎の大自然の中育てた和牛を<br>どうぞお楽しみくださいませ。</p>
+
+      <div class="rule"></div>
+
+      <div class="card">
+        <p class="lead">次回特典情報‼︎</p>
+        <p class="main" id="main"></p>
+        <p class="sub"  id="sub"></p>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="notes">
+        <p>※ マイページのご登録がお済みでない方は、ご登録くださいませ。</p>
+        <p>※ 上記特典を受け取るには、マイページのご登録が必要です。</p>
+        <p>※ ご登録は無料です。月額料もかかりません。</p>
+      </div>
+
+      <div class="line-block">
+        <div class="qr-ph" id="qrSlot">QRはここに入ります<br>（未確定）</div>
+        <p class="line-cap">マイページのご登録はこちら</p>
+        <p class="line-sub">このあとの特典やおすすめのご案内は、公式LINEからお送りします。</p>
+      </div>
+
+      <p class="foot">江田畜産　eda-livestock.com</p>
+    </div>
   </div>
 </div>
 
 <script>
-/* 絵柄の置き場。キー = その用紙が案内する回数（＝次回）。
-   Canva から A4（210×297mm）で書き出した画像をこの名前で置く。
-   png が無ければ jpg も探す＝書き出し形式で迷わなくてよい。 */
-var ART_BASE = {
-  2: 'public/rewards/next-2',
-  3: 'public/rewards/next-3',
-  4: 'public/rewards/next-4',
-  5: 'public/rewards/next-5',
-  6: 'public/rewards/next-6'
+/* ============================================================
+   文言の置き場（ここだけ直せば5枚ぜんぶに効く）。
+   キー = その用紙が案内する回数（＝次回）。
+   🔴 特典の中身の正は mypage.html の REWARD_STAGES。変えたときは対で直す。
+   ============================================================ */
+var SHEET_TEXT = {
+  2: { main: '送料が半額',
+       sub:  '前回のお届けから40日以内のご注文で、送料が半額になります。' },
+  3: { main: '鶏モモ 200g プレゼント',
+       sub:  '自社牧場で育てた平飼い鶏を、ご注文の箱にお入れします。' },
+  4: { main: '無添加ハンバーグ 2個 プレゼント',
+       sub:  '130g × 2個。自家製・無添加のハンバーグをお入れします。' },
+  5: { main: '牛焼肉 200g プレゼント',
+       sub:  '江田和牛の焼肉用カットを、ご注文の箱にお入れします。' },
+  6: { main: '限定部位をお選びいただけます',
+       sub:  'イチボ・シンシンなど、普段は店頭に出さない希少部位です。' }
 };
+
 var STAGE_LABEL = { 2:'2回目', 3:'3回目', 4:'4回目', 5:'5回目', 6:'6回目' };
 
 var qs    = new URLSearchParams(location.search);
 var stage = String(Number(qs.get('stage')) || '');
 var name0 = (qs.get('name') || '').trim();
-
-var sheet     = document.getElementById('sheet');
-var nameLine  = document.getElementById('nameLine');
-var nameInput = document.getElementById('nameInput');
-var posInput  = document.getElementById('posInput');
-var sizeInput = document.getElementById('sizeInput');
-var printBtn  = document.getElementById('printBtn');
+var t     = SHEET_TEXT[stage] || SHEET_TEXT[3];
 
 document.getElementById('barStage').textContent = STAGE_LABEL[stage] || '次回特典';
 document.title = (STAGE_LABEL[stage] || '次回特典') + 'の同梱用紙｜江田畜産';
+document.getElementById('main').innerHTML = t.main;
+document.getElementById('sub').innerHTML  = t.sub;
 
 /* ── お名前 ───────────────────────────────────────────── */
+var nameInput = document.getElementById('nameInput');
+var greetName = document.getElementById('greetName');
 function renderName() {
   var v = (nameInput.value || '').trim();
-  /* 名前が無いときは「様」だけが浮くので、宛名なしの文面に落とす */
-  nameLine.textContent = v ? (v + '様　ご購入いただきありがとうございます')
-                           : 'ご購入いただきありがとうございます';
+  /* 名前が無いときは「様」だけが浮くので、その行ごと出さない */
+  greetName.textContent = v ? (v + '様') : '';
+  greetName.style.display = v ? '' : 'none';
 }
 nameInput.value = name0;
 nameInput.addEventListener('input', renderName);
 renderName();
 
-/* ── 位置・文字サイズ（このPCに記憶する） ───────────────── */
-var POS_KEY = 'eda-reward-sheet-pos';
-var saved = {};
-try { saved = JSON.parse(localStorage.getItem(POS_KEY) || '{}') || {}; } catch (e) {}
-posInput.value  = Number(saved.top)  || 24;
-sizeInput.value = Number(saved.size) || 15;
-
-function applyPos() {
-  var t = Math.max(0, Math.min(200, Number(posInput.value) || 0));
-  var s = Math.max(8, Math.min(40,  Number(sizeInput.value) || 15));
-  sheet.style.setProperty('--name-top',  t + 'mm');
-  sheet.style.setProperty('--name-size', s + 'pt');
-  try { localStorage.setItem(POS_KEY, JSON.stringify({ top:t, size:s })); } catch (e) {}
+/* ── 文字全体の上下位置（このPCに記憶する） ───────────────── */
+var SHIFT_KEY  = 'eda-reward-sheet-shift';
+var shiftInput = document.getElementById('shiftInput');
+var savedShift = 0;
+try { savedShift = Number(localStorage.getItem(SHIFT_KEY)) || 0; } catch (e) {}
+shiftInput.value = savedShift;
+function applyShift() {
+  var v = Math.max(-40, Math.min(40, Number(shiftInput.value) || 0));
+  document.documentElement.style.setProperty('--shift', v + 'mm');
+  try { localStorage.setItem(SHIFT_KEY, String(v)); } catch (e) {}
 }
-posInput.addEventListener('input', applyPos);
-sizeInput.addEventListener('input', applyPos);
-applyPos();
+shiftInput.addEventListener('input', applyShift);
+applyShift();
 
-/* ── 絵柄を敷く（png → jpg → 未登録） ──────────────────── */
-function showPlaceholder(base) {
-  printBtn.disabled = true;
-  var d = document.createElement('div');
-  d.className = 'placeholder';
-  d.innerHTML = '<p>' + (STAGE_LABEL[stage] || 'この回') + 'の絵柄がまだ置かれていません。<br>' +
-    'Canva で作った A4 の画像を<br><code>' + base + '.png</code>（または .jpg）<br>として置いてください。<br><br>' +
-    '<span style="color:#B45309">絵柄が無いままでは印刷できません。</span></p>';
-  sheet.appendChild(d);
-}
-
-(function loadArt() {
-  var base = ART_BASE[stage];
-  if (!base) { showPlaceholder('public/rewards/next-N'); return; }
-  var tries = [base + '.png', base + '.jpg'];
+/* ── 画像を後から差し込む（無くても下書きとして印刷できる） ── */
+function swapIn(paths, onload) {
   (function next(i) {
-    if (i >= tries.length) { showPlaceholder(base); return; }
+    if (i >= paths.length) return;
     var img = new Image();
-    img.onload = function () {
-      img.className = 'art';
-      img.alt = '';
-      sheet.insertBefore(img, nameLine);   /* 名前は必ず絵柄の上に重ねる */
-    };
+    img.onload = function () { onload(img); };
     img.onerror = function () { next(i + 1); };
-    img.src = tries[i];
+    img.src = paths[i];
   })(0);
-})();
+}
+
+/* Canva の絵柄（全回共通の1枚）。置かれたら敷いて、下書きの飾りを引っ込める。 */
+swapIn(['public/rewards/base.png', 'public/rewards/base.jpg'], function (img) {
+  img.className = 'art'; img.alt = '';
+  var sheet = document.getElementById('sheet');
+  sheet.insertBefore(img, sheet.firstChild);
+  document.body.classList.add('has-art');
+});
+
+/* 公式LINEの友だち追加QR。置かれたら点線の枠と差し替える。 */
+swapIn(['public/rewards/line-qr.png', 'public/rewards/line-qr.jpg'], function (img) {
+  img.className = 'qr'; img.alt = '公式LINE 友だち追加';
+  var slot = document.getElementById('qrSlot');
+  slot.parentNode.replaceChild(img, slot);
+});
 </script>
 </body>
 </html>
