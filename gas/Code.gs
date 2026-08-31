@@ -2282,9 +2282,9 @@ function logInvoicePaid(inv) {
    ・配送先 = 初回注文(subscription.metadata.order_number)の destinations から復元
    ・中身   = subscription_plans(price_id 一致)の name/spec を「{plan} 定期便」1明細に
    ・通知   = 顧客(LINE優先/失敗時メール) + スタッフ(発送依頼メール)
-   ・在庫減算: 既定では**しない**(2026-06-13 の判断・別管理/誤減算防止)。
-     Script Property SUB_STOCK_DECREMENT='true' にすると PLAN_BOM で中身の単品を減らす
-     (2026-08-31 追加。定期便の肉はEC在庫と同じ在庫から出していると田崎さん確認済)
+   ・在庫減算: PLAN_BOM で中身の単品を減らす(2026-08-31 から有効)。
+     2026-06-13 は「別管理・誤減算防止」で減算しない判断だったが、その前提
+     (定期便は別在庫)が誤りだったため変更。止めるときは SUB_STOCK_DECREMENT='false'
    ============================================================ */
 function recordSubscriptionRenewalOrder_(inv) {
   if (!inv || !inv.subscription) return;              // サブスク以外の invoice は対象外
@@ -4579,11 +4579,11 @@ const PRODUCT_BOM = {
    鶏は商品名が「平飼い鶏 モモ」のようにスペース入り。1文字でも違うと
    黙って在庫が減らないので、products の name と必ず突き合わせること。
 
-   🔴 既定では減算しない。Script Property SUB_STOCK_DECREMENT='true'
-      のときだけ効く。2026-06-13 に「定期便ボックスは誤減算防止のため
-      個別 decrement しない」と決めた経緯があり、切り替えは
-      「定期便の肉をEC在庫と同じ在庫から出しているか」の確認が前提
-      (2026-08-31 田崎さん確認済＝同じ在庫。ONにするのは本人の合図で)。
+   🔴 2026-08-31 から既定で有効。2026-06-13 に「定期便ボックスは誤減算防止の
+      ため個別 decrement しない」と決めた経緯があるが、その前提だった
+      「定期便は別在庫」が誤りで、実際はECと同じ在庫から出していると
+      田崎さんに確認できたため切り替えた。止めるときは Script Property
+      SUB_STOCK_DECREMENT='false'。
    ============================================================ */
 const PLAN_BOM = {
   'ミニプラン': [
@@ -4615,10 +4615,14 @@ const PLAN_BOM = {
   ]
 };
 
-/* 定期便の在庫減算を有効にするか (既定 false)。
-   Script Property SUB_STOCK_DECREMENT を 'true' にすると効く。 */
+/* 定期便の在庫減算を有効にするか。
+   🔴 2026-08-31 田崎さん指示で既定ONにした（それまでは既定OFF）。
+      定期便の肉はECと同じ在庫から出しているため、減らさないと在庫が
+      実物より多く表示され続ける。
+   緊急停止したいときだけ Script Property SUB_STOCK_DECREMENT に
+   'false' を入れる（エディタで実行しなくても値を1つ足すだけで止まる）。 */
 function subStockEnabled_() {
-  return String(cfg('SUB_STOCK_DECREMENT', 'false')).toLowerCase() === 'true';
+  return String(cfg('SUB_STOCK_DECREMENT', 'true')).toLowerCase() !== 'false';
 }
 
 /* 注文明細のタイトルから定期便プランを見つけて中身を返す。定期便でなければ null。
