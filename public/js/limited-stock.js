@@ -144,6 +144,12 @@
       out[p.name] = {
         product: p, until: until, soldOutAt: at, total: total, unit: unitOf(p),
         stock: stock, available: avail,
+        /* セット商品(BOM)かどうか。「◯セット限定」の総数バッジを出すかの判断に使う。
+           セットは構成品を単品とも共有しているので「全部で◯セット」という決まった
+           数が存在しない（単品が売れれば作れるセット数も変わる）。
+           出せるのは今この瞬間の「残り◯セット」だけ
+           (2026-08-31 たろ指示: ◯セット限定は出さず残りだけ)。 */
+        isBom: (bomStock !== null && bomStock !== undefined),
         upcoming: upcoming, startAt: start,      /* 発売前＝予告表示 */
         closed: !!(at && now > at)               /* 販売停止済み（表示は残っている） */
       };
@@ -453,15 +459,27 @@
          1行目: [20セット限定] 8/7（金）23:59まで
          2行目: 残りセット数：20セット
          3行目: 残り時間：1日と05:35:59
-       1行に詰めると折り返して読みにくかったため、見出し付きで縦に並べる。 */
+       1行に詰めると折り返して読みにくかったため、見出し付きで縦に並べる。
+
+       セット商品(BOM)だけは1行目の「◯セット限定」を出さない。構成品を単品とも
+       共有しているので「全部で◯セット」という決まった数が無く、出すと在庫と
+       食い違う（2026-08-31 たろ指示）。締切もバッジも無いときは1行目ごと省く。 */
+    var showTotal = !info.isBom;
+    var headRow = (showTotal || deadline)
+      ? '<span class="lb-row lb-row-head">'
+        + (showTotal ? '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>' : '')
+        + (deadline ? '<span class="lb-deadline">' + deadline + '</span>' : '')
+        + '</span>'
+      : '';
+    /* 発売前は値が「9/3（木）発売」になるので「残りセット数：」の見出しを付けない
+       （「残りセット数：9/3（木）発売」と読めてしまう）。 */
+    var leftLabel = info.upcoming
+      ? ''
+      : '<span class="lb-label">残り' + (info.unit === 'セット' ? 'セット数' : '') + '：</span>';
     host.style.display = 'flex';
     host.innerHTML = '<span class="limited-banner-text">'
-      + '<span class="lb-row lb-row-head">'
-      + '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>'
-      + (deadline ? '<span class="lb-deadline">' + deadline + '</span>' : '')
-      + '</span>'
-      + '<span class="lb-row"><span class="lb-label">残り'
-      + (info.unit === 'セット' ? 'セット数' : '') + '：</span>'
+      + headRow
+      + '<span class="lb-row">' + leftLabel
       + '<b class="limited-left" data-limited-left="' + info.product.name.replace(/"/g, '&quot;') + '"></b></span>'
       + (deadlineAt ? '<span class="lb-row lb-row-time"><span class="lb-label">残り時間：</span></span>' : '')
       + '</span>';
