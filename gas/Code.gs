@@ -2197,9 +2197,23 @@ function decrementStockAfterOrder(session, meta) {
 
   // title ごとに必要ユニットを集計
   const unitsByTitle = {};
+  const subOn = subStockEnabled_();
   items.forEach(it => {
     const t = it.title || it.name || '';
     const u = variantUnits(it.variant) * (it.qty || 1);
+    /* 🍱 定期便ボックスは products に行が無いので、ここで中身の単品へ展開する。
+       初回(checkout.session.completed)も継続(invoice.payment_succeeded)も
+       この関数を通るので、1か所で両方に効く。既定OFF(subStockEnabled_)。 */
+    const planComps = subOn ? planComponentsForTitle_(t) : null;
+    if (planComps) {
+      planComps.forEach(c => {
+        const n = c.name;
+        if (!n) return;
+        unitsByTitle[n] = (unitsByTitle[n] || 0) + u * (Number(c.qty) || 1);
+      });
+      log('sub_stock_expand', { title: t, units: u });
+      return;
+    }
     unitsByTitle[t] = (unitsByTitle[t] || 0) + u;
   });
 
@@ -2268,7 +2282,9 @@ function logInvoicePaid(inv) {
    ・配送先 = 初回注文(subscription.metadata.order_number)の destinations から復元
    ・中身   = subscription_plans(price_id 一致)の name/spec を「{plan} 定期便」1明細に
    ・通知   = 顧客(LINE優先/失敗時メール) + スタッフ(発送依頼メール)
-   ・在庫減算は定期便ボックス(複数品の詰合せ)につき個別 decrement はしない(別管理・誤減算防止)
+   ・在庫減算: 既定では**しない**(2026-06-13 の判断・別管理/誤減算防止)。
+     Script Property SUB_STOCK_DECREMENT='true' にすると PLAN_BOM で中身の単品を減らす
+     (2026-08-31 追加。定期便の肉はEC在庫と同じ在庫から出していると田崎さん確認済)
    ============================================================ */
 function recordSubscriptionRenewalOrder_(inv) {
   if (!inv || !inv.subscription) return;              // サブスク以外の invoice は対象外
@@ -4552,6 +4568,71 @@ const PRODUCT_BOM = {
     { name: '切り落とし',     qty: 1 }
   ]
 };
+
+/* ============================================================
+   🍱 定期便ボックスの中身 (PLAN_BOM)
+   ------------------------------------------------------------
+   定期便は products シートに行が無く plans(subscription_plans) タブで
+   別管理なので、PRODUCT_BOM とは別に持つ。中身は同タブの items 列と
+   subscription.html の表示に合わせてある (品数も spec と一致):
+     ミニ 6品 / プロ 8品 / VIP 14品
+   鶏は商品名が「平飼い鶏 モモ」のようにスペース入り。1文字でも違うと
+   黙って在庫が減らないので、products の name と必ず突き合わせること。
+
+   🔴 既定では減算しない。Script Property SUB_STOCK_DECREMENT='true'
+      のときだけ効く。2026-06-13 に「定期便ボックスは誤減算防止のため
+      個別 decrement しない」と決めた経緯があり、切り替えは
+      「定期便の肉をEC在庫と同じ在庫から出しているか」の確認が前提
+      (2026-08-31 田崎さん確認済＝同じ在庫。ONにするのは本人の合図で)。
+   ============================================================ */
+const PLAN_BOM = {
+  'ミニプラン': [
+    { name: '赤身ステーキ',     qty: 1 },
+    { name: '赤身スライス',     qty: 1 },
+    { name: '切り落とし',       qty: 1 },
+    { name: '平飼い鶏 モモ',    qty: 1 },
+    { name: '平飼い鶏 ムネ',    qty: 1 },
+    { name: '平飼い鶏 ミンチ',  qty: 1 }
+  ],
+  'プロプラン': [
+    { name: '赤身ステーキ',     qty: 1 },
+    { name: 'サイコロステーキ', qty: 1 },
+    { name: '赤身スライス',     qty: 1 },
+    { name: '切り落とし',       qty: 1 },
+    { name: '平飼い鶏 モモ',    qty: 1 },
+    { name: '平飼い鶏 ムネ',    qty: 1 },
+    { name: '平飼い鶏 ミンチ',  qty: 2 }
+  ],
+  'VIPプラン': [
+    { name: '赤身ステーキ',     qty: 2 },
+    { name: '赤身スライス',     qty: 2 },
+    { name: '切り落とし',       qty: 2 },
+    { name: '霜降スライス',     qty: 1 },
+    { name: 'サイコロステーキ', qty: 1 },
+    { name: '平飼い鶏 モモ',    qty: 2 },
+    { name: '平飼い鶏 ムネ',    qty: 2 },
+    { name: '平飼い鶏 ミンチ',  qty: 2 }
+  ]
+};
+
+/* 定期便の在庫減算を有効にするか (既定 false)。
+   Script Property SUB_STOCK_DECREMENT を 'true' にすると効く。 */
+function subStockEnabled_() {
+  return String(cfg('SUB_STOCK_DECREMENT', 'false')).toLowerCase() === 'true';
+}
+
+/* 注文明細のタイトルから定期便プランを見つけて中身を返す。定期便でなければ null。
+   タイトルは初回と継続で形が違う (継続は「ミニプラン 定期便（1.2kg・6品）」)ので
+   完全一致ではなく「プラン名を含むか」で判定する。複数当たったら長い方を採る。 */
+function planComponentsForTitle_(title) {
+  var t = String(title || '');
+  if (!t) return null;
+  var hit = '';
+  Object.keys(PLAN_BOM).forEach(function (k) {
+    if (t.indexOf(k) >= 0 && k.length > hit.length) hit = k;
+  });
+  return hit ? PLAN_BOM[hit] : null;
+}
 
 /* 商品名 → 構成品 の対応表を作る (シート列 > 定数 の優先順) */
 function bomMap_(data, headers) {
