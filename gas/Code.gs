@@ -146,7 +146,8 @@ var STAFF_PROTECTED = {
   staff_ship: 1, staff_confirm_payment: 1,
   line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
-  diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1
+  diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1,
+  merge_dup_customers: 1
 };
 
 function doGet(e) {
@@ -163,6 +164,7 @@ function doGet(e) {
       case 'public_subscriptions': return publicSubscriptionPlans();
       case 'public_catalog':    return publicCatalog();
       case 'repeat_shipping':   return repeatShippingCheck(e.parameter);   /* 🚚 リピート送料半額の判定（真偽と日数だけ返す・個人情報なし） */
+      case 'coupon_status':     return couponStatus(e.parameter);   /* 🎟️ 初回クーポンの有効期限（真偽と日付だけ・個人情報なし） */   /* 🚚 リピート送料半額の判定（真偽と日数だけ返す・個人情報なし） */
       case 'public_popular':    return publicPopular(e.parameter);   /* 売れ行きランキング(商品名ベース・個人情報なし) */
       case 'cart_holds':        return cartHoldsPublic(e.parameter);   /* カート確保数 (gas/cart_holds.gs) */
       case 'dashboard':         return dashboardSummary(e.parameter);
@@ -187,6 +189,8 @@ function doGet(e) {
       case 'diag_update_webhook': return diagUpdateWebhook(e.parameter);
       case 'diag_find_session':  return diagFindSession(e.parameter);
       case 'diag_dedupe_orders': return diagDedupeOrders(e.parameter);
+      /* 顧客の重複2組を1行にまとめる一回きりの処理 (Merge_Dup_Customers.js)。?dry=1 で下見・?run=1 で実行 */
+      case 'merge_dup_customers': return mergeDupCustomers(e.parameter);
       case 'diag_bank_reminders': return jsonResponse(remindPendingBankTransfers(true));   /* ドライラン: 候補一覧のみ・送信なし */
       case 'setup_bank_reminder': return jsonResponse(setupBankReminderTrigger());          /* 日次10時トリガー設置(冪等) */
       case 'diag_ship_reminders': return ContentService.createTextOutput(alertUnshippedOrders(true)); /* 発送リマインドのドライラン(送信せず本文表示) */
@@ -381,6 +385,11 @@ function createCheckout(body) {
   if (custCoupon === linkCouponCode_()) {
     assertLinkCouponUnused_((body.customer && body.customer.email) || '');
   }
+  /* 🎟️ 有効期限（2026-08-31 追加・CouponExpiry.js）。
+     Stripe セッションを作る前に投げる＝副作用ゼロで止める。 */
+  assertCouponNotExpired_(custCoupon,
+    (body.customer && body.customer.email) || '',
+    (body.customer && (body.customer.lineUid || body.customer.line_uid)) || body.lineUid || '');
   items.forEach(it => {
     if (it.stripePriceId) {
       lineItems.push({
@@ -605,6 +614,11 @@ function createBankOrder(body) {
   if (custCoupon === linkCouponCode_()) {
     assertLinkCouponUnused_((body.customer && body.customer.email) || '');
   }
+  /* 🎟️ 有効期限（2026-08-31 追加・CouponExpiry.js）。
+     Stripe セッションを作る前に投げる＝副作用ゼロで止める。 */
+  assertCouponNotExpired_(custCoupon,
+    (body.customer && body.customer.email) || '',
+    (body.customer && (body.customer.lineUid || body.customer.line_uid)) || body.lineUid || '');
 
   const orderNum = generateOrderNumber();
   const cust = body.customer || {};
@@ -892,13 +906,33 @@ function createSubscriptionCheckout(body) {
 
   // 2026-05-26: GAS Properties が古い inactive Price ID を保持しているケースに備え、
   //              既知の正しい active Price ID を fallback として明示
+  /* === 定期便 新価格 2026-08-30 === */
+  // 本州・四国・九州（基準価格）
   const planMap = {
-    starter: cfg('STRIPE_PRICE_MINI', 'price_1TWAN0GSkhU1UEciNGZHORc3'),  // ミニ ¥6,980
-    regular: cfg('STRIPE_PRICE_PRO',  'price_1TWAN0GSkhU1UEciKod4PGpk'),  // スターター ¥12,800
-    volume:  cfg('STRIPE_PRICE_VIP',  'price_1TbK7DGSkhU1UEciPsf2dA53')   // レギュラー ¥24,400 (旧 ¥27,400/¥39,800 は archive 済み)
+    starter: cfg('STRIPE_PRICE_MINI', 'price_1UA1ExGSkhU1UEciD52SzdAe'),  // ミニ ¥9,280
+    regular: cfg('STRIPE_PRICE_PRO',  'price_1UA1GMGSkhU1UEciBOKaOXWT'),  // スターター ¥12,300
+    volume:  cfg('STRIPE_PRICE_VIP',  'price_1UA1HKGSkhU1UEciSPZnzKoJ')   // レギュラー ¥21,800
   };
-  const priceId = planMap[body.plan];
+  // 北海道 +¥1,000 / 沖縄 +¥700（ヤマト実費差は北海道¥1,200・沖縄¥280〜580。差額は当社負担）
+  const REGION_PRICE = {
+    hokkaido: {
+      starter: 'price_1UA1FHGSkhU1UEciEd1vN806',  // ミニ 北海道 ¥10,280
+      regular: 'price_1UA1GYGSkhU1UEciRlFUb6Ve',  // スターター 北海道 ¥13,300
+      volume:  'price_1UA1HVGSkhU1UEcilV5tKDSI'   // レギュラー 北海道 ¥22,800
+    },
+    okinawa: {
+      starter: 'price_1UA1FVGSkhU1UEcidfaEPxmF',  // ミニ 沖縄 ¥9,980
+      regular: 'price_1UA1GlGSkhU1UEciITrkTHHe',  // スターター 沖縄 ¥13,000
+      volume:  'price_1UA1HjGSkhU1UEciMKE1kuBg'   // レギュラー 沖縄 ¥22,500
+    }
+  };
+  const subPrefRaw = String((body.customer && body.customer.pref) || '').trim();
+  const subRegion = /北海道/.test(subPrefRaw) ? 'hokkaido'
+                  : /沖縄/.test(subPrefRaw)   ? 'okinawa'
+                  : '';
+  const priceId = (subRegion && REGION_PRICE[subRegion][body.plan]) || planMap[body.plan];
   if (!priceId) throw new Error('Invalid plan: ' + body.plan);
+  if (subRegion) log('subscription_region_price', { pref: subPrefRaw, region: subRegion, plan: body.plan, price: priceId });
 
   // 防御層: 古い inactive ID を含む Properties 設定でも事故らないよう、
   //          known-bad ID なら active な fallback に強制差し替え
@@ -906,7 +940,11 @@ function createSubscriptionCheckout(body) {
     'price_1TWAN1GSkhU1UEciXQJyqNet': 'price_1TbK7DGSkhU1UEciPsf2dA53', // 旧 ¥27,400 → 新 ¥24,400
     'price_1TW750GSkhU1UEciLLw2gqss': 'price_1TbK7DGSkhU1UEciPsf2dA53', // 旧 ¥39,800 → 新 ¥24,400
     'price_1TW74zGSkhU1UEciUiGw5tlq': 'price_1TWAN0GSkhU1UEciNGZHORc3', // 旧ミニ ¥9,800  → 現ミニ ¥6,980
-    'price_1TW74zGSkhU1UEci5RQzoKIP': 'price_1TWAN0GSkhU1UEciKod4PGpk'  // 旧スターター ¥19,800 → 現スターター ¥12,800
+    'price_1TW74zGSkhU1UEci5RQzoKIP': 'price_1UA1GMGSkhU1UEciBOKaOXWT', // 旧スターター ¥19,800 → 新スターター ¥12,300
+    // 2026-08-30 値上げ: 旧価格が Script Property に残っていても新価格へ強制差し替え
+    'price_1TWAN0GSkhU1UEciNGZHORc3': 'price_1UA1ExGSkhU1UEciD52SzdAe', // 旧ミニ ¥6,980      → 新ミニ ¥9,280
+    'price_1TWAN0GSkhU1UEciKod4PGpk': 'price_1UA1GMGSkhU1UEciBOKaOXWT', // 旧スターター ¥12,800 → 新 ¥12,300
+    'price_1TbK7DGSkhU1UEciPsf2dA53': 'price_1UA1HKGSkhU1UEciSPZnzKoJ'  // 旧レギュラー ¥24,400 → 新 ¥21,800
   };
   const correctedPriceId = KNOWN_BAD_PRICE_IDS[priceId] || priceId;
 
@@ -1921,6 +1959,8 @@ var AUTOMATION_REGISTRY = [
   ['EC', '発送予定日のお知らせ', '注文が確定した時／振込は入金確認した時', '稼働中', 'ご注文後すぐ「◯月◯日に発送予定です」をお知らせ（LINE連携済みはLINE・未連携はメール）。マイページの発送準備中カードにも同じ日付を表示。お届け希望日ありは希望日から逆算して1日前倒し（西日本2日前・東日本3日前＝社内の発送リマインドと同じ日）、最短は起点日+3日に着くよう逆算（西日本は起点+2日・東日本は起点+1日）。銀行振込は入金確認まで日付を出さない'],
   ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
   ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '稼働中', 'カートに入れて離脱した人へLINEで催促。購入済みの人には送らないよう修正済み'],
+  ['公式LINE', '初回クーポン10%OFFの配布と「残り1日」リマインド', '配布=指定日時に1回／リマインド=毎日18時（締切前日だけ実際に送る）', '稼働中', 'LINE連携済みで一度も買っていない人へ、個別トークで①「残り◯日」の配布 ②締切前日の「残り1日」を送る。本文末尾に送信時点の人気商品を3件自動で並べる（定期便・会員限定は除外）。締切は全員共通で FIRST_COUPON_DEADLINE に1つ持つ。送信のたびに購入有無を数え直し、買った人（定期便を含む）は自動で除外。配布とリマインドで別々の送信ログを持ち1人1回。2026-08-31 稼働開始（FirstCouponReminder.js）。8/31 18:35に53人へ配布・9/6にリマインド・締切9/7'],
+  ['EC', '初回クーポンの有効期限', '注文が作られる時', '稼働中', 'LINE連携特典の10%OFFクーポン(LINE10)に期限を付ける。期限＝「連携日＋7日」と「全員共通の下限日」の遅い方。決済ページは「◯月◯日まで・あと◯日」を表示し、期限切れなら適用を取り消す。本当の防波堤は決済作成時のGAS側ガード（Stripeセッションを作る前に止めるので副作用ゼロ）。連携日が分からない人は止めない。2026-08-31 稼働開始（CouponExpiry.js・決済系デプロイ版上げ済み）'],
   ['公式LINE', 'LINE数値（友だち数・属性）を毎朝記録', '毎朝7時', '稼働中', 'LINEから友だち数・ターゲットリーチ・ブロック数を取り「友達推移」タブの手入力列を自動で埋める。性別/年代/地域は「LINE属性」タブへ、配信種別ごとの件数は「LINE配信実績_日別API」タブへ。2026-08-22に setupLineInsights を実行してトリガー設置済み（初回で抜けていた8/20が埋まった）'],
   ['公式LINE', '顧客名簿（LINE連携）の自動更新', '毎日 朝7時', '稼働中', 'LINE連携した顧客を重複整理し、購入額の多い順に名簿シートへ毎日作り直す（GASが正・手編集は消える）'],
   ['公式LINE', '配信ごとの開封率・クリックを毎朝記録', '毎朝10時ごろ', '稼働中', 'LINEマネージャー画面から配信ごとの開封率・ECクリック・売上を取り「LINE開封_自動」タブに毎朝まとめる（ブラウザ操作のためPC/アプリ起動中に実行するローカル定期タスク）。2026-08-23追加＝LINEのログインが切れている時はシートを書き換えずに中止し、r.tasaki@ へメールで知らせる（2026-08-09〜08-23はログイン切れのまま黙って止まり、2週間分の数字が古いままだった）'],
@@ -2287,7 +2327,7 @@ function decrementStockAfterOrder(session, meta) {
     const u = variantUnits(it.variant) * (it.qty || 1);
     /* 🍱 定期便ボックスは products に行が無いので、ここで中身の単品へ展開する。
        初回(checkout.session.completed)も継続(invoice.payment_succeeded)も
-       この関数を通るので、1か所で両方に効く。既定OFF(subStockEnabled_)。 */
+       この関数を通るので、1か所で両方に効く。 */
     const planComps = subOn ? planComponentsForTitle_(t) : null;
     if (planComps) {
       planComps.forEach(c => {
@@ -2367,8 +2407,7 @@ function logInvoicePaid(inv) {
    ・中身   = subscription_plans(price_id 一致)の name/spec を「{plan} 定期便」1明細に
    ・通知   = 顧客(LINE優先/失敗時メール) + スタッフ(発送依頼メール)
    ・在庫減算: PLAN_BOM で中身の単品を減らす(2026-08-31 から有効)。
-     2026-06-13 は「別管理・誤減算防止」で減算しない判断だったが、その前提
-     (定期便は別在庫)が誤りだったため変更。止めるときは SUB_STOCK_DECREMENT='false'
+     止めるときは Script Property SUB_STOCK_DECREMENT='false'
    ============================================================ */
 function recordSubscriptionRenewalOrder_(inv) {
   if (!inv || !inv.subscription) return;              // サブスク以外の invoice は対象外
@@ -3476,6 +3515,20 @@ function pendingOrderRow_(sessionId, orderNum) {
   return null;
 }
 
+/* 🔎 顧客の名寄せキー (2026-08-31)
+   customers に同じ人の行が2つできるのを防ぐための照合キー。
+   email: 前後の空白を除去して小文字化 / phone: 数字だけにして 81→0 に統一。
+   電話は「9047241063」「090-412-09138」「819047241063」のような表記ゆれが実データにある。 */
+function custEmailKey_(v) {
+  return String(v == null ? '' : v).trim().toLowerCase();
+}
+function custPhoneKey_(v) {
+  var d = String(v == null ? '' : v).replace(/[^0-9]/g, '');
+  if (d.length > 11 && d.indexOf('81') === 0) d = '0' + d.slice(2);
+  if (d && d.charAt(0) !== '0') d = '0' + d;
+  return (d.length === 10 || d.length === 11) ? d : '';
+}
+
 function upsertCustomer(c) {
   if (!c.email) return;
   const sh = sheet('customers', [
@@ -3496,7 +3549,7 @@ function upsertCustomer(c) {
      ②(別メール)は「別の連絡先」として意図的に1行にまとめる方針 (ryotaro 2026-08-21)。 */
   let hit = -1;
   for (let i = 1; i < data.length; i++) {
-    if (data[i][emailIdx] === c.email) { hit = i; break; }
+    if (custEmailKey_(data[i][emailIdx]) === custEmailKey_(c.email)) { hit = i; break; }
   }
   if (hit === -1 && c.line_uid && lineIdx >= 0) {
     for (let i = 1; i < data.length; i++) {
@@ -3701,7 +3754,7 @@ function setupAllProperties() {
   const props = {
     // 新価格 (¥6,980 / ¥12,800 / ¥24,400) — 2026-05-26 レギュラー ¥27,400→¥24,400 整合修正
     // 旧 ¥27,400 (price_1TWAN1GSkhU1UEciXQJyqNet) と ¥39,800 (price_1TW750GSkhU1UEciLLw2gqss) は archive 済み
-    STRIPE_PRICE_MINI: 'price_1TWAN0GSkhU1UEciNGZHORc3',
+    STRIPE_PRICE_MINI: 'price_1UA1ExGSkhU1UEciD52SzdAe',
     STRIPE_PRICE_PRO:  'price_1TWAN0GSkhU1UEciKod4PGpk',
     STRIPE_PRICE_VIP:  'price_1TbK7DGSkhU1UEciPsf2dA53',
     // 🔴 2026-05-27: 本番ローンチ完了。DEMO100 (100%OFF) は無効化。
@@ -3860,7 +3913,7 @@ function lineLinkAccount(body) {
        ここで見つからず、同じ人の2行目を作っていた。→ email で外したら line_uid でも探す。 */
     let foundRow = -1;
     for (let i = 1; i < data.length; i++) {
-      if (data[i][emailIdx] === body.email) { foundRow = i + 1; break; }
+      if (custEmailKey_(data[i][emailIdx]) === custEmailKey_(body.email)) { foundRow = i + 1; break; }
     }
     if (foundRow === -1 && lineIdx >= 0) {
       for (let i = 1; i < data.length; i++) {
@@ -3931,10 +3984,17 @@ function updateProfile(body) {
   var lineIdx=col('line_uid'), emailIdx=col('email'), nameIdx=col('name'), phoneIdx=col('phone'),
       zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id');
   var data = sh.getDataRange().getValues();
-  var foundRow=-1;
+  /* 🔴 探す順を固定 (2026-08-31)
+     旧実装は line_uid と email の OR 一発で、シートの並び順で先に現れた行を取っていた。
+     → line_uid を先に全走査し、見つからなければ email で探す。 */
+  var foundRow=-1, foundBy='';
   for (var i=1;i<data.length;i++){
-    if ((uid && String(data[i][lineIdx])===String(uid)) ||
-        (email && String(data[i][emailIdx]).toLowerCase()===email.toLowerCase())) { foundRow=i+1; break; }
+    if (uid && String(data[i][lineIdx])===String(uid)) { foundRow=i+1; foundBy='uid'; break; }
+  }
+  if (foundRow===-1 && email) {
+    for (var j=1;j<data.length;j++){
+      if (custEmailKey_(data[j][emailIdx])===custEmailKey_(email)) { foundRow=j+1; foundBy='email'; break; }
+    }
   }
   if (foundRow===-1) {
     var row=new Array(headers.length).fill('');
@@ -3942,6 +4002,12 @@ function updateProfile(body) {
     if(uid) row[lineIdx]=uid;
     if(email) row[emailIdx]=email;
     sh.appendRow(row); foundRow=sh.getLastRow();
+  }
+  /* 🔴 email で見つかった行に line_uid を書き戻す (2026-08-31)
+     旧実装はここを書いていなかったため line_uid が空のまま残り、
+     次に line_register が来ると line_uid で一致せず同じ人の2行目ができていた。 */
+  if (foundBy==='email' && uid && !String(sh.getRange(foundRow, lineIdx+1).getValue()||'').trim()) {
+    sh.getRange(foundRow, lineIdx+1).setValue(uid);
   }
   if (body.name)    sh.getRange(foundRow, nameIdx+1).setValue(body.name);
   if (body.phone)   sh.getRange(foundRow, phoneIdx+1).setValue(body.phone);
@@ -3982,30 +4048,87 @@ function lineRegister(body) {
     var zipIdx      = ensureCol('zip');
     var addressIdx  = ensureCol('address');
     var surveyIdx   = ensureCol('survey_json');
+    var emailIdx    = ensureCol('email');
 
-    /* ---- 既存チェック (line_uid) ---- */
+    /* 空欄のときだけ書く (既に入っている値は絶対に潰さない) */
+    function fillIfEmpty(rowArr, rowNum, colIdx, val) {
+      if (colIdx < 0 || val === '' || val == null) return;
+      var cur = rowArr[colIdx];
+      if (!String(cur == null ? '' : cur).trim()) sh.getRange(rowNum, colIdx + 1).setValue(val);
+    }
+
+    /* 🔴 同一人物の二重登録を防ぐ (2026-08-31)
+       旧実装は line_uid 一致だけを見ていた。line_register の呼び出し元
+       (line-link.html / mypage.html) が送るのは line_uid・表示名・氏名・電話のみで email が無いため、
+       注文で先に作られた C-xxxxxxxx 行を見つけられず、同じ人の2行目 (UUID行) を作っていた。
+       → line_uid → 電話(正規化) → email の順で探し、見つかったら行を作らずその行を更新する。
+       購入額 (total_spent / order_count) と既存の email には一切触らない。
+       電話/メールが一致しても「別の line_uid が既に入っている行」は別人の可能性があるので拾わない。 */
+    var hit = -1, hitBy = '';
     for (var i = 1; i < data.length; i++) {
-      if (String(data[i][lineIdx]) === String(body.line_uid)) {
-        var customer = {};
-        headers.forEach(function(h, idx) { customer[h] = data[i][idx]; });
-        return jsonResponse({ ok: true, customer: customer, is_new: false });
+      if (String(data[i][lineIdx]) === String(body.line_uid)) { hit = i; hitBy = 'uid'; break; }
+    }
+    if (hit === -1) {
+      var pk = custPhoneKey_(body.phone);
+      if (pk) {
+        for (var i2 = 1; i2 < data.length; i2++) {
+          if (custPhoneKey_(data[i2][phoneIdx]) === pk &&
+              !String(data[i2][lineIdx] == null ? '' : data[i2][lineIdx]).trim()) { hit = i2; hitBy = 'phone'; break; }
+        }
+      }
+    }
+    if (hit === -1) {
+      var ek = custEmailKey_(body.email);
+      if (ek) {
+        for (var i3 = 1; i3 < data.length; i3++) {
+          if (custEmailKey_(data[i3][emailIdx]) === ek &&
+              !String(data[i3][lineIdx] == null ? '' : data[i3][lineIdx]).trim()) { hit = i3; hitBy = 'email'; break; }
+        }
       }
     }
 
-    /* ---- 新規登録 ---- */
-    var row = new Array(headers.length).fill('');
-    row[headers.indexOf('customer_id')] = Utilities.getUuid();
-    row[nameIdx]     = body.name || body.display_name || '';
-    row[phoneIdx]    = body.phone || '';
-    row[lineIdx]     = body.line_uid;
-    row[lineNameIdx] = body.display_name || '';
-    row[linkedAtIdx] = new Date();
-    row[zipIdx]      = body.zip || '';
-    row[addressIdx]  = body.address || '';
-    row[surveyIdx]   = JSON.stringify(body.survey || {});
-    row[headers.indexOf('total_spent')]  = 0;
-    row[headers.indexOf('order_count')]  = 0;
-    sh.appendRow(row);
+    if (hit >= 0) {
+      var hitRow = hit + 1, hv = data[hit];
+      fillIfEmpty(hv, hitRow, nameIdx,     body.name || body.display_name || '');
+      fillIfEmpty(hv, hitRow, phoneIdx,    body.phone || '');
+      fillIfEmpty(hv, hitRow, lineNameIdx, body.display_name || '');
+      fillIfEmpty(hv, hitRow, zipIdx,      body.zip || '');
+      fillIfEmpty(hv, hitRow, addressIdx,  body.address || '');
+      if (body.survey && Object.keys(body.survey).length) {
+        fillIfEmpty(hv, hitRow, surveyIdx, JSON.stringify(body.survey));
+      }
+      if (hitBy !== 'uid') {
+        /* 電話/メールで当たった行 = まだ LINE と繋がっていない行。ここで初めて line_uid を入れる */
+        sh.getRange(hitRow, lineIdx + 1).setValue(body.line_uid);
+        if (linkedAtIdx >= 0 && !hv[linkedAtIdx]) sh.getRange(hitRow, linkedAtIdx + 1).setValue(new Date());
+      }
+      log('line_register_merged', { uid: body.line_uid, by: hitBy, row: hitRow });
+
+      /* line_uid で当たった = 既に会員 → 従来どおり「登録済み」を返す (特典は出さない)。
+         電話/メールで当たった = 旧実装なら新規行を作って特典を出していたケース。
+         行を増やさないだけにして、画面と特典プッシュは従来と同じ挙動を保つ。 */
+      if (hitBy === 'uid') {
+        var customer = {};
+        var uidVals = sh.getRange(hitRow, 1, 1, headers.length).getValues()[0];
+        headers.forEach(function(h, idx) { customer[h] = uidVals[idx]; });
+        return jsonResponse({ ok: true, customer: customer, is_new: false });
+      }
+    } else {
+      /* ---- 新規登録 ---- */
+      var row = new Array(headers.length).fill('');
+      row[headers.indexOf('customer_id')] = Utilities.getUuid();
+      row[nameIdx]     = body.name || body.display_name || '';
+      row[phoneIdx]    = body.phone || '';
+      row[lineIdx]     = body.line_uid;
+      row[lineNameIdx] = body.display_name || '';
+      row[linkedAtIdx] = new Date();
+      row[zipIdx]      = body.zip || '';
+      row[addressIdx]  = body.address || '';
+      row[surveyIdx]   = JSON.stringify(body.survey || {});
+      row[headers.indexOf('total_spent')]  = 0;
+      row[headers.indexOf('order_count')]  = 0;
+      sh.appendRow(row);
+    }
 
     // アンケート回答を別シートにも記録 (分析用)
     try {
@@ -4803,6 +4926,8 @@ function planComponentsForTitle_(title) {
   });
   return hit ? PLAN_BOM[hit] : null;
 }
+
+/* 商品名 → 構成品 の対応表を作る (シート列 > 定数 の優先順) */
 
 /* 商品名 → 構成品 の対応表を作る (シート列 > 定数 の優先順) */
 function bomMap_(data, headers) {
