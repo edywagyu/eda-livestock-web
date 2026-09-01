@@ -1752,6 +1752,71 @@ function _dayNumLabel(n) {
   return (d.getUTCMonth() + 1) + '/' + d.getUTCDate() + '(' + ['日','月','火','水','木','金','土'][d.getUTCDay()] + ')';
 }
 
+/* ============================================================
+   📅 お客様にお伝えする「発送予定日」（2026-09-01 田崎さん決定）
+   ------------------------------------------------------------
+   決め方（地域別・東西で1日ずらす）:
+     ・お届け希望日あり … 希望日(T)の輸送日数ぶん前に発送 → 西=T−1 / 東=T−2（希望日ジャストに着く）
+     ・希望日なし(最短) … 起点日+3日に着くように発送     → 西=起点+2 / 東=起点+1
+   輸送日数は宮崎発ヤマト実測（WEST_NEXTDAY_PREFS の22県=翌日着 / それ以外=翌々日着。
+   空欄・不明は東扱い＝長い方で安全）＝ 社内アラート alertUnshippedOrders と同じ地図を共有。
+   起点日: カード決済＝注文日 / 銀行振込＝入金を確認した日。
+           未入金のうちは日付を一切出さない（嘘の予定日を言わないため・田崎さん決定）。
+   お届け先が複数のときは「一番早く出す日」を1つだけ伝える。
+   過去日になったら本日へ丸める（振込確認が遅れた等）。
+   ⚠️ 社内アラート alertUnshippedOrders は希望日ありのとき1日の余裕(buffer=1)を見るため、
+      社内の発送期限はここで出す日付より1日早い。お客様へはジャストの日付を伝える。
+   ============================================================ */
+function shipEtaTransitDays_(pref) {
+  return WEST_NEXTDAY_PREFS.indexOf(String(pref || '').trim()) >= 0 ? 1 : 2;   // 西=翌日着 / 東・不明=翌々日着
+}
+
+/* 発送予定日を日番号で返す。null = 出せない（配送対象の宛先なし／起点日不明）。 */
+function shipEtaDayNum_(destinations, orderWishYmd, baseDayNum) {
+  var dests = (destinations || []).filter(function (a) { return a && Array.isArray(a.items) && a.items.length > 0; });
+  if (!dests.length) return null;                                   // ギフト差出人のみ等＝発送物なし
+  var orderWish = _ymdDayNum(orderWishYmd);                         // 注文共通の希望日（宛先ごとが無いとき）
+  var today = _jstDayNum(new Date());
+  var best = null;
+  dests.forEach(function (a) {
+    var wish = _ymdDayNum((a.delivery || {}).date) || orderWish;
+    var T = wish || (baseDayNum != null ? baseDayNum + 3 : null);    // 希望日なし＝最短(起点+3日着・checkout の min と一致)
+    if (T == null) return;
+    var ship = T - shipEtaTransitDays_(a.pref);
+    if (best === null || ship < best) best = ship;                   // 複数宛先は一番早い発送日
+  });
+  if (best === null) return null;
+  return best < today ? today : best;
+}
+
+/* 「9月5日（金）」。通知・マイページの表記をこの1本に統一する。 */
+function shipEtaLabel_(dayNum) {
+  if (dayNum == null) return '';
+  var d = new Date(dayNum * 86400000);
+  return (d.getUTCMonth() + 1) + '月' + d.getUTCDate() + '日（' + ['日','月','火','水','木','金','土'][d.getUTCDay()] + '）';
+}
+/* 'YYYY-MM-DD'。マイページへ機械可読で渡す用。 */
+function shipEtaYmd_(dayNum) {
+  if (dayNum == null) return '';
+  var d = new Date(dayNum * 86400000);
+  return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2);
+}
+
+/* orders の1行(オブジェクト)から発送予定日。マイページ・入金確認通知の共通入口。
+   出さない条件: 定期便(別運用) / 未入金(嘘になる) / 伝票発行済み(実際の発送案内に切り替わる)。 */
+function shipEtaForOrderRow_(o) {
+  try {
+    if (!o) return null;
+    if (String(o.mode || '').indexOf('subscription') === 0) return null;
+    if (String(o.payment_status || '').toLowerCase() !== 'paid') return null;
+    if (String(o.tracking_number || '').trim()) return null;
+    var ds; try { ds = JSON.parse(o.destinations_json || '[]'); } catch (e) { ds = []; }
+    var base = o.paid_at   ? _jstDayNum(new Date(o.paid_at))
+             : o.placed_at ? _jstDayNum(new Date(o.placed_at)) : null;
+    return shipEtaDayNum_(ds, o.delivery_date, base);
+  } catch (e) { return null; }
+}
+
 /* dryRun=true でメール送信せず本文だけ返す（?action 経由の下見/デバッグ用・Tomの diag_bank_reminders と同様）。 */
 function alertUnshippedOrders(dryRun) {
   try {
@@ -1847,6 +1912,7 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '買った人を自動でLINE連携', '注文された瞬間', '稼働中', 'LINE経由で買った人のLINEと注文を自動でひも付け（次から個別に連絡できる）'],
   ['公式LINE', '連携で10%OFFクーポンを配布', 'LINE連携した瞬間', '稼働中', '連携してくれた人に割引クーポンを自動で送る'],
   ['公式LINE', '発送をLINEでお知らせ', '発送処理した時', '稼働中', '「発送しました＋お届け予定日」をLINEに自動送信（未連携の人にはメール）'],
+  ['EC', '発送予定日のお知らせ', '注文が確定した時／振込は入金確認した時', '稼働中', 'ご注文後すぐ「◯月◯日に発送予定です」をお知らせ（LINE連携済みはLINE・未連携はメール）。マイページの発送準備中カードにも同じ日付を表示。お届け希望日ありは希望日から逆算（西日本1日前・東日本2日前）、最短は起点日+3日に着くよう逆算。銀行振込は入金確認まで日付を出さない'],
   ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
   ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '稼働中', 'カートに入れて離脱した人へLINEで催促。購入済みの人には送らないよう修正済み'],
   ['公式LINE', 'LINE数値（友だち数・属性）を毎朝記録', '毎朝7時', '稼働中', 'LINEから友だち数・ターゲットリーチ・ブロック数を取り「友達推移」タブの手入力列を自動で埋める。性別/年代/地域は「LINE属性」タブへ、配信種別ごとの件数は「LINE配信実績_日別API」タブへ。2026-08-22に setupLineInsights を実行してトリガー設置済み（初回で抜けていた8/20が埋まった）'],
@@ -2098,14 +2164,26 @@ function finalizeOrder(session) {
   //   (LINE友だちだがWeb経由でemail決済した既存客もメールにしないため)。
   var custEmailForLine = (session.customer_details && session.customer_details.email) || '';
   var lineUid = (meta.line_uid && String(meta.line_uid).trim()) || lineUidForEmail(custEmailForLine) || lineUidByPhone_(meta.customer_phone);
+
+  // 発送予定日（カード決済＝この時点で入金済みなので注文確定と同時に伝える）。
+  //   銀行振込は入金確認まで出さない（staffConfirmPayment 側で送る）。定期便は毎月1日発送の別運用。
+  var shipEta = '';
+  try {
+    if (String(session.payment_status || '').toLowerCase() === 'paid' &&
+        String(meta.mode || '').indexOf('subscription') !== 0) {
+      var _etaDests; try { _etaDests = JSON.parse(destinationsOut || '[]'); } catch (e) { _etaDests = []; }
+      shipEta = shipEtaLabel_(shipEtaDayNum_(_etaDests, meta.delivery_date, _jstDayNum(new Date())));
+    }
+  } catch (e) { log('ship_eta_error', { order: orderNum, error: e.message }); }
+
   var linePushed = false;
   if (lineUid) {
     linePushed = sendLinePush(lineUid, [buildOrderConfirmMessage(
-      meta.customer_name || '', orderNum, total
+      meta.customer_name || '', orderNum, total, shipEta
     )]);
   }
   if (!linePushed) {
-    sendCustomerReceiptEmail(session, orderNum);
+    sendCustomerReceiptEmail(session, orderNum, shipEta);
   }
   // スタッフ通知は常にメール (社内オペ用)
   sendStaffNotificationEmail(session, orderNum);
@@ -2594,6 +2672,11 @@ function getOrdersByEmail(email) {
         //   これが無いと「発送前なのに発送済」誤表示・履歴バッジが常に準備中、になる(配送希望日機能で顕在化)。
         var _ps = String(o.payment_status || '').toLowerCase();
         o.status = (_ps === 'shipped' || _ps === 'delivered') ? _ps : (o.tracking_number ? 'shipped' : 'pending');
+        // 発送前の注文に「発送予定日」を添える（マイページの発送準備中カードで表示）。
+        //   通知（LINE/メール）と同じ shipEtaForOrderRow_ を使う＝言った日と画面の日がズレない。
+        var _eta = shipEtaForOrderRow_(o);
+        o.ship_eta = shipEtaYmd_(_eta);
+        o.ship_eta_label = shipEtaLabel_(_eta);
         orders.push(o);
       }
     }
@@ -3513,7 +3596,8 @@ function brandEmailHtml_(o) {
     '</table></td></tr></table></div>';
 }
 
-function sendCustomerReceiptEmail(session, orderNum) {
+/* shipEta = 「9月5日（金）」形式の発送予定日。空文字なら出さない。 */
+function sendCustomerReceiptEmail(session, orderNum, shipEta) {
   const email = session.customer_details && session.customer_details.email;
   if (!email) return;
   const total = session.amount_total ? '¥' + Number(session.amount_total).toLocaleString() : '-';
@@ -3536,7 +3620,8 @@ function sendCustomerReceiptEmail(session, orderNum) {
       greeting + '\n\n' +
       'この度はご注文いただき誠にありがとうございます。\n\n' +
       'ご注文番号: ' + orderNum + '\n' +
-      'お支払い額: ' + total + '\n\n' +
+      'お支払い額: ' + total + '\n' +
+      (shipEta ? '発送予定日: ' + shipEta + '\n' : '') + '\n' +
       'LINEで配送状況を受け取る（タップで連携完了）:\n' + lineLinkUrl + '\n\n' +
       'マイページ: https://www.eda-livestock.com/mypage.html\n\n' +
       '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
@@ -3545,12 +3630,14 @@ function sendCustomerReceiptEmail(session, orderNum) {
       heroUrl: BRAND_MAIL.heroOrder,
       title: 'ご注文ありがとうございます',
       intro: greeting + '、この度は江田和牛をお選びいただき誠にありがとうございます。<br>宮崎の牧場より、心を込めて発送の準備をいたします。',
-      rows: [['ご注文番号', orderNum], ['お支払い金額', total]],
+      rows: shipEta ? [['ご注文番号', orderNum], ['お支払い金額', total], ['発送予定日', shipEta]]
+                    : [['ご注文番号', orderNum], ['お支払い金額', total]],
       ctaLabel: 'LINEで配送状況を受け取る',
       ctaUrl: lineLinkUrl,
       cta2Label: 'マイページで注文を確認',
       cta2Url: 'https://www.eda-livestock.com/mypage.html',
-      note: '※ 上のLINEボタンはタップするだけで連携が完了し、発送のお知らせがLINEに届きます。<br>※ 商品はクール冷凍便でお届けします。発送時に追跡番号をお知らせいたします。'
+      note: '※ 上のLINEボタンはタップするだけで連携が完了し、発送のお知らせがLINEに届きます。<br>※ 商品はクール冷凍便でお届けします。発送時に追跡番号をお知らせいたします。' +
+            (shipEta ? '<br>※ 発送予定日はマイページでもご確認いただけます。' : '')
     })
   });
 }
@@ -4127,9 +4214,14 @@ function buildRegisterRewardMessage(customerName) {
   };
 }
 
-function buildOrderConfirmMessage(customerName, orderNum, totalYen) {
+/* shipEta = 「9月5日（金）」形式の発送予定日。空文字なら行ごと出さない（未入金・定期便など）。 */
+function buildOrderConfirmMessage(customerName, orderNum, totalYen, shipEta) {
   var liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
   var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  var etaRows = shipEta ? [{ type: 'box', layout: 'horizontal', contents: [
+    { type: 'text', text: '発送予定日', size: 'xs', color: '#888888', flex: 3 },
+    { type: 'text', text: shipEta, size: 'xs', color: '#0F3D2E', weight: 'bold', flex: 5, align: 'end' }
+  ]}] : [];
   return {
     type: 'flex',
     altText: '【江田畜産】ご注文を受け付けました（' + orderNum + '）',
@@ -4157,9 +4249,10 @@ function buildOrderConfirmMessage(customerName, orderNum, totalYen) {
           { type: 'box', layout: 'horizontal', contents: [
             { type: 'text', text: '合計金額', size: 'xs', color: '#888888', flex: 3 },
             { type: 'text', text: '¥' + (totalYen || 0).toLocaleString(), size: 'xs', color: '#333333', weight: 'bold', flex: 5, align: 'end' }
-          ]},
-          { type: 'text', text: '配送状況はマイページでご確認いただけます。発送時にもLINEでお知らせします。', size: 'xxs', color: '#999999', wrap: true, margin: 'md' }
-        ]
+          ]}
+        ].concat(etaRows, [
+          { type: 'text', text: '発送予定日はマイページでもご確認いただけます。発送時に追跡番号をお知らせします。', size: 'xxs', color: '#999999', wrap: true, margin: 'md' }
+        ])
       },
       footer: {
         type: 'box',
@@ -4180,6 +4273,73 @@ function buildOrderConfirmMessage(customerName, orderNum, totalYen) {
       }
     }
   };
+}
+
+/* 銀行振込の入金確認 → 「発送予定日」のお知らせ LINE Flex（2026-09-01）。
+   カード決済は注文確認(buildOrderConfirmMessage)に予定日が入るので、こちらは振込専用。 */
+function buildPaymentConfirmedMessage(customerName, orderNum, shipEta) {
+  var liffId = cfg('LIFF_ID', '1657458587-mz1dR9e6');
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  return {
+    type: 'flex',
+    altText: '【江田畜産】ご入金を確認しました／' + shipEta + 'に発送予定です（' + orderNum + '）',
+    contents: {
+      type: 'bubble',
+      hero: { type: 'image', url: 'https://www.eda-livestock.com/public/images/line/ship-truck.png',
+              size: 'full', aspectRatio: '20:9', aspectMode: 'cover' },
+      body: {
+        type: 'box', layout: 'vertical', spacing: 'md',
+        contents: [
+          { type: 'text', text: '✅ ご入金を確認しました', weight: 'bold', size: 'md', color: '#2d5016' },
+          { type: 'text', text: greeting + '、ありがとうございます。下記の予定で発送いたします。', size: 'sm', color: '#555555', wrap: true },
+          { type: 'separator' },
+          { type: 'box', layout: 'horizontal', contents: [
+            { type: 'text', text: '注文番号', size: 'xs', color: '#888888', flex: 3 },
+            { type: 'text', text: orderNum, size: 'xs', color: '#333333', flex: 5, align: 'end' }
+          ]},
+          { type: 'box', layout: 'horizontal', contents: [
+            { type: 'text', text: '発送予定日', size: 'xs', color: '#888888', flex: 3 },
+            { type: 'text', text: shipEta, size: 'xs', color: '#0F3D2E', weight: 'bold', flex: 5, align: 'end' }
+          ]},
+          { type: 'text', text: '発送予定日はマイページでもご確認いただけます。発送時に追跡番号をお知らせします。', size: 'xxs', color: '#999999', wrap: true, margin: 'md' }
+        ]
+      },
+      footer: {
+        type: 'box', layout: 'vertical',
+        contents: [{ type: 'button', style: 'primary', color: '#2d5016', height: 'sm',
+          action: { type: 'uri', label: '📦 マイページで確認する',
+                    uri: 'https://liff.line.me/' + liffId + '/mypage.html' } }]
+      }
+    }
+  };
+}
+
+/* 同上のメール版（LINE未連携 or LINE送信失敗時）。 */
+function sendPaymentConfirmedEmail(email, customerName, orderNum, shipEta) {
+  if (!email) return;
+  var greeting = customerName ? (customerName + ' 様') : 'お客様';
+  MailApp.sendEmail({
+    to: email,
+    name: BRAND_MAIL.sender,
+    subject: '【江田畜産】ご入金を確認しました（' + orderNum + '）',
+    body:   // plain fallback（JIS外の装飾文字を使わない＝文字化け防止）
+      greeting + '\n\n' +
+      'ご入金を確認いたしました。ありがとうございます。\n\n' +
+      'ご注文番号: ' + orderNum + '\n' +
+      '発送予定日: ' + shipEta + '\n\n' +
+      'マイページ: https://www.eda-livestock.com/mypage.html\n\n' +
+      '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
+      'https://www.eda-livestock.com/',
+    htmlBody: brandEmailHtml_({
+      heroUrl: BRAND_MAIL.heroShip,
+      title: 'ご入金を確認しました',
+      intro: greeting + '、ご入金を確認いたしました。<br>下記の予定で、宮崎の牧場より発送いたします。',
+      rows: [['ご注文番号', orderNum], ['発送予定日', shipEta]],
+      ctaLabel: 'マイページで確認する',
+      ctaUrl: 'https://www.eda-livestock.com/mypage.html',
+      note: '※ 商品はクール冷凍便でお届けします。発送時に追跡番号をお知らせいたします。<br>※ 発送予定日はマイページでもご確認いただけます。'
+    })
+  });
 }
 
 /* email → customers シートの line_uid を逆引き (見つからなければ '')。
@@ -5022,8 +5182,11 @@ function staffShip(body) {
    ------------------------------------------------------------
    銀行振込の「入金確認（アナログ）」。awaiting_payment → paid に更新し、
    在庫を減算（card 決済の finalizeOrder と同じく入金確定時に減算）、顧客マスタを upsert。
-   顧客への通知はここでは行わない（Tom 指示: 通知は伝票発行＝発送時の1回のみ）。
-   これにより staffShip の銀行ガードが外れ、伝票発行（発送）へ進めるようになる。 */
+   これにより staffShip の銀行ガードが外れ、伝票発行（発送）へ進めるようになる。
+   🔴 2026-09-01 田崎さん決定: 振込注文は「入金が確認できてから」発送予定日をお知らせする
+   （未入金のうちに予定日を言うと、入金が遅れたときに嘘になるため）。ここで1通だけ送る
+   （LINE連携済み→LINE / 未連携→メール）。発送時の追跡番号通知は従来どおり別で飛ぶ。
+   入金確認日は paid_at 列に記録し、最短注文の起点日（paid_at+3日着）に使う。 */
 function staffConfirmPayment(body) {
   if (!body.order_number) throw new Error('order_number required');
   const sh = sheet('orders');
@@ -5050,6 +5213,15 @@ function staffConfirmPayment(body) {
       }
       if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('paid');
 
+      // 入金確認日を paid_at に記録（列が無ければ row1 に追加）。最短注文の発送予定日の起点になる。
+      var paidAt = new Date();
+      try {
+        var _hdr = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+        var _pIdx = _hdr.indexOf('paid_at');
+        if (_pIdx === -1) { sh.getRange(1, _hdr.length + 1).setValue('paid_at'); _pIdx = _hdr.length; }
+        sh.getRange(i + 1, _pIdx + 1).setValue(paidAt);
+      } catch (e) { log('paid_at_write_error', { order: body.order_number, error: e.message }); }
+
       // 在庫減算（card と同様、入金確定時に減算）。失敗してもステータス更新は維持。
       try {
         decrementStockAfterOrder({}, { items_json: itemsIdx >= 0 ? String(data[i][itemsIdx] || '[]') : '[]' });
@@ -5067,6 +5239,26 @@ function staffConfirmPayment(body) {
           last_order_total: totalIdx >= 0 ? (Number(data[i][totalIdx]) || 0) : 0
         });
       } catch (e) { log('bank_upsert_error', { order: body.order_number, error: e.message }); }
+
+      // 発送予定日のお知らせ（LINE連携済み→LINE / 未連携 or LINE失敗→メール）。
+      try {
+        var _o = {};
+        headers.forEach(function (h, k) { _o[h] = data[i][k]; });
+        _o.payment_status = 'paid';
+        _o.paid_at = paidAt;
+        var _eta = shipEtaLabel_(shipEtaForOrderRow_(_o));
+        if (_eta) {
+          var _name  = nameIdx  >= 0 ? String(data[i][nameIdx]  || '') : '';
+          var _mail  = mailIdx  >= 0 ? String(data[i][mailIdx]  || '') : '';
+          var _uid   = (uidIdx  >= 0 ? String(data[i][uidIdx]   || '').trim() : '')
+                    || lineUidForEmail(_mail)
+                    || lineUidByPhone_(phoneIdx >= 0 ? data[i][phoneIdx] : '');
+          var _pushed = false;
+          if (_uid) _pushed = sendLinePush(_uid, [buildPaymentConfirmedMessage(_name, body.order_number, _eta)]);
+          if (!_pushed && _mail) sendPaymentConfirmedEmail(_mail, _name, body.order_number, _eta);
+          log('ship_eta_notified', { order: body.order_number, eta: _eta, via: _pushed ? 'line' : 'email' });
+        }
+      } catch (e) { log('ship_eta_notify_error', { order: body.order_number, error: e.message }); }
 
       log('bank_payment_confirmed', { order: body.order_number });
       return jsonResponse({ ok:true });
