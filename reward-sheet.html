@@ -25,6 +25,7 @@
     --forest:#0F3D2E; --gold:#D4A93B; --cream:#FAF7F0; --ink:#1A1A1A; --muted:#6B7280;
     --shift: 0mm;               /* 下書きのとき: 文字全体の上下位置 */
     --name-top: 40mm;           /* 絵柄ありのとき: 「〇〇様」を上から何mmに置くか */
+    --foot-top: 190mm;          /* 絵柄ありのとき: 下の案内文（LINE）を上から何mmに置くか */
   }
   *{ box-sizing:border-box }
   body{ margin:0; background:#E9ECEF; color:var(--ink);
@@ -71,7 +72,8 @@
   .spacer{ flex:1 }
 
   .line-block{ text-align:center }
-  .line-sub{ font-size:9.5pt; font-weight:500; color:var(--muted); line-height:1.8; margin:3mm 0 0 }
+  .line-lead{ font-size:12pt; font-weight:700; color:var(--forest); line-height:1.9; margin:0 }
+  .line-sub{ font-size:10.5pt; font-weight:500; color:var(--muted); line-height:1.9; margin:3mm 0 0 }
   .qr{ width:34mm; height:34mm; margin:5mm auto 3mm; display:block }
   .qr-ph{ width:34mm; height:34mm; margin:5mm auto 3mm; border:2px dashed #C9CED4; border-radius:3mm;
           display:flex; align-items:center; justify-content:center; font-size:8pt; font-weight:700; color:var(--muted); text-align:center; padding:3mm }
@@ -85,6 +87,9 @@
   body.has-art .sheet{ background:transparent }
   body.has-art .layer > *{ display:none }
   body.has-art .greet-name{ display:block; position:absolute; left:0; right:0; top:var(--name-top); margin:0 }
+  /* 下の案内文だけは絵柄ありでも刷る。公式LINEと繋がっているかで中身が変わるため
+     絵柄には入れず、ここで組む（[[お名前]]と同じ扱い）。 */
+  body.has-art .line-block{ display:block; position:absolute; left:14mm; right:14mm; top:var(--foot-top) }
 
   @media print{
     @page{ size:A4 portrait; margin:0 }
@@ -107,10 +112,12 @@
   </label>
   <button class="btn" onclick="window.print()">🖨 印刷する</button>
   <label style="margin-left:auto"><span id="shiftLabel">文字の上下位置</span> <input type="number" id="shiftInput" min="-40" max="200" step="1"> mm</label>
+  <label id="footLabelWrap" style="display:none">案内文の位置 <input type="number" id="footInput" min="0" max="270" step="1"> mm</label>
   <p class="hint">
     印刷設定は「用紙サイズ A4／余白なし（既定）／拡大縮小 100%／背景のグラフィックを印刷する」で刷ってください。<br>
-    Canvaの絵柄を置くと、この紙に刷る文字は「〇〇様」の1行だけになります（文言は絵柄の中にあるため）。<br>
-    その1行を上から何mmに置くかは、右の数字で1回だけ合わせてください（このパソコンに記憶されます）。
+    Canvaの絵柄を置くと、この紙に刷る文字は「〇〇様」と下の案内文だけになります（他の文言は絵柄の中）。<br>
+    下の案内文は<strong>公式LINEと繋がっている方だけ「感想をお聞かせください」に変わり、QRは出ません</strong>。<br>
+    位置は右の数字で1回だけ合わせてください（このパソコンに記憶されます）。
   </p>
 </div>
 
@@ -139,11 +146,7 @@
         <p>※ ご登録は無料です。月額料もかかりません。</p>
       </div>
 
-      <div class="line-block">
-        <div class="qr-ph" id="qrSlot">QRはここに入ります<br>（未確定）</div>
-        <p class="line-cap">マイページのご登録はこちら</p>
-        <p class="line-sub">このあとの特典やおすすめのご案内は、公式LINEからお送りします。</p>
-      </div>
+      <div class="line-block" id="lineBlock"></div>
 
       <p class="foot">江田畜産　eda-livestock.com</p>
     </div>
@@ -171,9 +174,34 @@ var SHEET_TEXT = {
 
 var STAGE_LABEL = { 2:'2回目', 3:'3回目', 4:'4回目', 5:'5回目', 6:'6回目' };
 
+/* ============================================================
+   下の案内文（公式LINE）。**繋がっているかどうかで中身を変える**
+   （2026-09-01 田崎さん決定）。
+     未連携  … 公式LINEにつながってもらう。QRを出す。
+     連携済み … 感想をもらう。QRは出さない（もう繋がっているため）。
+   🔴 この2行は絵柄(Canva)には入れない。ここで刷る＝1人ずつ出し分けられる。
+   ============================================================ */
+var FOOT_TEXT = {
+  /* 公式LINE未連携の方 */
+  off: function () {
+    return '<p class="line-lead">公式LINEとつながると、次回の特典やお届けのご案内が届きます。</p>' +
+           '<p class="line-sub">▼ 友だち追加・マイページのご登録はこちら</p>' +
+           '<div class="qr-ph" id="qrSlot">QRはここに入ります<br>（未登録）</div>';
+  },
+  /* 公式LINE連携済みの方（お名前を差し込む） */
+  on: function (name) {
+    var n = name ? (name + '様') : 'お客様';
+    return '<p class="line-lead">お味の感想を、公式LINEにひとことお聞かせください。</p>' +
+           '<p class="line-sub">いただいたお声はこれからの江田畜産に活かされ、' + n +
+           'に合ったご提案やお届けのご相談など、サポートをより厚くしてまいります。</p>';
+  }
+};
+
 var qs    = new URLSearchParams(location.search);
 var stage = String(Number(qs.get('stage')) || '');
 var name0 = (qs.get('name') || '').trim();
+/* ?line=1 … 公式LINE連携済み / それ以外 … 未連携（管理画面が注文の line_uid から渡す） */
+var lineLinked = qs.get('line') === '1';
 var t     = SHEET_TEXT[stage] || SHEET_TEXT[3];
 
 document.getElementById('barStage').textContent = STAGE_LABEL[stage] || '次回特典';
@@ -184,11 +212,18 @@ document.getElementById('sub').innerHTML  = t.sub;
 /* ── お名前 ───────────────────────────────────────────── */
 var nameInput = document.getElementById('nameInput');
 var greetName = document.getElementById('greetName');
+var lineBlock = document.getElementById('lineBlock');
+function renderFoot() {
+  var v = (nameInput.value || '').trim();
+  lineBlock.innerHTML = lineLinked ? FOOT_TEXT.on(v) : FOOT_TEXT.off();
+  if (!lineLinked) loadQr();          /* QRは未連携のときだけ */
+}
 function renderName() {
   var v = (nameInput.value || '').trim();
   /* 名前が無いときは「様」だけが浮くので、その行ごと出さない */
   greetName.textContent = v ? (v + '様') : '';
   greetName.style.display = v ? '' : 'none';
+  renderFoot();                        /* 連携済みの文面にはお名前が入る */
 }
 nameInput.value = name0;
 nameInput.addEventListener('input', renderName);
@@ -217,6 +252,15 @@ function applyShift() {
     try { localStorage.setItem(SHIFT_KEY, String(v)); } catch (e) {}
   }
 }
+var FOOTTOP_KEY = 'eda-reward-sheet-foottop';
+var footInput   = document.getElementById('footInput');
+function applyFootTop() {
+  var v = Math.max(0, Math.min(270, Number(footInput.value) || 190));
+  document.documentElement.style.setProperty('--foot-top', v + 'mm');
+  try { localStorage.setItem(FOOTTOP_KEY, String(v)); } catch (e) {}
+}
+footInput.addEventListener('input', applyFootTop);
+
 function useNameTopMode() {
   nameTopMode = true;
   shiftLabel.textContent = 'お名前の位置（上から）';
@@ -224,6 +268,12 @@ function useNameTopMode() {
   try { saved = Number(localStorage.getItem(NAMETOP_KEY)) || 40; } catch (e) {}
   shiftInput.value = saved;
   applyShift();
+  /* 絵柄ありのときだけ「案内文の位置」も出す */
+  var savedFoot = 190;
+  try { savedFoot = Number(localStorage.getItem(FOOTTOP_KEY)) || 190; } catch (e) {}
+  footInput.value = savedFoot;
+  applyFootTop();
+  document.getElementById('footLabelWrap').style.display = '';
 }
 (function initShift() {
   var saved = 0;
@@ -256,12 +306,14 @@ swapIn(['public/rewards/next-' + stage + '.png', 'public/rewards/next-' + stage 
   useNameTopMode();
 });
 
-/* 公式LINEの友だち追加QR。置かれたら点線の枠と差し替える。 */
-swapIn(['public/rewards/line-qr.png', 'public/rewards/line-qr.jpg'], function (img) {
-  img.className = 'qr'; img.alt = '公式LINE 友だち追加';
-  var slot = document.getElementById('qrSlot');
-  slot.parentNode.replaceChild(img, slot);
-});
+/* マイページ登録（=公式LINE連携）のQR。未連携の方の紙にだけ出す。 */
+function loadQr() {
+  swapIn(['public/rewards/line-qr.png', 'public/rewards/line-qr.jpg'], function (img) {
+    img.className = 'qr'; img.alt = 'マイページのご登録・公式LINE連携';
+    var slot = document.getElementById('qrSlot');
+    if (slot) slot.parentNode.replaceChild(img, slot);
+  });
+}
 </script>
 </body>
 </html>
