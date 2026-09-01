@@ -2870,6 +2870,43 @@ function applyCoupon() {
  if(msg){ msg.textContent = '✓ ' + c.label + ' を適用しました'; msg.className='coupon-msg ok'; }
  try { localStorage.setItem('eda-coupon', code); } catch(e){}
  renderSummary();
+ checkCouponExpiry(code, msg);   /* 🎟️ 有効期限は GAS に聞く（下の関数） */
+}
+
+/* ============================================================
+   🎟️ 初回クーポンの有効期限（2026-08-31 追加）
+   ------------------------------------------------------------
+   期限は「連携日+7日」と「全員共通の下限日」の遅い方で、その計算は
+   GAS の ?action=coupon_status 1本に持たせてある。ここで同じ式を
+   書き直すと画面と請求がズレるので、真偽と日付を聞くだけにする。
+   通信できなかったときは**通す**（払う気の客をネットワークの都合で
+   止めない）。期限切れの本当の防波堤は決済作成時の GAS 側ガード。
+   ============================================================ */
+async function checkCouponExpiry(code, msg) {
+ try {
+  if (!window.EDA_API) return;
+  const params = { code: code };
+  const em = memberEmail(); if (em) params.email = em;
+  const uid = getLineUid(); if (uid) params.uid = uid;
+  const r = await window.EDA_API.get('coupon_status', params);
+  if (!r || !r.ok || !r.hasExpiry) return;
+  if (!appliedCoupon || appliedCoupon.code !== code) return;   /* その間に外された/変えられた */
+  if (r.valid) {
+   if (msg && r.expiryJp) {
+    msg.textContent = '✓ ' + appliedCoupon.label + ' を適用しました（' + r.expiryJp + 'まで'
+      + (r.daysLeft != null ? '・あと' + r.daysLeft + '日' : '') + '）';
+   }
+   return;
+  }
+  appliedCoupon = null;
+  try { localStorage.removeItem('eda-coupon'); } catch(_){}
+  if (msg) {
+   msg.textContent = 'このクーポンは' + (r.expiryJp ? r.expiryJp : '') + 'で有効期限が切れています';
+   msg.className = 'coupon-msg error';
+  }
+  trackBlocked('coupon_expired', { code: String(code).slice(0, 24) });
+  renderSummary();
+ } catch (_) { /* 通信できなければ通す。GAS 側で最終的に弾かれる */ }
 }
 function initCouponFromStorage() {
  var code = '';

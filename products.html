@@ -10000,8 +10000,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-name">ヒレステーキ</p>
  <p class="product-desc">一頭から約3%しか取れない、最もやわらかい部位。脂は控えめで、赤身の甘みが上品に立つ。<strong>記念日の一枚</strong>に。</p>
  <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥2,375</strong></div>
- <div class="product-stat-item">真空 <strong>1枚 200g</strong></div>
+ <div class="product-stat-item">100g <strong>¥3,167</strong></div>
+ <div class="product-stat-item">真空 <strong>1枚 150g</strong></div>
  <div class="product-stat-item wide">流水で <strong>約15分</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
@@ -11526,9 +11526,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
       const featuredClass = featured ? ' featured' : '';
       const featuredTag = featured && badgeLabel ? '<span class="sub-plan-tag">' + badgeLabel + '</span>' : '';
       const vipTag = !featured && badgeLabel ? '<span class="sub-plan-tag sub-plan-tag--vip">' + badgeLabel + '</span>' : '';
-      const planBadgeIcon = planId === 'mini' ? '🌱' : (planId === 'pro' ? '🏆' : '👑');
-      const planBadgeCls = planId === 'mini' ? 'sub-plan-badge--mini' : (planId === 'pro' ? 'sub-plan-badge--pro' : 'sub-plan-badge--vip');
-      const vipClass = planId === 'vip' ? ' sub-plan-mini--vip' : '';
+      /* シートの planId は starter / regular / volume（subscription.html の PLANS キーと同じ）。
+         旧 mini / pro / vip も当面受ける。ラベルは MINI / LIGHT / FAMILY で静的HTMLと揃える。 */
+      const PLAN_TIER = { starter:'mini', mini:'mini', regular:'pro', pro:'pro', volume:'vip', vip:'vip' };
+      const CYCLE_LABEL = { mini:'MINI', pro:'LIGHT', vip:'FAMILY' };
+      const tier = PLAN_TIER[planId] || '';
+      /* planId が未設定なら、誤ったラベル(FAMILY等)を出さずに「毎月お届け」だけにする */
+      const cycleLabel = CYCLE_LABEL[tier] || '';
+      const planBadgeIcon = tier === 'mini' ? '🌱' : (tier === 'pro' ? '🏆' : '👑');
+      const planBadgeCls = 'sub-plan-badge--' + (tier || 'vip');
+      const vipClass = tier === 'vip' ? ' sub-plan-mini--vip' : '';
       const itemsHtml = items.length ? '<ul class="sub-plan-items">' + items.map(it => '<li>' + esc(it) + '</li>').join('') + '</ul>' : '';
       const vipPerkHtml = vipPerk ? ''
         + '<div class="sub-plan-vip-perk">'
@@ -11539,10 +11546,10 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
         + '  </div>'
         + '</div>' : '';
       return ''
-        + '<a href="subscription.html?plan=' + escAttr(planId) + '" class="sub-plan-mini' + featuredClass + vipClass + '">'
+        + '<a href="subscription.html' + (planId ? '?plan=' + escAttr(planId) : '') + '" class="sub-plan-mini' + featuredClass + vipClass + '">'
         + (featuredTag || vipTag)
         + '<div class="sub-plan-badge ' + planBadgeCls + '">' + planBadgeIcon + '</div>'
-        + '<div class="sub-plan-cycle">' + esc(planId.toUpperCase()) + ' · 毎月お届け</div>'
+        + '<div class="sub-plan-cycle">' + (cycleLabel ? cycleLabel + ' · ' : '') + '毎月お届け</div>'
         + '<div class="sub-plan-name">' + name + '</div>'
         + '<div class="sub-plan-target"><span class="sub-plan-target-size">' + target + '</span><span class="sub-plan-target-spec">' + spec + '</span></div>'
         + itemsHtml
@@ -12387,45 +12394,46 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  /* ★ プラン定義は subscription.html と完全同期 */
  const PLAN_DATA = {
  starter: {
- name: 'ミニ', key: 'starter', price: 6980, weight: '1kg', items: 5,
- cycle: 'LIGHT · 毎月お届け',
- desc: '1-2人家族・お試し向け',
+ name: 'ミニ', key: 'starter', price: 9280, weight: '1.2kg', items: 6,
+ cycle: 'MINI · 毎月お届け',
+ desc: '1人暮らし・お試し向け',
  contents: [
- 'サーロインステーキ 200g',
+ '赤身ステーキ 200g',
  '赤身スライス 200g',
+ '切り落とし 200g',
  '鶏モモ 200g',
  '鶏ムネ 200g',
  '鶏ミンチ 200g'
  ]
  },
  regular: {
- name: 'スターター', key: 'regular', price: 12800, weight: '1.6kg', items: 8,
- cycle: 'FAMILY · 毎月お届け',
- desc: '3-4人家族・週末に和牛も楽しみたい',
+ name: 'ライト', key: 'regular', price: 12300, weight: '1.6kg', items: 8,
+ cycle: 'LIGHT · 毎月お届け',
+ desc: '1-2名・週末に和牛も楽しみたい',
  featured: true,
  contents: [
- 'サーロインステーキ 200g',
  '赤身ステーキ 200g',
+ 'サイコロステーキ 200g',
  '赤身スライス 200g',
  '切り落とし 200g',
- '鶏モモ 200g × 2',
+ '鶏モモ 200g',
  '鶏ムネ 200g',
- '鶏ミンチ 200g'
+ '鶏ミンチ 200g × 2'
  ]
  },
  volume: {
- name: 'レギュラー', key: 'volume', price: 24400, weight: '3.2kg', items: 16,
- cycle: 'GRAND · 毎月お届け',
- desc: '5人以上の大家族・ヘビーユーザー向け',
+ name: 'ファミリー', key: 'volume', price: 21800, weight: '2.8kg', items: 14,
+ cycle: 'FAMILY · 毎月お届け',
+ desc: '3-4名の家族・ヘビーユーザー向け',
  vip: true,
  contents: [
- 'サーロインステーキ 200g × 2',
  '赤身ステーキ 200g × 2',
  '赤身スライス 200g × 2',
  '切り落とし 200g × 2',
- '和牛ミンチ 200g',
- '鶏モモ 200g × 3',
- '鶏ムネ 200g × 3',
+ '霜降スライス 200g',
+ 'サイコロステーキ 200g',
+ '鶏モモ 200g × 2',
+ '鶏ムネ 200g × 2',
  '鶏ミンチ 200g × 2'
  ]
  }
@@ -13203,7 +13211,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-08-31-wakeari-bom" defer></script>
+<script src="public/data/products-master.js?v=2026-08-31-hire-150g" defer></script>
 <script src="public/js/products-loader.js?v=005" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

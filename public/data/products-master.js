@@ -157,8 +157,10 @@
     {
       productId: 'P024', variantId: 'HIRE-STEAK', sku: 'EDA-HIRE-150',
       stripePriceId: '',
-      name: 'ヒレステーキ', variant: '1枚 200g',
-      price: 4750, weight: 200, stock: 16, temp: '冷凍',
+      /* 2026-08-31 田崎さん確認: 1枚は150g（200g表記が誤り）。商品コードEDA-HIRE-150とも一致。
+         ギフト【松】450g＝3枚 の内訳とも合う。価格¥4,750は据え置き。 */
+      name: 'ヒレステーキ', variant: '1枚 150g',
+      price: 4750, weight: 150, stock: 16, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Fillet Steak',
       description: '一頭から約3%だけの、最もやわらかい部位。記念日の一枚に。',
       images: ['public/images/products/drive/hire-steak.jpg']

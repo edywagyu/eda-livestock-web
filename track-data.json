@@ -595,7 +595,7 @@
     "exporter": "Eda Livestock Co., Ltd. · Japan",
     "importer": "Gebr. Otto Gourmet GmbH · Heinsberg, Germany",
     "product": "Eda Wagyu A5 (chilled & frozen)",
-    "boxes": 56,
+    "boxes": 57,
     "temp": "0–4°C / -18°C",
     "etd": "NRT · 31 Aug",
     "eta": "FRA · 1 Sep, 13:00",
@@ -619,7 +619,7 @@
         "callsign": "UAE319"
       },
       {
-        "flight": "EK41",
+        "flight": "EK0047",
         "carrier": "Emirates",
         "from": "DXB",
         "to": "FRA",
@@ -627,8 +627,8 @@
         "arr": "2026-09-01T11:00:00Z",
         "depDisp": "1 Sep 08:20 (GST)",
         "arrDisp": "1 Sep 13:00 (CEST)",
-        "track": "https://www.flightradar24.com/data/flights/ek41",
-        "callsign": "UAE41"
+        "track": "https://www.flightradar24.com/data/flights/ek47",
+        "callsign": "UAE47"
       }
     ],
     "steps": [
@@ -862,6 +862,84 @@
         "lab": "Arrived Auckland",
         "sub": "AKL",
         "t": "2026-09-08T21:25:00Z"
+      },
+      {
+        "lab": "Import clearance & delivery",
+        "sub": "Sep 9",
+        "t": "2026-09-09T02:00:00Z",
+        "est": true
+      }
+    ]
+  },
+  "ilm-0904": {
+    "order": "ETUS260726B",
+    "buyer": "ILM · Los Angeles, USA",
+    "awb": "618-56948415",
+    "airline": "Singapore Airlines Cargo",
+    "exporter": "Eda Livestock Co., Ltd. · Japan",
+    "importer": "International Lobster and Maguro LLC · Diamond Bar, USA",
+    "product": "Eda Wagyu A5 (chilled)",
+    "boxes": 139,
+    "temp": "0–4°C",
+    "etd": "Narita · 8 Sep, 18:40",
+    "eta": "Los Angeles · 8 Sep, 12:50",
+    "demoT": "2026-09-08T14:00:00Z",
+    "route": [
+      "NRT",
+      "LAX"
+    ],
+    "legs": [
+      {
+        "flight": "SQ012",
+        "carrier": "Singapore Airlines",
+        "from": "NRT",
+        "to": "LAX",
+        "dep": "2026-09-08T09:40:00Z",
+        "arr": "2026-09-08T19:50:00Z",
+        "depDisp": "8 Sep 18:40 (JST)",
+        "arrDisp": "8 Sep 12:50 (PDT)",
+        "track": "https://www.flightradar24.com/data/flights/sq12",
+        "callsign": "SIA12"
+      }
+    ],
+    "steps": [
+      {
+        "lab": "Slaughtered & A5 graded",
+        "sub": "K-2 / AO-4 plants",
+        "t": "2026-07-29T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Packed & chilled (0–4°C)",
+        "sub": "vacuum-sealed",
+        "t": "2026-08-19T02:00:00Z",
+        "est": true
+      },
+      {
+        "lab": "Received at Narita",
+        "sub": "cargo-in · Sep 4",
+        "t": "2026-09-04T02:00:00Z"
+      },
+      {
+        "lab": "Animal quarantine cleared",
+        "sub": "Sep 7",
+        "t": "2026-09-07T02:00:00Z"
+      },
+      {
+        "lab": "Customs cleared & loaded",
+        "sub": "Sep 8",
+        "t": "2026-09-08T02:00:00Z"
+      },
+      {
+        "lab": "In flight · SQ012",
+        "sub": "Tokyo → Los Angeles",
+        "t": "2026-09-08T09:40:00Z",
+        "air": true
+      },
+      {
+        "lab": "Arrived Los Angeles",
+        "sub": "LAX",
+        "t": "2026-09-08T19:50:00Z"
       },
       {
         "lab": "Import clearance & delivery",
