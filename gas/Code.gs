@@ -4803,10 +4803,20 @@ function requireStaff(e) {
   return verifyStaffToken_(token);
 }
 
+/* 🔴 PIN に既定値を置かない（2026-09-01 田崎さん指示）。
+   以前は cfg の第2引数に既定のPINが書かれており、Script Property が消えると
+   誰でもその既定値で STAFF ポータルに入れた。このリポジトリは公開なので、
+   既定値を書いておくことは「鍵の在り処を公開する」のと同じ。
+   未設定なら誰も入れない＝安全側に倒す。復旧は Script Properties に
+   STAFF_PIN を入れ直すだけ（コードの変更もデプロイも要らない）。 */
 function staffLogin(params) {
-  const pin = params.pin || '';
-  const validPin = cfg('STAFF_PIN', '1234');
-  if (String(pin) !== String(validPin)) {
+  const pin = String(params.pin || '');
+  const validPin = String(cfg('STAFF_PIN', '') || '');
+  if (!validPin) {
+    log('staff_login_no_pin', {});
+    return jsonResponse({ ok:false, success:false, error: 'STAFF_PIN が未設定です。管理者にご連絡ください。' });
+  }
+  if (!pin || pin !== validPin) {
     return jsonResponse({ ok:false, success:false, error: 'Invalid PIN' });
   }
   const token = makeStaffToken_(Date.now() + 12 * 3600 * 1000); // 12h 有効
