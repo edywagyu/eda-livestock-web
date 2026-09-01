@@ -4064,6 +4064,14 @@ function renderOrders(orders) {
  '<span>📅 お届け希望日</span><strong style="color:var(--color-ink);">' + escapeHtml(formatDateLong(order.delivery_date)) + (order.delivery_time ? '（' + escapeHtml(order.delivery_time) + '）' : '') + '</strong></div>';
  }
 
+ /* 発送予定日。GAS が計算した ship_eta_label をそのまま出す（自前で計算すると
+    LINE/メールでお伝えした日付とズレる）。伝票発行後は追跡表示に切り替わるので出さない。 */
+ let shipEtaHtml = '';
+ if (order.ship_eta_label && !order.tracking_number) {
+ shipEtaHtml = '<div class="order-ship-eta" style="font-family:var(--font-jp);font-size:12.5px;color:var(--color-ink-muted);margin-top:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+ '<span>🚚 発送予定日</span><strong style="color:var(--color-ink);">' + escapeHtml(order.ship_eta_label) + '</strong></div>';
+ }
+
  html += '<div class="order-card">' +
  '<div class="order-card-head">' +
  '<div><div class="order-number">ご注文番号 ' + escapeHtml(order.order_number || order.id || '-') + '</div>' +
@@ -4076,6 +4084,7 @@ function renderOrders(orders) {
  '<span class="order-total-price">' + formatYen(order.total || 0) + '</span>' +
  '</div>' +
  deliveryHtml +
+ shipEtaHtml +
  trackingHtml +
  (canReorder ? '<button type="button" class="order-reorder-btn" onclick="reorderOrder(' + oi + ')">' +
    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> もう一度買う</button>' : '') +
@@ -4515,27 +4524,36 @@ function renderHomeTab(orderCount, orders, customer) {
      return '<li><span class="home-delivery-item-name">' + escapeHtml(it.title || it.name) + '</span><span class="home-delivery-item-qty">×' + (it.qty || 1) + '</span></li>';
     }).join('') + '</ul>';
    }
+   /* 未発送（伝票なし）なら発送予定日も添える。GAS 計算の ship_eta_label＝
+      LINE/メールでお伝えした日付そのもの。発送後は追跡番号に役目が移るので出さない。 */
+   var etaLine = (shippedOrder.ship_eta_label && !shippedOrder.tracking_number)
+     ? '<p style="font-family:var(--font-jp);font-size:13.5px;color:rgba(255,255,255,0.88);margin:-6px 0 12px;font-weight:600;">🚚 発送予定日 <strong style="color:#FFD773;">' + escapeHtml(shippedOrder.ship_eta_label) + '</strong></p>'
+     : '';
    dvEl.innerHTML = '<div class="home-delivery-card">' +
     '<div class="home-delivery-head">' +
      '<p class="home-delivery-eyebrow">次回お届け予定</p>' +
      '<span class="status-badge ' + dst.cls + '"><span class="status-badge-dot"></span>' + dst.label + '</span>' +
     '</div>' +
     '<p class="home-delivery-date">' + escapeHtml(dateDisplay) + '</p>' +
-    itemsHtml + trkHtml +
+    etaLine + itemsHtml + trkHtml +
     '</div>';
   } else if (orderList.length > 0) {
-   /* 注文済みだが発送前 → 「発送までしばらくお待ちください」（お届け予定なし表示はしない） */
+   /* 注文済みだが発送前 → 発送予定日が出せるならその日付を、出せないなら従来の待ちメッセージ。
+      ship_eta_label は GAS 計算（LINE/メールでお伝えした日付と同じ）。振込未入金・定期便では空になる。 */
    var pend = orderList[0];
+   var pendEta = pend.ship_eta_label || '';
    dvEl.innerHTML = '<div class="home-delivery-card">' +
     '<div class="home-delivery-head">' +
-     '<p class="home-delivery-eyebrow">ご注文ありがとうございます</p>' +
+     '<p class="home-delivery-eyebrow">' + (pendEta ? '発送予定日' : 'ご注文ありがとうございます') + '</p>' +
      '<span class="status-badge preparing"><span class="status-badge-dot"></span>発送準備中</span>' +
     '</div>' +
-    '<p class="home-delivery-date" style="font-size:23px;line-height:1.5;">発送までしばらく<br>お待ちください</p>' +
+    (pendEta
+      ? '<p class="home-delivery-date">' + escapeHtml(pendEta) + '</p>'
+      : '<p class="home-delivery-date" style="font-size:23px;line-height:1.5;">発送までしばらく<br>お待ちください</p>') +
     '<p style="font-family:var(--font-jp);font-size:13px;color:rgba(255,255,255,0.85);margin:0;line-height:1.85;font-weight:500;">' +
      'ご注文番号 <strong style="font-family:\'SF Mono\',Menlo,monospace;color:#FFD773;">' + escapeHtml(pend.order_number || pend.id || '-') + '</strong><br>' +
      '合計 <strong style="color:#fff;">' + formatYen(pend.total || 0) + '</strong><br>' +
-     '<span style="color:rgba(255,255,255,0.7);">発送が確定しましたら、お届け日と追跡番号をこちらに表示します。</span>' +
+     '<span style="color:rgba(255,255,255,0.7);">' + (pendEta ? '発送しましたら、追跡番号をこちらに表示します。' : '発送が確定しましたら、お届け日と追跡番号をこちらに表示します。') + '</span>' +
     '</p>' +
     '</div>';
   } else {
