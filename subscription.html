@@ -396,7 +396,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
    linear-gradient(180deg, #FFFEFB 0%, #FFFFFF 100%);
 }
 
-/* === スターター: featured ゴールド (浮かさず、色味で差別化) === */
+/* === ライト: featured ゴールド (浮かさず、色味で差別化) === */
 .sub-plan-card.featured {
  border: 2px solid var(--color-gold);
  background:
@@ -409,7 +409,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  opacity: 0.7;
 }
 
-/* === レギュラー: 高級ダークグリーン === */
+/* === ファミリー: 高級ダークグリーン === */
 .sub-plan-card.sub-plan-card--vip {
  background:
    radial-gradient(circle at 100% 0%, rgba(212,169,59,0.10) 0%, transparent 40%),
@@ -2377,7 +2377,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
  <div class="sub-plans-grid">
  <article class="sub-plan-card" data-plan="starter">
- <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
+ <div class="sub-plan-cycle">MINI · 毎月お届け</div>
  <div class="sub-plan-name">ミニ</div>
  <div class="sub-plan-target">1人暮らし向け</div>
 
@@ -2425,8 +2425,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </article>
 
  <article class="sub-plan-card featured" data-plan="regular">
- <div class="sub-plan-cycle">FAMILY · 毎月お届け<span class="sub-plan-tag">★ 人気 No.1</span></div>
- <div class="sub-plan-name">スターター</div>
+ <div class="sub-plan-cycle">LIGHT · 毎月お届け<span class="sub-plan-tag">★ 人気 No.1</span></div>
+ <div class="sub-plan-name">ライト</div>
  <div class="sub-plan-target">1-2名向け</div>
 
  <div class="sub-plan-summary">
@@ -2473,8 +2473,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </article>
 
  <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
- <div class="sub-plan-cycle">GRAND · 毎月お届け<span class="sub-plan-tag sub-plan-tag--vip">💰 お得</span></div>
- <div class="sub-plan-name">レギュラー</div>
+ <div class="sub-plan-cycle">FAMILY · 毎月お届け<span class="sub-plan-tag sub-plan-tag--vip">💰 お得</span></div>
+ <div class="sub-plan-name">ファミリー</div>
  <div class="sub-plan-target">3-4名向け</div>
 
  <div class="sub-plan-summary">
@@ -2537,7 +2537,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="container">
  <div class="sub-detail-head">
  <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
- <h2 class="sub-detail-title" id="detailPlanTitle">スターター定期便の内容</h2>
+ <h2 class="sub-detail-title" id="detailPlanTitle">ライト定期便の内容</h2>
  <span class="sub-detail-plan-name" id="detailPlanLabel">1-2名向け · 月額 ¥12,300</span>
  </div>
 
@@ -2750,7 +2750,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
  <div class="checkout-summary" id="checkoutSummary">
  <div class="checkout-summary-row">
- <span id="summaryPlanName">スターター定期便</span>
+ <span id="summaryPlanName">ライト定期便</span>
  <strong id="summaryRegular">¥12,300/月</strong>
  </div>
  <div class="checkout-summary-row discount">
@@ -3450,7 +3450,7 @@ function toggleSubUnboxingSound() {
  <div class="mypage-feature-icon">🔄</div>
  <div class="mypage-feature-body">
  <strong>プランを切り替え</strong>
- <p>家族構成や消費ペースの変化に合わせて、<strong>翌月から</strong>ミニ ⇄ スターター ⇄ レギュラーに切替OK。</p>
+ <p>家族構成や消費ペースの変化に合わせて、<strong>翌月から</strong>ミニ ⇄ ライト ⇄ ファミリーに切替OK。</p>
  </div>
  </article>
 
@@ -3480,7 +3480,7 @@ function toggleSubUnboxingSound() {
  <details class="faq-item">
  <summary class="faq-q">スキップ・解約はどうやるの？</summary>
  <div class="faq-a">
- スキップ・プラン変更は<strong>マイページから1タップ、またはLINE公式アカウントで「来月スキップ」「ミニプランに変更」</strong>とメッセージするだけで完了します。電話での引き止めなどは一切ありません。<strong>次回お届け日の5日前まで</strong>に手続きいただければ、すべて反映されます。
+ スキップ・プラン変更は<strong>マイページから1タップ、またはLINE公式アカウントで「来月スキップ」「ミニに変更」</strong>とメッセージするだけで完了します。電話での引き止めなどは一切ありません。<strong>次回お届け日の5日前まで</strong>に手続きいただければ、すべて反映されます。
  </div>
  </details>
 
@@ -3494,7 +3494,7 @@ function toggleSubUnboxingSound() {
  <details class="faq-item">
  <summary class="faq-q">中身を変更できる？</summary>
  <div class="faq-a">
- 毎月の内容は固定ですが、<strong>プラン変更</strong>はいつでも可能です。LINE またはマイページから「レギュラーに変更」「ミニに変更」と1タップで翌月から切り替わります。また「鶏肉多め」「赤身多め」のリクエストもLINEで承ります。
+ 毎月の内容は固定ですが、<strong>プラン変更</strong>はいつでも可能です。LINE またはマイページから「ファミリーに変更」「ミニに変更」と1タップで翌月から切り替わります。また「鶏肉多め」「赤身多め」のリクエストもLINEで承ります。
  </div>
  </details>
 
@@ -3523,7 +3523,7 @@ function toggleSubUnboxingSound() {
  <details class="faq-item">
  <summary class="faq-q">2回目以降の金額は？</summary>
  <div class="faq-a">
- <strong>2回目以降は通常価格</strong>でお届けします。ミニ ¥9,280 / スターター ¥12,300 / レギュラー ¥21,800（すべて税込・送料込）。初月50%OFFは初回ご利用の方限定でございます。<br>※北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
+ <strong>2回目以降は通常価格</strong>でお届けします。ミニ ¥9,280 / ライト ¥12,300 / ファミリー ¥21,800（すべて税込・送料込）。初月50%OFFは初回ご利用の方限定でございます。<br>※北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
  </div>
  </details>
 
@@ -3562,7 +3562,7 @@ function toggleSubUnboxingSound() {
  <div class="sub-voice-avatar">田</div>
  <div>
  <div class="sub-voice-name">田中 様 / 東京都</div>
- <div class="sub-voice-product">スターター定期便 6ヶ月目</div>
+ <div class="sub-voice-product">ライト定期便 6ヶ月目</div>
  </div>
  </div>
  </div>
@@ -3574,19 +3574,19 @@ function toggleSubUnboxingSound() {
  <div class="sub-voice-avatar">佐</div>
  <div>
  <div class="sub-voice-name">佐藤 様 / 福岡</div>
- <div class="sub-voice-product">スターター定期便 3ヶ月目</div>
+ <div class="sub-voice-product">ライト定期便 3ヶ月目</div>
  </div>
  </div>
  </div>
 
  <div class="sub-voice-card">
  <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">5人家族なのでレギュラー。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
+ <p class="sub-voice-text">5人家族なのでファミリー。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
  <div class="sub-voice-author">
  <div class="sub-voice-avatar">山</div>
  <div>
  <div class="sub-voice-name">山田 様 / 大阪</div>
- <div class="sub-voice-product">レギュラー定期便 4ヶ月目</div>
+ <div class="sub-voice-product">ファミリー定期便 4ヶ月目</div>
  </div>
  </div>
  </div>
@@ -3637,7 +3637,7 @@ function toggleSubUnboxingSound() {
 
  <dt style="font-weight:600;margin-top:18px;">初月割引について</dt>
  <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
- 初月50%OFFは、はじめてご利用の方限定です。2回目以降は通常価格（ミニ ¥9,280 / スターター ¥12,300 / レギュラー ¥21,800・税込・送料込）でのお届けとなります。北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
+ 初月50%OFFは、はじめてご利用の方限定です。2回目以降は通常価格（ミニ ¥9,280 / ライト ¥12,300 / ファミリー ¥21,800・税込・送料込）でのお届けとなります。北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
  </dd>
  </dl>
 
@@ -3732,7 +3732,7 @@ const PLANS = {
  ]
  },
  regular: {
- name: 'スターター',
+ name: 'ライト',
  target: '1-2名向け · 1.6kg · 全 8品（牛 800g + 鶏 800g）',
  regular: 12300,
  half: 6150,
@@ -3755,7 +3755,7 @@ const PLANS = {
  ]
  },
  volume: {
- name: 'レギュラー',
+ name: 'ファミリー',
  target: '3-4名向け · 2.8kg · 全 14品（牛 1.6kg + 鶏 1.2kg）',
  regular: 21800,
  half: 10900,
@@ -3784,7 +3784,10 @@ const PLANS = {
 /* ============ URL ?plan= 取得 ============ */
 function getInitialPlan() {
  const params = new URLSearchParams(location.search);
- const p = (params.get('plan') || '').toLowerCase();
+ let p = (params.get('plan') || '').toLowerCase();
+ // 旧 planId (mini/pro/vip) のリンク・ブックマークも受ける
+ const ALIAS = { mini: 'starter', pro: 'regular', vip: 'volume' };
+ if (ALIAS[p]) p = ALIAS[p];
  if (PLANS[p]) return p;
  return 'regular'; // 内部デフォルト (detail/checkout 用)
 }
