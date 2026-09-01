@@ -3239,7 +3239,8 @@ function renderShipDetail() {
                 <span style="font-weight:800">様</span>
                 <button type="button" onclick="openPerkSheet(${nx.num})" style="${perkBtnStyle};border:0;cursor:pointer">📄 ${nx.num}回目の特典用紙を開く（印刷して同梱）</button>
               </div>
-              <div style="font-size:11px;color:var(--muted);margin-top:6px">この欄のお名前がそのまま用紙に刷られます（ご購入者名を入れてあります。ギフトの場合はご注意ください）</div>`
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">この欄のお名前がそのまま用紙に刷られます（ご購入者名を入れてあります。ギフトの場合はご注意ください）<br>
+                下の案内文は <strong style="color:${o.lineUid ? '#065F46' : '#8A6D1A'}">${o.lineUid ? 'LINE連携済み → ご感想のお願い（QRなし）' : 'LINE未連携 → 公式LINEへのご案内（QRあり）'}</strong> で刷られます</div>`
             : `<span style="color:var(--muted)">${nx.num}回目の特典が未設定のため、用紙はありません</span>`}</span></div>
       </div>`;
 
@@ -3371,7 +3372,11 @@ function renderShipDetail() {
 function openPerkSheet(num) {
   const el = document.getElementById('perkSheetName');
   const nm = el ? String(el.value || '').trim() : '';
-  window.open('reward-sheet.html?stage=' + encodeURIComponent(num) + '&name=' + encodeURIComponent(nm),
+  /* 公式LINEと繋がっているお客様には、紙の下の案内文が「ご感想をお聞かせください」に変わり
+     QRが出ない。判定は注文の line_uid（この画面が発送通知の宛先を決めるのと同じ値）。 */
+  const linked = (selectedOrder && selectedOrder.lineUid) ? '1' : '0';
+  window.open('reward-sheet.html?stage=' + encodeURIComponent(num) + '&name=' + encodeURIComponent(nm) +
+              '&line=' + linked,
               '_blank', 'noopener');
 }
 
