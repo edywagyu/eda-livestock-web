@@ -10515,7 +10515,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-proof-avatar">田</div>
  <div class="shop-proof-author-info">
  <div class="shop-proof-name">田中 様 / 東京都 / 共働き</div>
- <div class="shop-proof-product">スターター定期便</div>
+ <div class="shop-proof-product">ライト定期便</div>
  </div>
  </div>
  </div>
@@ -10526,7 +10526,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-proof-avatar">佐</div>
  <div class="shop-proof-author-info">
  <div class="shop-proof-name">佐藤 様 / 福岡 / 4人家族</div>
- <div class="shop-proof-product">スターター定期便</div>
+ <div class="shop-proof-product">ライト定期便</div>
  </div>
  </div>
  </div>
@@ -10537,7 +10537,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-proof-avatar">山</div>
  <div class="shop-proof-author-info">
  <div class="shop-proof-name">山田 様 / 大阪 / 共働き</div>
- <div class="shop-proof-product">レギュラー定期便</div>
+ <div class="shop-proof-product">ファミリー定期便</div>
  </div>
  </div>
  </div>
@@ -10783,7 +10783,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-plans-grid">
  <a href="subscription.html?plan=starter" class="sub-plan-mini">
  <div class="sub-plan-badge sub-plan-badge--mini">🌱</div>
- <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
+ <div class="sub-plan-cycle">MINI · 毎月お届け</div>
  <div class="sub-plan-name">ミニ</div>
  <div class="sub-plan-target"><span class="sub-plan-target-size">1人暮らし</span><span class="sub-plan-target-spec">1.2kg・6品</span></div>
  <div class="sub-plan-pricing">
@@ -10796,9 +10796,9 @@ body.is-member .product-card--organic .org-chk-lock {
  <a href="subscription.html?plan=regular" class="sub-plan-mini featured">
  <span class="sub-plan-tag">人気 No.1</span>
  <div class="sub-plan-badge sub-plan-badge--pro">🏆</div>
- <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
- <div class="sub-plan-name">スターター</div>
- <div class="sub-plan-target"><span class="sub-plan-target-size">1-2人家族</span><span class="sub-plan-target-spec">1.6kg・8品</span></div>
+ <div class="sub-plan-cycle">LIGHT · 毎月お届け</div>
+ <div class="sub-plan-name">ライト</div>
+ <div class="sub-plan-target"><span class="sub-plan-target-size">1-2名</span><span class="sub-plan-target-spec">1.6kg・8品</span></div>
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">¥12,300</div>
  <div class="sub-plan-price">¥6,150<small>/初月</small></div>
@@ -10807,11 +10807,11 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="sub-plan-cta-link">🛒 購入する →</div>
  </a>
  <a href="subscription.html?plan=volume" class="sub-plan-mini sub-plan-mini--vip">
- <span class="sub-plan-tag sub-plan-tag--vip">大家族向け</span>
+ <span class="sub-plan-tag sub-plan-tag--vip">💰 お得</span>
  <div class="sub-plan-badge sub-plan-badge--vip">👑</div>
- <div class="sub-plan-cycle">GRAND · 毎月お届け</div>
- <div class="sub-plan-name">レギュラー</div>
- <div class="sub-plan-target"><span class="sub-plan-target-size">3-4人家族</span><span class="sub-plan-target-spec">2.8kg・14品</span></div>
+ <div class="sub-plan-cycle">FAMILY · 毎月お届け</div>
+ <div class="sub-plan-name">ファミリー</div>
+ <div class="sub-plan-target"><span class="sub-plan-target-size">3-4名</span><span class="sub-plan-target-spec">2.8kg・14品</span></div>
  <div class="sub-plan-pricing">
  <div class="sub-plan-old-price">¥21,800</div>
  <div class="sub-plan-price">¥10,900<small>/初月</small></div>
@@ -13014,9 +13014,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
       const featuredClass = featured ? ' featured' : '';
       const featuredTag = featured && badgeLabel ? '<span class="sub-plan-tag">' + badgeLabel + '</span>' : '';
       const vipTag = !featured && badgeLabel ? '<span class="sub-plan-tag sub-plan-tag--vip">' + badgeLabel + '</span>' : '';
-      const planBadgeIcon = planId === 'mini' ? '🌱' : (planId === 'pro' ? '🏆' : '👑');
-      const planBadgeCls = planId === 'mini' ? 'sub-plan-badge--mini' : (planId === 'pro' ? 'sub-plan-badge--pro' : 'sub-plan-badge--vip');
-      const vipClass = planId === 'vip' ? ' sub-plan-mini--vip' : '';
+      /* シートの planId は starter / regular / volume（subscription.html の PLANS キーと同じ）。
+         旧 mini / pro / vip も当面受ける。ラベルは MINI / LIGHT / FAMILY で静的HTMLと揃える。 */
+      const PLAN_TIER = { starter:'mini', mini:'mini', regular:'pro', pro:'pro', volume:'vip', vip:'vip' };
+      const CYCLE_LABEL = { mini:'MINI', pro:'LIGHT', vip:'FAMILY' };
+      const tier = PLAN_TIER[planId] || '';
+      /* planId が未設定なら、誤ったラベル(FAMILY等)を出さずに「毎月お届け」だけにする */
+      const cycleLabel = CYCLE_LABEL[tier] || '';
+      const planBadgeIcon = tier === 'mini' ? '🌱' : (tier === 'pro' ? '🏆' : '👑');
+      const planBadgeCls = 'sub-plan-badge--' + (tier || 'vip');
+      const vipClass = tier === 'vip' ? ' sub-plan-mini--vip' : '';
       const itemsHtml = items.length ? '<ul class="sub-plan-items">' + items.map(it => '<li>' + esc(it) + '</li>').join('') + '</ul>' : '';
       const vipPerkHtml = vipPerk ? ''
         + '<div class="sub-plan-vip-perk">'
@@ -13027,10 +13034,10 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
         + '  </div>'
         + '</div>' : '';
       return ''
-        + '<a href="subscription.html?plan=' + escAttr(planId) + '" class="sub-plan-mini' + featuredClass + vipClass + '">'
+        + '<a href="subscription.html' + (planId ? '?plan=' + escAttr(planId) : '') + '" class="sub-plan-mini' + featuredClass + vipClass + '">'
         + (featuredTag || vipTag)
         + '<div class="sub-plan-badge ' + planBadgeCls + '">' + planBadgeIcon + '</div>'
-        + '<div class="sub-plan-cycle">' + esc(planId.toUpperCase()) + ' · 毎月お届け</div>'
+        + '<div class="sub-plan-cycle">' + (cycleLabel ? cycleLabel + ' · ' : '') + '毎月お届け</div>'
         + '<div class="sub-plan-name">' + name + '</div>'
         + '<div class="sub-plan-target"><span class="sub-plan-target-size">' + target + '</span><span class="sub-plan-target-spec">' + spec + '</span></div>'
         + itemsHtml
@@ -13971,45 +13978,46 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  /* ★ プラン定義は subscription.html と完全同期 */
  const PLAN_DATA = {
  starter: {
- name: 'ミニ', key: 'starter', price: 6980, weight: '1kg', items: 5,
- cycle: 'LIGHT · 毎月お届け',
- desc: '1-2人家族・お試し向け',
+ name: 'ミニ', key: 'starter', price: 9280, weight: '1.2kg', items: 6,
+ cycle: 'MINI · 毎月お届け',
+ desc: '1人暮らし・お試し向け',
  contents: [
- 'サーロインステーキ 200g',
+ '赤身ステーキ 200g',
  '赤身スライス 200g',
+ '切り落とし 200g',
  '鶏モモ 200g',
  '鶏ムネ 200g',
  '鶏ミンチ 200g'
  ]
  },
  regular: {
- name: 'スターター', key: 'regular', price: 12800, weight: '1.6kg', items: 8,
- cycle: 'FAMILY · 毎月お届け',
- desc: '3-4人家族・週末に和牛も楽しみたい',
+ name: 'ライト', key: 'regular', price: 12300, weight: '1.6kg', items: 8,
+ cycle: 'LIGHT · 毎月お届け',
+ desc: '1-2名・週末に和牛も楽しみたい',
  featured: true,
  contents: [
- 'サーロインステーキ 200g',
  '赤身ステーキ 200g',
+ 'サイコロステーキ 200g',
  '赤身スライス 200g',
  '切り落とし 200g',
- '鶏モモ 200g × 2',
+ '鶏モモ 200g',
  '鶏ムネ 200g',
- '鶏ミンチ 200g'
+ '鶏ミンチ 200g × 2'
  ]
  },
  volume: {
- name: 'レギュラー', key: 'volume', price: 24400, weight: '3.2kg', items: 16,
- cycle: 'GRAND · 毎月お届け',
- desc: '5人以上の大家族・ヘビーユーザー向け',
+ name: 'ファミリー', key: 'volume', price: 21800, weight: '2.8kg', items: 14,
+ cycle: 'FAMILY · 毎月お届け',
+ desc: '3-4名の家族・ヘビーユーザー向け',
  vip: true,
  contents: [
- 'サーロインステーキ 200g × 2',
  '赤身ステーキ 200g × 2',
  '赤身スライス 200g × 2',
  '切り落とし 200g × 2',
- '和牛ミンチ 200g',
- '鶏モモ 200g × 3',
- '鶏ムネ 200g × 3',
+ '霜降スライス 200g',
+ 'サイコロステーキ 200g',
+ '鶏モモ 200g × 2',
+ '鶏ムネ 200g × 2',
  '鶏ミンチ 200g × 2'
  ]
  }
