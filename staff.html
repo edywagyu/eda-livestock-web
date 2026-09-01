@@ -3070,16 +3070,9 @@ var REWARD_LADDER = {
   6: '限定部位を買える権利（イチボ・シンシン等）'
 };
 
-/* 同梱するA4用紙(PDF)。キー = その用紙が案内する回数（＝次回）。
-   ファイルは public/rewards/ に置く（本番URL = https://www.eda-livestock.com/public/rewards/next-2.pdf）。
-   ドライブ等の絶対URLを書いてもそのまま開く。'' か未登録 = 用紙がまだ無い、と画面に出る。 */
-var REWARD_SHEET_PDFS = {
-  2: 'public/rewards/next-2.pdf',
-  3: 'public/rewards/next-3.pdf',
-  4: 'public/rewards/next-4.pdf',
-  5: 'public/rewards/next-5.pdf',
-  6: 'public/rewards/next-6.pdf'
-};
+/* 同梱するA4用紙は reward-sheet.html が刷る（片面・全回とも同じデザインで文言だけ違う）。
+   用紙の文言は reward-sheet.html の SHEET_TEXT が正。絵柄(Canva)を差し替えるときは
+   public/rewards/base.png を置き換えるだけで、ここも向こうも修正は要らない。 */
 
 /* 注文番号 → 通算回数 の対応表。
    「何回目か」の母数は注文DB全件でなければならないが、staff_orders は直近200件しか
@@ -3132,7 +3125,7 @@ function nextRewardOf(count) {
   var n = Number(count) || 0;
   if (n <= 0) return null;
   var next = n + 1;
-  return { num: next, reward: REWARD_LADDER[next] || '', pdf: REWARD_SHEET_PDFS[next] || '' };
+  return { num: next, reward: REWARD_LADDER[next] || '' };
 }
 
 function renderOrders() {
@@ -3239,9 +3232,15 @@ function renderShipDetail() {
     : `<div class="detail-card">
         <div class="detail-row"><span class="label">🔁 ご注文回数</span><span class="value" style="font-weight:700">今回で <strong style="color:var(--forest)">${pc}回目</strong>${o.purchaseCountExact === false ? '<span style="font-size:11px;font-weight:600;color:#8A6D1A;background:#FFF1CC;border-radius:4px;padding:1px 6px;margin-left:6px">概算</span>' : ''}<div style="font-size:11px;font-weight:500;color:var(--muted);margin-top:2px">単品のみ（定期便は数えません）${o.purchaseCountExact === false ? '／注文DB全件を読めなかったため、直近200件の中だけで数えた値です' : ''}</div></span></div>
         <div class="detail-row"><span class="label">🎁 次回（${nx.num}回目）の特典</span><span class="value">${nx.reward ? escapeHtml(nx.reward) : '<span style="color:var(--muted)">まだ決まっていません</span>'}</span></div>
-        <div class="detail-row"><span class="label">📄 同梱する用紙</span><span class="value" id="perkSheetSlot">${nx.pdf
-            ? `<a href="${escapeHtml(nx.pdf)}" target="_blank" rel="noopener" style="${perkBtnStyle}">📄 ${nx.num}回目の特典用紙を開く（印刷して同梱）</a>`
-            : `<span style="color:var(--muted)">${nx.num}回目の用紙は未登録です</span>`}</span></div>
+        <div class="detail-row"><span class="label">📄 同梱する用紙</span><span class="value" id="perkSheetSlot">${nx.reward
+            ? `<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                <input id="perkSheetName" type="text" value="${escapeHtml(buyer.name || '')}" placeholder="お客様のお名前"
+                       style="flex:1 1 150px;min-width:130px;padding:9px 11px;border:1.5px solid #D7DEE3;border-radius:8px;font-size:14px;font-weight:700">
+                <span style="font-weight:800">様</span>
+                <button type="button" onclick="openPerkSheet(${nx.num})" style="${perkBtnStyle};border:0;cursor:pointer">📄 ${nx.num}回目の特典用紙を開く（印刷して同梱）</button>
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-top:6px">この欄のお名前がそのまま用紙に刷られます（ご購入者名を入れてあります。ギフトの場合はご注意ください）</div>`
+            : `<span style="color:var(--muted)">${nx.num}回目の特典が未設定のため、用紙はありません</span>`}</span></div>
       </div>`;
 
   // 商品欄：括弧のバリアント表記・スラッシュをなくし「商品名 ／ 個数」の2列リストで表示
@@ -3365,21 +3364,17 @@ function renderShipDetail() {
     `}
   `;
 
-  // 用紙(PDF)が本当に置いてあるかを確かめる。無いのに「開く」だけ出ていると、
-  // 梱包中にクリックして404を見る事故になるので、その場で表示を差し替える。
-  if (pc && nx.pdf) verifyPerkSheet(nx.pdf, nx.num);
 }
 
-/* 特典用紙(PDF)の実在チェック。見つからなければボタンを「未登録」に差し替える。 */
-async function verifyPerkSheet(url, num) {
-  const slot = document.getElementById('perkSheetSlot');
-  if (!slot) return;
-  try {
-    const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-    if (res.ok) return;
-  } catch (e) { /* 通信できないときは触らない（オフラインで消さない） */ return; }
-  slot.innerHTML = '<span style="color:#8A6D1A">' + num + '回目の用紙が見つかりません（' + escapeHtml(url) + ' が未登録）</span>';
+/* 特典用紙を新しいタブで開く。お名前は入力欄の値をそのまま渡す
+   （初期値はご購入者名。ギフトで宛名を変えたいときはこの欄を書き換えてから押す）。 */
+function openPerkSheet(num) {
+  const el = document.getElementById('perkSheetName');
+  const nm = el ? String(el.value || '').trim() : '';
+  window.open('reward-sheet.html?stage=' + encodeURIComponent(num) + '&name=' + encodeURIComponent(nm),
+              '_blank', 'noopener');
 }
+
 
 let shipPhotoData = null;
 
