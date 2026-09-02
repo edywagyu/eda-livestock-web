@@ -78,6 +78,12 @@ body{
   width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
   display:block;
 }
+/* 訳あり・不揃い品の2枚目（実物の見え方を先に見せる。2026-09-02 ryotaro指示）。
+   パック全体を切らずに見せたいので cover ではなく contain。 */
+.card-img2{
+  width:100%; aspect-ratio:4/3; background:#fff center/contain no-repeat;
+  display:block; border-top:1px solid #EDE8DC;
+}
 .card-body{padding:18px 18px 20px;}
 .card-tag{
   display:inline-block; background:var(--forest); color:var(--gold-light);
@@ -245,6 +251,9 @@ body{
     }
   ];
 
+  /* 訳あり・不揃い品の共通イメージ写真（実物の一例）。fusoroi: true を付けた品の2枚目に入る。 */
+  var FUSOROI_IMG = 'public/images/products/drive/fusoroi-sample.jpg';
+
   var CART_KEY = 'eda-cart';
   var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
 
@@ -370,6 +379,9 @@ body{
     return '' +
       '<div class="card" data-i="' + i + '"' + (it.anchor ? ' id="' + it.anchor + '"' : '') + '>' +
         '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
+        /* 訳あり・不揃い品は実物の見え方を2枚目に必ず入れる（2026-09-02 ryotaro指示）。
+           新しい訳あり品を足すときは fusoroi: true を書くだけでこの写真が入る。 */
+        (it.fusoroi ? '<div class="card-img2" style="background-image:url(' + FUSOROI_IMG + ')"></div>' : '') +
         '<div class="card-body">' +
           (it.memberOnly === false ? '' : '<span class="card-tag">会員限定</span>') +
           '<h3>' + it.name + '</h3>' +
