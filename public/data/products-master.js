@@ -487,6 +487,22 @@
           → A・B・ミスジ単品が同じミスジ在庫を共有し、残数が自動で連動する。
           数量を変えるときは products の「ミスジステーキ」「赤身ステーキ」の stock を動かす。
        10%オフ。単品合計 ¥10,300 → ¥9,270 ／ ¥10,400 → ¥9,360。 */
+    /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
+       🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
+          説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
+       通常の「切り落とし」(P005 ¥1,600) とは別商品で、在庫も別枠（componentsなし）。 */
+    {
+      productId: 'P041', variantId: 'WAKEARI-KIRI', sku: 'EDA-WAKEARI-KIRI-200',
+      stripePriceId: '',
+      name: '訳あり切り落とし', variant: '1袋 200g',
+      price: 1200, weight: 200, stock: 20, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Kiriotoshi',
+      description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざるため、通常の切り落とし（200g ¥1,600）より1袋400円お安くしています。中身は同じ江田和牛です。煮込み、炒め、丼にそのまま使えます。2枚目が実際の商品の一例です。',
+      images: [
+        'public/images/products/drive/kiriotoshi.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
     {
       productId: 'P039', variantId: 'TABEKURABE-A', sku: 'EDA-TABEKURABE-A',
       stripePriceId: '',
