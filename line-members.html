@@ -160,19 +160,28 @@ body{
   background:var(--gold);color:var(--forest);text-decoration:none;font-weight:700;
   font-size:15px;padding:14px 22px;border-radius:10px;white-space:nowrap;
 }
-/* 上部の切替ボタン（2026-09-02 ryotaro指示）。限定商品一覧／限定不揃い品／イマおすすめ／通常商品一覧。
+/* 上部の切替ボタン。限定商品一覧／限定不揃い品／イマおすすめ／通常商品一覧。
+   2026-09-02 ryotaro指示で「江田畜産らしく」＝案3 深緑の箔押しカードに変更。
+   角丸を落として明朝体にし、現在地は深緑の中に金の細枠を1本。
    4つ並ぶと横がきついので、狭い画面では自動で2段に折り返す。 */
-.pagenav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;}
+.pagenav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px;}
 .pagenav a{
-  flex:1 1 calc(50% - 8px);text-align:center;text-decoration:none;font-weight:700;font-size:14px;
-  padding:14px 4px;border-radius:10px;border:1.5px solid var(--forest);
-  color:var(--forest);background:#fff;line-height:1.3;
+  flex:1 1 calc(50% - 10px);text-align:center;text-decoration:none;
+  font-family:'Shippori Mincho','Noto Serif JP',serif;
+  font-weight:600;font-size:14.5px;letter-spacing:.05em;
+  color:var(--forest);background:#fff;padding:15px 4px;line-height:1.3;
+  border:1px solid rgba(15,61,46,.16);border-radius:3px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
 }
-.pagenav a.on{background:var(--forest);color:#fff;}
-/* 通常のショップへ出る導線は、限定ページの中では控えめにする */
-.pagenav a.out{border-color:#C9C2B4;color:var(--muted);}
+.pagenav a.on{
+  background:linear-gradient(180deg,var(--forest) 0%,#0A2C21 100%);
+  color:var(--gold-light);border-color:var(--forest);
+  box-shadow:inset 0 0 0 1px rgba(212,169,59,.5);
+}
+/* 通常のショップへ出る導線は、限定ページの中では控えめに（点線＝外に出る） */
+.pagenav a.out{color:var(--muted);border-style:dashed;background:transparent;box-shadow:none;}
 @media(min-width:560px){.pagenav a{flex:1 1 0;}}
-@media(max-width:400px){.pagenav a{font-size:12px;padding:13px 2px;letter-spacing:-.02em;}}
+@media(max-width:400px){.pagenav a{font-size:13px;padding:14px 2px;letter-spacing:.02em;}}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:24px 0 0;line-height:1.8;}
 .foot a{color:var(--forest);}
 </style>
