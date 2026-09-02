@@ -181,7 +181,7 @@ body{
   <!-- 上部ボタン2つ（2026-09-02 ryotaro指示）。現在地は on クラスで塗る -->
   <nav class="pagenav">
     <a href="line-members.html">限定商品一覧</a>
-    <a href="line-members-wakeari.html">限定訳あり商品</a>
+    <a href="line-members-wakeari.html">限定不揃い品</a>
     <a class="on" href="line-members-osusume.html">イマおすすめ</a>
   </nav>
 
@@ -225,23 +225,22 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
-    /* ===== 限定　和牛ミンチ（2026-09-02 ryotaro指示で新設）=====
-       1つ売りは作らない＝2つ／3つの2択のみ（最低2袋から）。
-       🔴 ラベルの「2つ」「3つ」は GAS の在庫減算(variantUnits)が読む文字列。
-          変えると在庫が正しく減らない。
-       🔴 名前の全角スペース（限定＋和牛ミンチ）まで products の name と
-          完全一致させること。決済も在庫減算も name の完全一致でしか動かない。
-       既存の「ミンチ」(P010B ¥1,350 / 200g) とは別商品。 */
     {
+      /* 限定　和牛ミンチ。1つ売りは作らない＝2つ／3つの2択のみ（最低2袋から）。
+         🔴 ラベルの「2つ」「3つ」は GAS の在庫減算(variantUnits)が読む文字列。変更禁止。
+         🔴 名前の全角スペースまで products の name と完全一致させること。
+         お得額の基準は通常の「ミンチ」(P010B ¥1,350 / 200g) の単品価格:
+           2袋 ¥2,700 → ¥2,400（¥300お得）／ 3袋 ¥4,050 → ¥3,050（¥1,000お得）
+         listPrice は2袋のときの単品合計。3つを選ぶと variants 側の off が出る。 */
       productId: 'P042', variantId: 'GENTEI-MINCE',
       name: '限定　和牛ミンチ',
       variant: '1袋 200g',
-      price: 2400, listPrice: 0, stock: 10, limitedTotal: 0,
+      price: 2400, listPrice: 2700, stock: 10, limitedTotal: 0,
       img: 'public/images/products/drive/minced.jpg',
       desc: '和牛のミンチ。ハンバーグ、そぼろ、ミートソースに。2袋からのお届けです。',
       variants: [
-        { t: '2つセット',  p: 2400, n: 2 },
-        { t: '3つセット',  p: 3050, n: 3 }
+        { t: '2つセット',  p: 2400, n: 2, off:  300 },
+        { t: '3つセット',  p: 3050, n: 3, off: 1000 }
       ]
     }
   ];

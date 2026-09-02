@@ -181,7 +181,7 @@ body{
   <!-- 上部ボタン2つ（2026-09-02 ryotaro指示）。現在地は on クラスで塗る -->
   <nav class="pagenav">
     <a class="on" href="line-members.html">限定商品一覧</a>
-    <a href="line-members-wakeari.html">限定訳あり商品</a>
+    <a href="line-members-wakeari.html">限定不揃い品</a>
     <a href="line-members-osusume.html">イマおすすめ</a>
   </nav>
 
@@ -358,6 +358,34 @@ body{
       variants: [
         { t: '1つ',                  p:  760, n: 1 },
         { t: '3つセット【5%オフ】',   p: 2166, n: 3, off: 114, mem: true }
+      ]
+    },
+    {
+      /* 不揃いページの商品。通常の「切り落とし」(P005 ¥1,600) とは別商品で、
+         在庫も別枠（components なし＝P005の76袋は減らない）。 */
+      productId: 'P041', variantId: 'WAKEARI-KIRI',
+      name: '訳あり切り落とし',
+      variant: '1袋 200g',
+      price: 1200, listPrice: 0, stock: 20, limitedTotal: 0,
+      img: 'public/images/products/drive/kiriotoshi.jpg',
+      desc: '部位を選ばず集めた、家庭用の切り落とし。煮込み、炒め、丼に。'
+    },
+    {
+      /* 限定　和牛ミンチ。1つ売りは作らない＝2つ／3つの2択のみ（最低2袋から）。
+         🔴 ラベルの「2つ」「3つ」は GAS の在庫減算(variantUnits)が読む文字列。変更禁止。
+         🔴 名前の全角スペースまで products の name と完全一致させること。
+         お得額の基準は通常の「ミンチ」(P010B ¥1,350 / 200g) の単品価格:
+           2袋 ¥2,700 → ¥2,400（¥300お得）／ 3袋 ¥4,050 → ¥3,050（¥1,000お得）
+         listPrice は2袋のときの単品合計。3つを選ぶと variants 側の off が出る。 */
+      productId: 'P042', variantId: 'GENTEI-MINCE',
+      name: '限定　和牛ミンチ',
+      variant: '1袋 200g',
+      price: 2400, listPrice: 2700, stock: 10, limitedTotal: 0,
+      img: 'public/images/products/drive/minced.jpg',
+      desc: '和牛のミンチ。ハンバーグ、そぼろ、ミートソースに。2袋からのお届けです。',
+      variants: [
+        { t: '2つセット',  p: 2400, n: 2, off:  300 },
+        { t: '3つセット',  p: 3050, n: 3, off: 1000 }
       ]
     }
   ];
