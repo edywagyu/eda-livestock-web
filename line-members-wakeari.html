@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>公式LINE会員限定｜江田畜産</title>
+<title>公式LINE会員限定 訳あり商品｜江田畜産</title>
 <link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -173,15 +173,15 @@ body{
 
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
-  <div class="hero-badge">公式LINE会員様 限定商品</div>
+  <div class="hero-badge">公式LINE会員様 限定 訳あり商品</div>
 </div>
 
 <div class="wrap">
 
   <!-- 上部ボタン2つ（2026-09-02 ryotaro指示）。現在地は on クラスで塗る -->
   <nav class="pagenav">
-    <a class="on" href="line-members.html">限定商品一覧</a>
-    <a href="line-members-wakeari.html">限定訳あり商品</a>
+    <a href="line-members.html">限定商品一覧</a>
+    <a class="on" href="line-members-wakeari.html">限定訳あり商品</a>
     <a href="line-members-osusume.html">イマおすすめ</a>
   </nav>
 
@@ -225,140 +225,20 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
-    /* ---------- 一番上はミスジステーキ（2026-09-02 ryotaro指示） ---------- */
+    /* ===== 訳あり 切り落とし（2026-09-02 ryotaro指示で新設）=====
+       通常の「切り落とし」(P005 ¥1,600) とは別商品。名前を分けてあるのは、
+       GAS の在庫減算・決済が products の name の完全一致でしか動かないため。
+       同名にすると通常品の在庫から減る。
+       🔴 products シートに 訳あり切り落とし の行(P041 / WAKEARI-KIRI)が
+          無いと、validateStockBeforeCheckout が素通り(fail-open)して
+          在庫20を超えて売れ、決済後も stock が減らない。 */
     {
-      productId: 'P023', variantId: 'MISUJI-STEAK',
-      name: 'ミスジステーキ',
-      variant: '1枚 150g',
-      price: 3500, listPrice: 0, stock: 0, limitedTotal: 0,
-      img: 'public/images/products/drive/misuji-steak.jpg',
-      desc: '肩甲骨の内側にある、一頭からわずかしか取れない希少部位。細かなサシと赤身の旨みが同居します。厚めのレア焼きで。',
-      /* まとめ買い割引。ラベルは店頭カードと同じ表記にしてある。
-         GAS の在庫減算が variant 内の「2つ／3つ」を見て ×2 / ×3 するため、
-         この文字列を変えると在庫が正しく減らなくなる。 */
-      variants: [
-        { t: '1つ',                  p: 3500, n: 1 },
-        { t: '2つセット【5%オフ】',   p: 6650, n: 2, off: 350 },
-        { t: '3つセット【10%オフ】',  p: 9450, n: 3, off: 1050 }
-      ]
-    },
-    /* ---------- 非表示（2026-09-02 ryotaro指示） ----------
-         本日限定 食べ比べ2種（Aセット P039 ／ Bセット P040）。
-         販売は 2026-08-31 23:59 で終了しており、以降は在庫0の
-         「完売しました」カードとして残っていたのでカードごと下げた。
-         商品データは products シートに残してある（published=FALSE / stock 0）。
-         戻すときはこのブロックのコメントを外し、published を TRUE に戻す。
-         🔴 在庫は本番DBの components(BOM) で単品に展開される。
-            A = 赤身ステーキ×2 ＋ ミスジステーキ×1
-            B = ミスジステーキ×2 ＋ 赤身ステーキ×1
-            セット行の stock は売れても動かないので、syncCatalog が
-            min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
-         ⚠ 8/31配信のリッチメッセージが #set-a / #set-b で飛んでくるが、
-            カードを下げるとアンカーも消える（ページ先頭に着地する）。
-         10%オフ。単品合計 A ¥10,300 → ¥9,270 ／ B ¥10,400 → ¥9,360。 */
-    /*    {
-      productId: 'P039', variantId: 'TABEKURABE-A', anchor: 'set-a',
-      name: 'Aセット｜赤身ステーキ2枚＋ミスジ1枚',
-      variant: '赤身ステーキ200g×2 ＋ ミスジステーキ150g×1（計550g）',
-      price: 9270, listPrice: 10300, stock: 7, limitedTotal: 7,
-      showLeft: true, leftUnit: 'セット',
-      endAt: '2026-09-01T00:00:00+09:00',
-      endLabel: '本日 8月31日（月）23:59',
-      img: 'public/images/products/drive/tabekurabe-a.jpg',
-      desc: '同じ焼き方で、赤身とサシを食べ比べ。モモの中心から取った赤身ステーキを2枚に、一頭からわずかしか取れないミスジを1枚。赤身をしっかり食べたい方はこちら。'
-    },
-    {
-      productId: 'P040', variantId: 'TABEKURABE-B', anchor: 'set-b',
-      name: 'Bセット｜ミスジ2枚＋赤身ステーキ1枚',
-      variant: 'ミスジステーキ150g×2 ＋ 赤身ステーキ200g×1（計500g）',
-      price: 9360, listPrice: 10400, stock: 3, limitedTotal: 3,
-      showLeft: true, leftUnit: 'セット',
-      endAt: '2026-09-01T00:00:00+09:00',
-      endLabel: '本日 8月31日（月）23:59',
-      img: 'public/images/products/drive/tabekurabe-b.jpg',
-      desc: '同じ焼き方で、赤身とサシを食べ比べ。一頭からわずかしか取れないミスジを2枚に、赤身ステーキを1枚。希少部位を主役にしたい方はこちら。'
-    },*/
-    {
-      productId: 'P034', variantId: 'SHIMOFURI-MEMBER',
-      name: 'LINE会員限定 霜降スライス まとめ買い',
-      variant: '200g×2袋 ／ 200g×3袋',
-      price: 6280, listPrice: 7400, stock: 43, limitedTotal: 43,
-      img: 'public/images/products/drive/shimofuri-slice.jpg',
-      desc: '肩ロースの霜降りを約2mm厚の薄切りに。夏は冷しゃぶで、たれを変えるだけで最後まで飽きません。1袋ずつ買うより2袋で1,120円、3袋で2,720円お得です。',
-      /* 会員限定のまとめ買い割引。shop.html / products.html の通常カード
-         (1つ¥3,700 / 2つセット【5%オフ】 / 3つセット【10%オフ】) は据え置き＝触らない。
-         ラベルの「2つ」「3つ」は GAS の在庫減算(variantUnits)が読む文字列なので変更禁止。
-         1kg(5つセット ¥12,480 / 32%オフ / off:6020) は variantUnits が「5つ」を
-         ×1 と数えるため本番GASの一般化が入るまで出さない
-         （2026-08-17 ryotaro判断: 初回は 400g / 600g の2択で公開）。 */
-      variants: [
-        { t: '2つセット【15%オフ】',  p: 6280, n: 2, off: 1120, mem: true },
-        { t: '3つセット【24%オフ】',  p: 8380, n: 3, off: 2720, mem: true }
-      ]
-    },
-    /* ---------- 非表示（2026-08-27 たろ指示） ----------
-         肉の日 焼肉3袋セット(P027) と同じ 赤身焼肉・バラ焼肉 を使っており、
-         在庫を食い合っていたため下げた（15セット中2セット売れて残13）。
-         単品計¥4,300→¥3,800＝11.6%オフで、肉の日セット(6.5%オフ)より
-         割引率が高い状態でもあった。
-         商品データは products シートに残してある（published=FALSE / 在庫13は据え置き）。
-         戻すときはこのブロックのコメントを外し、published を TRUE に戻す。 */
-      /*{
-      productId: 'P033', variantId: 'YAKINIKU-SET-2',
-      name: 'LINE会員限定 焼肉2種セット',
-      variant: '赤身焼肉200g ＋ バラ焼肉200g',
-      price: 3800, listPrice: 4300, stock: 15, limitedTotal: 15,
-      img: 'public/images/products/drive/yakiniku-set-2.jpg',
-      desc: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得です。ご家庭の焼肉・BBQに。'
-    }*/
-    {
-      /* 2026-09-06(日) 18:30 発売の数量限定セット。
-         🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
-            セットが売れると単品(P035/P036)の在庫が自動で減る＝二重販売しない。
-            だから在庫は取り分けず、カメノコ8袋 / シンシン6袋 を単品と共有する
-            (2026-08-30 ryotaro判断・案2)。components を消すと売り越す。
-         🔴 下の stock は取得失敗時の目安。実際は syncCatalog が構成品から
-            min(カメノコ, シンシン) で作り直す。セット行の stock は動かないので
-            そのまま使うと肉が無くなっても完売表示にならない (2026-08-31 修正)。 */
-      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
-      /* 通常サイト(shop.html / products.html)にも同じ商品を出している。
-         name は在庫減算と決済の突合キーなので両方で完全一致させること。
-         会員限定ではないので memberOnly:false ＝「会員限定」バッジを出さない。 */
-      memberOnly: false,
-      name: 'カメノコ・シンシン焼肉セット',
-      variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, stock: 6, limitedTotal: 6,
-      startAt: '2026-09-06T18:30:00+09:00',
-      startLabel: '9月6日（日）18:30',
-      img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
-      desc: 'モモの中のシンタマを4つに分けた希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。'
-    },
-    {
-      productId: 'P032', variantId: 'HIRE-CUBE',
-      name: 'ヒレサイコロステーキ',
+      productId: 'P041', variantId: 'WAKEARI-KIRI',
+      name: '訳あり切り落とし',
       variant: '1袋 200g',
-      price: 2500, listPrice: 0, stock: 3, limitedTotal: 3,
-      img: 'public/images/products/drive/cube-red.jpg',
-      desc: '一頭から約3%だけのヒレを、ステーキにできない部分までサイコロカットに。希少部位を気軽に。'
-    },
-    {
-      productId: 'P008', variantId: 'HAMBURG',
-      name: 'ハンバーグ',
-      variant: '1個 130g',
-      price: 760, listPrice: 0, stock: 38, limitedTotal: 0,
-      img: 'public/images/products/drive/hamburg.jpg',
-      desc: '和牛100%のシンプル配合。冷蔵庫で数時間解凍してから、フライパンで両面を焼くだけ。平日の夕食に。',
-      /* まとめ買い割引は【この会員限定ページだけ】。shop.html の店頭カードは
-         1つ/2つセット/3つセットのまま＝据え置き。
-         ラベルの「3つ」は GAS の在庫減算(variantUnits)が読む文字列。
-         5つセットは variantUnits の一般化(N つ/N 個 + セット)が本番GASに
-         入っていないと ×1 でしか減らず売り越すので、2026-08-23 に取り下げた。
-         GAS を直したら下の行を戻すこと:
-         { t: '5つセット【10%オフ】',  p: 3420, n: 5, off: 380, mem: true } */
-      variants: [
-        { t: '1つ',                  p:  760, n: 1 },
-        { t: '3つセット【5%オフ】',   p: 2166, n: 3, off: 114, mem: true }
-      ]
+      price: 1200, listPrice: 0, stock: 20, limitedTotal: 0,
+      img: 'public/images/products/drive/kiriotoshi.jpg',
+      desc: '部位を選ばず集めた、家庭用の切り落とし。煮込み、炒め、丼に。'
     }
   ];
 
