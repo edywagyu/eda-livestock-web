@@ -78,12 +78,6 @@ body{
   width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
   display:block;
 }
-/* 訳あり・不揃い品の2枚目（実物の見え方を先に見せる。2026-09-02 ryotaro指示）。
-   パック全体を切らずに見せたいので cover ではなく contain。 */
-.card-img2{
-  width:100%; aspect-ratio:4/3; background:#fff center/contain no-repeat;
-  display:block; border-top:1px solid #EDE8DC;
-}
 .card-body{padding:18px 18px 20px;}
 .card-tag{
   display:inline-block; background:var(--forest); color:var(--gold-light);
@@ -244,13 +238,11 @@ body{
       variant: '1袋 200g',
       price: 1200, listPrice: 0, stock: 20, limitedTotal: 0,
       img: 'public/images/products/drive/kiriotoshi.jpg',
-      fusoroi: true,
-      desc: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざるため、通常の切り落とし（200g ¥1,600）より1袋400円お安くしています。中身は同じ江田和牛です。煮込み、炒め、丼にそのまま使えます。2枚目が実際の商品の一例です。'
+      /* 不揃いの説明と実物写真は商品詳細ページ(product.html?id=P041)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: '部位を選ばず集めた、家庭用の切り落とし。煮込み、炒め、丼に。'
     }
   ];
-
-  /* 訳あり・不揃い品の共通イメージ写真（実物の一例）。fusoroi: true を付けた品の2枚目に入る。 */
-  var FUSOROI_IMG = 'public/images/products/drive/fusoroi-sample.jpg';
 
   var CART_KEY = 'eda-cart';
   var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
@@ -321,10 +313,13 @@ body{
     return !!it.endAt && Date.now() >= endMs(it);
   }
 
-  /* 並べ替え用: 買えないもの(完売 / 販売終了)は 1 ＝ 下に回る。 */
-  function closedRank(it) {
-    if (it.productId === 'P034' && p034Phase() === 'ended') return 1;
-    return (isEnded(it) || it.stock <= 0) ? 1 : 0;
+  /* 並べ替え用（2026-09-02 ryotaro指示）。上から順に:
+       0 = 販売中／1 = これから発売（startAt の予告）／2 = 買えない（完売・販売終了）
+     発売前の判定を先に見る。カードの表示も upcoming が優先される（発売予告 > 完売）ため。 */
+  function sortRank(it) {
+    if (isUpcoming(it)) return 1;
+    if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
+    return (isEnded(it) || it.stock <= 0) ? 2 : 0;
   }
 
   /* ---------- 描画 ---------- */
@@ -377,9 +372,6 @@ body{
     return '' +
       '<div class="card" data-i="' + i + '"' + (it.anchor ? ' id="' + it.anchor + '"' : '') + '>' +
         '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
-        /* 訳あり・不揃い品は実物の見え方を2枚目に必ず入れる（2026-09-02 ryotaro指示）。
-           新しい訳あり品を足すときは fusoroi: true を書くだけでこの写真が入る。 */
-        (it.fusoroi ? '<div class="card-img2" style="background-image:url(' + FUSOROI_IMG + ')"></div>' : '') +
         '<div class="card-body">' +
           (it.memberOnly === false ? '' : '<span class="card-tag">会員限定</span>') +
           '<h3>' + it.name + '</h3>' +
@@ -407,14 +399,13 @@ body{
   }
 
   function render() {
-    /* 買えないもの（完売・販売終了）は常に下に回す（2026-09-02 ryotaro指示）。
+    /* 並び順は「販売中 → これから発売 → 買えないもの（完売・販売終了）」（2026-09-02 ryotaro指示）。
        今後どの商品を足しても自動でそうなるよう、並べ替えはここで毎回やる。
-       発売前（startAt）の予告は「これから買えるもの」なので上のまま動かさない。
        🔴 data-i は ITEMS の元の位置を渡すこと。bind() が ITEMS[data-i] を引くので、
           並べ替え後の見た目の順番を渡すと別商品がカートに入る。
        Array.prototype.sort は安定ソートなので、同じ扱いのもの同士は元の順番を保つ。 */
     var order = ITEMS.map(function (it, i) { return { it: it, i: i }; })
-                     .sort(function (a, b) { return closedRank(a.it) - closedRank(b.it); });
+                     .sort(function (a, b) { return sortRank(a.it) - sortRank(b.it); });
     document.getElementById('cards').innerHTML =
       order.map(function (o) { return cardHtml(o.it, o.i); }).join('');
     bind();
