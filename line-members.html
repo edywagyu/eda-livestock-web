@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>公式LINE会員限定｜江田畜産</title>
+<!-- 在庫API(GAS)の接続を先に張っておく。応答自体が3〜5秒かかるので、握手ぶんだけでも先に済ませる -->
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -230,7 +233,7 @@ body{
       productId: 'P023', variantId: 'MISUJI-STEAK',
       name: 'ミスジステーキ',
       variant: '1枚 150g',
-      price: 3500, listPrice: 0, stock: 0, limitedTotal: 0,
+      price: 3500, listPrice: 0, stock: 7, limitedTotal: 0,
       img: 'public/images/products/drive/misuji-steak.jpg',
       desc: '肩甲骨の内側にある、一頭からわずかしか取れない希少部位。細かなサシと赤身の旨みが同居します。厚めのレア焼きで。',
       /* まとめ買い割引。ラベルは店頭カードと同じ表記にしてある。
@@ -327,7 +330,7 @@ body{
       memberOnly: false,
       name: 'カメノコ・シンシン焼肉セット',
       variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, stock: 6, limitedTotal: 6,
+      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 6,
       startAt: '2026-09-06T18:30:00+09:00',
       startLabel: '9月6日（日）18:30',
       img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
@@ -337,7 +340,7 @@ body{
       productId: 'P032', variantId: 'HIRE-CUBE',
       name: 'ヒレサイコロステーキ',
       variant: '1袋 200g',
-      price: 2500, listPrice: 0, stock: 3, limitedTotal: 3,
+      price: 2500, listPrice: 0, stock: 0, limitedTotal: 3,
       img: 'public/images/products/drive/cube-red.jpg',
       desc: '一頭から約3%だけのヒレを、ステーキにできない部分までサイコロカットに。希少部位を気軽に。'
     },
@@ -345,7 +348,7 @@ body{
       productId: 'P008', variantId: 'HAMBURG',
       name: 'ハンバーグ',
       variant: '1個 130g',
-      price: 760, listPrice: 0, stock: 38, limitedTotal: 0,
+      price: 760, listPrice: 0, stock: 0, limitedTotal: 0,
       img: 'public/images/products/drive/hamburg.jpg',
       desc: '和牛100%のシンプル配合。冷蔵庫で数時間解凍してから、フライパンで両面を焼くだけ。平日の夕食に。',
       /* まとめ買い割引は【この会員限定ページだけ】。shop.html の店頭カードは
@@ -392,8 +395,12 @@ body{
     }
   ];
 
-  /* public_catalog（本物の在庫）を読み終えたか。false の間は購入させない。 */
+  /* 在庫API(GAS)は応答に3〜5秒かかる。待っている間ページを止めないため、
+     ①スクリプトが動いた瞬間に取りに行き ②画面は下の ITEMS の数字ですぐ描き
+     ③「カートに追加」が押された時だけ、まだ届いていなければそこで待つ。
+     ＝ 見た目のロスをゼロにしつつ、完売品はカートに入らない（2026-09-02 ryotaro指示）。 */
   var stockReady = false;
+  var catalogPromise = null;
 
   var CART_KEY = 'eda-cart';
   var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
@@ -468,7 +475,6 @@ body{
        0 = 販売中／1 = これから発売（startAt の予告）／2 = 買えない（完売・販売終了）
      発売前の判定を先に見る。カードの表示も upcoming が優先される（発売予告 > 完売）ため。 */
   function sortRank(it) {
-    if (!stockReady) return 0;          /* 在庫が来るまでは並べ替えない（順番が飛ぶため） */
     if (isUpcoming(it)) return 1;
     if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
     return (isEnded(it) || it.stock <= 0) ? 2 : 0;
@@ -481,12 +487,7 @@ body{
     var ended = phase === 'ended' || isEnded(it);
     var upcoming = isUpcoming(it);
     var soldOut = it.stock <= 0;
-    /* 🔴 本物の在庫は public_catalog を読むまで分からない（約3〜4秒）。それまでは
-       ITEMS に書いてある古い数字しか無く、実際は完売の品に「カートに追加」を
-       出していた（2026-09-02 田崎さん指摘）。読み込みが終わるまでは押させない。
-       取得に失敗したときは stockReady を true にして従来どおりの表示に戻す。 */
-    var loading = !stockReady;
-    var closed = soldOut || ended || upcoming || loading;
+    var closed = soldOut || ended || upcoming;
     var off = (it.listPrice && it.listPrice > it.price)
       ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
     var was = (it.listPrice && it.listPrice > it.price)
@@ -509,9 +510,7 @@ body{
        出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
     var stockLine = '';
-    if (loading) {
-      stockLine = '<p class="stock-line">在庫を確認しています…</p>';
-    } else if (upcoming) {
+    if (upcoming) {
       stockLine = '<p class="stock-line">' + it.startLabel + ' 発売 ／ 数量限定</p>';
     } else if (ended) {
       stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
@@ -550,9 +549,8 @@ body{
             '</div>' +
           '</div>' +
           '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
-            (loading ? '在庫を確認しています…'
-                     : (upcoming ? it.startLabel + ' 発売'
-                                 : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加')))) +
+            (upcoming ? it.startLabel + ' 発売'
+                      : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加'))) +
           '</button>' +
         '</div>' +
       '</div>';
@@ -645,6 +643,24 @@ body{
   }
 
   function addToCart(it, qty, btn) {
+    /* 在庫がまだ届いていなければ、ここで初めて待つ（たいていは既に届いていて待たない）。
+       待っている間に完売が分かったらカートに入れずに描き直す。 */
+    if (!stockReady && catalogPromise) {
+      btn.disabled = true;
+      btn.textContent = '在庫を確認中…';
+      catalogPromise.then(function () {
+        render();
+        var card = document.querySelector('.card[data-i="' + ITEMS.indexOf(it) + '"]');
+        var b2 = card ? card.querySelector('.btn-add') : btn;
+        if (it.stock <= 0 || isEnded(it) || isUpcoming(it)) return;   /* 完売・終了なら入れない */
+        doAddToCart(it, qty, b2);
+      });
+      return;
+    }
+    doAddToCart(it, qty, btn);
+  }
+
+  function doAddToCart(it, qty, btn) {
     var v = currentVariant(it);
     var cart = readCart();
     var maxQty = Math.max(1, Math.floor(it.stock / v.n));
@@ -685,8 +701,18 @@ body{
   }
 
   /* ---------- ライブ在庫・価格 ---------- */
+  /* スクリプトが読まれた時点で取りに行く（init を待たない）。 */
+  function startCatalogFetch() {
+    if (!catalogPromise) {
+      catalogPromise = fetch(CATALOG_URL).then(function (r) { return r.json(); })
+                            .catch(function () { return null; });
+    }
+    return catalogPromise;
+  }
+
   function syncCatalog() {
-    fetch(CATALOG_URL).then(function (r) { return r.json(); }).then(function (res) {
+    startCatalogFetch().then(function (res) {
+      if (!res) { stockReady = true; render(); return; }
       /* public_catalog は {ok:true, products:[...]} を返す。素の配列で来る場合にも備える。 */
       var list = Array.isArray(res) ? res : (res && res.products);
       if (!Array.isArray(list)) return;
@@ -726,10 +752,6 @@ body{
       });
       stockReady = true;
       render();
-    }).catch(function () {
-      /* 取得できなかったときは、これまでどおり ITEMS の数字で表示する（売り逃しを防ぐ）。 */
-      stockReady = true;
-      render();
     });
   }
 
@@ -741,6 +763,8 @@ body{
     d.setDate(d.getDate() + 3);
     el.textContent = 'お届けはご注文から中2日以降（最短 ' + (d.getMonth() + 1) + '月' + d.getDate() + '日）のご指定になります。';
   }
+
+  startCatalogFetch();
 
   /* ---------- 起動 ---------- */
   function init() {
