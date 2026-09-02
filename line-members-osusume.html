@@ -314,6 +314,12 @@ body{
     return !!it.endAt && Date.now() >= endMs(it);
   }
 
+  /* 並べ替え用: 買えないもの(完売 / 販売終了)は 1 ＝ 下に回る。 */
+  function closedRank(it) {
+    if (it.productId === 'P034' && p034Phase() === 'ended') return 1;
+    return (isEnded(it) || it.stock <= 0) ? 1 : 0;
+  }
+
   /* ---------- 描画 ---------- */
   function cardHtml(it, i) {
     var phase = (it.productId === 'P034') ? p034Phase() : 'onsale';
@@ -391,7 +397,16 @@ body{
   }
 
   function render() {
-    document.getElementById('cards').innerHTML = ITEMS.map(cardHtml).join('');
+    /* 買えないもの（完売・販売終了）は常に下に回す（2026-09-02 ryotaro指示）。
+       今後どの商品を足しても自動でそうなるよう、並べ替えはここで毎回やる。
+       発売前（startAt）の予告は「これから買えるもの」なので上のまま動かさない。
+       🔴 data-i は ITEMS の元の位置を渡すこと。bind() が ITEMS[data-i] を引くので、
+          並べ替え後の見た目の順番を渡すと別商品がカートに入る。
+       Array.prototype.sort は安定ソートなので、同じ扱いのもの同士は元の順番を保つ。 */
+    var order = ITEMS.map(function (it, i) { return { it: it, i: i }; })
+                     .sort(function (a, b) { return closedRank(a.it) - closedRank(b.it); });
+    document.getElementById('cards').innerHTML =
+      order.map(function (o) { return cardHtml(o.it, o.i); }).join('');
     bind();
     scheduleP034Refresh();
     scrollToHash();
