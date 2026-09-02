@@ -19,7 +19,8 @@
     REWARD_MIN_SUBTOTAL: 5000,
     REWARD_BY_STAGE: {
       3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-      4: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' }
+      4: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
+      5: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '5回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
     },
 
     /* 肉の日キャンペーン特典（2026-08-27〜08-30）。期間を過ぎたら自動で付かなくなる。 */
