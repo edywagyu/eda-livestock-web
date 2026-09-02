@@ -4145,7 +4145,7 @@ var REWARD_STAGES = [
  { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
  { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
  { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
- { num: 5, label: '5回目のご注文', reward: '牛焼肉 200g プレゼント', desc: '江田和牛の焼肉用カットをお届け', code: 'YAKI-FREE', icon: '5' },
+ { num: 5, label: '5回目のご注文', reward: '赤身焼肉 200g プレゼント', desc: 'ウデの赤身を焼肉用にカット。脂は控えめ（ご注文時に自動でお付けします）', code: '', icon: '5', auto: true },
  { num: 6, label: '6回目のご注文', reward: '限定部位を買える権利', desc: 'イチボ・シンシンなど、通常は店頭に出さない希少部位をご購入いただけます', code: '', icon: '6', member: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '7回目以降の特典はお楽しみに', code: '', icon: '7', locked: true },
  { num: 8, label: '8回目のご注文', reward: '？？？', desc: '', code: '', icon: '8', locked: true }
@@ -4862,7 +4862,6 @@ function goShopWithCoupon(code) {
 
 function generateDemoCoupons(orderCount) {
  var all = [];
- var conditions = '※ 5,000円（税込）以上のご注文で利用可能・他クーポン併用不可';
  if (orderCount === 0) {
  all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '全商品10%OFF', conditions: '※ 初回ご注文で全商品10%OFF・他クーポン併用不可', expires: '2026/12/31まで', status: 'active', minPurchase: 0 });
  }
@@ -4872,9 +4871,9 @@ function generateDemoCoupons(orderCount) {
     checkout.html が注文へ ¥0 で自動同梱する方式に変えた(PR #145)。
     ここに残すとコードと自動同梱が二重に見えるので、クーポン一覧には出さない。
     特典そのものは「特典のあゆみ」(REWARD_STAGES)に auto:true で出ている。 */
- if (orderCount >= 4 && orderCount < 5) {
- all.push({ code: 'YAKI-FREE', value: '無料', name: '牛焼肉 200g', description: '5回目購入特典（江田和牛）', conditions: conditions, expires: '2026/06/10まで', status: 'active', minPurchase: 5000 });
- }
+ /* 🔴 2026-09-02: 5回目も現物が「赤身焼肉」に決まり、3・4回目と同じ自動同梱に変えた。
+    YAKI-FREE のコードは checkout.html の COUPONS に無く、押すと「正しくありません」に
+    なっていたので、このクーポン一覧から外す。特典は「特典のあゆみ」に auto:true で出る。 */
  if (orderCount >= 1) {
  all.push({ code: 'エダチク10', value: '10%OFF', name: '初回購入特典', description: '使用済', expires: '使用日: 2026/04/10', status: 'used' });
  }

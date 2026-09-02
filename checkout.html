@@ -1635,7 +1635,8 @@ async function runRepeatShipCheck() {
       「(特典)」等を足した瞬間に在庫が減らなくなる。目印は variant 側に入れる。
    🔴 回数の数え方はマイページ(customer_lookup の total_orders)と同じにする。
       別の数え方にすると「あと1回で◯◯」の表示と実際に付く特典がズレる。
-   🔴 5回目(牛焼肉200g)は現物の割当が未決のため未登録。決まったら1行足すだけ。
+   🔴 5回目は「赤身焼肉」(P025・1袋200g)で確定(2026-09-02 田崎さん決定)。
+      6回目(限定部位)は現物の割当が未決のため未登録。決まったら1行足すだけ。
    ============================================================ */
 var REWARD_MARK = '🎁';          // staff.html / 注文明細で特典行を見分ける目印
 /* 条件の正は public/js/gift-rules.js（右上の案内 gift-notice.js と同じものを見る＝
@@ -1644,7 +1645,8 @@ var _GR = window.EDA_GIFT_RULES || null;
 var REWARD_MIN_SUBTOTAL = (_GR && _GR.REWARD_MIN_SUBTOTAL) || 5000;
 var REWARD_BY_STAGE = (_GR && _GR.REWARD_BY_STAGE) || {
   3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-  4: { title: 'ハンバーグ',       variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' }
+  4: { title: 'ハンバーグ',       variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
+  5: { title: '赤身焼肉',         variant: '1袋 200g', qty: 1, label: '5回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
 };
 var rewardStage = 0;        // 今回の注文が何回目か（customer_lookup の答え + 1）
 var rewardStock = {};       // { 商品名: 在庫 } 在庫を割った特典は付けない
@@ -3479,7 +3481,7 @@ initCouponFromStorage();
 try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
-<script src="public/js/gift-rules.js?v=001"></script>
+<script src="public/js/gift-rules.js?v=002"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=002" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
