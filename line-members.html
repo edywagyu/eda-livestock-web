@@ -90,7 +90,8 @@ body{
   font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 6px; color:var(--ink);
 }
 .card-variant{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
-.card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 16px;}
+.card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 10px;}
+    .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
 .price-now{font-family:'Shippori Mincho',serif;font-size:27px;font-weight:700;color:var(--forest);}
@@ -237,6 +238,7 @@ body{
        冷凍焼けの実物写真は商品詳細ページ(product.html?id=P043)の2枚目に置く。 */
     {
       productId: 'P043', variantId: 'FUZOROI-SET',
+      detailId: 'P043', detailLabel: '実物の写真を見る',
       name: '不揃い品セット',
       variant: '和牛5種 各200g 計1kg',
       price: 7980, listPrice: 10850, stock: 3, limitedTotal: 0,
@@ -248,6 +250,7 @@ body{
     /* ---------- 一番上はミスジステーキ（2026-09-02 ryotaro指示） ---------- */
     {
       productId: 'P023', variantId: 'MISUJI-STEAK',
+      detailId: 'P023',
       name: 'ミスジステーキ',
       variant: '1枚 150g',
       price: 3500, listPrice: 0, stock: 7, limitedTotal: 0,
@@ -341,6 +344,7 @@ body{
             min(カメノコ, シンシン) で作り直す。セット行の stock は動かないので
             そのまま使うと肉が無くなっても完売表示にならない (2026-08-31 修正)。 */
       productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
+      detailId: 'P037',
       /* 通常サイト(shop.html / products.html)にも同じ商品を出している。
          name は在庫減算と決済の突合キーなので両方で完全一致させること。
          会員限定ではないので memberOnly:false ＝「会員限定」バッジを出さない。 */
@@ -355,6 +359,7 @@ body{
     },
     {
       productId: 'P032', variantId: 'HIRE-CUBE',
+      detailId: 'P032',
       name: 'ヒレサイコロステーキ',
       variant: '1袋 200g',
       price: 2500, listPrice: 0, stock: 0, limitedTotal: 3,
@@ -363,6 +368,7 @@ body{
     },
     {
       productId: 'P008', variantId: 'HAMBURG',
+      detailId: 'P008',
       name: 'ハンバーグ',
       variant: '1個 130g',
       price: 760, listPrice: 0, stock: 0, limitedTotal: 0,
@@ -384,6 +390,7 @@ body{
       /* 不揃いページの商品。通常の「切り落とし」(P005 ¥1,600) とは別商品で、
          在庫も別枠（components なし＝P005の76袋は減らない）。 */
       productId: 'P041', variantId: 'WAKEARI-KIRI',
+      detailId: 'P041', detailLabel: '実物の写真を見る',
       name: '訳あり切り落とし',
       variant: '1袋 200g',
       price: 1200, listPrice: 0, stock: 20, limitedTotal: 0,
@@ -552,6 +559,14 @@ body{
           '<h3>' + it.name + '</h3>' +
           '<p class="card-variant">' + it.variant + '</p>' +
           '<p class="card-desc">' + it.desc + '</p>' +
+          /* 商品詳細ページへのリンク。detailId を持つ品だけに出す（2026-09-02 ryotaro指示）。
+             🔴 全部に出してはいけない。product.html は products-master.js から引くので、
+                そこに無い品(P033/P034/P042 など)へ飛ばすとサーロイン(売り切れ)に化ける。
+                詳細ページを足したら detailId を書く、が対応関係。 */
+          (it.detailId
+            ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
+              + (it.detailLabel || '商品の詳細を見る') + ' →</a>'
+            : '') +
           '<div class="price-row">' + was +
             '<span class="price-now">' + yen(it.price) + '</span>' + off +
           '</div>' +
