@@ -90,7 +90,8 @@ body{
   font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 6px; color:var(--ink);
 }
 .card-variant{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
-.card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 16px;}
+.card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 10px;}
+    .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
 .price-now{font-family:'Shippori Mincho',serif;font-size:27px;font-weight:700;color:var(--forest);}
@@ -233,6 +234,24 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
+    /* ===== 不揃い品セット（2026-09-03(木) 18:30 発売）=====
+       和牛5種を各200g・計1kg。ステーキはミスジか赤身のランダム。
+       🔴 components なし＝別枠在庫。セットが売れても構成品(ミンチ/赤身ステーキ/
+          赤身スライス/バラ焼肉/切り落とし)の在庫は自動で減らない＝手で調整する
+          （2026-09-02 ryotaro「在庫はこっちでやる」）。
+       🔴 stock は products シート(P043)が正。下の値は取得失敗時のフォールバック。
+       冷凍焼けの実物写真は商品詳細ページ(product.html?id=P043)の2枚目に置く。 */
+    {
+      productId: 'P043', variantId: 'FUZOROI-SET',
+      detailId: 'P043', detailLabel: '実物の写真を見る',
+      name: '不揃い品セット',
+      variant: '和牛5種 各200g 計1kg',
+      price: 7980, listPrice: 10850, stock: 3, limitedTotal: 0,
+      startAt: '2026-09-03T18:30:00+09:00',
+      startLabel: '9月3日（木）18:30',
+      img: 'public/images/products/drive/fuzoroi-set.jpg',
+      desc: '和牛ミンチ／ステーキ（ミスジか赤身がランダムで入ります）／赤身スライス／バラ焼肉／切り落とし。スライス・バラ焼肉・切り落としは冷凍焼けで、表面の色が黒っぽく変わっています。ステーキは形が不揃いです。内容量も味も、通常の商品と同じです。'
+    },
     /* ===== 訳あり 切り落とし（2026-09-02 ryotaro指示で新設）=====
        通常の「切り落とし」(P005 ¥1,600) とは別商品。名前を分けてあるのは、
        GAS の在庫減算・決済が products の name の完全一致でしか動かないため。
@@ -242,6 +261,7 @@ body{
           在庫20を超えて売れ、決済後も stock が減らない。 */
     {
       productId: 'P041', variantId: 'WAKEARI-KIRI',
+      detailId: 'P041', detailLabel: '実物の写真を見る',
       name: '訳あり切り落とし',
       variant: '1袋 200g',
       price: 1200, listPrice: 0, stock: 20, limitedTotal: 0,
@@ -392,6 +412,14 @@ body{
           '<h3>' + it.name + '</h3>' +
           '<p class="card-variant">' + it.variant + '</p>' +
           '<p class="card-desc">' + it.desc + '</p>' +
+          /* 商品詳細ページへのリンク。detailId を持つ品だけに出す（2026-09-02 ryotaro指示）。
+             🔴 全部に出してはいけない。product.html は products-master.js から引くので、
+                そこに無い品(P033/P034/P042 など)へ飛ばすとサーロイン(売り切れ)に化ける。
+                詳細ページを足したら detailId を書く、が対応関係。 */
+          (it.detailId
+            ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
+              + (it.detailLabel || '商品の詳細を見る') + ' →</a>'
+            : '') +
           '<div class="price-row">' + was +
             '<span class="price-now">' + yen(it.price) + '</span>' + off +
           '</div>' +

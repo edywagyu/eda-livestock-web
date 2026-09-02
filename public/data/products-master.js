@@ -487,6 +487,26 @@
           → A・B・ミスジ単品が同じミスジ在庫を共有し、残数が自動で連動する。
           数量を変えるときは products の「ミスジステーキ」「赤身ステーキ」の stock を動かす。
        10%オフ。単品合計 ¥10,300 → ¥9,270 ／ ¥10,400 → ¥9,360。 */
+    /* ===== 不揃い品セット（2026-09-03(木) 18:30 発売・会員限定ページの商品）=====
+       和牛5種を各200g・計1kg。ステーキはミスジか赤身のランダム。
+       🔴 components なし＝別枠在庫。ステーキがランダムで在庫は手管理のため
+          BOM の自動減算は使わない＝構成品(ミンチ/赤身ステーキ/赤身スライス/
+          バラ焼肉/切り落とし)の在庫はセットが売れても自動では減らない
+          （2026-09-02 ryotaro「在庫はこっちでやる」）。
+       🔴 訳あり・不揃い品は images の2枚目に実物の一例を入れる。
+          冷凍焼けの程度は【この商品詳細ページ】の2枚目で見せる（2026-09-02 ryotaro指示）。 */
+    {
+      productId: 'P043', variantId: 'FUZOROI-SET', sku: 'EDA-FUZOROI-SET',
+      stripePriceId: '',
+      name: '不揃い品セット', variant: '和牛5種 各200g 計1kg',
+      price: 7980, listPrice: 10850, weight: 1000, stock: 3, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Fuzoroi Assortment Set',
+      description: '和牛5種を、各200g・計1kg。和牛ミンチ／ステーキ（ミスジか赤身がランダムで入ります）／赤身スライス／バラ焼肉／切り落とし。スライス・バラ焼肉・切り落としは冷凍焼けで、表面の色が黒っぽく変わっています。2枚目が実際の商品の一例です。ステーキは形が不揃いです。内容量も味も、通常の商品と同じです。見た目のぶんだけお安くしました。単品で買うと ¥10,850 → ¥7,980。',
+      images: [
+        'public/images/products/drive/fuzoroi-set.jpg',
+        'public/images/products/drive/fuzoroi-setsumei.jpg'
+      ]
+    },
     /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
