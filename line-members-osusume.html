@@ -245,6 +245,9 @@ body{
     }
   ];
 
+  /* public_catalog（本物の在庫）を読み終えたか。false の間は購入させない。 */
+  var stockReady = false;
+
   var CART_KEY = 'eda-cart';
   var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
 
@@ -318,6 +321,7 @@ body{
        0 = 販売中／1 = これから発売（startAt の予告）／2 = 買えない（完売・販売終了）
      発売前の判定を先に見る。カードの表示も upcoming が優先される（発売予告 > 完売）ため。 */
   function sortRank(it) {
+    if (!stockReady) return 0;          /* 在庫が来るまでは並べ替えない（順番が飛ぶため） */
     if (isUpcoming(it)) return 1;
     if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
     return (isEnded(it) || it.stock <= 0) ? 2 : 0;
@@ -330,7 +334,12 @@ body{
     var ended = phase === 'ended' || isEnded(it);
     var upcoming = isUpcoming(it);
     var soldOut = it.stock <= 0;
-    var closed = soldOut || ended || upcoming;
+    /* 🔴 本物の在庫は public_catalog を読むまで分からない（約3〜4秒）。それまでは
+       ITEMS に書いてある古い数字しか無く、実際は完売の品に「カートに追加」を
+       出していた（2026-09-02 田崎さん指摘）。読み込みが終わるまでは押させない。
+       取得に失敗したときは stockReady を true にして従来どおりの表示に戻す。 */
+    var loading = !stockReady;
+    var closed = soldOut || ended || upcoming || loading;
     var off = (it.listPrice && it.listPrice > it.price)
       ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
     var was = (it.listPrice && it.listPrice > it.price)
@@ -353,7 +362,9 @@ body{
        出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
     var stockLine = '';
-    if (upcoming) {
+    if (loading) {
+      stockLine = '<p class="stock-line">在庫を確認しています…</p>';
+    } else if (upcoming) {
       stockLine = '<p class="stock-line">' + it.startLabel + ' 発売 ／ 数量限定</p>';
     } else if (ended) {
       stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
@@ -392,8 +403,9 @@ body{
             '</div>' +
           '</div>' +
           '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
-            (upcoming ? it.startLabel + ' 発売'
-                      : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加'))) +
+            (loading ? '在庫を確認しています…'
+                     : (upcoming ? it.startLabel + ' 発売'
+                                 : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加')))) +
           '</button>' +
         '</div>' +
       '</div>';
@@ -565,8 +577,13 @@ body{
         else if (typeof live.stock === 'number') it.stock = live.stock;
         changed = true;
       });
-      if (changed) render();
-    }).catch(function () {});
+      stockReady = true;
+      render();
+    }).catch(function () {
+      /* 取得できなかったときは、これまでどおり ITEMS の数字で表示する（売り逃しを防ぐ）。 */
+      stockReady = true;
+      render();
+    });
   }
 
   /* 最短お届け日は checkout.html と同じ「3日後から」。固定で書くと必ず古くなるので毎回計算する。 */
