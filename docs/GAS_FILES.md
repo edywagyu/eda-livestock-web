@@ -1,6 +1,7 @@
 # 本番GASプロジェクトとリポジトリの対応表
 
-最終確認: 2026-08-22（`clasp clone` で本番プロジェクトを実際に読み出して照合）
+最終確認: 2026-08-22 18:00（`clasp clone` で本番プロジェクトを実際に読み出して照合。
+この時点で `Code.js` は `origin/main` と**差分0行**）
 
 本番の Apps Script プロジェクト
 `1ElO2DI4UNrhFPAy7cf5XEfysRrdM9aU5gkAkJqx4MILkq0OHJINSIf-n`
@@ -18,7 +19,7 @@ push するときは必ず `clasp clone` で本番を落としてきて、
 
 | 本番プロジェクトのファイル | リポジトリ | 備考 |
 |---|---|---|
-| `Code.js` | `gas/Code.gs` | リポジトリ側が新しい。本番に未反映の差分あり（下記） |
+| `Code.js` | `gas/Code.gs` | 2026-08-22 18:00 時点で**一致**（#127 まで反映済み） |
 | `Code_v2_Additions.js` | `gas/Code_v2_Additions.gs` | 差分あり |
 | `cart_holds.js` | `gas/cart_holds.gs` | 一致 |
 | `appsscript.json` | `gas/appsscript.json` | 差分あり |
@@ -37,9 +38,11 @@ push するときは必ず `clasp clone` で本番を落としてきて、
 2. ~~`publicPopular()` が二重定義になりうる~~ → **2026-08-22 に解消済み。**
    `gas/Code.gs` から切り出して `gas/Popular.gs` に移した（本番の `Popular.js` とバイト一致）。
    これでリポジトリと本番のファイル構成が一致し、`Code.gs` を push しても二重定義にならない。
-3. **本番の Web App 2本はバージョン固定** (`@105` staff系 / `@107` mypage系)。
-   `clasp push` はコードを HEAD に置くだけで、この2本の挙動は変わらない。
+3. **本番の Web App 2本はバージョン固定** (**`@110` staff・計測系 / `@109` mypage・決済系**、
+   2026-08-22 18:00 時点)。`clasp push` はコードを HEAD に置くだけで、この2本の挙動は変わらない。
    本番に反映したい時だけ `clasp redeploy <deploymentId>` で版を上げる。
+   - staff・計測系 `AKfycbx7u3D5mM…`（products-loader / c.html が使う）
+   - mypage・決済系 `AKfycbxFfdz-H6Vcw…`（`eda-config.js` の `GAS_URL_PROD`）
 4. **版を上げた人が実行ユーザーになる**（`appsscript.json` の `executeAs: USER_DEPLOYING`）。
    メールの送信元や権限がその人に切り替わるので、上げる前に誰の名義にするか決めること。
 
@@ -120,5 +123,11 @@ diff /tmp/main_code.gs $D2/Code.js | grep -c '^[<>]'
 - **②実際に起きた事故**: 13:57 に push → 13:58 に別チャットが PR #127 をマージ →
   別チャットが**古い土台のまま** push → **#127（顧客の二重登録を防ぐ）が本番から抜けた**（61行）。
   手順5・6をやっていれば、その場で気づけた。
+  - **→ ✅ 2026-08-22 18:00 に復旧済み。** この手順1〜6をそのまま実行して push し直した
+    （`Code.js` 61行のみ更新 / 10ファイルで欠落なし / push後の再clone照合OK / main との差分0行）。
+    あわせてデプロイ2本の版を上げた（staff・計測系 `@108→@110` / mypage・決済系 `@107→@109`）。
+    実行ユーザーは `r.tasaki@` のまま変更なし。**この事故は解消しており、対応不要。**
+  - 教訓としては生かす: **「マージした」と「本番に入った」は別**。マージ直後に他チャットが
+    古い土台で push すると、マージ内容が黙って消える。手順6（main との突き合わせ）が最後の砦。
 
 **push は最後の一手だけ人間が打つ。打つ直前に手順3を、打った直後に手順5・6を必ず回す。**
