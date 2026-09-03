@@ -795,7 +795,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>
       </div>
     </details>
-    <details class="pdp-detail-item">
+    <details class="pdp-detail-item" id="pdpCookItem">
       <summary class="pdp-detail-summary" id="pdpCookTitle">焼き方</summary>
       <div class="pdp-detail-body" id="pdpCookingTips">
         <p>塩のみで、フライパンに 90 秒。<br>
@@ -877,7 +877,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
 <!-- ============ SCRIPTS ============ -->
 <script src="public/data/products-master.js?v=2026-09-03-p042"></script>
-<script src="public/data/pdp-content.js?v=2026-09-03c"></script>
+<script src="public/data/pdp-content.js?v=2026-09-03-nocook"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -1009,12 +1009,20 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     if (cutEl) cutEl.textContent = C.cutCopy;
     const thawEl = document.getElementById('pdpThaw');
     if (thawEl) thawEl.innerHTML = '<p>' + esc(C.thaw) + '。<br>解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>';
-    const ctEl = document.getElementById('pdpCookTitle');
-    if (ctEl) ctEl.textContent = C.cookTitle;
-    const tipEl = document.getElementById('pdpCookingTips');
-    if (tipEl && C.cook && C.cook.length) {
-      tipEl.innerHTML = '<ol class="pdp-cook-steps">' +
-        C.cook.map(s => '<li><b>' + esc(s.t) + '</b><span>' + esc(s.d) + '</span></li>').join('') + '</ol>';
+    /* cook を持たない品は「焼き方／食べ方」の項目ごと隠す。
+       中身が複数種のセットなど、ひとつの焼き方に書けない品のため
+       （2026-09-03 ryotaro指示・不揃い品セット P043）。 */
+    const cookItem = document.getElementById('pdpCookItem');
+    if (!C.cook || !C.cook.length) {
+      if (cookItem) cookItem.hidden = true;
+    } else {
+      const ctEl = document.getElementById('pdpCookTitle');
+      if (ctEl) ctEl.textContent = C.cookTitle;
+      const tipEl = document.getElementById('pdpCookingTips');
+      if (tipEl) {
+        tipEl.innerHTML = '<ol class="pdp-cook-steps">' +
+          C.cook.map(s => '<li><b>' + esc(s.t) + '</b><span>' + esc(s.d) + '</span></li>').join('') + '</ol>';
+      }
     }
   } else {
     const cutItem = document.getElementById('pdpCutItem');
