@@ -219,7 +219,10 @@
     sync();
   }
 
-  function apply() { try { applyDetails(); applyBundle(); } catch (e) { console.error(e); } }
+  /* 2026-09-03 ryotaro指示で、会員限定ページの「まとめ買いで送料無料」ボックスは
+     いったん出さない（商品詳細ページ側のおすすめは残す）。
+     復活させるときは applyBundle() をここに戻す。 */
+  function apply() { try { applyDetails(); } catch (e) { console.error(e); } }
 
   /* カードは何度か描き直される（在庫の取得後・発売時刻・タブ復帰）。
      ページ側の render() から呼ばれない経路でも確実に付くよう、
