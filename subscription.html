@@ -2543,7 +2543,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
  <div class="sub-detail-grid">
  <div class="sub-detail-items" id="detailItemsList">
- <h3>毎月お届けの内容</h3>
+ <h3>毎月お届けの内容例</h3>
  <!-- 中身は JS で動的に切替 -->
  </div>
 
@@ -3819,7 +3819,7 @@ function selectPlan(planKey, fromUser) {
 
  // 内容物リスト
  const itemsList = document.getElementById('detailItemsList');
- itemsList.innerHTML = '<h3>毎月お届けの内容</h3>' + plan.items.map(it => `
+ itemsList.innerHTML = '<h3>毎月お届けの内容例</h3>' + plan.items.map(it => `
  <div class="sub-detail-item-row">
  <div class="sub-detail-item-img" style="background-image:url('${it.img}')"></div>
  <div class="sub-detail-item-info">
