@@ -434,7 +434,8 @@ body{
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
     var stockLine = '';
     if (upcoming) {
-      stockLine = '<p class="stock-line">' + it.startLabel + ' 発売 ／ 数量限定</p>';
+      stockLine = '<p class="stock-line">' + it.startLabel + ' 発売'
+                + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + ' ／ 数量限定</p>';
     } else if (ended) {
       stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
     } else if (soldOut) {
@@ -446,6 +447,10 @@ body{
          ここに出す数字は在庫と連動する。 */
       stockLine = '<p class="stock-line">残り' + it.stock + (it.leftUnit || '点')
                 + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + '</p>';
+    } else if (it.endLabel) {
+      /* 締切のある品は締切を日時で出す（LINE本文の確定ルールと同じ）。
+         数量は書かない＝構成品を単品と共有するセットは総数が決まらないため。 */
+      stockLine = '<p class="stock-line">' + it.endLabel + 'まで ／ 数量限定</p>';
     } else if (it.productId === 'P034') {
       /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
       stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
