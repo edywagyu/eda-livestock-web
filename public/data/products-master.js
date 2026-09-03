@@ -511,6 +511,20 @@
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
        通常の「切り落とし」(P005 ¥1,600) とは別商品で、在庫も別枠（componentsなし）。 */
+    /* ===== 限定　和牛ミンチ（会員限定ページ line-members-osusume.html の商品）=====
+       🔴 2026-09-03 追加。ここに無いと product.html?id=P042 がサーロインに化け、
+          不揃い品セットの「まとめてご注文」にも出せない。値は products シートが正。 */
+    {
+      productId: 'P042', variantId: 'GENTEI-MINCE', sku: 'EDA-GENTEI-MINCE-200',
+      stripePriceId: '',
+      name: '限定　和牛ミンチ', variant: '1袋 200g',
+      price: 2400, weight: 200, stock: 10, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Gentei Wagyu Minced',
+      description: '和牛のミンチ。ハンバーグ、そぼろ、ミートソースに。2袋からのお届けです。',
+      images: [
+        'public/images/products/drive/minced.jpg'
+      ]
+    },
     {
       productId: 'P041', variantId: 'WAKEARI-KIRI', sku: 'EDA-WAKEARI-KIRI-200',
       stripePriceId: '',

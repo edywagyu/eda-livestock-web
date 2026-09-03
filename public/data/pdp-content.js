@@ -1,4 +1,4 @@
-/* 江田畜産 商品詳細ページ 追加コンテンツ（2026-09-02）
+/* 江田畜産 商品詳細ページ 追加コンテンツ（2026-09-02〜）
    部位・包装・人数目安・解凍・調理手順・育て方・併買おすすめ */
 window.EDA_PDP_CONTENT = {
  "P001": {
@@ -32,6 +32,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1枚 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P002",
    "P003",
@@ -87,6 +88,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1枚 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -138,6 +140,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P024",
    "P002",
@@ -193,6 +196,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P025",
    "P003",
@@ -244,6 +248,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P024",
    "P003",
@@ -299,6 +304,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P025",
    "P023",
@@ -350,6 +356,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 150g",
   "weight": 150,
+  "featured": false,
   "cross": [
    "P024",
    "P003",
@@ -409,6 +416,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1個 130g",
   "weight": 130,
+  "featured": false,
   "cross": [
    "P005",
    "P003",
@@ -460,6 +468,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "個包装 50g",
   "weight": 50,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -511,6 +520,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -562,6 +572,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P004",
    "P025",
@@ -613,6 +624,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -664,6 +676,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -715,6 +728,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P025",
    "P023",
@@ -766,6 +780,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -813,6 +828,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -868,6 +884,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1枚 150g",
   "weight": 150,
+  "featured": false,
   "cross": [
    "P025",
    "P006",
@@ -927,6 +944,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1枚 150g",
   "weight": 150,
+  "featured": false,
   "cross": [
    "P003",
    "P007",
@@ -982,6 +1000,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P006",
    "P023",
@@ -1037,6 +1056,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1088,6 +1108,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1139,6 +1160,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1190,6 +1212,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1241,6 +1264,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "カメノコ200g ＋ シンシン200g",
   "weight": 400,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1292,6 +1316,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1343,6 +1368,7 @@ window.EDA_PDP_CONTENT = {
   ],
   "variant": "1袋 200g",
   "weight": 200,
+  "featured": false,
   "cross": [
    "P003",
    "P024",
@@ -1364,6 +1390,52 @@ window.EDA_PDP_CONTENT = {
    {
     "id": "P004",
     "q": 1
+   }
+  ]
+ },
+ "P043": {
+  "cut": "和牛5種（ミンチ／ステーキ／赤身スライス／バラ焼肉／切り落とし）",
+  "cutCopy": "和牛ミンチ、ステーキ（ミスジか赤身がランダムで入ります）、赤身スライス、バラ焼肉、切り落としの5種を各200g、計1kg。スライス・バラ焼肉・切り落としは冷凍焼けで、表面の色が黒っぽく変わっています。ステーキは形が不揃いです。内容量も味も、通常の商品と同じです。",
+  "pack": "脱気包装",
+  "meals": "5〜6人前",
+  "thaw": "冷蔵庫で1日〜1日半（お急ぎの場合は流水で15分以上）",
+  "cookTitle": "食べ方。",
+  "cook": [
+   {
+    "t": "解凍する",
+    "d": "冷蔵庫で1日〜1日半かけて解凍します。使う分だけ取り出して、残りは冷凍のままで構いません。"
+   },
+   {
+    "t": "ステーキは強火で",
+    "d": "フライパンを熱してから焼き付け、裏返して火を弱めます。焼きすぎないこと。"
+   },
+   {
+    "t": "スライスは湯にくぐらせる",
+    "d": "沸騰の一歩手前の湯に数秒。色が変わったら引き上げます。"
+   },
+   {
+    "t": "焼肉・切り落としは広げて",
+    "d": "重ねずに広げて焼きます。切り落としは煮込みや丼にも。"
+   },
+   {
+    "t": "ミンチは火を入れる",
+    "d": "ハンバーグは蒸し焼き、ソースやカレーは炒めてから煮込みます。"
+   }
+  ],
+  "variant": "和牛5種 各200g 計1kg",
+  "weight": 1000,
+  "featured": true,
+  "cross": [
+   "P042"
+  ],
+  "combo": [
+   {
+    "id": "P043",
+    "q": 1
+   },
+   {
+    "id": "P042",
+    "q": 3
    }
   ]
  }
