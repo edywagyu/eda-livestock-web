@@ -511,6 +511,28 @@
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
        通常の「切り落とし」(P005 ¥1,600) とは別商品で、在庫も別枠（componentsなし）。 */
+    /* ===== 会員限定セット（line-members.html の商品）=====
+       🔴 2026-09-03 追加。ここに無いと product.html?id=P033 / P034 が
+          サーロインに化ける（会員限定ページのカードから詳細へ飛べるようにするため必須）。
+       products シートでは published=false（通常の一覧には出さない）。値はシートが正。 */
+    {
+      productId: 'P033', variantId: 'YAKINIKU-SET-2', sku: 'EDA-YAKINIKU-SET2',
+      stripePriceId: '',
+      name: 'LINE会員限定 焼肉2種セット', variant: '赤身焼肉200g＋バラ焼肉200g',
+      price: 3800, weight: 400, stock: 13, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Members Yakiniku Set',
+      description: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得な公式LINE会員限定セット。ご家庭の焼肉・BBQに。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
+    },
+    {
+      productId: 'P034', variantId: 'SHIMOFURI-MEMBER', sku: 'EDA-SHIMO-MEMBER',
+      stripePriceId: '',
+      name: 'LINE会員限定 霜降スライス まとめ買い', variant: '200g×2袋 ／ 200g×3袋',
+      price: 6280, weight: 400, stock: 41, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Members Marbled Slice Bulk',
+      description: '肩ロースの霜降りを薄切りに。夏は冷しゃぶで、たれを変えるだけで最後まで飽きません。1袋ずつ買うより2袋で1,120円、3袋で2,720円お得です。',
+      images: ['public/images/products/drive/shimofuri-slice.jpg']
+    },
     /* ===== 限定　和牛ミンチ（会員限定ページ line-members-osusume.html の商品）=====
        🔴 2026-09-03 追加。ここに無いと product.html?id=P042 がサーロインに化け、
           不揃い品セットの「まとめてご注文」にも出せない。値は products シートが正。 */

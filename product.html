@@ -1051,8 +1051,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const byId = {};
     all.forEach(x => { byId[x.productId] = x; });
     const items = C.combo
-      .map(c => ({ p: byId[c.id], q: c.q }))
-      .filter(x => x.p && !x.p.comingSoon && (x.p.productId === productId || (x.p.stock || 0) > 0));
+      .map(c => ({ p: byId[c.id], q: c.q, pr: c.price || 0, vl: c.variant || '' }))
+      .filter(x => x.p && !x.p.comingSoon && (x.p.productId === productId || (x.p.stock || 0) > 0))
+      .map(x => Object.assign(x, { unit: x.pr || x.p.price || 0 }));
     if (items.length < 2) return;
     const sec = document.getElementById('pdpBundle');
     const FREE = 11000;
@@ -1071,17 +1072,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         </label>
         <div class="pdp-bd-tag">${i === 0 ? 'この商品' : '&nbsp;'}</div>
         <h3>${esc(x.p.name)}</h3>
-        <div class="pdp-bd-price">¥${(x.p.price || 0).toLocaleString()}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}</div>
+        <div class="pdp-bd-price">¥${x.unit.toLocaleString()}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}</div>
       </article>`).join('');
     function sync() {
       const on = [].slice.call(document.querySelectorAll('.pdp-bd-cb'))
         .map((cb, i) => cb.checked ? items[i] : null).filter(Boolean);
-      const total = on.reduce((s, x) => s + (x.p.price || 0) * x.q, 0);
+      const total = on.reduce((s, x) => s + x.unit * x.q, 0);
       document.getElementById('pdpBdRow').innerHTML = on.length
         ? on.map(x => `<div class="pdp-bd-item">
             <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="">
-            <div><b>${esc(x.p.name)}</b>${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}<br>
-            <span>¥${((x.p.price || 0) * x.q).toLocaleString()}</span></div></div>`).join('<div class="pdp-bd-plus">＋</div>')
+            <div><b>${esc(x.p.name)}</b>${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}<br>
+            <span>¥${(x.unit * x.q).toLocaleString()}</span></div></div>`).join('<div class="pdp-bd-plus">＋</div>')
         : '<div class="pdp-bd-empty">商品を選んでください。</div>';
       document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
       document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
@@ -1104,19 +1105,19 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         const cart = JSON.parse(localStorage.getItem('eda-cart') || '[]');
         on.forEach(x => {
           const pr = x.p;
-          const ex = cart.find(c => c.variantId === pr.variantId);
+          const ex = cart.find(c => c.variantId === pr.variantId && c.variant === (x.vl || pr.variant || ''));
           if (ex) { ex.qty += x.q; }
           else {
             cart.push({
               variantId: pr.variantId, productId: pr.productId, title: pr.name,
-              variant: pr.variant || '', price: pr.price || 0, qty: x.q,
+              variant: x.vl || pr.variant || '', price: x.unit, qty: x.q,
               img: (pr.images && pr.images[0]) || '', stripePriceId: pr.stripePriceId || ''
             });
           }
           try {
             if (window.edaAnalytics) {
-              window.edaAnalytics.addToCart(pr.productId || pr.variantId || '', (pr.price || 0) * x.q,
-                { title: pr.name || '', variant: pr.variant || '', source: 'pdp-bundle', qty: x.q });
+              window.edaAnalytics.addToCart(pr.productId || pr.variantId || '', x.unit * x.q,
+                { title: pr.name || '', variant: x.vl || pr.variant || '', source: 'pdp-bundle', qty: x.q });
             }
           } catch (e) {}
         });
