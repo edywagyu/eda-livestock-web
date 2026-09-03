@@ -62,6 +62,44 @@
       var after = card.querySelector('.card-desc') || card.querySelector('.card-variant');
       if (after && after.parentNode) after.parentNode.insertBefore(el, after.nextSibling);
     });
+    linkCards();
+  }
+
+  /* ---------- カードから商品詳細ページへ飛べるようにする ----------
+     従来は detailId を書いた品だけリンクが出ていて、他はタップしても進めなかった。
+     products-master.js に載っている品なら全部リンクする（載っていない品に飛ばすと
+     サーロインに化けるので、そこだけは今までどおりリンクしない）。 */
+  function inMaster(pid) {
+    var all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+    for (var i = 0; i < all.length; i++) { if (all[i].productId === pid) return true; }
+    return false;
+  }
+  function linkCards() {
+    var LM = window.__LM;
+    if (!LM || !LM.ITEMS) return;
+    document.querySelectorAll('.card').forEach(function (card) {
+      var it = LM.ITEMS[Number(card.getAttribute('data-i'))];
+      if (!it || !it.productId) return;
+      if (!inMaster(it.productId)) return;
+      var href = 'product.html?id=' + it.productId;
+      /* 既存のリンクが無ければ足す */
+      if (!card.querySelector('.card-detail')) {
+        var a = document.createElement('a');
+        a.className = 'card-detail';
+        a.href = href;
+        a.textContent = '商品の詳細を見る →';
+        var d = card.querySelector('.lm-detail') || card.querySelector('.card-desc');
+        if (d && d.parentNode) d.parentNode.insertBefore(a, d.nextSibling);
+      }
+      /* 写真と商品名もタップで飛べるように */
+      ['.card-img', 'h3'].forEach(function (sel) {
+        var t = card.querySelector(sel);
+        if (!t || t.__lmLinked) return;
+        t.__lmLinked = true;
+        t.style.cursor = 'pointer';
+        t.addEventListener('click', function () { location.href = href; });
+      });
+    });
   }
 
   /* ---------- 2) 送料無料のまとめ買いボックス ---------- */
@@ -77,10 +115,16 @@
     var base = featured || pool[0];
     var C = content(base.productId);
     if (C && C.combo && C.combo.length && C.combo.every(function (c) { return byId[c.id]; })) {
-      return C.combo.map(function (c) { return { it: byId[c.id], q: c.q }; });
+      return C.combo.map(function (c) {
+        var it = byId[c.id], unit = c.price || it.price, vi = -1;
+        if (c.variant && it.variants) {
+          it.variants.forEach(function (v, i) { if (v.t === c.variant) { vi = i; unit = c.price || v.p; } });
+        }
+        return { it: it, q: c.q, unit: unit, vl: c.variant || '', vi: vi };
+      });
     }
     /* 無ければ、そのページの商品で ¥11,000 をちょうど超えるまで足す */
-    var picked = [{ it: base, q: 1 }];
+    var picked = [{ it: base, q: 1, unit: base.price, vl: '', vi: -1 }];
     var used = {}; used[base.productId] = 1;
     var total = base.price;
     while (total < FREE && picked.length < 5) {
@@ -91,16 +135,16 @@
       var pick = cross.length
         ? cross.reduce(function (a, b) { return a.price <= b.price ? a : b; })
         : cand.reduce(function (a, b) { return a.price >= b.price ? a : b; });
-      picked.push({ it: pick, q: 1 }); used[pick.productId] = 1; total += pick.price;
+      picked.push({ it: pick, q: 1, unit: pick.price, vl: '', vi: -1 }); used[pick.productId] = 1; total += pick.price;
     }
     var guard = 0;
     while (total < FREE && guard++ < 40) {
       var need2 = FREE - total;
-      var cr = picked.filter(function (p) { return p.it.price >= need2; });
+      var cr = picked.filter(function (p) { return p.unit >= need2; });
       var pk = cr.length
-        ? cr.reduce(function (a, b) { return a.it.price <= b.it.price ? a : b; })
-        : picked.reduce(function (a, b) { return a.it.price >= b.it.price ? a : b; });
-      pk.q += 1; total += pk.it.price;
+        ? cr.reduce(function (a, b) { return a.unit <= b.unit ? a : b; })
+        : picked.reduce(function (a, b) { return a.unit >= b.unit ? a : b; });
+      pk.q += 1; total += pk.unit;
     }
     return picked;
   }
@@ -131,8 +175,8 @@
           '<label class="lm-bd-img" style="background-image:url(' + p.it.img + ')">' +
             '<input type="checkbox" class="lm-bd-cb" data-k="' + k + '" checked>' +
             '<span class="lm-bd-mark"></span></label>' +
-          '<h3>' + esc(p.it.name) + (p.q > 1 ? ' <span>× ' + p.q + '</span>' : '') + '</h3>' +
-          '<div class="lm-bd-price">' + yen(p.it.price * p.q) + '</div>' +
+          '<h3>' + esc(p.it.name) + (p.vl ? ' <span>' + esc(p.vl) + '</span>' : '') + (p.q > 1 ? ' <span>× ' + p.q + '</span>' : '') + '</h3>' +
+          '<div class="lm-bd-price">' + yen(p.unit * p.q) + '</div>' +
         '</article>';
       }).join('') + '</div>' +
       '<div class="lm-bd-sum"><span class="lm-bd-total" id="lmBdTotal"></span>' +
@@ -144,7 +188,7 @@
       var on = [].slice.call(sec.querySelectorAll('.lm-bd-cb'))
         .map(function (cb, i) { return cb.checked ? picked[i] : null; })
         .filter(Boolean);
-      var total = on.reduce(function (s, p) { return s + p.it.price * p.q; }, 0);
+      var total = on.reduce(function (s, p) { return s + p.unit * p.q; }, 0);
       sec.querySelector('#lmBdTotal').textContent = on.length ? '合計 ' + yen(total) : '';
       sec.querySelector('#lmBdFree').innerHTML = !on.length ? ''
         : total >= FREE ? '<span class="lm-bd-ok">送料無料（¥11,000以上）</span>'
@@ -164,7 +208,7 @@
       btn.addEventListener('click', function () {
         var on = this.__on || [];
         if (!on.length || !LM.add) return;
-        on.forEach(function (p) { LM.add(p.it, p.q, btn); });
+        on.forEach(function (p) { if (p.vi >= 0) p.it.sel = p.vi; LM.add(p.it, p.q, btn); });
         var t = this.textContent;
         this.textContent = '✓ カートに追加しました';
         this.disabled = true;
