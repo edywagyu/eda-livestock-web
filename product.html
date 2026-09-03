@@ -460,6 +460,108 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   color: var(--color-forest);
 }
 
+/* ============ 数字の帯 + どう育てたか（2026-09-02 追加） ============ */
+.pdp-band { margin: 72px 0 0;
+  background: linear-gradient(180deg, #FAF6EE 0%, #F2EBD9 100%);
+  border-top: 1px solid rgba(212,169,59,.35); border-bottom: 1px solid rgba(212,169,59,.25); }
+.pdp-band-in { display: grid; grid-template-columns: repeat(4, 1fr); }
+.pdp-band-i { padding: 32px 12px; text-align: center; border-left: 1px solid rgba(212,169,59,.25); }
+.pdp-band-i:first-child { border-left: 0; }
+.pdp-band-i b { display: block; font-family: var(--font-jp-serif); font-size: 30px;
+  color: var(--color-forest); line-height: 1.15; font-weight: 500; }
+.pdp-band-i b em { font-style: normal; font-size: 13px; margin-left: 2px; color: var(--color-gold-soft); }
+.pdp-band-i span { display: block; font-size: 10px; letter-spacing: .13em;
+  color: var(--color-ink-muted); margin-top: 10px; }
+
+.pdp-raise-sec { background: var(--color-forest); color: var(--color-cream); }
+.pdp-raise-in { padding: clamp(48px,6vw,80px) clamp(24px,4vw,48px); }
+.pdp-raise-eyebrow { font-size: 10px; letter-spacing: .34em; color: var(--color-gold); margin: 0 0 10px; }
+.pdp-raise-lead { font-family: var(--font-jp-serif); font-size: 27px; color: #fff;
+  font-weight: 500; margin: 0 0 34px; }
+.pdp-raise-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+  background: rgba(212,169,59,.22); border: 1px solid rgba(212,169,59,.22); }
+.pdp-raise-card { background: var(--color-forest); padding: 30px 28px; }
+.pdp-raise-card .no { font-family: var(--font-jp-serif); font-size: 11px; letter-spacing: .26em;
+  color: var(--color-gold); margin-bottom: 12px; }
+.pdp-raise-card h3 { font-family: var(--font-jp-serif); font-size: 18px; margin: 0 0 10px;
+  font-weight: 500; color: #fff; }
+.pdp-raise-card p { margin: 0; color: rgba(250,247,240,.74); font-size: 13.5px; line-height: 2.05; }
+.pdp-raise-stance { margin: 34px 0 0; padding-top: 26px; border-top: 1px solid rgba(212,169,59,.22);
+  font-family: var(--font-jp-serif); font-size: 17px; line-height: 1.95; color: #fff; }
+.pdp-raise-stance span { color: var(--color-gold); }
+@media (max-width: 760px) {
+  .pdp-band-in { grid-template-columns: repeat(2, 1fr); }
+  .pdp-band-i:nth-child(odd) { border-left: 0; }
+  .pdp-band-i:nth-child(n+3) { border-top: 1px solid rgba(212,169,59,.25); }
+  .pdp-raise-grid { grid-template-columns: 1fr; }
+  .pdp-raise-lead { font-size: 21px; }
+  .pdp-raise-stance { font-size: 15px; }
+}
+
+.pdp-sub-sec { margin-top: 88px; padding-top: 72px; border-top: 1px solid var(--color-bone); }
+.pdp-sub-wrap { max-width: 560px; margin: 0 auto; }
+
+/* ============ 部位・調理・併買（2026-09-02 追加） ============ */
+.pdp-cook-steps { list-style: none; counter-reset: cs; margin: 0; padding: 0; }
+.pdp-cook-steps li { counter-increment: cs; display: grid; grid-template-columns: 38px 1fr;
+  gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-line); }
+.pdp-cook-steps li:last-child { border-bottom: 0; }
+.pdp-cook-steps li::before { content: '0' counter(cs); font-family: var(--font-display);
+  font-size: 15px; color: var(--color-gold-soft); }
+.pdp-cook-steps b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 3px; }
+.pdp-raise { margin: 0 0 14px; }
+.pdp-raise b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 2px; }
+
+.pdp-bundle { margin-top: 96px; padding-top: 80px; border-top: 1px solid var(--color-bone); }
+.pdp-bundle-lead { font-family: var(--font-jp-serif); font-size: 24px; color: var(--color-forest);
+  text-align: center; font-weight: 500; margin: 0 0 36px; }
+.pdp-bd-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.pdp-bd-card h3 { font-family: var(--font-jp-serif); font-size: 15px; color: var(--color-forest);
+  margin: 4px 0 3px; font-weight: 500; }
+.pdp-bd-price { font-family: var(--font-display); font-size: 15px; color: var(--color-forest); }
+.pdp-bd-price span { font-size: 12px; color: var(--color-ink-muted); }
+.pdp-bd-imgwrap { display: block; position: relative; cursor: pointer; }
+.pdp-bd-imgwrap img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+  background: var(--color-paper); border: 1px solid var(--color-line); }
+.pdp-bd-imgwrap input { position: absolute; opacity: 0; width: 0; height: 0; }
+.pdp-bd-box-mark { position: absolute; top: 9px; right: 9px; width: 24px; height: 24px; z-index: 2;
+  background: #fff; border: 1px solid #B9B2A2; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+.pdp-bd-imgwrap input:checked + .pdp-bd-box-mark { background: var(--color-forest); border-color: var(--color-forest); }
+.pdp-bd-imgwrap input:checked + .pdp-bd-box-mark::after { content: ''; position: absolute;
+  left: 7px; top: 2px; width: 6px; height: 12px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
+.pdp-bd-tag { font-size: 10px; letter-spacing: .14em; color: var(--color-gold-soft); margin-top: 10px; min-height: 15px; }
+.pdp-bd-box { margin-top: 28px; background: #fff; border: 1px solid rgba(212,169,59,.32); padding: 26px 24px; }
+.pdp-bd-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 14px; }
+.pdp-bd-item { display: flex; align-items: center; gap: 9px; }
+.pdp-bd-item img { width: 52px; height: 52px; object-fit: cover; background: var(--color-paper);
+  border: 1px solid var(--color-line); }
+.pdp-bd-item b { font-weight: 500; color: var(--color-ink); }
+.pdp-bd-item span { color: var(--color-ink-muted); font-size: 12px; }
+.pdp-bd-plus { font-family: var(--font-jp-serif); font-size: 20px; color: var(--color-gold-soft); }
+.pdp-bd-empty { font-size: 13px; color: var(--color-ink-muted); }
+.pdp-bd-sum { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-line);
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.pdp-bd-total { font-family: var(--font-jp-serif); font-size: 25px; color: var(--color-forest); font-weight: 500; }
+.pdp-bd-free { font-size: 12px; letter-spacing: .1em; color: #1a6b46;
+  background: rgba(26,107,70,.10); border: 1px solid rgba(26,107,70,.28); padding: 5px 12px; }
+.pdp-bd-short { font-size: 12px; letter-spacing: .1em; color: #8a5a1e;
+  background: rgba(212,169,59,.14); border: 1px solid rgba(212,169,59,.32); padding: 5px 12px; }
+.pdp-bd-btn { display: block; width: 100%; margin-top: 18px; background: var(--color-forest);
+  color: var(--color-cream); border: 0; padding: 18px; font-size: 13px; font-weight: 700;
+  letter-spacing: .2em; font-family: var(--font-jp); cursor: pointer; }
+.pdp-bd-btn:hover { background: var(--color-forest-light); }
+.pdp-bd-btn:disabled { opacity: .4; cursor: default; }
+@media (max-width: 760px) {
+  .pdp-bd-cards { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .pdp-bundle-lead { font-size: 19px; }
+  .pdp-bd-row { flex-direction: column; align-items: stretch; gap: 0; }
+  .pdp-bd-item { width: 100%; padding: 12px 0; border-bottom: 1px solid var(--color-line); }
+  .pdp-bd-item:last-child { border-bottom: 0; }
+  .pdp-bd-plus { width: 100%; text-align: center; padding: 2px 0; }
+  .pdp-bd-sum { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .pdp-bd-btn { letter-spacing: .12em; font-size: 12.5px; }
+}
+
 /* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
   .pdp-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -620,29 +722,6 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         <button class="pdp-cta-primary" id="addToCartBtn" onclick="addToCart()">追加する</button>
       </div>
 
-      <!-- 🔴 定期便アップグレード提案 (動的・含まれるプランがあれば表示) -->
-      <div id="pdpSubscriptionUpsell" class="pdp-sub-upsell" style="display:none;margin-top:18px;padding:18px 18px 16px;background:linear-gradient(135deg,#0F3D2E 0%,#061410 100%);color:#fff;border-radius:14px;border:1.5px solid var(--color-gold);position:relative;overflow:hidden">
-        <div style="position:absolute;top:0;right:0;background:var(--color-gold);color:var(--color-forest-deep);font-size: 12px;font-weight:800;letter-spacing:0.12em;padding:4px 14px;border-bottom-left-radius:10px">初月50%OFF</div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-gold);letter-spacing:0.1em;margin-bottom:6px;margin-top:2px">
-          <span>📅</span><span>SAVE MORE — 定期便ならお得</span>
-        </div>
-        <div id="pdpSubName" style="font-family:var(--font-jp-serif,serif);font-size:18px;font-weight:700;margin-bottom:4px;color:#fff">—</div>
-        <div id="pdpSubItems" style="font-size:11.5px;color:rgba(255,255,255,0.75);line-height:1.55;margin-bottom:12px">—</div>
-        <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:14px">
-          <div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.55);text-decoration:line-through" id="pdpSubOldPrice">—</div>
-            <div style="font-size:22px;font-weight:800;color:var(--color-gold);line-height:1" id="pdpSubFirstPrice">—</div>
-            <div style="font-size: 12px;color:rgba(255,255,255,0.6);margin-top:2px">初月価格 (税込)</div>
-          </div>
-          <div style="flex:1"></div>
-          <div style="text-align:right">
-            <div style="display:inline-block;padding:4px 10px;background:rgba(212,169,59,0.18);border:1px solid rgba(212,169,59,0.4);border-radius:14px;font-size:11px;font-weight:700;color:var(--color-gold)" id="pdpSubSavings">—</div>
-          </div>
-        </div>
-        <a id="pdpSubCta" href="subscription.html" class="pdp-sub-cta" style="display:block;padding:12px 16px;background:var(--color-gold);color:var(--color-forest-deep);font-weight:800;font-size:13px;text-align:center;border-radius:8px;text-decoration:none;letter-spacing:0.02em">この定期便で申し込む →</a>
-        <div style="font-size: 12px;color:rgba(255,255,255,0.55);text-align:center;margin-top:8px">スキップ・カスタム可 / 解約は3ヶ月継続が条件</div>
-      </div>
-
       <!-- 🎁 ギフト導線 (のし・化粧箱つきで贈る) -->
       <div id="pdpGiftOption" class="pdp-gift-option" style="display:none;margin-top:18px;padding:18px 18px 16px;background:linear-gradient(135deg,#0F3D2E 0%,#061410 100%);color:#fff;border-radius:14px;border:1.5px solid var(--color-gold);position:relative;overflow:hidden">
         <div style="position:absolute;top:0;right:0;background:var(--color-gold);color:var(--color-forest-deep);font-size: 12px;font-weight:800;letter-spacing:0.12em;padding:4px 14px;border-bottom-left-radius:10px">のし・名入れ無料</div>
@@ -686,7 +765,22 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   </div>
 
   <!-- ============ ACCORDION DETAILS ============ -->
+  <!-- ============ 数字の帯 + どう育てたか（2026-09-02） ============ -->
+  <section class="pdp-band" id="pdpBand" hidden><div class="pdp-band-in" id="pdpBandIn"></div></section>
+  <section class="pdp-raise-sec" id="pdpRaiseSec" hidden>
+    <div class="pdp-raise-in">
+      <p class="pdp-raise-eyebrow">HOW WE RAISE</p>
+      <h2 class="pdp-raise-lead">どう育てたか。</h2>
+      <div class="pdp-raise-grid" id="pdpRaiseGrid"></div>
+      <p class="pdp-raise-stance"><span>A5・BMS・産地名ではなく、</span>その手前にある「どう育てたか」を価値基準に。</p>
+    </div>
+  </section>
+
   <section class="pdp-details">
+    <details class="pdp-detail-item" open id="pdpCutItem">
+      <summary class="pdp-detail-summary">どの部位ですか？</summary>
+      <div class="pdp-detail-body"><p id="pdpCutCopy"></p></div>
+    </details>
     <details class="pdp-detail-item" open>
       <summary class="pdp-detail-summary">商品仕様</summary>
       <div class="pdp-detail-body">
@@ -695,14 +789,14 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     </details>
     <details class="pdp-detail-item">
       <summary class="pdp-detail-summary">解凍方法</summary>
-      <div class="pdp-detail-body">
-        <p>冷凍状態のまま、冷蔵庫でゆっくり解凍してください (約 8 時間)。<br>
-        急ぐ場合は、真空袋のまま流水で約 30 分。<br>
+      <div class="pdp-detail-body" id="pdpThaw">
+        <p>冷凍のまま冷蔵庫へ移し、1 日〜1 日半かけて解凍してください。<br>
+        お急ぎの場合は、袋のまま流水で 15 分以上。<br>
         解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>
       </div>
     </details>
     <details class="pdp-detail-item">
-      <summary class="pdp-detail-summary">調理のヒント</summary>
+      <summary class="pdp-detail-summary" id="pdpCookTitle">焼き方</summary>
       <div class="pdp-detail-body" id="pdpCookingTips">
         <p>塩のみで、フライパンに 90 秒。<br>
         強火で表面を焼き固め、肉汁を閉じ込めます。</p>
@@ -726,12 +820,50 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     </details>
   </section>
 
-  <!-- ============ RELATED ============ -->
-  <section class="pdp-related">
-    <p class="pdp-related-title">— You May Also Like —</p>
-    <div class="pdp-related-grid" id="relatedGrid"></div>
+  <!-- ============ BOUGHT TOGETHER ============ -->
+  <section class="pdp-bundle" id="pdpBundle" hidden>
+    <p class="pdp-related-title">— Frequently Bought Together —</p>
+    <h2 class="pdp-bundle-lead">この商品を買った人は、こんなものも買っています。</h2>
+    <div class="pdp-bd-cards" id="pdpBdCards"></div>
+    <div class="pdp-bd-box">
+      <div class="pdp-bd-row" id="pdpBdRow"></div>
+      <div class="pdp-bd-sum">
+        <span class="pdp-bd-total" id="pdpBdTotal"></span>
+        <span id="pdpBdFree"></span>
+      </div>
+      <button class="pdp-bd-btn" id="pdpBdBtn" type="button"></button>
+    </div>
   </section>
 
+  <!-- ============ 定期便のご案内（2026-09-02 に右カラムから移動） ============ -->
+  <section class="pdp-sub-sec" id="pdpSubSec" hidden>
+    <p class="pdp-related-title">— Subscription —</p>
+    <h2 class="pdp-bundle-lead">続けて召し上がるなら、定期便が安くなります。</h2>
+    <div class="pdp-sub-wrap">
+      <div id="pdpSubscriptionUpsell" class="pdp-sub-upsell" style="display:none;margin-top:18px;padding:18px 18px 16px;background:linear-gradient(135deg,#0F3D2E 0%,#061410 100%);color:#fff;border-radius:14px;border:1.5px solid var(--color-gold);position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;right:0;background:var(--color-gold);color:var(--color-forest-deep);font-size: 12px;font-weight:800;letter-spacing:0.12em;padding:4px 14px;border-bottom-left-radius:10px">初月50%OFF</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-gold);letter-spacing:0.1em;margin-bottom:6px;margin-top:2px">
+          <span>📅</span><span>SAVE MORE — 定期便ならお得</span>
+        </div>
+        <div id="pdpSubName" style="font-family:var(--font-jp-serif,serif);font-size:18px;font-weight:700;margin-bottom:4px;color:#fff">—</div>
+        <div id="pdpSubItems" style="font-size:11.5px;color:rgba(255,255,255,0.75);line-height:1.55;margin-bottom:12px">—</div>
+        <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:14px">
+          <div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.55);text-decoration:line-through" id="pdpSubOldPrice">—</div>
+            <div style="font-size:22px;font-weight:800;color:var(--color-gold);line-height:1" id="pdpSubFirstPrice">—</div>
+            <div style="font-size: 12px;color:rgba(255,255,255,0.6);margin-top:2px">初月価格 (税込)</div>
+          </div>
+          <div style="flex:1"></div>
+          <div style="text-align:right">
+            <div style="display:inline-block;padding:4px 10px;background:rgba(212,169,59,0.18);border:1px solid rgba(212,169,59,0.4);border-radius:14px;font-size:11px;font-weight:700;color:var(--color-gold)" id="pdpSubSavings">—</div>
+          </div>
+        </div>
+        <a id="pdpSubCta" href="subscription.html" class="pdp-sub-cta" style="display:block;padding:12px 16px;background:var(--color-gold);color:var(--color-forest-deep);font-weight:800;font-size:13px;text-align:center;border-radius:8px;text-decoration:none;letter-spacing:0.02em">この定期便で申し込む →</a>
+        <div style="font-size: 12px;color:rgba(255,255,255,0.55);text-align:center;margin-top:8px">スキップ・カスタム可 / 解約は3ヶ月継続が条件</div>
+      </div>
+
+    </div>
+  </section>
 </main>
 
 <!-- ============ MOBILE STICKY CTA ============ -->
@@ -745,6 +877,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
 <!-- ============ SCRIPTS ============ -->
 <script src="public/data/products-master.js?v=2026-09-02-wakeari-pdp"></script>
+<script src="public/data/pdp-content.js?v=2026-09-02b"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -775,7 +908,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const hide = (sel) => { const el = document.querySelector(sel); if (el) el.style.display = 'none'; };
     ['.pdp-gallery', '.pdp-variant-section', '.pdp-qty-section', '.pdp-cta-section',
      '#pdpSubscriptionUpsell', '#pdpGiftOption', '.pdp-meta', '.pdp-details',
-     '.pdp-price', '.pdp-price-note', '.pdp-variant-label', '#stickyCta'].forEach(hide);
+     '.pdp-price', '.pdp-price-note', '.pdp-variant-label', '#stickyCta', '#pdpBundle', '#pdpBand', '#pdpRaiseSec', '#pdpSubSec'].forEach(hide);
     const t = document.getElementById('pdpTitle');
     if (t) t.textContent = 'お取り扱いを終了しました';
     const d = document.getElementById('pdpDescription');
@@ -848,43 +981,149 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
   /* === スペック === */
   const spec = document.getElementById('pdpSpec');
+  /* 2026-09-02 追加コンテンツ（public/data/pdp-content.js） */
+  const C = (window.EDA_PDP_CONTENT || {})[productId] || null;
+  const PROF = (window.EDA_PDP_PROFILE || {})[product.category] || (window.EDA_PDP_PROFILE || {}).beef || null;
+  const isChicken = product.category === 'chicken' || product.category === 'chicken-org';
+  const per100 = (C && C.weight) ? '¥' + Math.round((product.price || 0) / C.weight * 100).toLocaleString() : '';
   const rows = [
-    ['内容量', product.variant || ''],
-    ['原産地', product.category === 'chicken' || product.category === 'chicken-org' ? '大分県' : '宮崎県'],
-    ['飼育', product.category === 'chicken' || product.category === 'chicken-org' ? '提携農家 平飼い・無投薬' : '自社飼育 30 ヶ月以上・無投薬'],
+    C ? ['部位', C.cut] : null,
+    ['内容量', (C && C.variant) || product.variant || ''],
+    C ? ['お召し上がり人数', C.meals] : null,
+    per100 ? ['100g あたり', per100] : null,
+    ['原産地', PROF ? PROF.origin : (isChicken ? '大分県' : '宮崎県')],
+    ['飼育', PROF ? PROF.raise : ''],
     ['加工地', '宮崎県'],
     ['保管', '冷凍 (-18°C 以下)'],
+    C ? ['包装', C.pack] : null,
     ['賞味期限', '製造日より 6 ヶ月'],
-    ['アレルゲン', product.category === 'beef' ? '牛肉' : (product.category === 'chicken' || product.category === 'chicken-org') ? '鶏肉' : '牛肉']
-  ];
+    C ? ['解凍', C.thaw] : null,
+    ['アレルゲン', isChicken ? '鶏肉' : '牛肉']
+  ].filter(Boolean);
   spec.innerHTML = rows.map(([k, v]) => `<div class="pdp-spec-row"><dt>${k}</dt><dd>${v}</dd></div>`).join('');
 
-  /* === 鶏は仕入れ表示 === */
-  if (product.category === 'chicken' || product.category === 'chicken-org') {
-    document.getElementById('pdpOriginInfo').innerHTML = `
-      <p>大分県の提携農家にて、無投薬・平飼いで育てられた鶏。<br>
-      ${product.isOrganic ? '飼料は有機 JAS 認証相当の無農薬。月に少量のみの取り扱いです。' : '私たちが選んだ農家からのみ仕入れ、抗生物質・成長促進剤は使用していません。'}</p>
-    `;
+  /* === 部位・調理・育て方（2026-09-02） === */
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  if (C) {
+    const cutEl = document.getElementById('pdpCutCopy');
+    if (cutEl) cutEl.textContent = C.cutCopy;
+    const thawEl = document.getElementById('pdpThaw');
+    if (thawEl) thawEl.innerHTML = '<p>' + esc(C.thaw) + '。<br>解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>';
+    const ctEl = document.getElementById('pdpCookTitle');
+    if (ctEl) ctEl.textContent = C.cookTitle;
+    const tipEl = document.getElementById('pdpCookingTips');
+    if (tipEl && C.cook && C.cook.length) {
+      tipEl.innerHTML = '<ol class="pdp-cook-steps">' +
+        C.cook.map(s => '<li><b>' + esc(s.t) + '</b><span>' + esc(s.d) + '</span></li>').join('') + '</ol>';
+    }
+  } else {
+    const cutItem = document.getElementById('pdpCutItem');
+    if (cutItem) cutItem.hidden = true;
+  }
+  if (PROF && PROF.how) {
+    const originEl = document.getElementById('pdpOriginInfo');
+    if (originEl) originEl.innerHTML = PROF.how.map(x =>
+      '<p class="pdp-raise"><b>' + esc(x.t) + '</b>' + esc(x.d) + '</p>').join('');
+    /* 独立セクション（数字の帯 ＋ どう育てたか 4項目） */
+    const bandIn = document.getElementById('pdpBandIn');
+    if (bandIn && PROF.band) {
+      bandIn.innerHTML = PROF.band.map(b =>
+        '<div class="pdp-band-i"><b>' + esc(b[0]) + '<em>' + esc(b[1]) + '</em></b><span>' + esc(b[2]) + '</span></div>').join('');
+      document.getElementById('pdpBand').hidden = false;
+    }
+    const grid = document.getElementById('pdpRaiseGrid');
+    if (grid) {
+      grid.innerHTML = PROF.how.map(x =>
+        '<div class="pdp-raise-card"><div class="no">' + esc(x.n) + '</div><h3>' + esc(x.t) + '</h3><p>' + esc(x.d) + '</p></div>').join('');
+      document.getElementById('pdpRaiseSec').hidden = false;
+    }
   }
 
   /* === 関連商品 === */
-  const related = all.filter(p =>
-    p.productId !== productId &&
-    p.category === product.category &&
-    (!p.comingSoon)
-  ).slice(0, 3);
-  document.getElementById('relatedGrid').innerHTML = related.map(p => `
-    <a href="product.html?id=${p.productId}" class="pdp-related-card">
-      <div class="pdp-related-img">
-        <img src="${bustImg((p.images && p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="${p.name}">
-      </div>
-      <div class="pdp-related-body">
-        <h3 class="pdp-related-name">${p.name}</h3>
-        <div class="pdp-related-price">¥${(p.price || 0).toLocaleString()}</div>
-        <span class="pdp-related-link">VIEW →</span>
-      </div>
-    </a>
-  `).join('');
+  /* 関連商品（You May Also Like）は 2026-09-02 に撤去。
+     併買おすすめ（この商品を買った人は）に一本化した。 */
+
+  /* === 🛒 この商品を買った人は（2026-09-02） ===
+     public/data/pdp-content.js の実注文履歴ベースの併買データ。
+     在庫のある商品だけを出し、送料無料(¥11,000)に届く組み合わせをチェック式で提案する。 */
+  (function renderBundle() {
+    if (!C || !C.combo || !C.combo.length) return;
+    const byId = {};
+    all.forEach(x => { byId[x.productId] = x; });
+    const items = C.combo
+      .map(c => ({ p: byId[c.id], q: c.q }))
+      .filter(x => x.p && !x.p.comingSoon && (x.p.productId === productId || (x.p.stock || 0) > 0));
+    if (items.length < 2) return;
+    const sec = document.getElementById('pdpBundle');
+    const FREE = 11000;
+    document.getElementById('pdpBdCards').innerHTML = items.map((x, i) => `
+      <article class="pdp-bd-card">
+        <label class="pdp-bd-imgwrap">
+          <input type="checkbox" class="pdp-bd-cb" data-i="${i}" checked>
+          <span class="pdp-bd-box-mark"></span>
+          <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="${esc(x.p.name)}">
+        </label>
+        <div class="pdp-bd-tag">${i === 0 ? 'この商品' : '&nbsp;'}</div>
+        <h3>${esc(x.p.name)}</h3>
+        <div class="pdp-bd-price">¥${(x.p.price || 0).toLocaleString()}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}</div>
+      </article>`).join('');
+    function sync() {
+      const on = [].slice.call(document.querySelectorAll('.pdp-bd-cb'))
+        .map((cb, i) => cb.checked ? items[i] : null).filter(Boolean);
+      const total = on.reduce((s, x) => s + (x.p.price || 0) * x.q, 0);
+      document.getElementById('pdpBdRow').innerHTML = on.length
+        ? on.map(x => `<div class="pdp-bd-item">
+            <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="">
+            <div><b>${esc(x.p.name)}</b>${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}<br>
+            <span>¥${((x.p.price || 0) * x.q).toLocaleString()}</span></div></div>`).join('<div class="pdp-bd-plus">＋</div>')
+        : '<div class="pdp-bd-empty">商品を選んでください。</div>';
+      document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
+      document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
+        : total >= FREE ? '<span class="pdp-bd-free">送料無料（¥11,000以上）</span>'
+        : '<span class="pdp-bd-short">送料無料まであと ¥' + (FREE - total).toLocaleString() + '</span>';
+      const btn = document.getElementById('pdpBdBtn');
+      btn.disabled = !on.length;
+      btn.textContent = on.length
+        ? (on.length === items.length ? on.length + 'つすべてをカートに追加する：¥' + total.toLocaleString()
+                                      : on.length + '点をカートに追加する：¥' + total.toLocaleString())
+        : 'カートに追加する';
+      btn.__items = on;
+    }
+    document.querySelectorAll('.pdp-bd-cb').forEach(cb => cb.addEventListener('change', sync));
+    document.getElementById('pdpBdBtn').addEventListener('click', function () {
+      const on = this.__items || [];
+      if (!on.length) return;
+      /* 既存の pdpPushToCart と同じ localStorage 'eda-cart' 形式で積む */
+      try {
+        const cart = JSON.parse(localStorage.getItem('eda-cart') || '[]');
+        on.forEach(x => {
+          const pr = x.p;
+          const ex = cart.find(c => c.variantId === pr.variantId);
+          if (ex) { ex.qty += x.q; }
+          else {
+            cart.push({
+              variantId: pr.variantId, productId: pr.productId, title: pr.name,
+              variant: pr.variant || '', price: pr.price || 0, qty: x.q,
+              img: (pr.images && pr.images[0]) || '', stripePriceId: pr.stripePriceId || ''
+            });
+          }
+          try {
+            if (window.edaAnalytics) {
+              window.edaAnalytics.addToCart(pr.productId || pr.variantId || '', (pr.price || 0) * x.q,
+                { title: pr.name || '', variant: pr.variant || '', source: 'pdp-bundle', qty: x.q });
+            }
+          } catch (e) {}
+        });
+        localStorage.setItem('eda-cart', JSON.stringify(cart));
+      } catch (e) { console.error(e); return; }
+      const t = this.textContent;
+      this.textContent = '✓ カートに追加しました';
+      this.disabled = true;
+      setTimeout(() => { this.textContent = t; this.disabled = false; }, 2000);
+    });
+    sync();
+    sec.hidden = false;
+  })();
 
   /* === 🔴 定期便アップグレード提案 ===
      スプシ subscription_plans から、この商品が含まれるプランを探し、
@@ -1005,6 +1244,9 @@ async function loadSubscriptionUpsell(product) {
   document.getElementById('pdpSubCta').href = 'subscription.html?plan=' + (plan.planId || '');
   document.getElementById('pdpSubCta').textContent = (plan.name || '定期便') + 'で申し込む →';
   el.style.display = 'block';
+  /* 見出しごと出す（プランが見つからない時は section ごと非表示のまま） */
+  const subSec = document.getElementById('pdpSubSec');
+  if (subSec) subSec.hidden = false;
 }
 
 /* === Gallery thumb 切替 === */
