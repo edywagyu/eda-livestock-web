@@ -104,7 +104,7 @@
     {
       productId: 'P044', variantId: 'HAMBURG-XL', sku: 'EDA-HAMBURG-250',
       name: '特大ハンバーグ', variant: '1個 250g',
-      price: 1800, weight: 250, stock: 0, temp: '冷凍',
+      price: 1800, weight: 250, stock: 10, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg XL',
       description: '和牛 100%、1個 250g。冷蔵庫で解凍してから、フライパンで蒸し焼き。',
       images: ['public/images/products/drive/hamburg.jpg']
