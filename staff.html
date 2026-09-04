@@ -1493,6 +1493,23 @@ ul { list-style: none; padding: 0; margin: 0; }
           更新する
         </div>
         <div id="subList"></div>
+
+        <!-- 🛒 定期便の「今月だけ追加」(アドオン)。申込時に足された分。
+             これは Stripe の課金には乗っていないので、必ず目視で拾って手配する。 -->
+        <div id="subAddonsPanel" style="margin-top:28px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <h3 style="margin:0;font-size:15px">🛒 今月だけ追加（アドオン）</h3>
+            <span id="subAddonsBadge" style="display:none;background:#B42318;color:#fff;border-radius:99px;padding:1px 9px;font-size:11px;font-weight:700"></span>
+            <div class="refresh-btn" style="margin-left:auto" onclick="loadSubAddons()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              更新する
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
+            定期便の申込時に「今月だけ追加」で選ばれた商品。<strong style="color:#B42318">Stripeの決済には含まれていないので、同梱するか別途ご請求するかを都度判断してください。</strong>
+          </div>
+          <div id="subAddonsList"></div>
+        </div>
       </div>
     </section>
 
@@ -4995,8 +5012,58 @@ function loadSubscriptions() {
         featured: p.featured === true || p.featured === 'TRUE' || p.featured === 'true'
       }));
       renderSubList();
+      loadSubAddons();
     })
     .catch(e => toast('定期便取得失敗: ' + e.message, 'error'));
+}
+
+/* 🛒 定期便アドオン一覧 (GAS: staff_subscription_addons) */
+let subAddonsCache = [];
+function loadSubAddons() {
+  if (isDemoMode()) {
+    subAddonsCache = [{ ts:'2026-07-28T00:35:38Z', plan:'regular', name:'（デモ）山田花子', email:'demo@example.com',
+                        items:'バラ焼肉×1 / ミンチ×1 / ハンバーグ×1', total:3249, count:3 }];
+    renderSubAddons();
+    return;
+  }
+  fetch(GAS_URL + '?action=staff_subscription_addons&_cb=' + Date.now() + authQS())
+    .then(r => r.json())
+    .then(d => {
+      if (!d.ok) throw new Error(d.error || '取得失敗');
+      subAddonsCache = d.rows || [];
+      renderSubAddons();
+    })
+    .catch(e => toast('アドオン取得失敗: ' + e.message, 'error'));
+}
+
+function renderSubAddons() {
+  const list = document.getElementById('subAddonsList');
+  const badge = document.getElementById('subAddonsBadge');
+  if (!list) return;
+  if (badge) {
+    if (subAddonsCache.length) { badge.style.display=''; badge.textContent = subAddonsCache.length + '件'; }
+    else badge.style.display = 'none';
+  }
+  if (!subAddonsCache.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px 20px;font-size:13px">追加購入はまだありません</div>';
+    return;
+  }
+  const PLAN_LABEL = { starter:'ミニ', regular:'ライト', volume:'ファミリー' };
+  list.innerHTML = subAddonsCache.map(r => {
+    const d = r.ts ? new Date(r.ts) : null;
+    const ds = d && !isNaN(d) ? (d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate()) : '';
+    return `
+    <div style="padding:12px 14px;background:#FEF3F2;border:1px solid #FDA29B;border-left:4px solid #B42318;border-radius:10px;margin-bottom:8px">
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <strong style="font-size:14px">${escapeHtml(r.name || '(名前なし)')}</strong>
+        <span style="font-size:11px;color:var(--muted)">${escapeHtml(PLAN_LABEL[r.plan] || r.plan || '')}</span>
+        <span style="font-size:11px;color:var(--muted)">${escapeHtml(ds)}</span>
+        <strong style="margin-left:auto;font-size:14px;color:#B42318">+¥${Number(r.total||0).toLocaleString()}</strong>
+      </div>
+      <div style="margin-top:6px;font-size:13px">${escapeHtml(r.items || '')}</div>
+      <div style="margin-top:4px;font-size:11px;color:var(--muted)">${escapeHtml(r.email || '')} ${escapeHtml(r.phone || '')}</div>
+    </div>`;
+  }).join('');
 }
 
 function renderSubList() {
