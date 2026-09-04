@@ -9745,7 +9745,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div style="flex:1;min-width:240px;">
  <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">🎁 初めてのお客様へ</p>
  <p style="margin:6px 0 0;font-size:14px;color:#1A1A1A;line-height:1.6;">
- まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「ハンバーグ 130g×3 (¥2,280)」</strong> をお試しください。 ¥11,000 以上で送料無料（北海道のみ +¥500）。
+ まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「特大ハンバーグ 250g (¥1,800)」</strong> をお試しください。 ¥11,000 以上で送料無料（北海道のみ +¥500）。
  </p>
  </div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -10228,6 +10228,19 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">100g換算 <strong>¥585</strong></div>
  <div class="product-stat-item">個包装 <strong>1個 130g</strong></div>
  <div class="product-stat-item wide">冷蔵庫で <strong>約3時間</strong>で解凍</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="processed" data-variants='[{"id":51044025000001,"t":"1つ","p":1800}]'>
+ <div class="product-card-img" data-label="HAMBURG XL"></div>
+ <div class="product-tag-row"><span class="product-tag">Hamburg XL</span><span class="product-price">¥1,800</span></div>
+ <p class="product-name" data-en="Hamburg steak XL">特大ハンバーグ</p>
+ <p class="product-desc">和牛100%のシンプル配合を、たっぷり1個250gで。冷蔵庫で解凍してから、フライパンで両面を焼くだけ。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g換算 <strong>¥720</strong></div>
+ <div class="product-stat-item">個包装 <strong>1個 250g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約5時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -11598,20 +11611,6 @@ function toggleUnboxingSound() {
  <span class="gift-product-price">¥11,000<small>送料込み・税込</small></span>
  </div>
  <button onclick="orderGift('take', 11000, '赤身ステーキ ギフト【竹】 600g')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
- </div>
- </div>
- <div class="gift-product-card">
- <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg'))">
- <span class="gift-product-rank rank-ume">梅</span>
- </div>
- <div class="gift-product-body">
- <h3>ハンバーグ ギフト【梅】</h3>
- <p>江田和牛100%・無投薬の手作りハンバーグ。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。</p>
- <div class="gift-product-meta">
- <span class="gift-product-vol">ハンバーグ 5個 / 130g×5</span>
- <span class="gift-product-price">¥5,500<small>送料込み・税込</small></span>
- </div>
- <button onclick="orderGift('ume', 5500, 'ハンバーグ ギフト【梅】 5個')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
  </div>
  </div>
  </div><!-- /.gift-products-grid -->
@@ -13494,7 +13493,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const RECIPE_PRODUCTS = {
  'サーロインステーキ': { id: 50830136082730, price: 3400, title: 'サーロインステーキ', img: 'public/images/products/drive/sirloin.jpg' },
  '和牛の牛丼': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
- 'ハンバーグ': { id: 50830191427882, price: 760, title: 'ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
+ 'ハンバーグ': { id: 51044025000001, price: 1800, title: '特大ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
  '和牛のすき焼き': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
  '鶏ももの照り焼き': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のしゃぶしゃぶ': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
@@ -13554,7 +13553,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const RECIPES = [
  /* ---- 和牛 ---- */
  { type: 'beef', rank: 3, time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
- { type: 'beef', rank: 3, time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
+ { type: 'beef', rank: 3, time: 15, name: '特大ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
  { type: 'beef', rank: 3, time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.pexels.com/photos/3799314/pexels-photo-3799314.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['切り落とし', '玉ねぎ'] },
  { type: 'beef', rank: 3, time: 25, season: ['autumn', 'winter'], name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
  { type: 'beef', rank: 2, time: 15, season: ['summer'], name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒。冷しゃぶにすれば、暑い日でもすすむ。', img: 'https://images.pexels.com/photos/37735951/pexels-photo-37735951.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['和牛赤身スライス', '昆布出汁'] },
@@ -14795,7 +14794,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-09-03-p042" defer></script>
+<script src="public/data/products-master.js?v=2026-09-04-p044" defer></script>
 <script src="public/js/products-loader.js?v=005" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

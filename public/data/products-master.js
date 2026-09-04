@@ -102,6 +102,14 @@
       images: ['public/images/products/drive/hamburg.jpg']
     },
     {
+      productId: 'P044', variantId: 'HAMBURG-XL', sku: 'EDA-HAMBURG-250',
+      name: '特大ハンバーグ', variant: '1個 250g',
+      price: 1800, weight: 250, stock: 0, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg XL',
+      description: '和牛 100%、1個 250g。冷蔵庫で解凍してから、フライパンで蒸し焼き。',
+      images: ['public/images/products/drive/hamburg.jpg']
+    },
+    {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
       stripePriceId: 'price_1Tcbx9GSkhU1UEcik9aUn4RT',
       name: 'ローストビーフ', variant: '1袋 300g',
