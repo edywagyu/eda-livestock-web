@@ -12570,13 +12570,33 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
 
  /* --- Gift order: 単品/セットをギフトモードでcheckoutへ --- */
+ /* 🔴 products シートの name と「完全一致」でないと在庫が動かない。
+    GAS の validateStockBeforeCheckout / decrementStockAfterOrder は
+    どちらも products の name 列とカート item の title を突き合わせる方式で、
+    一致しない品は素通り = 在庫上限も効かず、売れても stock が減らない。
+    カードの表示名はサイズ付き(例「ヒレステーキ ギフト【松】 450g」)で
+    name(「ヒレステーキ ギフト【松】」)と一致していなかった。
+    gift.html は 2026-08-24 に修正済みだったが shop.html / products.html の
+    2枚に同じ修正が入っておらず、2026-09-05 のギフト注文(ヒレ【松】×2)でも
+    在庫が引かれなかった(2026-09-05 修正)。
+    → カートに積む title は下記のカタログ名に揃え、サイズは variant 側へ逃がす。
+    ⚠ ここを書き換えるときは products シートの name と1文字ずつ照合すること。
+    ⚠ Stripe Price ID の引き当ては従来どおり表示名(サイズ付き)で行う。 */
+ const GIFT_CATALOG = {
+ matsu: { name: 'ヒレステーキ ギフト【松】', variant: '450g' },
+ take: { name: '赤身ステーキ ギフト【竹】', variant: '600g' },
+ ume: { name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5' }
+ };
  window.orderGift = function(giftId, price, title) {
  const stripePriceId = lookupStripePriceId(title, '') || null;
+ const cat = GIFT_CATALOG[giftId];
+ const cartTitle = cat ? cat.name : title;
+ const cartVariant = cat ? cat.variant : 'ギフトセット';
  const giftItem = {
  variantId: 'gift-' + giftId,
  price: price,
- title: title,
- variant: 'ギフトセット',
+ title: cartTitle,
+ variant: cartVariant,
  img: 'public/images/products/drive/gift-box.jpg',
  qty: 1,
  gift: true,
@@ -12585,7 +12605,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  items.push(giftItem);
  save();
  /* 📊 Analytics: ギフトのカート追加イベント (カゴ落ち検知 gas/cart_holds.gs の入力) */
- if (window.edaAnalytics) window.edaAnalytics.addToCart(giftItem.variantId, price, { title: title, variant: 'ギフトセット' });
+ if (window.edaAnalytics) window.edaAnalytics.addToCart(giftItem.variantId, price, { title: cartTitle, variant: cartVariant });
  location.href = 'checkout.html?mode=gift';
  };
 
