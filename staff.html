@@ -1819,6 +1819,7 @@ let pinBuffer = '';
 let inventoryCache = [];
 let ordersCache = [];
 let selectedOrder = null;
+let deeplinkOrder = '';   /* 社内メール通知の ?order=EDA-... を保持（ログイン後に開く） */
 
 /* ================ TOAST ================ */
 function toast(msg, type) {
@@ -1945,6 +1946,9 @@ function enterApp() {
   }
 
   loadDashboard();
+
+  /* 社内メールの「管理画面（この注文）」リンクから来たとき＝その注文を開く */
+  if (deeplinkOrder) { const _o = deeplinkOrder; deeplinkOrder = ''; openOrderDeepLink(_o); }
 }
 
 /* ================ DEMO DATA ================
@@ -3184,6 +3188,19 @@ function selectOrder(orderId) {
   if (!selectedOrder) return;
   switchTab('ship');
   renderShipDetail();
+}
+
+/* 新規注文の社内メール（【新規注文】）にある管理画面リンク ?order=EDA-... で飛んで来たとき、
+   注文一覧を取り直してその注文の発送処理画面を直接開く。
+   まだ一覧に出ていない場合は注文一覧を表示して知らせる（勝手に別の注文を開かない）。 */
+async function openOrderDeepLink(orderId) {
+  const want = String(orderId || '').trim().toUpperCase();
+  if (!want) return;
+  try { await loadOrders(); } catch (e) { /* 取得失敗時は下のフォールバックへ */ }
+  const hit = ordersCache.find(o => String(o.id || '').trim().toUpperCase() === want);
+  if (hit) { selectOrder(hit.id); return; }
+  switchTab('orders');
+  toast('注文 ' + orderId + ' が見つかりません（注文一覧を表示しました）', 'error');
 }
 
 function renderShipEmpty() {
@@ -5239,6 +5256,9 @@ function enterDemoQuick() {
     location.replace(location.pathname);
     return;
   }
+
+  // ?order=EDA-... → ログイン後にその注文の発送処理画面を開く（社内メール通知のリンク）
+  deeplinkOrder = String(params.get('order') || '').trim();
 
   // ?demo=1 → 即デモ起動（PIN不要）
   if (params.get('demo') === '1') {
