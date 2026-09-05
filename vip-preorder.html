@@ -296,6 +296,16 @@ body{
 
   /* このページに並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
+  /* 「商品の詳細を見る」から焼き方の手順を落とす（2026-09-05 ryotaro指示）。
+     pdp-content.js は全ページ共通なので、元データは触らずこのページの読み込み分だけ
+     cook / cookTitle を消す。部位・内容量・保存・解凍の説明はそのまま残る。 */
+  try {
+    var PDP = window.EDA_PDP_CONTENT || {};
+    ['P035', 'P036', 'P037'].forEach(function (id) {
+      if (PDP[id]) { delete PDP[id].cook; delete PDP[id].cookTitle; }
+    });
+  } catch (e) {}
+
   var ITEMS = [
     /* ===== VIP先行販売（2026-09-05 ryotaro指示）=====
        一般発売は shop.html / products.html で 2026-09-06(日) 20:00（products-master.js の
@@ -313,7 +323,6 @@ body{
       name: 'カメノコ・シンシン焼肉セット',
       variant: 'カメノコ200g ＋ シンシン200g',
       price: 4860, listPrice: 5400, stock: 4, limitedTotal: 0,
-      showLeft: true, leftUnit: 'セット',
       endAt: '2026-09-06T18:00:00+09:00',
       endLabel: '9月6日（日）18:00',
       img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
@@ -324,7 +333,6 @@ body{
       name: 'カメノコ焼肉',
       variant: '1袋 200g',
       price: 2700, listPrice: 0, stock: 8, limitedTotal: 0,
-      showLeft: true, leftUnit: '袋',
       endAt: '2026-09-06T18:00:00+09:00',
       endLabel: '9月6日（日）18:00',
       img: 'public/images/products/drive/kamenoko-yakiniku.jpg',
@@ -335,7 +343,6 @@ body{
       name: 'シンシン焼肉',
       variant: '1袋 200g',
       price: 2700, listPrice: 0, stock: 6, limitedTotal: 0,
-      showLeft: true, leftUnit: '袋',
       endAt: '2026-09-06T18:00:00+09:00',
       endLabel: '9月6日（日）18:00',
       img: 'public/images/products/drive/shinshin-yakiniku.jpg',
@@ -473,9 +480,9 @@ body{
       stockLine = '<p class="stock-line">残り' + it.stock + (it.leftUnit || '点')
                 + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + '</p>';
     } else if (it.endLabel) {
-      /* 締切のある品は締切を日時で出す（LINE本文の確定ルールと同じ）。
-         数量は書かない＝構成品を単品と共有するセットは総数が決まらないため。 */
-      stockLine = '<p class="stock-line">' + it.endLabel + 'まで ／ 数量限定</p>';
+      /* 残数は出さない（2026-09-05 ryotaro指示）。頭に「先行販売」を置き、
+         締切だけを日時で出す（LINE本文の確定ルールと同じ）。 */
+      stockLine = '<p class="stock-line">先行販売 ／ ' + it.endLabel + 'まで</p>';
     } else if (it.productId === 'P034') {
       /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
       stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
