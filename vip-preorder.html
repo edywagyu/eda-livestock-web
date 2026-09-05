@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>VIP限定 先行販売｜江田畜産</title>
+<!-- 在庫API(GAS)の接続を先に張っておく。応答自体が3〜5秒かかるので、握手ぶんだけでも先に済ませる -->
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#0F3D2E; --forest-deep:#061410; --gold:#D4A93B; --gold-light:#FFE594;
+  --cream:#FAF7F0; --ink:#1A1A1A; --muted:#6B6B6B; --line-green:#06C755;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--cream); color:var(--ink);
+  font-family:'Inter','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+  line-height:1.7; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 18px 80px;}
+
+/* ---------- ヘッダー ---------- */
+.hero{
+  background:linear-gradient(180deg,var(--forest) 0%,var(--forest-deep) 100%);
+  color:#fff; padding:38px 18px 34px; text-align:center;
+}
+.hero-brand{
+  font-size:11px; letter-spacing:.22em; color:var(--gold);
+  text-transform:uppercase; margin:0 0 14px;
+}
+.hero-badge{
+  display:inline-block; border:1px solid rgba(212,169,59,.6);
+  background:rgba(212,169,59,.12); color:var(--gold-light);
+  font-size:15px; font-weight:600; letter-spacing:.12em;
+  padding:9px 22px; border-radius:999px; margin-bottom:0;
+}
+.hero h1{
+  font-family:'Shippori Mincho','Noto Serif JP',serif; font-weight:600;
+  font-size:clamp(22px,6vw,30px); margin:0 0 10px; line-height:1.45;
+}
+.hero p{margin:0;font-size:13.5px;color:rgba(255,255,255,.8);}
+
+/* ---------- 連携ゲート ---------- */
+.gate{
+  margin:28px 0 0; padding:30px 22px; text-align:center;
+  background:#fff; border:1px dashed rgba(212,169,59,.65); border-radius:14px;
+}
+.gate-icon{font-size:38px;line-height:1;margin-bottom:12px;}
+.gate h2{
+  font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 10px; color:var(--forest);
+}
+.gate p{font-size:13.5px;color:var(--muted);margin:0 0 20px;}
+.gate-cta{
+  display:block; background:var(--line-green); color:#fff !important;
+  text-decoration:none; font-weight:700; font-size:16px;
+  padding:15px 20px; border-radius:10px;
+  box-shadow:0 6px 16px rgba(6,199,85,.35);
+}
+.gate-note{font-size:11.5px;color:var(--muted);margin:16px 0 0;line-height:1.6;}
+
+/* ---------- 商品 ---------- */
+.section-label{
+  text-align:center; font-size:11px; letter-spacing:.2em; color:var(--gold);
+  margin:30px 0 4px; text-transform:uppercase;
+}
+.section-title{
+  text-align:center; font-family:'Shippori Mincho',serif; font-size:20px;
+  color:var(--forest); margin:0 0 22px;
+}
+.card{
+  background:#fff; border:1px solid rgba(15,61,46,.1); border-radius:14px;
+  overflow:hidden; margin-bottom:22px; box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+.card-img{
+  width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
+  display:block;
+}
+.card-body{padding:18px 18px 20px;}
+.card-tag{
+  display:inline-block; background:var(--forest); color:var(--gold-light);
+  font-size:10.5px; letter-spacing:.1em; padding:4px 10px; border-radius:4px; margin-bottom:10px;
+}
+.card h3{
+  font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 6px; color:var(--ink);
+}
+.card-variant{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
+.card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 10px;}
+    .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
+.price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+.price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
+.price-now{font-family:'Shippori Mincho',serif;font-size:27px;font-weight:700;color:var(--forest);}
+.price-off{
+  background:#C0392B;color:#fff;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:4px;
+}
+.stock-line{font-size:12.5px;color:#C0392B;font-weight:600;margin:0 0 14px;}
+.stock-line.plain{color:var(--muted);font-weight:500;}
+.var-row{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;}
+.var-opt{
+  display:flex;align-items:center;gap:10px;border:1px solid rgba(15,61,46,.2);
+  border-radius:9px;padding:11px 13px;cursor:pointer;background:#fff;
+}
+.var-opt.sel{border-color:var(--forest);background:rgba(15,61,46,.04);box-shadow:0 0 0 1px var(--forest) inset;}
+.var-opt .dot{
+  width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(15,61,46,.35);flex:none;
+}
+.var-opt.sel .dot{border-color:var(--forest);background:radial-gradient(circle,var(--forest) 0 45%,transparent 46%);}
+.var-opt .t{flex:1;font-size:13.5px;}
+/* 「会員価格」チップ。この口数は会員限定ページだけの値段だと明示する。 */
+.var-opt .mem{
+  display:inline-block;font-size:10px;font-weight:700;color:var(--forest);
+  background:rgba(212,169,59,.30);padding:2px 6px;border-radius:4px;
+  white-space:nowrap;margin-left:6px;vertical-align:1px;
+}
+.var-opt .p{font-size:14px;font-weight:700;color:var(--forest);white-space:nowrap;}
+.var-opt .save{
+  font-size:10.5px;font-weight:700;color:#fff;background:#C0392B;
+  padding:2px 7px;border-radius:4px;white-space:nowrap;
+}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.qty-label{font-size:12.5px;color:var(--muted);}
+.qty-box{display:flex;align-items:center;border:1px solid rgba(15,61,46,.2);border-radius:8px;overflow:hidden;}
+.qty-box button{
+  width:38px;height:38px;border:0;background:#fff;font-size:18px;color:var(--forest);cursor:pointer;
+}
+.qty-box span{width:40px;text-align:center;font-size:15px;font-weight:600;}
+.btn-add{
+  display:block;width:100%;border:0;border-radius:10px;cursor:pointer;
+  background:var(--forest);color:#fff;font-size:15.5px;font-weight:700;
+  padding:15px 16px;font-family:inherit;
+}
+.btn-add:disabled{background:#B5B5B5;cursor:not-allowed;}
+.btn-add.added{background:var(--gold);color:var(--forest);}
+
+/* ---------- 締切 ---------- */
+.deadline{
+  background:var(--forest); color:#fff; border-radius:12px;
+  padding:16px 18px; text-align:center; margin:4px 0 26px;
+}
+.deadline strong{color:var(--gold-light);font-size:16px;}
+.deadline span{display:block;font-size:12.5px;color:rgba(255,255,255,.75);margin-top:4px;}
+
+/* ---------- カートバー ---------- */
+.cartbar{
+  position:fixed;left:0;right:0;bottom:0;background:#fff;
+  border-top:1px solid rgba(15,61,46,.12); padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  display:none; box-shadow:0 -4px 18px rgba(0,0,0,.08); z-index:50;
+}
+.cartbar.on{display:block;}
+.cartbar-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:14px;}
+.cartbar-sum{flex:1;font-size:13px;color:var(--muted);}
+.cartbar-sum b{display:block;font-size:17px;color:var(--ink);}
+.cartbar a{
+  background:var(--gold);color:var(--forest);text-decoration:none;font-weight:700;
+  font-size:15px;padding:14px 22px;border-radius:10px;white-space:nowrap;
+}
+/* 上部の切替ボタン。限定商品一覧／限定不揃い品／イマおすすめ／通常商品一覧。
+   2026-09-02 ryotaro指示で「江田畜産らしく」＝案3 深緑の箔押しカードに変更。
+   角丸を落として明朝体にし、現在地は深緑の中に金の細枠を1本。
+   4つ並ぶと横がきついので、狭い画面では自動で2段に折り返す。 */
+.pagenav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px;}
+.pagenav a{
+  flex:1 1 calc(50% - 10px);text-align:center;text-decoration:none;
+  font-family:'Shippori Mincho','Noto Serif JP',serif;
+  font-weight:600;font-size:14.5px;letter-spacing:.05em;
+  color:var(--forest);background:#fff;padding:15px 4px;line-height:1.3;
+  border:1px solid rgba(15,61,46,.16);border-radius:3px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.pagenav a.on{
+  background:linear-gradient(180deg,var(--forest) 0%,#0A2C21 100%);
+  color:var(--gold-light);border-color:var(--forest);
+  box-shadow:inset 0 0 0 1px rgba(212,169,59,.5);
+}
+/* 通常のショップへ出る導線は、限定ページの中では控えめに（点線＝外に出る） */
+.pagenav a.out{color:var(--muted);border-style:dashed;background:transparent;box-shadow:none;}
+@media(min-width:560px){.pagenav a{flex:1 1 0;}}
+@media(max-width:400px){.pagenav a{font-size:13px;padding:14px 2px;letter-spacing:.02em;}}
+.foot{text-align:center;font-size:11.5px;color:var(--muted);padding:24px 0 0;line-height:1.8;}
+.foot a{color:var(--forest);}
+
+
+/* ===== 会員限定ページ 追加表示（2026-09-03） ===== */
+.lm-detail{margin:10px 0 14px;border-top:1px solid var(--color-bone,#EFE8D7);border-bottom:1px solid var(--color-bone,#EFE8D7)}
+.lm-detail>summary{list-style:none;cursor:pointer;padding:12px 0;font-size:13.5px;
+  color:var(--color-forest,#0F3D2E);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.lm-detail>summary::-webkit-details-marker{display:none}
+.lm-detail>summary::after{content:'+';font-size:18px;font-weight:300}
+.lm-detail[open]>summary::after{content:'−'}
+.lm-detail-body{padding:0 0 16px}
+.lm-cut{margin:0 0 12px;font-size:13px;line-height:1.95;color:var(--color-ink-muted,#5C5C5C)}
+.lm-spec{margin:0 0 14px}
+.lm-spec>div{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:8px 0;
+  border-bottom:1px solid rgba(212,169,59,.18);font-size:12.5px}
+.lm-spec dt{margin:0;color:var(--color-ink-muted,#5C5C5C)}
+.lm-spec dd{margin:0;color:var(--color-ink,#1A1A1A)}
+.lm-cook-t{margin:0 0 6px;font-size:12px;letter-spacing:.1em;color:var(--color-gold-soft,#856A20)}
+.lm-cook{counter-reset:lc;margin:0;padding:0;list-style:none}
+.lm-cook li{counter-increment:lc;display:grid;grid-template-columns:30px 1fr;gap:8px;
+  padding:8px 0;border-bottom:1px solid rgba(212,169,59,.18);font-size:12.5px}
+.lm-cook li:last-child{border-bottom:0}
+.lm-cook li::before{content:'0' counter(lc);color:var(--color-gold-soft,#856A20)}
+.lm-cook b{display:block;color:var(--color-forest,#0F3D2E);margin-bottom:2px}
+.lm-cook span{color:var(--color-ink-muted,#5C5C5C);line-height:1.85}
+
+.lm-bundle{margin:34px 0 0;background:#fff;border:1px solid rgba(212,169,59,.4);
+  border-radius:14px;padding:22px 18px}
+.lm-bd-eyebrow{margin:0 0 6px;font-size:11px;letter-spacing:.18em;color:var(--color-gold-soft,#856A20);font-weight:700}
+.lm-bd-lead{margin:0 0 18px;font-size:18px;line-height:1.6;color:var(--color-forest,#0F3D2E);font-weight:600}
+.lm-bd-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.lm-bd-img{display:block;position:relative;width:100%;aspect-ratio:1/1;border-radius:8px;
+  background-size:cover;background-position:center;background-color:#F5EFE3;cursor:pointer}
+.lm-bd-img input{position:absolute;opacity:0;width:0;height:0}
+.lm-bd-mark{position:absolute;top:8px;right:8px;width:24px;height:24px;background:#fff;
+  border:1px solid #B9B2A2;border-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.lm-bd-img input:checked+.lm-bd-mark{background:var(--color-forest,#0F3D2E);border-color:var(--color-forest,#0F3D2E)}
+.lm-bd-img input:checked+.lm-bd-mark::after{content:'';position:absolute;left:7px;top:2px;
+  width:6px;height:12px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(42deg)}
+.lm-bd-card h3{margin:8px 0 2px;font-size:13.5px;color:var(--color-forest,#0F3D2E);font-weight:600}
+.lm-bd-card h3 span{font-size:12px;color:var(--color-ink-muted,#5C5C5C)}
+.lm-bd-price{font-size:13.5px;color:var(--color-forest,#0F3D2E)}
+.lm-bd-sum{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:16px;
+  padding-top:14px;border-top:1px solid rgba(212,169,59,.24)}
+.lm-bd-total{font-size:21px;font-weight:700;color:var(--color-forest,#0F3D2E)}
+.lm-bd-ok{font-size:11.5px;letter-spacing:.08em;color:#1a6b46;background:rgba(26,107,70,.1);
+  border:1px solid rgba(26,107,70,.28);padding:4px 10px;border-radius:999px}
+.lm-bd-ng{font-size:11.5px;letter-spacing:.08em;color:#8a5a1e;background:rgba(212,169,59,.14);
+  border:1px solid rgba(212,169,59,.32);padding:4px 10px;border-radius:999px}
+.lm-bd-btn{display:block;width:100%;margin-top:14px;padding:16px;border:0;border-radius:10px;
+  background:var(--color-forest,#0F3D2E);color:#fff;font-size:13.5px;font-weight:700;
+  letter-spacing:.06em;cursor:pointer;font-family:inherit}
+.lm-bd-btn:disabled{opacity:.4;cursor:default}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <p class="hero-brand">EDA LIVESTOCK</p>
+  <div class="hero-badge">VIP会員様 先行販売</div>
+  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">一般発売の前に、いつもご利用いただいている方だけにご案内しています。<br><b style="color:#FFE594;">9月6日（日）18:00まで</b></p>
+</div>
+
+<div class="wrap">
+
+  <!-- 上部ボタン（2026-09-02 ryotaro指示）。現在地は on クラス／通常ショップへ出る導線は out クラス -->
+  <nav class="pagenav">
+    <a class="on" href="vip-preorder.html">先行販売</a>
+    <a class="out" href="products.html">通常商品一覧</a>
+  </nav>
+
+  <!-- 未連携: 鍵 -->
+  <div class="gate" id="gate" hidden>
+    <div class="gate-icon">🔒</div>
+    <h2>ここから先は会員様限定です</h2>
+    <p>公式LINEとの連携が済んでいる方のみ、商品と価格をご覧いただけます。<br>連携は数秒で完了します。</p>
+    <a class="gate-cta" id="gateCta" href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html">LINEで連携して商品を見る →</a>
+    <p class="gate-note">
+      ※すでに連携がお済みの方は、<a href="#" id="reloadLink">こちらを押して再読み込み</a>してください。<br>
+      ※LINEアプリ内のブラウザで開くと、そのまま連携できます。
+    </p>
+  </div>
+
+  <!-- 連携済み: 商品 -->
+  <div id="members" hidden>
+    <div id="cards"></div>
+  </div>
+
+</div>
+
+<div class="cartbar" id="cartbar">
+  <div class="cartbar-inner">
+    <div class="cartbar-sum"><span id="cartCount">0点</span><b id="cartTotal">¥0</b></div>
+    <a href="checkout.html" id="toCheckout">レジに進む →</a>
+  </div>
+</div>
+
+<p class="foot">
+  江田畜産（宮崎県西諸県郡高原町）<br>
+  <a href="shop.html">通常のオンラインショップはこちら</a>
+</p>
+
+<script src="public/js/analytics.js?v=005" defer></script>
+<script src="public/js/member-gate.js" defer></script>
+<script src="public/data/pdp-content.js?v=2026-09-03c"></script>
+<script src="public/js/member-extras.js?v=003"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* このページに並べる品。price / stock は public_catalog のライブ値で上書きされる
+     （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
+  var ITEMS = [
+    /* ===== VIP先行販売（2026-09-05 ryotaro指示）=====
+       一般発売は shop.html / products.html で 2026-09-06(日) 20:00（products-master.js の
+       limitedStartAt）。このページはその前に買えるVIP向けの先行枠で、締切は 9/6(日) 18:00。
+       🔴 値引きはしない。単品は通常価格 ¥2,700、セットは通常どおり単品合計より540円お得。
+       🔴 name は在庫減算と決済の突合キー。products シート／shop.html と完全一致させること。
+          画面に出す「先行販売」はカードのバッジであって name ではない。
+       🔴 detailId は付けない。product.html は products-master.js を読むので、
+          limitedStartAt を過ぎるまで「発売予定」で購入不可の画面に飛んでしまう。
+       🔴 セット(P037)は本番DBの components(BOM) で カメノコ1 + シンシン1 に展開される。
+          セットが売れると単品の在庫が自動で減る＝二重販売しない。残数は syncCatalog が
+          構成品から min(カメノコ, シンシン) で作り直す。 */
+    {
+      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
+      name: 'カメノコ・シンシン焼肉セット',
+      variant: 'カメノコ200g ＋ シンシン200g',
+      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 0,
+      showLeft: true, leftUnit: 'セット',
+      endAt: '2026-09-06T18:00:00+09:00',
+      endLabel: '9月6日（日）18:00',
+      img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
+      desc: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。'
+    },
+    {
+      productId: 'P035', variantId: 'KAMENOKO-YAKINIKU',
+      name: 'カメノコ焼肉',
+      variant: '1袋 200g',
+      price: 2700, listPrice: 0, stock: 8, limitedTotal: 0,
+      showLeft: true, leftUnit: '袋',
+      endAt: '2026-09-06T18:00:00+09:00',
+      endLabel: '9月6日（日）18:00',
+      img: 'public/images/products/drive/kamenoko-yakiniku.jpg',
+      desc: 'モモの中の「シンタマ」を4つに分けたうちの一つ。きめが細かく、脂は控えめ。焼肉用にカットしました。'
+    },
+    {
+      productId: 'P036', variantId: 'SHINSHIN-YAKINIKU',
+      name: 'シンシン焼肉',
+      variant: '1袋 200g',
+      price: 2700, listPrice: 0, stock: 6, limitedTotal: 0,
+      showLeft: true, leftUnit: '袋',
+      endAt: '2026-09-06T18:00:00+09:00',
+      endLabel: '9月6日（日）18:00',
+      img: 'public/images/products/drive/shinshin-yakiniku.jpg',
+      desc: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。'
+    }
+  ];
+
+  /* 在庫API(GAS)は応答に3〜5秒かかる。待っている間ページを止めないため、
+     ①スクリプトが動いた瞬間に取りに行き ②画面は下の ITEMS の数字ですぐ描き
+     ③「カートに追加」が押された時だけ、まだ届いていなければそこで待つ。
+     ＝ 見た目のロスをゼロにしつつ、完売品はカートに入らない（2026-09-02 ryotaro指示）。 */
+  var stockReady = false;
+  var catalogPromise = null;
+
+  var CART_KEY = 'eda-cart';
+  var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
+
+  function yen(n) { return '¥' + Number(n || 0).toLocaleString('ja-JP'); }
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function writeCart(c) {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch (e) {}
+    paintCartBar();
+  }
+
+  /* ---------- 会員判定 ---------- */
+  /* 2026-08-23 ゲート開放: 判定が端末の localStorage しか見ておらず、
+     連携済みの人でもブラウザが変わると鍵がかかって配信導線が切れていた。
+     鍵を戻すときは REQUIRE_MEMBER を true にするだけでよい。 */
+  var REQUIRE_MEMBER = false;
+
+  function memberOn() {
+    if (!REQUIRE_MEMBER) return true;
+    /* member-gate.js が未読込でも落ちないよう自前でも判定 */
+    if (typeof window.isMember === 'function') return window.isMember();
+    try {
+      if (localStorage.getItem('eda-member-line-uid')) return true;
+      if (localStorage.getItem('eda-member-email')) return true;
+      var s = JSON.parse(localStorage.getItem('eda-mypage-session') || '{}');
+      return !!(s.line_uid || s.email);
+    } catch (e) { return false; }
+  }
+
+  /* ---------- P034 の販売終了・表示終了（2026-08-23 ryotaro指示） ----------
+     8/24 00:00 に販売終了（「販売は終了しました」を出して購入不可）。
+     表示終了は 8/24 20:00 の予定だったが、ryotaro指示で前倒しし
+     販売終了と同時刻＝即非表示にした（2026-08-24）。端末のタイムゾーンに
+     左右されないよう +09:00 付きの絶対時刻で比較する。 */
+  var P034_SALE_END = new Date('2026-08-24T00:00:00+09:00');
+  var P034_HIDE_AT  = new Date('2026-08-24T00:00:00+09:00');
+
+  function p034Phase() {
+    var now = Date.now();
+    if (now < P034_SALE_END.getTime()) return 'onsale';
+    if (now < P034_HIDE_AT.getTime())  return 'ended';
+    return 'hidden';
+  }
+
+  /* ---------- 発売予約（startAt）----------
+     startAt を持つ品は、その時刻まで「◯月◯日 発売」の予告表示にして購入させない。
+     端末のタイムゾーンに左右されないよう +09:00 付きの絶対時刻で比較し、
+     画面に出す文言は startLabel をそのまま使う（端末側で日付を組み立てない）。 */
+  function startMs(it) {
+    return it.startAt ? new Date(it.startAt).getTime() : 0;
+  }
+  function isUpcoming(it) {
+    return !!it.startAt && Date.now() < startMs(it);
+  }
+
+  /* ---------- 販売終了（endAt）----------
+     endAt を持つ品は、その時刻を過ぎたら「販売終了」にして購入させない。
+     startAt と同じく +09:00 付きの絶対時刻で比較する（端末TZに左右されない）。
+     🔴 これは画面の話。GAS は products シートの実在庫を見るので、
+        締切前にカートに入れた人はそのまま決済できる。確実に止めるなら
+        products の published を FALSE にするか stock を 0 にすること。 */
+  function endMs(it) {
+    return it.endAt ? new Date(it.endAt).getTime() : 0;
+  }
+  function isEnded(it) {
+    return !!it.endAt && Date.now() >= endMs(it);
+  }
+
+  /* 並べ替え用（2026-09-02 ryotaro指示）。上から順に:
+       0 = 販売中／1 = これから発売（startAt の予告）／2 = 買えない（完売・販売終了）
+     発売前の判定を先に見る。カードの表示も upcoming が優先される（発売予告 > 完売）ため。 */
+  function sortRank(it) {
+    if (isUpcoming(it)) return 1;
+    if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
+    return (isEnded(it) || it.stock <= 0) ? 2 : 0;
+  }
+
+  /* ---------- 描画 ---------- */
+  function cardHtml(it, i) {
+    var phase = (it.productId === 'P034') ? p034Phase() : 'onsale';
+    if (phase === 'hidden') return '';
+    var ended = phase === 'ended' || isEnded(it);
+    var upcoming = isUpcoming(it);
+    var soldOut = it.stock <= 0;
+    var closed = soldOut || ended || upcoming;
+    var off = (it.listPrice && it.listPrice > it.price)
+      ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
+    var was = (it.listPrice && it.listPrice > it.price)
+      ? '<span class="price-was">' + yen(it.listPrice) + '</span>' : '';
+    var varHtml = '';
+    if (it.variants && it.variants.length) {
+      varHtml = '<div class="var-row">' + it.variants.map(function (v, vi) {
+        var can = !closed && it.stock >= v.n;
+        return '<div class="var-opt' + (vi === (it.sel || 0) ? ' sel' : '') + '"' +
+               ' data-v="' + vi + '"' + (can ? '' : ' style="opacity:.45;pointer-events:none"') + '>' +
+                 '<span class="dot"></span>' +
+                 '<span class="t">' + v.t +
+                   (v.mem ? '<span class="mem">会員価格</span>' : '') + '</span>' +
+                 (v.off ? '<span class="save">' + yen(v.off) + 'お得</span>' : '') +
+                 '<span class="p">' + yen(v.p) + '</span>' +
+               '</div>';
+      }).join('') + '</div>';
+    }
+    /* 残数（残り◯セット／袋／枚／個）は出さない（2026-08-22 ryotaro指示）。
+       出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
+       完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
+    var stockLine = '';
+    if (upcoming) {
+      stockLine = '<p class="stock-line">' + it.startLabel + ' 発売'
+                + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + ' ／ 数量限定</p>';
+    } else if (ended) {
+      stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
+    } else if (soldOut) {
+      stockLine = '<p class="stock-line">完売しました</p>';
+    } else if (it.showLeft) {
+      /* 残数を出すのは showLeft を付けた品だけ（2026-08-31 ryotaro指示）。
+         他の品は従来どおり出さない（2026-08-22 指示は据え置き）。
+         BOMセットの it.stock は syncCatalog が構成品から作り直した実数なので、
+         ここに出す数字は在庫と連動する。 */
+      stockLine = '<p class="stock-line">残り' + it.stock + (it.leftUnit || '点')
+                + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + '</p>';
+    } else if (it.endLabel) {
+      /* 締切のある品は締切を日時で出す（LINE本文の確定ルールと同じ）。
+         数量は書かない＝構成品を単品と共有するセットは総数が決まらないため。 */
+      stockLine = '<p class="stock-line">' + it.endLabel + 'まで ／ 数量限定</p>';
+    } else if (it.productId === 'P034') {
+      /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
+      stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
+    }
+    return '' +
+      '<div class="card" data-i="' + i + '"' + (it.anchor ? ' id="' + it.anchor + '"' : '') + '>' +
+        '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
+        '<div class="card-body">' +
+          (it.memberOnly === false ? '' : '<span class="card-tag">先行販売</span>') +
+          '<h3>' + it.name + '</h3>' +
+          '<p class="card-variant">' + it.variant + '</p>' +
+          '<p class="card-desc">' + it.desc + '</p>' +
+          /* 商品詳細ページへのリンク。detailId を持つ品だけに出す（2026-09-02 ryotaro指示）。
+             🔴 全部に出してはいけない。product.html は products-master.js から引くので、
+                そこに無い品(P033/P034/P042 など)へ飛ばすとサーロイン(売り切れ)に化ける。
+                詳細ページを足したら detailId を書く、が対応関係。 */
+          (it.detailId
+            ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
+              + (it.detailLabel || '商品の詳細を見る') + ' →</a>'
+            : '') +
+          '<div class="price-row">' + was +
+            '<span class="price-now">' + yen(it.price) + '</span>' + off +
+          '</div>' +
+          stockLine +
+          varHtml +
+          '<div class="qty-row">' +
+            '<span class="qty-label">数量</span>' +
+            '<div class="qty-box">' +
+              '<button type="button" data-act="minus">−</button>' +
+              '<span data-qty>1</span>' +
+              '<button type="button" data-act="plus">＋</button>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
+            (upcoming ? it.startLabel + ' 発売'
+                      : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加'))) +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function render() {
+    /* 並び順は「販売中 → これから発売 → 買えないもの（完売・販売終了）」（2026-09-02 ryotaro指示）。
+       今後どの商品を足しても自動でそうなるよう、並べ替えはここで毎回やる。
+       🔴 data-i は ITEMS の元の位置を渡すこと。bind() が ITEMS[data-i] を引くので、
+          並べ替え後の見た目の順番を渡すと別商品がカートに入る。
+       Array.prototype.sort は安定ソートなので、同じ扱いのもの同士は元の順番を保つ。 */
+    var order = ITEMS.map(function (it, i) { return { it: it, i: i }; })
+                     .sort(function (a, b) { return sortRank(a.it) - sortRank(b.it); });
+    document.getElementById('cards').innerHTML =
+      order.map(function (o) { return cardHtml(o.it, o.i); }).join('');
+    bind();
+    scheduleP034Refresh();
+    scrollToHash();
+    /* 会員限定ページの追加表示（商品の詳細 / 送料無料のまとめ買い）2026-09-03 */
+    window.__LM = { ITEMS: ITEMS, add: doAddToCart,
+      purchasable: function (it) { return it.stock > 0 && !isEnded(it) && !isUpcoming(it); } };
+    if (window.edaMemberExtras) window.edaMemberExtras.apply();
+  }
+
+  /* カードは JS で描くので、ブラウザ標準の #アンカー ジャンプ（読み込み直後に走る）
+     には間に合わない。描き終わったあとに自分でその位置まで送る。
+     LINE配信のリッチメッセージが商品ごとに #set-a / #set-b で飛んでくる。
+     1回だけ実行する（syncCatalog の再描画で毎回飛ぶと操作を奪ってしまう）。 */
+  var hashDone = false;
+  function scrollToHash() {
+    if (hashDone) return;
+    var id = (location.hash || '').replace('#', '');
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    hashDone = true;
+    setTimeout(function () {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 60);
+  }
+
+  /* 境界の時刻に描き直す。タブを開いたままでも 0:00 / 20:00 / 発売時刻
+     ちょうどで切り替わる。 */
+  var p034Timer = null;
+  function scheduleP034Refresh() {
+    if (p034Timer) { clearTimeout(p034Timer); p034Timer = null; }
+    var now = Date.now();
+    var bounds = [P034_SALE_END.getTime(), P034_HIDE_AT.getTime()];
+    ITEMS.forEach(function (it) { if (it.startAt) bounds.push(startMs(it)); });
+    ITEMS.forEach(function (it) { if (it.endAt) bounds.push(endMs(it)); });
+    var next = bounds.filter(function (t) { return t > now; })
+                     .sort(function (a, b) { return a - b; })[0];
+    if (!next) return;
+    var wait = next - now + 500;
+    if (wait > 86400000) return;   /* 1日以上先なら張らない（次のページ読み込みで拾う） */
+    p034Timer = setTimeout(render, wait);
+  }
+
+  function bind() {
+    document.querySelectorAll('.card').forEach(function (card) {
+      var i = Number(card.getAttribute('data-i'));
+      var it = ITEMS[i];
+      var qtyEl = card.querySelector('[data-qty]');
+      card.addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        var act = b.getAttribute('data-act');
+        var q = Number(qtyEl.textContent) || 1;
+        var per = currentVariant(it).n;
+        var maxQty = Math.max(1, Math.floor(it.stock / per));
+        if (act === 'minus') { qtyEl.textContent = Math.max(1, q - 1); }
+        else if (act === 'plus') { qtyEl.textContent = Math.min(maxQty, q + 1); }
+        else if (act === 'add') { addToCart(it, q, b); }
+      });
+      /* バリエーション選択 */
+      card.addEventListener('click', function (e) {
+        var o = e.target.closest('.var-opt');
+        if (!o) return;
+        it.sel = Number(o.getAttribute('data-v'));
+        card.querySelectorAll('.var-opt').forEach(function (el) {
+          el.classList.toggle('sel', el === o);
+        });
+        qtyEl.textContent = '1';
+      });
+    });
+  }
+
+  /* 選択中のバリエーション。variants が無い商品は 1つ扱い。 */
+  function currentVariant(it) {
+    if (!it.variants || !it.variants.length) {
+      return { t: it.variant, p: it.price, n: 1 };
+    }
+    return it.variants[it.sel || 0];
+  }
+
+  function addToCart(it, qty, btn) {
+    /* 在庫がまだ届いていなければ、ここで初めて待つ（たいていは既に届いていて待たない）。
+       待っている間に完売が分かったらカートに入れずに描き直す。 */
+    if (!stockReady && catalogPromise) {
+      btn.disabled = true;
+      btn.textContent = '在庫を確認中…';
+      catalogPromise.then(function () {
+        render();
+        var card = document.querySelector('.card[data-i="' + ITEMS.indexOf(it) + '"]');
+        var b2 = card ? card.querySelector('.btn-add') : btn;
+        if (it.stock <= 0 || isEnded(it) || isUpcoming(it)) return;   /* 完売・終了なら入れない */
+        doAddToCart(it, qty, b2);
+      });
+      return;
+    }
+    doAddToCart(it, qty, btn);
+  }
+
+  function doAddToCart(it, qty, btn) {
+    var v = currentVariant(it);
+    var cart = readCart();
+    var maxQty = Math.max(1, Math.floor(it.stock / v.n));
+    var hit = cart.filter(function (c) {
+      return c.variantId === it.variantId && c.variant === v.t;
+    })[0];
+    if (hit) { hit.qty = Math.min(maxQty, (hit.qty || 0) + qty); }
+    else {
+      cart.push({
+        variantId: it.variantId, productId: it.productId,
+        title: it.name, variant: v.t,
+        price: v.p, qty: qty, img: it.img, stripePriceId: ''
+      });
+    }
+    writeCart(cart);
+    /* ★ 商品ページからの add_to_cart が計測されていなかったので、ここでは必ず送る */
+    try {
+      if (window.edaAnalytics) {
+        window.edaAnalytics.addToCart(it.productId, v.p * qty, { source: 'vip-preorder', variant: v.t });
+      }
+    } catch (e) {}
+    btn.textContent = 'カートに入れました ✓';
+    btn.classList.add('added');
+    setTimeout(function () {
+      btn.textContent = 'カートに追加';
+      btn.classList.remove('added');
+    }, 1800);
+  }
+
+  function paintCartBar() {
+    var cart = readCart();
+    var n = cart.reduce(function (a, c) { return a + (c.qty || 0); }, 0);
+    var sum = cart.reduce(function (a, c) { return a + (c.price || 0) * (c.qty || 0); }, 0);
+    var bar = document.getElementById('cartbar');
+    document.getElementById('cartCount').textContent = n + '点';
+    document.getElementById('cartTotal').textContent = yen(sum);
+    bar.classList.toggle('on', n > 0);
+  }
+
+  /* ---------- ライブ在庫・価格 ---------- */
+  /* スクリプトが読まれた時点で取りに行く（init を待たない）。 */
+  function startCatalogFetch() {
+    if (!catalogPromise) {
+      catalogPromise = fetch(CATALOG_URL).then(function (r) { return r.json(); })
+                            .catch(function () { return null; });
+    }
+    return catalogPromise;
+  }
+
+  function syncCatalog() {
+    startCatalogFetch().then(function (res) {
+      if (!res) { stockReady = true; render(); return; }
+      /* public_catalog は {ok:true, products:[...]} を返す。素の配列で来る場合にも備える。 */
+      var list = Array.isArray(res) ? res : (res && res.products);
+      if (!Array.isArray(list)) return;
+
+      /* 🧩 セット商品(components ＝ BOM)は、GAS が構成品の在庫で売買するため
+         セット行の stock が売れても動かない。そのまま使うと肉が無くなっても
+         「完売しました」に切り替わらず、決済の最後で弾かれる。
+         なので構成品から min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
+         構成品が1つでも見つからないときは判定不能として触らない(fail-open)。
+         ※入れ子セットは想定していない(このページの商品は1段のみ)。
+         同じ計算を通常サイト側は public/js/products-loader.js が持っている。 */
+      var stockByName = {};
+      list.forEach(function (p) { if (p && p.name) stockByName[p.name] = Number(p.stock) || 0; });
+      function bomStock(raw) {
+        var comps;
+        try { comps = JSON.parse(raw || ''); } catch (e) { return null; }
+        if (!Array.isArray(comps) || !comps.length) return null;
+        var min = Infinity;
+        for (var i = 0; i < comps.length; i++) {
+          var c = comps[i] || {}, n = c.name || c.title;
+          if (!n) continue;
+          if (!(n in stockByName)) return null;
+          min = Math.min(min, Math.floor(stockByName[n] / (Number(c.qty) || 1)));
+        }
+        return (min === Infinity) ? null : Math.max(0, min);
+      }
+
+      var changed = false;
+      ITEMS.forEach(function (it) {
+        var live = list.filter(function (p) { return p.variantId === it.variantId; })[0];
+        if (!live) return;
+        if (typeof live.price === 'number' && live.price > 0) it.price = live.price;
+        var bom = bomStock(live.components);
+        if (bom !== null) it.stock = bom;                          /* セット＝構成品から算出 */
+        else if (typeof live.stock === 'number') it.stock = live.stock;
+        changed = true;
+      });
+      stockReady = true;
+      render();
+    });
+  }
+
+  /* 最短お届け日は checkout.html と同じ「3日後から」。固定で書くと必ず古くなるので毎回計算する。 */
+  function paintShipNote() {
+    var el = document.getElementById('shipNote');
+    if (!el) return;
+    var d = new Date();
+    d.setDate(d.getDate() + 3);
+    el.textContent = 'お届けはご注文から中2日以降（最短 ' + (d.getMonth() + 1) + '月' + d.getDate() + '日）のご指定になります。';
+  }
+
+  startCatalogFetch();
+
+  /* ---------- 起動 ---------- */
+  function init() {
+    var on = memberOn();
+    document.getElementById('gate').hidden = on;
+    document.getElementById('members').hidden = !on;
+    if (on) {
+      render();
+      syncCatalog();
+      try {
+        ITEMS.forEach(function (it) {
+          if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
+        });
+      } catch (e) {}
+    }
+    paintCartBar();
+    paintShipNote();
+    var rl = document.getElementById('reloadLink');
+    if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); location.reload(); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 60); });
+  } else {
+    setTimeout(init, 60);
+  }
+})();
+</script>
+</body>
+</html>
