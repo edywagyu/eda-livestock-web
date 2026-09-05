@@ -410,8 +410,8 @@
       images: ['public/images/products/drive/wakeari-slice-set.jpg']
     },
 
-    /* ===== カメノコ焼肉 / シンシン焼肉 (2026-08-30 18:30 販売開始・数量限定) =====
-       シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 9/6(日) 18:30 に自動解禁。
+    /* ===== カメノコ焼肉 / シンシン焼肉 (2026-09-06 20:00 販売開始・数量限定) =====
+       シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 9/6(日) 20:00 に自動解禁。
        limitedStartAt を過ぎるまでカード・PDPともに「発売予定」で購入不可。
        限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。
        🔴 同じ肉で 2種セット(P037) も売る。セットは products シートの components
@@ -427,7 +427,7 @@
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
       price: 2700, weight: 200, stock: 8, temp: '冷凍',
       limitedTotal: 8,
-      limitedStartAt: '2026/09/06 18:30',
+      limitedStartAt: '2026/09/06 20:00',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
       description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。',
@@ -439,14 +439,14 @@
       name: 'シンシン焼肉', variant: '1袋 200g',
       price: 2700, weight: 200, stock: 6, temp: '冷凍',
       limitedTotal: 6,
-      limitedStartAt: '2026/09/06 18:30',
+      limitedStartAt: '2026/09/06 20:00',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
       description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。',
       images: ['public/images/products/drive/shinshin-yakiniku.jpg']
     },
 
-    /* ===== カメノコ・シンシン焼肉セット (2026-09-06 18:30 販売開始・数量限定) =====
+    /* ===== カメノコ・シンシン焼肉セット (2026-09-06 20:00 販売開始・数量限定) =====
        カメノコ200g + シンシン200g の2種セット。定価¥5,400 → ¥4,860 (10%オフ)。
        🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
           セット行そのものの stock は GAS 側で減らないので、フロントは
@@ -474,7 +474,7 @@
         { name: 'シンシン焼肉', qty: 1 }
       ],
       limitedTotal: 6,          /* 表示には出ない。限定品の仕組みを有効にするだけ */
-      limitedStartAt: '2026/09/06 18:30',
+      limitedStartAt: '2026/09/06 20:00',
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Shinshin Set',
       description: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。',
