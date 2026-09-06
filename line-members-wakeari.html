@@ -311,6 +311,9 @@ body{
       name: '不揃い品セット',
       variant: '和牛5種 各200g 計1kg',
       price: 7980, listPrice: 10850, stock: 3, limitedTotal: 0,
+      /* 「数量限定」ではなく実在庫の「残り◯セット」を出す（2026-09-06 ryotaro指示）。
+         数字は products シート(P043)のライブ在庫で、売れれば減る＝偽の希少性にならない。 */
+      showLeft: true, leftUnit: 'セット',
       startAt: '2026-09-03T18:30:00+09:00',
       startLabel: '9月3日（木）18:30',
       endAt: '2026-09-06T23:59:00+09:00',
