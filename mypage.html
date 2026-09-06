@@ -2587,6 +2587,7 @@ button:focus-visible, a:focus-visible {
  transition: all 0.2s;
 }
 .sub-action-btn:hover { border-color: var(--color-gold); transform: translateY(-1px); }
+.sub-action-btn.undo { color: var(--color-gold-text); border-color: var(--color-gold); }
 .sub-action-btn.cancel { color: var(--color-red); margin-left: auto; border-color: var(--color-error-border); }
 .sub-action-btn.cancel:hover { border-color: var(--color-red); background: var(--color-error-bg); }
 
@@ -3047,7 +3048,7 @@ button:focus-visible, a:focus-visible {
  <h3 class="dash-section-title">SUBSCRIPTION</h3>
  <div class="sub-card" id="subCard"></div>
  <div id="subActions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
- <button class="sub-action-btn skip" onclick="subSkip()">
+ <button class="sub-action-btn skip" id="subSkipBtn" onclick="subSkip()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
   次回をスキップ
  </button>
@@ -3059,7 +3060,11 @@ button:focus-visible, a:focus-visible {
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   次回分に商品追加
  </button>
- <button class="sub-action-btn pause" onclick="subPause()">
+ <button class="sub-action-btn cycle" id="subCycleBtn" onclick="subCycle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+  隔月に変更
+ </button>
+ <button class="sub-action-btn pause" id="subPauseBtn" onclick="subPause()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
   一時停止
  </button>
@@ -4885,8 +4890,27 @@ function generateDemoCoupons(orderCount) {
 }
 
 /* ---- Subscription Actions (GAS 連携版) ---- */
+var _lastSub = null;
 async function subSkip() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+
+ /* すでにスキップ済みなら取り消し */
+ if (_lastSub && _lastSub.skip_active) {
+  var undoOk = await edaConfirm('スキップの取り消し',
+   (_lastSub.skipped_delivery || '') + ' のお届けを、通常どおりお届けに戻しますか？', { ok: '取り消す' });
+  if (!undoOk) return;
+  try {
+   const undo = await window.EDA_API.post('unskip_subscription', { email: currentSession.email });
+   if (undo.ok) {
+    toast(undo.next_delivery ? ('スキップを取り消しました。次回は ' + undo.next_delivery + ' です') : 'スキップを取り消しました', 'success');
+    setTimeout(function(){ location.reload(); }, 1600);
+   } else {
+    toast('取り消しに失敗しました: ' + (undo.error || ''), 'error');
+   }
+  } catch (e) { toast('通信エラーが発生しました', 'error'); }
+  return;
+ }
+
  var ok = await edaConfirm('配送スキップ', '次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\nスタッフがLINE/メールで詳細をご連絡いたします', { ok: 'スキップする' });
  if (!ok) return;
  try {
@@ -4907,12 +4931,49 @@ async function subSkip() {
 async function subChange() {
  location.href = 'subscription-change.html';
 }
+/* お届け頻度（毎月／隔月）の変更申請 */
+async function subCycle() {
+ if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+ var btn = document.getElementById('subCycleBtn');
+ var target = (btn && btn.dataset.target) || '隔月';
+ var current = target === '隔月' ? '毎月' : '隔月';
+ var ok = await edaConfirm('お届け頻度の変更',
+  target === '隔月'
+   ? 'お届けを隔月（2ヶ月に1回）に変更しますか？\n\nスタッフが確認のうえ切り替えて、ご連絡いたします'
+   : 'お届けを毎月に戻しますか？\n\nスタッフが確認のうえ切り替えて、ご連絡いたします',
+  { ok: target + 'にする' });
+ if (!ok) return;
+ try {
+  const result = await window.EDA_API.post('change_subscription_cycle', {
+   email: currentSession.email, cycle: target, current_cycle: current
+  });
+  if (result.ok) toast('お届け頻度の変更を受け付けました', 'success');
+  else toast('申請に失敗しました: ' + (result.error || ''), 'error');
+ } catch (err) {
+  toast('通信エラーが発生しました', 'error');
+ }
+}
 /* 次回のお届けに商品を足すリクエスト */
 async function subCustomize() {
  location.href = 'subscription-customize.html';
 }
 async function subPause() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+
+ /* 一時停止中なら再開 */
+ if (_lastSub && _lastSub.paused) {
+  var okR = await edaConfirm('定期便の再開', '定期便を再開しますか？\n\nスタッフが確認のうえ、次回のお届け日をご連絡いたします', { ok: '再開する' });
+  if (!okR) return;
+  try {
+   const r = await window.EDA_API.post('resume_subscription', { email: currentSession.email });
+   if (r.ok) {
+    toast(r.next_delivery ? ('再開しました。次回は ' + r.next_delivery + ' です') : '再開を受け付けました', 'success');
+    setTimeout(function(){ location.reload(); }, 1600);
+   } else { toast('再開に失敗しました: ' + (r.error || ''), 'error'); }
+  } catch (e) { toast('通信エラーが発生しました', 'error'); }
+  return;
+ }
+
  var ok = await edaConfirm('定期便の一時停止', '定期便を一時停止しますか？\nいつでも再開できます\n\nスタッフから停止期間の確認連絡をいたします', { ok: '一時停止する' });
  if (!ok) return;
  try {
@@ -4920,7 +4981,10 @@ async function subPause() {
  email: currentSession.email,
  reason: 'mypage_user_pause_request'
  });
- if (result.ok) toast('一時停止リクエストを受け付けました', 'success');
+ if (result.ok) {
+  toast('一時停止を受け付けました', 'success');
+  setTimeout(function(){ location.reload(); }, 1600);
+ }
  else toast('申請に失敗しました', 'error');
  } catch (err) {
  toast('通信エラーが発生しました', 'error');
@@ -5120,13 +5184,42 @@ function renderSubscription(sub) {
  '<span class="sub-plan-price">' + formatYen(sub.price || 0) + '<small>/月</small></span>' +
  '</div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">ステータス</span>' +
- '<span class="sub-detail-value" style="color:var(--color-gold)">利用中</span></div>' +
+ '<span class="sub-detail-value" style="color:' + (sub.paused ? 'var(--color-ink)' : 'var(--color-gold)') + '">' +
+ escapeHtml(sub.status_label || (sub.paused ? '一時停止中' : '利用中')) + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">次回お届け日</span>' +
- '<span class="sub-detail-value">' + (sub.next_delivery ? formatDate(sub.next_delivery) : '-') + '</span></div>' +
+ '<span class="sub-detail-value">' + (sub.paused ? '再開後にご案内します' : (sub.next_delivery ? formatDate(sub.next_delivery) : '-')) + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">お届けサイクル</span>' +
  '<span class="sub-detail-value">' + escapeHtml(sub.cycle || '毎月') + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">ご利用開始日</span>' +
  '<span class="sub-detail-value">' + (sub.start_date ? formatDate(sub.start_date) : '-') + '</span></div>';
+
+ /* スキップ済みなら「スキップを取り消す」に変える */
+ _lastSub = sub;
+ var skipBtn = document.getElementById('subSkipBtn');
+ if (skipBtn) {
+  skipBtn.lastChild.textContent = sub.skip_active ? ' スキップを取り消す ' : ' 次回をスキップ ';
+  skipBtn.classList.toggle('undo', !!sub.skip_active);
+ }
+ if (sub.skip_active && sub.skipped_delivery) {
+  card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">スキップ中</span>' +
+   '<span class="sub-detail-value">' + escapeHtml(sub.skipped_delivery) + ' のお届けを飛ばします</span></div>';
+ }
+
+ /* 一時停止中なら「再開する」に変える。停止中はスキップ操作を隠す */
+ var pauseBtn = document.getElementById('subPauseBtn');
+ if (pauseBtn) {
+  pauseBtn.lastChild.textContent = sub.paused ? ' 再開する ' : ' 一時停止 ';
+  pauseBtn.classList.toggle('undo', !!sub.paused);
+ }
+ if (skipBtn) skipBtn.style.display = sub.paused ? 'none' : '';
+
+ /* お届け頻度のボタンは、いまが毎月なら「隔月に変更」、隔月なら「毎月に戻す」 */
+ var cycleBtn = document.getElementById('subCycleBtn');
+ if (cycleBtn) {
+  var isEvery2 = String(sub.cycle || '').indexOf('隔月') >= 0;
+  cycleBtn.dataset.target = isEvery2 ? '毎月' : '隔月';
+  cycleBtn.lastChild.textContent = isEvery2 ? ' 毎月に戻す ' : ' 隔月に変更 ';
+ }
 }
 
 /* ---- Logout (LIFF) ---- */
