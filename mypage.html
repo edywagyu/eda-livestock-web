@@ -3055,6 +3055,10 @@ button:focus-visible, a:focus-visible {
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
   プラン変更
  </button>
+ <button class="sub-action-btn customize" onclick="subCustomize()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  今月だけ追加
+ </button>
  <button class="sub-action-btn pause" onclick="subPause()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
   一時停止
@@ -4900,9 +4904,11 @@ async function subSkip() {
  }
 }
 async function subChange() {
- var ok = await edaConfirm('プラン変更', 'プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）', { ok: 'LINEを開く' });
- if (!ok) return;
- window.open('https://line.me/R/ti/p/@706sgiuq', '_blank');
+ location.href = 'subscription-change.html';
+}
+/* 次回のお届けに商品を足すリクエスト（今月だけ追加） */
+async function subCustomize() {
+ location.href = 'subscription-customize.html';
 }
 async function subPause() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
