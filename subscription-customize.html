@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<link rel="apple-touch-icon" href="public/images/favicon.svg">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex,nofollow">
+<title>定期便に今月だけ追加｜江田畜産</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#0F3D2E; --forest-2:#0B2E23; --gold:#D4A93B; --gold-text:#E7C572;
+  --cream:#FAF7F0; --line:rgba(250,247,240,0.14); --muted:rgba(250,247,240,0.62);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--forest-2);color:var(--cream);
+  font-family:'Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 120px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+.topbar img{height:34px}
+.back{font-size:13px;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--cream)}
+h1{font-family:'Shippori Mincho',serif;font-size:23px;font-weight:600;margin:26px 0 6px}
+.lead{font-size:14px;color:var(--muted);margin:0 0 24px}
+.next{background:rgba(255,255,255,0.05);border:1px solid rgba(212,169,59,0.35);border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:14px}
+.next b{color:var(--gold-text);font-weight:600}
+.item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.item img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0;background:rgba(255,255,255,0.06)}
+.item .nm{font-size:15px}
+.item .sub{font-size:12px;color:var(--muted)}
+.item .grow{flex:1;min-width:0}
+.qty{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.qty button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:transparent;
+  color:var(--cream);font-size:17px;line-height:1;cursor:pointer}
+.qty button:hover{border-color:var(--gold)}
+.qty span{min-width:20px;text-align:center;font-size:15px}
+label.note{display:block;font-size:13px;color:var(--muted);margin:26px 0 8px}
+textarea{width:100%;min-height:80px;background:rgba(255,255,255,0.05);border:1px solid var(--line);
+  border-radius:10px;color:var(--cream);padding:12px 14px;font:inherit;font-size:14px}
+textarea:focus{outline:none;border-color:var(--gold)}
+.bar{position:sticky;bottom:0;background:var(--forest-2);border-top:1px solid var(--line);padding:14px 0 10px;margin-top:8px}
+.sum{display:flex;justify-content:space-between;font-size:14px;margin-bottom:10px}
+.sum b{color:var(--gold-text);font-size:18px;font-weight:600}
+.submit{width:100%;background:var(--gold);color:#0B2E23;border:none;border-radius:10px;padding:15px;
+  font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.submit:disabled{opacity:.4;cursor:not-allowed}
+.err{color:#F1A9A9;font-size:13px;margin-top:10px;min-height:18px}
+.done{background:rgba(212,169,59,0.10);border:1px solid rgba(212,169,59,0.5);border-radius:12px;padding:26px;text-align:center}
+.done h2{font-family:'Shippori Mincho',serif;font-size:20px;font-weight:600;margin:0 0 10px}
+.done p{font-size:14px;color:var(--muted);margin:0 0 18px}
+.done a{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:11px 22px;font-size:14px;text-decoration:none;color:inherit}
+.fine{font-size:12px;color:var(--muted);margin-top:14px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="mypage.html"><img src="public/images/logo/eda-livestock-logo.png" alt="EDA-LIVESTOCK"></a>
+  <a class="back" href="mypage.html">&larr; マイページに戻る</a>
+</div>
+
+<div class="wrap">
+  <h1>今月だけ追加</h1>
+  <p class="lead">次回のお届けに足したい商品を選んでください。今回のお届け分にだけ加わります。</p>
+
+  <div class="next" id="next" style="display:none">次回のお届け予定：<b id="nextVal">—</b></div>
+
+  <div id="form">
+    <div id="list"></div>
+
+    <label class="note" for="note">ご要望（任意）</label>
+    <textarea id="note" placeholder="例：来月以降も同じものを入れてほしい"></textarea>
+
+    <div class="bar">
+      <div class="sum"><span id="cnt">選択なし</span><b id="total">¥0</b></div>
+      <button class="submit" id="submit" disabled>この内容で追加を申し込む</button>
+      <div class="err" id="err"></div>
+      <p class="fine">お申し込み後、担当者が確認してから追加します。追加分の代金はご連絡のうえ別途ご請求します。この画面だけでは請求も出荷も確定しません。</p>
+    </div>
+  </div>
+
+  <div id="done" class="done" style="display:none">
+    <h2>お申し込みを受け付けました</h2>
+    <p>担当者が確認のうえ、次回のお届けに追加してご連絡いたします。</p>
+    <a href="mypage.html">マイページに戻る</a>
+  </div>
+</div>
+
+<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script>
+var SESSION_KEY = 'eda-mypage-session';
+var _email = '', _items = [], _qty = {};
+
+function getSession() {
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { return null; }
+}
+function yen(n) { return '¥' + Number(n || 0).toLocaleString('ja-JP'); }
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function showErr(msg) { document.getElementById('err').textContent = msg || ''; }
+
+function refreshTotal() {
+  var count = 0, total = 0;
+  _items.forEach(function (p) {
+    var q = _qty[p.variantId] || 0;
+    count += q; total += q * (Number(p.price) || 0);
+  });
+  document.getElementById('cnt').textContent = count ? (count + '点を追加') : '選択なし';
+  document.getElementById('total').textContent = yen(total);
+  document.getElementById('submit').disabled = count === 0;
+}
+
+function renderItems() {
+  document.getElementById('list').innerHTML = _items.map(function (p) {
+    return '<div class="item">' +
+      '<img src="' + esc(p.image) + '" alt="">' +
+      '<div class="grow"><div class="nm">' + esc(p.name) + '</div>' +
+      '<div class="sub">' + esc(p.variant) + '　' + yen(p.price) + '</div></div>' +
+      '<div class="qty">' +
+        '<button type="button" data-id="' + esc(p.variantId) + '" data-d="-1" aria-label="減らす">−</button>' +
+        '<span id="q-' + esc(p.variantId) + '">0</span>' +
+        '<button type="button" data-id="' + esc(p.variantId) + '" data-d="1" aria-label="増やす">＋</button>' +
+      '</div></div>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('.qty button'), function (b) {
+    b.addEventListener('click', function () {
+      var id = b.getAttribute('data-id'), d = Number(b.getAttribute('data-d'));
+      var v = (_qty[id] || 0) + d;
+      if (v < 0) v = 0; if (v > 10) v = 10;
+      _qty[id] = v;
+      var el = document.getElementById('q-' + id);
+      if (el) el.textContent = v;
+      refreshTotal();
+      showErr('');
+    });
+  });
+}
+
+async function boot() {
+  var s = getSession();
+  if (!s || !s.email) { location.href = 'mypage.html'; return; }
+  _email = s.email;
+
+  try {
+    var look = await window.EDA_API.get('customer_lookup', { email: _email });
+    var sc = (look && look.customer && look.customer.subscription) || null;
+    if (sc && sc.active && sc.next_delivery) {
+      document.getElementById('next').style.display = '';
+      document.getElementById('nextVal').textContent = sc.next_delivery;
+    }
+  } catch (e) {}
+
+  try {
+    var res = await window.EDA_API.get('public_products', {});
+    _items = ((res && res.products) || []).filter(function (p) {
+      return p.published !== false && Number(p.stock) > 0 && !p.comingSoon;
+    });
+  } catch (e) { _items = []; }
+  if (!_items.length) { showErr('商品を読み込めませんでした。時間をおいて開き直してください。'); return; }
+  renderItems();
+  refreshTotal();
+}
+
+document.getElementById('submit').addEventListener('click', async function () {
+  var picked = _items.filter(function (p) { return (_qty[p.variantId] || 0) > 0; })
+    .map(function (p) { return { name: p.name + '（' + p.variant + '）', qty: _qty[p.variantId], price: p.price }; });
+  if (!picked.length) { showErr('追加したい商品を選んでください'); return; }
+  var btn = this;
+  btn.disabled = true; btn.textContent = '送信中…';
+  try {
+    var r = await window.EDA_API.post('customize_subscription', {
+      email: _email, items: picked, note: document.getElementById('note').value || ''
+    });
+    if (r && r.ok) {
+      document.getElementById('form').style.display = 'none';
+      document.getElementById('done').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      showErr('送信できませんでした：' + ((r && r.error) || '時間をおいてお試しください'));
+      btn.disabled = false; btn.textContent = 'この内容で追加を申し込む';
+    }
+  } catch (e) {
+    showErr('通信エラーが発生しました');
+    btn.disabled = false; btn.textContent = 'この内容で追加を申し込む';
+  }
+});
+
+function startWhenReady() {
+  var tries = 0;
+  (function waitApi() {
+    if (window.EDA_API && window.EDA_API.get) { boot(); return; }
+    if (++tries > 60) { showErr('接続の準備ができませんでした。開き直してください。'); return; }
+    setTimeout(waitApi, 100);
+  })();
+}
+if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', startWhenReady);
+else startWhenReady();
+</script>
+</body>
+</html>
