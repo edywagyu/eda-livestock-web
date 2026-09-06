@@ -4895,7 +4895,8 @@ async function subSkip() {
  reason: 'mypage_user_action'
  });
  if (result.ok) {
- toast('スキップ申請を受け付けました', 'success');
+ toast(result.next_delivery ? ('スキップしました。次回は ' + result.next_delivery + ' です') : 'スキップ申請を受け付けました', 'success');
+ setTimeout(function(){ location.reload(); }, 1600);   /* 次回お届け日の表示を更新 */
  } else {
  toast('申請に失敗しました: ' + (result.error || ''), 'error');
  }
