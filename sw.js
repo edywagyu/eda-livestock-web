@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-09-06-274-subscription-selfserve';
+const CACHE_VERSION = 'eda-v2026-09-06-275-addon-button-label';
 const CORE_ASSETS = [
   './',
   'index.html',
