@@ -29,6 +29,10 @@ h1{font-family:'Shippori Mincho',serif;font-size:23px;font-weight:600;margin:26p
 .lead{font-size:14px;color:var(--muted);margin:0 0 24px}
 .next{background:rgba(255,255,255,0.05);border:1px solid rgba(212,169,59,0.35);border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:14px}
 .next b{color:var(--gold-text);font-weight:600}
+.off{background:rgba(212,169,59,0.10);border:1px solid rgba(212,169,59,0.45);border-radius:12px;padding:12px 18px;margin-bottom:22px;font-size:14px}
+.off b{color:var(--gold-text);font-weight:600}
+.item .was{color:var(--muted);text-decoration:line-through;margin-right:6px}
+.item .now{color:var(--gold-text)}
 .item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
 .item img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex-shrink:0;background:rgba(255,255,255,0.06)}
 .item .nm{font-size:15px}
@@ -68,6 +72,8 @@ textarea:focus{outline:none;border-color:var(--gold)}
   <h1>次回分に商品追加</h1>
   <p class="lead">次回のお届けに足したい商品を選んでください。今回のお届け分にだけ加わります。</p>
 
+  <div class="off">定期便をご利用中のお客様は、追加分の商品が<b>すべて5%オフ</b>になります。</div>
+
   <div class="next" id="next" style="display:none">次回のお届け予定：<b id="nextVal">—</b></div>
 
   <div id="form">
@@ -100,6 +106,8 @@ function getSession() {
   try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { return null; }
 }
 function yen(n) { return '¥' + Number(n || 0).toLocaleString('ja-JP'); }
+var OFF_RATE = 0.05;   /* 定期便のお客様は追加分5%オフ */
+function offPrice(n) { return Math.round(Number(n || 0) * (1 - OFF_RATE)); }
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -110,9 +118,9 @@ function refreshTotal() {
   var count = 0, total = 0;
   _items.forEach(function (p) {
     var q = _qty[p.variantId] || 0;
-    count += q; total += q * (Number(p.price) || 0);
+    count += q; total += q * offPrice(p.price);
   });
-  document.getElementById('cnt').textContent = count ? (count + '点を追加') : '選択なし';
+  document.getElementById('cnt').textContent = count ? (count + '点を追加（5%オフ後）') : '選択なし';
   document.getElementById('total').textContent = yen(total);
   document.getElementById('submit').disabled = count === 0;
 }
@@ -122,7 +130,8 @@ function renderItems() {
     return '<div class="item">' +
       '<img src="' + esc(p.image) + '" alt="">' +
       '<div class="grow"><div class="nm">' + esc(p.name) + '</div>' +
-      '<div class="sub">' + esc(p.variant) + '　' + yen(p.price) + '</div></div>' +
+      '<div class="sub">' + esc(p.variant) + '　<span class="was">' + yen(p.price) + '</span>' +
+        '<span class="now">' + yen(offPrice(p.price)) + '</span></div></div>' +
       '<div class="qty">' +
         '<button type="button" data-id="' + esc(p.variantId) + '" data-d="-1" aria-label="減らす">−</button>' +
         '<span id="q-' + esc(p.variantId) + '">0</span>' +
@@ -160,7 +169,8 @@ async function boot() {
   try {
     var res = await window.EDA_API.get('public_products', {});
     _items = ((res && res.products) || []).filter(function (p) {
-      return p.published !== false && Number(p.stock) > 0 && !p.comingSoon;
+      /* 通常商品のみ（オーガニック／有機JASは対象外） */
+      return p.published !== false && Number(p.stock) > 0 && !p.comingSoon && !p.isOrganic;
     });
   } catch (e) { _items = []; }
   if (!_items.length) { showErr('商品を読み込めませんでした。時間をおいて開き直してください。'); return; }
@@ -170,7 +180,8 @@ async function boot() {
 
 document.getElementById('submit').addEventListener('click', async function () {
   var picked = _items.filter(function (p) { return (_qty[p.variantId] || 0) > 0; })
-    .map(function (p) { return { name: p.name + '（' + p.variant + '）', qty: _qty[p.variantId], price: p.price }; });
+    .map(function (p) { return { name: p.name + '（' + p.variant + '）', qty: _qty[p.variantId],
+      price: offPrice(p.price), list_price: p.price }; });
   if (!picked.length) { showErr('追加したい商品を選んでください'); return; }
   var btn = this;
   btn.disabled = true; btn.textContent = '送信中…';

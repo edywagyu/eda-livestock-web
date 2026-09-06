@@ -3059,6 +3059,10 @@ button:focus-visible, a:focus-visible {
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   次回分に商品追加
  </button>
+ <button class="sub-action-btn cycle" id="subCycleBtn" onclick="subCycle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+  隔月に変更
+ </button>
  <button class="sub-action-btn pause" onclick="subPause()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
   一時停止
@@ -4907,6 +4911,28 @@ async function subSkip() {
 async function subChange() {
  location.href = 'subscription-change.html';
 }
+/* お届け頻度（毎月／隔月）の変更申請 */
+async function subCycle() {
+ if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+ var btn = document.getElementById('subCycleBtn');
+ var target = (btn && btn.dataset.target) || '隔月';
+ var current = target === '隔月' ? '毎月' : '隔月';
+ var ok = await edaConfirm('お届け頻度の変更',
+  target === '隔月'
+   ? 'お届けを隔月（2ヶ月に1回）に変更しますか？\n\nスタッフが確認のうえ切り替えて、ご連絡いたします'
+   : 'お届けを毎月に戻しますか？\n\nスタッフが確認のうえ切り替えて、ご連絡いたします',
+  { ok: target + 'にする' });
+ if (!ok) return;
+ try {
+  const result = await window.EDA_API.post('change_subscription_cycle', {
+   email: currentSession.email, cycle: target, current_cycle: current
+  });
+  if (result.ok) toast('お届け頻度の変更を受け付けました', 'success');
+  else toast('申請に失敗しました: ' + (result.error || ''), 'error');
+ } catch (err) {
+  toast('通信エラーが発生しました', 'error');
+ }
+}
 /* 次回のお届けに商品を足すリクエスト */
 async function subCustomize() {
  location.href = 'subscription-customize.html';
@@ -5127,6 +5153,14 @@ function renderSubscription(sub) {
  '<span class="sub-detail-value">' + escapeHtml(sub.cycle || '毎月') + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">ご利用開始日</span>' +
  '<span class="sub-detail-value">' + (sub.start_date ? formatDate(sub.start_date) : '-') + '</span></div>';
+
+ /* お届け頻度のボタンは、いまが毎月なら「隔月に変更」、隔月なら「毎月に戻す」 */
+ var cycleBtn = document.getElementById('subCycleBtn');
+ if (cycleBtn) {
+  var isEvery2 = String(sub.cycle || '').indexOf('隔月') >= 0;
+  cycleBtn.dataset.target = isEvery2 ? '毎月' : '隔月';
+  cycleBtn.lastChild.textContent = isEvery2 ? ' 毎月に戻す ' : ' 隔月に変更 ';
+ }
 }
 
 /* ---- Logout (LIFF) ---- */
