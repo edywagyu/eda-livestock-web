@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-09-07-296-fuzoroi-link-only';
+const CACHE_VERSION = 'eda-v2026-09-07-298-fuzoroi-link-only';
 const CORE_ASSETS = [
   './',
   'index.html',
