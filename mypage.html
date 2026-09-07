@@ -3807,7 +3807,17 @@ document.getElementById('dashTabs').addEventListener('click', function(e) {
  btn.setAttribute('aria-selected', 'true');
  var panel = document.getElementById('panel-' + tabId);
  if (panel) panel.classList.add('active');
+ try { localStorage.setItem('eda-mypage-tab', tabId); } catch (_) {}   /* 開いていたタブを覚える */
 });
+/* 前に開いていたタブを復元する（更新してもホームに戻らない） */
+function restoreLastTab() {
+ try {
+  var last = localStorage.getItem('eda-mypage-tab');
+  if (!last || last === 'home') return;
+  var btn = document.querySelector('.dash-tab[data-tab="' + last + '"]');
+  if (btn) btn.click();
+ } catch (_) {}
+}
 function switchTab(tabId) {
  var btn = document.querySelector('.dash-tab[data-tab="' + tabId + '"]');
  if (btn) btn.click();
@@ -3972,6 +3982,8 @@ function renderDashboard(customer, orders) {
  var couponStatEl = document.getElementById('couponStat');
  if (couponHintEl) couponHintEl.textContent = activeCoupons.length > 0 ? 'タップで表示 ›' : '';
  if (couponStatEl) couponStatEl.style.display = ''; // 常に表示（0でもタップで特典タブへ）
+
+ setTimeout(restoreLastTab, 0);
 
  /* Subscription badge */
  var badgeArea = document.getElementById('subBadgeArea');
@@ -4891,6 +4903,22 @@ function generateDemoCoupons(orderCount) {
 
 /* ---- Subscription Actions (GAS 連携版) ---- */
 var _lastSub = null;
+/* 定期便カードだけ静かに描き直す（ページを再読み込みしないので、開いているタブも位置も動かない） */
+async function refreshSubscription() {
+ try {
+  if (!currentSession || !currentSession.email) return;
+  var d = await window.EDA_API.get('customer_lookup', { email: currentSession.email });
+  var sub = d && d.customer && d.customer.subscription;
+  var badgeArea = document.getElementById('subBadgeArea');
+  if (sub && sub.active) {
+   if (badgeArea) badgeArea.innerHTML = '<div class="sub-badge active"><span class="sub-badge-dot"></span>' +
+    (sub.paused ? '定期便 一時停止中' : '定期便ご利用中') + '</div>';
+   renderSubscription(sub);
+   document.getElementById('subSection').style.display = '';
+   document.getElementById('subEmpty').style.display = 'none';
+  }
+ } catch (e) {}
+}
 async function subSkip() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
 
@@ -4903,7 +4931,7 @@ async function subSkip() {
    const undo = await window.EDA_API.post('unskip_subscription', { email: currentSession.email });
    if (undo.ok) {
     toast(undo.next_delivery ? ('スキップを取り消しました。次回は ' + undo.next_delivery + ' です') : 'スキップを取り消しました', 'success');
-    setTimeout(function(){ location.reload(); }, 1600);
+    refreshSubscription();
    } else {
     toast('取り消しに失敗しました: ' + (undo.error || ''), 'error');
    }
@@ -4920,7 +4948,7 @@ async function subSkip() {
  });
  if (result.ok) {
  toast(result.next_delivery ? ('スキップしました。次回は ' + result.next_delivery + ' です') : 'スキップ申請を受け付けました', 'success');
- setTimeout(function(){ location.reload(); }, 1600);   /* 次回お届け日の表示を更新 */
+ refreshSubscription();   /* 次回お届け日の表示を更新 */
  } else {
  toast('申請に失敗しました: ' + (result.error || ''), 'error');
  }
@@ -4968,7 +4996,7 @@ async function subPause() {
    const r = await window.EDA_API.post('resume_subscription', { email: currentSession.email });
    if (r.ok) {
     toast(r.next_delivery ? ('再開しました。次回は ' + r.next_delivery + ' です') : '再開を受け付けました', 'success');
-    setTimeout(function(){ location.reload(); }, 1600);
+    refreshSubscription();
    } else { toast('再開に失敗しました: ' + (r.error || ''), 'error'); }
   } catch (e) { toast('通信エラーが発生しました', 'error'); }
   return;
@@ -4983,7 +5011,7 @@ async function subPause() {
  });
  if (result.ok) {
   toast('一時停止を受け付けました', 'success');
-  setTimeout(function(){ location.reload(); }, 1600);
+  refreshSubscription();
  }
  else toast('申請に失敗しました', 'error');
  } catch (err) {

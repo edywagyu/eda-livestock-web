@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-09-06-278-skip-undo-pause-status';
+const CACHE_VERSION = 'eda-v2026-09-07-279-keep-tab-fast';
 const CORE_ASSETS = [
   './',
   'index.html',
