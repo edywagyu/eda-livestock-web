@@ -10744,7 +10744,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* ======== DELIVERY DATE CALCULATOR ========
  3段階締切バケット:
- 〜10:00 → +2日 (本日10時まで → 2日後)
+ 〜10:00 → +3日 (本日10時まで → 3日後)
  〜17:00 → +3日 (本日17時まで → 3日後)
  〜22:00 → +3日 (本日22時まで → 3日後)
  22:00〜 → 翌日基点で+2日 = 今日から+3日
@@ -10759,7 +10759,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  let addDays;
  let bucketLabel;
- if (hour < 10) { addDays = 2; bucketLabel = '本日10:00まで'; }
+ if (hour < 10) { addDays = 3; bucketLabel = '本日10:00まで'; }
  else if (hour < 17) { addDays = 3; bucketLabel = '本日17:00まで'; }
  else if (hour < 22) { addDays = 3; bucketLabel = '本日22:00まで'; }
  else { addDays = 3; bucketLabel = '明日10:00まで'; } // 22時以降は翌日朝までの注文として扱う
@@ -12992,7 +12992,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
 /* ============ 配送カウントダウンバー（3段階締切・時間帯連動） ============
  締切バケット:
- ▸ 〜10:00 → +2日後にお届け / 次の締切「本日 10:00」
+ ▸ 〜10:00 → +3日後にお届け / 次の締切「本日 10:00」
  ▸ 〜17:00 → +3日後にお届け / 次の締切「本日 17:00」
  ▸ 〜22:00 → +3日後にお届け / 次の締切「本日 22:00」（最終）
  ▸ 22:00 以降 → 翌日10:00 締切扱い / +3日後（明日基点で2日後相当）
@@ -13007,7 +13007,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  // 3段階の締切バケット定義
  const CUTOFF_BUCKETS = [
- { until: 10, label: '10:00', addDays: 2, tag: '', lead: '朝のうちにご注文で' },
+ { until: 10, label: '10:00', addDays: 3, tag: '', lead: '朝のうちにご注文で' },
  { until: 17, label: '17:00', addDays: 3, tag: '', lead: '午後のご注文で' },
  { until: 22, label: '22:00', addDays: 3, tag: '', lead: '夜のご注文で' }
  ];
@@ -13202,10 +13202,9 @@ function copyPopCoupon() {
     var sel=document.getElementById('deliveryDate');
     if(!sel || sel.dataset.filled) return;
     var jst=jstNow();
-    /* 最短日は配送カウントダウンバー(shipCountdownInit)と同じルール:
-       〜10:00 の注文=2日後着 / 10:00以降=3日後着 / 22:00以降は翌日10時締切扱いで結局3日後着。
+    /* 最短日は配送カウントダウンバー(shipCountdownInit)と同じルール = 時間帯によらず3日後着。
        日曜着はこの下のループでスキップされる。バナー側を変えたらここも合わせること。 */
-    var lead=jst.getHours()<10?2:3;
+    var lead=3;
     var cur=new Date(jst); cur.setDate(cur.getDate()+lead);
     var saved=null; try{ saved=localStorage.getItem('eda-deliv-date'); }catch(e){}
     var added=0;

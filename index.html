@@ -4938,10 +4938,10 @@ section.featured {
  const DAYS_JP = ['日','月','火','水','木','金','土'];
  const now = new Date();
  /* JST offset */
- const jst = new Date(now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000);
+ const jst = new Date(now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000); /* 符号は「+」が正。「-」だとJST端末で18時間ずれる */
  const hour = jst.getHours();
- /* Before 14:00 JST → +2 days, after → +3 days */
- let addDays = hour < 14 ? 2 : 3;
+ /* 最短は時間帯によらず3日後着（shop.html の配送バナーと同ルール） */
+ let addDays = 3;
  const delivery = new Date(jst);
  delivery.setDate(delivery.getDate() + addDays);
  /* Skip Sunday */
@@ -4949,7 +4949,7 @@ section.featured {
  const m = delivery.getMonth() + 1;
  const d = delivery.getDate();
  const day = DAYS_JP[delivery.getDay()];
- return { text: m + '月' + d + '日（' + day + '）', isToday14: hour < 14 };
+ return { text: m + '月' + d + '日（' + day + '）', isToday14: false };
  }
 
  /* Populate delivery estimates on product cards */
