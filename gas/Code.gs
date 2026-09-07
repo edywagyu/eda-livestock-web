@@ -3583,6 +3583,63 @@ function pendingOrderRow_(sessionId, orderNum) {
 function custEmailKey_(v) {
   return String(v == null ? '' : v).trim().toLowerCase();
 }
+
+/* 🎂 誕生日を必ず 'MM-DD' の文字列にそろえる。
+   受け取る形が3通りあるため1箇所で吸収する:
+     ①マイページから 'MM-DD'（本来の形）
+     ②'YYYY-MM-DD'（将来 年つきで送られてきた場合）
+     ③Date オブジェクト（シートが日付として解釈してしまった古い行）
+   どれでもない/空なら '' を返す（＝未登録）。 */
+function normBirthday_(v) {
+  if (v == null || v === '') return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    if (isNaN(v.getTime())) return '';
+    return ('0' + (v.getMonth() + 1)).slice(-2) + '-' + ('0' + v.getDate()).slice(-2);
+  }
+  var s = String(v).trim();
+  var m = s.match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})/);   /* 'MM-DD' も 'YYYY-MM-DD' も末尾2つを拾う */
+  if (s.match(/^\d{4}[-\/]/)) m = s.slice(5).match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})/) || m;
+  if (!m) return '';
+  var mo = Number(m[1]), da = Number(m[2]);
+  if (!(mo >= 1 && mo <= 12) || !(da >= 1 && da <= 31)) return '';
+  return ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+}
+
+/* 🎂 ご注文日の「月」を 'MM' で返す。
+   placed_at はシートの入り方によって Date のことも文字列のこともあるので両対応する。
+   Date のときは日本時間で月を出す（UTC で見ると月初/月末の注文が1つ前の月にずれる）。 */
+function orderMonth_(v) {
+  if (!v) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    if (isNaN(v.getTime())) return '';
+    return Utilities.formatDate(v, 'Asia/Tokyo', 'MM');
+  }
+  var s = String(v);
+  var m = s.match(/^(\d{4})-(\d{2})/);        /* 'YYYY-MM-DD' / ISO文字列 */
+  return m ? m[2] : '';
+}
+
+/* 🎂 customers の誕生日を「メール」と「line_uid」の2通りで引ける表にする。
+   staffOrders が注文1件ごとに顧客シートを読み直さないための前処理。 */
+function birthdayIndex_() {
+  var out = { byEmail: {}, byUid: {} };
+  try {
+    var sh = sheet('customers');
+    var data = sh.getDataRange().getValues();
+    if (data.length < 2) return out;
+    var h = data[0];
+    var bIdx = h.indexOf('birthday');
+    if (bIdx === -1) return out;                     /* 誕生日欄をまだ誰も登録していない */
+    var eIdx = h.indexOf('email'), uIdx = h.indexOf('line_uid');
+    for (var i = 1; i < data.length; i++) {
+      var b = normBirthday_(data[i][bIdx]);
+      if (!b) continue;
+      if (eIdx >= 0 && data[i][eIdx]) out.byEmail[custEmailKey_(data[i][eIdx])] = b;
+      if (uIdx >= 0 && data[i][uIdx]) out.byUid[String(data[i][uIdx]).trim()] = b;
+    }
+  } catch (e) { /* 顧客シートが読めなくても注文一覧は出す */ }
+  return out;
+}
 function custPhoneKey_(v) {
   var d = String(v == null ? '' : v).replace(/[^0-9]/g, '');
   if (d.length > 11 && d.indexOf('81') === 0) d = '0' + d.slice(2);
@@ -4043,7 +4100,8 @@ function updateProfile(body) {
   var headers = sh.getDataRange().getValues()[0];
   function col(n){ var i=headers.indexOf(n); if(i===-1){ i=headers.length; sh.getRange(1,i+1).setValue(n); headers.push(n);} return i; }
   var lineIdx=col('line_uid'), emailIdx=col('email'), nameIdx=col('name'), phoneIdx=col('phone'),
-      zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id');
+      zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id'),
+      bdayIdx=col('birthday');   /* 🎂 誕生日 (MM-DD・年は預からない)。列が無ければ col() が作る */
   var data = sh.getDataRange().getValues();
   /* 🔴 探す順を固定 (2026-08-31)
      旧実装は line_uid と email の OR 一発で、シートの並び順で先に現れた行を取っていた。
@@ -4075,9 +4133,21 @@ function updateProfile(body) {
   if (body.zip)     sh.getRange(foundRow, zipIdx+1).setValue(body.zip);
   if (body.address) sh.getRange(foundRow, addrIdx+1).setValue(body.address);
   if (email && !String(sh.getRange(foundRow, emailIdx+1).getValue())) sh.getRange(foundRow, emailIdx+1).setValue(email);
+  /* 🎂 誕生日 (MM-DD)。マイページの「お誕生日」欄から来る。
+     '' を送ると登録の取り消し。Sheets に日付として解釈されないよう必ず文字列で入れる。 */
+  if (body.birthday !== undefined) {
+    var bd = normBirthday_(body.birthday);
+    var bdCell = sh.getRange(foundRow, bdayIdx+1);
+    bdCell.setNumberFormat('@');
+    bdCell.setValue(bd);
+  }
+  /* 🔴 profile_complete は「氏名・郵便番号・住所のどれかを送ってきたとき」だけ計算し直す。
+     誕生日だけを保存しに来た呼び出しでここを無条件に上書きすると、
+     住所を登録済みの方の profile_complete が空に戻ってしまう。 */
+  var touchesProfile = (body.name !== undefined || body.zip !== undefined || body.address !== undefined);
   var complete = !!(body.name && body.zip && body.address);
-  sh.getRange(foundRow, pcIdx+1).setValue(complete ? 'TRUE' : '');
-  log('update_profile', { uid: uid, email: email, complete: complete });
+  if (touchesProfile) sh.getRange(foundRow, pcIdx+1).setValue(complete ? 'TRUE' : '');
+  log('update_profile', { uid: uid, email: email, complete: complete, birthday: (body.birthday !== undefined) });
   var rowVals = sh.getRange(foundRow,1,1,headers.length).getValues()[0];
   var customer={}; headers.forEach(function(h,idx){ customer[h]=rowVals[idx]; });
   return jsonResponse({ ok:true, complete: complete, customer: customer });
@@ -5305,6 +5375,24 @@ function staffOrders() {
     }).reverse().slice(0, 200);
     /* 🐔 chicken_perk 列は アンケートGAS(eda-survey-gas / Perk.gs)が書く。
        staffOrders は orders の全列をそのまま返すので、ここでは何もしない。 */
+
+    /* 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）の同梱判定。判定はここ1箇所だけ。
+       ルール (2026-09-07 田崎さん確定):
+         ・単品のお客様   … ご自身の誕生日“月”にご注文があった分に同梱する
+         ・定期便のお客様 … 誕生日“月”のお届けに必ず同梱する（ご注文の有無を問わない）
+       定期便は毎月お届けがあるので、「注文した月＝誕生日の月」という同じ式で
+       自動的に誕生日月の回だけが当たる。だから条件分岐は要らない。
+       お客様は customers の birthday(MM-DD) を line_uid → email の順で引く
+       （line_uid のほうが確実。[[顧客の二重登録]] と同じ優先順）。 */
+    var bdIndex = birthdayIndex_();
+    orders.forEach(function (o) {
+      var b = bdIndex.byUid[String(o.line_uid || '').trim()] ||
+              bdIndex.byEmail[custEmailKey_(o.customer_email)] || '';
+      o.birthday = b;
+      var mo = orderMonth_(o.placed_at);
+      o.birthday_match = !!(b && mo && mo === b.slice(0, 2));
+    });
+
     return jsonResponse({ ok:true, orders });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });

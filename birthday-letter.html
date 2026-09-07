@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お誕生日のお手紙｜江田畜産</title>
+<meta name="robots" content="noindex,nofollow">
+<!-- ============================================================
+     🎂 誕生日プレゼント（赤身ステーキ）に添えるA4のお手紙
+     ------------------------------------------------------------
+     管理画面(staff.html)の発送処理から
+       birthday-letter.html?name=田崎
+     で開く。「PDFで保存」を押すと、お名前入りのA4が1枚出る。
+
+     🔴 文面は 2026-09-07 に田崎さん確定。置き場は下の LETTER ただ1つ。
+        改行位置まで含めて確定なので、勝手に詰めたり足したりしない。
+        （自動折り返しに任せると「ます。」だけが次行に落ちて不格好になる）
+
+     🔴 レイアウトは Canva「EC_誕生日施策」と同じ寸法にしてある。
+        https://www.canva.com/design/DAHUelRN4m8/Sg05Xbz8tlMKnkQZEVxx5g/edit
+        片方だけ直すと紙とデータがズレるので、直すときは両方直す。
+
+     配る条件（田崎さん確定）:
+       ・単品のお客様 … ご自身の誕生日月にご注文があった方のみ
+       ・定期便のお客様 … 誕生日月のお届けに必ず同梱（注文の有無を問わない）
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Shippori+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#0F3D2E;      /* 見出しの深緑（ブランド色） */
+    --gold:#B8932F;        /* 金の罫。白地なので #D4A93B より濃い方を使う */
+    --ink:#1A1A1A;
+    --muted:#6B7280;
+  }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:#E9ECEF; color:var(--ink);
+        font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif }
+
+  /* ── 画面だけのツールバー（印刷では消える） ───────────────── */
+  .bar{ position:sticky; top:0; z-index:10; background:var(--forest); color:#fff; padding:12px 16px;
+        display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center }
+  .bar h1{ font-size:14px; font-weight:800; margin:0 8px 0 0 }
+  .bar label{ font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:6px }
+  .bar input[type=text]{ width:200px; padding:7px 10px; border:0; border-radius:7px; font-size:14px; font-weight:700 }
+  .bar .btn{ padding:9px 18px; border:0; border-radius:8px; background:#D4A93B; color:#1a1a1a;
+             font-weight:800; font-size:13px; cursor:pointer }
+  .bar .hint{ font-size:11px; color:#C8D8CE; flex-basis:100%; line-height:1.7 }
+
+  /* ── 用紙（A4 原寸・片面） ─────────────────────────────── */
+  .stage{ padding:24px; display:flex; justify-content:center }
+  .sheet{ position:relative; width:210mm; height:297mm; background:#fff; overflow:hidden;
+          box-shadow:0 6px 24px rgba(0,0,0,.18) }
+
+  /* 位置はすべて Canva と同じ mm 指定。左右の余白は 30mm。 */
+  .head{ position:absolute; left:30mm; top:40mm; width:150mm; text-align:center;
+         font-family:"Cormorant Garamond","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+         font-weight:400; font-size:40pt; line-height:1.2; letter-spacing:.02em; color:var(--forest) }
+  .rule{ position:absolute; left:85mm; top:66mm; width:40mm; height:1.2pt; background:var(--gold) }
+  .to  { position:absolute; left:30mm; top:78mm; width:150mm;
+         font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+         font-size:16pt; font-weight:500; letter-spacing:.04em; color:var(--ink) }
+  .body{ position:absolute; left:30mm; top:100mm; width:150mm;
+         font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+         font-size:13pt; font-weight:400; line-height:1.8; letter-spacing:.02em; color:var(--ink);
+         white-space:pre-line }   /* ← 改行をそのまま出す。折り返し位置は LETTER が持っている */
+  .sign{ position:absolute; left:30mm; top:246mm; width:150mm; text-align:right;
+         font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+         font-size:14pt; font-weight:500; line-height:1.9; letter-spacing:.02em; color:var(--ink) }
+
+  /* ── 印刷 ─────────────────────────────────────────── */
+  @page{ size:A4 portrait; margin:0 }
+  @media print{
+    body{ background:#fff }
+    .bar,.stage{ padding:0 }
+    .bar{ display:none }
+    .sheet{ box-shadow:none; width:210mm; height:297mm }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>🎂 お誕生日のお手紙</h1>
+  <label>お名前
+    <input type="text" id="nameInput" placeholder="田崎" oninput="applyName()">
+  </label>
+  <button class="btn" onclick="window.print()">PDFで保存 / 印刷</button>
+  <div class="hint">
+    お名前を入れると用紙の「〇〇 様」が変わります。空のままなら「〇〇 様」のまま刷れます。<br>
+    「PDFで保存」→ 送信先で <strong>「PDFに保存」</strong> を選ぶとPDFがダウンロードされます。用紙サイズはA4・余白なしのまま変えないでください。
+  </div>
+</div>
+
+<div class="stage">
+  <div class="sheet">
+    <div class="head">Happy Birthday</div>
+    <div class="rule"></div>
+    <div class="to" id="toName">〇〇 様</div>
+    <div class="body" id="letterBody"></div>
+    <div class="sign">江田畜産株式会社<br>代表 江田友輝</div>
+  </div>
+</div>
+
+<script>
+/* 🔴 確定文面（2026-09-07 田崎さん）。改行位置も含めて確定。ここだけが正。 */
+var LETTER =
+  'この度は、お誕生日おめでとうございます。\n' +
+  '\n' +
+  '数ある中から江田畜産をお選びいただき、\n' +
+  'いつもありがとうございます。\n' +
+  '日ごろの感謝をこめて、ささやかですが\n' +
+  'お祝いに「赤身ステーキ」をお入れしました。\n' +
+  '\n' +
+  '焼く30分前に冷蔵庫から出して常温に戻し、\n' +
+  '塩は焼く直前に。\n' +
+  '強火で両面に焼き色をつけたら火を止めて、\n' +
+  'アルミホイルで数分休ませてください。\n' +
+  '焼きすぎないのがいちばんのコツです。\n' +
+  '\n' +
+  '大切な一日が、笑顔溢れる食卓になりますように。\n' +
+  'これからも変わらぬお付き合いを、\n' +
+  'どうぞよろしくお願いいたします。';
+
+document.getElementById('letterBody').textContent = LETTER;
+
+function applyName() {
+  var v = String(document.getElementById('nameInput').value || '').trim();
+  document.getElementById('toName').textContent = (v ? v : '〇〇') + ' 様';
+}
+
+/* staff.html から ?name=... で開かれる */
+(function () {
+  var p = new URLSearchParams(location.search);
+  var n = String(p.get('name') || '').trim();
+  if (n) { document.getElementById('nameInput').value = n; applyName(); }
+})();
+</script>
+
+</body>
+</html>

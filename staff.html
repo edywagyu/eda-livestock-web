@@ -3008,6 +3008,11 @@ function normalizeStaffOrder(o) {
     // 🐔 鶏ムネ特典（購入時アンケート回答者への次回同梱）。GAS が orders の
     //    chicken_perk 列 or ライブ判定で '要同梱（鶏ムネ1個）' / '同梱済…' / '特典発生元…' を返す。
     chickenPerk: String(o.chicken_perk || '').trim(),
+    // 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）。判定は GAS(staffOrders) が持っている。
+    //    customers.birthday(MM-DD) と「ご注文した月」を突き合わせて birthday_match を立てて返す。
+    //    ここでは受け取るだけ。画面側で月を数え直さない（数え直すと判定が2箇所になる）。
+    birthday: String(o.birthday || ''),
+    birthdayMatch: o.birthday_match === true,
     phone: d0.tel || o.customer_phone || '',
     zip: d0.zip || '',
     pref: d0.pref || '',
@@ -3172,7 +3177,7 @@ function orderRowHtml(o) {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}${o.birthdayMatch ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#B4508A;border-radius:4px;padding:1px 6px;margin-left:4px">🎂 誕生日</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}${o.purchaseCount ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#1E5C3A;background:#E8F5EC;border-radius:4px;padding:1px 6px;margin-left:4px">' + o.purchaseCount + '回目</span>' : ''}</div>
           <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
@@ -3317,7 +3322,31 @@ function renderShipDetail() {
       ✓ 鶏ムネ特典は同梱済みとして記録されています
     </div>` : '');
 
-  document.getElementById('shipContent').innerHTML = perkBanner + `
+  /* 🎂 お誕生日プレゼント（赤身ステーキ＋お手紙）のバナー。
+     出すかどうかは GAS(staffOrders) の birthday_match だけで決まる。ここで月を数え直さない。
+     ・単品   … ご自身の誕生日“月”にご注文があった分に同梱
+     ・定期便 … 誕生日“月”のお届けに必ず同梱（ご注文の有無を問わない）
+     お手紙は birthday-letter.html（A4・1枚）を開いてPDFで保存/印刷する。 */
+  const bdBtnStyle = 'display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:8px;' +
+                     'background:#B4508A;color:#fff;font-weight:800;font-size:13px;border:0;cursor:pointer';
+  const birthdayBanner = o.birthdayMatch ? `
+    <div class="card" style="border:2px solid #B4508A;background:#FCEBF5;padding:14px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;color:#8A2F66;margin-bottom:6px">🎂 お誕生日月のお客様です${o.birthday ? '（' + Number(o.birthday.slice(0, 2)) + '月' + Number(o.birthday.slice(3, 5)) + '日）' : ''}</div>
+      <div style="font-size:12px;color:#7A2A5A;line-height:1.7">
+        この発送分に <strong>赤身ステーキ 1パック</strong> と <strong>お祝いのお手紙</strong> を無料で同梱してください。<br>
+        ${isSubOrder(o)
+          ? '<strong>定期便のお客様です。ご注文の有無にかかわらず必ずお入れします。</strong>'
+          : '単品のご注文です。お誕生日の月のご注文なので対象です。'}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px">
+        <button type="button" style="${bdBtnStyle}" onclick="openBirthdayLetter()">🎂 お手紙を開く（PDFで保存／印刷）</button>
+      </div>
+      <div style="font-size:11px;color:#8A2F66;margin-top:6px">
+        お手紙には <strong>${escapeHtml(buyer.name || '（名前なし）')}</strong> 様のお名前が入ります。ギフトの場合はご注意ください。
+      </div>
+    </div>` : '';
+
+  document.getElementById('shipContent').innerHTML = birthdayBanner + perkBanner + `
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
       <div class="detail-row"><span class="label">受注日</span><span class="value">${escapeHtml(o.orderDate || '')}</span></div>
@@ -3403,6 +3432,13 @@ function renderShipDetail() {
 
 /* 特典用紙を新しいタブで開く。お名前は入力欄の値をそのまま渡す
    （初期値はご購入者名。ギフトで宛名を変えたいときはこの欄を書き換えてから押す）。 */
+/* 🎂 お誕生日のお手紙（A4・1枚）を開く。お名前はご購入者名を入れる。 */
+function openBirthdayLetter() {
+  const p = (selectedOrder && selectedOrder.purchaser) || {};
+  const nm = String(p.name || (selectedOrder && selectedOrder.customerName) || '').trim();
+  window.open('birthday-letter.html?name=' + encodeURIComponent(nm), '_blank', 'noopener');
+}
+
 function openPerkSheet(num) {
   const el = document.getElementById('perkSheetName');
   const nm = el ? String(el.value || '').trim() : '';
