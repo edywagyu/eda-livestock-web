@@ -1040,10 +1040,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .cancel-reason-comment:focus { outline: none; border-color: var(--color-forest); }
 .eda-modal-btn.danger[disabled] { opacity: 0.45; cursor: not-allowed; }
 /* TOP3 もう一度買う */
-.top3-row--tap { cursor: pointer; border-radius: 8px; margin: -4px -6px; padding: 4px 6px; transition: background 0.2s; }
-.top3-row--tap:hover { background: rgba(212,169,59,0.12); }
-.top3-row--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
-.top3-reorder { flex-shrink: 0; margin-left: 10px; color: #FFD773; display: flex; align-items: center; }
 /* 注文履歴 もう一度買う */
 .order-reorder-btn {
  display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -1355,16 +1351,32 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* Tappable coupon stat (header) */
 /* 上部カード: 選ばれた商品 TOP3 */
-.welcome-top3-wrap { display: block; padding: 18px 20px 20px; }
-.top3-head { font-family: var(--font-jp); font-size: 11px; letter-spacing: 0.1em; color: rgba(255,255,255,0.72); text-transform: none; margin: 0 0 12px; font-weight: 600; }
-.top3-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.top3-row { display: flex; align-items: center; gap: 12px; }
-.top3-rank { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #3a2f10; background: #FFD773; }
-.top3-rank-2 { background: #E6E1D4; color: #4a4a44; }
-.top3-rank-3 { background: #D9B48A; color: #3a2b18; }
-.top3-name { flex: 1; font-family: var(--font-jp); font-size: 14px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.top3-count { flex-shrink: 0; font-family: var(--font-jp); font-size: 12px; color: rgba(255,255,255,0.7); }
-.top3-empty { font-family: var(--font-jp); font-size: 12.5px; color: rgba(255,255,255,0.72); line-height: 1.6; }
+.welcome-card-slot { display: block; padding: 18px 20px 20px; }
+/* 🎂 会員カードの一番下＝マイページを開いて最初に目に入る場所。
+   ここは深緑の暗いカードの中なので、文字は金と白で書く（深緑・黒は沈んで見えない）。
+   2026-09-07 田崎さん指示で「選ばれた商品 TOP3」からこのご案内に差し替えた。 */
+.bd-prompt { display: flex; align-items: flex-start; gap: 12px; }
+.bd-prompt-ico { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+ background: rgba(212,169,59,0.18); border: 1px solid rgba(212,169,59,0.45);
+ display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; }
+.bd-prompt-body { flex: 1; min-width: 0; }
+.bd-prompt-title { font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+ color: #FFD773; margin: 0 0 4px; line-height: 1.5; }
+.bd-prompt-text { font-family: var(--font-jp); font-size: 12.5px; line-height: 1.8;
+ color: rgba(255,255,255,0.86); margin: 0; }
+.bd-prompt-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+ padding: 9px 18px; border: 0; border-radius: 8px; cursor: pointer;
+ background: #FFD773; color: #3a2f10;
+ font-family: var(--font-jp); font-size: 13px; font-weight: 800; letter-spacing: 0.02em; }
+.bd-prompt-btn:hover { background: #FFE49A; }
+.bd-prompt-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.bd-prompt-date { display: inline-block; margin-top: 8px; padding: 3px 12px; border-radius: 999px;
+ background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18);
+ font-family: var(--font-jp); font-size: 12.5px; font-weight: 700; color: #fff; }
+.bd-prompt-edit { margin-left: 10px; background: none; border: 0; cursor: pointer; padding: 0;
+ font-family: var(--font-jp); font-size: 11.5px; color: rgba(255,255,255,0.62); text-decoration: underline; }
+.bd-prompt--now { border: 1px solid rgba(212,169,59,0.45); border-radius: 10px; padding: 12px 14px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04)); }
 .welcome-stat-tappable { cursor: pointer; border-radius: 12px; transition: background 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; }
 .welcome-stat-tappable:hover { background: rgba(212, 169, 59, 0.10); transform: translateY(-1px); }
 .welcome-stat-tappable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
@@ -3019,7 +3031,7 @@ button:focus-visible, a:focus-visible {
  </div>
  <p class="welcome-member-since" id="memberSince"></p>
  </div>
- <div class="welcome-card-bottom welcome-top3-wrap" id="welcomeTop3"></div>
+ <div class="welcome-card-bottom welcome-card-slot" id="welcomeBirthday"></div>
  <!-- 旧: ご注文回数/累計お買い上げ/利用可能クーポン。集計は保持のため隠しノードで残す -->
  <span id="totalOrders" hidden>0</span>
  <span id="totalSpent" hidden>-</span>
@@ -3968,7 +3980,6 @@ function reorderItems(items) {
  window.location.href = added > 0 ? 'shop.html?cart=1' : 'shop.html';
 }
 function reorderOrder(oi) { var o = (window._edaOrders || [])[oi]; if (o) reorderItems(o.items || []); }
-function reorderProduct(pi) { var s = (window._edaTop3Samples || [])[pi]; if (s) reorderItems([s]); }
 
 /* お付き合い起点日: eda-member-linked-at → customer.created_at → 最古の注文日 → 今 */
 function getRelationshipStart(customer, orders) {
@@ -3994,42 +4005,75 @@ function formatRelationship(start) {
  return Math.max(m, 1) + 'ヶ月';
 }
 
-/* 注文明細を集計して「選ばれた商品 TOP3」を描画 */
-function renderTop3(custName, orders) {
- var el = document.getElementById('welcomeTop3');
+/* 🎂 会員カードの一番下に出す「お誕生日」のご案内
+   ------------------------------------------------------------
+   マイページを開いて最初に目に入る場所。ここでしか気づいてもらえないので、
+   未登録の方には登録の入口を、登録済みの方にはいつ何が届くかを出す。
+   2026-09-07 田崎さん指示で「選ばれた商品 TOP3」からこれに差し替えた。
+
+   3つの出し分け:
+     ①未登録        … 登録をお願いする（ボタンで設定タブの誕生日欄まで連れて行く）
+     ②今月が誕生月  … 金の枠で「今月です」と出す（いちばん行動してほしい状態）
+     ③それ以外      … 登録済みの日付と、その月に何が届くかを静かに出す
+   ⚠️ 深緑の暗いカードの中なので、文字は金と白だけを使う。 */
+function renderBirthdayPrompt() {
+ var el = document.getElementById('welcomeBirthday');
  if (!el) return;
- var counts = {}, samples = {};
- (orders || []).forEach(function(o){
-  /* 定期便の注文はTOP3に入れない（毎月届くものなので「選ばれた商品」にならない） */
-  if (String(o.mode || '').indexOf('subscription') === 0) return;
-  (o.items || []).forEach(function(it){
-   var name = (it.title || it.name || '').toString().trim();
-   if (!name) return;
-   if (name.indexOf('定期便') >= 0) return;   /* 商品名に定期便が入るものも除外 */
-   counts[name] = (counts[name] || 0) + (Number(it.qty) || 1);
-   if (!samples[name] || ((it.variantId || it.id) && !(samples[name].variantId || samples[name].id))) samples[name] = it;
-  });
- });
- var ranked = Object.keys(counts).map(function(k){ return { name: k, qty: counts[k], sample: samples[k] }; })
-  .sort(function(a, b){ return b.qty - a.qty; }).slice(0, 3);
- if (!ranked.length) {
-  el.innerHTML = '<div class="top3-empty">ご注文が増えると、' + escapeHtml(custName) + '様に選ばれた商品トップ3を表示します</div>';
+ var bd = loadBirthday();
+
+ if (!bd) {
+  el.innerHTML =
+   '<div class="bd-prompt">' +
+    '<div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
+    '<div class="bd-prompt-body">' +
+     '<p class="bd-prompt-title">お誕生日を教えてください</p>' +
+     '<p class="bd-prompt-text">お誕生日の月にご注文いただくと、お祝いに「赤身ステーキ」をお入れします。' +
+      '定期便の方は、その月のお届けに自動でお入れします。</p>' +
+     '<button type="button" class="bd-prompt-btn" onclick="goBirthdaySetting()">お誕生日を登録する</button>' +
+    '</div>' +
+   '</div>';
   return;
  }
- window._edaTop3Samples = ranked.map(function(r){ return r.sample; });
- var cartSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>';
- var rows = ranked.map(function(r, i){
-  var canRe = r.sample && (r.sample.variantId || r.sample.id);
-  var attrs = canRe ? ' class="top3-row top3-row--tap" role="button" tabindex="0" onclick="reorderProduct(' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();reorderProduct(' + i + ');}"' : ' class="top3-row"';
-  return '<li' + attrs + '>' +
-   '<span class="top3-rank top3-rank-' + (i + 1) + '">' + (i + 1) + '</span>' +
-   '<span class="top3-name">' + escapeHtml(r.name) + '</span>' +
-   '<span class="top3-count">' + r.qty + '回</span>' +
-   (canRe ? '<span class="top3-reorder" aria-label="もう一度買う">' + cartSvg + '</span>' : '') +
-  '</li>';
- }).join('');
- el.innerHTML = '<div class="top3-head">' + escapeHtml(custName) + '様に選ばれた商品 TOP3</div>' +
-  '<ol class="top3-list">' + rows + '</ol>';
+
+ var mo = Number(bd.slice(0, 2)), da = Number(bd.slice(3, 5));
+ var thisMonth = (new Date()).getMonth() + 1;
+ var label = mo + '月' + da + '日';
+
+ if (mo === thisMonth) {
+  el.innerHTML =
+   '<div class="bd-prompt bd-prompt--now">' +
+    '<div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
+    '<div class="bd-prompt-body">' +
+     '<p class="bd-prompt-title">今月はお誕生月です（' + label + '）</p>' +
+     '<p class="bd-prompt-text">今月中にご注文いただいた分に、お祝いの「赤身ステーキ」とお手紙をお入れします。' +
+      '定期便の方は、今月のお届けに自動でお入れします。</p>' +
+    '</div>' +
+   '</div>';
+  return;
+ }
+
+ el.innerHTML =
+  '<div class="bd-prompt">' +
+   '<div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
+   '<div class="bd-prompt-body">' +
+    '<p class="bd-prompt-title">お誕生日を登録いただいています</p>' +
+    '<p class="bd-prompt-text">' + label + 'の月にご注文いただくと、お祝いに「赤身ステーキ」をお入れします。</p>' +
+    '<span class="bd-prompt-date">' + label + '</span>' +
+    '<button type="button" class="bd-prompt-edit" onclick="goBirthdaySetting()">変更する</button>' +
+   '</div>' +
+  '</div>';
+}
+
+/* ご案内から設定タブの誕生日欄まで連れて行く（入力欄も開いた状態にする） */
+function goBirthdaySetting() {
+ try { switchTab('settings'); } catch (e) {}
+ setTimeout(function () {
+  var card = document.getElementById('birthdayCard');
+  if (!card) return;
+  var form = document.getElementById('birthdayForm');
+  if (form && form.style.display === 'none') { try { toggleBirthdayEdit(); } catch (e) {} }
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+ }, 120);
 }
 
 function renderDashboard(customer, orders) {
@@ -4073,8 +4117,8 @@ function renderDashboard(customer, orders) {
   sinceEl.textContent = custName + '様とのお付き合い ' + formatRelationship(startDate) + '目';
  }
 
- /* ★ お客様に選ばれた商品 TOP3（注文明細を集計） */
- renderTop3(custName, orders);
+ /* 🎂 お誕生日のご案内（TOP3から差し替え・2026-09-07 田崎さん指示） */
+ renderBirthdayPrompt();
 
  /* ★ Premium: Available coupons count（下カード/一覧と同じ判定に統一） */
  var coupons = customer.coupons || generateDemoCoupons(orderCount);
