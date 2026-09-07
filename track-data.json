@@ -867,7 +867,8 @@
       }
     ],
     "statusNote": "Export documents issued · 7 Sep",
-    "pallets": 2
+    "pallets": 2,
+    "informationAsOf": "2026-09-07T23:12:01Z"
   },
   "ilm-0904": {
     "order": "ETUS260726B",
