@@ -405,29 +405,17 @@ body{
       img: 'public/images/products/drive/yakiniku-set-2.jpg',
       desc: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得です。ご家庭の焼肉・BBQに。'
     }*/
-    {
-      /* 2026-09-06(日) 20:00 発売の数量限定セット。
-         🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
-            セットが売れると単品(P035/P036)の在庫が自動で減る＝二重販売しない。
-            だから在庫は取り分けず、カメノコ8袋 / シンシン6袋 を単品と共有する
-            (2026-08-30 ryotaro判断・案2)。components を消すと売り越す。
-         🔴 下の stock は取得失敗時の目安。実際は syncCatalog が構成品から
-            min(カメノコ, シンシン) で作り直す。セット行の stock は動かないので
-            そのまま使うと肉が無くなっても完売表示にならない (2026-08-31 修正)。 */
-      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
-      detailId: 'P037',
-      /* 通常サイト(shop.html / products.html)にも同じ商品を出している。
-         name は在庫減算と決済の突合キーなので両方で完全一致させること。
-         会員限定ではないので memberOnly:false ＝「会員限定」バッジを出さない。 */
-      memberOnly: false,
-      name: 'カメノコ・シンシン焼肉セット',
-      variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 6,
-      startAt: '2026-09-06T20:00:00+09:00',
-      startLabel: '9月6日（日）20:00',
-      img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
-      desc: 'モモの中のシンタマを4つに分けた希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。'
-    },
+    /* ===== カメノコ・シンシン焼肉セット (P037) は 2026-09-07 に販売終了 =====
+       田崎さん指示で単品(P035 カメノコ / P036 シンシン)ごと店頭から下げた。
+       本番DB products では P035/P036/P037 とも published=FALSE、P037 は stock=0。
+       単品の実在庫はカメノコ7袋・シンシン5袋が残っている(products の stock はそのまま)。
+       再開するときは products の published を TRUE に戻し、ここに下のカードを書き戻す:
+         productId 'P037' / variantId 'KAMENOKO-SHINSHIN-SET' / detailId 'P037'
+         memberOnly:false / name 'カメノコ・シンシン焼肉セット'
+         variant 'カメノコ200g ＋ シンシン200g' / price 4860 / listPrice 5400 / limitedTotal 6
+         img 'public/images/products/drive/kamenoko-shinshin-set.jpg'
+       在庫は products の components (BOM) で カメノコ1 + シンシン1 に展開されるので、
+       セット行の stock は取り分けず、syncCatalog が min(カメノコ, シンシン) で作り直す。 */
     {
       productId: 'P032', variantId: 'HIRE-CUBE',
       detailId: 'P032',
