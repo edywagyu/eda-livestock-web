@@ -13195,14 +13195,14 @@ function copyPopCoupon() {
 /* ===== お届け日ドロップダウン: 実日付を最短日から14日分生成 + 選択保存 (Tom 2026-06) =====
    従来は <option>指定なし(最短)</option> のみで実質選べず、updateDeliveryNote() も未定義だった。 */
 (function(){
-  function jstNow(){ var n=new Date(); return new Date(n.getTime()+(9*60-n.getTimezoneOffset())*60000); }
+  function jstNow(){ var n=new Date(); return new Date(n.getTime()+(9*60+n.getTimezoneOffset())*60000); }  /* 符号は「+」が正。「-」だとJST端末で18時間先にずれ、最短日が1日後ろに動いていた */
   function fmtIso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   var DAYS=['日','月','火','水','木','金','土'];
   function buildDeliveryOptions(){
     var sel=document.getElementById('deliveryDate');
     if(!sel || sel.dataset.filled) return;
     var jst=jstNow();
-    var lead=jst.getHours()<10?2:3;            /* 最短: 朝10時前は2日後、以降3日後 */
+    var lead=3;                                /* 最短: 注文日から3日後（時間帯によらず一律・checkout.htmlのmin=+3日と同一） */
     var cur=new Date(jst); cur.setDate(cur.getDate()+lead);
     var saved=null; try{ saved=localStorage.getItem('eda-deliv-date'); }catch(e){}
     var added=0;
