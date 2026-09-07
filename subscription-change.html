@@ -81,14 +81,14 @@ textarea:focus{outline:none;border-color:var(--gold)}
     <label class="note" for="note">ご要望（任意）</label>
     <textarea id="note" placeholder="例：牛肉を多めにしてほしい／次回から変更したい"></textarea>
 
-    <button class="submit" id="submit" disabled>この内容で変更を申し込む</button>
+    <button class="submit" id="submit" disabled>このプランに変更する</button>
     <div class="err" id="err"></div>
-    <p class="fine">お申し込み後、担当者が内容を確認してから切り替えます。切り替え完了はご連絡いたします。この画面だけでは請求内容は変わりません。</p>
+    <p class="fine">変更は次回のお届け分から反映されます。内容はマイページでご確認いただけます。</p>
   </div>
 
   <div id="done" class="done" style="display:none">
-    <h2>お申し込みを受け付けました</h2>
-    <p>担当者が確認のうえ、次回のお届け分から切り替えてご連絡いたします。</p>
+    <h2>プランを変更しました</h2>
+    <p>次回のお届け分から新しいプランでお届けします。</p>
     <a href="mypage.html">マイページに戻る</a>
   </div>
 </div>
@@ -168,6 +168,9 @@ document.getElementById('submit').addEventListener('click', async function () {
       email: _email,
       current_plan: _currentPlan,
       new_plan: _selected.name + 'プラン（' + yen(_selected.oldPrice) + '/月）',
+      plan_id: _selected.planId,
+      plan_name: _selected.name + 'プラン',
+      plan_price: _selected.oldPrice,
       note: document.getElementById('note').value || ''
     });
     if (r && r.ok) {
@@ -176,11 +179,11 @@ document.getElementById('submit').addEventListener('click', async function () {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       showErr('送信できませんでした：' + ((r && r.error) || '時間をおいてお試しください'));
-      btn.disabled = false; btn.textContent = 'この内容で変更を申し込む';
+      btn.disabled = false; btn.textContent = 'このプランに変更する';
     }
   } catch (e) {
     showErr('通信エラーが発生しました');
-    btn.disabled = false; btn.textContent = 'この内容で変更を申し込む';
+    btn.disabled = false; btn.textContent = 'このプランに変更する';
   }
 });
 
