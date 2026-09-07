@@ -37,6 +37,8 @@ function rsr_url_()         { return String(cfg('REPEAT_SHIP_REMIND_URL', '') ||
 function rsr_stamp_(d)      { return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm'); }
 function rsr_dayToDate_(n)  { return new Date(n * 86400000 - 9 * 3600000); }
 function rsr_md_(n)         { var d = rsr_dayToDate_(n); return Utilities.formatDate(d, 'Asia/Tokyo', 'M月d日'); }
+/* 残り日数の見せ方。期限当日（残り0日）は「あと0日」ではなく「本日最終日」と出す（2026-09-03 田崎さん指示）。 */
+function rsr_leftLabel_(n)  { return (Number(n) > 0) ? ('あと' + Number(n) + '日') : '本日最終日'; }
 
 /* ---- 本番ON/OFF（エディタから手で実行する）---- */
 function setRepeatShipRemindOn()  { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_REMIND_ENABLED', 'true');  return 'REPEAT_SHIP_REMIND_ENABLED=true'; }
@@ -184,7 +186,7 @@ function sendRepeatShipLine_(p) {
     '2回目のご注文は送料が半額になります。\n' +
     '　送料 1,100円 → 550円\n' +
     '　（北海道・沖縄は 2,200円 → 1,100円）\n\n' +
-    'お使いいただける期限：' + rsr_md_(p.deadline) + '（あと' + p.daysLeft + '日）\n' +
+    'お使いいただける期限：' + rsr_md_(p.deadline) + '（' + rsr_leftLabel_(p.daysLeft) + '）\n' +
     'クーポンコードは要りません。ご注文時に自動で半額になります。\n\n' +
     '▼ご注文はこちら\n' + rsr_url_();
   return sendLinePush(p.uid, [{ type: 'text', text: text }]);
@@ -196,12 +198,12 @@ function sendRepeatShipMail_(p) {
   MailApp.sendEmail({
     to: p.email,
     name: BRAND_MAIL.sender,
-    subject: '【あと' + p.daysLeft + '日】2回目のご注文は送料半額です｜江田畜産',
+    subject: '【' + rsr_leftLabel_(p.daysLeft) + '】2回目のご注文は送料半額です｜江田畜産',
     body:
       greeting + '\n\n' +
       '2回目のご注文は送料が半額になります。\n' +
       '  送料 1,100円 → 550円（北海道・沖縄は 2,200円 → 1,100円）\n\n' +
-      'お使いいただける期限: ' + deadline + '（あと' + p.daysLeft + '日）\n' +
+      'お使いいただける期限: ' + deadline + '（' + rsr_leftLabel_(p.daysLeft) + '）\n' +
       'クーポンコードは要りません。ご注文時に自動で半額になります。\n\n' +
       '▼ご注文はこちら\n' + rsr_url_() + '\n\n' +
       '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
@@ -213,7 +215,7 @@ function sendRepeatShipMail_(p) {
       rows: [
         ['送料（通常配送）', '<span style="text-decoration:line-through;color:#9aa5a0;">1,100円</span>　550円'],
         ['送料（北海道・沖縄）', '<span style="text-decoration:line-through;color:#9aa5a0;">2,200円</span>　1,100円'],
-        ['ご利用期限', deadline + '（あと' + p.daysLeft + '日）']
+        ['ご利用期限', deadline + '（' + rsr_leftLabel_(p.daysLeft) + '）']
       ],
       ctaLabel: 'ご注文はこちら',
       ctaUrl: rsr_url_(),
