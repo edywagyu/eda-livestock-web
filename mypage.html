@@ -1377,6 +1377,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  font-family: var(--font-jp); font-size: 11.5px; color: rgba(255,255,255,0.62); text-decoration: underline; }
 .bd-prompt--now { border: 1px solid rgba(212,169,59,0.45); border-radius: 10px; padding: 12px 14px;
  background: linear-gradient(135deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04)); }
+/* 誕生月でない間にこの枠へ出すもの（定期便の方＝次回お届け／それ以外＝人気商品） */
+.ws-eyebrow { font-family: var(--font-jp); font-size: 11px; letter-spacing: .1em; font-weight: 600;
+ color: rgba(255,255,255,0.72); margin: 0 0 10px; }
+.ws-date { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; margin: 0 0 6px; line-height: 1.3; }
+.ws-sub { font-family: var(--font-jp); font-size: 12px; line-height: 1.8; color: rgba(255,255,255,0.72); margin: 0; }
+.ws-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.ws-row { display: flex; align-items: center; gap: 12px; }
+.ws-rank { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+ justify-content: center; font-family: var(--font-display); font-size: 12px; font-weight: 700;
+ color: #3a2f10; background: #FFD773; }
+.ws-rank-2 { background: #E6E1D4; color: #4a4a44; }
+.ws-rank-3 { background: #D9B48A; color: #3a2b18; }
+.ws-name { flex: 1; font-family: var(--font-jp); font-size: 14px; font-weight: 600; color: #fff;
+ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; padding: 8px 16px;
+ border-radius: 8px; border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.06);
+ color: #fff; text-decoration: none; font-family: var(--font-jp); font-size: 12.5px; font-weight: 700; }
+.ws-link:hover { background: rgba(255,255,255,0.14); }
 .welcome-stat-tappable { cursor: pointer; border-radius: 12px; transition: background 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; }
 .welcome-stat-tappable:hover { background: rgba(212, 169, 59, 0.10); transform: translateY(-1px); }
 .welcome-stat-tappable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
@@ -3031,7 +3049,7 @@ button:focus-visible, a:focus-visible {
  </div>
  <p class="welcome-member-since" id="memberSince"></p>
  </div>
- <div class="welcome-card-bottom welcome-card-slot" id="welcomeBirthday"></div>
+ <div class="welcome-card-bottom welcome-card-slot" id="welcomeSlot"></div>
  <!-- 旧: ご注文回数/累計お買い上げ/利用可能クーポン。集計は保持のため隠しノードで残す -->
  <span id="totalOrders" hidden>0</span>
  <span id="totalSpent" hidden>-</span>
@@ -4005,22 +4023,39 @@ function formatRelationship(start) {
  return Math.max(m, 1) + 'ヶ月';
 }
 
-/* 🎂 会員カードの一番下に出す「お誕生日」のご案内
+/* 会員カードの一番下＝マイページを開いて最初に目に入る1枠
    ------------------------------------------------------------
-   マイページを開いて最初に目に入る場所。ここでしか気づいてもらえないので、
-   未登録の方には登録の入口を、登録済みの方にはいつ何が届くかを出す。
-   2026-09-07 田崎さん指示で「選ばれた商品 TOP3」からこれに差し替えた。
+   ここに何を出すかの優先順位（2026-09-07 田崎さん決定）:
+     ①お誕生月のあいだ … お祝いのご案内（誕生月の「1日前」から出す＝前月の末日から）
+     ②誕生日が未登録   … 登録のお願い（ここでしか気づいてもらえないので②に置く）
+     ③定期便の方       … 次回のお届け（お客様がマイページを開く一番の理由）
+     ④それ以外         … いま売れている商品 TOP3
 
-   3つの出し分け:
-     ①未登録        … 登録をお願いする（ボタンで設定タブの誕生日欄まで連れて行く）
-     ②今月が誕生月  … 金の枠で「今月です」と出す（いちばん行動してほしい状態）
-     ③それ以外      … 登録済みの日付と、その月に何が届くかを静かに出す
-   ⚠️ 深緑の暗いカードの中なので、文字は金と白だけを使う。 */
-function renderBirthdayPrompt() {
- var el = document.getElementById('welcomeBirthday');
+   ⚠️ ここは深緑の暗いカードの中。文字は金(#FFD773)と白だけを使う。
+      深緑やインク色は背景に沈んで見えない（PR #263 と同じ罠）。 */
+var _lastCustomer = null;   /* 誕生日を保存した直後にこの枠を描き直すため、直近の会員情報を覚えておく */
+function renderWelcomeSlot(customer) {
+ var el = document.getElementById('welcomeSlot');
  if (!el) return;
+ if (customer) _lastCustomer = customer; else customer = _lastCustomer;
  var bd = loadBirthday();
 
+ /* ── ① お誕生月のあいだ ───────────────────────────── */
+ var win = birthdayWindow(bd);
+ if (win.inWindow) {
+  var body = win.isEve
+   ? '<p class="bd-prompt-title">明日から お誕生月です（' + win.label + '）</p>' +
+     '<p class="bd-prompt-text">来月中にご注文いただいた分に、お祝いの「赤身ステーキ」とお手紙をお入れします。' +
+      '定期便の方は、来月のお届けに自動でお入れします。</p>'
+   : '<p class="bd-prompt-title">今月はお誕生月です（' + win.label + '）</p>' +
+     '<p class="bd-prompt-text">今月中にご注文いただいた分に、お祝いの「赤身ステーキ」とお手紙をお入れします。' +
+      '定期便の方は、今月のお届けに自動でお入れします。</p>';
+  el.innerHTML = '<div class="bd-prompt bd-prompt--now"><div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
+   '<div class="bd-prompt-body">' + body + '</div></div>';
+  return;
+ }
+
+ /* ── ② 誕生日が未登録 ─────────────────────────────── */
  if (!bd) {
   el.innerHTML =
    '<div class="bd-prompt">' +
@@ -4035,33 +4070,60 @@ function renderBirthdayPrompt() {
   return;
  }
 
- var mo = Number(bd.slice(0, 2)), da = Number(bd.slice(3, 5));
- var thisMonth = (new Date()).getMonth() + 1;
- var label = mo + '月' + da + '日';
-
- if (mo === thisMonth) {
+ /* ── ③ 定期便の方 ────────────────────────────────── */
+ var sub = customer && customer.subscription;
+ if (sub && sub.active) {
+  var next = sub.next_delivery ? formatDateLong(sub.next_delivery) : '毎月1日';
   el.innerHTML =
-   '<div class="bd-prompt bd-prompt--now">' +
-    '<div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
-    '<div class="bd-prompt-body">' +
-     '<p class="bd-prompt-title">今月はお誕生月です（' + label + '）</p>' +
-     '<p class="bd-prompt-text">今月中にご注文いただいた分に、お祝いの「赤身ステーキ」とお手紙をお入れします。' +
-      '定期便の方は、今月のお届けに自動でお入れします。</p>' +
-    '</div>' +
-   '</div>';
+   '<p class="ws-eyebrow">定期便 次回のお届け</p>' +
+   '<p class="ws-date">' + escapeHtml(next) + '</p>' +
+   '<p class="ws-sub">次回お届けする商品は、毎月20日ごろに決まります。決まりましたら「定期便」タブでご覧いただけます。</p>' +
+   '<a class="ws-link" href="javascript:void(0)" onclick="switchTab(\'subscription\')">定期便を見る' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
   return;
  }
 
- el.innerHTML =
-  '<div class="bd-prompt">' +
-   '<div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
-   '<div class="bd-prompt-body">' +
-    '<p class="bd-prompt-title">お誕生日を登録いただいています</p>' +
-    '<p class="bd-prompt-text">' + label + 'の月にご注文いただくと、お祝いに「赤身ステーキ」をお入れします。</p>' +
-    '<span class="bd-prompt-date">' + label + '</span>' +
-    '<button type="button" class="bd-prompt-edit" onclick="goBirthdaySetting()">変更する</button>' +
-   '</div>' +
-  '</div>';
+ /* ── ④ それ以外 … いま売れている商品 ─────────────────── */
+ el.innerHTML = '<p class="ws-eyebrow">いま売れている商品</p>' +
+  '<p class="ws-sub">読み込んでいます…</p>';
+ loadPopularForSlot(el);
+}
+
+/* 「お誕生月のあいだ」か。誕生月の1日前（前月の末日）から、誕生月の終わりまで。
+   例: 9月15日生まれの方 → 8月31日から9月30日まで出る。 */
+function birthdayWindow(bd) {
+ if (!bd) return { inWindow: false };
+ var bm = Number(bd.slice(0, 2)), bday = Number(bd.slice(3, 5));
+ var now = new Date();
+ var m = now.getMonth() + 1, d = now.getDate();
+ var label = bm + '月' + bday + '日';
+ if (m === bm) return { inWindow: true, isEve: false, label: label };
+ /* 前月の末日だけ「明日から」。12月末→1月生まれ も拾う */
+ var lastDay = new Date(now.getFullYear(), m, 0).getDate();
+ var nextMonth = (m === 12) ? 1 : m + 1;
+ if (d === lastDay && nextMonth === bm) return { inWindow: true, isEve: true, label: label };
+ return { inWindow: false };
+}
+
+/* 人気商品は products-loader と同じデプロイから取る。
+   🔴 EDA_CONFIG.GAS_URL は別デプロイで public_popular を知らない（popular.js と同じ理由）。 */
+var WS_POPULAR_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_popular';
+function loadPopularForSlot(el) {
+ fetch(WS_POPULAR_URL, { cache: 'no-store' })
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+   var list = (d && d.ranking ? d.ranking : []).slice(0, 3);
+   if (!list.length) { el.innerHTML = ''; return; }   /* 取れなければ何も出さない（嘘を出さない） */
+   var rows = list.map(function (r, i) {
+    return '<li class="ws-row"><span class="ws-rank ws-rank-' + (i + 1) + '">' + (i + 1) + '</span>' +
+     '<span class="ws-name">' + escapeHtml(r.name || '') + '</span></li>';
+   }).join('');
+   el.innerHTML = '<p class="ws-eyebrow">いま売れている商品</p>' +
+    '<ol class="ws-list">' + rows + '</ol>' +
+    '<a class="ws-link" href="shop.html">お買い物へ' +
+     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
+  })
+  .catch(function () { el.innerHTML = ''; });
 }
 
 /* ご案内から設定タブの誕生日欄まで連れて行く（入力欄も開いた状態にする） */
@@ -4117,8 +4179,8 @@ function renderDashboard(customer, orders) {
   sinceEl.textContent = custName + '様とのお付き合い ' + formatRelationship(startDate) + '目';
  }
 
- /* 🎂 お誕生日のご案内（TOP3から差し替え・2026-09-07 田崎さん指示） */
- renderBirthdayPrompt();
+ /* 会員カードの一番下の1枠（誕生月／未登録／定期便／人気商品 を出し分け） */
+ renderWelcomeSlot(customer);
 
  /* ★ Premium: Available coupons count（下カード/一覧と同じ判定に統一） */
  var coupons = customer.coupons || generateDemoCoupons(orderCount);
@@ -4654,6 +4716,7 @@ function saveBirthday() {
   document.getElementById('birthdayForm').style.display = 'none';
   document.getElementById('birthdayDisplay').style.display = '';
   renderBirthday({});
+  renderWelcomeSlot();   /* 一番上の枠もその場で切り替える（登録のお願い → 登録済みの表示） */
 }
 
 /* 郵便番号 → 住所自動入力 */
