@@ -3013,6 +3013,10 @@ function normalizeStaffOrder(o) {
     //    ここでは受け取るだけ。画面側で月を数え直さない（数え直すと判定が2箇所になる）。
     birthday: String(o.birthday || ''),
     birthdayMatch: o.birthday_match === true,
+    // 🎂 プレゼントは お一人 その月に1回だけ（早い方で渡す）。
+    //    先に発送した注文の番号が入る。空＝まだ誰にも渡していない。
+    birthdayGivenBy: String(o.birthday_given_by || ''),
+    birthdayGivenHere: o.birthday_given_here === true,
     // 🔁 「この“方”が定期便のお客様か」。そのご注文が定期便か(mode)とは別物で、
     //    定期便の方が単品で買ってくださったご注文にも立つ。判定は GAS 側だけが持つ。
     isSubscriber: o.is_subscriber === true,
@@ -3330,10 +3334,24 @@ function renderShipDetail() {
      出すかどうかは GAS(staffOrders) の birthday_match だけで決まる。ここで月を数え直さない。
      ・単品   … ご自身の誕生日“月”にご注文があった分に同梱
      ・定期便 … 誕生日“月”のお届けに必ず同梱（ご注文の有無を問わない）
+     🔴 プレゼントは お一人 その月に1回だけ（「早い方で渡す」2026-09-07 田崎さん決定）。
+        先に発送した注文が付与ログに入るので、2件目以降はグレーの「お渡し済み」に変わる。
+        判定は GAS が birthday_given_by で返す。画面では数え直さない。
      お手紙は birthday-letter.html（A4・1枚）を開いてPDFで保存/印刷する。 */
   const bdBtnStyle = 'display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:8px;' +
                      'background:#B4508A;color:#fff;font-weight:800;font-size:13px;border:0;cursor:pointer';
-  const birthdayBanner = o.birthdayMatch ? `
+  /* 別の注文で今月ぶんを渡し済み＝この箱には入れない */
+  const bdAlreadyElsewhere = o.birthdayMatch && o.birthdayGivenBy && !o.birthdayGivenHere;
+
+  const birthdayBanner = !o.birthdayMatch ? '' : (bdAlreadyElsewhere ? `
+    <div class="card" style="border:1px solid #D7C3CE;background:#F6F1F4;padding:12px;margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;color:#6B5A64;margin-bottom:4px">🎂 今月のお誕生日プレゼントはお渡し済みです</div>
+      <div style="font-size:12px;color:#6B5A64;line-height:1.7">
+        <strong>この箱には入れないでください。</strong>
+        今月は先に発送した ご注文 <strong>${escapeHtml(o.birthdayGivenBy)}</strong> にお入れしています。<br>
+        プレゼントはお一人 その月に1回、早い方のお届けにお入れする決まりです。
+      </div>
+    </div>` : `
     <div class="card" style="border:2px solid #B4508A;background:#FCEBF5;padding:14px;margin-bottom:12px">
       <div style="font-size:15px;font-weight:800;color:#8A2F66;margin-bottom:6px">🎂 お誕生日月のお客様です${o.birthday ? '（' + Number(o.birthday.slice(0, 2)) + '月' + Number(o.birthday.slice(3, 5)) + '日）' : ''}</div>
       <div style="font-size:12px;color:#7A2A5A;line-height:1.7">
@@ -3346,9 +3364,12 @@ function renderShipDetail() {
         <button type="button" style="${bdBtnStyle}" onclick="openBirthdayLetter()">🎂 お手紙を開く（PDFで保存／印刷）</button>
       </div>
       <div style="font-size:11px;color:#8A2F66;margin-top:6px">
-        お手紙には <strong>${escapeHtml(buyer.name || '（名前なし）')}</strong> 様のお名前が入ります。ギフトの場合はご注意ください。
+        お手紙には <strong>${escapeHtml(buyer.name || '（名前なし）')}</strong> 様のお名前が入ります。ギフトの場合はご注意ください。<br>
+        ${o.birthdayGivenHere
+          ? 'このご注文で今月ぶんをお渡し済みとして記録されています。'
+          : 'お一人 その月に1回だけです。発送を記録した時点で「お渡し済み」になります。'}
       </div>
-    </div>` : '';
+    </div>`);
 
   document.getElementById('shipContent').innerHTML = birthdayBanner + perkBanner + `
     <div class="detail-card">
