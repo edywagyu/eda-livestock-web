@@ -73,6 +73,28 @@ function dsd_parse_(v) {
   return isNaN(d.getTime()) ? null : d;
 }
 
+/* ---- 自動配信の時刻をまとめて設定 ----
+   2026-09-07 田崎さん指示「カゴ落ちの催促以外は18時に統一」。
+   カゴ落ちだけは当日その場で発生するので毎時のまま触らない。
+   時刻を変えたい時もこの1本を実行すれば3本まとめて付け替わる。 */
+var DSD_SEND_HOUR = 18;
+function setupSendSchedule() {
+  return {
+    送料半額:     dsd_retime_('runRepeatShipRemindLive', DSD_SEND_HOUR),
+    初回感想:     dsd_retime_('runFirstFollowupLive',    DSD_SEND_HOUR),
+    初回クーポン: dsd_retime_('runFirstCouponRemindLive', DSD_SEND_HOUR),
+    ダイジェスト: installDailyDigestTrigger()
+  };
+}
+function dsd_retime_(fn, hour) {
+  var removed = 0;
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === fn) { ScriptApp.deleteTrigger(t); removed++; }
+  });
+  ScriptApp.newTrigger(fn).timeBased().everyDays(1).atHour(hour).inTimezone(DSD_TZ).create();
+  return { hour: hour, removed: removed };
+}
+
 /* ---- 初期設定（これ1本でトリガー設置＋いまの中身を1通送って確かめる）----
    CustomerRoster の setupRosterAutomation と同じ流儀。時刻を変えた時もこれを実行すればよい。 */
 function setupDigest() {
@@ -329,14 +351,14 @@ function runDailySendDigest() {
   plans.push(p1);
 
   /* ② 送料半額「残り1日」 */
-  var p2 = { title: '送料半額 残り1日', time: '10時台', channel: 'LINE / メール',
+  var p2 = { title: '送料半額 残り1日', time: '18時台', channel: 'LINE / メール',
              sw: dsd_onoff_('REPEAT_SHIP_REMIND_ENABLED'), rows: [], note: '' };
   try { runRepeatShipRemindDry(); p2.rows = dsd_readCand_(RSR_CAND_SHEET); }
   catch (e) { p2.note = '集計できませんでした: ' + e.message; }
   plans.push(p2);
 
   /* ③ 初回お届け1週間後の感想 */
-  var p3 = { title: '初回お届け1週間後の感想', time: '11時台', channel: 'LINE / メール',
+  var p3 = { title: '初回お届け1週間後の感想', time: '18時台', channel: 'LINE / メール',
              sw: dsd_onoff_('FIRST_FOLLOWUP_ENABLED'), rows: [], note: '' };
   try { runFirstFollowupDry(); p3.rows = dsd_readCand_(FDF_CAND_SHEET); }
   catch (e) { p3.note = '集計できませんでした: ' + e.message; }
@@ -451,7 +473,7 @@ function dsd_html_(now, plans, cart, names) {
   h.push('※ LINEに「既読・未読」を取る仕組みはありません（LINE側が出していない）。代わりに配信リンクを押したかどうかを「リンク」列に出しています。押していない＝読んでいない、とは言い切れません。<br>');
   h.push('※「カートに残っている」は、送ったあとに購入もカートからの削除も記録されていない状態です。買ってくださった方はこの表には出しません。<br>');
   h.push('※「カートに入っている商品」は、カゴ落ちの前後48時間にカートへ入れて、そのあと外していない商品です。LINEのIDを全イベントに付け始める前（2026年8月頭より前）の古い送信は取れないので「（記録なし）」になります。<br>');
-  h.push('※ この予告は毎朝8時。実際に送るのは 送料半額10時台／感想11時台／初回クーポン18時台、カゴ落ちは毎時。<br>');
+  h.push('※ このメールは毎晩20時。実際に送るのは 送料半額・感想・初回クーポンとも18時台、カゴ落ちは毎時。<br>');
   h.push('※ 止めたいときは、その施策のスイッチをOFFにしてください（このメール自体を止めるなら setDigestOff）。');
   h.push('</div></div>');
   return h.join('');
