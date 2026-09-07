@@ -704,6 +704,20 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         <select class="pdp-variant-select" id="variantSelect"></select>
       </div>
 
+      <!-- 📅 予約注文：売り切れ中の「次回最短お届け日」。中身は public/js/preorder.js が組み立てる。
+           在庫が1以上に戻れば pdpApplyStock がここを空にして display:none に戻す。 -->
+      <div class="pdp-preorder" id="pdpPreorderBox" style="display:none"></div>
+      <style>
+        .pdp-preorder{border:1.5px solid var(--color-gold);border-radius:12px;padding:18px 18px 16px;margin:0 0 20px;
+          background:linear-gradient(180deg,#FFFDF7 0%,#FBF6E9 100%);}
+        .pdp-preorder .pre-eyebrow{display:flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.16em;
+          color:var(--color-gold-soft);margin-bottom:8px;}
+        .pdp-preorder .pre-line{font-family:var(--font-jp-serif,serif);font-size:16.5px;line-height:1.55;
+          color:var(--color-forest);font-weight:500;margin:0;}
+        .pdp-preorder .pre-line b{font-size:22px;font-weight:600;border-bottom:2px solid var(--color-gold);padding-bottom:1px;}
+        .pdp-preorder .pre-sub{font-size:11.5px;color:var(--color-ink-muted);margin:10px 0 0;line-height:1.65;}
+      </style>
+
       <!-- 数量 -->
       <div class="pdp-qty-section">
         <span class="pdp-qty-label">数量</span>
@@ -1302,7 +1316,25 @@ function pdpApplyStock() {
     const giftEligible = !cur.comingSoon && (cur.price || 0) > 0 && cur.category !== 'gift';
     giftEl.style.display = (giftEligible && avail > 0) ? 'block' : 'none';
   }
-  if (live.stock <= 0) {
+  const preBox = document.getElementById('pdpPreorderBox');
+  const preLabel = (window.EDA_PREORDER && live.stock <= 0) ? window.EDA_PREORDER.labelFor(live) : '';
+  if (live.stock <= 0 && preLabel) {
+    /* 📅 売り切れ＝予約受付。ボタンは通常商品とまったく同じで、押せばカートに入る。
+       お届け日の下限は checkout.html 側が同じ preorder.js を見て 予約日以降に絞る。 */
+    if (preBox) {
+      preBox.innerHTML =
+        '<div class="pre-eyebrow"><span>◆</span><span>ただいま品切れ中 — ご予約を承ります</span></div>'
+        + '<p class="pre-line">この商品の次回最短お届け日は<br><b>' + preLabel + '</b>です</p>'
+        + '<p class="pre-sub">お届け日は、ご注文手続きの中で ' + preLabel + ' 以降からご指定いただけます。</p>';
+      preBox.style.display = 'block';
+    }
+    if (note) { note.style.display = 'none'; }
+    [btn, sticky].forEach(b => { if (b && b.disabled) { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; } });
+    if (btn && /売り切れ|確保中/.test(btn.textContent)) btn.textContent = '追加する';
+    if (sticky && /売り切れ|確保中/.test(sticky.textContent)) sticky.textContent = '追加';
+  } else if (live.stock <= 0) {
+    /* preorder.js が読めなかったときだけ従来どおり止める（買えないより誤った日付を出さない） */
+    if (preBox) { preBox.style.display = 'none'; preBox.innerHTML = ''; }
     if (note) { note.style.display = 'block'; note.style.color = '#9B1C1C'; note.textContent = '申し訳ございません — ただいま売り切れです（再入荷までお待ちください）'; }
     [btn, sticky].forEach(b => { if (b) { b.disabled = true; b.textContent = '売り切れ — 再入荷待ち'; b.style.opacity = '0.5'; b.style.cursor = 'not-allowed'; } });
     if (sticky) sticky.textContent = '売り切れ';
@@ -1314,6 +1346,8 @@ function pdpApplyStock() {
   } else {
     /* 残数（残りわずか — あと◯点）は出さない（2026-08-22 ryotaro指示）。
        売り切れ・確保中の案内は上の分岐で従来どおり出る。 */
+    /* 在庫が戻った＝予約日の表示は消す（2026-09-07 田崎さん指示） */
+    if (preBox) { preBox.style.display = 'none'; preBox.innerHTML = ''; }
     if (note) { note.style.display = 'none'; }
     [btn, sticky].forEach(b => { if (b && b.disabled) { b.disabled = false; b.style.opacity = ''; b.style.cursor = ''; } });
     if (btn && /売り切れ|確保中/.test(btn.textContent)) btn.textContent = '追加する';
@@ -1327,7 +1361,10 @@ window.refreshStockBadges = pdpApplyStock;
 function pdpPushToCart() {
   const product = window.__pdpProduct;
   if (!product) return false;
-  if (typeof product.stock === 'number' && product.stock <= 0) { pdpApplyStock(); return false; }
+  /* 📅 在庫0でも「次回最短お届け日」が出せる品は予約として通す（2026-09-07 田崎さん決定）。
+     日付が出せないとき（preorder.js 未読込など）だけ従来どおり止める。 */
+  const _canPreorder = !!(window.EDA_PREORDER && window.EDA_PREORDER.dateFor(product));
+  if (typeof product.stock === 'number' && product.stock <= 0 && !_canPreorder) { pdpApplyStock(); return false; }
   const qty = +document.getElementById('qty').value || 1;
   const item = {
     variantId: product.variantId,
@@ -1385,7 +1422,8 @@ function giftThisProduct() {
   location.href = 'checkout.html?mode=gift';
 }
 </script>
-<script src="public/js/products-loader.js?v=005" defer></script>
+<script src="public/js/preorder.js?v=001"></script>
+<script src="public/js/products-loader.js?v=006" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>

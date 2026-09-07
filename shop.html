@@ -7352,6 +7352,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  z-index: 6;
  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
+.stock-badge-overlay.stock-preorder {
+ background: rgba(15, 61, 46, 0.92);
+ color: #fff;
+ border: 1px solid rgba(212, 169, 59, 0.55);
+ letter-spacing: 0.02em;
+}
 .stock-badge-overlay.stock-out {
  background: rgba(200, 16, 46, 0.92);
  color: white;
@@ -12522,6 +12528,13 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  } catch(e) {}
  return Infinity; /* master 不明時は制限なし (旧動作) */
  }
+ /* 📅 予約判定 (public/js/preorder.js) 用に商品そのものを引く */
+ function getProductByTitle(title) {
+ try {
+ const master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+ return master.find(p => p.name === title) || null;
+ } catch(e) { return null; }
+ }
  function currentCartUnits(title) {
  return items
  .filter(i => i.title === title)
@@ -12539,7 +12552,10 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const stock = getStockForTitle(title);
  const addUnits = variantUnits(variant) * qtyToAdd;
  const currentUnits = currentCartUnits(title);
- if (currentUnits + addUnits > stock) {
+ /* 📅 在庫0でも「次回最短お届け日」を出せる品は予約として通す（2026-09-07 田崎さん決定） */
+ const _pre = (stock <= 0 && window.EDA_PREORDER)
+   ? window.EDA_PREORDER.dateFor(getProductByTitle(title)) : null;
+ if (!_pre && currentUnits + addUnits > stock) {
  const remaining = Math.max(0, stock - currentUnits);
  if (remaining === 0) {
  alert(`「${title}」は在庫切れです。\n再入荷をお待ちください。`);
@@ -13163,7 +13179,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  return;
  }
  const stockByTitle = {};
- master.forEach(p => { if (p.name) stockByTitle[p.name] = p.stock; });
+ const masterByTitle = {};
+ master.forEach(p => { if (p.name) { stockByTitle[p.name] = p.stock; masterByTitle[p.name] = p; } });
 
  document.querySelectorAll('.product-card').forEach(card => {
  const nameEl = card.querySelector('.product-name');
@@ -13176,14 +13193,24 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  card.querySelectorAll('.stock-badge-overlay').forEach(el => el.remove());
 
  if (stock === 0) {
- /* 在庫切れ */
+ /* 📅 売り切れ。予約が受けられるなら日付バッジにしてボタンは生かす（products.html と同じ規則） */
+ const preLabel = window.EDA_PREORDER
+   ? window.EDA_PREORDER.labelFor(masterByTitle[title] || { stock: 0 }) : '';
  const b = document.createElement('div');
- b.className = 'stock-badge-overlay stock-out';
- b.textContent = '在庫切れ';
+ b.className = 'stock-badge-overlay ' + (preLabel ? 'stock-preorder' : 'stock-out');
+ b.textContent = preLabel ? (preLabel.replace(/（.）$/, '') + '〜お届け／予約可') : '在庫切れ';
  card.appendChild(b);
- /* カートボタン disable */
  const btn = card.querySelector('.btn-add-cart');
- if (btn) {
+ if (btn && preLabel) {
+ if (btn.dataset.stockDisabled === '1') {
+ btn.disabled = false;
+ btn.style.opacity = '';
+ btn.style.cursor = '';
+ delete btn.dataset.stockDisabled;
+ if (typeof btn._edaRefreshLabel === 'function') btn._edaRefreshLabel();
+ else if (btn.textContent.trim() === '在庫切れ') btn.textContent = 'カートに追加';
+ }
+ } else if (btn) {
  btn.disabled = true;
  btn.textContent = '在庫切れ';
  btn.style.opacity = '0.5';
@@ -14755,7 +14782,8 @@ function copyPopCoupon() {
 })();
 </script>
 <script src="public/data/products-master.js?v=2026-09-05-kameshin2000" defer></script>
-<script src="public/js/products-loader.js?v=005" defer></script>
+<script src="public/js/preorder.js?v=001"></script>
+<script src="public/js/products-loader.js?v=006" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
