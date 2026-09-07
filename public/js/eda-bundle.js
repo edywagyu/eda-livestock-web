@@ -70,14 +70,25 @@
     }
   }
 
+  /* 🔴 お客様ごとに中身が変わる問い合わせは、キャッシュを避ける。
+     GASのURLは毎回まったく同じなので、そのままだとブラウザとGoogle側の両方が
+     前の答えを使い回す。こちらでデータを直しても、お客様の画面は古いままになる。
+     2026-09-07 実際に起きた: 定期便を「ご利用中」に直したのに、お客様の画面は
+     「ご利用いただいていません」のまま。LINEの中のブラウザは特に長く持ち続ける。
+     ⚠️ 商品・在庫（public_catalog / public_products / public_subscriptions）は
+        ここに入れない。全員に同じ内容を返すものなので、キャッシュが効いた方が速い。 */
+  const NO_CACHE_ACTIONS = ['customer_lookup', 'repeat_shipping', 'coupon_status'];
+
   // ヘルパー: GAS への fetch を統一
   global.EDA_API = {
     async get(action, params) {
       const url = new URL(FINAL_URL);
       url.searchParams.set('action', action);
       Object.entries(params || {}).forEach(([k, v]) => url.searchParams.set(k, v));
+      const noCache = NO_CACHE_ACTIONS.indexOf(action) >= 0;
+      if (noCache) url.searchParams.set('_cb', Date.now() + '-' + Math.random().toString(36).slice(2, 8));
       try {
-        const res = await fetch(url.toString());
+        const res = await fetch(url.toString(), noCache ? { cache: 'no-store' } : undefined);
         return await res.json();
       } catch (e) {
         console.error('[EDA_API.get]', action, e);
