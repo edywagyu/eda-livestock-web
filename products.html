@@ -12990,35 +12990,21 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  setInterval(update, 60 * 60 * 1000);
 })();
 
-/* ============ 配送カウントダウンバー（3段階締切・時間帯連動） ============
- 締切バケット:
- ▸ 〜10:00 → +3日後にお届け / 次の締切「本日 10:00」
- ▸ 〜17:00 → +3日後にお届け / 次の締切「本日 17:00」
- ▸ 〜22:00 → +3日後にお届け / 次の締切「本日 22:00」（最終）
- ▸ 22:00 以降 → 翌日10:00 締切扱い / +3日後（明日基点で2日後相当）
- ※ 日曜日着はスキップして月曜に繰り上げ
- ============================================================ */
+/* ============ 配送バー（最短お届け日のみ） ============
+ お届けは時間帯によらず一律3日後着。日曜着はスキップして月曜。
+ ※「本日◯◯まで受付中」の締切カウントダウンは、全時間帯で同じ3日後着に
+   なり実態と合わなくなったため 2026-09-07 に廃止（田崎さん判断）。
+ ※ 最短日を変えるときは商品カード getDeliveryDate / カートのプルダウン /
+   checkout.html の _deliveryBounds も合わせること。
+ ====================================================== */
 (function shipCountdownInit() {
  const headlineEl = document.getElementById('shipCdHeadline');
  const metaEl = document.getElementById('shipCdMeta');
  if (!headlineEl || !metaEl) return;
 
  const days = ['日','月','火','水','木','金','土'];
-
- // 3段階の締切バケット定義
- const CUTOFF_BUCKETS = [
- { until: 10, label: '10:00', addDays: 3, tag: '', lead: '朝のうちにご注文で' },
- { until: 17, label: '17:00', addDays: 3, tag: '', lead: '午後のご注文で' },
- { until: 22, label: '22:00', addDays: 3, tag: '', lead: '夜のご注文で' }
- ];
-
- function pickBucket(hour) {
- // hour < 10 → bucket[0], hour < 17 → bucket[1], hour < 22 → bucket[2]
- for (const b of CUTOFF_BUCKETS) {
- if (hour < b.until) return b;
- }
- return null; // 22:00 以降は翌日扱い
- }
+ const LEAD_DAYS = 3;
+ const NOTE = '※ 最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。';
 
  function calcArrival(orderBase, addDays) {
  const arrival = new Date(orderBase);
@@ -13029,66 +13015,18 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  return arrival;
  }
 
- function remainText(now, targetHour) {
- const cutoff = new Date(now);
- cutoff.setHours(targetHour, 0, 0, 0);
- if (cutoff <= now) cutoff.setDate(cutoff.getDate() + 1); // 翌日締切
- const diffMs = cutoff - now;
- if (diffMs <= 0) return null;
- const hours = Math.floor(diffMs / 3600000);
- const minutes = Math.floor((diffMs % 3600000) / 60000);
- if (hours < 1) return `あと ${minutes}分`;
- return `${hours}時間${String(minutes).padStart(2,'0')}分`;
- }
-
  function update() {
- const now = new Date();
- const hour = now.getHours();
- const bucket = pickBucket(hour);
-
- let arrival, cutoffLabel, addDays, tag, lead, isToday, remain;
-
- if (bucket) {
- // 本日内の締切に間に合う
- arrival = calcArrival(now, bucket.addDays);
- cutoffLabel = bucket.label;
- addDays = bucket.addDays;
- tag = bucket.tag;
- lead = bucket.lead;
- isToday = true;
- remain = remainText(now, bucket.until);
- } else {
- // 22:00 以降 → 翌日 10:00 締切（明日朝までに注文すれば +2 from tomorrow = +3 from today）
- const tomorrow = new Date(now);
- tomorrow.setDate(tomorrow.getDate() + 1);
- arrival = calcArrival(tomorrow, 2);
- cutoffLabel = '明日 10:00';
- addDays = 3;
- tag = '';
- lead = '深夜のご注文も';
- isToday = false;
- remain = remainText(now, 10);
- }
-
+ const arrival = calcArrival(new Date(), LEAD_DAYS);
  const m = arrival.getMonth() + 1;
  const d = arrival.getDate();
  const w = days[arrival.getDay()];
 
- headlineEl.innerHTML = `${tag} ${lead} <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
-
- if (isToday) {
- metaEl.innerHTML = `本日 <strong>${cutoffLabel}</strong> まで受付中` +
- (remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : '') +
- ` <span class="ship-cd-note">※ 最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</span>`;
- } else {
- metaEl.innerHTML = `<strong>${cutoffLabel}</strong> まで受付` +
- (remain ? ` <span class="ship-cd-remain">あと ${remain}</span>` : '') +
- ` <span class="ship-cd-note">※ 最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</span>`;
- }
+ headlineEl.innerHTML = `本日のご注文で <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
+ metaEl.innerHTML = `<span class="ship-cd-note">${NOTE}</span>`;
  }
 
  update();
- setInterval(update, 60000); // 1分ごと更新
+ setInterval(update, 60000); // 1分ごと更新（日付が変わったら追従）
 })();
 
 (function couponPopInit() {
