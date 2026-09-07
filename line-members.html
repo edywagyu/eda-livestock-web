@@ -298,6 +298,21 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
+    /* ===== 特大ハンバーグ (P044) 2026-09-07 =====
+       田崎さん指示（2026-09-07）。9/4に一般公開した新商品を、公式LINE会員限定
+       ページにも転載する。値引きはしない（通常の商品一覧と同じ ¥1,800）。
+       10%OFF は既存の LINE10 クーポンで決済時に効く＝products の price は触らない。
+       アレルギー: 小麦を使用。 */
+    {
+      productId: 'P044', variantId: 'HAMBURG-XL',
+      detailId: 'P044',
+      memberOnly: false,
+      name: '特大ハンバーグ',
+      variant: '1個 250g',
+      price: 1800, listPrice: 0, stock: 20, limitedTotal: 20,
+      img: 'public/images/products/drive/hamburg.jpg',
+      desc: '和牛100%、1個250g。味つけは有機調味料のみ。冷蔵庫で解凍して、フライパンで両面を焼くだけ。※小麦を使用しています。小麦アレルギーの方はご遠慮ください。'
+    },
     /* ===== 不揃い品セット (P043) は 2026-09-07 から「リンクを知っている方だけ」に =====
        田崎さん指示（2026-09-07）。会員限定ページのカードを外し、商品詳細ページ
        (product.html?id=P043) の直リンクだけで購入できる状態にする。
