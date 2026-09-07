@@ -4142,7 +4142,11 @@ function mpRepeatShipNote() {
   if (!r || !r.enabled || !r.eligible) return '';
   if (r.half) {
     var d = mpFmtDeadline(r.deadline);
-    return '<span class="rj-deadline">\u23F3 ' + d + 'まで（あと' + Number(r.daysLeft) + '日）</span>';
+    /* 残り0日を「あと0日」と出すと意味が伝わらないので、LINE・メールの文面
+       （RepeatShipReminder.gs の rsr_leftLabel_）と同じ「本日最終日」に揃える。 */
+    var left = Number(r.daysLeft);
+    var leftLabel = (left > 0) ? ('あと' + left + '日') : '本日最終日';
+    return '<span class="rj-deadline">\u23F3 ' + d + 'まで（' + leftLabel + '）</span>';
   }
   return '<span class="rj-deadline rj-deadline--over">期限が過ぎました</span>';
 }
