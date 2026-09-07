@@ -2555,7 +2555,7 @@ button:focus-visible, a:focus-visible {
  .order-item { font-size: 12px; }
  .order-total-price { font-size: 18px; }
  .sub-card { padding: 20px 16px; }
- .sub-action-btn { font-size: 12px !important; padding: 9px 12px !important; }
+ .sub-action-btn { white-space: normal; text-align: center; line-height: 1.35; font-size: 12px !important; padding: 9px 12px !important; }
  .rj-header { padding: 20px 16px 16px; }
  .rj-step-content { padding: 16px 16px 16px 0; }
  .rj-step-rail { width: 44px; }
@@ -2590,8 +2590,12 @@ button:focus-visible, a:focus-visible {
 .sub-action-btn {
  display: inline-flex;
  align-items: center;
+ justify-content: center;
+ white-space: normal;
+ text-align: center;
+ line-height: 1.35;
  gap: 6px;
- padding: 11px 16px;
+ padding: 11px 12px;
  background: white;
  border: 1.5px solid var(--color-bone);
  border-radius: 10px;
@@ -2604,7 +2608,7 @@ button:focus-visible, a:focus-visible {
 }
 .sub-action-btn:hover { border-color: var(--color-gold); transform: translateY(-1px); }
 .sub-action-btn.undo { color: var(--color-gold-text); border-color: var(--color-gold); }
-.sub-action-btn.cancel { color: var(--color-red); margin-left: auto; border-color: var(--color-error-border); }
+.sub-action-btn.cancel { color: var(--color-red); border-color: var(--color-error-border); }
 .sub-action-btn.cancel:hover { border-color: var(--color-red); background: var(--color-error-bg); }
 
 /* (old reward-prog styles removed — replaced by .rj-* journey styles above) */
@@ -3063,11 +3067,7 @@ button:focus-visible, a:focus-visible {
  <div id="subSection" style="display:none;">
  <h3 class="dash-section-title">SUBSCRIPTION</h3>
  <div class="sub-card" id="subCard"></div>
- <div id="subActions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
- <button class="sub-action-btn skip" id="subSkipBtn" onclick="subSkip()">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-  次回をスキップ
- </button>
+ <div id="subActions" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px">
  <button class="sub-action-btn change" onclick="subChange()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
   プラン変更
@@ -3079,6 +3079,10 @@ button:focus-visible, a:focus-visible {
  <button class="sub-action-btn cycle" id="subCycleBtn" onclick="subCycle()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
   隔月に変更
+ </button>
+ <button class="sub-action-btn skip" id="subSkipBtn" onclick="subSkip()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+  次回をスキップ
  </button>
  <button class="sub-action-btn pause" id="subPauseBtn" onclick="subPause()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
