@@ -40,6 +40,11 @@ function rsr_md_(n)         { var d = rsr_dayToDate_(n); return Utilities.format
 /* 残り日数の見せ方。期限当日（残り0日）は「あと0日」ではなく「本日最終日」と出す（2026-09-03 田崎さん指示）。 */
 function rsr_leftLabel_(n)  { return (Number(n) > 0) ? ('あと' + Number(n) + '日') : '本日最終日'; }
 
+/* ---- 手動エントリポイント（この2本を set 系より前に置く＝ファイルを開いた時に
+        ONスイッチが選ばれてしまう事故を防ぐ。先頭は送らない Dry。2026-09-07）---- */
+function runRepeatShipRemindDry()  { return repeatShipRemind_('dry');  }   // 送らない。候補だけシートに出す
+function runRepeatShipRemindLive() { return repeatShipRemind_('live'); }   // 実送信（ENABLED=true 必須）
+
 /* ---- 本番ON/OFF（エディタから手で実行する）---- */
 function setRepeatShipRemindOn()  { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_REMIND_ENABLED', 'true');  return 'REPEAT_SHIP_REMIND_ENABLED=true'; }
 function setRepeatShipRemindOff() { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_REMIND_ENABLED', 'false'); return 'REPEAT_SHIP_REMIND_ENABLED=false'; }
@@ -48,15 +53,16 @@ function setRepeatShipRemindOff() { PropertiesService.getScriptProperties().setP
 function setRepeatShipHalfOn()  { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_HALF', 'true');  return 'REPEAT_SHIP_HALF=true'; }
 function setRepeatShipHalfOff() { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_HALF', 'false'); return 'REPEAT_SHIP_HALF=false'; }
 
-/* ---- 手動エントリポイント ---- */
-function runRepeatShipRemindDry()  { return repeatShipRemind_('dry');  }   // 送らない。候補だけシートに出す
-function runRepeatShipRemindLive() { return repeatShipRemind_('live'); }   // 実送信（ENABLED=true 必須）
-
 /* ---- 日次トリガー設置（冪等・1回だけ実行）---- */
 function installRepeatShipRemindTrigger() {
-  var has = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'runRepeatShipRemindLive'; });
-  if (!has) ScriptApp.newTrigger('runRepeatShipRemindLive').timeBased().everyDays(1).atHour(10).create();
-  return { ok: true, created: !has };
+  /* 2026-09-07 田崎さん指示で 10時 → 18時（カゴ落ち以外は18時に統一）。
+     時刻を変えても効くよう、既存は消して作り直す。 */
+  var removed = 0;
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'runRepeatShipRemindLive') { ScriptApp.deleteTrigger(t); removed++; }
+  });
+  ScriptApp.newTrigger('runRepeatShipRemindLive').timeBased().everyDays(1).atHour(18).create();
+  return { ok: true, hour: 18, removed: removed };
 }
 
 /* ============================================================
