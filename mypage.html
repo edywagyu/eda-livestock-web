@@ -5229,8 +5229,8 @@ function renderSubscription(sub) {
   skipBtn.classList.toggle('undo', !!sub.skip_active);
  }
  if (sub.skip_active && sub.skipped_delivery) {
-  card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">スキップ中</span>' +
-   '<span class="sub-detail-value">' + escapeHtml(sub.skipped_delivery) + ' のお届けを飛ばします</span></div>';
+  card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">お休みする回</span>' +
+   '<span class="sub-detail-value">' + escapeHtml(sub.skipped_delivery) + ' のお届け</span></div>';
  }
 
  /* 一時停止中なら「再開する」に変える。停止中はスキップ操作を隠す */
