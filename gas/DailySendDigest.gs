@@ -40,6 +40,10 @@ var DSD_TZ         = 'Asia/Tokyo';
 var DSD_TO_DEFAULT = 'r.tasaki@eda-livestock.com';
 var DSD_WD         = ['日', '月', '火', '水', '木', '金', '土'];
 var DSD_CART_BACK_H = 48;   /* カート投入をどれだけ前までさかのぼって見るか（時間） */
+/* 表に出さない人（2026-09-07 田崎さん指示「あと俺も」＝自分の行は要らない）。
+   uid は customers の line_uid、メールは注文に使っているもの。増やす時は Script Property で足す。 */
+var DSD_EXCLUDE_UIDS_DEFAULT   = 'U9f604bc69c9c1f40276f5d28458e353e';
+var DSD_EXCLUDE_EMAILS_DEFAULT = 'ryochin429@gmail.com,r.tasaki@eda-livestock.com';
 
 function dsd_to_()      { return String(cfg('DIGEST_TO', '') || DSD_TO_DEFAULT); }
 function dsd_enabled_() { return String(cfg('DIGEST_ENABLED', 'true')) !== 'false'; }
@@ -48,6 +52,19 @@ function dsd_esc_(v)    { return String(v == null ? '' : v).replace(/&/g, '&amp;
 function dsd_stamp_(d)  { return Utilities.formatDate(d, DSD_TZ, 'M/d HH:mm'); }
 function dsd_yen_(n)    { n = Math.round(Number(n) || 0); return '¥' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function dsd_onoff_(k)  { return String(cfg(k, 'false')) === 'true' ? 'ON' : 'OFF'; }
+
+function dsd_set_(csv) {
+  var m = {};
+  String(csv || '').split(',').forEach(function (v) { v = v.trim(); if (v) m[v.toLowerCase()] = 1; });
+  return m;
+}
+function dsd_excluded_(uid, email) {
+  var u = dsd_set_(cfg('DIGEST_EXCLUDE_UIDS', '') || DSD_EXCLUDE_UIDS_DEFAULT);
+  var e = dsd_set_(cfg('DIGEST_EXCLUDE_EMAILS', '') || DSD_EXCLUDE_EMAILS_DEFAULT);
+  if (uid && u[String(uid).toLowerCase()]) return true;
+  if (email && e[String(email).toLowerCase()]) return true;
+  return false;
+}
 
 function dsd_parse_(v) {
   if (!v) return null;
@@ -124,6 +141,7 @@ function dsd_readCand_(sheetName) {
     var em = iEm >= 0 ? String(d[r][iEm] || '').trim() : '';
     var uid = iUid >= 0 ? String(d[r][iUid] || '').trim() : '';
     if (!em && !uid) continue;
+    if (dsd_excluded_(uid, em)) continue;   /* 自分の行は出さない */
     var extra = [];
     for (var c = 0; c < H.length; c++) {
       if (c === iEm || c === iUid || c === iNm || c === iCh) continue;
@@ -156,9 +174,10 @@ function dsd_cartHistory_() {
   var H = d[0].map(function (v) { return String(v || ''); });
   var iAt = H.indexOf('送信日時'), iUid = H.indexOf('line_uid'), iNm = H.indexOf('表示名'),
       iVal = H.indexOf('金額'), iRes = H.indexOf('送信結果');
-  var sent = [], oldest = null;
+  var sent = [], oldest = null, hiddenSelf = 0;
   for (var r = 1; r < d.length; r++) {
     var uid = String(d[r][iUid] || '').trim(); if (!uid) continue;
+    if (dsd_excluded_(uid, '')) { hiddenSelf++; continue; }   /* 自分の行は出さない */
     var at = dsd_parse_(d[r][iAt]);
     sent.push({
       uid: uid, at: at,
@@ -172,6 +191,8 @@ function dsd_cartHistory_() {
 
   var uids = {}; sent.forEach(function (s2) { uids[s2.uid] = 1; });
   var ev = dsd_scanEvents_(oldest, uids);
+  var pnames = {};
+  try { pnames = dsd_productNames_(); } catch (e) { log('digest_products_err', { error: e.message }); }
   var ordersByUid = {};
   try { ordersByUid = rosterOrdersByUid_(); } catch (e) { log('digest_orders_err', { error: e.message }); }
 
@@ -188,10 +209,17 @@ function dsd_cartHistory_() {
     else                                            s.state = '🛒 カートに残っている';
     s.bought = bought;
     s.opened = opened ? '開いた' : '—';
-    s.items  = dsd_cartItems_(ev.cartByUid[s.uid], s.at);
+    s.items  = dsd_cartItems_(ev.cartByUid[s.uid], s.at, pnames);
   });
+  /* 2026-09-07 田崎さん指示「売れた人は記載しなくていい」＝買ってくれた行は落とす。
+     何件あったかだけは注記で残す（黙って消すと「減った」に見えるので）。 */
+  var boughtCount = 0;
+  sent = sent.filter(function (s) { if (s.bought) { boughtCount++; return false; } return true; });
+
   sent.sort(function (a, b) { return (b.at ? b.at.getTime() : 0) - (a.at ? a.at.getTime() : 0); });
   res.rows = sent;
+  res.hiddenBought = boughtCount;
+  res.hiddenSelf = hiddenSelf;
   res.note = ev.note;
   return res;
 }
@@ -240,8 +268,28 @@ function dsd_scanEvents_(since, uids) {
   return out;
 }
 
+/* 商品ID(P0xx / variantId / SKU) → 商品名。events に商品名が入っていない行があるため。
+   products: productId,variantId,sku,stripePriceId,name,... */
+function dsd_productNames_() {
+  var map = {};
+  var sh = ss().getSheetByName('products'); if (!sh) return map;
+  var d = sh.getDataRange().getValues(); if (d.length < 2) return map;
+  var H = d[0].map(function (v) { return String(v || ''); });
+  var iPid = H.indexOf('productId'), iVar = H.indexOf('variantId'), iSku = H.indexOf('sku'), iNm = H.indexOf('name');
+  if (iNm < 0) return map;
+  for (var r = 1; r < d.length; r++) {
+    var nm = String(d[r][iNm] || '').trim(); if (!nm) continue;
+    [iPid, iVar, iSku].forEach(function (i) {
+      if (i < 0) return;
+      var k = String(d[r][i] || '').trim();
+      if (k && !map[k.toLowerCase()]) map[k.toLowerCase()] = nm;
+    });
+  }
+  return map;
+}
+
 /* その送信の時点でカートに入っていた商品名。入れたあとに外した商品は落とす。 */
-function dsd_cartItems_(events, sentAt) {
+function dsd_cartItems_(events, sentAt, pnames) {
   if (!events || !events.length || !sentAt) return '';
   var from = new Date(sentAt.getTime() - DSD_CART_BACK_H * 3600 * 1000);
   var lastAdd = {}, lastRm = {};
@@ -253,7 +301,7 @@ function dsd_cartItems_(events, sentAt) {
   var items = [];
   Object.keys(lastAdd).forEach(function (t) {
     if (lastRm[t] && lastRm[t] > lastAdd[t]) return;
-    items.push(t);
+    items.push((pnames && pnames[String(t).toLowerCase()]) || t);   /* IDのままだと何の商品か分からない */
   });
   return items.join(' / ');
 }
@@ -372,6 +420,10 @@ function dsd_html_(now, plans, cart, names) {
          ' <span style="font-size:11px;color:#fff;background:' + ((dsd_onoff_('CART_RECOVERY_ENABLED') === 'ON') ? G : '#b3261e') +
          ';padding:2px 8px;border-radius:999px;">スイッチ ' + dsd_onoff_('CART_RECOVERY_ENABLED') + '</span></div>');
   h.push('<div style="font-size:12px;color:' + SUB + ';margin:0 0 8px;">朝の時点では「今日誰に飛ぶか」は決まりません（お客様がカートを置いた時に発生）。これまでに送った全件と、その後どうなったかです。</div>');
+  var hid = [];
+  if (cart.hiddenBought) hid.push('買ってくださった ' + cart.hiddenBought + ' 件');
+  if (cart.hiddenSelf)   hid.push('自分の ' + cart.hiddenSelf + ' 件');
+  if (hid.length) h.push('<div style="font-size:12px;color:' + SUB + ';margin:0 0 6px;">' + dsd_esc_(hid.join('と') + 'は省いています') + '</div>');
   if (cart.note) h.push('<div style="font-size:12px;color:' + SUB + ';margin:0 0 6px;">' + dsd_esc_(cart.note) + '</div>');
   if (!cart.rows.length) {
     h.push('<div style="font-size:13px;color:' + SUB + ';">送信実績なし</div>');
@@ -397,7 +449,7 @@ function dsd_html_(now, plans, cart, names) {
 
   h.push('<div style="margin-top:22px;padding-top:12px;border-top:1px solid ' + LINE_ + ';font-size:11px;color:' + SUB + ';line-height:1.7;">');
   h.push('※ LINEに「既読・未読」を取る仕組みはありません（LINE側が出していない）。代わりに配信リンクを押したかどうかを「リンク」列に出しています。押していない＝読んでいない、とは言い切れません。<br>');
-  h.push('※「カートに残っている」は、送ったあとに購入もカートからの削除も記録されていない状態です。<br>');
+  h.push('※「カートに残っている」は、送ったあとに購入もカートからの削除も記録されていない状態です。買ってくださった方はこの表には出しません。<br>');
   h.push('※「カートに入っている商品」は、カゴ落ちの前後48時間にカートへ入れて、そのあと外していない商品です。LINEのIDを全イベントに付け始める前（2026年8月頭より前）の古い送信は取れないので「（記録なし）」になります。<br>');
   h.push('※ この予告は毎朝8時。実際に送るのは 送料半額10時台／感想11時台／初回クーポン18時台、カゴ落ちは毎時。<br>');
   h.push('※ 止めたいときは、その施策のスイッチをOFFにしてください（このメール自体を止めるなら setDigestOff）。');
@@ -419,7 +471,8 @@ function dsd_text_(plans, cart, names) {
     });
   });
   t.push('');
-  t.push('■ カゴ落ち（これまでの全送信）');
+  t.push('■ カゴ落ち（これまでの全送信・買ってくださった方と自分は省略）');
+  if (cart.hiddenBought || cart.hiddenSelf) t.push('  （省いた分: 買ってくださった ' + (cart.hiddenBought||0) + ' 件 / 自分 ' + (cart.hiddenSelf||0) + ' 件）');
   if (!cart.rows.length) t.push('  送信実績なし');
   cart.rows.forEach(function (s) {
     t.push('  - ' + (s.at ? dsd_stamp_(s.at) : '') + ' / ' + (s.lineName || '（不明）') +
