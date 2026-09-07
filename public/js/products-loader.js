@@ -207,7 +207,10 @@
       limitedStartAt:   keep(p, 'limitedStartAt'),
       limitedSoldOutAt: keep(p, 'limitedSoldOutAt'),
       limitedUntil:     keep(p, 'limitedUntil'),
-      limitedUnit:      keep(p, 'limitedUnit') || ''
+      limitedUnit:      keep(p, 'limitedUnit') || '',
+      /* 📅 予約注文 (public/js/preorder.js)。products シートの soldOutAt 列＝在庫が0になった日。
+         列がまだ無ければ undefined のまま来る＝preorder.js が「今日+9日」に読み替える。 */
+      soldOutAt:        keep(p, 'soldOutAt') || ''
     }));
 
     /* 🧩 セット商品の stock を構成品から作り直す。

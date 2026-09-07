@@ -1905,6 +1905,10 @@ function restoreCheckoutForm() {
       セット商品の構成品まではここでは見ないので、それは従来どおり裏側で弾かれる。
    ============================================================ */
 var gStockBlocked = [];          // 買えない商品名の一覧（注文ボタンを止める根拠）
+/* 📅 予約注文（売り切れ商品）。public/js/preorder.js が出す
+   { items:[{title,label,iso,date}], date, iso, label }。無ければ date:null。
+   これが入っているとお届け希望日の下限が 予約日 まで上がり、注意書きが出る。 */
+var gPreorder = { items: [], date: null, iso: '', label: '' };
 var _stockCheckTries = 0;
 function _variantUnits(variant) {
  // 裏側 validateStockBeforeCheckout の variantUnits と同じ規則にそろえる
@@ -1932,10 +1936,19 @@ async function checkCartStock() {
    const t = it.title || '';
    need[t] = (need[t] || 0) + _variantUnits(it.variant) * (it.qty || 1);
   });
+  /* 📅 在庫0の品は「買えない」ではなく「予約」として通す（2026-09-07 田崎さん決定）。
+     在庫が1以上あるのに数が足りないケース（残り1点に2点）は従来どおり止める。 */
+  gPreorder = (window.EDA_PREORDER)
+    ? window.EDA_PREORDER.forCart(cartItems, list)
+    : { items: [], date: null, iso: '', label: '' };
+  var preTitles = {};
+  gPreorder.items.forEach(function (b) { preTitles[b.title] = true; });
   gStockBlocked = Object.keys(need).filter(function (t) {
+   if (preTitles[t]) return false;                                  // 予約で受けるので止めない
    return (t in stock) && !isNaN(stock[t]) && stock[t] < need[t];   // 台帳に無い商品は判定しない
   }).map(function (t) { return { title: t, need: need[t], stock: stock[t] }; });
- } catch (e) { gStockBlocked = []; }
+  renderDestinations();                                             // お届け日の下限と注意書きを描き直す
+ } catch (e) { gStockBlocked = []; gPreorder = { items: [], date: null, iso: '', label: '' }; }
  renderStockAlert();
  renderSummary();                              // 注文ボタンの止め／解除を反映
  if (gStockBlocked.length) {
@@ -3073,6 +3086,13 @@ function _deliveryBounds() {
  const _lead = 3;
  const minD = new Date(now); minD.setDate(minD.getDate() + _lead);
  if (minD.getDay() === 0) minD.setDate(minD.getDate() + 1);
+ /* 📅 予約商品が入っていれば、その最短お届け日より前は選べないようにする。
+    カレンダーの下限(min)を上げるだけで、それ以前の日はグレーになって押せない。
+    hint の「最短 ◯月◯日〜」も minLabel 経由で自動的にこの日付になる。
+    🔴 これは画面側の制限。受け取る側(GAS)でも同じ日付で弾く必要がある（未実装・下の PR 説明参照）。 */
+ if (gPreorder && gPreorder.date && gPreorder.date.getTime() > minD.getTime()) {
+  minD.setTime(gPreorder.date.getTime());
+ }
  const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
  const first = new Date(now.getFullYear(), now.getMonth() + 1, 1);
  return { min: _fmtIso(minD), max: _fmtIso(maxD), minLabel: `${minD.getMonth() + 1}月${minD.getDate()}日`, first: _fmtIso(first), firstLabel: `${first.getMonth() + 1}月1日` };
@@ -3099,7 +3119,15 @@ function deliveryFieldHtml(dest, dIdx) {
    </div>
    <div class="dest-field"><label>お届け時間帯</label>${timeSel}</div>
   </div>`;
- const wrap = (inner) => `<div class="dest-delivery" style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(15,61,46,0.15)"><div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:8px">🚚 お届け日時</div>${inner}</div>`;
+ /* 📅 予約商品が入っているときの注意書き。日付を指定せず「最短」で頼まれた方に、
+    いつになるのかを必ず伝える（2026-09-07 田崎さん指示）。 */
+ const preNote = (gPreorder && gPreorder.date)
+  ? `<div style="margin-top:12px;background:#FFF8E8;border:1px solid rgba(212,169,59,.5);border-left:3px solid var(--color-gold);border-radius:0 8px 8px 0;padding:11px 14px;font-size:12px;color:#6B4E12;line-height:1.7">`
+    + `ご予約商品（${gPreorder.items.map(b => b.title).join('・')}）が含まれています。<br>`
+    + `日付を指定されない場合は、最短で <strong style="color:#4A360C">${gPreorder.label}</strong> のお届けとなります。`
+    + `</div>`
+  : '';
+ const wrap = (inner) => `<div class="dest-delivery" style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(15,61,46,0.15)"><div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:8px">🚚 お届け日時</div>${inner}${preNote}</div>`;
  const timeOnly = `<div class="dest-form-row"><div class="dest-field"><label>お届け時間帯</label>${timeSel}</div></div>`;
 
  if (isGift) return wrap(pair('お届け希望日', `未指定＝最短でお届け（最短 ${b.minLabel}〜1か月先まで指定可）`));
@@ -3486,6 +3514,7 @@ initCouponFromStorage();
 try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
+<script src="public/js/preorder.js?v=001"></script>
 <script src="public/js/gift-rules.js?v=002"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=002" defer></script>

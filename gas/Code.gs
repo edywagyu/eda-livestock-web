@@ -2356,6 +2356,8 @@ function decrementStockAfterOrder(session, meta) {
       const cur = Number(data[i][stockIdx]) || 0;
       const next = Math.max(0, cur - consumed);
       sh.getRange(i + 1, stockIdx + 1).setValue(next);
+      /* 📅 ここで0に落ちた＝予約の起点。次回最短お届け日はこの日付から数える */
+      stampSoldOutAt_(sh, headers, i + 1, cur, next);
     }
   }
 }
@@ -3269,6 +3271,53 @@ function collectItems(body) {
    カート内の各 item が在庫を超えないかチェック
    返り値: error メッセージ配列 (空 = OK, 非空 = 在庫不足)
    ============================================================ */
+/* ============================================================
+   📅 予約注文 — 「在庫が0になった日」(products.soldOutAt) の押印
+   ------------------------------------------------------------
+   2026-09-07 田崎さん決定。売り切れた商品は買えなくするのではなく、
+   「次回最短お届け日 = 0になった日 + 9日」を出して予約で受ける。
+   その起点になる日付をここで記録する。
+
+   ・在庫が 1以上 → 0 に落ちた瞬間に今日の日付を書く
+   ・在庫が 0 → 1以上 に戻ったら消す（表示も指定日の下限も注意書きも全部消える）
+   ・列が無ければ右端に 'soldOutAt' を自動で作る。publicCatalog は
+     ヘッダーをそのまま返すので、GAS の他の変更なしでフロントに届く。
+
+   🔴 日付は文字列 'YYYY-MM-DD' で書く。Date を入れるとスプシのタイムゾーン変換で
+      前日にずれることがある（ロット台帳で実際に起きている）。
+   ============================================================ */
+function _soldOutAtCol_(sh, headers) {
+  var idx = headers.indexOf('soldOutAt');
+  if (idx !== -1) return idx;
+  var col = headers.length + 1;
+  sh.getRange(1, col).setValue('soldOutAt');
+  headers.push('soldOutAt');
+  return headers.length - 1;
+}
+function _todayIso_() {
+  return Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+}
+/* row は1始まりのシート行番号。prevStock→nextStock の遷移で押印/消去する */
+function stampSoldOutAt_(sh, headers, row, prevStock, nextStock) {
+  try {
+    var idx = _soldOutAtCol_(sh, headers);
+    var cell = sh.getRange(row, idx + 1);
+    if (nextStock <= 0 && prevStock > 0) {
+      cell.setNumberFormat('@');
+      cell.setValue(_todayIso_());
+    } else if (nextStock > 0) {
+      if (String(cell.getValue() || '') !== '') cell.setValue('');
+    }
+  } catch (e) {
+    log('soldoutat_stamp_error', { row: row, error: e.message });
+  }
+}
+
+/* 予約注文を受け付けるか。Script Property PREORDER_ENABLED = 'true' で有効。
+   🔴 既定は false。フロント(product/products/checkout)をマージする前に true にすること。
+      逆順にすると「カートに入るのに決済で弾かれる」状態になる。 */
+function preorderEnabled_() { return String(cfg('PREORDER_ENABLED', 'false')) === 'true'; }
+
 function validateStockBeforeCheckout(items) {
   const errors = [];
   try {
@@ -3308,6 +3357,13 @@ function validateStockBeforeCheckout(items) {
       const title = data[i][titleIdx];
       const stock = Number(data[i][stockIdx]) || 0;
       const needed = needByTitle[title] || 0;
+      /* 📅 在庫0の品は「売り切れ」ではなく「予約」として通す（フロントの
+         preorder.js / checkCartStock と同じ規則）。在庫が1以上あるのに
+         数が足りないケース（残り1点に2点）は従来どおり弾く。 */
+      if (needed > 0 && stock <= 0 && preorderEnabled_()) {
+        log('preorder_accepted', { title: title, qty: needed });
+        continue;
+      }
       if (needed > 0 && needed > stock) {
         errors.push(`「${title}」: 在庫 ${stock} 点 / 注文 ${needed} 点 (${needed - stock} 点 不足)`);
       }
@@ -5025,7 +5081,11 @@ function staffUpdateStock(body) {
     const stockIdx = headers.indexOf('stock');
     for (let i = 1; i < data.length; i++) {
       if (data[i][vidIdx] === body.variantId) {
-        sh.getRange(i + 1, stockIdx + 1).setValue(Number(body.stock) || 0);
+        const _prev = Number(data[i][stockIdx]) || 0;
+        const _next = Number(body.stock) || 0;
+        sh.getRange(i + 1, stockIdx + 1).setValue(_next);
+        /* 📅 管理画面で0にした＝予約開始／1以上に戻した＝予約日の表示を消す */
+        stampSoldOutAt_(sh, headers, i + 1, _prev, _next);
         return jsonResponse({ ok:true, row: i + 1 });
       }
     }
