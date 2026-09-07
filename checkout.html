@@ -3067,10 +3067,10 @@ const TIMECODE_TO_TEXT = { '': '', '0812': '午前中（〜12:00）', '1416': '1
 function _fmtIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function _deliveryBounds() {
  const now = new Date();
- // 最短日は shop.html の配送カウントダウンバー(shipCountdownInit)と同じルール:
- // 〜10:00 の注文=2日後着 / 10:00以降=3日後着（22:00以降も翌日10時締切扱いで3日後着）。
- // 日曜着はスキップして月曜。バナー側を変えたらここも合わせること。
- const _lead = now.getHours() < 10 ? 2 : 3;
+ // 最短日は shop.html の配送カウントダウンバー(shipCountdownInit)と同じルール
+ // = 時間帯によらず3日後着。日曜着はスキップして月曜。
+ // バナー側を変えたらここも合わせること。
+ const _lead = 3;
  const minD = new Date(now); minD.setDate(minD.getDate() + _lead);
  if (minD.getDay() === 0) minD.setDate(minD.getDate() + 1);
  const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
