@@ -2016,12 +2016,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: rgba(255,255,255,0.9);
 }
 .settings-row:last-child { border-bottom: none; }
+/* 🔴 設定タブは .dashboard-section が深緑グラデーションの「暗い」画面。
+   ラベルも値もインク色（ほぼ黒）だと背景に沈んで読めない。白系で書く。 */
 .settings-label {
- color: var(--color-ink-muted); font-size: 12px; min-width: 80px;
+ color: rgba(255,255,255,0.60); font-size: 12px; min-width: 80px;
  font-family: var(--font-jp); flex-shrink: 0;
 }
 .settings-value {
- color: var(--color-ink); font-family: var(--font-jp); text-align: right;
+ color: rgba(255,255,255,0.94); font-family: var(--font-jp); text-align: right;
  word-break: break-all;
 }
 .settings-empty {
@@ -2034,22 +2036,24 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .settings-note {
  font-size: 12px !important; color: var(--color-ink-muted) !important;
 }
-/* 🎂 お誕生日カードの「特典のご案内」。金の細枠で、登録する理由が先に目に入るようにする */
+/* 🎂 お誕生日カードの「特典のご案内」。金の細枠で、登録する理由が先に目に入るようにする。
+   🔴 マイページの設定タブは .dashboard-section が深緑グラデーションの「暗い」画面。
+      文字を深緑やインク色にすると背景に沈んで読めない。ここは必ず金と白で書く。 */
 .birthday-perk {
  margin: 0 24px; padding: 14px 16px;
- background: linear-gradient(135deg, rgba(212,169,59,0.10), rgba(212,169,59,0.02));
- border: 1px solid rgba(212,169,59,0.30); border-radius: 10px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.14), rgba(212,169,59,0.04));
+ border: 1px solid rgba(212,169,59,0.38); border-radius: 10px;
 }
 .birthday-perk-title {
  font-family: var(--font-jp); font-size: 14px; font-weight: 700;
- color: var(--color-forest); margin: 0 0 8px;
+ color: #FFD773; margin: 0 0 8px;
 }
 .birthday-perk-list {
  margin: 0; padding-left: 1.1em;
  font-family: var(--font-jp); font-size: 12.5px; line-height: 1.9;
- color: var(--color-ink);
+ color: rgba(255,255,255,0.92);
 }
-.birthday-perk-list strong { color: var(--color-forest); font-weight: 700; }
+.birthday-perk-list strong { color: #FFD773; font-weight: 700; }
 .settings-add-btn {
  display: inline-flex; align-items: center; gap: 6px;
  padding: 10px 20px; border-radius: 8px; font-size: 13px;
@@ -2064,9 +2068,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .settings-field { display: flex; flex-direction: column; gap: 6px; }
 .settings-field:not(.half) { grid-column: 1 / -1; }
+/* 🔴 同じ理由。暗い画面なので入力欄のラベルも白系で書く（黒だと「月」「日」が見えない）。
+   ⚠️ 共通CSS public/css/a11y.css の
+      `label:not(.checkout-consent):not(.payment-option) { color: var(--color-forest) }`
+      が全ページ共通で当たっていて、詳細度も読み込み順もあちらが上。
+      なので .dashboard-section .settings-card を前に付けて詳細度で上回らせている。
+      ここを短く書き直すと、また「月」「日」が見えなくなる。 */
 .settings-field label {
  font-family: var(--font-jp); font-size: 12px; font-weight: 600;
- color: var(--color-ink-muted); letter-spacing: 0.02em;
+ color: rgba(255,255,255,0.78); letter-spacing: 0.02em;
+}
+.dashboard-section .settings-card .settings-field label {
+ font-size: 12px; color: rgba(255,255,255,0.78);
 }
 .settings-field .required { color: var(--color-red); font-size: 10px; }
 .settings-field input,
@@ -3987,9 +4000,12 @@ function renderTop3(custName, orders) {
  if (!el) return;
  var counts = {}, samples = {};
  (orders || []).forEach(function(o){
+  /* 定期便の注文はTOP3に入れない（毎月届くものなので「選ばれた商品」にならない） */
+  if (String(o.mode || '').indexOf('subscription') === 0) return;
   (o.items || []).forEach(function(it){
    var name = (it.title || it.name || '').toString().trim();
    if (!name) return;
+   if (name.indexOf('定期便') >= 0) return;   /* 商品名に定期便が入るものも除外 */
    counts[name] = (counts[name] || 0) + (Number(it.qty) || 1);
    if (!samples[name] || ((it.variantId || it.id) && !(samples[name].variantId || samples[name].id))) samples[name] = it;
   });
