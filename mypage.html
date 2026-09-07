@@ -3987,9 +3987,12 @@ function renderTop3(custName, orders) {
  if (!el) return;
  var counts = {}, samples = {};
  (orders || []).forEach(function(o){
+  /* 定期便の注文はTOP3に入れない（毎月届くものなので「選ばれた商品」にならない） */
+  if (String(o.mode || '').indexOf('subscription') === 0) return;
   (o.items || []).forEach(function(it){
    var name = (it.title || it.name || '').toString().trim();
    if (!name) return;
+   if (name.indexOf('定期便') >= 0) return;   /* 商品名に定期便が入るものも除外 */
    counts[name] = (counts[name] || 0) + (Number(it.qty) || 1);
    if (!samples[name] || ((it.variantId || it.id) && !(samples[name].variantId || samples[name].id))) samples[name] = it;
   });
