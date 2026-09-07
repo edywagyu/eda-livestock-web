@@ -171,7 +171,7 @@
   </div>
 
   <div class="main" id="mainGrid">
-    <div class="map-panel"><div class="map-heading">Flight route <button id="resetMap" type="button">Show full route</button></div><div id="map" aria-label="Shipment flight route"></div><div class="mapnote" id="mapNote" role="status"></div></div>
+    <div class="map-panel"><div class="map-heading">Flight route <button id="resetMap" type="button">Show full route</button></div><div id="map" aria-label="Shipment flight route"></div><div class="mapnote" id="mapNote" role="status"></div><div class="mapnote" id="dataFreshness" role="status"></div></div>
     <div class="card" id="detail"></div>
   </div>
 
@@ -204,11 +204,10 @@ var AIRPORTS = {
   RMQ:{name:"Taichung",     city:"Taichung", ll:[24.2647,120.6213]},
   AKL:{name:"Auckland",     city:"Auckland", ll:[-37.0082,174.7850]}
 };
-var BOXES_PER_PALLET = 24;            // company rule: 1 pallet per 24 boxes (round up)
 var DEFAULT_DEMO_T = "2026-07-01T15:30:00Z";
 
 var P = new URLSearchParams(location.search);
-var ID = P.get("id") || "carnes-0626";
+var ID = P.get("id") || "";
 var mode, now;
 // 🔴 Default = LIVE (real time). Buyer-facing links must reflect reality, never a
 // simulated in-flight view. Demo is opt-in via ?demo=1; ?t=... scrubs a fixed time.
@@ -287,11 +286,14 @@ function liveFetch(cs){
     }).catch(function(){ return null; });
 }
 function nowHHMM(){ return new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); }
+var liveGeneration=0;
+function stopLive(){liveGeneration++;if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
 function startLive(cs, fromU){
+  stopLive();var generation=liveGeneration;
   function tick(){
     if(mode==="live") now=Date.now();
     liveFetch(cs).then(function(p){
-      if(state.phase!=="flying" || S.legs[state.legIdx].callsign!==cs)return;
+      if(generation!==liveGeneration||!S||state.phase!=="flying" || S.legs[state.legIdx].callsign!==cs)return;
       var badge=document.getElementById("liveBadge");
       if(!p){
         badge.style.display="none";
@@ -403,7 +405,7 @@ function render(){
     '<div class="fld"><span class="k">Carrier</span><span class="v"><span class="carrier">'+ico("plane")+S.airline+'</span></span></div>'+
     '<div style="padding-top:10px"><div class="k" style="color:var(--muted);font-size:13.5px;margin-bottom:6px">Flights</div><div class="legs">'+legHtml+'</div></div>'+
     '<div class="fld"><span class="k">Cargo</span><span class="v">'+S.product+'</span></div>'+
-    '<div class="fld"><span class="k">Pallets</span><span class="v">'+Math.ceil(S.boxes/BOXES_PER_PALLET)+' pallets</span></div>'+
+    '<div class="fld"><span class="k">Pallets</span><span class="v">'+(Number.isInteger(S.pallets)&&S.pallets>0?S.pallets+' pallets':'Not confirmed')+'</span></div>'+
     '<div class="fld"><span class="k">Boxes</span><span class="v">'+S.boxes+' boxes · '+S.temp+'</span></div>'+
     '<div class="fld"><span class="k">Departure (ETD)</span><span class="v">'+S.etd+'</span></div>'+
     '<div class="fld" style="border-bottom:none"><span class="k">Arrival (ETA)</span><span class="v">'+S.eta+'</span></div>';
@@ -441,7 +443,7 @@ function render(){
 
 /* ---------- map (antimeridian-safe via longitude unwrapping) ---------- */
 function drawMap(){
-  if(liveTimer){clearInterval(liveTimer);liveTimer=null;}
+  stopLive();
   if(activeMap){activeMap.remove();activeMap=null;}
   planeMarker=null;
   var map=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true,minZoom:1,maxZoom:6,zoomSnap:0.25});
@@ -480,6 +482,7 @@ function drawMap(){
     L.marker(here,{icon:L.divIcon({className:"",html:pinHtml,iconSize:[40,40],iconAnchor:[20,40]}),zIndexOffset:1000}).addTo(map);
   }
   function fit(){map.invalidateSize();map.fitBounds(L.latLngBounds(routePts),{padding:[50,40],maxZoom:5});}
+  map.on("resize",fit);
   document.getElementById("resetMap").onclick=fit;
   setTimeout(fit,60);
 
@@ -488,20 +491,41 @@ function drawMap(){
   setMapNote(note,false);
 }
 
+/* Refresh the published record; a successful download does not mean the carrier updated it. */
+var dataLoading=false, dataLoadedAt=null, dataRefreshFailed=false;
+function refreshShipment(){
+  if(dataLoading)return Promise.resolve();
+  dataLoading=true;
+  return fetch("track-data.json?ts="+Date.now(),{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw Error("http "+r.status);return r.json();})
+    .then(function(data){
+      var next=data[ID];
+      if(!next){S=null;stopLive();notFound(ID,false);return;}
+      if(!Array.isArray(next.steps)||!Number.isInteger(next.boxes)||next.boxes<=0||!Array.isArray(next.legs)||!next.legs.length||!Array.isArray(next.route)||next.route.length!==next.legs.length+1||
+        next.legs.some(function(l,i){return !AIRPORTS[l.from]||!AIRPORTS[l.to]||next.route[i]!==l.from||next.route[i+1]!==l.to||!Number.isFinite(Date.parse(l.dep))||!Number.isFinite(Date.parse(l.arr))||Date.parse(l.dep)>=Date.parse(l.arr);}))throw Error("invalid schedule");
+      var changed=dataRefreshFailed||JSON.stringify(next)!==JSON.stringify(S);dataRefreshFailed=false;
+      S=next;dataLoadedAt=new Date().toISOString();
+      if(mode==="demo")now=Date.parse(S.demoT||DEFAULT_DEMO_T);
+      else if(mode==="live")now=Date.now();
+      if(changed)render();
+      document.getElementById("dataFreshness").textContent="Published schedule checked: "+dataLoadedAt.replace("T"," ").replace(/\.\d+Z$/," UTC")+" · Carrier changes require confirmation.";
+    }).catch(function(){
+      if(!S){notFound(ID,true);return;}
+      dataRefreshFailed=true;stopLive();document.getElementById("liveBadge").style.display="none";
+      document.getElementById("locLabel").textContent="Location update unavailable";
+      document.getElementById("status").textContent="Tracking refresh unavailable";
+      document.getElementById("dataFreshness").textContent="Schedule refresh unavailable. Showing previously loaded information; confirm changes with EDA-LIVESTOCK.";
+    }).finally(function(){dataLoading=false;});
+}
 /* ---------- boot: load data, route by ?id ---------- */
 if(P.get("probe")){
   probeView(P.get("probe").toUpperCase().trim());
-} else {
-  fetch("track-data.json?ts="+Date.now(),{cache:"no-store"})
-    .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
-    .then(function(data){
-      S = data[ID];
-      if(!S){ notFound(ID,false); return; }
-      if(mode==="demo") now = Date.parse(S.demoT || DEFAULT_DEMO_T);
-      render();
-      if(mode==="live")setInterval(function(){now=Date.now();var next=estimatePosition();if(next.phase!==state.phase||next.legIdx!==state.legIdx)render();},30000);
-    })
-    .catch(function(){ notFound(ID,true); });
+} else if(!ID){notFound("",false);} else {
+  refreshShipment();
+  if(mode==="live"){
+    setInterval(refreshShipment,60000);
+    setInterval(function(){if(!S||dataRefreshFailed)return;now=Date.now();var next=estimatePosition();if(next.phase!==state.phase||next.legIdx!==state.legIdx)render();},30000);
+  }
 }
 </script>
 </body>

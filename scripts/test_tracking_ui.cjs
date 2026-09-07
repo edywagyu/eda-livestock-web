@@ -27,3 +27,20 @@ ctx.fetch=()=>Promise.reject(Error('offline'));ctx.startLive('ANZ90',140);
 await new Promise(r=>setImmediate(r));assert.equal(get('liveBadge').style.display,'none');assert(get('mapNote').textContent.includes('unavailable'));checks+=2;
 console.log('PASS',checks,'schedule/state/signal regression checks');
 })().catch(e=>{console.error(e);process.exitCode=1});
+// Published schedule refresh: changes, offline, recovery, malformed record.
+(async()=>{
+ const n={};const el=id=>n[id]??={style:{},innerHTML:'',textContent:'',addEventListener(){}};
+ const c={...ctx,document:{getElementById:el},fetch:()=>new Promise(()=>{})};
+ vm.createContext(c);vm.runInContext(code,c);c.drawMap=()=>{};c.dataLoading=false;
+ const original=JSON.parse(JSON.stringify(data));
+ c.fetch=()=>Promise.resolve({ok:true,json:()=>Promise.resolve(original)});
+ await c.refreshShipment();assert.equal(c.S.awb,original['neatmeat-0904'].awb);
+ const revised=JSON.parse(JSON.stringify(original));revised['neatmeat-0904'].statusNote='Test revised schedule';
+ c.fetch=()=>Promise.resolve({ok:true,json:()=>Promise.resolve(revised)});await c.refreshShipment();
+ assert.equal(el('status').textContent,'Test revised schedule');
+ c.fetch=()=>Promise.reject(Error('offline'));await c.refreshShipment();assert(c.dataRefreshFailed);assert(el('dataFreshness').textContent.includes('unavailable'));
+ c.fetch=()=>Promise.resolve({ok:true,json:()=>Promise.resolve(revised)});await c.refreshShipment();assert(!c.dataRefreshFailed);assert.equal(el('status').textContent,'Test revised schedule');
+ const invalid=JSON.parse(JSON.stringify(revised));invalid['neatmeat-0904'].legs[0].dep='bad';
+ c.fetch=()=>Promise.resolve({ok:true,json:()=>Promise.resolve(invalid)});await c.refreshShipment();assert(c.dataRefreshFailed);assert.notEqual(c.S.legs[0].dep,'bad');
+ console.log('PASS 5 schedule refresh regression checks');
+})().catch(e=>{console.error(e);process.exitCode=1});
