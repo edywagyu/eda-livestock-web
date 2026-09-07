@@ -72,68 +72,6 @@ function bg_todayKeys_(now) {
 }
 
 /* ============================================================
-   定期便のお客様かどうか
-   ------------------------------------------------------------
-   文面を分けるためだけに使う（2026-09-07 田崎さん指示）。
-   “正”が2つあるので両方を見て、どちらかに当たれば定期便とみなす:
-     ①「定期便マスター」の 状態=有効 … 手管理の名簿でこれが正
-        （WIX/Shopify 時代からのお客様は新ECの注文が無いのでここにしか居ない）
-        照合はお名前。空白は詰めて比べる（SubscriptionMonthRows と同じやり方）
-     ② orders に mode が subscription… のご注文がある … 新ECのお客様
-        こちらはメール/line_uid で確実に照合できる
-   🔴 外したときに困るのは「定期便の方に “ご注文ください” と送ってしまう」方なので、
-      迷ったら定期便側（＝ご注文へ誘導しない方）に倒す作りにしている。
-   ============================================================ */
-function bg_normName_(v) { return String(v || '').replace(/[\s　]/g, ''); }
-
-function bg_subscriberIndex_() {
-  var out = { byEmail: {}, byUid: {}, byName: {} };
-
-  /* ① 定期便マスター（手管理・状態=有効） */
-  try {
-    var ms = ss().getSheetByName('定期便マスター');
-    if (ms) {
-      var mv = ms.getDataRange().getValues();
-      var MH = {};
-      (mv[0] || []).forEach(function (h, i) { MH[String(h).trim()] = i; });
-      if (MH['状態'] != null && MH['名前'] != null) {
-        for (var r = 1; r < mv.length; r++) {
-          if (String(mv[r][MH['状態']] || '').trim() !== '有効') continue;
-          var nm = bg_normName_(mv[r][MH['名前']]);
-          if (nm) out.byName[nm] = true;
-        }
-      }
-    }
-  } catch (e) { /* マスターが読めなくても②で拾う */ }
-
-  /* ② orders に定期便のご注文がある */
-  try {
-    var os = sheet('orders');
-    var ov = os.getDataRange().getValues();
-    if (ov.length >= 2) {
-      var h = ov[0];
-      var iMode = h.indexOf('mode'), iMail = h.indexOf('customer_email'), iUid = h.indexOf('line_uid');
-      if (iMode >= 0) {
-        for (var r2 = 1; r2 < ov.length; r2++) {
-          if (String(ov[r2][iMode] || '').indexOf('subscription') !== 0) continue;
-          if (iMail >= 0 && ov[r2][iMail]) out.byEmail[custEmailKey_(ov[r2][iMail])] = true;
-          if (iUid  >= 0 && ov[r2][iUid])  out.byUid[String(ov[r2][iUid]).trim()] = true;
-        }
-      }
-    }
-  } catch (e) { /* orders が読めなくても①で拾う */ }
-
-  return out;
-}
-
-function bg_isSubscriber_(idx, p) {
-  if (p.uid   && idx.byUid[p.uid]) return true;
-  if (p.email && idx.byEmail[p.email]) return true;
-  var nm = bg_normName_(p.name);
-  return !!(nm && idx.byName[nm]);
-}
-
-/* ============================================================
    本体
    ============================================================ */
 function birthdayGreeting_(mode) {
@@ -179,9 +117,9 @@ function birthdayGreeting_(mode) {
 
   /* 文面の出し分け（定期便 / 単品）。候補が居るときだけ名簿を読む */
   if (cands.length) {
-    var subIdx = bg_subscriberIndex_();
+    var subIdx = subscriberIndex_();
     cands.forEach(function (p) {
-      p.isSub = bg_isSubscriber_(subIdx, p);
+      p.isSub = isSubscriber_(subIdx, p);
       p.kind  = p.isSub ? '定期便' : '単品';
     });
   }

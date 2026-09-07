@@ -1957,6 +1957,7 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '連携で10%OFFクーポンを配布', 'LINE連携した瞬間', '稼働中', '連携してくれた人に割引クーポンを自動で送る'],
   ['公式LINE', '発送をLINEでお知らせ', '発送処理した時', '稼働中', '「発送しました＋お届け予定日」をLINEに自動送信（未連携の人にはメール）'],
   ['公式LINE', 'お誕生日当日のお祝いメッセージ', '毎日 朝9時', '準備中（スイッチOFF）', 'マイページで誕生日を登録されたお客様に、その日の朝「お誕生日おめでとうございます」を1通お送りする。あわせて「今月中のご注文に赤身ステーキをお入れします（定期便の方は今月のお届けに自動で）」をご案内する。LINE連携済みの方はLINE、未連携の方はメール（発送通知と同じ振り分け）。同じ方に同じ年は二度送らない。2月29日生まれの方は平年は2月28日に送る。実送信のスイッチは Script Properties の BIRTHDAY_MSG_ENABLED（既定OFF）。送信の記録は本番EC注文DBの「誕生日メッセージ_送信ログ」タブ。2026-09-07追加'],
+  ['社内シート', '定期便のお客様に印をつける', '毎日 朝7時', '準備中', '本番EC注文DBの「顧客」タブに「定期便」列、「注文」タブに「定期便のお客様」列を自動で作り、定期便をご利用中の方の行に「定期便」と書く。定期便かどうかは「定期便マスターの状態=有効（手管理の名簿。旧サイトからのお客様はここにしか居ない）」と「新ECで定期便のご注文がある」の両方を見て、どちらかに当たれば定期便として扱う。管理画面の注文一覧・発送画面にも同じ判定で「🔁 定期便の方」と出る。単品でご注文された定期便のお客様にも印が付く（梱包時の取り違えを防ぐため）。2026-09-07追加'],
   ['EC', '発送予定日のお知らせ', '注文が確定した時／振込は入金確認した時', '稼働中', 'ご注文後すぐ「◯月◯日に発送予定です」をお知らせ（LINE連携済みはLINE・未連携はメール）。マイページの発送準備中カードにも同じ日付を表示。お届け希望日ありは希望日から逆算して1日前倒し（西日本2日前・東日本3日前＝社内の発送リマインドと同じ日）、最短は起点日+3日に着くよう逆算（西日本は起点+2日・東日本は起点+1日）。銀行振込は入金確認まで日付を出さない'],
   ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
   ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '稼働中', 'カートに入れて離脱した人へLINEで催促。購入済みの人には送らないよう修正済み'],
@@ -3605,6 +3606,73 @@ function normBirthday_(v) {
   var mo = Number(m[1]), da = Number(m[2]);
   if (!(mo >= 1 && mo <= 12) || !(da >= 1 && da <= 31)) return '';
   return ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+}
+
+/* ============================================================
+   定期便のお客様かどうか（3か所から使う共通の判定）
+   ------------------------------------------------------------
+   使う場所（判定はここ1箇所だけ。増やさない）:
+     ・誕生日メッセージの文面の出し分け（BirthdayGreeting.gs）
+     ・顧客シート / 注文シートの「定期便」列（markSubscribers）
+     ・管理画面の注文一覧・発送画面のバッジ（staffOrders が is_subscriber を返す）
+   “正”が2つあるので両方を見て、どちらかに当たれば定期便とみなす:
+     ①「定期便マスター」の 状態=有効 … 手管理の名簿でこれが正
+        （WIX/Shopify 時代からのお客様は新ECの注文が無いのでここにしか居ない）
+        照合はお名前。空白は詰めて比べる（SubscriptionMonthRows と同じやり方）
+     ② orders に mode が subscription… のご注文がある … 新ECのお客様
+        こちらはメール/line_uid で確実に照合できる
+   🔴 外したときに困るのは「定期便の方に “ご注文ください” と送ってしまう」方なので、
+      迷ったら定期便側（＝ご注文へ誘導しない方）に倒す作りにしている。
+   ⚠️ ①はお名前での照合なので、同姓同名や表記ゆれには当たらないことがある。
+      ②（新ECのご注文）で当たる方はそちらで確実に拾える。
+   ============================================================ */
+function subNormName_(v) { return String(v || '').replace(/[\s　]/g, ''); }
+
+function subscriberIndex_() {
+  var out = { byEmail: {}, byUid: {}, byName: {} };
+
+  /* ① 定期便マスター（手管理・状態=有効） */
+  try {
+    var ms = ss().getSheetByName('定期便マスター');
+    if (ms) {
+      var mv = ms.getDataRange().getValues();
+      var MH = {};
+      (mv[0] || []).forEach(function (h, i) { MH[String(h).trim()] = i; });
+      if (MH['状態'] != null && MH['名前'] != null) {
+        for (var r = 1; r < mv.length; r++) {
+          if (String(mv[r][MH['状態']] || '').trim() !== '有効') continue;
+          var nm = subNormName_(mv[r][MH['名前']]);
+          if (nm) out.byName[nm] = true;
+        }
+      }
+    }
+  } catch (e) { /* マスターが読めなくても②で拾う */ }
+
+  /* ② orders に定期便のご注文がある */
+  try {
+    var os = sheet('orders');
+    var ov = os.getDataRange().getValues();
+    if (ov.length >= 2) {
+      var h = ov[0];
+      var iMode = h.indexOf('mode'), iMail = h.indexOf('customer_email'), iUid = h.indexOf('line_uid');
+      if (iMode >= 0) {
+        for (var r2 = 1; r2 < ov.length; r2++) {
+          if (String(ov[r2][iMode] || '').indexOf('subscription') !== 0) continue;
+          if (iMail >= 0 && ov[r2][iMail]) out.byEmail[custEmailKey_(ov[r2][iMail])] = true;
+          if (iUid  >= 0 && ov[r2][iUid])  out.byUid[String(ov[r2][iUid]).trim()] = true;
+        }
+      }
+    }
+  } catch (e) { /* orders が読めなくても①で拾う */ }
+
+  return out;
+}
+
+function isSubscriber_(idx, p) {
+  if (p.uid   && idx.byUid[p.uid]) return true;
+  if (p.email && idx.byEmail[p.email]) return true;
+  var nm = subNormName_(p.name);
+  return !!(nm && idx.byName[nm]);
 }
 
 /* 🎂 ご注文日の「月」を 'MM' で返す。
@@ -5387,12 +5455,20 @@ function staffOrders() {
        お客様は customers の birthday(MM-DD) を line_uid → email の順で引く
        （line_uid のほうが確実。[[顧客の二重登録]] と同じ優先順）。 */
     var bdIndex = birthdayIndex_();
+    /* 🔁 「この“方”が定期便のお客様か」。そのご注文が定期便かどうか(mode)とは別物で、
+       定期便の方が単品で買ってくださったご注文にも立つ。梱包時に取り違えないため。 */
+    var subIndex = subscriberIndex_();
     orders.forEach(function (o) {
       var b = bdIndex.byUid[String(o.line_uid || '').trim()] ||
               bdIndex.byEmail[custEmailKey_(o.customer_email)] || '';
       o.birthday = b;
       var mo = orderMonth_(o.placed_at);
       o.birthday_match = !!(b && mo && mo === b.slice(0, 2));
+      o.is_subscriber = isSubscriber_(subIndex, {
+        email: custEmailKey_(o.customer_email),
+        uid:   String(o.line_uid || '').trim(),
+        name:  String(o.customer_name || '').trim()
+      });
     });
 
     return jsonResponse({ ok:true, orders });

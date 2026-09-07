@@ -3013,6 +3013,9 @@ function normalizeStaffOrder(o) {
     //    ここでは受け取るだけ。画面側で月を数え直さない（数え直すと判定が2箇所になる）。
     birthday: String(o.birthday || ''),
     birthdayMatch: o.birthday_match === true,
+    // 🔁 「この“方”が定期便のお客様か」。そのご注文が定期便か(mode)とは別物で、
+    //    定期便の方が単品で買ってくださったご注文にも立つ。判定は GAS 側だけが持つ。
+    isSubscriber: o.is_subscriber === true,
     phone: d0.tel || o.customer_phone || '',
     zip: d0.zip || '',
     pref: d0.pref || '',
@@ -3177,7 +3180,7 @@ function orderRowHtml(o) {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}${o.birthdayMatch ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#B4508A;border-radius:4px;padding:1px 6px;margin-left:4px">🎂 誕生日</span>' : ''}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}${o.birthdayMatch ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#B4508A;border-radius:4px;padding:1px 6px;margin-left:4px">🎂 誕生日</span>' : ''}${o.isSubscriber ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#2563EB;border-radius:4px;padding:1px 6px;margin-left:4px">🔁 定期便の方</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}${o.purchaseCount ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#1E5C3A;background:#E8F5EC;border-radius:4px;padding:1px 6px;margin-left:4px">' + o.purchaseCount + '回目</span>' : ''}</div>
           <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
@@ -3243,6 +3246,7 @@ function renderShipDetail() {
   // 明細リスト（受注ID…配送STS）の中に差し込む「購入者」「配送先」の行。
   const buyerRows = `
       <div class="detail-row"><span class="label">🧾 ご購入者</span><span class="value">${escapeHtml(buyer.name || '（名前なし）')}${o.purchaseCount ? ' <span style="font-size:11px;color:var(--gold-soft)">' + o.purchaseCount + '回目</span>' : ''}</span></div>
+      ${o.isSubscriber ? `<div class="detail-row"><span class="label">🔁 定期便</span><span class="value"><span style="display:inline-block;font-size:12px;font-weight:800;color:#fff;background:#2563EB;border-radius:4px;padding:2px 10px">定期便のお客様</span>${isSubOrder(o) ? '' : '<span style="font-size:11px;color:var(--muted);margin-left:8px">今回は単品のご注文です</span>'}</span></div>` : ''}
       <div class="detail-row"><span class="label">購入者 住所</span><span class="value">${escapeHtml((buyer.zip ? '〒' + buyer.zip + '　' : '') + (buyer.address || '（住所の登録なし）'))}</span></div>
       ${buyer.tel ? `<div class="detail-row"><span class="label">購入者 電話</span><span class="value">${escapeHtml(buyer.tel)}</span></div>` : ''}
       ${buyer.email ? `<div class="detail-row"><span class="label">購入者 メール</span><span class="value" style="font-size:12px">${escapeHtml(buyer.email)}</span></div>` : ''}`;
