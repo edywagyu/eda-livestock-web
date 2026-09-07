@@ -59,6 +59,7 @@ textarea:focus{outline:none;border-color:var(--gold)}
 .done p{font-size:14px;color:var(--muted);margin:0 0 18px}
 .done a{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:11px 22px;font-size:14px;text-decoration:none;color:inherit}
 .fine{font-size:12px;color:var(--muted);margin-top:14px}
+.loading{color:var(--muted);font-size:14px;padding:22px 0}
 </style>
 </head>
 <body>
@@ -77,7 +78,7 @@ textarea:focus{outline:none;border-color:var(--gold)}
   <div class="next" id="next" style="display:none">次回のお届け予定：<b id="nextVal">—</b></div>
 
   <div id="form">
-    <div id="list"></div>
+    <div id="list"><p class="loading">商品を読み込んでいます…</p></div>
 
     <label class="note" for="note">ご要望（任意）</label>
     <textarea id="note" placeholder="例：来月以降も同じものを入れてほしい"></textarea>
@@ -134,7 +135,7 @@ function renderItems() {
         '<span class="now">' + yen(offPrice(p.price)) + '</span></div></div>' +
       '<div class="qty">' +
         '<button type="button" data-id="' + esc(p.variantId) + '" data-d="-1" aria-label="減らす">−</button>' +
-        '<span id="q-' + esc(p.variantId) + '">0</span>' +
+        '<span id="q-' + esc(p.variantId) + '">' + (_qty[p.variantId] || 0) + '</span>' +
         '<button type="button" data-id="' + esc(p.variantId) + '" data-d="1" aria-label="増やす">＋</button>' +
       '</div></div>';
   }).join('');
@@ -152,30 +153,58 @@ function renderItems() {
   });
 }
 
+function pickItems(list) {
+  /* 通常商品のみ（オーガニック／有機JASは対象外） */
+  return (list || []).filter(function (p) {
+    return p.published !== false && Number(p.stock) > 0 && !p.comingSoon && !p.isOrganic;
+  });
+}
+
 async function boot() {
   var s = getSession();
   if (!s || !s.email) { location.href = 'mypage.html'; return; }
   _email = s.email;
 
+  /* 前に開いたときの内容をすぐ出す（待たせない）。中身は下で最新に差し替える */
+  try {
+    var cached = JSON.parse(localStorage.getItem('eda-addon-cache') || 'null');
+    if (cached && cached.items && cached.items.length) {
+      _items = pickItems(cached.items);
+      renderItems(); refreshTotal();
+      if (cached.next) {
+        document.getElementById('next').style.display = '';
+        document.getElementById('nextVal').textContent = cached.next;
+      }
+    }
+  } catch (e) {}
+
+  var nextDate = '';
   try {
     var look = await window.EDA_API.get('customer_lookup', { email: _email });
     var sc = (look && look.customer && look.customer.subscription) || null;
     if (sc && sc.active && sc.next_delivery) {
+      nextDate = sc.next_delivery;
       document.getElementById('next').style.display = '';
-      document.getElementById('nextVal').textContent = sc.next_delivery;
+      document.getElementById('nextVal').textContent = nextDate;
     }
   } catch (e) {}
 
+  var fresh = [];
   try {
     var res = await window.EDA_API.get('public_products', {});
-    _items = ((res && res.products) || []).filter(function (p) {
-      /* 通常商品のみ（オーガニック／有機JASは対象外） */
-      return p.published !== false && Number(p.stock) > 0 && !p.comingSoon && !p.isOrganic;
-    });
-  } catch (e) { _items = []; }
-  if (!_items.length) { showErr('商品を読み込めませんでした。時間をおいて開き直してください。'); return; }
+    fresh = pickItems((res && res.products) || []);
+  } catch (e) { fresh = []; }
+
+  if (!fresh.length) {
+    if (!_items.length) showErr('商品を読み込めませんでした。時間をおいて開き直してください。');
+    return;
+  }
+  _items = fresh;
   renderItems();
   refreshTotal();
+  try {
+    localStorage.setItem('eda-addon-cache', JSON.stringify({ items: fresh, next: nextDate, ts: Date.now() }));
+  } catch (e) {}
 }
 
 document.getElementById('submit').addEventListener('click', async function () {

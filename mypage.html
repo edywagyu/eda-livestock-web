@@ -4965,21 +4965,56 @@ async function subCycle() {
  var btn = document.getElementById('subCycleBtn');
  var target = (btn && btn.dataset.target) || '隔月';
  var current = target === '隔月' ? '毎月' : '隔月';
- var ok = await edaConfirm('お届け頻度の変更',
-  target === '隔月'
-   ? 'お届けを隔月（2ヶ月に1回）に変更しますか？\n\nスタッフが確認のうえ切り替えて、ご連絡いたします'
-   : 'お届けを毎月に戻しますか？\n\nスタッフが確認のうえ切り替えて、ご連絡いたします',
-  { ok: target + 'にする' });
- if (!ok) return;
+ var firstDelivery = 'keep';
+ if (target === '隔月') {
+  var choice = await subCycleChoiceModal(_lastSub && _lastSub.next_delivery);
+  if (!choice) return;
+  firstDelivery = choice;
+ } else {
+  var okM = await edaConfirm('お届け頻度の変更', 'お届けを毎月に戻しますか？', { ok: '毎月にする' });
+  if (!okM) return;
+ }
  try {
   const result = await window.EDA_API.post('change_subscription_cycle', {
-   email: currentSession.email, cycle: target, current_cycle: current
+   email: currentSession.email, cycle: target, current_cycle: current, first_delivery: firstDelivery
   });
-  if (result.ok) toast('お届け頻度の変更を受け付けました', 'success');
-  else toast('申請に失敗しました: ' + (result.error || ''), 'error');
+  if (result.ok) {
+   toast(result.message || 'お届け頻度を変更しました', 'success');
+   refreshSubscription();
+  }
+  else toast('変更できませんでした: ' + (result.error || ''), 'error');
  } catch (err) {
   toast('通信エラーが発生しました', 'error');
  }
+}
+
+/* 隔月にするとき、次回のお届けをどうするか選ぶ */
+function subCycleChoiceModal(nextDate) {
+ return new Promise(function(resolve){
+  var d = nextDate ? formatDate(nextDate) : '次回';
+  var overlay = document.createElement('div');
+  overlay.className = 'eda-modal-overlay';
+  overlay.innerHTML = '<div class="eda-modal">' +
+   '<h3 class="eda-modal-title">隔月（2ヶ月に1回）に変更</h3>' +
+   '<p class="eda-modal-body" style="text-align:left">' + escapeHtml(d) + ' のお届けはどうしますか？</p>' +
+   '<div class="cancel-reason-list">' +
+    '<label class="cancel-reason-opt"><input type="radio" name="cycleFirst" value="keep" checked><span>' + escapeHtml(d) + ' は受け取る（そこから隔月）</span></label>' +
+    '<label class="cancel-reason-opt"><input type="radio" name="cycleFirst" value="skip"><span>' + escapeHtml(d) + ' は休む（翌々月から）</span></label>' +
+   '</div>' +
+   '<div class="eda-modal-actions vertical">' +
+    '<button class="eda-modal-btn" id="cycleOk">この内容で変更する</button>' +
+    '<button class="eda-modal-btn secondary" id="cycleNo">やめる</button>' +
+   '</div></div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.classList.add('show'); }); });
+  function close(v){ overlay.classList.remove('show'); setTimeout(function(){ overlay.remove(); resolve(v); }, 180); }
+  overlay.querySelector('#cycleOk').addEventListener('click', function(){
+   var sel = overlay.querySelector('input[name="cycleFirst"]:checked');
+   close(sel ? sel.value : 'keep');
+  });
+  overlay.querySelector('#cycleNo').addEventListener('click', function(){ close(null); });
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) close(null); });
+ });
 }
 /* 次回のお届けに商品を足すリクエスト */
 async function subCustomize() {
@@ -5096,7 +5131,10 @@ async function subCancel() {
  email: currentSession.email,
  reason: reasonFull
  });
- if (result.ok) toast('解約申請を受け付けました。担当者からご連絡します');
+ if (result.ok) {
+  toast(result.message || '解約を承りました', 'success');
+  refreshSubscription();
+ }
  else toast('申請に失敗しました: ' + (result.error || ''));
  } catch (err) {
  toast('通信エラーが発生しました');
@@ -5227,6 +5265,10 @@ function renderSubscription(sub) {
  if (skipBtn) {
   skipBtn.lastChild.textContent = sub.skip_active ? ' スキップを取り消す ' : ' 次回をスキップ ';
   skipBtn.classList.toggle('undo', !!sub.skip_active);
+ }
+ if (sub.cancel_pending && sub.cancel_note) {
+  card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">終了予定</span>' +
+   '<span class="sub-detail-value">' + escapeHtml(sub.cancel_note) + '</span></div>';
  }
  if (sub.skip_active && sub.skipped_delivery) {
   card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">お休みする回</span>' +
