@@ -12213,7 +12213,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const DAYS_JP = ['日','月','火','水','木','金','土'];
  const now = new Date();
  /* JST offset */
- const jst = new Date(now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000);
+ const jst = new Date(now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000); /* 符号は「+」が正。「-」だとJST端末で18時間ずれ、16時以降だけバナーより1日後ろの日付が出ていた */
  const hour = jst.getHours();
 
  let addDays;
@@ -14772,7 +14772,10 @@ function copyPopCoupon() {
     var sel=document.getElementById('deliveryDate');
     if(!sel || sel.dataset.filled) return;
     var jst=jstNow();
-    var lead=3;                                /* 最短: 注文日から3日後（時間帯によらず一律・checkout.htmlのmin=+3日と同一） */
+    /* 最短日は配送カウントダウンバー(shipCountdownInit)と同じルール:
+       〜10:00 の注文=2日後着 / 10:00以降=3日後着 / 22:00以降は翌日10時締切扱いで結局3日後着。
+       日曜着はこの下のループでスキップされる。バナー側を変えたらここも合わせること。 */
+    var lead=jst.getHours()<10?2:3;
     var cur=new Date(jst); cur.setDate(cur.getDate()+lead);
     var saved=null; try{ saved=localStorage.getItem('eda-deliv-date'); }catch(e){}
     var added=0;

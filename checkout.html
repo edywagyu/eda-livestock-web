@@ -3057,7 +3057,7 @@ function renderSummary() {
 
 /* ---- 配送日オプション（お届け先ごと）----
  ▸ 定期便(自宅): 毎月1日固定・時間帯のみ
- ▸ ギフト / 単品(自宅): 最短3日後〜1か月先で日付指定可
+ ▸ ギフト / 単品(自宅): 最短日(バナーと同ルール)〜1か月先で日付指定可
  ▸ 単品(自宅) + 定期便: 「定期便と一緒(1日)」or「先に自宅へ(日付指定)」を選択
 */
 const DELIV_TIMES = ['', '午前中（〜12:00）', '14:00 - 16:00', '16:00 - 18:00', '18:00 - 20:00（推奨）', '19:00 - 21:00'];
@@ -3067,10 +3067,15 @@ const TIMECODE_TO_TEXT = { '': '', '0812': '午前中（〜12:00）', '1416': '1
 function _fmtIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function _deliveryBounds() {
  const now = new Date();
- const minD = new Date(now); minD.setDate(minD.getDate() + 3);
+ // 最短日は shop.html の配送カウントダウンバー(shipCountdownInit)と同じルール:
+ // 〜10:00 の注文=2日後着 / 10:00以降=3日後着（22:00以降も翌日10時締切扱いで3日後着）。
+ // 日曜着はスキップして月曜。バナー側を変えたらここも合わせること。
+ const _lead = now.getHours() < 10 ? 2 : 3;
+ const minD = new Date(now); minD.setDate(minD.getDate() + _lead);
+ if (minD.getDay() === 0) minD.setDate(minD.getDate() + 1);
  const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
  const first = new Date(now.getFullYear(), now.getMonth() + 1, 1);
- return { min: _fmtIso(minD), max: _fmtIso(maxD), first: _fmtIso(first), firstLabel: `${first.getMonth() + 1}月1日` };
+ return { min: _fmtIso(minD), max: _fmtIso(maxD), minLabel: `${minD.getMonth() + 1}月${minD.getDate()}日`, first: _fmtIso(first), firstLabel: `${first.getMonth() + 1}月1日` };
 }
 function _timeSelectHtml(dIdx, cur) {
  return `<select onchange="updateDestDelivery(${dIdx},'time',this.value)">`
@@ -3097,7 +3102,7 @@ function deliveryFieldHtml(dest, dIdx) {
  const wrap = (inner) => `<div class="dest-delivery" style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(15,61,46,0.15)"><div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:8px">🚚 お届け日時</div>${inner}</div>`;
  const timeOnly = `<div class="dest-form-row"><div class="dest-field"><label>お届け時間帯</label>${timeSel}</div></div>`;
 
- if (isGift) return wrap(pair('お届け希望日', '未指定＝最短でお届け（3日後〜1か月先まで指定可）'));
+ if (isGift) return wrap(pair('お届け希望日', `未指定＝最短でお届け（最短 ${b.minLabel}〜1か月先まで指定可）`));
 
  if (isSelf) {
   const selfHasItems = (dest.itemIds || []).length > 0;
@@ -3114,10 +3119,10 @@ function deliveryFieldHtml(dest, dIdx) {
      <label style="${optStyle(!sep)}"><input type="radio" name="deliv-mode-${dIdx}" value="with_sub" ${!sep ? 'checked' : ''} onchange="updateDestDelivery(${dIdx},'mode','with_sub')" style="accent-color:var(--color-forest)"><span>⭐ 定期便と一緒に毎月1日お届け（おすすめ）</span></label>
      <label style="${optStyle(sep)}"><input type="radio" name="deliv-mode-${dIdx}" value="separate" ${sep ? 'checked' : ''} onchange="updateDestDelivery(${dIdx},'mode','separate')" style="accent-color:var(--color-forest)"><span>📅 先に自宅へ届ける（日付を指定）</span></label>
     </div>
-    ${sep ? pair('お届け希望日', '3日後〜1か月先まで指定可') : timeOnly}`);
+    ${sep ? pair('お届け希望日', `最短 ${b.minLabel}〜1か月先まで指定可`) : timeOnly}`);
   }
   // 定期便なし・自宅に商品あり = 通常の日付指定
-  if (selfHasItems) return wrap(pair('お届け希望日', '未指定＝最短でお届け（3日後〜1か月先まで指定可）'));
+  if (selfHasItems) return wrap(pair('お届け希望日', `未指定＝最短でお届け（最短 ${b.minLabel}〜1か月先まで指定可）`));
   return ''; // 自宅に何も送らない（差出人住所のみ）= 日時欄なし
  }
  return '';
