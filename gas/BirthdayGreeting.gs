@@ -10,9 +10,12 @@
  *     ＝発送通知と同じ振り分け（2026-09-07 田崎さん指示）。
  *
  *  文面の中身:
- *   お祝いと、「お誕生日の月のご注文に赤身ステーキをお入れします」の2つだけ。
- *   単品の方と定期便の方で分けない（2026-09-07 田崎さん決定）。
+ *   お祝いと、赤身ステーキのご案内の2つだけ。
+ *   🔴 定期便の方と単品の方で文面を分ける（2026-09-07 田崎さん指示）。
+ *     ・定期便の方 … 「今月のお届けに入れます・お手続きは要りません」＝ご注文へ誘導しない
+ *     ・単品の方   … 「今月中のご注文に入れます」＝ご注文への導線を出す
  *   ⚠️ 文面は下の BG_TEXT ただ1つが正。直すときはここだけ。
+ *   （箱に入れる紙のお手紙 birthday-letter.html は共通1本のまま。こちらだけ分ける）
  *
  *  同梱の条件（マイページ・管理画面と同じ。3箇所で食い違わせない）:
  *    単品   … ご自身の誕生日“月”にご注文があった分に同梱
@@ -34,7 +37,7 @@
 
 var BG_LOG_SHEET  = '誕生日メッセージ_送信ログ';
 var BG_CAND_SHEET = '誕生日メッセージ_候補';
-var BG_HEADERS    = ['sent_at', 'year', 'email', 'line_uid', 'name', 'birthday', 'channel'];
+var BG_HEADERS    = ['sent_at', 'year', 'email', 'line_uid', 'name', 'birthday', 'channel', '区分'];
 
 function bg_enabled_()  { return String(cfg('BIRTHDAY_MSG_ENABLED', 'false')) === 'true'; }
 function bg_shopUrl_()  { return String(cfg('BIRTHDAY_MSG_SHOP_URL', '') || 'https://www.eda-livestock.com/shop.html'); }
@@ -66,6 +69,68 @@ function bg_todayKeys_(now) {
     if (!isLeap) keys.push('02-29');   /* 平年は2月29日生まれの方を28日にまとめる */
   }
   return keys;
+}
+
+/* ============================================================
+   定期便のお客様かどうか
+   ------------------------------------------------------------
+   文面を分けるためだけに使う（2026-09-07 田崎さん指示）。
+   “正”が2つあるので両方を見て、どちらかに当たれば定期便とみなす:
+     ①「定期便マスター」の 状態=有効 … 手管理の名簿でこれが正
+        （WIX/Shopify 時代からのお客様は新ECの注文が無いのでここにしか居ない）
+        照合はお名前。空白は詰めて比べる（SubscriptionMonthRows と同じやり方）
+     ② orders に mode が subscription… のご注文がある … 新ECのお客様
+        こちらはメール/line_uid で確実に照合できる
+   🔴 外したときに困るのは「定期便の方に “ご注文ください” と送ってしまう」方なので、
+      迷ったら定期便側（＝ご注文へ誘導しない方）に倒す作りにしている。
+   ============================================================ */
+function bg_normName_(v) { return String(v || '').replace(/[\s　]/g, ''); }
+
+function bg_subscriberIndex_() {
+  var out = { byEmail: {}, byUid: {}, byName: {} };
+
+  /* ① 定期便マスター（手管理・状態=有効） */
+  try {
+    var ms = ss().getSheetByName('定期便マスター');
+    if (ms) {
+      var mv = ms.getDataRange().getValues();
+      var MH = {};
+      (mv[0] || []).forEach(function (h, i) { MH[String(h).trim()] = i; });
+      if (MH['状態'] != null && MH['名前'] != null) {
+        for (var r = 1; r < mv.length; r++) {
+          if (String(mv[r][MH['状態']] || '').trim() !== '有効') continue;
+          var nm = bg_normName_(mv[r][MH['名前']]);
+          if (nm) out.byName[nm] = true;
+        }
+      }
+    }
+  } catch (e) { /* マスターが読めなくても②で拾う */ }
+
+  /* ② orders に定期便のご注文がある */
+  try {
+    var os = sheet('orders');
+    var ov = os.getDataRange().getValues();
+    if (ov.length >= 2) {
+      var h = ov[0];
+      var iMode = h.indexOf('mode'), iMail = h.indexOf('customer_email'), iUid = h.indexOf('line_uid');
+      if (iMode >= 0) {
+        for (var r2 = 1; r2 < ov.length; r2++) {
+          if (String(ov[r2][iMode] || '').indexOf('subscription') !== 0) continue;
+          if (iMail >= 0 && ov[r2][iMail]) out.byEmail[custEmailKey_(ov[r2][iMail])] = true;
+          if (iUid  >= 0 && ov[r2][iUid])  out.byUid[String(ov[r2][iUid]).trim()] = true;
+        }
+      }
+    }
+  } catch (e) { /* orders が読めなくても①で拾う */ }
+
+  return out;
+}
+
+function bg_isSubscriber_(idx, p) {
+  if (p.uid   && idx.byUid[p.uid]) return true;
+  if (p.email && idx.byEmail[p.email]) return true;
+  var nm = bg_normName_(p.name);
+  return !!(nm && idx.byName[nm]);
 }
 
 /* ============================================================
@@ -112,6 +177,15 @@ function birthdayGreeting_(mode) {
     });
   }
 
+  /* 文面の出し分け（定期便 / 単品）。候補が居るときだけ名簿を読む */
+  if (cands.length) {
+    var subIdx = bg_subscriberIndex_();
+    cands.forEach(function (p) {
+      p.isSub = bg_isSubscriber_(subIdx, p);
+      p.kind  = p.isSub ? '定期便' : '単品';
+    });
+  }
+
   /* ドライランは候補を書き出して終わり */
   if (!live) {
     bg_writeCandidates_(cands);
@@ -141,31 +215,51 @@ function birthdayGreeting_(mode) {
 
 /* ============================================================
    文面（🔴 ここだけが正。LINEもメールも同じことを言う）
+   定期便の方と単品の方で分ける（2026-09-07 田崎さん指示）。
+   ・定期便の方 … もう届くことが決まっているので、ご注文へ誘導しない
+   ・単品の方   … 「今月中のご注文」が条件なので、ご注文への導線を出す
    ============================================================ */
 var BG_TEXT = {
   subject: 'お誕生日おめでとうございます｜江田畜産',
-  line1:   'お誕生日おめでとうございます。',
-  line2:   'いつも江田畜産をご利用いただき、ありがとうございます。',
-  perk:    '今月中にご注文いただいた分に、お祝いとして「赤身ステーキ」をお入れします。\n' +
-           '定期便をご利用の方は、今月のお届けに自動でお入れしますので、ご注文は要りません。',
+  greet:   'お誕生日おめでとうございます。',
   close:   '素敵な一年になりますように。',
-  sign:    '江田畜産　農場長　田崎'
+  sign:    '江田畜産　農場長　田崎',
+
+  /* 定期便をご利用の方 */
+  sub: {
+    thanks: 'いつも定期便をご利用いただき、ありがとうございます。',
+    perk:   '今月のお届けに、お祝いとして「赤身ステーキ」をお入れします。\n' +
+            'お手続きは要りませんので、そのままお待ちください。',
+    cta:    null   /* ご注文へは誘導しない */
+  },
+
+  /* 単品でお買い物の方 */
+  single: {
+    thanks: 'いつも江田畜産をご利用いただき、ありがとうございます。',
+    perk:   '今月中にご注文いただいた分に、お祝いとして「赤身ステーキ」をお入れします。\n' +
+            'お誕生日の月だけのお楽しみです。',
+    cta:    'ご注文はこちら'
+  }
 };
 
+function bg_copy_(p) { return p.isSub ? BG_TEXT.sub : BG_TEXT.single; }
+
 function bg_sendLine_(p) {
+  var c = bg_copy_(p);
   var text =
     (p.name ? p.name + ' 様\n\n' : '') +
-    BG_TEXT.line1 + '\n' +
-    BG_TEXT.line2 + '\n\n' +
-    BG_TEXT.perk + '\n\n' +
+    BG_TEXT.greet + '\n' +
+    c.thanks + '\n\n' +
+    c.perk + '\n\n' +
     BG_TEXT.close + '\n\n' +
-    BG_TEXT.sign + '\n' +
-    'ご注文はこちら ' + bg_shopUrl_();
+    BG_TEXT.sign +
+    (c.cta ? '\n' + c.cta + ' ' + bg_shopUrl_() : '');
   return sendLinePush(p.uid, [{ type: 'text', text: text }]);
 }
 
 function bg_sendMail_(p) {
   if (!p.email) return false;
+  var c = bg_copy_(p);
   var greeting = p.name ? (p.name + ' 様') : 'お客様';
   /* メールで届く方は LINE 未連携なので、連携のご案内を1ブロックだけ足す（発送通知と同じ考え方） */
   var lineIntroText =
@@ -177,22 +271,22 @@ function bg_sendMail_(p) {
     subject: BG_TEXT.subject,
     body:
       greeting + '\n\n' +
-      BG_TEXT.line1 + '\n' +
-      BG_TEXT.line2 + '\n\n' +
-      BG_TEXT.perk + '\n\n' +
+      BG_TEXT.greet + '\n' +
+      c.thanks + '\n\n' +
+      c.perk + '\n\n' +
       BG_TEXT.close + '\n\n' +
       BG_TEXT.sign + '\n' +
-      'ご注文はこちら ' + bg_shopUrl_() + '\n\n' +
+      (c.cta ? c.cta + ' ' + bg_shopUrl_() + '\n\n' : '\n') +
       lineIntroText + '\n\n' +
       '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
       'https://www.eda-livestock.com/',
     htmlBody: brandEmailHtml_({
       heroUrl: BRAND_MAIL.heroOrder,
       title: 'お誕生日おめでとうございます',
-      intro: greeting + '<br><br>' + BG_TEXT.line1 + '<br>' + BG_TEXT.line2,
-      boxText: BG_TEXT.perk.replace(/\n/g, '<br>'),
-      ctaLabel: 'ご注文はこちら',
-      ctaUrl: bg_shopUrl_(),
+      intro: greeting + '<br><br>' + BG_TEXT.greet + '<br>' + c.thanks,
+      boxText: c.perk.replace(/\n/g, '<br>'),
+      ctaLabel: c.cta || '',
+      ctaUrl:   c.cta ? bg_shopUrl_() : '',
       note: BG_TEXT.close + '　' + BG_TEXT.sign +
             '<br>※ 公式LINEとつないでいただくと、ご案内がLINEに届くようになります。'
     })
@@ -219,16 +313,16 @@ function bg_readSentLog_(year) {
 
 function bg_appendSentLog_(p, year) {
   sheet(BG_LOG_SHEET, BG_HEADERS)
-    .appendRow([rsr_stamp_(new Date()), year, p.email || '', p.uid || '', p.name || '', p.birthday, p.channel]);
+    .appendRow([rsr_stamp_(new Date()), year, p.email || '', p.uid || '', p.name || '', p.birthday, p.channel, p.kind || '']);
 }
 
 function bg_writeCandidates_(cands) {
-  var head = ['作成', 'email', 'line_uid', 'name', '誕生日', '送る手段'];
+  var head = ['作成', 'email', 'line_uid', 'name', '誕生日', '送る手段', '区分'];
   var sh = sheet(BG_CAND_SHEET, head);
   sh.clear();
   sh.appendRow(head);
   var now = rsr_stamp_(new Date());
   cands.forEach(function (p) {
-    sh.appendRow([now, p.email || '', p.uid || '', p.name || '', p.birthday, p.channel]);
+    sh.appendRow([now, p.email || '', p.uid || '', p.name || '', p.birthday, p.channel, p.kind || '']);
   });
 }
