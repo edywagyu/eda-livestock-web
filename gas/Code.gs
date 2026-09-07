@@ -1958,6 +1958,7 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '発送をLINEでお知らせ', '発送処理した時', '稼働中', '「発送しました＋お届け予定日」をLINEに自動送信（未連携の人にはメール）'],
   ['公式LINE', 'お誕生日当日のお祝いメッセージ', '毎日 朝9時', '準備中（スイッチOFF）', 'マイページで誕生日を登録されたお客様に、その日の朝「お誕生日おめでとうございます」を1通お送りする。あわせて「今月中のご注文に赤身ステーキをお入れします（定期便の方は今月のお届けに自動で）」をご案内する。LINE連携済みの方はLINE、未連携の方はメール（発送通知と同じ振り分け）。同じ方に同じ年は二度送らない。2月29日生まれの方は平年は2月28日に送る。実送信のスイッチは Script Properties の BIRTHDAY_MSG_ENABLED（既定OFF）。送信の記録は本番EC注文DBの「誕生日メッセージ_送信ログ」タブ。2026-09-07追加'],
   ['社内シート', '定期便のお客様に印をつける', '毎日 朝7時', '準備中', '本番EC注文DBの「顧客」タブに「定期便」列、「注文」タブに「定期便のお客様」列を自動で作り、定期便をご利用中の方の行に「定期便」と書く。定期便かどうかは「定期便マスターの状態=有効（手管理の名簿。旧サイトからのお客様はここにしか居ない）」と「新ECで定期便のご注文がある」の両方を見て、どちらかに当たれば定期便として扱う。管理画面の注文一覧・発送画面にも同じ判定で「🔁 定期便の方」と出る。単品でご注文された定期便のお客様にも印が付く（梱包時の取り違えを防ぐため）。2026-09-07追加'],
+  ['EC', '誕生日プレゼントは月に1回だけ（早い方で渡す）', '発送処理した時', '稼働中', 'お誕生日の月に赤身ステーキをお入れするのは、お一人その月に1回まで。定期便の方が同じ月に単品でも買われた場合に2つ渡ってしまうのを防ぐ。先に発送した箱に入れる決まりで、発送を記録した時点で本番EC注文DBの「誕生日特典_付与ログ」タブに1行残る。同じ月の2件目以降の発送画面は「今月はお渡し済みです。この箱には入れないでください」というグレーの表示に変わる。2026-09-07追加'],
   ['EC', '発送予定日のお知らせ', '注文が確定した時／振込は入金確認した時', '稼働中', 'ご注文後すぐ「◯月◯日に発送予定です」をお知らせ（LINE連携済みはLINE・未連携はメール）。マイページの発送準備中カードにも同じ日付を表示。お届け希望日ありは希望日から逆算して1日前倒し（西日本2日前・東日本3日前＝社内の発送リマインドと同じ日）、最短は起点日+3日に着くよう逆算（西日本は起点+2日・東日本は起点+1日）。銀行振込は入金確認まで日付を出さない'],
   ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
   ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '稼働中', 'カートに入れて離脱した人へLINEで催促。購入済みの人には送らないよう修正済み'],
@@ -5458,12 +5459,23 @@ function staffOrders() {
     /* 🔁 「この“方”が定期便のお客様か」。そのご注文が定期便かどうか(mode)とは別物で、
        定期便の方が単品で買ってくださったご注文にも立つ。梱包時に取り違えないため。 */
     var subIndex = subscriberIndex_();
+    /* 🎂 誕生日プレゼントは お一人 その月に1回だけ（早い方で渡す）。
+       先に発送した注文が「誕生日特典_付与ログ」に入るので、それを引いて
+       2件目以降には「今月はお渡し済み」と出せるようにする。 */
+    var grantIndex = birthdayGrantIndex_();
     orders.forEach(function (o) {
       var b = bdIndex.byUid[String(o.line_uid || '').trim()] ||
               bdIndex.byEmail[custEmailKey_(o.customer_email)] || '';
       o.birthday = b;
       var mo = orderMonth_(o.placed_at);
       o.birthday_match = !!(b && mo && mo === b.slice(0, 2));
+      if (o.birthday_match) {
+        var gk = bggPersonKey_(o.customer_email, o.line_uid) + '|' + bggYearMonth_(o.placed_at);
+        var by = grantIndex[gk] || '';
+        /* 自分自身の発送で付いた記録は「渡し済み（この注文で）」。別の注文なら二重同梱の警告になる */
+        o.birthday_given_by = by;
+        o.birthday_given_here = !!(by && String(by) === String(o.order_number));
+      }
       o.is_subscriber = isSubscriber_(subIndex, {
         email: custEmailKey_(o.customer_email),
         uid:   String(o.line_uid || '').trim(),
@@ -5507,6 +5519,23 @@ function staffShip(body) {
       const tracking = String(body.tracking_number || '').trim();
       sh.getRange(i + 1, tnIdx + 1).setValue(tracking);
       if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('shipped');
+
+      /* 🎂 誕生日プレゼント（赤身ステーキ）は お一人 その月に1回だけ。
+         「早い方で渡す」（2026-09-07 田崎さん決定）＝ 先に発送した箱に入れる。
+         だから記録の起点は発送。ここで1行残すと、同じ月の次のご注文の発送画面には
+         「今月はお渡し済み」と出て、二重に入らない。
+         ⚠️ 記録に失敗しても発送そのものは止めない。 */
+      try {
+        var _bdRow = data[i];
+        var _bdGet = function (n) { var k = headers.indexOf(n); return k >= 0 ? _bdRow[k] : ''; };
+        recordBirthdayGiftIfDue_({
+          order_number: body.order_number,
+          email: _bdGet('customer_email'),
+          line_uid: _bdGet('line_uid'),
+          name: _bdGet('customer_name'),
+          placed_at: _bdGet('placed_at')
+        });
+      } catch (e) { log('birthday_gift_record_error', { order: body.order_number, error: e.message }); }
       // お届け予定日も orders に保存（マイページ「次回お届け予定」に反映。従来は通知のみで未保存＝日程調整中バグ）。
       if (body.delivery_date) {
         var _hdrNow = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
