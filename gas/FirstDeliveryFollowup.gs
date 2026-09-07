@@ -48,9 +48,14 @@ function runFirstFollowupDry()  { return firstDeliveryFollowup_('dry');  }   // 
 function runFirstFollowupLive() { return firstDeliveryFollowup_('live'); }   // 実送信（ENABLED=true 必須）
 
 function installFirstFollowupTrigger() {
-  var has = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'runFirstFollowupLive'; });
-  if (!has) ScriptApp.newTrigger('runFirstFollowupLive').timeBased().everyDays(1).atHour(11).create();
-  return { ok: true, created: !has };
+  /* 2026-09-07 田崎さん指示で 11時 → 18時（カゴ落ち以外は18時に統一）。
+     時刻を変えても効くよう、既存は消して作り直す。 */
+  var removed = 0;
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'runFirstFollowupLive') { ScriptApp.deleteTrigger(t); removed++; }
+  });
+  ScriptApp.newTrigger('runFirstFollowupLive').timeBased().everyDays(1).atHour(18).create();
+  return { ok: true, hour: 18, removed: removed };
 }
 
 /* ============================================================
