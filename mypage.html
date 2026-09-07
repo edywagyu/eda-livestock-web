@@ -2034,6 +2034,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .settings-note {
  font-size: 12px !important; color: var(--color-ink-muted) !important;
 }
+/* 🎂 お誕生日カードの「特典のご案内」。金の細枠で、登録する理由が先に目に入るようにする */
+.birthday-perk {
+ margin: 0 24px; padding: 14px 16px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.10), rgba(212,169,59,0.02));
+ border: 1px solid rgba(212,169,59,0.30); border-radius: 10px;
+}
+.birthday-perk-title {
+ font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+ color: var(--color-forest); margin: 0 0 8px;
+}
+.birthday-perk-list {
+ margin: 0; padding-left: 1.1em;
+ font-family: var(--font-jp); font-size: 12.5px; line-height: 1.9;
+ color: var(--color-ink);
+}
+.birthday-perk-list strong { color: var(--color-forest); font-weight: 700; }
 .settings-add-btn {
  display: inline-flex; align-items: center; gap: 6px;
  padding: 10px 20px; border-radius: 8px; font-size: 13px;
@@ -3187,6 +3203,73 @@ button:focus-visible, a:focus-visible {
   </div>
  </div>
 
+ <!-- お誕生日 -->
+ <!-- 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）のための欄。
+      お預かりするのは「月」と「日」だけ。年齢につながる年はお伺いしない。
+      同梱の条件は下の birthday-perk に書いてあるものが正で、
+      判定の実体は GAS の staffOrders（注文した月＝誕生日の月）。 -->
+ <h3 class="dash-section-title" style="margin-top:32px;">お誕生日</h3>
+ <div class="settings-card" id="birthdayCard">
+  <div class="settings-card-header">
+  <div class="settings-card-icon" aria-hidden="true">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-8H4v8"/><path d="M2 13h20"/><path d="M4 13V9a2 2 0 012-2h12a2 2 0 012 2v4"/><path d="M12 7V4"/><path d="M8 7V5"/><path d="M16 7V5"/></svg>
+  </div>
+  <div class="settings-card-title">お誕生日</div>
+  <button class="settings-edit-btn" id="birthdayEditBtn" onclick="toggleBirthdayEdit()" aria-label="お誕生日を編集" style="display:none;">
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+   編集
+  </button>
+  </div>
+
+  <!-- 特典のご案内 -->
+  <div class="birthday-perk">
+  <p class="birthday-perk-title">お誕生日の月に「赤身ステーキ」をプレゼント</p>
+  <ul class="birthday-perk-list">
+   <li>単品でお買い物の方 … <strong>お誕生日の月にご注文いただいた分</strong>に、お入れします。</li>
+   <li>定期便の方 … お誕生日の月のお届けに<strong>必ず</strong>お入れします（ご注文は要りません）。</li>
+   <li>お祝いのお手紙を添えてお届けします。</li>
+  </ul>
+  </div>
+
+  <!-- 表示モード -->
+  <div id="birthdayDisplay">
+  <div class="settings-empty" id="birthdayEmpty">
+   <p>お誕生日が未登録です</p>
+   <button class="settings-add-btn" onclick="toggleBirthdayEdit()">
+   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+   お誕生日を登録
+   </button>
+  </div>
+  <div class="settings-data" id="birthdayData" style="display:none;">
+   <div class="settings-row"><span class="settings-label">お誕生日</span><span class="settings-value" id="dispBirthday"></span></div>
+  </div>
+  </div>
+
+  <!-- 編集モード -->
+  <div id="birthdayForm" style="display:none;">
+  <div class="settings-form-grid">
+   <div class="settings-field half">
+   <label for="bdMonth">月 <span class="required">*</span></label>
+   <select id="bdMonth" onchange="fillBirthdayDays()">
+    <option value="">--</option>
+    <option value="01">1月</option><option value="02">2月</option><option value="03">3月</option><option value="04">4月</option>
+    <option value="05">5月</option><option value="06">6月</option><option value="07">7月</option><option value="08">8月</option>
+    <option value="09">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+   </select>
+   </div>
+   <div class="settings-field half">
+   <label for="bdDay">日 <span class="required">*</span></label>
+   <select id="bdDay"><option value="">--</option></select>
+   </div>
+  </div>
+  <div class="settings-form-actions">
+   <button class="settings-save-btn" onclick="saveBirthday()">保存する</button>
+   <button class="settings-cancel-btn" onclick="toggleBirthdayEdit()">キャンセル</button>
+  </div>
+  <p class="settings-form-note">※ お預かりするのは月と日だけです。生まれた年はお伺いしません。</p>
+  </div>
+ </div>
+
  <!-- お支払い方法 -->
  <h3 class="dash-section-title" style="margin-top:32px;">お支払い方法</h3>
  <div class="settings-card" id="paymentCard">
@@ -4261,6 +4344,7 @@ function renderRewardJourney(count) {
 /* ---- Settings Tab: Shipping & Payment ---- */
 var SHIP_KEY = 'eda-member-shipping';
 var CARD_KEY = 'eda-member-card';
+var BD_KEY   = 'eda-member-birthday';   /* 🎂 'MM-DD'。サーバー(customers.birthday)の写し */
 
 function loadShipping() {
  try { return JSON.parse(localStorage.getItem(SHIP_KEY) || 'null'); } catch(e) { return null; }
@@ -4334,6 +4418,10 @@ function renderSettings(customer, orders) {
   if (cardEmpty) cardEmpty.style.display = '';
   if (cardData) cardData.style.display = 'none';
  }
+ /* 🎂 お誕生日 — サーバー(customers.birthday)を正とし、無ければ端末の控えを出す。
+    renderSettings は保存直後に renderSettings({}) でも呼ばれるので、
+    customer が空でも控えから描けるようにしておく。 */
+ renderBirthday(customer);
  /* Account info */
  var email = (customer && customer.email) || '';
  try { email = email || localStorage.getItem('eda-member-email') || ''; } catch(e){}
@@ -4397,6 +4485,107 @@ function saveShipping() {
  document.getElementById('shippingForm').style.display = 'none';
  document.getElementById('shippingDisplay').style.display = '';
  renderSettings({});
+}
+
+/* ================= 🎂 お誕生日 =================
+   お預かりするのは月と日だけ（'MM-DD'）。年はお伺いしない。
+   保存先は customers.birthday（GAS の update_profile）。
+   端末の localStorage には表示を速くするための控えだけを置く。 */
+
+function normBirthdayStr(v) {
+  var m = String(v == null ? '' : v).match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})/);
+  if (!m) return '';
+  var mo = Number(m[1]), da = Number(m[2]);
+  if (!(mo >= 1 && mo <= 12) || !(da >= 1 && da <= 31)) return '';
+  return ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+}
+
+function loadBirthday() {
+  try { return normBirthdayStr(localStorage.getItem(BD_KEY) || ''); } catch (e) { return ''; }
+}
+
+/* 月を選ぶと日の選択肢を作り直す（2月は29日まで。年を預からないので閏年は考えない） */
+function fillBirthdayDays() {
+  var mo = Number(document.getElementById('bdMonth').value || 0);
+  var sel = document.getElementById('bdDay');
+  var keep = sel.value;
+  var max = mo === 2 ? 29 : ([4, 6, 9, 11].indexOf(mo) >= 0 ? 30 : 31);
+  var html = '<option value="">--</option>';
+  for (var d = 1; d <= max; d++) {
+    var v = ('0' + d).slice(-2);
+    html += '<option value="' + v + '">' + d + '日</option>';
+  }
+  sel.innerHTML = html;
+  if (keep && Number(keep) <= max) sel.value = keep;
+}
+
+function renderBirthday(customer) {
+  var bd = normBirthdayStr(customer && customer.birthday);
+  if (bd) { try { localStorage.setItem(BD_KEY, bd); } catch (e) {} }
+  else    { bd = loadBirthday(); }
+
+  var empty = document.getElementById('birthdayEmpty');
+  var data  = document.getElementById('birthdayData');
+  var btn   = document.getElementById('birthdayEditBtn');
+  if (!empty || !data) return;
+
+  if (bd) {
+    empty.style.display = 'none';
+    data.style.display = '';
+    document.getElementById('dispBirthday').textContent =
+      Number(bd.slice(0, 2)) + '月' + Number(bd.slice(3, 5)) + '日';
+    if (btn) btn.style.display = '';
+  } else {
+    empty.style.display = '';
+    data.style.display = 'none';
+    if (btn) btn.style.display = 'none';
+  }
+}
+
+function toggleBirthdayEdit() {
+  var form = document.getElementById('birthdayForm');
+  var disp = document.getElementById('birthdayDisplay');
+  if (!form || !disp) return;
+  var opening = form.style.display === 'none';
+  if (opening) {
+    var bd = loadBirthday();
+    document.getElementById('bdMonth').value = bd ? bd.slice(0, 2) : '';
+    fillBirthdayDays();
+    document.getElementById('bdDay').value = bd ? bd.slice(3, 5) : '';
+    form.style.display = '';
+    disp.style.display = 'none';
+  } else {
+    form.style.display = 'none';
+    disp.style.display = '';
+  }
+}
+
+function saveBirthday() {
+  var mo = document.getElementById('bdMonth').value;
+  var da = document.getElementById('bdDay').value;
+  var hasErr = false;
+  ['bdMonth', 'bdDay'].forEach(function (id) {
+    var f = document.getElementById(id); if (!f) return;
+    var w = f.closest('.settings-field'); if (!w) return;
+    w.classList.remove('has-error');
+    if (!f.value) { w.classList.add('has-error'); hasErr = true; }
+  });
+  if (hasErr) return;
+
+  var bd = normBirthdayStr(mo + '-' + da);
+  if (!bd) return;
+  try { localStorage.setItem(BD_KEY, bd); } catch (e) {}
+
+  if (window.EDA_API) {
+    var uid = '', em = '';
+    try { uid = localStorage.getItem('eda-member-line-uid') || ''; } catch (e) {}
+    try { em  = localStorage.getItem('eda-member-email') || ''; } catch (e) {}
+    window.EDA_API.post('update_profile', { line_uid: uid, email: em, birthday: bd }).catch(function () {});
+  }
+
+  document.getElementById('birthdayForm').style.display = 'none';
+  document.getElementById('birthdayDisplay').style.display = '';
+  renderBirthday({});
 }
 
 /* 郵便番号 → 住所自動入力 */
