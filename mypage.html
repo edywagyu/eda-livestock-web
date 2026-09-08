@@ -4375,7 +4375,9 @@ async function mpLoadRepeatShip(orderCount) {
 }
 
 var REWARD_STAGES = [
- { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
+ /* 🐔 2026-09-08 田崎さん指示: 初回特典を10%OFFクーポンから鶏モモ1袋に変更。
+    実体は gift-rules.js の REWARD_BY_STAGE[1]。ここの文言と必ず対で維持する。 */
+ { num: 1, label: '1回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '1', auto: true },
  { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
  { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
  { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
