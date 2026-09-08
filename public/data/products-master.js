@@ -110,7 +110,7 @@
       images: ['public/images/products/drive/hamburg.jpg']
     },
 
-    /* ===== 人気4種セット (2026-09-08 新設) =====
+    /* ===== はじめてセット (2026-09-08 新設) =====
        全購入者42人の「初めてのご注文」に何が入っていたかを数えて、上位4品で組んだ。
        サイコロステーキ11人 / 切り落とし8人 / バラ焼肉7人 / 赤身スライス7人。
        説明文の「いちばん多く選ばれている」はこの実測が根拠で、盛った数字ではない。
@@ -120,7 +120,7 @@
     {
       productId: 'P045', variantId: 'NINKI-4SET', sku: 'EDA-NINKI-4SET',
       stripePriceId: '',
-      name: '人気4種セット', variant: '4品 各200g・計800g',
+      name: 'はじめてセット', variant: '4品 各200g・計800g',
       price: 7900, weight: 800, stock: 0, temp: '冷凍',
       published: false,
       components: [
