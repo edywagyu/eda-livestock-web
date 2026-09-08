@@ -72,8 +72,11 @@
     var r = R.REWARD_BY_STAGE[stageOf(session)];
     if (r && R.REWARD_LINE_ONLY && !(session && session.line_uid)) r = null;
     if (r) {
+      /* 品切れのときは別の品をお入れする運用（2026-09-08 田崎さん指示）。
+         ここでは在庫を持っていないので、条件を満たしている人には必ず一言添える。 */
+      var SUB_NOTE = '在庫が無い場合は、同じくらいの品をお入れします';
       rows.push(sub >= R.REWARD_MIN_SUBTOTAL
-        ? { on: true,  text: r.title + (r.qty > 1 ? '（' + r.qty + '点）' : '') + ' が付いてきます', sub: r.label }
+        ? { on: true,  text: r.title + (r.qty > 1 ? '（' + r.qty + '点）' : '') + ' が付いてきます', sub: r.label + '／' + SUB_NOTE }
         : { on: false, text: 'あと ' + yen(R.REWARD_MIN_SUBTOTAL - sub) + ' で ' + r.title + ' が付いてきます', sub: r.label });
     }
 
