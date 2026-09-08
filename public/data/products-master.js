@@ -121,8 +121,8 @@
       productId: 'P045', variantId: 'NINKI-4SET', sku: 'EDA-NINKI-4SET',
       stripePriceId: '',
       name: 'はじめてセット', variant: '4品 各200g・計800g',
-      price: 7900, weight: 800, stock: 0, temp: '冷凍',
-      published: false,
+      price: 7900, weight: 800, stock: 4, temp: '冷凍',
+      published: true,
       components: [
         { name: '赤身スライス',     qty: 1 },
         { name: 'バラ焼肉',         qty: 1 },
