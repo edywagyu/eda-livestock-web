@@ -38,6 +38,15 @@
     if (v instanceof Date) return isNaN(v.getTime()) ? null : noon(v);
     var s = String(v).trim();
     if (!s) return null;
+    /* 🔴 シートに「文字列の 'YYYY-MM-DD'」ではなく「日付」として入っていると、
+       GAS は UTC の ISO 文字列 ('2026-09-11T15:00:00.000Z' = JST 9/12 00:00) を返す。
+       これを先頭の日付部分だけ切り出すと 9/11 になり、丸一日前倒しで約束してしまう。
+       末尾に時刻(T…)が付いている値は Date として解釈し、ブラウザのタイムゾーンに
+       直してから日付を取る（日本から見れば 9/12 になる）。 */
+    if (/\d{4}-\d{2}-\d{2}T/.test(s)) {
+      var iso = new Date(s);
+      return isNaN(iso.getTime()) ? null : noon(iso);
+    }
     var m = s.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
     if (m) return noon(new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
     var d = new Date(s);
