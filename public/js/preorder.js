@@ -62,21 +62,35 @@
     return isNaN(n) ? null : n;
   }
 
+  /* 📅 商品ごとの「この日以降でないと届けられない」指定（2026-09-08 追加）。
+     products シートの shipFrom 列に 'YYYY-MM-DD' を入れると、在庫があっても
+     その日より前の着日を選べなくなる。原料の入荷待ちで、売りは始めたいが
+     早い着日は約束できない商品のため（はじめてセット＝バラ焼肉 9/10 入荷）。
+     入荷して不要になったら列を空にするだけでよく、過ぎた日付は自動で無視される。 */
+  function shipFromOf(product) {
+    var d = parseDate(product && (product.shipFrom || product.shipfrom || product.ship_from));
+    if (!d) return null;
+    return d.getTime() > today().getTime() ? skipSunday(d) : null;   /* 過去日は出さない */
+  }
+
   /* 在庫が無い＝予約受付の対象か */
   function isPreorder(product) {
     var s = stockOf(product);
     return s !== null && s <= 0;
   }
 
-  /* 予約商品の「次回最短お届け日」。在庫があるなら null（＝何も出さない） */
+  /* 「次回最短お届け日」。在庫があり shipFrom も無いなら null（＝何も出さない） */
   function dateFor(product) {
-    if (!isPreorder(product)) return null;
+    var sf = shipFromOf(product);
+    if (!isPreorder(product)) return sf;      /* 在庫あり → shipFrom があればそれだけ効く */
     var base = parseDate(product.soldOutAt || product.soldoutAt || product.sold_out_at);
     var d = base ? addDays(base, LEAD_DAYS) : null;
     var t = today();
     /* 記録が無い / すでに過ぎている → 今日から数え直す（過去日は出さない） */
     if (!d || d.getTime() <= t.getTime()) d = addDays(t, LEAD_DAYS);
-    return skipSunday(d);
+    d = skipSunday(d);
+    /* 両方あるときは遅いほうを採る（どちらの制約も破らない） */
+    return (sf && sf.getTime() > d.getTime()) ? sf : d;
   }
 
   function labelFor(product) { var d = dateFor(product); return d ? toLabel(d) : ''; }
@@ -99,7 +113,9 @@
     (items || []).forEach(function (it) {
       var t = (it && (it.title || it.name)) || '';
       var p = byName[t];
-      if (!p || !isPreorder(p)) return;
+      /* 在庫切れ(予約)だけでなく、shipFrom で着日を後ろに寄せている商品も拾う。
+         dateFor が null を返す＝どちらの制約も無い商品なので、そこで落ちる。 */
+      if (!p) return;
       if (found.some(function (f) { return f.title === t; })) return;
       var d = dateFor(p);
       if (!d) return;
