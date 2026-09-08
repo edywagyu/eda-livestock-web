@@ -18,6 +18,11 @@
     /* 購入回数特典（2026-08-26 田崎さん指示）。マイページの案内と同じ条件。 */
     REWARD_MIN_SUBTOTAL: 5000,
     REWARD_BY_STAGE: {
+      /* 🐔 2026-09-08 田崎さん指示: 初回特典を 10%OFFクーポン(LINE10) から
+         「平飼い鶏 モモ 1袋プレゼント」に変更。
+         53人に配ったクーポンで買ったのは1人(1.9%)だったため、値引きではなく現物に切り替える。
+         クーポンと違って入力が要らない＝コードの打ち間違いや期限切れで落ちない。 */
+      1: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '初回ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
       3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
       4: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
       5: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '5回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
