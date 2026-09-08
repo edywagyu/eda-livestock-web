@@ -4386,7 +4386,9 @@ var REWARD_STAGES = [
  { num: 2, label: '2回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '2', auto: true },
  { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
  { num: 4, label: '4回目のご注文', reward: '赤身焼肉 200g プレゼント', desc: 'ウデの赤身を焼肉用にカット。脂は控えめ（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
- { num: 5, label: '5回目のご注文', reward: '送料無料', desc: '前回のお届けから40日以内のご注文で送料が無料（自動適用）', code: '', icon: '5', auto: true },
+ /* 送料が半額か無料かは GAS(REPEAT_SHIP_RATE)が正。desc も rate に追従させる
+    （下の renderRewardJourney で差し替える）。ここは読めなかったときの控え。 */
+ { num: 5, label: '5回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '5', auto: true },
  { num: 6, label: '6回目のご注文', reward: '限定部位を買える権利', desc: 'イチボ・シンシンなど、通常は店頭に出さない希少部位をご購入いただけます', code: '', icon: '6', member: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '7回目以降の特典はお楽しみに', code: '', icon: '7', locked: true },
  { num: 8, label: '8回目のご注文', reward: '？？？', desc: '', code: '', icon: '8', locked: true }
@@ -4425,19 +4427,26 @@ function renderRewardJourney(count) {
  } else {
   dotContent = s.icon;
  }
+ /* 🚚 送料の特典は「何回目か」も「半額か無料か」も GAS(repeatShipStage_/
+    repeatShipRate_)が正。名前と説明文の両方をその返事に合わせる。
+    片方でも固定文言のままにすると「画面は半額・請求は無料」の類のズレが出る。 */
+ var _reward = s.reward;
+ var _desc = s.desc;
+ if (s.num === mpShipStage() && mpRepeatShip) {
+  var _free = (mpRepeatShip.rate === 'free');
+  _reward = _free ? '送料無料' : '送料半額';
+  var _lim = Number(mpRepeatShip.limit) || 40;
+  _desc = '前回のお届けから' + _lim + '日以内のご注文で送料が' + (_free ? '無料' : '半額') + '（自動適用）';
+ }
+
  var descContent = isDone
   ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 獲得済み</span>'
-  : (isLocked ? '' : escapeHtml(s.desc));
- /* \u23F3 送料半額(2回目)だけは期限がある。まだ獲得していない人に残り日数と期日を出す。 */
+  : (isLocked ? '' : escapeHtml(_desc));
+ /* \u23F3 送料の特典だけは期限がある。まだ獲得していない人に残り日数と期日を出す。 */
  if (s.num === mpShipStage() && !isDone) {
   var _note = mpRepeatShipNote();
   if (_note) descContent = (descContent ? descContent + '<br>' : '') + _note;
  }
-
- /* 🚚 2回目の送料特典は半額と無料を切り替えられる（GAS の REPEAT_SHIP_RATE）。
-    ここを固定文言のままにすると「画面は半額・請求は無料」になるので、返事の rate に合わせる。 */
- var _reward = s.reward;
- if (s.num === mpShipStage() && mpRepeatShip) _reward = (mpRepeatShip.rate === 'free') ? '送料無料' : '送料半額';
 
  stepsHtml += '<div class="rj-step ' + cls + '">' +
   '<div class="rj-step-rail"><div class="rj-step-dot">' + dotContent + '</div><div class="rj-step-line"></div></div>' +
