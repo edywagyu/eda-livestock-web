@@ -4425,11 +4425,16 @@ function renderRewardJourney(count) {
   if (_note) descContent = (descContent ? descContent + '<br>' : '') + _note;
  }
 
+ /* 🚚 2回目の送料特典は半額と無料を切り替えられる（GAS の REPEAT_SHIP_RATE）。
+    ここを固定文言のままにすると「画面は半額・請求は無料」になるので、返事の rate に合わせる。 */
+ var _reward = s.reward;
+ if (s.num === 2 && mpRepeatShip && mpRepeatShip.rate === 'free') _reward = '送料無料';
+
  stepsHtml += '<div class="rj-step ' + cls + '">' +
   '<div class="rj-step-rail"><div class="rj-step-dot">' + dotContent + '</div><div class="rj-step-line"></div></div>' +
   '<div class="rj-step-content">' +
    '<p class="rj-step-label">' + s.label + '</p>' +
-   '<p class="rj-step-reward">' + escapeHtml(s.reward) + '</p>' +
+   '<p class="rj-step-reward">' + escapeHtml(_reward) + '</p>' +
    (descContent ? '<p class="rj-step-desc">' + descContent + '</p>' : '') +
   '</div></div>';
  });

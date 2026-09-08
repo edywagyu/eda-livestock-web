@@ -3400,9 +3400,15 @@ function validateStockBeforeCheckout(items) {
        フロントを本番反映する前に true にすると表示と請求がズレるので、
        サイト側マージ → 動作確認 → true の順で入れること。
      REPEAT_SHIP_DAYS = '40'    … 日数。既定 40。
+     REPEAT_SHIP_RATE = 'half'  … 値引き幅。'half'=半額（既定・従来どおり）/ 'free'=無料。
+       🔴 'free' にすると「2回目のお客様は送料無料」になる。対象者の判定（＝ちょうど1回
+          購入済み・期限内）は half のときと同一で、引く額だけが変わる。
+          フロント checkout.html の _shipRepeatRate と対で維持すること。
    ============================================================ */
 function repeatShipEnabled_() { return String(cfg('REPEAT_SHIP_HALF', 'false')) === 'true'; }
 function repeatShipDays_()    { return Number(cfg('REPEAT_SHIP_DAYS', '40')) || 40; }
+/* 'free' 以外は全部 'half' 扱い（設定ミスで勝手に無料にしない fail-safe） */
+function repeatShipRate_()    { return String(cfg('REPEAT_SHIP_RATE', 'half')) === 'free' ? 'free' : 'half'; }
 
 /* この人の直近の「お届け日」を day number で返す（無ければ null）。
    email と line_uid のどちらか一致で本人とみなす（別メールで買われた場合は検知できない＝
@@ -3475,6 +3481,7 @@ function repeatShippingCheck(params) {
   }
   if (!repeatShipEnabled_()) return jsonResponse({ ok: true, enabled: false, half: false });
   var limit = repeatShipDays_();
+  var rate  = repeatShipRate_();   /* 'half' | 'free' — 画面の表示額を請求と一致させるために返す */
   /* 🔴 half は請求(isRepeatShipHalf_)と同じ条件で返す。「2回目だけ」の条件を
      ここに入れ忘れると、3回目以降の人の画面に半額と出て請求は満額になる
      （LINE10 でフロントとバックがズレた事故と同じ形）。 */
@@ -3482,7 +3489,7 @@ function repeatShippingCheck(params) {
   var eligible = (count === 1);                    // 次の注文が2回目の人か
   var last = lastDeliveryDayNum_(email, uid);
   if (last === null) {
-    return jsonResponse({ ok: true, enabled: true, half: false, limit: limit, orders: count, eligible: eligible });
+    return jsonResponse({ ok: true, enabled: true, half: false, rate: rate, limit: limit, orders: count, eligible: eligible });
   }
   var days = _jstDayNum(new Date()) - last;
   var within = (days >= 0 && days <= limit);
@@ -3490,6 +3497,7 @@ function repeatShippingCheck(params) {
   return jsonResponse({
     ok: true, enabled: true,
     half: (eligible && within),
+    rate: rate,
     eligible: eligible,
     orders: count,
     days: days, limit: limit,
@@ -3502,9 +3510,11 @@ function calcShipping(subtotal, pref, halfOff) {
   if (subtotal >= 11000) return 0; // ¥11,000以上 送料無料
   // 北海道/沖縄は追加料金
   var base = (pref === '北海道' || pref === '沖縄県') ? 2200 : 1100;
-  // 🚚 リピート送料半額（2026-08-23）: 前回のお届け日から N 日以内の再注文は半額。
+  // 🚚 リピート送料の優遇（2026-08-23 半額 / 2026-09-08 無料も選べるように）:
+  //    前回のお届け日から N 日以内の「2回目」の注文が対象。引く額は REPEAT_SHIP_RATE で決める。
   //    ¥11,000以上は上で 0 円になっているので、ここは「送料が発生する注文」だけが通る。
-  return halfOff ? base / 2 : base;
+  if (!halfOff) return base;
+  return repeatShipRate_() === 'free' ? 0 : base / 2;
 }
 
 function flattenForm(obj, prefix) {
