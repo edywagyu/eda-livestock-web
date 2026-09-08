@@ -1111,7 +1111,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         : '<div class="pdp-bd-empty">商品を選んでください。</div>';
       document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
       document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
-        : total >= FREE ? '<span class="pdp-bd-free">送料無料（¥11,000以上）</span>'
+        : total >= FREE ? '<span class="pdp-bd-free">送料無料</span>'
         : '<span class="pdp-bd-short">送料無料まであと ¥' + (FREE - total).toLocaleString() + '</span>';
       const btn = document.getElementById('pdpBdBtn');
       btn.disabled = !on.length;
