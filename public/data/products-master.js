@@ -109,6 +109,30 @@
       description: '和牛 100%、1個 250g。冷蔵庫で解凍してから、フライパンで蒸し焼き。',
       images: ['public/images/products/drive/hamburg.jpg']
     },
+
+    /* ===== はじめてセット (2026-09-08 新設) =====
+       全購入者42人の「初めてのご注文」に何が入っていたかを数えて、上位4品で組んだ。
+       サイコロステーキ11人 / 切り落とし8人 / バラ焼肉7人 / 赤身スライス7人。
+       説明文の「いちばん多く選ばれている」はこの実測が根拠で、盛った数字ではない。
+       🧩 components(BOM) は必須。これが無いとセットが売れても4品の在庫が減らず、
+          売り切れていても注文が通る(P031と同じ設計)。
+       🔴 単品合計 ¥7,900 と同額。値引きではなく「選ぶ手間を省いたセット」として出す。 */
+    {
+      productId: 'P045', variantId: 'NINKI-4SET', sku: 'EDA-NINKI-4SET',
+      stripePriceId: '',
+      name: 'はじめてセット', variant: '4品 各200g・計800g',
+      price: 7900, weight: 800, stock: 4, temp: '冷凍',
+      published: true,
+      components: [
+        { name: '赤身スライス',     qty: 1 },
+        { name: 'バラ焼肉',         qty: 1 },
+        { name: 'サイコロステーキ', qty: 1 },
+        { name: '切り落とし',       qty: 1 }
+      ],
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Hajimete Set',
+      description: '初めてのご注文でいちばん多く選ばれている4品を、そのまま1つにまとめました。赤身スライス200g／バラ焼肉200g／サイコロステーキ200g／切り落とし200gの計800g。焼く・炒める・煮る、どれもこれ1つで揃います。迷ったらこれを選んでください。',
+      images: ['public/images/products/drive/hajimete-set.jpg']
+    },
     {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
       stripePriceId: 'price_1Tcbx9GSkhU1UEcik9aUn4RT',

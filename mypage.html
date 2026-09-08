@@ -4337,7 +4337,10 @@ function renderOrders(orders) {
    🔴 対象は「次のご注文が2回目の人」だけ。3回目以降の人には出さない
       （eligible が false で返る）。
    ============================================================ */
-var mpRepeatShip = null;      // { enabled, eligible, half, daysLeft, deadline } / 未取得は null
+var mpRepeatShip = null;      // { enabled, eligible, half, rate, stage, daysLeft, deadline } / 未取得は null
+/* 送料特典が何回目に付くかは GAS(repeatShipStage_)が正。既定5回目。
+   ここを固定値にすると、回を移したときに期限表示だけ前の回に残る。 */
+function mpShipStage() { var n = mpRepeatShip && Number(mpRepeatShip.stage); return (n >= 1) ? n : 5; }
 
 function mpFmtDeadline(ymd) {
   var m = String(ymd || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -4375,11 +4378,15 @@ async function mpLoadRepeatShip(orderCount) {
 }
 
 var REWARD_STAGES = [
- { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
- { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
- { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
- { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
- { num: 5, label: '5回目のご注文', reward: '赤身焼肉 200g プレゼント', desc: 'ウデの赤身を焼肉用にカット。脂は控えめ（ご注文時に自動でお付けします）', code: '', icon: '5', auto: true },
+ /* 🎁 2026-09-08 田崎さん指示で組み替え。実体は gift-rules.js の REWARD_BY_STAGE と
+    Code.js の repeatShipStage_(送料)。ここの文言と必ず対で維持する。
+      ・初回を10%OFFクーポンから鶏モモ1袋へ
+      ・送料は「半額・2回目」から「無料・5回目」へ。現物特典は全部ひとつ前へ繰り下げ */
+ { num: 1, label: '1回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '1', auto: true },
+ { num: 2, label: '2回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '2', auto: true },
+ { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
+ { num: 4, label: '4回目のご注文', reward: '赤身焼肉 200g プレゼント', desc: 'ウデの赤身を焼肉用にカット。脂は控えめ（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
+ { num: 5, label: '5回目のご注文', reward: '送料無料', desc: '前回のお届けから40日以内のご注文で送料が無料（自動適用）', code: '', icon: '5', auto: true },
  { num: 6, label: '6回目のご注文', reward: '限定部位を買える権利', desc: 'イチボ・シンシンなど、通常は店頭に出さない希少部位をご購入いただけます', code: '', icon: '6', member: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '7回目以降の特典はお楽しみに', code: '', icon: '7', locked: true },
  { num: 8, label: '8回目のご注文', reward: '？？？', desc: '', code: '', icon: '8', locked: true }
@@ -4420,16 +4427,21 @@ function renderRewardJourney(count) {
   ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 獲得済み</span>'
   : (isLocked ? '' : escapeHtml(s.desc));
  /* \u23F3 送料半額(2回目)だけは期限がある。まだ獲得していない人に残り日数と期日を出す。 */
- if (s.num === 2 && !isDone) {
+ if (s.num === mpShipStage() && !isDone) {
   var _note = mpRepeatShipNote();
   if (_note) descContent = (descContent ? descContent + '<br>' : '') + _note;
  }
+
+ /* 🚚 2回目の送料特典は半額と無料を切り替えられる（GAS の REPEAT_SHIP_RATE）。
+    ここを固定文言のままにすると「画面は半額・請求は無料」になるので、返事の rate に合わせる。 */
+ var _reward = s.reward;
+ if (s.num === mpShipStage() && mpRepeatShip) _reward = (mpRepeatShip.rate === 'free') ? '送料無料' : '送料半額';
 
  stepsHtml += '<div class="rj-step ' + cls + '">' +
   '<div class="rj-step-rail"><div class="rj-step-dot">' + dotContent + '</div><div class="rj-step-line"></div></div>' +
   '<div class="rj-step-content">' +
    '<p class="rj-step-label">' + s.label + '</p>' +
-   '<p class="rj-step-reward">' + escapeHtml(s.reward) + '</p>' +
+   '<p class="rj-step-reward">' + escapeHtml(_reward) + '</p>' +
    (descContent ? '<p class="rj-step-desc">' + descContent + '</p>' : '') +
   '</div></div>';
  });
@@ -4446,7 +4458,7 @@ function renderRewardJourney(count) {
  var next = REWARD_STAGES[Math.min(count, 5)];   /* 中身が入っているのは6段目まで */
  var remaining = next.num - count;
  /* 次が2回目の人には、いつまでに頼めば半額になるかを同じ行で伝える */
- var _bnote = (next.num === 2) ? mpRepeatShipNote() : '';
+ var _bnote = (next.num === mpShipStage()) ? mpRepeatShipNote() : '';
  bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong>' +
   (_bnote ? '<br/><small style="opacity:0.9">' + _bnote + '</small>' : '') + '</p></div>';
  }

@@ -672,7 +672,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <div class="pdp-variant-label" id="pdpVariant">1枚 200g</div>
 
       <div class="pdp-price" id="pdpPrice">¥3,400</div>
-      <p class="pdp-price-note">税込価格 / ¥11,000 以上のご注文で送料無料（北海道のみ +¥500）</p>
+      <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
+           金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
+      <p class="pdp-price-note">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
 
       <!-- 限定品の締切・残数。中身は public/js/limited-stock.js が products シートの
            limitedTotal / limitedUntil から組み立てる。キャンペーンごとの編集も、
@@ -766,7 +768,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M22 4L12 13 2 4"/>
           </svg>
-          <span>¥11,000 (税込) 以上で送料無料（北海道のみ +¥500）</span>
+          <span>送料 ¥1,100 (税込)／北海道・沖縄 ¥2,200</span>
         </div>
         <div class="pdp-meta-row">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -821,7 +823,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <div class="pdp-detail-body">
         <p>ヤマト運輸クール宅急便 (冷凍便) でお届けします。<br>
         最短 3 日でお届け（目安）。お届け日時のご指定も可能です。<br>
-        ¥11,000 (税込) 以上のご注文で送料無料。北海道のみ追加 ¥500 を頂戴します。</p>
+        送料は ¥1,100 (税込)、北海道・沖縄は ¥2,200 (税込) を頂戴します。<br>
+        贈り物としてお送りする場合は、送料は頂戴しません。</p>
       </div>
     </details>
     <details class="pdp-detail-item">
@@ -1457,9 +1460,9 @@ window.addEventListener('load', () => {
   });
 });
 </script>
-<script src="public/js/gift-rules.js?v=004"></script>
+<script src="public/js/gift-rules.js?v=005"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=002" defer></script>
+<script src="public/js/gift-notice.js?v=003" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>

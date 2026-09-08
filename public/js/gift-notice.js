@@ -66,8 +66,11 @@
     var sub  = cartSubtotal();
     var rows = [];
 
-    /* ① 購入回数特典 */
+    /* ① 購入回数特典
+       🔗 連携者限定のときは、連携していない人に「付いてきます」と見せない
+          （決済画面の currentReward と同じ条件にする＝案内と実物がズレない）。 */
     var r = R.REWARD_BY_STAGE[stageOf(session)];
+    if (r && R.REWARD_LINE_ONLY && !(session && session.line_uid)) r = null;
     if (r) {
       rows.push(sub >= R.REWARD_MIN_SUBTOTAL
         ? { on: true,  text: r.title + (r.qty > 1 ? '（' + r.qty + '点）' : '') + ' が付いてきます', sub: r.label }
