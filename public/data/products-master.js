@@ -131,7 +131,7 @@
       ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Hajimete Set',
       description: '初めてのご注文でいちばん多く選ばれている4品を、そのまま1つにまとめました。赤身スライス200g／バラ焼肉200g／サイコロステーキ200g／切り落とし200gの計800g。焼く・炒める・煮る、どれもこれ1つで揃います。迷ったらこれを選んでください。',
-      images: ['public/images/products/drive/cube-steak.jpg']
+      images: ['public/images/products/drive/hajimete-set.jpg']
     },
     {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
