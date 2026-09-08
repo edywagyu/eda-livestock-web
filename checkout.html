@@ -1543,7 +1543,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <!-- 🔴 gift-rules.js は下のインライン定義(_GR)より先に読む。後ろに置くと
      window.EDA_GIFT_RULES がまだ無い状態で評価され、checkout.html は
      常にフォールバック側の値で動く（2026-09-08 発見）。 -->
-<script src="public/js/gift-rules.js?v=005"></script>
+<script src="public/js/gift-rules.js?v=006"></script>
 <script>
 /* ============================================================
  * 4購入導線統合 Checkout — Mode 自動判定
@@ -1650,7 +1650,9 @@ var REWARD_MARK = '🎁';          // staff.html / 注文明細で特典行を�
 /* 条件の正は public/js/gift-rules.js（右上の案内 gift-notice.js と同じものを見る＝
    画面の案内と実際に入る特典がズレない）。読めなかったときだけ下の値を使う。 */
 var _GR = window.EDA_GIFT_RULES || null;
-var REWARD_MIN_SUBTOTAL = (_GR && _GR.REWARD_MIN_SUBTOTAL) || 5000;
+/* 🔴 || は 0 を falsy として弾くので使えない（0＝金額条件なしが 5000 に化ける）。
+   gift-rules.js に数字が入っていればそれを使い、読めなかったときだけ 0 に倒す。 */
+var REWARD_MIN_SUBTOTAL = (_GR && typeof _GR.REWARD_MIN_SUBTOTAL === 'number') ? _GR.REWARD_MIN_SUBTOTAL : 0;
 /* 特典を公式LINE連携者だけにするか。gift-rules.js が正。読めなかったときは
    限定しない側に倒す＝連携している人の特典を誤って落とさない(fail-open)。 */
 var REWARD_LINE_ONLY = !!(_GR && _GR.REWARD_LINE_ONLY);
@@ -3622,7 +3624,7 @@ try { scheduleRepeatShipCheck(); } catch (e) {}
 
 <script src="public/js/preorder.js?v=003"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=004" defer></script>
+<script src="public/js/gift-notice.js?v=005" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=007" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
