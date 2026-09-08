@@ -4402,7 +4402,9 @@ function getNextReward(count) {
 }
 
 /* Common reward/coupon conditions text */
-var REWARD_CONDITIONS = '※ クーポン特典は 5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可（送料半額は自動適用・金額条件なし）';
+/* 2026-09-08 田崎さん指示で更新。クーポン方式をやめて現物の自動同梱にしたこと、
+   公式LINE連携が条件になったこと、品切れ時は別の品をお入れすることを明記する。 */
+var REWARD_CONDITIONS = '※ ご注文特典は 5,000円（税込）以上のご注文が対象・公式LINE連携済みの方に限ります。クーポンコードの入力は要りません（ご注文時に自動でお入れします）。在庫が無い場合は、同じくらいの品をお入れします。送料の特典は金額の条件なく自動で適用されます。';
 
 /* ---- Render Reward Journey (特典タブ) ---- */
 function renderRewardJourney(count) {
