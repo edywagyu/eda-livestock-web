@@ -124,13 +124,13 @@
       price: 7900, weight: 800, stock: 0, temp: '冷凍',
       published: false,
       components: [
-        { name: 'サイコロステーキ', qty: 1 },
-        { name: '切り落とし',       qty: 1 },
+        { name: '赤身スライス',     qty: 1 },
         { name: 'バラ焼肉',         qty: 1 },
-        { name: '赤身スライス',     qty: 1 }
+        { name: 'サイコロステーキ', qty: 1 },
+        { name: '切り落とし',       qty: 1 }
       ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Popular 4 Set',
-      description: '初めてのご注文でいちばん多く選ばれている4品を、そのまま1つにまとめました。サイコロステーキ200g／切り落とし200g／バラ焼肉200g／赤身スライス200gの計800g。焼く・炒める・煮る、どれもこれ1つで揃います。迷ったらこれを選んでください。',
+      description: '初めてのご注文でいちばん多く選ばれている4品を、そのまま1つにまとめました。赤身スライス200g／バラ焼肉200g／サイコロステーキ200g／切り落とし200gの計800g。焼く・炒める・煮る、どれもこれ1つで揃います。迷ったらこれを選んでください。',
       images: ['public/images/products/drive/cube-steak.jpg']
     },
     {
