@@ -17,15 +17,20 @@
 
     /* 購入回数特典（2026-08-26 田崎さん指示）。マイページの案内と同じ条件。 */
     REWARD_MIN_SUBTOTAL: 5000,
+    /* 🎁 2026-09-08 田崎さん指示で階段を組み替えた。
+       ① 初回特典を 10%OFFクーポン(LINE10) から「平飼い鶏 モモ 1袋」に変更。
+          53人に配ったクーポンで買ったのは1人(1.9%)だったため、値引きではなく現物にする。
+          クーポンと違って入力が要らない＝コードの打ち間違いや期限切れで落ちない。
+       ② 2回目の「送料半額」をやめて「送料無料」にし、5回目へ移した。
+          以降の現物特典は全部ひとつ前へ繰り下げ（旧3→2 / 旧4→3 / 旧5→4）。
+       🔴 5回目の送料無料はここには書かない。送料は商品行ではなく
+          GAS の calcShipping が決めるため、REWARD_BY_STAGE に混ぜると
+          ¥0の商品行として同梱されてしまう。実体は Code.js の repeatShipStage_()。 */
     REWARD_BY_STAGE: {
-      /* 🐔 2026-09-08 田崎さん指示: 初回特典を 10%OFFクーポン(LINE10) から
-         「平飼い鶏 モモ 1袋プレゼント」に変更。
-         53人に配ったクーポンで買ったのは1人(1.9%)だったため、値引きではなく現物に切り替える。
-         クーポンと違って入力が要らない＝コードの打ち間違いや期限切れで落ちない。 */
-      1: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '初回ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-      3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-      4: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
-      5: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '5回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
+      1: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '初回ご注文特典',   img: 'public/images/products/drive/chicken-thigh.jpg' },
+      2: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '2回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
+      3: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '3回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
+      4: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '4回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
     },
 
     /* キャンペーン特典（¥0 で同梱する1品）。期間を過ぎたら自動で付かなくなる＝撤去作業は不要。

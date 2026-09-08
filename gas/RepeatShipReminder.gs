@@ -1,6 +1,6 @@
 /**
  * ============================================================
- *  送料半額（2回目のご注文特典）の期限リマインド
+ *  送料無料（既定 5回目のご注文特典）の期限リマインド
  *  2026-08-26 追加 / 自己完結・既存関数(cfg, sheet, log, sendLinePush,
  *                    brandEmailHtml_, lastDeliveryDayNum_, _jstDayNum) を流用
  * ------------------------------------------------------------
@@ -10,7 +10,8 @@
  *   - 40 日を過ぎた人には送らない（もう失効しているので、案内すると嘘になる）。
  *
  *  なぜ「1回しか買っていない人」だけか:
- *   送料半額は 2回目のご注文だけの特典（2026-08-26 田崎さん決定）。
+ *   送料の特典は「何回目か」を Code.js の repeatShipStage_ が決める
+ *   （2026-08-26 は2回目・2026-09-08 に5回目へ移動）。
  *   請求側の判定 isRepeatShipHalf_ も同じ repeatShipPaidOrderCount_ を見ている＝
  *   「通知が来たのに半額にならない」「半額なのに通知が来ない」が構造的に起きない。
  *
@@ -145,7 +146,7 @@ function repeatShipRemind_(mode) {
   Object.keys(people).forEach(function (em) {
     var p = people[em];
     if (sent[em]) return;                                             // 1人1回だけ
-    if (repeatShipPaidOrderCount_(p.email, p.uid) !== 1) return;       // 2回目待ちの人だけ
+    if (repeatShipPaidOrderCount_(p.email, p.uid) !== repeatShipStage_() - 1) return;  // 特典の回(既定5回目)待ちの人だけ
     var last = lastDeliveryDayNum_(p.email, p.uid);
     if (last === null) return;
     var days = today - last;
@@ -190,6 +191,8 @@ function repeatShipRemind_(mode) {
    請求と文面がズレると「無料と書いてあるのに550円取られた」になるので、
    ここでも同じ関数を呼んで文面を組み立てる（自前で判定を書き直さない）。 */
 function rsr_isFree_() { return repeatShipRate_() === 'free'; }
+/* 「◯回目のご注文は」の◯。Code.js の repeatShipStage_ が正＝請求と文面が必ず揃う。 */
+function rsr_stageWord_() { return repeatShipStage_() + '回目'; }
 function rsr_perkWord_() { return rsr_isFree_() ? '無料' : '半額'; }
 function rsr_shipLine_(base, halfAmt) {
   return rsr_isFree_() ? (base + '円 → 0円') : (base + '円 → ' + halfAmt + '円');
@@ -199,7 +202,7 @@ function sendRepeatShipLine_(p) {
   var w = rsr_perkWord_();
   var text =
     (p.name ? p.name + ' 様\n\n' : '') +
-    '2回目のご注文は送料が' + w + 'になります。\n' +
+    rsr_stageWord_() + 'のご注文は送料が' + w + 'になります。\n' +
     '　送料 ' + rsr_shipLine_('1,100', '550') + '\n' +
     '　（北海道・沖縄は ' + rsr_shipLine_('2,200', '1,100') + '）\n\n' +
     'お使いいただける期限：' + rsr_md_(p.deadline) + '（' + rsr_leftLabel_(p.daysLeft) + '）\n' +
@@ -214,10 +217,10 @@ function sendRepeatShipMail_(p) {
   MailApp.sendEmail({
     to: p.email,
     name: BRAND_MAIL.sender,
-    subject: '【' + rsr_leftLabel_(p.daysLeft) + '】2回目のご注文は送料' + rsr_perkWord_() + 'です｜江田畜産',
+    subject: '【' + rsr_leftLabel_(p.daysLeft) + '】' + rsr_stageWord_() + 'のご注文は送料' + rsr_perkWord_() + 'です｜江田畜産',
     body:
       greeting + '\n\n' +
-      '2回目のご注文は送料が' + rsr_perkWord_() + 'になります。\n' +
+      rsr_stageWord_() + 'のご注文は送料が' + rsr_perkWord_() + 'になります。\n' +
       '  送料 ' + rsr_shipLine_('1,100', '550') + '（北海道・沖縄は ' + rsr_shipLine_('2,200', '1,100') + '）\n\n' +
       'お使いいただける期限: ' + deadline + '（' + rsr_leftLabel_(p.daysLeft) + '）\n' +
       'クーポンコードは要りません。ご注文時に自動で' + rsr_perkWord_() + 'になります。\n\n' +
@@ -226,8 +229,8 @@ function sendRepeatShipMail_(p) {
       'https://www.eda-livestock.com/',
     htmlBody: brandEmailHtml_({
       heroUrl: BRAND_MAIL.heroShip,
-      title: '2回目のご注文は送料' + rsr_perkWord_() + 'です',
-      intro: greeting + '<br>2回目のご注文は、送料が' + rsr_perkWord_() + 'になります。',
+      title: rsr_stageWord_() + 'のご注文は送料' + rsr_perkWord_() + 'です',
+      intro: greeting + '<br>' + rsr_stageWord_() + 'のご注文は、送料が' + rsr_perkWord_() + 'になります。',
       rows: [
         ['送料（通常配送）', '<span style="text-decoration:line-through;color:#9aa5a0;">1,100円</span>　' + (rsr_isFree_() ? '0円' : '550円')],
         ['送料（北海道・沖縄）', '<span style="text-decoration:line-through;color:#9aa5a0;">2,200円</span>　' + (rsr_isFree_() ? '0円' : '1,100円')],

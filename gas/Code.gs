@@ -3409,6 +3409,10 @@ function repeatShipEnabled_() { return String(cfg('REPEAT_SHIP_HALF', 'false')) 
 function repeatShipDays_()    { return Number(cfg('REPEAT_SHIP_DAYS', '40')) || 40; }
 /* 'free' 以外は全部 'half' 扱い（設定ミスで勝手に無料にしない fail-safe） */
 function repeatShipRate_()    { return String(cfg('REPEAT_SHIP_RATE', 'half')) === 'free' ? 'free' : 'half'; }
+/* 何回目のご注文に付ける特典か（2026-09-08 田崎さん指示で 2回目 → 5回目へ移動）。
+   「5回目に付く」＝支払い済みの注文が4件ある人の次の注文が対象。
+   1未満やゴミが入ったら 5 に倒す（判定が全員一致してしまう 0 を避ける fail-safe）。 */
+function repeatShipStage_()   { var n = Number(cfg('REPEAT_SHIP_STAGE', '5')); return (n >= 1) ? n : 5; }
 
 /* この人の直近の「お届け日」を day number で返す（無ければ null）。
    email と line_uid のどちらか一致で本人とみなす（別メールで買われた場合は検知できない＝
@@ -3459,7 +3463,7 @@ function isRepeatShipHalf_(email, lineUid) {
        （特典階段そのものは進むので、3回目は従来どおり鶏モモになる）。
        実体の数え方は RepeatShipReminder.js の repeatShipPaidOrderCount_ 1本
        ＝通知の対象者と請求の判定が必ず同じ人になるようにする。 */
-    if (repeatShipPaidOrderCount_(email, lineUid) !== 1) return false;
+    if (repeatShipPaidOrderCount_(email, lineUid) !== repeatShipStage_() - 1) return false;
     var last = lastDeliveryDayNum_(email, lineUid);
     if (last === null) return false;
     var days = _jstDayNum(new Date()) - last;
@@ -3486,10 +3490,11 @@ function repeatShippingCheck(params) {
      ここに入れ忘れると、3回目以降の人の画面に半額と出て請求は満額になる
      （LINE10 でフロントとバックがズレた事故と同じ形）。 */
   var count = repeatShipPaidOrderCount_(email, uid);
-  var eligible = (count === 1);                    // 次の注文が2回目の人か
+  var stage = repeatShipStage_();
+  var eligible = (count === stage - 1);            // 次の注文が特典の回(既定5回目)にあたる人か
   var last = lastDeliveryDayNum_(email, uid);
   if (last === null) {
-    return jsonResponse({ ok: true, enabled: true, half: false, rate: rate, limit: limit, orders: count, eligible: eligible });
+    return jsonResponse({ ok: true, enabled: true, half: false, rate: rate, stage: stage, limit: limit, orders: count, eligible: eligible });
   }
   var days = _jstDayNum(new Date()) - last;
   var within = (days >= 0 && days <= limit);
@@ -3498,6 +3503,7 @@ function repeatShippingCheck(params) {
     ok: true, enabled: true,
     half: (eligible && within),
     rate: rate,
+    stage: stage,
     eligible: eligible,
     orders: count,
     days: days, limit: limit,
