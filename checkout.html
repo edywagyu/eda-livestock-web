@@ -1540,6 +1540,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  © 2026 Eda Livestock Co., Ltd. · <a href="contact.html" style="color: var(--color-gold-soft);" data-en="Need help? →">困った時はこちら →</a>
 </footer>
 
+<!-- 🔴 gift-rules.js は下のインライン定義(_GR)より先に読む。後ろに置くと
+     window.EDA_GIFT_RULES がまだ無い状態で評価され、checkout.html は
+     常にフォールバック側の値で動く（2026-09-08 発見）。 -->
+<script src="public/js/gift-rules.js?v=005"></script>
 <script>
 /* ============================================================
  * 4購入導線統合 Checkout — Mode 自動判定
@@ -1647,11 +1651,16 @@ var REWARD_MARK = '🎁';          // staff.html / 注文明細で特典行を�
    画面の案内と実際に入る特典がズレない）。読めなかったときだけ下の値を使う。 */
 var _GR = window.EDA_GIFT_RULES || null;
 var REWARD_MIN_SUBTOTAL = (_GR && _GR.REWARD_MIN_SUBTOTAL) || 5000;
+/* 特典を公式LINE連携者だけにするか。gift-rules.js が正。読めなかったときは
+   限定しない側に倒す＝連携している人の特典を誤って落とさない(fail-open)。 */
+var REWARD_LINE_ONLY = !!(_GR && _GR.REWARD_LINE_ONLY);
+/* 🔴 gift-rules.js が読めなかったときだけ使う控え。中身は必ず向こうと同じにする
+      （ズレていると、読み込みに失敗した人だけ違う特典が付く）。 */
 var REWARD_BY_STAGE = (_GR && _GR.REWARD_BY_STAGE) || {
-  1: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '初回ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-  3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-  4: { title: 'ハンバーグ',       variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
-  5: { title: '赤身焼肉',         variant: '1袋 200g', qty: 1, label: '5回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
+  1: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '初回ご注文特典',   img: 'public/images/products/drive/chicken-thigh.jpg' },
+  2: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '2回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
+  3: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '3回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
+  4: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '4回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
 };
 var rewardStage = 0;        // 今回の注文が何回目か（customer_lookup の答え + 1）
 var rewardStock = {};       // { 商品名: 在庫 } 在庫を割った特典は付けない
@@ -1662,6 +1671,11 @@ var _rewardKey = '';
    5,000円を割ったら消える／ギフトだけの注文には付かない。 */
 function currentReward() {
   if (rewardDropped || subscription) return null;              // 定期便はプランに込みなので対象外
+  /* 🔗 2026-09-08 田崎さん指示: ご注文特典は公式LINEと連携している方だけ。
+     連携率が 758人中90人(12%)と低く、連携する理由が無かったため
+     「特典は連携した人のもの」にして理由をつくる。
+     判定は getLineUid() ＝ 決済画面の他の会員判定(クーポン等)と同じ物差し。 */
+  if (REWARD_LINE_ONLY && !getLineUid()) return null;
   var r = REWARD_BY_STAGE[rewardStage];
   if (!r) return null;
   var selfIds = (destinations[0] && destinations[0].itemIds) || [];
@@ -1789,6 +1803,54 @@ async function runRewardCheck(email, uid) {
   } catch (e) {
     rewardStage = 0;                                           // 分からないときは付けない(fail-closed)
   }
+}
+
+/* ============================================================
+   🔗 決済画面での公式LINE連携のご案内（2026-09-08 田崎さん指示）
+   ------------------------------------------------------------
+   連携率が 758人中90人(12%)しかない原因は「買う前に連携する道が無い」こと。
+   連携できたのはマイページと注文完了ページだけで、どちらも買った後か
+   自分で探しに来た人しか通らなかった。注文する人は必ずこの画面を通るので
+   ここに置く。
+   🔴 「連携してください」とは書かない。もらえる物（鶏モモ等）で誘う。
+      何が付くかは REWARD_BY_STAGE から引く＝特典を入れ替えても文言がズレない。
+   🔴 連携済みの人には出さない。金額が足りない人にも出さない
+      （連携しても付かないのに「付きます」と言うことになるため）。
+   ============================================================ */
+function lineLinkPromoHtml() {
+  if (!REWARD_LINE_ONLY || getLineUid() || subscription) return '';
+  var r = REWARD_BY_STAGE[rewardStage];
+  if (!r) return '';                                    /* もらえる物が無いなら黙っている */
+  var selfIds = (destinations[0] && destinations[0].itemIds) || [];
+  if (!selfIds.length) return '';                       /* ギフトだけの注文は対象外 */
+  var selfSubtotal = selfIds.reduce(function (sum, i) {
+    var it = cartItems[i]; return it ? sum + discountedUnit(it.price || 0) * (it.qty || 1) : sum;
+  }, 0);
+  if (selfSubtotal < REWARD_MIN_SUBTOTAL) return '';    /* 金額が届いていないうちは言わない */
+  var stock = rewardStock[r.title];
+  if (typeof stock === 'number' && stock < r.qty) return '';   /* 在庫が無い物を約束しない */
+
+  var mail = String((destinations[0] && destinations[0].email) || '').trim();
+  var liffId = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '1657458587-mz1dR9e6';
+  var href = 'https://line.me/R/ti/p/@706sgiuq';
+  try {
+    if (mail && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) {
+      /* メールが分かっていれば連携まで一気に済む（注文完了ページと同じ仕掛け）。
+         btoa は非ASCIIで落ちるので、失敗したら素の友だち追加URLに倒す。 */
+      href = 'https://liff.line.me/' + liffId + '/line-link.html?e=' + encodeURIComponent(btoa(mail));
+    }
+  } catch (e) {}
+
+  var gift = r.title + (r.qty > 1 ? '（' + r.qty + '点）' : '');
+  return '<div style="margin-top:10px;padding:12px;border:1px solid #06C755;border-radius:10px;background:rgba(6,199,85,0.06)">' +
+    '<p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:var(--color-forest,#0F3D2E)">' +
+      '<strong>' + gift + '</strong> が無料で付きます。<br>' +
+      '<span style="font-size:12px;color:var(--color-ink-muted,#666)">公式LINEとつなぐと、' + r.label + 'としてお入れします。</span>' +
+    '</p>' +
+    '<a href="' + href + '" target="_blank" rel="noopener" ' +
+      'style="display:block;text-align:center;background:#06C755;color:#fff;padding:10px;border-radius:8px;' +
+      'text-decoration:none;font-weight:700;font-size:13px">LINEでつないで受け取る</a>' +
+  '</div>';
 }
 
 function getLineUid() {
@@ -2963,6 +3025,10 @@ function renderSummary() {
  itemsHtml += `<div class="summary-line-item" style="color:var(--color-gold,#D4A93B);font-weight:700"><span>${REWARD_MARK} ${_rwSum.title}<span class="qty">×${_rwSum.qty}</span></span><span>¥0</span></div>`;
  });
 
+ /* 🔗 連携すれば受け取れる特典があるのに、まだ連携していない人にだけ案内を出す。
+    「連携してください」ではなく「◯◯が付きます」と、もらえる物で誘う。 */
+ itemsHtml += lineLinkPromoHtml();
+
  if (!itemsHtml) {
  itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
  }
@@ -3524,9 +3590,8 @@ try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
 <script src="public/js/preorder.js?v=001"></script>
-<script src="public/js/gift-rules.js?v=004"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=002" defer></script>
+<script src="public/js/gift-notice.js?v=003" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=007" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
