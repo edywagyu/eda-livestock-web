@@ -433,7 +433,9 @@ function createCheckout(body) {
     (body.customer && body.customer.email) || '',
     (body.customer && body.customer.line_uid) || ''
   );
-  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
+  /* 🚚 freeShip 商品（はじめてセット等）が入っていれば自宅送料も 0 円 */
+  const _freeShipItem = hasFreeShipItem_(items);
+  const shipping = (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
   if (shipping > 0) {
     lineItems.push({
       price_data: {
@@ -610,7 +612,9 @@ function createBankOrder(body) {
     (body.customer && body.customer.email) || '',
     (body.customer && body.customer.line_uid) || ''
   );
-  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
+  /* 🚚 freeShip 商品（はじめてセット等）が入っていれば自宅送料も 0 円 */
+  const _freeShipItem = hasFreeShipItem_(items);
+  const shipping = (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
 
   // 振込金額: クライアント計算済みの最終合計（クーポン適用後）を信頼。
   //   入金は Tom が実額照合（アナログ）するため、画面表示との一致を優先。無ければ subtotal+shipping。
@@ -3681,6 +3685,34 @@ function repeatShippingCheck(params) {
     daysLeft: Math.max(0, limit - days),
     deadline: Utilities.formatDate(deadline, 'Asia/Tokyo', 'yyyy-MM-dd')
   });
+}
+
+/* 🚚 商品ごとの「これが入っていれば送料無料」（2026-09-09 田崎さん決定）
+   products シートの freeShip 列が TRUE の商品が1点でもカートにあれば、
+   その注文の自宅送料を 0 円にする。初回向けの「はじめてセット」用。
+   ・ギフト分の送料はもともと 0 円なので、効くのは自宅分だけ
+   ・freeShip 列が無い／読めないときは false を返す＝従来どおり送料を頂く(fail-safe)
+   ・照合キーは products の name と カートの title（在庫判定・BOM と同じ完全一致） */
+function hasFreeShipItem_(items) {
+  try {
+    const sh = ss().getSheetByName('products');
+    if (!sh) return false;
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return false;
+    const headers = data[0];
+    const nameIdx = headers.indexOf('name');
+    const freeIdx = headers.indexOf('freeShip');
+    if (nameIdx === -1 || freeIdx === -1) return false;
+    const free = {};
+    for (var r = 1; r < data.length; r++) {
+      var v = String(data[r][freeIdx]).trim().toLowerCase();
+      if (v === 'true' || v === '1') free[String(data[r][nameIdx]).trim()] = true;
+    }
+    return (items || []).some(function (it) { return !!free[String((it && it.title) || '').trim()]; });
+  } catch (e) {
+    log('free_ship_check_warn', { error: e.message });
+    return false;
+  }
 }
 
 function calcShipping(subtotal, pref, halfOff) {
