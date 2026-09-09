@@ -5665,12 +5665,19 @@ function staffOrders() {
        先に発送した注文が「誕生日特典_付与ログ」に入るので、それを引いて
        2件目以降には「今月はお渡し済み」と出せるようにする。 */
     var grantIndex = birthdayGrantIndex_();
+    /* 🎂 「お誕生月は過ぎたが次のご注文で渡す」手動の名簿（gas/BirthdayGiftManual.gs）。
+       誕生日の月に当たらない方でも、ここに載っていれば次のご注文が対象になる。 */
+    var manualIndex = birthdayManualIndex_();
     orders.forEach(function (o) {
       var b = bdIndex.byUid[String(o.line_uid || '').trim()] ||
               bdIndex.byEmail[custEmailKey_(o.customer_email)] || '';
       o.birthday = b;
       var mo = orderMonth_(o.placed_at);
       o.birthday_match = !!(b && mo && mo === b.slice(0, 2));
+      /* 手動の名簿に載っている方は、誕生日の月でなくても対象にする（発送画面の出し方は同じ） */
+      o.birthday_manual = !o.birthday_match &&
+        birthdayManualPending_(manualIndex, o.customer_email, o.line_uid);
+      if (o.birthday_manual) o.birthday_match = true;
       if (o.birthday_match) {
         var gk = bggPersonKey_(o.customer_email, o.line_uid) + '|' + bggYearMonth_(o.placed_at);
         var by = grantIndex[gk] || '';

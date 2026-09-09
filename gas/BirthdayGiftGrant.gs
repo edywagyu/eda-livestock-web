@@ -73,12 +73,15 @@ function recordBirthdayGiftIfDue_(o) {
   /* その方の誕生日 */
   var bdIdx = birthdayIndex_();
   var bd = bdIdx.byUid[String(o.line_uid || '').trim()] || bdIdx.byEmail[custEmailKey_(o.email)] || '';
-  if (!bd) return { recorded: false, reason: '誕生日が未登録' };
+
+  /* 🎂 手動の名簿（gas/BirthdayGiftManual.gs）に載っている方は、誕生日の月でなくても対象 */
+  var manual = birthdayManualPending_(birthdayManualIndex_(), o.email, o.line_uid);
+  if (!bd && !manual) return { recorded: false, reason: '誕生日が未登録' };
 
   /* ご注文の月＝誕生日の月か */
   var ym = bggYearMonth_(o.placed_at);
   if (!ym) return { recorded: false, reason: 'ご注文日が読めない' };
-  if (ym.slice(5, 7) !== bd.slice(0, 2)) return { recorded: false, reason: '誕生日の月ではない' };
+  if (!manual && ym.slice(5, 7) !== bd.slice(0, 2)) return { recorded: false, reason: '誕生日の月ではない' };
 
   /* 今月すでに渡していないか */
   var granted = birthdayGrantIndex_();
@@ -93,6 +96,7 @@ function recordBirthdayGiftIfDue_(o) {
     String(o.name || '').trim(),
     String(o.order_number || '')
   ]);
-  log('birthday_gift_granted', { order: o.order_number, ym: ym, key: key });
-  return { recorded: true, ym: ym, order: o.order_number };
+  log('birthday_gift_granted', { order: o.order_number, ym: ym, key: key, manual: manual });
+  if (manual) birthdayManualMarkDone_(o.email, o.line_uid, o.order_number);
+  return { recorded: true, ym: ym, order: o.order_number, manual: manual };
 }
