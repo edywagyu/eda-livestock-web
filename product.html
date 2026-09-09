@@ -1309,6 +1309,12 @@ function pdpApplyStock() {
   const live = all.find(p => p.productId === cur.productId);
   if (!live || typeof live.stock !== 'number') return;
   cur.stock = live.stock;
+  /* 🚚 送料無料の商品（freeShip）はライブ取得後にも文言を直す。初回描画の時点では
+     同梱マスターに freeShip が無く、旧文言のままになるため。 */
+  if (String(live.freeShip).trim().toLowerCase() === 'true') {
+    const _note2 = document.querySelector('.pdp-price-note');
+    if (_note2) _note2.textContent = '税込価格 / 送料無料でお届けします';
+  }
   const note = document.getElementById('pdpStockNote');
   const btn = document.getElementById('addToCartBtn');
   const sticky = document.getElementById('stickyCtaBtn');
@@ -1432,7 +1438,7 @@ function giftThisProduct() {
 }
 </script>
 <script src="public/js/preorder.js?v=003"></script>
-<script src="public/js/products-loader.js?v=006" defer></script>
+<script src="public/js/products-loader.js?v=007" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
