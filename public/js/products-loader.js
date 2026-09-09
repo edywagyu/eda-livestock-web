@@ -210,7 +210,10 @@
       limitedUnit:      keep(p, 'limitedUnit') || '',
       /* 📅 予約注文 (public/js/preorder.js)。products シートの soldOutAt 列＝在庫が0になった日。
          列がまだ無ければ undefined のまま来る＝preorder.js が「今日+9日」に読み替える。 */
-      soldOutAt:        keep(p, 'soldOutAt') || ''
+      soldOutAt:        keep(p, 'soldOutAt') || '',
+      /* 🚚 これが入っていれば送料無料になる商品（products シートの freeShip 列）。
+         ここで捨てると商品ページが「別途 送料 ¥1,100」のままになる。 */
+      freeShip:         keep(p, 'freeShip')
     }));
 
     /* 🧩 セット商品の stock を構成品から作り直す。
