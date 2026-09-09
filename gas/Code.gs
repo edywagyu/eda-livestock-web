@@ -3625,6 +3625,21 @@ function normBirthday_(v) {
   return ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
 }
 
+/* 🎂 顧客シートに書くときの形。年が分かれば 'YYYY-MM-DD'、分からなければ 'MM-DD'。
+   2026-09-09 にマイページで生まれた年もお伺いするようにしたため、年を落とさず残す。
+   ★プレゼントの判定・お祝いメッセージは今までどおり normBirthday_（MM-DD）だけを見る。
+     年は「何年生まれか」を知るためだけに置いてある。 */
+function normBirthdayFull_(v) {
+  var mmdd = normBirthday_(v);
+  if (!mmdd) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') return mmdd;   /* 年は当てにならないので落とす */
+  var y = String(v).trim().match(/^(\d{4})\s*[-\/年]/);
+  if (!y) return mmdd;
+  var yr = Number(y[1]);
+  if (!(yr >= 1900 && yr <= new Date().getFullYear())) return mmdd;
+  return yr + '-' + mmdd;
+}
+
 /* ============================================================
    定期便のお客様かどうか（3か所から使う共通の判定）
    ------------------------------------------------------------
@@ -4188,7 +4203,7 @@ function updateProfile(body) {
   function col(n){ var i=headers.indexOf(n); if(i===-1){ i=headers.length; sh.getRange(1,i+1).setValue(n); headers.push(n);} return i; }
   var lineIdx=col('line_uid'), emailIdx=col('email'), nameIdx=col('name'), phoneIdx=col('phone'),
       zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id'),
-      bdayIdx=col('birthday');   /* 🎂 誕生日 (MM-DD・年は預からない)。列が無ければ col() が作る */
+      bdayIdx=col('birthday');   /* 🎂 誕生日 (YYYY-MM-DD)。列が無ければ col() が作る */
   var data = sh.getDataRange().getValues();
   /* 🔴 探す順を固定 (2026-08-31)
      旧実装は line_uid と email の OR 一発で、シートの並び順で先に現れた行を取っていた。
@@ -4220,10 +4235,10 @@ function updateProfile(body) {
   if (body.zip)     sh.getRange(foundRow, zipIdx+1).setValue(body.zip);
   if (body.address) sh.getRange(foundRow, addrIdx+1).setValue(body.address);
   if (email && !String(sh.getRange(foundRow, emailIdx+1).getValue())) sh.getRange(foundRow, emailIdx+1).setValue(email);
-  /* 🎂 誕生日 (MM-DD)。マイページの「お誕生日」欄から来る。
+  /* 🎂 誕生日 (YYYY-MM-DD。年より前の登録は MM-DD のまま)。マイページの「お誕生日」欄から来る。
      '' を送ると登録の取り消し。Sheets に日付として解釈されないよう必ず文字列で入れる。 */
   if (body.birthday !== undefined) {
-    var bd = normBirthday_(body.birthday);
+    var bd = normBirthdayFull_(body.birthday);
     var bdCell = sh.getRange(foundRow, bdayIdx+1);
     bdCell.setNumberFormat('@');
     bdCell.setValue(bd);

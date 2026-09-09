@@ -2096,6 +2096,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 20px 24px 0; display: grid;
  grid-template-columns: 1fr 1fr; gap: 16px;
 }
+/* 🎂 お誕生日だけは 年・月・日 の3つ。2列のままだと「日」が次の行にひとりで落ちるので3列にする */
+.settings-form-grid.bd3 { grid-template-columns: 1fr 1fr 1fr; }
 .settings-field { display: flex; flex-direction: column; gap: 6px; }
 .settings-field:not(.half) { grid-column: 1 / -1; }
 /* 🔴 同じ理由。暗い画面なので入力欄のラベルも白系で書く（黒だと「月」「日」が見えない）。
@@ -2166,6 +2168,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 @media (max-width: 640px) {
  .settings-form-grid { grid-template-columns: 1fr; padding: 16px 16px 0; }
+ .settings-form-grid.bd3 { grid-template-columns: 1fr; }   /* 🎂 スマホは1列に戻す */
  .settings-field.half { grid-column: auto; }
  .settings-card-header { padding: 14px 16px; }
  .settings-data { padding: 12px 16px; }
@@ -3252,7 +3255,10 @@ button:focus-visible, a:focus-visible {
 
  <!-- お誕生日 -->
  <!-- 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）のための欄。
-      お預かりするのは「月」と「日」だけ。年齢につながる年はお伺いしない。
+      お預かりするのは「生まれた年」「月」「日」の3つ（2026-09-09に年を追加）。
+      保存の形は 'YYYY-MM-DD'。年より前に登録した方は 'MM-DD' のまま入っているので、
+      読むときは必ず bdMMDD() を通して月日だけ取り出すこと。
+      プレゼントの判定は月だけ。年は使わない（GAS の normBirthday_ が年を落として MM-DD にする）。
       同梱の条件は下の birthday-perk に書いてあるものが正で、
       判定の実体は GAS の staffOrders（注文した月＝誕生日の月）。 -->
  <h3 class="dash-section-title" style="margin-top:32px;">お誕生日</h3>
@@ -3294,7 +3300,13 @@ button:focus-visible, a:focus-visible {
 
   <!-- 編集モード -->
   <div id="birthdayForm" style="display:none;">
-  <div class="settings-form-grid">
+  <div class="settings-form-grid bd3">
+   <div class="settings-field half">
+   <label for="bdYear">生まれた年 <span class="required">*</span></label>
+   <select id="bdYear" onchange="fillBirthdayDays()">
+    <option value="">--</option>
+   </select>
+   </div>
    <div class="settings-field half">
    <label for="bdMonth">月 <span class="required">*</span></label>
    <select id="bdMonth" onchange="fillBirthdayDays()">
@@ -3313,7 +3325,7 @@ button:focus-visible, a:focus-visible {
    <button class="settings-save-btn" onclick="saveBirthday()">保存する</button>
    <button class="settings-cancel-btn" onclick="toggleBirthdayEdit()">キャンセル</button>
   </div>
-  <p class="settings-form-note">※ お預かりするのは月と日だけです。生まれた年はお伺いしません。</p>
+  <p class="settings-form-note">※ お誕生日は、お祝いのご案内以外には使いません。</p>
   </div>
  </div>
 
@@ -4092,6 +4104,7 @@ function renderWelcomeSlot(customer) {
 /* 「お誕生月のあいだ」か。誕生月の1日前（前月の末日）から、誕生月の終わりまで。
    例: 9月15日生まれの方 → 8月31日から9月30日まで出る。 */
 function birthdayWindow(bd) {
+ bd = bdMMDD(bd);          /* 年つき 'YYYY-MM-DD' で来ても月日だけで見る */
  if (!bd) return { inWindow: false };
  var bm = Number(bd.slice(0, 2)), bday = Number(bd.slice(3, 5));
  var now = new Date();
@@ -4497,7 +4510,7 @@ function renderRewardJourney(count) {
 /* ---- Settings Tab: Shipping & Payment ---- */
 var SHIP_KEY = 'eda-member-shipping';
 var CARD_KEY = 'eda-member-card';
-var BD_KEY   = 'eda-member-birthday';   /* 🎂 'MM-DD'。サーバー(customers.birthday)の写し */
+var BD_KEY   = 'eda-member-birthday';   /* 🎂 'YYYY-MM-DD'（年より前の登録は 'MM-DD'）。サーバー(customers.birthday)の写し */
 
 function loadShipping() {
  try { return JSON.parse(localStorage.getItem(SHIP_KEY) || 'null'); } catch(e) { return null; }
@@ -4641,28 +4654,63 @@ function saveShipping() {
 }
 
 /* ================= 🎂 お誕生日 =================
-   お預かりするのは月と日だけ（'MM-DD'）。年はお伺いしない。
+   お預かりするのは 生まれた年・月・日（'YYYY-MM-DD'）。
+   2026-09-09 より前に登録された方は 'MM-DD'（年なし）のまま入っている。
+   どちらの形も受け取れるようにし、月日だけ要るところは bdMMDD() を通す。
    保存先は customers.birthday（GAS の update_profile）。
    端末の localStorage には表示を速くするための控えだけを置く。 */
 
+var BD_YEAR_MIN = 1926;   /* 年の選択肢の下限。上限は今年 */
+
+/* 'YYYY-MM-DD'（年があれば）または 'MM-DD' にそろえる。読めなければ '' */
 function normBirthdayStr(v) {
-  var m = String(v == null ? '' : v).match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})/);
+  var s = String(v == null ? '' : v).trim();
+  var m = s.match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})\s*日?\s*$/);
   if (!m) return '';
   var mo = Number(m[1]), da = Number(m[2]);
   if (!(mo >= 1 && mo <= 12) || !(da >= 1 && da <= 31)) return '';
-  return ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+  var mmdd = ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+  var y = s.match(/^(\d{4})\s*[-\/年]/);   /* 先頭の4桁だけを年とみなす */
+  if (!y) return mmdd;
+  var yr = Number(y[1]);
+  if (!(yr >= 1900 && yr <= new Date().getFullYear())) return mmdd;
+  return yr + '-' + mmdd;
+}
+
+/* 月日だけ取り出す（'MM-DD'）。年つき・年なしのどちらでも同じ答えになる */
+function bdMMDD(v) {
+  var b = normBirthdayStr(v);
+  return b ? b.slice(-5) : '';
+}
+/* 生まれた年（無ければ ''） */
+function bdYearOf(v) {
+  var b = normBirthdayStr(v);
+  return (b && b.length === 10) ? b.slice(0, 4) : '';
 }
 
 function loadBirthday() {
   try { return normBirthdayStr(localStorage.getItem(BD_KEY) || ''); } catch (e) { return ''; }
 }
 
-/* 月を選ぶと日の選択肢を作り直す（2月は29日まで。年を預からないので閏年は考えない） */
+/* 年の選択肢を作る（今年 → 1926年の順） */
+function fillBirthdayYears() {
+  var sel = document.getElementById('bdYear');
+  if (!sel || sel.options.length > 1) return;   /* 一度作ったら作り直さない */
+  var now = new Date().getFullYear();
+  var html = '<option value="">--</option>';
+  for (var y = now; y >= BD_YEAR_MIN; y--) html += '<option value="' + y + '">' + y + '年</option>';
+  sel.innerHTML = html;
+}
+
+/* 月（と年）を選ぶと日の選択肢を作り直す。2月の末日は年が決まっていれば閏年で判断する */
 function fillBirthdayDays() {
   var mo = Number(document.getElementById('bdMonth').value || 0);
+  var yrEl = document.getElementById('bdYear');
+  var yr = Number((yrEl && yrEl.value) || 0);
   var sel = document.getElementById('bdDay');
   var keep = sel.value;
-  var max = mo === 2 ? 29 : ([4, 6, 9, 11].indexOf(mo) >= 0 ? 30 : 31);
+  var feb = (yr && !((yr % 4 === 0 && yr % 100 !== 0) || yr % 400 === 0)) ? 28 : 29;
+  var max = mo === 2 ? feb : ([4, 6, 9, 11].indexOf(mo) >= 0 ? 30 : 31);
   var html = '<option value="">--</option>';
   for (var d = 1; d <= max; d++) {
     var v = ('0' + d).slice(-2);
@@ -4685,8 +4733,9 @@ function renderBirthday(customer) {
   if (bd) {
     empty.style.display = 'none';
     data.style.display = '';
+    var md = bdMMDD(bd), yr = bdYearOf(bd);
     document.getElementById('dispBirthday').textContent =
-      Number(bd.slice(0, 2)) + '月' + Number(bd.slice(3, 5)) + '日';
+      (yr ? yr + '年' : '') + Number(md.slice(0, 2)) + '月' + Number(md.slice(3, 5)) + '日';
     if (btn) btn.style.display = '';
   } else {
     empty.style.display = '';
@@ -4701,10 +4750,12 @@ function toggleBirthdayEdit() {
   if (!form || !disp) return;
   var opening = form.style.display === 'none';
   if (opening) {
-    var bd = loadBirthday();
-    document.getElementById('bdMonth').value = bd ? bd.slice(0, 2) : '';
+    var bd = loadBirthday(), md = bdMMDD(bd);
+    fillBirthdayYears();
+    document.getElementById('bdYear').value = bdYearOf(bd);
+    document.getElementById('bdMonth').value = md ? md.slice(0, 2) : '';
     fillBirthdayDays();
-    document.getElementById('bdDay').value = bd ? bd.slice(3, 5) : '';
+    document.getElementById('bdDay').value = md ? md.slice(3, 5) : '';
     form.style.display = '';
     disp.style.display = 'none';
   } else {
@@ -4714,10 +4765,11 @@ function toggleBirthdayEdit() {
 }
 
 function saveBirthday() {
+  var yr = document.getElementById('bdYear').value;
   var mo = document.getElementById('bdMonth').value;
   var da = document.getElementById('bdDay').value;
   var hasErr = false;
-  ['bdMonth', 'bdDay'].forEach(function (id) {
+  ['bdYear', 'bdMonth', 'bdDay'].forEach(function (id) {
     var f = document.getElementById(id); if (!f) return;
     var w = f.closest('.settings-field'); if (!w) return;
     w.classList.remove('has-error');
@@ -4725,7 +4777,7 @@ function saveBirthday() {
   });
   if (hasErr) return;
 
-  var bd = normBirthdayStr(mo + '-' + da);
+  var bd = normBirthdayStr(yr + '-' + mo + '-' + da);
   if (!bd) return;
   try { localStorage.setItem(BD_KEY, bd); } catch (e) {}
 
