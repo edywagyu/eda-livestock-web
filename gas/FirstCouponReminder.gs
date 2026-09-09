@@ -171,7 +171,35 @@ function fcr_popularNames_() {
       return nm.indexOf('定期便') < 0 && nm.indexOf('会員限定') < 0;
     });
   }
+  /* 店頭に出していない商品を外す（2026-09-05 田崎さん指定）。
+     ランキングは過去14日の実績なので、その後 published=FALSE にした商品
+     （肉の日限定セット・ハンバーグ等）がそのまま残る。押しても買えない。 */
+  var pub = fcr_publishedNames_();
+  if (pub) list = list.filter(function (r) { return pub[fcr_nz_(r.name)]; });
   return list.slice(0, n).map(function (r) { return String(r.name || ''); }).filter(Boolean);
+}
+
+/* 店頭に出ている（published=TRUE）商品名の集合。
+   読めなければ null を返す＝フィルタを掛けない（人気商品が全部消えるより出す方がまし）。 */
+function fcr_publishedNames_() {
+  try {
+    var d = sheet('products').getDataRange().getValues();
+    if (d.length < 2) return null;
+    var h = d[0];
+    var iName = h.indexOf('name'), iPub = h.indexOf('published');
+    if (iName < 0 || iPub < 0) return null;
+    var map = {};
+    for (var r = 1; r < d.length; r++) {
+      var v = d[r][iPub];
+      if (!(v === true || String(v).toUpperCase() === 'TRUE')) continue;
+      var k = fcr_nz_(d[r][iName]);
+      if (k) map[k] = true;
+    }
+    return map;
+  } catch (e) {
+    log('first_coupon_published_error', { error: String(e) });
+    return null;
+  }
 }
 
 /* ============================================================
@@ -273,6 +301,21 @@ function firstCouponJob_(job, mode) {
   return { ok: true, job: job, mode: 'live', candidates: cands.length, sent: ok, failed: ng, daysLeft: daysLeft };
 }
 
+/* 2026-09-06 のリマインドに載せる新商品の予告（2026-09-05 田崎さん承認の文面）。
+   販売開始はサイト側の limitedStartAt = 2026/09/06 20:00 と一致させること
+   （products-master.js / line-members.html・PR #231）。
+   🔴 このキャンペーンが終わったら '' に戻す。残すと次のリマインドにも出る。 */
+var FCR_NOTICE_DEFAULT = [
+  '【今夜20:00 発売】',
+  '　カメノコ焼肉 200g　\u00a52,700',
+  '　シンシン焼肉 200g　\u00a52,700',
+  '　2種セット　\u00a55,400 → \u00a54,860',
+  '',
+  'モモの中の希少部位「シンタマ」から2種。',
+  'なくなり次第終了です。',
+  'クーポン（10%OFF）はこの2品にも使えます。'
+].join('\n');
+
 /* ============================================================
    送信（LINE個別トーク）
    文面は「得／いつまで／何をする」の3つ＋いま人気の商品。
@@ -300,6 +343,16 @@ function fcr_send_(announce, p, popular, deadline, daysLeft) {
     L.push('　全品 10%OFF（クーポンコード：' + fcr_code_() + '）');
     L.push('');
     L.push('残り1日です。');
+  }
+
+  /* お知らせ枠（人気商品の上）。既定は下の FCR_NOTICE_DEFAULT。
+     Script Property FIRST_COUPON_NOTICE を置けばそちらが勝つ（'-' で消せる）。
+     ＝次回このリマインドを使うときは、必ず中身を書き換えるか消すこと。 */
+  var notice = String(cfg('FIRST_COUPON_NOTICE', '') || FCR_NOTICE_DEFAULT);
+  if (notice && notice !== '-') {
+    L.push('');
+    L.push('―――――――――');
+    notice.split('\n').forEach(function (line) { L.push(line); });
   }
 
   if (popular && popular.length) {
