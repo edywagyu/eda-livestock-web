@@ -3013,6 +3013,8 @@ function normalizeStaffOrder(o) {
     //    ここでは受け取るだけ。画面側で月を数え直さない（数え直すと判定が2箇所になる）。
     birthday: String(o.birthday || ''),
     birthdayMatch: o.birthday_match === true,
+    // 🎂 お誕生月ではないが「次のご注文で渡す」と手で指定された方（誕生日特典_手動付与タブ）
+    birthdayManual: o.birthday_manual === true,
     // 🎂 プレゼントは お一人 その月に1回だけ（早い方で渡す）。
     //    先に発送した注文の番号が入る。空＝まだ誰にも渡していない。
     birthdayGivenBy: String(o.birthday_given_by || ''),
@@ -3353,12 +3355,16 @@ function renderShipDetail() {
       </div>
     </div>` : `
     <div class="card" style="border:2px solid #B4508A;background:#FCEBF5;padding:14px;margin-bottom:12px">
-      <div style="font-size:15px;font-weight:800;color:#8A2F66;margin-bottom:6px">🎂 お誕生日月のお客様です${o.birthday ? '（' + Number(o.birthday.slice(0, 2)) + '月' + Number(o.birthday.slice(3, 5)) + '日）' : ''}</div>
+      <div style="font-size:15px;font-weight:800;color:#8A2F66;margin-bottom:6px">${o.birthdayManual
+        ? '🎂 誕生日プレゼントをお入れする方です（お礼としての手動指定）'
+        : '🎂 お誕生日月のお客様です' + (o.birthday ? '（' + Number(o.birthday.slice(0, 2)) + '月' + Number(o.birthday.slice(3, 5)) + '日）' : '')}</div>
       <div style="font-size:12px;color:#7A2A5A;line-height:1.7">
         この発送分に <strong>赤身ステーキ 1パック</strong> と <strong>お祝いのお手紙</strong> を無料で同梱してください。<br>
-        ${isSubOrder(o)
-          ? '<strong>定期便のお客様です。ご注文の有無にかかわらず必ずお入れします。</strong>'
-          : '単品のご注文です。お誕生日の月のご注文なので対象です。'}
+        ${o.birthdayManual
+          ? 'お誕生月は過ぎていますが、日ごろのお礼として<strong>この1回だけ</strong>お入れします。'
+          : (isSubOrder(o)
+            ? '<strong>定期便のお客様です。ご注文の有無にかかわらず必ずお入れします。</strong>'
+            : '単品のご注文です。お誕生日の月のご注文なので対象です。')}
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px">
         <button type="button" style="${bdBtnStyle}" onclick="openBirthdayLetter()">🎂 お手紙を開く（PDFで保存／印刷）</button>
@@ -3367,7 +3373,9 @@ function renderShipDetail() {
         お手紙には <strong>${escapeHtml(buyer.name || '（名前なし）')}</strong> 様のお名前が入ります。ギフトの場合はご注意ください。<br>
         ${o.birthdayGivenHere
           ? 'このご注文で今月ぶんをお渡し済みとして記録されています。'
-          : 'お一人 その月に1回だけです。発送を記録した時点で「お渡し済み」になります。'}
+          : (o.birthdayManual
+            ? '発送を記録した時点で名簿が「済」になり、次のご注文には出なくなります。'
+            : 'お一人 その月に1回だけです。発送を記録した時点で「お渡し済み」になります。')}
       </div>
     </div>`);
 
