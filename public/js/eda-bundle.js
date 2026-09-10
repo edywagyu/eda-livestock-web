@@ -94,8 +94,13 @@
   function edaHandleAuth(res) {
     try {
       if (res && res.code === 'AUTH_REQUIRED') {
+        /* 🔴 合言葉を持っていなかったときは戻さない。
+           マイページには「前回の注文メールで自動ログインを試す」導線があり、
+           そこで断られるたびに mypage.html へ飛ばすと、読み込み→拒否→読み込み…と
+           無限に往復してしまう。持っていた合言葉が切れた場合だけ、ログイン画面へ戻す。 */
+        var had = !!edaAuthToken();
         localStorage.removeItem('eda-mypage-session');
-        if (/mypage|subscription-/.test(location.pathname)) location.href = 'mypage.html';
+        if (had && /mypage|subscription-/.test(location.pathname)) location.href = 'mypage.html';
       }
     } catch (e) {}
     return res;

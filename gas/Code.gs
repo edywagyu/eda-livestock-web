@@ -178,7 +178,10 @@ var CUSTOMER_PROTECTED = {
   change_subscription_plan: 1, change_subscription_cycle: 1
 };
 
-function authMode_() { return String(cfg('REQUIRE_CUSTOMER_TOKEN', 'log')).trim().toLowerCase(); }
+/* 2026-09-10: 画面側が合言葉を送るようになり、実際のログインで動作を確認できたので既定を 'on' にした。
+   戻すときは、スクリプトプロパティ REQUIRE_CUSTOMER_TOKEN に 'log' か 'off' を入れる
+   （プロパティが無いときだけこの既定値が使われる）。 */
+function authMode_() { return String(cfg('REQUIRE_CUSTOMER_TOKEN', 'on')).trim().toLowerCase(); }
 
 /* ログインが通ったときに1本発行して保管する */
 function authIssue_(email, method, days) {
