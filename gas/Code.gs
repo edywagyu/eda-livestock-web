@@ -6796,13 +6796,20 @@ function changeSubscriptionCycle(body) {
   subActionRecord_(email, 'cycle_change', (from || '(不明)') + ' → ' + cycle);
 
   var skipLine = '次回のお届け: あり（そこから隔月）';
-  var _sc = '未反映（毎月に戻す操作のためStripeは変更なし）';
-  if (cycle.indexOf('隔月') >= 0 && firstDelivery === 'skip') {
-    var t = subNextDeliveryForEmail_(email);
-    var sh2 = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
-    sh2.appendRow([new Date(), email, 'skip', '', '対象:' + _subYmd_(t) + ' / 隔月変更にともなうお休み']);
-    skipLine = '次回のお届け: なし（' + _subYmd_(t) + ' はお休み、翌々月から）';
+  var _sc;
+  if (cycle.indexOf('隔月') >= 0) {
+    /* 請求そのものを「2ヶ月ごと」の価格に切り替える（金額は毎月と同額） */
     _sc = subStripeApply_('cycle_every_other', email);
+    if (firstDelivery === 'skip') {
+      var t = subNextDeliveryForEmail_(email);
+      var sh2 = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
+      sh2.appendRow([new Date(), email, 'skip', '', '対象:' + _subYmd_(t) + ' / 隔月変更にともなうお休み']);
+      skipLine = '次回のお届け: なし（' + _subYmd_(t) + ' はお休み、翌々月から）';
+      /* 次回を休むぶん、次の請求日も1ヶ月うしろへ送る */
+      _sc += ' ／ ' + subStripeApply_('skip', email);
+    }
+  } else {
+    _sc = subStripeApply_('cycle_monthly', email);
   }
   subCacheClear_(email);
 
@@ -6813,8 +6820,7 @@ function changeSubscriptionCycle(body) {
     skipLine,
     '',
     'Stripe: ' + _sc,
-    '※ 隔月の請求そのもの（2ヶ月ごとの自動課金）にはStripeの「隔月プラン価格」が必要です。当面は毎月請求のまま、次回請求日を1ヶ月後ろへ送る運用です。',
-    '定期便マスターの「頻度」も隔月に直してください。'
+    '定期便マスターの「頻度」も直してください。'
   ]);
   return jsonResponse({ ok: true, message: 'お届け頻度を変更しました。' });
 }
@@ -6938,6 +6944,45 @@ function _subPlanPriceId_(planId) {
   } catch (e) { return ''; }
 }
 
+
+/* 毎月の Price ID → 隔月（2ヶ月ごと）の Price ID。2026-09-10 に Stripe で9本作成。
+   金額は毎月と同額で、請求間隔だけ「2ヶ月ごと」。地域別に3本ずつあるので、
+   いま契約している Price ID からそのまま引ける（都道府県を見直す必要がない）。 */
+var SUB_PRICE_EVERY_OTHER = {
+  /* 本州・四国・九州 */
+  'price_1UA1ExGSkhU1UEciD52SzdAe': 'price_1UE1fPGSkhU1UEciMERdJEmG',  // ミニ ¥9,280
+  'price_1UA1GMGSkhU1UEciBOKaOXWT': 'price_1UE1ggGSkhU1UEciSe4mSehv',  // スターター ¥12,300
+  'price_1UA1HKGSkhU1UEciSPZnzKoJ': 'price_1UE1hjGSkhU1UEciQUXeyceK',  // レギュラー ¥21,800
+  /* 北海道 */
+  'price_1UA1FHGSkhU1UEciEd1vN806': 'price_1UE1fPGSkhU1UEcicig08x2C',  // ミニ ¥10,280
+  'price_1UA1GYGSkhU1UEciRlFUb6Ve': 'price_1UE1ggGSkhU1UEciHwOjqQcv',  // スターター ¥13,300
+  'price_1UA1HVGSkhU1UEcilV5tKDSI': 'price_1UE1hjGSkhU1UEcixbHhC1QH',  // レギュラー ¥22,800
+  /* 沖縄 */
+  'price_1UA1FVGSkhU1UEcidfaEPxmF': 'price_1UE1fPGSkhU1UEcilazWMprp',  // ミニ ¥9,980
+  'price_1UA1GlGSkhU1UEciITrkTHHe': 'price_1UE1ggGSkhU1UEci14JZR0kb',  // スターター ¥13,000
+  'price_1UA1HjGSkhU1UEciMKE1kuBg': 'price_1UE1hjGSkhU1UEciZntpdvj1'   // レギュラー ¥22,500
+};
+
+/* 毎月 → 隔月。無ければ '' */
+function _subPriceEveryOther_(monthlyId) {
+  return SUB_PRICE_EVERY_OTHER[String(monthlyId || '')] || '';
+}
+/* 隔月 → 毎月。無ければ ''（＝いまは隔月ではない） */
+function _subPriceMonthly_(everyOtherId) {
+  var id = String(everyOtherId || '');
+  for (var k in SUB_PRICE_EVERY_OTHER) {
+    if (SUB_PRICE_EVERY_OTHER[k] === id) return k;
+  }
+  return '';
+}
+/* Stripe の定期便オブジェクトから、いま課金に使われている Price ID を取り出す */
+function _subCurPriceId_(sub) {
+  var items = (sub && sub.items && sub.items.data) || [];
+  if (!items.length) return '';
+  var it = items[0];
+  return String((it.price && it.price.id) || (it.plan && it.plan.id) || '');
+}
+
 /* action: 'skip' | 'unskip' | 'pause' | 'resume' → 結果の説明文を返す（例外は投げない） */
 function subStripeApply_(action, email, extra) {
   try {
@@ -6959,6 +7004,8 @@ function subStripeApply_(action, email, extra) {
       if (!pid) return '未反映（プランのPrice IDが見つかりません）';
       var items = (sub.items && sub.items.data) || [];
       if (!items.length) return '未反映（Stripeの明細が取れません）';
+      /* いまが隔月の契約なら、プランを変えても隔月のまま（毎月に戻さない） */
+      if (_subPriceMonthly_(_subCurPriceId_(sub))) pid = _subPriceEveryOther_(pid) || pid;
       _subStripeCall_('subscriptions/' + sub.id, {
         'items[0][id]': items[0].id, 'items[0][price]': pid, 'proration_behavior': 'none'
       });
@@ -6976,7 +7023,27 @@ function subStripeApply_(action, email, extra) {
       _subStripeCall_('subscriptions/' + sub.id, { 'cancel_at_period_end': 'true' });
       return '次回のお届けを最後に解約する設定にしました（' + sub.id + '）';
     }
-    if (action === 'skip' || action === 'unskip' || action === 'cycle_every_other') {
+    if (action === 'cycle_every_other' || action === 'cycle_monthly') {
+      var cItems = (sub.items && sub.items.data) || [];
+      if (!cItems.length) return '未反映（Stripeの明細が取れません）';
+      var curId = _subCurPriceId_(sub);
+      var toId  = (action === 'cycle_every_other') ? _subPriceEveryOther_(curId) : _subPriceMonthly_(curId);
+      if (!toId) {
+        return (action === 'cycle_every_other')
+          ? '未反映（いまの価格 ' + curId + ' に対応する隔月価格がありません）'
+          : '未反映（すでに毎月の請求です）';
+      }
+      _subStripeCall_('subscriptions/' + sub.id, {
+        'items[0][id]': cItems[0].id,
+        'items[0][price]': toId,
+        'proration_behavior': 'none',
+        'billing_cycle_anchor': 'unchanged'
+      });
+      return (action === 'cycle_every_other'
+        ? '請求を2ヶ月ごとに切り替えました（'
+        : '請求を毎月に戻しました（') + toId + '・' + sub.id + '）';
+    }
+    if (action === 'skip' || action === 'unskip') {
       var base = Number(sub.current_period_end || 0);
       if (!base) return '未反映（次回請求日が取れません）';
       var d = new Date(base * 1000);
