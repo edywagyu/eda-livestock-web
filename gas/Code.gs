@@ -6863,15 +6863,17 @@ function changeSubscriptionCycle(body) {
   var skipLine = '次回のお届け: あり（そこから隔月）';
   var _sc;
   if (cycle.indexOf('隔月') >= 0) {
-    /* 請求そのものを「2ヶ月ごと」の価格に切り替える（金額は毎月と同額） */
-    _sc = subStripeApply_('cycle_every_other', email);
+    /* 請求そのものを「2ヶ月ごと」の価格に切り替える（金額は毎月と同額）。
+       次回を休むときは、価格の切り替えと同時に次回請求日を1ヶ月うしろへ送る
+       （2回に分けて呼ぶと、間隔変更のたびに請求日が切り直されて二重にズレる） */
     if (firstDelivery === 'skip') {
       var t = subNextDeliveryForEmail_(email);
       var sh2 = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
       sh2.appendRow([new Date(), email, 'skip', '', '対象:' + _subYmd_(t) + ' / 隔月変更にともなうお休み']);
       skipLine = '次回のお届け: なし（' + _subYmd_(t) + ' はお休み、翌々月から）';
-      /* 次回を休むぶん、次の請求日も1ヶ月うしろへ送る */
-      _sc += ' ／ ' + subStripeApply_('skip', email);
+      _sc = subStripeApply_('cycle_every_other', email, 1);
+    } else {
+      _sc = subStripeApply_('cycle_every_other', email);
     }
   } else {
     _sc = subStripeApply_('cycle_monthly', email);
@@ -7102,15 +7104,31 @@ function subStripeApply_(action, email, extra) {
           ? '未反映（いまの価格 ' + curId + ' に対応する隔月価格がありません）'
           : '未反映（すでに毎月の請求です）';
       }
+      /* 🔴 請求間隔を変えると Stripe は請求サイクルの切り直しを必ず要求する。
+         billing_cycle_anchor='unchanged' を渡すと 400
+         「Changing plan intervals. There's no way to leave billing cycle unchanged.」
+         （2026-09-10 実測）。かといって省略すると"今すぐ"で切り直され、その場で課金されてしまう。
+         → いまの期間末を trial_end に渡して、そこを次回請求日として切り直す。
+            これなら今日は課金されず、次回はいままでどおりの日、その次から2ヶ月ごとになる。
+         extra に月数を渡すと、その分だけ次回請求日を後ろへ送る（隔月変更で次回を休むとき用）。 */
+      var cBase = Number(sub.current_period_end || 0);
+      if (!cBase) return '未反映（次回請求日が取れません）';
+      var cD = new Date(cBase * 1000);
+      var cShift = Number(extra) || 0;
+      if (cShift) cD.setMonth(cD.getMonth() + cShift);
+      var cTs = Math.floor(cD.getTime() / 1000);
+      if (cTs <= Math.floor(new Date().getTime() / 1000) + 300) {
+        return '未反映（次回請求日が近すぎます。手動でご確認ください）';
+      }
       _subStripeCall_('subscriptions/' + sub.id, {
         'items[0][id]': cItems[0].id,
         'items[0][price]': toId,
         'proration_behavior': 'none',
-        'billing_cycle_anchor': 'unchanged'
+        'trial_end': String(cTs)
       });
       return (action === 'cycle_every_other'
-        ? '請求を2ヶ月ごとに切り替えました（'
-        : '請求を毎月に戻しました（') + toId + '・' + sub.id + '）';
+        ? '請求を2ヶ月ごとに切り替えました（次回請求 '
+        : '請求を毎月に戻しました（次回請求 ') + _subYmd_(cD) + '・' + toId + '・' + sub.id + '）';
     }
     if (action === 'skip' || action === 'unskip') {
       var base = Number(sub.current_period_end || 0);
