@@ -3202,15 +3202,6 @@ button:focus-visible, a:focus-visible {
   <label class="subcheck-label" for="subCheckPhone">お電話番号（任意）</label>
   <input type="tel" class="subcheck-input" id="subCheckPhone" placeholder="090-1234-5678" autocomplete="tel">
   </div>
-  <div class="subcheck-field">
-  <label class="subcheck-label" for="subCheckWhere">どちらでお申し込みでしたか</label>
-  <select class="subcheck-select" id="subCheckWhere">
-   <option value="以前のホームページ">以前のホームページ</option>
-   <option value="いまのホームページ">いまのホームページ</option>
-   <option value="お電話・LINE・直接">お電話・LINE・直接</option>
-   <option value="わからない" selected>わからない</option>
-  </select>
-  </div>
   <div class="subcheck-actions">
   <button type="button" class="subcheck-btn subcheck-btn--yes" id="subCheckSend" onclick="subCheckSubmit()">この内容で送る</button>
   </div>
@@ -3783,7 +3774,6 @@ function subCheckSubmit() {
  var name = (document.getElementById('subCheckName').value || '').trim();
  var email = (document.getElementById('subCheckEmail').value || '').trim();
  var phone = (document.getElementById('subCheckPhone').value || '').trim();
- var where = document.getElementById('subCheckWhere').value || '';
  function fail(msg) { if (err) { err.textContent = msg; err.style.display = 'block'; } }
  if (!name) { fail('お名前をご入力ください'); return; }
  if (!email || email.indexOf('@') === -1) { fail('メールアドレスをご入力ください'); return; }
@@ -3792,7 +3782,6 @@ function subCheckSubmit() {
 
  var c = _subCheckCustomer || {};
  var msg = '【マイページより：定期便を継続中とのご回答】\n' +
-  'お申し込み先: ' + where + '\n' +
   'マイページのお名前: ' + (c.name || '(未登録)') + '\n' +
   'マイページのメール: ' + (c.email || '(未登録)') + '\n' +
   'LINE表示名: ' + (c.line_name || '(なし)');
