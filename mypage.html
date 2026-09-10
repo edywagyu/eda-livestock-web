@@ -3471,7 +3471,7 @@ async function sendOtp() {
  if (!email || !email.includes('@')) { showOtpError('メールアドレスを入力してください'); return; }
  _otpEmail = email;
  try {
-   const res = await fetch(GAS_API_URL + '?action=request_otp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'request_otp', email}) });
+   const res = await fetch(GAS_API_URL + '?action=request_otp', { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'request_otp', email}) });
    const data = await res.json();
    if (data.ok) {
      document.getElementById('otpStep1').style.display = 'none';
@@ -3484,7 +3484,7 @@ async function verifyOtp() {
  const code = document.getElementById('otpCodeInput').value.trim();
  if (!code || code.length < 6) { showOtpError('6桁のコードを入力してください'); return; }
  try {
-   const res = await fetch(GAS_API_URL + '?action=verify_otp', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'verify_otp', email: _otpEmail, code}) });
+   const res = await fetch(GAS_API_URL + '?action=verify_otp', { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'verify_otp', email: _otpEmail, code}) });
    const data = await res.json();
    if (data.ok) {
      showOtpError('');
