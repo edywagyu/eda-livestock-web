@@ -197,7 +197,7 @@ img { max-width: 100%; display: block; }
 
   <nav class="links">
 
-    <a class="link-card" href="https://www.eda-livestock.com/shop.html">
+    <a class="link-card" href="https://www.eda-livestock.com/shop.html?src=instagram&amp;l=shop">
       <span class="link-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
@@ -214,7 +214,7 @@ img { max-width: 100%; display: block; }
       </span>
     </a>
 
-    <a class="link-card" href="https://lin.ee/S8GFrFk">
+    <a class="link-card" href="https://lin.ee/S8GFrFk" data-line-cta="instagram-links">
       <span class="link-icon is-line" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5.1 8.3v7.4h3.1"/>
@@ -233,7 +233,7 @@ img { max-width: 100%; display: block; }
       </span>
     </a>
 
-    <a class="link-card" href="https://www.eda-livestock.com/furusato.html">
+    <a class="link-card" href="https://www.eda-livestock.com/furusato.html?src=instagram&amp;l=furusato">
       <span class="link-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="8" width="18" height="13" rx="1.5"/>
@@ -261,6 +261,19 @@ img { max-width: 100%; display: block; }
   </footer>
 
 </main>
+
+<!-- アクセス解析: このページの表示(page_view)と、LINEボタンのクリック(line_click)を events に記録。
+     ショップ / ふるさと納税は遷移先で ?src=instagram&l=… を拾って src_click が記録される。 -->
+<script src="public/js/analytics.js?v=005" defer></script>
+<script>
+/* lin.ee は analytics.js の自動計測（href に line.me を含むリンク）に当たらないので、ここで拾う */
+document.addEventListener('click', function (e) {
+  var a = e.target && e.target.closest && e.target.closest('a[href*="lin.ee"]');
+  if (a && window.edaAnalytics && window.edaAnalytics.lineClick) {
+    window.edaAnalytics.lineClick();
+  }
+}, true);
+</script>
 
 </body>
 </html>
