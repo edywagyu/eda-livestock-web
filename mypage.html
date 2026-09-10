@@ -3678,7 +3678,8 @@ async function verifyOtp() {
    if (data.ok) {
      showOtpError('');
      // OTP 認証成功 → セッション+キャッシュ保存してダッシュボード表示
-     const session = { email: _otpEmail, auth: 'otp', ts: Date.now(), cache: { customer: data.customer || null, orders: data.orders || [] } };
+     /* 2026-09-10: サーバが発行した合言葉を保存する。以降の問い合わせに自動で付く */
+     const session = { email: _otpEmail, auth: 'otp', ts: Date.now(), token: data.token || '', cache: { customer: data.customer || null, orders: data.orders || [] } };
      try { localStorage.setItem('eda-mypage-session', JSON.stringify(session)); } catch(e){}
      renderDashboard(data.customer || { name: _otpEmail.split('@')[0], email: _otpEmail }, data.orders || []);
    } else { showOtpError(otpErrorJa(data.error, 'コードが正しくないか、有効期限（10分）が切れています。もう一度お試しください。')); }
@@ -4097,6 +4098,7 @@ async function tryLineLogin(profile) {
   window.unlockMember({ line_uid: profile.userId, name: profile.displayName, email: result.customer.email });
  }
  lineSession.email = result.customer.email || '';
+ lineSession.token = result.token || '';   /* 2026-09-10: 合言葉を保存 */
  localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
  renderDashboard(result.customer, result.orders || []);
  return;
@@ -6122,7 +6124,7 @@ function copyTrackingFallback(text) {
 <!-- アクセス解析（他ページと同じ analytics.js。ここが無いとこのページの改修は効果を測れない） -->
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=008" defer></script>
+<script src="public/js/eda-bundle.js?v=009" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>

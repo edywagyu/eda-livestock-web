@@ -1788,7 +1788,9 @@ async function runRewardCheck(email, uid) {
   if (!window.EDA_API) return;
   _rewardKey = key;
   try {
-    var d = await window.EDA_API.get('customer_lookup', { email: email, line_uid: uid || '' });
+    /* 2026-09-10: ここはログイン前なので customer_lookup（要ログイン）は使えない。
+       個人情報を返さない order_count に切り替えた。数え方は下の reward-count.js のまま。 */
+    var d = await window.EDA_API.get('order_count', { email: email });
     /* 🔴 数え方は public/js/reward-count.js に集約（単品のみ・定期便は数えない/2026-08-26 田崎さん決定）。
        total_orders は定期便も重複行も含む全件なので使わない。ここを変えると
        マイページの「あと1回で◯◯」と実際に付く特典がズレる。 */
@@ -3635,7 +3637,7 @@ try { scheduleRepeatShipCheck(); } catch (e) {}
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=005" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=008" defer></script>
+<script src="public/js/eda-bundle.js?v=009" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 

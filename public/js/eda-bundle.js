@@ -80,17 +80,40 @@
         ここに入れない。全員に同じ内容を返すものなので、キャッシュが効いた方が速い。 */
   const NO_CACHE_ACTIONS = ['customer_lookup', 'repeat_shipping', 'coupon_status'];
 
+  /* 🔴 ログインの証拠（合言葉）を毎回そえる — 2026-09-10 追加
+     以前は「メールアドレスさえ送れば誰にでも」氏名・電話・住所・注文履歴が返り、
+     住所変更も解約も通っていた（ログインを通らなくても叩けた）。
+     ログイン時に受け取った合言葉を、すべての問い合わせに自動で付ける。 */
+  function edaAuthToken() {
+    try {
+      var s = JSON.parse(localStorage.getItem('eda-mypage-session') || 'null');
+      return (s && s.token) || '';
+    } catch (e) { return ''; }
+  }
+  /* サーバに「ログインが必要」と言われたら、古いログイン情報を捨ててログイン画面へ戻す */
+  function edaHandleAuth(res) {
+    try {
+      if (res && res.code === 'AUTH_REQUIRED') {
+        localStorage.removeItem('eda-mypage-session');
+        if (/mypage|subscription-/.test(location.pathname)) location.href = 'mypage.html';
+      }
+    } catch (e) {}
+    return res;
+  }
+
   // ヘルパー: GAS への fetch を統一
   global.EDA_API = {
     async get(action, params) {
       const url = new URL(FINAL_URL);
       url.searchParams.set('action', action);
       Object.entries(params || {}).forEach(([k, v]) => url.searchParams.set(k, v));
+      const tk = edaAuthToken();
+      if (tk) url.searchParams.set('token', tk);
       const noCache = NO_CACHE_ACTIONS.indexOf(action) >= 0;
       if (noCache) url.searchParams.set('_cb', Date.now() + '-' + Math.random().toString(36).slice(2, 8));
       try {
         const res = await fetch(url.toString(), noCache ? { cache: 'no-store' } : undefined);
-        return await res.json();
+        return edaHandleAuth(await res.json());
       } catch (e) {
         console.error('[EDA_API.get]', action, e);
         return { ok: false, error: e.message };
@@ -99,14 +122,17 @@
     async post(action, body) {
       const url = new URL(FINAL_URL);
       url.searchParams.set('action', action);
+      const payload = Object.assign({}, body || {});
+      const tk = edaAuthToken();
+      if (tk) payload.token = tk;
       try {
         const res = await fetch(url.toString(), {
           method: 'POST',
           // GAS は text/plain で受け取れる (CORS 簡略化のため)
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify(body || {})
+          body: JSON.stringify(payload)
         });
-        return await res.json();
+        return edaHandleAuth(await res.json());
       } catch (e) {
         console.error('[EDA_API.post]', action, e);
         return { ok: false, error: e.message };

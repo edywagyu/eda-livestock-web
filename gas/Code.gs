@@ -151,11 +151,113 @@ var STAFF_PROTECTED = {
   merge_dup_customers: 1
 };
 
+/* ============================================================
+   ログインの証拠（合言葉）— 2026-09-10 追加
+   ------------------------------------------------------------
+   これまで、お客様向けの窓口は「メールアドレスさえ渡せば誰にでも」
+   氏名・電話・住所・注文履歴・カード下4桁を返し、住所変更や解約まで
+   受け付けていた（ログインを通らなくても叩ける＝OWASP A01 と同じ形）。
+   ログイン自体は前からあり、合言葉(token)も発行していたが、
+   どこにも保管しておらず、どの窓口も確認していなかった。
+   → 発行した合言葉を sessions タブに保管し、窓口ごとに確認する。
+
+   切り替えスイッチ: スクリプトプロパティ REQUIRE_CUSTOMER_TOKEN
+     'off' … 何も見ない（従来どおり）
+     'log' … 合言葉が無くても通すが events に記録だけ残す（既定・様子見用）
+     'on'  … 合言葉が無ければ断る（本番運用）
+   ★ 画面側(mypage/subscription-*)が合言葉を送るようになってから 'on' にすること。
+   ============================================================ */
+var AUTH_TAB = 'sessions';
+var AUTH_DEFAULT_DAYS = 30;
+
+/* 合言葉が要る窓口。ここに無いものは誰でも叩ける（商品一覧・在庫など） */
+var CUSTOMER_PROTECTED = {
+  customer_lookup: 1, update_profile: 1,
+  skip_subscription: 1, resume_subscription: 1, cancel_subscription: 1,
+  unskip_subscription: 1, customize_subscription: 1,
+  change_subscription_plan: 1, change_subscription_cycle: 1
+};
+
+function authMode_() { return String(cfg('REQUIRE_CUSTOMER_TOKEN', 'log')).trim().toLowerCase(); }
+
+/* ログインが通ったときに1本発行して保管する */
+function authIssue_(email, method, days) {
+  var em = String(email || '').trim().toLowerCase();
+  if (!em) return '';
+  var token = Utilities.base64EncodeWebSafe(Utilities.getUuid() + Utilities.getUuid()).replace(/=+$/, '');
+  try {
+    var sh = sheet(AUTH_TAB, ['token', 'email', 'method', 'issued_at', 'expires_at']);
+    var exp = new Date();
+    exp.setDate(exp.getDate() + (Number(days) || AUTH_DEFAULT_DAYS));
+    sh.appendRow([token, em, String(method || ''), new Date(), exp]);
+  } catch (e) { return ''; }
+  return token;
+}
+
+/* 合言葉 → その人のメールアドレス。無効・期限切れなら '' */
+function authEmail_(token) {
+  var t = String(token || '').trim();
+  if (!t) return '';
+  try {
+    var sh = ss().getSheetByName(AUTH_TAB);
+    if (!sh) return '';
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return '';
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iT = h.indexOf('token'), iE = h.indexOf('email'), iX = h.indexOf('expires_at');
+    if (iT < 0 || iE < 0) return '';
+    var now = new Date();
+    for (var i = d.length - 1; i >= 1; i--) {
+      if (String(d[i][iT]) !== t) continue;
+      if (iX >= 0 && d[i][iX] && new Date(d[i][iX]) < now) return '';
+      return String(d[i][iE] || '').trim().toLowerCase();
+    }
+  } catch (e) {}
+  return '';
+}
+
+/* 窓口ごとの確認。通すときは null、断るときは返す中身を返す。
+   通ったときは「画面から来たメールアドレス」を合言葉から引いた本人のもので上書きする
+   ＝画面が誰のアドレスを送ってきても、本人の分しか触れない。 */
+function authGuard_(action, params, body) {
+  if (!CUSTOMER_PROTECTED[action]) return null;
+  var mode = authMode_();
+  if (mode === 'off') return null;
+  var who = authEmail_((params && params.token) || (body && body.token));
+  if (who) {
+    if (params) params.email = who;
+    if (body) body.email = who;
+    return null;
+  }
+  try { log('auth_missing', { action: action, mode: mode }); } catch (e) {}
+  if (mode !== 'on') return null;   /* 'log' は様子見なので通す */
+  return jsonResponse({ ok: false, code: 'AUTH_REQUIRED',
+    error: 'ログインが必要です。お手数ですが、もう一度ログインしてください。' });
+}
+
+/* GET order_count { email } — 特典が何回目かを数えるためだけの窓口（2026-09-10）。
+   レジ画面はログイン前なので customer_lookup を使えない。個人情報は一切返さず、
+   「注文番号・種別・届け先があるかどうか」だけを返す。数え方は従来どおり
+   画面側の public/js/reward-count.js に任せる（2つに分けるとズレるため）。 */
+function orderCountPublic(params) {
+  var email = String((params && params.email) || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return jsonResponse({ ok: false, error: 'invalid email' });
+  var orders = getOrdersByEmail(email) || [];
+  var slim = orders.map(function (o) {
+    var d = (o.destinations_json !== undefined) ? o.destinations_json : o.dest;
+    var has = Array.isArray(d) ? d.length > 0 : (!!String(d || '').trim() && String(d).trim() !== '[]');
+    return { num: String(o.order_number || o.num || ''), mode: String(o.mode || ''), dest: has ? [1] : [] };
+  });
+  return jsonResponse({ ok: true, orders: slim });
+}
+
 function doGet(e) {
   const action = (e.parameter && e.parameter.action) || 'ping';
   if (STAFF_PROTECTED[action] && !requireStaff(e)) {
     return jsonResponse({ ok:false, error: 'unauthorized' });
   }
+  var _agG = authGuard_(action, e.parameter, null);
+  if (_agG) return _agG;
   try {
     switch (action) {
       case 'ping':              return ping();
@@ -179,6 +281,7 @@ function doGet(e) {
       case 'customers_csv':     return customersCsv(e.parameter);
       case 'segment_stats':     return segmentStats();
       case 'customer_lookup':   return customerLookup(e.parameter);
+      case 'order_count':       return orderCountPublic(e.parameter);   /* レジ画面の特典判定用・個人情報なし */
       case 'check_config':      return jsonResponse(checkConfig());
       case 'setup':             return runSetup(e.parameter);
       case 'update_properties': return jsonResponse(setupAllProperties());
@@ -272,6 +375,9 @@ function doPost(e) {
   if (STAFF_PROTECTED[action] && !requireStaff(e)) {
     return jsonResponse({ ok:false, error: 'unauthorized' });
   }
+
+  var _agP = authGuard_(action, e.parameter, body);
+  if (_agP) return _agP;
 
   try {
     log(action, body);
@@ -996,18 +1102,16 @@ function createSubscriptionCheckout(body) {
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
   // ★ 初月50%OFF: Property 未設定でも 'FIRST50' にフォールバック（黙って割引が消える事故を防止）。
   const halfCoupon = cfg('STRIPE_COUPON_50OFF', 'FIRST50');
-  /* 🔁 旧カート(Shopify/WIX)からの切り替え = 初回1回分を無料にする(100%OFF・duration=once)。
+  /* 🔁 旧カート(Shopify/WIX)からの切り替え（2026-09-10 田崎さん確定＝初回半額）。
+     初回半額は新規の方にも既に効いている(halfCoupon)ので、割引そのものは上乗せしない。
+     ここでは「誰が切り替えで入ってきたか」を数えられるように記録だけ残す。
      画面から switch_from_legacy が来ても、定期便マスターで「有効・旧カート・肉」を
-     サーバ側で照合してからでないと効かない（URLを知っているだけでは無料にならない）。
-     クーポンIDは Script Property STRIPE_COUPON_SWITCH100 で差し替え可能。既定は既存の100%OFF券。 */
+     サーバ側で照合してからでないと切り替え扱いにならない。 */
   const switchHit = body.switch_from_legacy
     ? legacySubscriberByEmail_(String((body.customer && body.customer.email) || ''))
     : null;
   const isSwitch = !!(switchHit && /肉/.test(switchHit.category || ''));
-  const switchCoupon = cfg('STRIPE_COUPON_SWITCH100', 'DEMO100');
-  const applyCoupon = isTestCoupon ? 'DEMO100'
-                    : isSwitch     ? switchCoupon
-                    : (demoCoupon || halfCoupon || '');
+  const applyCoupon = isTestCoupon ? 'DEMO100' : (demoCoupon || halfCoupon || '');
   if (isSwitch) log('subscription_switch_offer', { email: (body.customer && body.customer.email) || '', from: switchHit.kubun, plan_before: switchHit.plan });
 
   // Checkout in PAYMENT mode (初月分の一回限り課金)
@@ -2929,7 +3033,8 @@ function verifyOtp(body) {
       sh.getRange(i+1, 4).setValue(true); // used
       const orders = getOrdersByEmail(body.email);
       const customer = getCustomerByEmail(body.email, orders);
-      const token = Utilities.base64Encode(body.email + ':' + Utilities.getUuid());
+      /* 2026-09-10: 発行しっぱなしだった合言葉を sessions タブに保管する */
+      const token = authIssue_(body.email, 'otp', AUTH_DEFAULT_DAYS);
       attachCardToCustomer(customer, orders);
       return jsonResponse({ ok:true, success: true, token: token, customer: customer, orders: orders });
     }
@@ -4405,7 +4510,9 @@ function lineLogin(body) {
         }
         attachCardToCustomer(customer, orders);
         attachSwitchOffer_(customer);   /* 旧カート定期便の方に切り替え案内を出す */
-        return jsonResponse({ ok:true, matched:true, customer, orders });
+        /* 2026-09-10: LINEログインでも合言葉を発行して返す */
+        return jsonResponse({ ok:true, matched:true, customer, orders,
+                              token: authIssue_(customer.email, 'line', AUTH_DEFAULT_DAYS) });
       }
     }
     return jsonResponse({ ok:true, matched:false });
