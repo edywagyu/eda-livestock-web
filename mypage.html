@@ -3085,13 +3085,15 @@ button:focus-visible, a:focus-visible {
  <!-- 🔁 旧カート（Shopify / WIX）の定期便をご利用中の方への切り替え案内。
       出す・出さないは GAS が決める（customer.switch_offer が付いた方だけ display:block になる）。
       対象＝定期便マスターで「状態=有効・区分=shopify/WIX・カテゴリ=肉」の方。
-      米・玄米の契約は新ECの定期便に受け皿が無いので出ない。 -->
+      米・玄米の契約は新ECの定期便に受け皿が無いので出ない。
+      オファーは「初回半額」（2026-09-10 田崎さん確定）。初回半額は新規の方にも
+      既に適用されているので、割引そのものは切り替え専用ではない。 -->
  <div class="switch-offer" id="switchOffer" style="display:none;">
  <p class="switch-offer-eyebrow">定期便をご利用のお客様へ</p>
- <h2 class="switch-offer-title">新しい定期便へ、<strong>初回1回分無料</strong>で移れます</h2>
+ <h2 class="switch-offer-title">新しい定期便へ、<strong>初回半額</strong>で移れます</h2>
  <p class="switch-offer-body" id="switchOfferBody"></p>
  <ul class="switch-offer-list">
-  <li>初回の1回分が <strong>0円</strong>（お支払いは2回目から）</li>
+  <li>最初のお届けが <strong>半額</strong>になります</li>
   <li>お届け日の変更・お休み・解約が、このマイページからできます</li>
   <li>切り替えが終わるまで、<strong>今のお届けはそのまま</strong>続きます</li>
  </ul>
