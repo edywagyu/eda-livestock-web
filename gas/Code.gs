@@ -3265,6 +3265,7 @@ function skipSubscription(body) {
     subject: _pause ? '【江田畜産】定期便 一時停止申請' : '【江田畜産】定期便スキップ申請',
     body: '顧客: ' + body.email + '\n対象: ' + (_pause ? '一時停止（再開のご連絡まで）' : _targetYmd + ' のお届けをスキップ → 次回は ' + _after) + '\n備考: ' + (body.note || body.reason || '(なし)') + '\n\nStripe: ' + _stripe
   });
+  if (_subStripeFailed_(_stripe)) return _subStripeFailJson_('スキップ／一時停止');
   return jsonResponse({ ok:true, next_delivery: _after });
 }
 
@@ -3301,6 +3302,7 @@ function cancelSubscription(body) {
     body: 'お客様: ' + email + '\n終了時期: ' + endText + '\n理由: ' + (reason || '(未記入)') +
           '\n\nStripe: ' + _sx
   });
+  if (_subStripeFailed_(_sx)) return _subStripeFailJson_('解約');
   return jsonResponse({ ok:true, cancel_note: endText, last_delivery: lastDelivery,
     message: lateInMonth ? ('承りました。' + lastDelivery + ' のお届けを最後に終了します。')
                          : '承りました。次回のお届けはありません。' });
@@ -6848,6 +6850,7 @@ function changeSubscriptionPlan(body) {
     '',
     'Stripe: ' + _sp
   ]);
+  if (_subStripeFailed_(_sp)) return _subStripeFailJson_('プランの変更');
   return jsonResponse({ ok: true, message: 'プランを変更しました。' });
 }
 
@@ -6870,6 +6873,7 @@ function resumeSubscription(body) {
     '',
     'Stripe: ' + _sr
   ]);
+  if (_subStripeFailed_(_sr)) return _subStripeFailJson_('定期便の再開');
   return jsonResponse({ ok: true, next_delivery: _subYmd_(subNextDeliveryForEmail_(email)) });
 }
 
@@ -6892,6 +6896,7 @@ function unskipSubscription(body) {
     '',
     'Stripe: ' + _st
   ]);
+  if (_subStripeFailed_(_st)) return _subStripeFailJson_('スキップの取り消し');
   return jsonResponse({ ok: true, next_delivery: target });
 }
 
@@ -6936,6 +6941,7 @@ function changeSubscriptionCycle(body) {
     'Stripe: ' + _sc,
     '定期便マスターの「頻度」も直してください。'
   ]);
+  if (_subStripeFailed_(_sc)) return _subStripeFailJson_('お届け頻度の変更');
   return jsonResponse({ ok: true, message: 'お届け頻度を変更しました。' });
 }
 
@@ -7099,6 +7105,18 @@ function _subCurPriceId_(sub) {
   if (!items.length) return '';
   var it = items[0];
   return String((it.price && it.price.id) || (it.plan && it.plan.id) || '');
+}
+
+/* 🔴 Stripeの反映結果を、お客様の画面に正しく出すための判定（2026-09-10 追加）。
+   これまでは Stripe が失敗しても必ず ok:true を返しており、実際は何も変わっていないのに
+   お客様の画面には「変更しました」と出ていた。失敗はスタッフ宛メールにしか書かれないため、
+   隔月切り替えが400で失敗し続けていたことに誰も気づけなかった。
+     '失敗:'   … Stripe が明確に断った → お客様にも失敗として返す（下の関数）
+     '未反映（' … 安全スイッチOFFなど。申請は記録済みで人が対応するので、従来どおり成功扱い */
+function _subStripeFailed_(res) { return String(res || '').indexOf('失敗') === 0; }
+function _subStripeFailJson_(what) {
+  return jsonResponse({ ok: false,
+    error: what + 'ができませんでした。恐れ入りますが、もう一度お試しいただくかお問い合わせください。' });
 }
 
 /* action: 'skip' | 'unskip' | 'pause' | 'resume' → 結果の説明文を返す（例外は投げない） */
