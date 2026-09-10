@@ -114,6 +114,14 @@ function installDailyDigestTrigger() {
   ScriptApp.newTrigger('runDailySendDigest').timeBased().everyDays(1).atHour(DSD_HOUR).inTimezone(DSD_TZ).create();
   return { ok: true, hour: DSD_HOUR, removed: removed };
 }
+/* ---- 2026-09-09 田崎さん指示「夜の2通を1つに」----
+   20時の単独送信をやめ、21時の「今日やったこと」に中身ごと合流させた。
+   20時のトリガーは残してあるが、この旗が立っている間は何もせず終わる。
+   元に戻したい（20時にも単独で届くようにしたい）ときは setDigestMergedOff()。 */
+function dsd_merged_()        { return String(cfg('DIGEST_MERGED', 'true')) !== 'false'; }
+function setDigestMergedOff() { PropertiesService.getScriptProperties().setProperty('DIGEST_MERGED', 'false'); return 'DIGEST_MERGED=false（20時にも単独で届きます）'; }
+function setDigestMergedOn()  { PropertiesService.getScriptProperties().setProperty('DIGEST_MERGED', 'true');  return 'DIGEST_MERGED=true（21時の1通にまとめます）'; }
+
 function setDigestOn()  { PropertiesService.getScriptProperties().setProperty('DIGEST_ENABLED', 'true');  return 'DIGEST_ENABLED=true'; }
 function setDigestOff() { PropertiesService.getScriptProperties().setProperty('DIGEST_ENABLED', 'false'); return 'DIGEST_ENABLED=false'; }
 
@@ -331,8 +339,11 @@ function dsd_cartItems_(events, sentAt, pnames) {
 /* ============================================================
    本体
    ============================================================ */
-function runDailySendDigest() {
-  var now = new Date();
+/* ---- 集めるところだけ切り出したもの ----
+   2026-09-09 田崎さん指示「夜の2通を1つにまとめて」。
+   21時の「今日やったこと」(DailyWorkReport.gs) から呼ぶ。
+   ここは数字と名簿を作るだけで、メールは組み立てない。 */
+function dsd_collect_() {
   var names = dsd_names_();
   var plans = [];
 
@@ -371,6 +382,21 @@ function runDailySendDigest() {
   var todayCount = 0;
   plans.forEach(function (p) { if (!p.note) todayCount += p.rows.length; });
 
+  return { names: names, plans: plans, cart: cart, todayCount: todayCount };
+}
+
+/* ---- 単独で1通送る（2026-09-09以降は既定で送らない）----
+   20時のトリガーはそのまま残っているが、DIGEST_MERGED=true なので何もせず終わる。
+   単独で見たいときは runDailySendDigestForce() / runDailySendDigestDry()。 */
+function runDailySendDigest(opts) {
+  var now = new Date();
+  if (!(opts && opts.force) && dsd_merged_()) {
+    log('digest_skipped', { reason: 'merged_into_workreport' });
+    return { ok: true, sent: false, note: '21時の「今日やったこと」に統合済み（単独で送るなら runDailySendDigestForce）' };
+  }
+  var c = dsd_collect_();
+  var names = c.names, plans = c.plans, cart = c.cart, todayCount = c.todayCount;
+
   var subject = '【自動配信】' + Utilities.formatDate(now, DSD_TZ, 'M月d日') +
                 '(' + DSD_WD[Number(Utilities.formatDate(now, DSD_TZ, 'u')) % 7] + ')' +
                 ' 今日送る ' + todayCount + '件 ／ カゴ落ちのその後 ' + cart.rows.length + '件';
@@ -387,11 +413,14 @@ function runDailySendDigest() {
   return { ok: true, sent: true, to: to, today: todayCount, cart: cart.rows.length };
 }
 
+/* 統合をいったん無視して、いま単独で1通送る */
+function runDailySendDigestForce() { return runDailySendDigest({ force: true }); }
+
 /* 送らずに中身だけ確認したいとき */
 function runDailySendDigestDry() {
   var saved = cfg('DIGEST_ENABLED', 'true');
   PropertiesService.getScriptProperties().setProperty('DIGEST_ENABLED', 'false');
-  try { return runDailySendDigest(); }
+  try { return runDailySendDigest({ force: true }); }
   finally { PropertiesService.getScriptProperties().setProperty('DIGEST_ENABLED', saved); }
 }
 
@@ -410,7 +439,53 @@ function dsd_html_(now, plans, cart, names) {
   h.push('<h2 style="margin:6px 0 2px;font-size:19px;">今日、公式LINE（自動）で誰に何が飛ぶか</h2>');
   h.push('<div style="font-size:12px;color:' + SUB + ';margin-bottom:16px;">判定は実際に送るプログラムと同じものを通しています。止めたい場合はスイッチをOFFにしてください。</div>');
 
-  /* --- 今日の予定 --- */
+  h.push(dsd_sectionsHtml_(plans, cart, names));
+
+  h.push('<div style="margin-top:22px;padding-top:12px;border-top:1px solid ' + LINE_ + ';font-size:11px;color:' + SUB + ';line-height:1.7;">');
+  h.push('※ LINEに「既読・未読」を取る仕組みはありません（LINE側が出していない）。代わりに配信リンクを押したかどうかを「リンク」列に出しています。押していない＝読んでいない、とは言い切れません。<br>');
+  h.push('※「カートに残っている」は、送ったあとに購入もカートからの削除も記録されていない状態です。買ってくださった方はこの表には出しません。<br>');
+  h.push('※「カートに入っている商品」は、カゴ落ちの前後48時間にカートへ入れて、そのあと外していない商品です。LINEのIDを全イベントに付け始める前（2026年8月頭より前）の古い送信は取れないので「（記録なし）」になります。<br>');
+  h.push('※ このメールは毎晩20時。実際に送るのは 送料半額・感想・初回クーポンとも18時台、カゴ落ちは毎時。<br>');
+  h.push('※ 止めたいときは、その施策のスイッチをOFFにしてください（このメール自体を止めるなら setDigestOff）。');
+  h.push('</div></div>');
+  return h.join('');
+}
+
+/* テキスト版（HTMLを読めない環境向けの控え） */
+function dsd_text_(plans, cart, names) {
+  var t = [];
+  plans.forEach(function (p) {
+    t.push('■ ' + p.title + '（' + p.time + '／スイッチ ' + p.sw + '）');
+    if (p.note) t.push('  ' + p.note);
+    if (!p.rows.length) { t.push('  対象なし'); return; }
+    p.rows.forEach(function (x) {
+      t.push('  - ' + (dsd_lineName_(names, x.uid, x.email) || '（未連携）') +
+             ' / ' + (dsd_orderName_(names, x.uid, x.email, x.name) || '（名前なし）') +
+             ' / ' + x.channel + (x.extra ? ' / ' + x.extra : ''));
+    });
+  });
+  t.push('');
+  t.push('■ カゴ落ち（これまでの全送信・買ってくださった方と自分は省略）');
+  if (cart.hiddenBought || cart.hiddenSelf) t.push('  （省いた分: 買ってくださった ' + (cart.hiddenBought||0) + ' 件 / 自分 ' + (cart.hiddenSelf||0) + ' 件）');
+  if (!cart.rows.length) t.push('  送信実績なし');
+  cart.rows.forEach(function (s) {
+    t.push('  - ' + (s.at ? dsd_stamp_(s.at) : '') + ' / ' + (s.lineName || '（不明）') +
+           ' / ' + (s.items || '（カートの中身は記録なし）') +
+           ' / ' + dsd_yen_(s.value) + ' / ' + s.state + ' / リンク ' + s.opened);
+  });
+  return t.join('\n');
+}
+
+
+/* ---- 予定とカゴ落ちの表だけを組む（囲みも見出しも脚注も付けない）----
+   2026-09-09 夜の2通を1通にまとめた際に切り出した。
+   単独メール(dsd_html_)と、21時の「今日やったこと」の両方から同じものを使う。 */
+function dsd_sectionsHtml_(plans, cart, names) {
+  var G = '#0F3D2E', LINE_ = '#ece8dc', SUB = '#7c8a83';
+  var th = 'padding:8px 10px;background:' + G + ';color:#fff;font-size:12px;text-align:left;white-space:nowrap;';
+  var td = 'padding:8px 10px;border-bottom:1px solid ' + LINE_ + ';font-size:13px;vertical-align:top;';
+  var h = [];
+
   plans.forEach(function (p) {
     var swColor = (p.sw === 'ON') ? G : '#b3261e';
     h.push('<div style="margin:0 0 6px;font-size:15px;font-weight:bold;">' + dsd_esc_(p.title) +
@@ -469,37 +544,5 @@ function dsd_html_(now, plans, cart, names) {
     h.push('</table>');
   }
 
-  h.push('<div style="margin-top:22px;padding-top:12px;border-top:1px solid ' + LINE_ + ';font-size:11px;color:' + SUB + ';line-height:1.7;">');
-  h.push('※ LINEに「既読・未読」を取る仕組みはありません（LINE側が出していない）。代わりに配信リンクを押したかどうかを「リンク」列に出しています。押していない＝読んでいない、とは言い切れません。<br>');
-  h.push('※「カートに残っている」は、送ったあとに購入もカートからの削除も記録されていない状態です。買ってくださった方はこの表には出しません。<br>');
-  h.push('※「カートに入っている商品」は、カゴ落ちの前後48時間にカートへ入れて、そのあと外していない商品です。LINEのIDを全イベントに付け始める前（2026年8月頭より前）の古い送信は取れないので「（記録なし）」になります。<br>');
-  h.push('※ このメールは毎晩20時。実際に送るのは 送料半額・感想・初回クーポンとも18時台、カゴ落ちは毎時。<br>');
-  h.push('※ 止めたいときは、その施策のスイッチをOFFにしてください（このメール自体を止めるなら setDigestOff）。');
-  h.push('</div></div>');
   return h.join('');
-}
-
-/* テキスト版（HTMLを読めない環境向けの控え） */
-function dsd_text_(plans, cart, names) {
-  var t = [];
-  plans.forEach(function (p) {
-    t.push('■ ' + p.title + '（' + p.time + '／スイッチ ' + p.sw + '）');
-    if (p.note) t.push('  ' + p.note);
-    if (!p.rows.length) { t.push('  対象なし'); return; }
-    p.rows.forEach(function (x) {
-      t.push('  - ' + (dsd_lineName_(names, x.uid, x.email) || '（未連携）') +
-             ' / ' + (dsd_orderName_(names, x.uid, x.email, x.name) || '（名前なし）') +
-             ' / ' + x.channel + (x.extra ? ' / ' + x.extra : ''));
-    });
-  });
-  t.push('');
-  t.push('■ カゴ落ち（これまでの全送信・買ってくださった方と自分は省略）');
-  if (cart.hiddenBought || cart.hiddenSelf) t.push('  （省いた分: 買ってくださった ' + (cart.hiddenBought||0) + ' 件 / 自分 ' + (cart.hiddenSelf||0) + ' 件）');
-  if (!cart.rows.length) t.push('  送信実績なし');
-  cart.rows.forEach(function (s) {
-    t.push('  - ' + (s.at ? dsd_stamp_(s.at) : '') + ' / ' + (s.lineName || '（不明）') +
-           ' / ' + (s.items || '（カートの中身は記録なし）') +
-           ' / ' + dsd_yen_(s.value) + ' / ' + s.state + ' / リンク ' + s.opened);
-  });
-  return t.join('\n');
 }
