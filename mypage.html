@@ -3477,7 +3477,7 @@ async function sendOtp() {
      document.getElementById('otpStep1').style.display = 'none';
      document.getElementById('otpStep2').style.display = 'block';
      showOtpError('');
-   } else { showOtpError(data.error || '送信失敗。登録されていないメールアドレスの可能性があります'); }
+   } else { showOtpError(otpErrorJa(data.error, '送信失敗。登録されていないメールアドレスの可能性があります')); }
  } catch(e) { showOtpError('通信エラー。しばらくしてお試しください'); }
 }
 async function verifyOtp() {
@@ -3492,8 +3492,19 @@ async function verifyOtp() {
      const session = { email: _otpEmail, auth: 'otp', ts: Date.now(), cache: { customer: data.customer || null, orders: data.orders || [] } };
      try { localStorage.setItem('eda-mypage-session', JSON.stringify(session)); } catch(e){}
      renderDashboard(data.customer || { name: _otpEmail.split('@')[0], email: _otpEmail }, data.orders || []);
-   } else { showOtpError(data.error || 'コードが正しくないか期限切れです'); }
+   } else { showOtpError(otpErrorJa(data.error, 'コードが正しくないか、有効期限（10分）が切れています。もう一度お試しください。')); }
  } catch(e) { showOtpError('通信エラー'); }
+}
+/* GAS が返すエラー文は英語。そのまま出すとお客様の画面に英語が出るので日本語に置き換える。
+   （例: verify_otp は 'Invalid or expired OTP' を返す） */
+function otpErrorJa(raw, fallback) {
+ const s = String(raw || '');
+ if (!s) return fallback;
+ if (/invalid|expired/i.test(s)) return 'コードが正しくないか、有効期限（10分）が切れています。もう一度お試しください。';
+ if (/email and code required/i.test(s)) return 'メールアドレスと6桁のコードをご入力ください';
+ if (/email required/i.test(s)) return 'メールアドレスをご入力ください';
+ if (/unknown action/i.test(s)) return '通信に失敗しました。しばらくしてからもう一度お試しください。';
+ return fallback;
 }
 function showOtpError(msg) {
  const el = document.getElementById('otpError');
