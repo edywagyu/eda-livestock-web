@@ -118,6 +118,27 @@
           売り切れていても注文が通る(P031と同じ設計)。
        🔴 単品合計 ¥7,900 と同額。値引きではなく「選ぶ手間を省いたセット」として出す。 */
     {
+      productId: 'P046', variantId: 'YAKINIKU-SET', sku: 'EDA-YAKINIKU-SET',
+      stripePriceId: '',
+      name: '焼肉セット', variant: '赤身焼肉200g×1 + バラ焼肉200g×2',
+      /* stock は products シートのライブ在庫で上書きされ、さらに components から
+         「あと何セット作れるか」に再計算される (products-loader.js の applyBomStock)。
+         ここは取得失敗時のフォールバック。 */
+      price: 5800, weight: 600, stock: 22, temp: '冷凍',
+      published: true,
+      /* BOM。本番DBの components 列と同じ内容。
+         はじめてセット(P045)ともバラ焼肉を共有しているので、
+         どちらが売れても両方の「作れる数」が減る。 */
+      components: [
+        { name: '赤身焼肉', qty: 1 },
+        { name: 'バラ焼肉', qty: 2 }
+      ],
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku Set',
+      listPrice: 6200,
+      description: '赤身焼肉200g×1とバラ焼肉200g×2の3袋セット（合計600g）。赤身の噛みごたえと、バラの脂の甘み。焼いて分け合う日に。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
+    },
+    {
       productId: 'P045', variantId: 'NINKI-4SET', sku: 'EDA-NINKI-4SET',
       stripePriceId: '',
       name: 'はじめてセット', variant: '4品 各200g・計800g',
