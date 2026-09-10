@@ -3167,6 +3167,7 @@ button:focus-visible, a:focus-visible {
       サーバに残り、田崎さんへ通知メールが飛ぶ（既存の submit_inquiry を使うので
       サーバ側の追加は不要）。 -->
  <div class="subcheck" id="subCheck" style="display:none;">
+  <p id="subCheckPreviewTag" style="display:none;margin:0 0 14px;padding:7px 12px;border-radius:8px;background:rgba(255,255,255,0.14);font-family:var(--font-jp);font-size:11.5px;font-weight:700;color:#FFD773;">👀 見本モード（?subcheck=preview）— 押しても記録も通知もされません</p>
 
  <!-- ① 質問 -->
  <div id="subCheckAsk">
@@ -3701,10 +3702,20 @@ async function verifyOtp() {
 var SUBCHECK_KEY = 'eda-subcheck-2026-09';
 var _subCheckCustomer = null;
 
+/* 👀 見本モード: mypage.html?subcheck=preview
+   すでに登録済みの人（田崎さん・江田さん）だと、このカードは条件に合わず出ない。
+   仕様を確認したいときのために、条件を無視して出すだけのモードを用意する。
+   このモードでは「答えを覚える」「お問い合わせを送る」を一切しない＝何度でも見られるし、
+   押しても田崎さんに通知は飛ばない。 */
+function subCheckIsPreview() {
+ try { return new URLSearchParams(location.search).get('subcheck') === 'preview'; } catch (e) { return false; }
+}
+
 function subCheckSaved() {
  try { return JSON.parse(localStorage.getItem(SUBCHECK_KEY) || 'null'); } catch (e) { return null; }
 }
 function subCheckRemember(answer) {
+ if (subCheckIsPreview()) return;   /* 見本モードでは覚えない */
  try { localStorage.setItem(SUBCHECK_KEY, JSON.stringify({ answer: answer, at: new Date().toISOString() })); } catch (e) {}
 }
 function subCheckLog(eventType, meta) {
@@ -3719,6 +3730,13 @@ function initSubCheck(customer) {
  _subCheckCustomer = customer || {};
  var el = document.getElementById('subCheck');
  if (!el) return;
+ if (subCheckIsPreview()) {
+  /* 見本モード: 条件を全部飛ばして出す。記録も通知もしない */
+  var pv = document.getElementById('subCheckPreviewTag');
+  if (pv) pv.style.display = 'block';
+  el.style.display = 'block';
+  return;
+ }
  if (subCheckSaved()) return;                                   // もう答えていただいた
  if (customer && customer.switch_offer) return;                 // こちらで分かっている方
  if (customer && customer.subscription && customer.subscription.active) return;  // 今の定期便がある方
@@ -3772,6 +3790,13 @@ function subCheckSubmit() {
   'マイページのメール: ' + (c.email || '(未登録)') + '\n' +
   'LINE表示名: ' + (c.line_name || '(なし)');
 
+ if (subCheckIsPreview()) {
+  /* 見本モード: 実際には送らず、送れたときの画面だけ見せる */
+  document.getElementById('subCheckForm').style.display = 'none';
+  document.getElementById('subCheckDone').style.display = 'block';
+  if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
+  return;
+ }
  if (!(window.EDA_API && window.EDA_API.post)) {
   if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
   fail('通信の準備ができていません。ページを読み込み直してお試しください。');
