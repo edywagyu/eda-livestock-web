@@ -15,8 +15,9 @@
 (function (global) {
   'use strict';
 
-  // ↓↓↓ 本番 GAS Web App URL (2026-05-24 v7 デプロイ — LINE friends API integration) ↓↓↓
-  const GAS_URL_PROD = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
+  // ↓↓↓ 本番 GAS Web App URL ↓↓↓
+  // 2026-09-10: サイトが使う窓口を1本に統一（旧 AKfycbxFfdz… は廃止予定・キャッシュ対策で当面は生かす）
+  const GAS_URL_PROD = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
   // ↓↓↓ テスト用 GAS Web App URL (未設定なら本番と同じ URL に test_mode=1 を付与) ↓↓↓
   const GAS_URL_TEST = ''; // ステージング GAS をデプロイしたらここに記入
   // ↑↑↑ ここまで ↑↑↑

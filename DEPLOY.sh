@@ -9,7 +9,7 @@ set -u
 
 REPO="/Users/tomokieda/AI - CLAUDE CODE/eda-livestock-web"
 GAS_DIR="$REPO/gas"
-DEPLOY_ID="AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ"
+DEPLOY_ID="AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ"
 EXEC_URL="https://script.google.com/macros/s/${DEPLOY_ID}/exec"
 EXPECT_VER="2026.05.31c"
 

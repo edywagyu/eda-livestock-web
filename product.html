@@ -1227,7 +1227,7 @@ async function loadSubscriptionUpsell(product) {
   /* 定期便を出さない商品 (単発の限定セット等。増やす時はここに productId を足す) */
   const SUB_UPSELL_EXCLUDE = ['P027']; /* P027 = 肉の日限定セット */
   if (SUB_UPSELL_EXCLUDE.includes(product.productId)) return;
-  const GAS = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec'; // 顧客向けページ＝mypage/checkout系デプロイを参照(staff用と分離)
+  const GAS = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec'; // 2026-09-10 サイトが使うGAS窓口を1本に統一（旧: mypage/checkout系 AKfycbxFfdz…）
   let plans = [];
   try {
     /* sessionStorage キャッシュ (5分) */
@@ -1448,7 +1448,7 @@ function giftThisProduct() {
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="public/js/liff-uid.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=007" defer></script>
+<script src="public/js/eda-bundle.js?v=008" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script>
 /* PDP: view_item イベント送信
