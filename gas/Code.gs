@@ -2799,10 +2799,75 @@ function staffSubscriptionAddons() {
 /* ============================================================
    POST: request_otp / verify_otp (マイページ認証)
    ============================================================ */
+/* ✉️ ログインコード送信のガード（2026-09-10 追加）
+   以前は「誰のアドレスにでも」【江田畜産】ログイン用 6桁コードを送っていた。
+   いたずらや自動プログラムで無関係の人に送られると迷惑メール報告が積み上がり、
+   注文確認メールや発送メールまで迷惑メール扱いされる（Gmailの1日の送信上限も食い潰す）。
+   → ①注文者/顧客として登録のあるアドレスにだけ送る
+     ②同じアドレスへは60秒に1回・24時間に10回まで
+   画面には常に同じ「送りました」を返す（登録の有無を外から判別させないため）。 */
+function isKnownCustomerEmail_(email) {
+  const target = String(email || '').trim().toLowerCase();
+  if (!target) return false;
+  try {
+    const sh = ss().getSheetByName('customers');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      if (data.length >= 2) {
+        const idx = data[0].indexOf('email');
+        if (idx !== -1) {
+          for (let i = 1; i < data.length; i++) {
+            if (String(data[i][idx] || '').trim().toLowerCase() === target) return true;
+          }
+        }
+      }
+    }
+  } catch (e) { /* customers が読めなければ orders で判定する */ }
+  try {
+    const osh = ss().getSheetByName('orders');
+    if (osh) {
+      const od = osh.getDataRange().getValues();
+      if (od.length >= 2) {
+        const oi = od[0].indexOf('customer_email');
+        if (oi !== -1) {
+          for (let i = 1; i < od.length; i++) {
+            if (String(od[i][oi] || '').trim().toLowerCase() === target) return true;
+          }
+        }
+      }
+    }
+  } catch (e) { /* noop */ }
+  return false;
+}
+
+function otpThrottled_(sh, email) {
+  const target = String(email || '').trim().toLowerCase();
+  try {
+    const data = sh.getDataRange().getValues();
+    const now = Date.now();
+    let within24h = 0;
+    for (let i = data.length - 1; i >= 1; i--) {
+      if (String(data[i][0] || '').trim().toLowerCase() !== target) continue;
+      const issued = new Date(data[i][2]).getTime() - 10*60*1000; // expires_at は発行時刻+10分
+      if (isNaN(issued)) continue;
+      const age = now - issued;
+      if (age > 24*60*60*1000) break;   // これより前は全部24時間より古い
+      if (age < 60*1000) return true;   // 60秒に1回
+      within24h++;
+      if (within24h >= 10) return true; // 24時間に10回
+    }
+  } catch (e) { /* 読めないときは止めない */ }
+  return false;
+}
+
 function requestOtp(body) {
   if (!body.email) throw new Error('email required');
-  const otp = String(Math.floor(100000 + Math.random() * 900000));
   const sh = sheet('otps', ['email','otp','expires_at','used']);
+  /* 送っても送らなくても同じ返事を返す（登録の有無を外から判別させない） */
+  const silentOk = jsonResponse({ ok:true, expires_in: 600 });
+  if (otpThrottled_(sh, body.email)) return silentOk;
+  if (!isKnownCustomerEmail_(body.email)) return silentOk;
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
   sh.appendRow([body.email, otp, new Date(Date.now() + 10*60*1000), false]); // 10分有効
 
   MailApp.sendEmail({

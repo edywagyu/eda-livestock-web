@@ -11,8 +11,10 @@
  *      ここは自動では埋まらない。作業した日にクロードが1行ずつ書く（列＝日付/時刻/区分/
  *      やったこと/詳細・リンク/記録者）。行が無い日は「記録なし」と出る。
  *
- *  ⚠️ 20時のダイジェスト（DailySendDigest.gs）とは役割が違う。
- *     20時＝「誰に何が飛んだか」の名簿。21時＝「その日1日に何が起きたか」の要約。
+ *  ③ 自動配信の名簿 … 2026-09-09 田崎さん指示「夜の2通を1つにまとめて」。
+ *     20時に別便で出していた DailySendDigest.gs の中身（今日誰に何が飛んだか／カゴ落ちのその後）を
+ *     dsd_collect_() + dsd_sectionsHtml_() でそのまま取り込み、この1通の下段に置いた。
+ *     20時のトリガーは残っているが DIGEST_MERGED=true の間は何も送らない（戻すなら setDigestMergedOff）。
  *  ⚠️ 売上は税込・定期便を除く単品/ギフトのみ（管理画面の「今月のまとめ」と同じ基準）。
  *     社内(@eda-livestock.com)とお届け先の無い注文は数えない。
  *
@@ -216,26 +218,29 @@ function dwr_workLogs_(ymd) {
 function runDailyWorkReport() {
   var now = new Date();
   var ymd = dwr_ymd_(now);
-  var ec = {}, line = {}, logs = [];
+  var ec = {}, line = {}, logs = [], dg = null;
   try { ec = dwr_ecStats_(ymd); }   catch (e) { ec = { error: e.message }; }
   try { line = dwr_lineStats_(ymd); } catch (e) { line = { error: e.message }; }
   try { logs = dwr_workLogs_(ymd); }  catch (e) { logs = []; }
+  /* 2026-09-09 田崎さん指示「夜の2通を1つに」＝20時のダイジェストをここに合流させた */
+  try { dg = dsd_collect_(); } catch (e) { dg = { error: e.message }; }
 
   var subject = '【今日やったこと】' + Utilities.formatDate(now, DSD_TZ, 'M月d日') +
                 '(' + DSD_WD[Number(Utilities.formatDate(now, DSD_TZ, 'u')) % 7] + ')' +
                 ' ご注文 ' + (ec.orders || 0) + '件 ／ 自動配信 ' + (line.total || 0) + '通 ／ 作業 ' + logs.length + '件';
-  var html = dwr_html_(now, ec, line, logs);
+  var html = dwr_html_(now, ec, line, logs, dg);
 
   if (!dwr_enabled_()) {
     log('workreport_skipped', { reason: 'WORKREPORT_ENABLED=false' });
     return { ok: true, sent: false, note: 'WORKREPORT_ENABLED=false なので送っていません' };
   }
-  MailApp.sendEmail({ to: dwr_to_(), name: BRAND_MAIL.sender, subject: subject, htmlBody: html, body: dwr_text_(ec, line, logs) });
-  log('workreport_sent', { to: dwr_to_(), orders: ec.orders || 0, line: line.total || 0, logs: logs.length });
+  MailApp.sendEmail({ to: dwr_to_(), name: BRAND_MAIL.sender, subject: subject, htmlBody: html, body: dwr_text_(ec, line, logs, dg) });
+  log('workreport_sent', { to: dwr_to_(), orders: ec.orders || 0, line: line.total || 0, logs: logs.length,
+                           digest: (dg && dg.cart) ? dg.cart.rows.length : -1 });
   return { ok: true, sent: true, orders: ec.orders || 0, lineSends: line.total || 0, logs: logs.length };
 }
 
-function dwr_html_(now, ec, line, logs) {
+function dwr_html_(now, ec, line, logs, dg) {
   var G = '#0F3D2E', LINE_ = '#ece8dc', SUB = '#7c8a83';
   var th = 'padding:8px 10px;background:' + G + ';color:#fff;font-size:12px;text-align:left;white-space:nowrap;';
   var td = 'padding:8px 10px;border-bottom:1px solid ' + LINE_ + ';font-size:13px;vertical-align:top;';
@@ -289,16 +294,27 @@ function dwr_html_(now, ec, line, logs) {
     h.push('</table>');
   }
 
+  /* --- ③ 自動配信の名簿（旧・20時のメール。2026-09-09にここへ統合）--- */
+  h.push('<div style="margin:28px 0 2px;padding-top:18px;border-top:2px solid ' + G + ';font-size:15px;font-weight:bold;">公式LINE（自動）で誰に何が飛んだか</div>');
+  h.push('<div style="font-size:12px;color:' + SUB + ';margin-bottom:16px;">判定は実際に送るプログラムと同じものを通しています。止めたい場合はスイッチをOFFにしてください。</div>');
+  if (!dg || dg.error) {
+    h.push('<div style="font-size:13px;color:#b3261e;">名簿を作れませんでした' + (dg && dg.error ? '（' + dsd_esc_(dg.error) + '）' : '') + '</div>');
+  } else {
+    h.push(dsd_sectionsHtml_(dg.plans, dg.cart, dg.names));
+  }
+
   h.push('<div style="margin-top:22px;padding-top:12px;border-top:1px solid ' + LINE_ + ';font-size:11px;color:' + SUB + ';line-height:1.7;">');
   h.push('※ 上の2つの表は、システムが記録している事実をそのまま数えたものです（人の手は入りません）。<br>');
   h.push('※ 売上は税込・単品とギフトのみ。定期便と社内の注文は入れていません。<br>');
-  h.push('※ 下の「クロードがやった作業」は、本番EC注文DBの「作業ログ」タブに書いた行です。<br>');
-  h.push('※ このメールは毎晩21時。20時のメールは「今日どの自動配信が誰に飛んだか」の名簿です。');
+  h.push('※「クロードがやった作業」は、本番EC注文DBの「作業ログ」タブに書いた行です。EC・公式LINEに限らず、ふるさと納税・牛舎・営業・経理など、その日にやったことは区分を付けてすべてここに出ます。<br>');
+  h.push('※ LINEに「既読・未読」を取る仕組みはありません（LINE側が出していない）。代わりに配信リンクを押したかどうかを「リンク」列に出しています。<br>');
+  h.push('※「カートに残っている」は、送ったあとに購入もカートからの削除も記録されていない状態です。買ってくださった方はこの表には出しません。<br>');
+  h.push('※ このメールは毎晩21時の1通だけです。2026年9月9日から、20時に別便で届いていた「自動配信の名簿」をこのメールに統合しました（元に戻すなら setDigestMergedOff）。');
   h.push('</div></div>');
   return h.join('');
 }
 
-function dwr_text_(ec, line, logs) {
+function dwr_text_(ec, line, logs, dg) {
   var t = [];
   t.push('■ EC（ネットショップ）');
   t.push('  ご注文 ' + (ec.orders || 0) + '件 / 売上 ' + dsd_yen_(ec.revenue || 0) +
@@ -312,5 +328,9 @@ function dwr_text_(ec, line, logs) {
   t.push('■ クロードがやった作業');
   if (!logs.length) t.push('  記録なし');
   logs.forEach(function (x) { t.push('  - ' + x.time + ' [' + x.kind + '] ' + x.what + (x.detail ? ' / ' + x.detail : '')); });
+  t.push('');
+  t.push('===== 公式LINE（自動）で誰に何が飛んだか =====');
+  if (!dg || dg.error) t.push('  名簿を作れませんでした' + (dg && dg.error ? '（' + dg.error + '）' : ''));
+  else t.push(dsd_text_(dg.plans, dg.cart, dg.names));
   return t.join('\n');
 }
