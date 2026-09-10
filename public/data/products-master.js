@@ -134,7 +134,9 @@
         { name: 'バラ焼肉', qty: 1 }
       ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku Set',
-      listPrice: 6700,
+      /* 定価（取り消し線）は出さない（2026-09-10 田崎さん決定）。
+         実測: 値引き10%以下の5商品は295閲覧でカート2件、取り消し線の有無では差が出ない。
+         今回は単品合計¥6,700に対し3%引きなので、併記すると「たった200円」に見える。 */
       description: '赤身焼肉200g×2とバラ焼肉200g×1の3袋セット（合計600g）。赤身の噛みごたえを主役に、バラの脂で味を締める。焼いて分け合う日に。',
       images: ['public/images/products/drive/yakiniku-set-2.jpg']
     },
