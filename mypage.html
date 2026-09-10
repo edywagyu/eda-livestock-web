@@ -2066,6 +2066,50 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .settings-note {
  font-size: 12px !important; color: var(--color-ink-muted) !important;
 }
+/* 🔁 旧カート（Shopify/WIX）の定期便の方への切り替え案内。お誕生日の上に置く。
+   出るかどうかは GAS が決める（customer.switch_offer が付いた方だけ）。
+   🔴 ここも深緑の暗い背景。文字は金と白で書く（インク色は沈んで読めない）。 */
+.switch-offer {
+ margin: 0 0 28px; padding: 22px 24px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.05));
+ border: 1px solid rgba(212,169,59,0.45); border-radius: 14px;
+}
+.switch-offer-eyebrow {
+ font-family: var(--font-jp); font-size: 11px; font-weight: 700;
+ letter-spacing: 0.12em; color: #FFD773; margin: 0 0 8px;
+}
+.switch-offer-title {
+ font-family: var(--font-jp); font-size: 19px; font-weight: 700; line-height: 1.5;
+ color: #fff; margin: 0 0 10px;
+}
+.switch-offer-title strong { color: #FFD773; }
+.switch-offer-body {
+ font-family: var(--font-jp); font-size: 13px; line-height: 1.9;
+ color: rgba(255,255,255,0.92); margin: 0 0 14px;
+}
+.switch-offer-list {
+ margin: 0 0 18px; padding-left: 1.1em;
+ font-family: var(--font-jp); font-size: 13px; line-height: 1.9;
+ color: rgba(255,255,255,0.92);
+}
+.switch-offer-list strong { color: #FFD773; font-weight: 700; }
+.switch-offer-btn {
+ display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+ padding: 14px 28px; border-radius: 10px;
+ font-family: var(--font-jp); font-size: 15px; font-weight: 700;
+ color: var(--color-forest-deep); background: #FFD773;
+ text-decoration: none; transition: all .2s;
+}
+.switch-offer-btn:hover { background: #FFE49A; transform: translateY(-1px); }
+.switch-offer-note {
+ font-family: var(--font-jp); font-size: 11.5px; line-height: 1.8;
+ color: rgba(255,255,255,0.7); margin: 12px 0 0;
+}
+@media (max-width: 600px) {
+ .switch-offer { padding: 18px 16px; }
+ .switch-offer-title { font-size: 17px; }
+ .switch-offer-btn { width: 100%; }
+}
 /* 🎂 お誕生日カードの「特典のご案内」。金の細枠で、登録する理由が先に目に入るようにする。
    🔴 マイページの設定タブは .dashboard-section が深緑グラデーションの「暗い」画面。
       文字を深緑やインク色にすると背景に沈んで読めない。ここは必ず金と白で書く。 */
@@ -3038,6 +3082,22 @@ button:focus-visible, a:focus-visible {
 <section class="dashboard-section" id="dashboard">
  <div class="container-narrow">
 
+ <!-- 🔁 旧カート（Shopify / WIX）の定期便をご利用中の方への切り替え案内。
+      出す・出さないは GAS が決める（customer.switch_offer が付いた方だけ display:block になる）。
+      対象＝定期便マスターで「状態=有効・区分=shopify/WIX・カテゴリ=肉」の方。
+      米・玄米の契約は新ECの定期便に受け皿が無いので出ない。 -->
+ <div class="switch-offer" id="switchOffer" style="display:none;">
+ <p class="switch-offer-eyebrow">定期便をご利用のお客様へ</p>
+ <h2 class="switch-offer-title">新しい定期便へ、<strong>初回1回分無料</strong>で移れます</h2>
+ <p class="switch-offer-body" id="switchOfferBody"></p>
+ <ul class="switch-offer-list">
+  <li>初回の1回分が <strong>0円</strong>（お支払いは2回目から）</li>
+  <li>お届け日の変更・お休み・解約が、このマイページからできます</li>
+  <li>切り替えが終わるまで、<strong>今のお届けはそのまま</strong>続きます</li>
+ </ul>
+ <a class="switch-offer-btn" href="subscription.html?switch=1">新しい定期便を見る</a>
+ <p class="switch-offer-note">※ 内容とお値段は次のページでご確認いただけます。ご不明な点は LINE 公式（@706sgiuq）までお気軽にどうぞ。</p>
+ </div>
  <!-- Welcome Card -->
  <div class="welcome-card fade-in" id="welcomeCard" role="banner" aria-label="会員情報">
  <div class="welcome-card-top">
@@ -4173,6 +4233,21 @@ function renderDashboard(customer, orders) {
 
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
+
+ /* 🔁 旧カート定期便の方だけ、お誕生日の上に切り替え案内を出す（判定はGAS側） */
+ try {
+ var _so = customer && customer.switch_offer;
+ var _soEl = document.getElementById('switchOffer');
+ if (_so && _soEl) {
+  var _soName = (_so.name || customer.name || '').trim();
+  var _soPlan = (_so.plan || '').trim();
+  document.getElementById('switchOfferBody').textContent =
+  (_soName ? _soName + ' 様は現在、' : '現在、') +
+  (_soPlan ? '「' + _soPlan + '」' : '定期便') +
+  'をご利用いただいております。いつもありがとうございます。';
+  _soEl.style.display = 'block';
+ }
+ } catch (_soErr) { /* 案内が出ないだけ。マイページ本体は止めない */ }
  var _pgH = document.getElementById('pageHeader');
  if (_pgH) _pgH.style.display = 'none';
  dashboard.classList.add('show');

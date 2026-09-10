@@ -4169,7 +4169,10 @@ async function handleSubmit(e) {
  const a = ADDONS.find(p => p.id === x.id);
  return a ? { id: a.id, name: a.name, price: discountedPrice(a.price), qty: x.qty } : null;
  }).filter(Boolean),
- coupon_code: __testCouponActive ? 'test' : ''
+ coupon_code: __testCouponActive ? 'test' : '',
+ /* 🔁 マイページの切り替え案内から来た方は初回1回分を無料にする。
+    ここが true でも、GAS が定期便マスターで「有効・旧カート・肉」を照合してからでないと効かない。 */
+ switch_from_legacy: new URLSearchParams(location.search).get('switch') === '1'
  }).then(result => {
  if (result.ok && result.url) {
  localStorage.setItem('eda-last-order', JSON.stringify({
