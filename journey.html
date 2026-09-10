@@ -4348,8 +4348,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* ======== CART SYSTEM ======== */
   (function() {
-    // GAS URL は public/js/eda-config.js で集中管理 (デプロイ時1ヶ所のみ変更)
-    const GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
     const CART_KEY = 'eda-cart';
     const FREE_SHIP = 11000;
 
@@ -4544,47 +4542,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       });
     }
 
-    /* --- Checkout → Stripe via GAS API --- */
+    /* --- Checkout → 正規のレジ画面 (checkout.html) ---
+       2026-09-10: ここは以前、住所も送料もギフト指定も飛ばして直接 Stripe を叩く
+       旧式の導線だった。しかもこの3ページ(booking/journey/press)は eda-config.js を
+       読み込んでいないため GAS_API_URL が空文字になり、サイト自身にPOSTして
+       「決済エラー: Unexpected token '<'」で必ず失敗していた。
+       カートは shop と同じ eda-cart を共有しているので、shop.html と同じく
+       checkout.html に渡すだけでよい。 */
     if (checkBtn) {
-      checkBtn.addEventListener('click', async () => {
+      checkBtn.addEventListener('click', () => {
         if (items.length === 0) return;
-
-        /* ボタンをローディング状態に */
-        checkBtn.disabled = true;
-        const originalText = checkBtn.textContent;
-        checkBtn.textContent = '決済ページへ移動中...';
-
-        try {
-          const dateEl = document.getElementById('deliveryDate');
-          const timeEl = document.getElementById('deliveryTime');
-          const res = await fetch(GAS_API_URL + '?action=create_checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              items: items.map(i => ({
-                title: i.title,
-                variant: i.variant,
-                price: i.price,
-                qty: i.qty,
-                variantId: i.variantId
-              })),
-              deliveryDate: dateEl ? dateEl.value : '',
-              deliveryTime: timeEl ? timeEl.value : ''
-            })
-          });
-
-          const result = await res.json();
-
-          if (result.url) {
-            window.location.href = result.url;
-          } else {
-            throw new Error(result.error || '決済セッションの作成に失敗しました');
-          }
-        } catch (err) {
-          alert('決済エラー: ' + err.message + '\nもう一度お試しください。');
-          checkBtn.disabled = false;
-          checkBtn.textContent = originalText;
-        }
+        save(); // 念のため最新を保存
+        location.href = 'checkout.html';
       });
     }
 
