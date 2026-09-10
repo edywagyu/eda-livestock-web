@@ -2066,6 +2066,67 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .settings-note {
  font-size: 12px !important; color: var(--color-ink-muted) !important;
 }
+/* 🙋 定期便を続けているかを、ご本人に聞くカード（2026-09-10）。
+   こちらのデータでは旧カート(Shopify/WIX)の定期便の方を判別できない
+   （対象10アドレスは顧客リストにもLINE連携にも1件も載っていない）ので、
+   当てにいくのをやめて本人に聞く。お誕生日の案内より上に置く。
+   🔴 ここも深緑の暗い背景。文字は金と白で書く。 */
+.subcheck {
+ margin: 0 0 28px; padding: 22px 24px;
+ background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+ border: 1px solid rgba(255,255,255,0.22); border-radius: 14px;
+}
+.subcheck--offer {
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.05));
+ border-color: rgba(212,169,59,0.45);
+}
+.subcheck-title {
+ font-family: var(--font-jp); font-size: 17px; font-weight: 700; line-height: 1.6;
+ color: #fff; margin: 0 0 8px;
+}
+.subcheck-title strong { color: #FFD773; }
+.subcheck-text {
+ font-family: var(--font-jp); font-size: 13px; line-height: 1.9;
+ color: rgba(255,255,255,0.88); margin: 0 0 16px;
+}
+.subcheck-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.subcheck-btn {
+ flex: 1 1 auto; min-width: 150px;
+ display: inline-flex; align-items: center; justify-content: center;
+ padding: 13px 20px; border-radius: 10px; border: none; cursor: pointer;
+ font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+ text-decoration: none; transition: all .2s;
+}
+.subcheck-btn--yes { background: #FFD773; color: var(--color-forest-deep); }
+.subcheck-btn--yes:hover { background: #FFE49A; }
+.subcheck-btn--no {
+ background: transparent; color: rgba(255,255,255,0.9);
+ border: 1px solid rgba(255,255,255,0.35);
+}
+.subcheck-btn--no:hover { background: rgba(255,255,255,0.08); }
+.subcheck-field { margin-bottom: 12px; }
+.subcheck-label {
+ display: block; font-family: var(--font-jp); font-size: 12px; font-weight: 600;
+ color: rgba(255,255,255,0.8); margin: 0 0 5px;
+}
+.subcheck-input, .subcheck-select {
+ width: 100%; padding: 11px 13px; border-radius: 8px;
+ border: 1px solid rgba(255,255,255,0.28); background: rgba(0,0,0,0.22);
+ font-family: var(--font-jp); font-size: 14px; color: #fff;
+}
+.subcheck-input::placeholder { color: rgba(255,255,255,0.4); }
+.subcheck-select option { color: #111; }
+.subcheck-note {
+ font-family: var(--font-jp); font-size: 11.5px; line-height: 1.8;
+ color: rgba(255,255,255,0.65); margin: 12px 0 0;
+}
+.subcheck-err {
+ font-family: var(--font-jp); font-size: 12.5px; color: #FFB4A2; margin: 10px 0 0;
+}
+@media (max-width: 600px) {
+ .subcheck { padding: 18px 16px; }
+ .subcheck-btn { flex: 1 1 100%; }
+}
 /* 🔁 旧カート（Shopify/WIX）の定期便の方への切り替え案内。お誕生日の上に置く。
    出るかどうかは GAS が決める（customer.switch_offer が付いた方だけ）。
    🔴 ここも深緑の暗い背景。文字は金と白で書く（インク色は沈んで読めない）。 */
@@ -3100,6 +3161,73 @@ button:focus-visible, a:focus-visible {
  <a class="switch-offer-btn" href="subscription.html?switch=1">新しい定期便を見る</a>
  <p class="switch-offer-note">※ 内容とお値段は次のページでご確認いただけます。ご不明な点は LINE 公式（@706sgiuq）までお気軽にどうぞ。</p>
  </div>
+ <!-- 🙋 定期便を続けているかの確認（2026-09-10・案A）。
+      旧カートの定期便の方をこちらのデータで当てられないので、ご本人に聞く。
+      答えは localStorage に覚えて二度目は出さない。「はい」の回答はお問い合わせとして
+      サーバに残り、田崎さんへ通知メールが飛ぶ（既存の submit_inquiry を使うので
+      サーバ側の追加は不要）。 -->
+ <div class="subcheck" id="subCheck" style="display:none;">
+
+ <!-- ① 質問 -->
+ <div id="subCheckAsk">
+  <h2 class="subcheck-title">定期便は、いまもご利用中でしょうか？</h2>
+  <p class="subcheck-text">江田畜産のお肉が毎月届く定期便のことです。お手続きの行き違いを防ぐため、確認させてください。</p>
+  <div class="subcheck-actions">
+  <button type="button" class="subcheck-btn subcheck-btn--yes" onclick="subCheckAnswer('yes')">はい、続けています</button>
+  <button type="button" class="subcheck-btn subcheck-btn--no" onclick="subCheckAnswer('no')">いいえ、利用していません</button>
+  </div>
+ </div>
+
+ <!-- ② 「はい」→ 確認したいことを聞く -->
+ <div id="subCheckForm" style="display:none;">
+  <h2 class="subcheck-title">ありがとうございます。<br>2つだけ教えてください</h2>
+  <p class="subcheck-text">いまのご契約と、このマイページを結びつけるために使います。</p>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckName">お名前</label>
+  <input type="text" class="subcheck-input" id="subCheckName" placeholder="江田 太郎" autocomplete="name">
+  </div>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckEmail">お申し込みのときのメールアドレス</label>
+  <input type="email" class="subcheck-input" id="subCheckEmail" placeholder="taro@example.com" autocomplete="email">
+  </div>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckPhone">お電話番号（任意）</label>
+  <input type="tel" class="subcheck-input" id="subCheckPhone" placeholder="090-1234-5678" autocomplete="tel">
+  </div>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckWhere">どちらでお申し込みでしたか</label>
+  <select class="subcheck-select" id="subCheckWhere">
+   <option value="以前のホームページ">以前のホームページ</option>
+   <option value="いまのホームページ">いまのホームページ</option>
+   <option value="お電話・LINE・直接">お電話・LINE・直接</option>
+   <option value="わからない" selected>わからない</option>
+  </select>
+  </div>
+  <div class="subcheck-actions">
+  <button type="button" class="subcheck-btn subcheck-btn--yes" id="subCheckSend" onclick="subCheckSubmit()">この内容で送る</button>
+  </div>
+  <p class="subcheck-err" id="subCheckErr" style="display:none;"></p>
+  <p class="subcheck-note">※ 内容を確認のうえ、担当の田崎よりご連絡いたします。</p>
+ </div>
+
+ <!-- ③ 「いいえ」→ 定期便のご案内 -->
+ <div id="subCheckOffer" style="display:none;">
+  <h2 class="subcheck-title">毎月おいしいところが届く、<strong>定期便</strong>はいかがですか</h2>
+  <p class="subcheck-text">その月にいちばん良いお肉を、江田畜産が選んでお届けします。<strong>最初のお届けは半額</strong>でお試しいただけます。お休みも解約も、このマイページからいつでもできます。</p>
+  <div class="subcheck-actions">
+  <a class="subcheck-btn subcheck-btn--yes" href="subscription.html" onclick="subCheckRemember('no_clicked')">定期便を見る</a>
+  <button type="button" class="subcheck-btn subcheck-btn--no" onclick="subCheckClose()">とじる</button>
+  </div>
+ </div>
+
+ <!-- ④ 送信できたとき -->
+ <div id="subCheckDone" style="display:none;">
+  <h2 class="subcheck-title">ありがとうございました</h2>
+  <p class="subcheck-text" style="margin:0;">確認のうえ、担当の田崎よりご連絡いたします。引き続きよろしくお願いいたします。</p>
+ </div>
+
+ </div>
+
  <!-- Welcome Card -->
  <div class="welcome-card fade-in" id="welcomeCard" role="banner" aria-label="会員情報">
  <div class="welcome-card-top">
@@ -3557,6 +3685,116 @@ async function verifyOtp() {
    } else { showOtpError(otpErrorJa(data.error, 'コードが正しくないか、有効期限（10分）が切れています。もう一度お試しください。')); }
  } catch(e) { showOtpError('通信エラー'); }
 }
+/* ============================================================
+   🙋 定期便を続けているかの確認（2026-09-10・案A）
+   ------------------------------------------------------------
+   なぜ聞くのか:
+     旧カート(Shopify/WIX)で定期便を続けている11軒を、こちらのデータからは
+     特定できない（対象10アドレスは顧客リストにもLINE連携にも1件も無い）。
+     当てにいくのをやめて、マイページに来た方に直接うかがう。
+   保存:
+     ・答えは localStorage（この端末に覚える）。二度目からは出さない。
+     ・「はい」はお問い合わせとしてサーバにも残り、田崎さんへ通知が飛ぶ
+       （既存の submit_inquiry を使うのでサーバ側の追加は不要）。
+     ・「いいえ」は log_event に残す（何人に聞いて何人が定期便を使っていないか数えるため）。
+   ============================================================ */
+var SUBCHECK_KEY = 'eda-subcheck-2026-09';
+var _subCheckCustomer = null;
+
+function subCheckSaved() {
+ try { return JSON.parse(localStorage.getItem(SUBCHECK_KEY) || 'null'); } catch (e) { return null; }
+}
+function subCheckRemember(answer) {
+ try { localStorage.setItem(SUBCHECK_KEY, JSON.stringify({ answer: answer, at: new Date().toISOString() })); } catch (e) {}
+}
+function subCheckLog(eventType, meta) {
+ try {
+  if (window.EDA_API && window.EDA_API.post) {
+   window.EDA_API.post('log_event', { event_type: eventType, page: 'mypage.html', meta: meta || {} });
+  }
+ } catch (e) {}
+}
+
+function initSubCheck(customer) {
+ _subCheckCustomer = customer || {};
+ var el = document.getElementById('subCheck');
+ if (!el) return;
+ if (subCheckSaved()) return;                                   // もう答えていただいた
+ if (customer && customer.switch_offer) return;                 // こちらで分かっている方
+ if (customer && customer.subscription && customer.subscription.active) return;  // 今の定期便がある方
+ el.style.display = 'block';
+ subCheckLog('subcheck_shown', { email: (customer && customer.email) || '' });
+}
+
+function subCheckAnswer(answer) {
+ var ask = document.getElementById('subCheckAsk');
+ if (ask) ask.style.display = 'none';
+ if (answer === 'yes') {
+  var c = _subCheckCustomer || {};
+  var n = document.getElementById('subCheckName');
+  var m = document.getElementById('subCheckEmail');
+  var t = document.getElementById('subCheckPhone');
+  if (n && !n.value) n.value = c.name || '';
+  if (m && !m.value) m.value = c.email || '';
+  if (t && !t.value) t.value = c.phone || '';
+  document.getElementById('subCheckForm').style.display = 'block';
+  subCheckLog('subcheck_yes', { email: c.email || '' });
+ } else {
+  document.getElementById('subCheck').classList.add('subcheck--offer');
+  document.getElementById('subCheckOffer').style.display = 'block';
+  subCheckRemember('no');
+  subCheckLog('subcheck_no', { email: (_subCheckCustomer && _subCheckCustomer.email) || '' });
+ }
+}
+
+function subCheckClose() {
+ var el = document.getElementById('subCheck');
+ if (el) el.style.display = 'none';
+}
+
+function subCheckSubmit() {
+ var err = document.getElementById('subCheckErr');
+ var btn = document.getElementById('subCheckSend');
+ var name = (document.getElementById('subCheckName').value || '').trim();
+ var email = (document.getElementById('subCheckEmail').value || '').trim();
+ var phone = (document.getElementById('subCheckPhone').value || '').trim();
+ var where = document.getElementById('subCheckWhere').value || '';
+ function fail(msg) { if (err) { err.textContent = msg; err.style.display = 'block'; } }
+ if (!name) { fail('お名前をご入力ください'); return; }
+ if (!email || email.indexOf('@') === -1) { fail('メールアドレスをご入力ください'); return; }
+ if (err) err.style.display = 'none';
+ if (btn) { btn.disabled = true; btn.textContent = '送信中...'; }
+
+ var c = _subCheckCustomer || {};
+ var msg = '【マイページより：定期便を継続中とのご回答】\n' +
+  'お申し込み先: ' + where + '\n' +
+  'マイページのお名前: ' + (c.name || '(未登録)') + '\n' +
+  'マイページのメール: ' + (c.email || '(未登録)') + '\n' +
+  'LINE表示名: ' + (c.line_name || '(なし)');
+
+ if (!(window.EDA_API && window.EDA_API.post)) {
+  if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
+  fail('通信の準備ができていません。ページを読み込み直してお試しください。');
+  return;
+ }
+ window.EDA_API.post('submit_inquiry', {
+  inquiry_type: '定期便の継続確認',
+  name: name, email: email, phone: phone,
+  message: msg,
+  source: 'mypage.html 定期便の継続確認'
+ }).then(function (r) {
+  if (!r || r.ok === false) throw new Error((r && r.error) || '送信できませんでした');
+  subCheckRemember('yes');
+  document.getElementById('subCheckForm').style.display = 'none';
+  document.getElementById('subCheckDone').style.display = 'block';
+  subCheckLog('subcheck_yes_sent', { email: email });
+ }).catch(function (e) {
+  if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
+  fail('送信できませんでした。お手数ですが LINE 公式（@706sgiuq）までお知らせください。');
+  console.error('[subCheckSubmit]', e);
+ });
+}
+
 /* GAS が返すエラー文は英語。そのまま出すとお客様の画面に英語が出るので日本語に置き換える。
    （例: verify_otp は 'Invalid or expired OTP' を返す） */
 function otpErrorJa(raw, fallback) {
@@ -4250,6 +4488,11 @@ function renderDashboard(customer, orders) {
   _soEl.style.display = 'block';
  }
  } catch (_soErr) { /* 案内が出ないだけ。マイページ本体は止めない */ }
+
+ /* 🙋 定期便を続けているかの確認。出す条件は「まだ答えていない方」だけ。
+    ・こちらで旧カートの定期便と分かっている方（switch_offer）には出さない＝もう聞く必要がない
+    ・いまの定期便がある方にも出さない＝答えは分かっている */
+ try { initSubCheck(customer); } catch (_scErr) { /* 出ないだけ */ }
  var _pgH = document.getElementById('pageHeader');
  if (_pgH) _pgH.style.display = 'none';
  dashboard.classList.add('show');
