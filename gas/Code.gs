@@ -6960,7 +6960,11 @@ var SUB_PRICE_EVERY_OTHER = {
   /* 沖縄 */
   'price_1UA1FVGSkhU1UEcidfaEPxmF': 'price_1UE1fPGSkhU1UEcilazWMprp',  // ミニ ¥9,980
   'price_1UA1GlGSkhU1UEciITrkTHHe': 'price_1UE1ggGSkhU1UEci14JZR0kb',  // スターター ¥13,000
-  'price_1UA1HjGSkhU1UEciMKE1kuBg': 'price_1UE1hjGSkhU1UEciZntpdvj1'   // レギュラー ¥22,500
+  'price_1UA1HjGSkhU1UEciMKE1kuBg': 'price_1UE1hjGSkhU1UEciZntpdvj1',  // レギュラー ¥22,500
+  /* 旧価格のまま続けている方むけ。値上げにならないよう、同額の隔月価格を用意した（2026-09-10）。
+     旧価格は地域別になっていないので、隔月も同額1本ずつ。 */
+  'price_1TWAN0GSkhU1UEciNGZHORc3': 'price_1UE2E7GSkhU1UEciaGgbhUsB',  // 旧ミニプラン ¥6,980（松本友美様）
+  'price_1TWAN0GSkhU1UEciKod4PGpk': 'price_1UE2FBGSkhU1UEciZYfhaJyo'   // 旧プロプラン ¥12,800（大澤英里子様ほか）
 };
 
 /* 毎月 → 隔月。無ければ '' */
