@@ -996,7 +996,19 @@ function createSubscriptionCheckout(body) {
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
   // ★ 初月50%OFF: Property 未設定でも 'FIRST50' にフォールバック（黙って割引が消える事故を防止）。
   const halfCoupon = cfg('STRIPE_COUPON_50OFF', 'FIRST50');
-  const applyCoupon = isTestCoupon ? 'DEMO100' : (demoCoupon || halfCoupon || '');
+  /* 🔁 旧カート(Shopify/WIX)からの切り替え = 初回1回分を無料にする(100%OFF・duration=once)。
+     画面から switch_from_legacy が来ても、定期便マスターで「有効・旧カート・肉」を
+     サーバ側で照合してからでないと効かない（URLを知っているだけでは無料にならない）。
+     クーポンIDは Script Property STRIPE_COUPON_SWITCH100 で差し替え可能。既定は既存の100%OFF券。 */
+  const switchHit = body.switch_from_legacy
+    ? legacySubscriberByEmail_(String((body.customer && body.customer.email) || ''))
+    : null;
+  const isSwitch = !!(switchHit && /肉/.test(switchHit.category || ''));
+  const switchCoupon = cfg('STRIPE_COUPON_SWITCH100', 'DEMO100');
+  const applyCoupon = isTestCoupon ? 'DEMO100'
+                    : isSwitch     ? switchCoupon
+                    : (demoCoupon || halfCoupon || '');
+  if (isSwitch) log('subscription_switch_offer', { email: (body.customer && body.customer.email) || '', from: switchHit.kubun, plan_before: switchHit.plan });
 
   // Checkout in PAYMENT mode (初月分の一回限り課金)
   // setup_future_usage='off_session' で決済カードを保存 → Webhook で Subscription にアタッチ
@@ -1048,6 +1060,7 @@ function createSubscriptionCheckout(body) {
       }])
     }
   };
+  if (isSwitch) sessionParams.metadata.switch_from = switchHit.kubun;
   if (applyCoupon) {
     sessionParams.discounts = [{ coupon: applyCoupon }];
   }
@@ -1388,18 +1401,37 @@ function createDelayedSubscription(session, meta) {
   const STRIPE = cfg('STRIPE_SECRET_KEY');
   if (!STRIPE) throw new Error('Stripe not configured');
   if (!session.customer) throw new Error('No customer on session');
-  if (!session.payment_intent) throw new Error('No payment_intent on session');
 
-  // PaymentIntent から saved PaymentMethod を取得
-  const piRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_intents/' + session.payment_intent, {
-    method: 'get',
-    headers: { 'Authorization': 'Bearer ' + STRIPE },
-    muteHttpExceptions: true
-  });
-  const pi = JSON.parse(piRes.getContentText());
-  if (pi.error) throw new Error('PI retrieval: ' + pi.error.message);
-  const paymentMethodId = pi.payment_method;
-  if (!paymentMethodId) throw new Error('No payment_method on PaymentIntent');
+  /* 🔴 初回が ¥0 のときは PaymentIntent が作られない（2026-09-10）
+     Stripe は合計0円の Checkout では PaymentIntent ではなく SetupIntent を作る。
+     旧実装は payment_intent が無いと throw していたので、
+     「初回1回分無料」で申し込むとカードだけ保存されて定期便が1本も作られない、
+     という事故になっていた（切り替え案内を出す前に発見）。
+     → PaymentIntent が無ければ SetupIntent からカードを取る。 */
+  var paymentMethodId = '';
+  if (session.payment_intent) {
+    const piRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_intents/' + session.payment_intent, {
+      method: 'get',
+      headers: { 'Authorization': 'Bearer ' + STRIPE },
+      muteHttpExceptions: true
+    });
+    const pi = JSON.parse(piRes.getContentText());
+    if (pi.error) throw new Error('PI retrieval: ' + pi.error.message);
+    paymentMethodId = pi.payment_method;
+  } else if (session.setup_intent) {
+    const siRes = UrlFetchApp.fetch('https://api.stripe.com/v1/setup_intents/' + session.setup_intent, {
+      method: 'get',
+      headers: { 'Authorization': 'Bearer ' + STRIPE },
+      muteHttpExceptions: true
+    });
+    const si = JSON.parse(siRes.getContentText());
+    if (si.error) throw new Error('SI retrieval: ' + si.error.message);
+    paymentMethodId = si.payment_method;
+    log('subscription_zero_first_month', { session: session.id, customer: session.customer });
+  } else {
+    throw new Error('No payment_intent / setup_intent on session');
+  }
+  if (!paymentMethodId) throw new Error('No payment_method on intent');
 
   // (b) 冪等性ガード: 同一顧客に同じ price の active サブスクが既にあれば二重作成しない。
   //     webhook 二重発火で同一定期便サブスクが2本でき二重課金になる事故(ry ¥6,980×2)の再発防止。fail-open。
@@ -2837,6 +2869,10 @@ function isKnownCustomerEmail_(email) {
       }
     }
   } catch (e) { /* noop */ }
+  /* ③ 旧カート(Shopify/WIX)の名簿。LegacyCustomers.js（本番GASのみ・公開リポジトリには置かない） */
+  try {
+    if (typeof legacyCustomerByEmail_ === 'function' && legacyCustomerByEmail_(target)) return true;
+  } catch (e) { /* noop */ }
   return false;
 }
 
@@ -2940,6 +2976,11 @@ function getOrdersByEmail(email) {
 }
 
 function getCustomerByEmail(email, ordersHint) {
+  /* 旧カート定期便の方に切り替え案内を出す。中身は従来どおり getCustomerByEmailBase_ */
+  return attachSwitchOffer_(getCustomerByEmailBase_(email, ordersHint));
+}
+
+function getCustomerByEmailBase_(email, ordersHint) {
   // customers マスタから取得 (なければ orders から集計)
   try {
     const sh = ss().getSheetByName('customers');
@@ -2965,7 +3006,12 @@ function getCustomerByEmail(email, ordersHint) {
   } catch (e) { /* fallthrough */ }
   // orders だけから生成
   const orders = ordersHint || getOrdersByEmail(email);
-  const c = { email: email, name: email.split('@')[0] };
+  /* 旧カート(Shopify/WIX)の名簿にあればお名前を使う。
+     無いと「メールの@より前」がそのままお名前として画面に出てしまう。 */
+  let legacyHit = null;
+  try { if (typeof legacyCustomerByEmail_ === 'function') legacyHit = legacyCustomerByEmail_(email); } catch (e) {}
+  const c = { email: email, name: (legacyHit && legacyHit.name) || email.split('@')[0] };
+  if (legacyHit) c.legacy_src = legacyHit.src;
   c.total_orders = orders.length;
   c.total_spent = orders.reduce((s, o) => s + (Number(o.total) || 0), 0);
   // 直近注文の名前を使う
@@ -4355,6 +4401,7 @@ function lineLogin(body) {
           }
         }
         attachCardToCustomer(customer, orders);
+        attachSwitchOffer_(customer);   /* 旧カート定期便の方に切り替え案内を出す */
         return jsonResponse({ ok:true, matched:true, customer, orders });
       }
     }
