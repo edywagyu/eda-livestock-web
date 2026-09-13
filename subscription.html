@@ -4111,24 +4111,10 @@ async function handleSubmit(e) {
  appliedAt: new Date().toISOString()
  }));
 
- // アドオン (10%OFF適用後) を cart に push
- if (addedAddons.length > 0) {
- const cartItems = addedAddons.map(x => {
- const a = ADDONS.find(p => p.id === x.id);
- const disc = discountedPrice(a.price);
- return {
- variantId: 'addon-' + a.id,
- price: disc,
- title: a.name + '（今月限り 10%OFF）',
- variant: 'サブスク同時追加',
- img: a.img,
- qty: x.qty
- };
- });
- localStorage.setItem('eda-cart', JSON.stringify(cartItems));
- } else {
+ // アドオンは create_subscription_checkout の決済に直接載せる（2026-09-13）。
+ // 以前はここで買い物カゴ(eda-cart)にも積んでいたため、定期便の決済とは別に
+ // カゴへ残り、お客様が後からもう一度買ってしまう経路になっていた。カゴは空にする。
  localStorage.removeItem('eda-cart');
- }
 
  // GAS にも申込ログを送信（fire-and-forget - 失敗してもUX影響なし）
  if (window.EDA_API) {
@@ -4184,7 +4170,7 @@ async function handleSubmit(e) {
  name: customer.name,
  phone: customer.phone,
  address: customer.address,
- total: PLANS[currentPlan] ? PLANS[currentPlan].half : 0,
+ total: (PLANS[currentPlan] ? PLANS[currentPlan].half : 0) + getAddonsTotal(),
  date: new Date().toISOString()
  }));
  window.location.href = result.url;

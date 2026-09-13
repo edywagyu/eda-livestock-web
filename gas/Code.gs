@@ -1117,6 +1117,71 @@ function createSubscriptionCheckout(body) {
   const applyCoupon = isTestCoupon ? 'DEMO100' : (demoCoupon || halfCoupon || '');
   if (isSwitch) log('subscription_switch_offer', { email: (body.customer && body.customer.email) || '', from: switchHit.kubun, plan_before: switchHit.plan });
 
+  /* ============================================================
+     「今月だけ追加」(アドオン) を初月決済に載せる  ★2026-09-13
+     ------------------------------------------------------------
+     これまで body.addons は完全に無視されており、申込画面に出ている合計
+     (プラン初月半額 + アドオン10%OFF) のうち **プラン分しか請求していなかった**。
+     実害: 2026-07-28 EDA-20260728-0485B2 大澤様 ¥3,249 が未請求・未発送。
+     ・価格はフロントの申告値を信用せず SUB_ADDONS(サーバ側マスタ)から計算する。
+     ・初月50%OFF クーポンはセッション全体に効く＝アドオンまで半額になるため、
+       アドオンがある回だけクーポンを使わず、プラン行を割引後の額で作る
+       （請求額＝お客様が申込画面で見ている合計、と一致させる）。
+     ・アドオン無しの申込は従来と同じ経路をそのまま通る（挙動不変）。
+     ============================================================ */
+  var subAddonLineItems = [];
+  var subAddonItems = [];
+  (body.addons || []).forEach(function (a) {
+    var m = SUB_ADDONS[a && a.id];
+    if (!m) return;                                   // 未知IDは無視（価格改ざん防止）
+    var qty = Math.max(1, Math.min(20, Math.floor(Number(a.qty) || 1)));
+    var unit = Math.round(m.p * (1 - SUB_ADDON_DISCOUNT));
+    subAddonLineItems.push({
+      price_data: {
+        currency: 'jpy',
+        product_data: { name: m.n + '（今月だけ追加・10%OFF）' },
+        unit_amount: unit
+      },
+      quantity: qty
+    });
+    /* items_json 用。title は products シートの name と完全一致させる
+       （decrementStockAfterOrder の突合キー。一致しないと在庫が減らない）。 */
+    subAddonItems.push({ title: m.n, variant: '今月だけ追加', qty: qty });
+  });
+  var subHasAddons = subAddonLineItems.length > 0;
+
+  /* アドオンがある回は 50%OFF クーポンをセッションに載せない。
+     割引率は Stripe のクーポン実体から読む（読めない時だけ、サイト表記どおり 50% を使う）。 */
+  var subPlanUnitAmount = unitAmount;
+  var subPlanLabelSuffix = '';
+  var subSkipCoupon = false;
+  if (subHasAddons && applyCoupon && !isTestCoupon && !demoCoupon) {
+    var pctOff = 50;
+    try {
+      var cRes = UrlFetchApp.fetch('https://api.stripe.com/v1/coupons/' + encodeURIComponent(applyCoupon), {
+        method: 'get', headers: { 'Authorization': 'Bearer ' + STRIPE }, muteHttpExceptions: true
+      });
+      var cObj = JSON.parse(cRes.getContentText());
+      if (cObj && cObj.percent_off) pctOff = Number(cObj.percent_off);
+      else if (cObj && cObj.amount_off && unitAmount) pctOff = Math.min(100, cObj.amount_off / unitAmount * 100);
+      else log('subscription_addon_coupon_unknown', { coupon: applyCoupon, order: orderNum });
+    } catch (e) {
+      log('subscription_addon_coupon_lookup_failed', { coupon: applyCoupon, error: e.message });
+    }
+    subPlanUnitAmount = Math.round(unitAmount * (1 - pctOff / 100));
+    subPlanLabelSuffix = '・初月' + Math.round(pctOff) + '%OFF適用済';
+    subSkipCoupon = true;
+  }
+  if (subHasAddons) {
+    log('subscription_addons_charged', {
+      order: orderNum,
+      count: subAddonItems.length,
+      addons_total: subAddonLineItems.reduce(function (s, li) { return s + li.price_data.unit_amount * li.quantity; }, 0),
+      plan_amount: subPlanUnitAmount,
+      coupon_skipped: subSkipCoupon
+    });
+  }
+
   // Checkout in PAYMENT mode (初月分の一回限り課金)
   // setup_future_usage='off_session' で決済カードを保存 → Webhook で Subscription にアタッチ
   const sessionParams = {
@@ -1130,11 +1195,11 @@ function createSubscriptionCheckout(body) {
     line_items: [{
       price_data: {
         currency: 'jpy',
-        product_data: { name: planName + '定期便（初月分）' },
-        unit_amount: unitAmount
+        product_data: { name: planName + '定期便（初月分）' + subPlanLabelSuffix },
+        unit_amount: subPlanUnitAmount
       },
       quantity: 1
-    }],
+    }].concat(subAddonLineItems),
     payment_intent_data: {
       setup_future_usage: 'off_session',
       metadata: {
@@ -1168,7 +1233,7 @@ function createSubscriptionCheckout(body) {
     }
   };
   if (isSwitch) sessionParams.metadata.switch_from = switchHit.kubun;
-  if (applyCoupon) {
+  if (applyCoupon && !subSkipCoupon) {
     sessionParams.discounts = [{ coupon: applyCoupon }];
   }
   const params = flattenForm(sessionParams);
@@ -1208,7 +1273,7 @@ function createSubscriptionCheckout(body) {
 
   if (data.error) throw new Error('Stripe: ' + data.error.message);
 
-  recordPendingOrder(orderNum, data.id, body, null, 0, 'subscription_first_month');
+  recordPendingOrder(orderNum, data.id, body, null, 0, 'subscription_first_month', subAddonItems);
 
   return jsonResponse({ ok: true, url: data.url, session_id: data.id, order_number: orderNum });
 }
@@ -6227,6 +6292,9 @@ function b2Rows_(opts) {
     if (kind === 'sub' && !isSub) return;     // 定期便タブ: 単品は出さない
     let subPlan = '';
     if (isSub) { try { subPlan = JSON.parse(get(row, 'metadata_json') || '{}').plan || ''; } catch (e) {} }
+    /* 定期便に「今月だけ追加」がある回は品名に「他N点」を足す＝同梱を落とさない。 */
+    let subExtra = '';
+    if (isSub) { try { var _si = JSON.parse(get(row, 'items_json') || '[]'); if (_si.length) subExtra = ' 他' + _si.length + '点'; } catch (e) {} }
     const dest = get(row, 'destinations_json');
     try {
       const d = JSON.parse(dest);
@@ -6249,7 +6317,7 @@ function b2Rows_(opts) {
         // 品名２は25全角文字制限。商品を全部つなぐと超えて取込エラーになるため代表1点+「他N点」に圧縮。
         const hinmei = its.length
           ? ((its[0].title || '') + (its.length > 1 ? (' 他' + (its.length - 1) + '点') : ''))
-          : ('定期便ボックス' + (subPlan ? '（' + subPlan + '）' : ''));
+          : ('定期便ボックス' + (subPlan ? '（' + subPlan + '）' : '') + subExtra);
         // 🔴 お届け先ごとの希望日/時間（destinations[].delivery）を優先。無ければ注文共通(order-level)へフォールバック。
         const _dv = addr.delivery || {};
         const _dd = (kind === 'sub') ? SUB_ARRIVE                                              // 定期便は翌月1日着で固定
