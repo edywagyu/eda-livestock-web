@@ -102,6 +102,8 @@ function refreshLineCustomerRoster(){
   if (rows.length) sh.getRange(2,1,rows.length,header.length).setValues(rows);
   sh.setFrozenRows(1);
   sh.getRange(1,1,1,header.length).setBackground('#0F3D2E').setFontColor('#FFFFFF');
+  // VIP内・割引客セグメントも同じ毎朝7時のタイミングで作り直す（失敗しても名簿更新は止めない）
+  try { updateVipDiscountSegment(); } catch(e) {}
   return '顧客名簿 更新 ' + rows.length + '名';
 }
 

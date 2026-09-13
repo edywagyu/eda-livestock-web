@@ -11,7 +11,7 @@
   window.__edaErrTracker = true;
 
   // 公開情報（pk_live と同様にフロント露出OK）。本番GAS web app。
-  var GAS_URL = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
   var sent = 0;
   var MAX_SEND = 10;                          // 同セッション最大10回（無限ループ防止）
 

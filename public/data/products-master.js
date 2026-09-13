@@ -102,6 +102,61 @@
       images: ['public/images/products/drive/hamburg.jpg']
     },
     {
+      productId: 'P044', variantId: 'HAMBURG-XL', sku: 'EDA-HAMBURG-250',
+      name: '特大ハンバーグ', variant: '1個 250g',
+      price: 1800, weight: 250, stock: 10, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg XL',
+      description: '和牛 100%、1個 250g。冷蔵庫で解凍してから、フライパンで蒸し焼き。',
+      images: ['public/images/products/drive/hamburg.jpg']
+    },
+
+    /* ===== はじめてセット (2026-09-08 新設) =====
+       全購入者42人の「初めてのご注文」に何が入っていたかを数えて、上位4品で組んだ。
+       サイコロステーキ11人 / 切り落とし8人 / バラ焼肉7人 / 赤身スライス7人。
+       説明文の「いちばん多く選ばれている」はこの実測が根拠で、盛った数字ではない。
+       🧩 components(BOM) は必須。これが無いとセットが売れても4品の在庫が減らず、
+          売り切れていても注文が通る(P031と同じ設計)。
+       🔴 単品合計 ¥7,900 と同額。値引きではなく「選ぶ手間を省いたセット」として出す。 */
+    {
+      productId: 'P046', variantId: 'YAKINIKU-SET', sku: 'EDA-YAKINIKU-SET',
+      stripePriceId: '',
+      name: '焼肉セット', variant: '赤身焼肉200g×2 + バラ焼肉200g×1',
+      /* stock は products シートのライブ在庫で上書きされ、さらに components から
+         「あと何セット作れるか」に再計算される (products-loader.js の applyBomStock)。
+         ここは取得失敗時のフォールバック。 */
+      price: 6500, weight: 600, stock: 39, temp: '冷凍',
+      published: true,
+      /* BOM。本番DBの components 列と同じ内容。
+         はじめてセット(P045)ともバラ焼肉を共有しているので、
+         どちらが売れても両方の「作れる数」が減る。 */
+      components: [
+        { name: '赤身焼肉', qty: 2 },
+        { name: 'バラ焼肉', qty: 1 }
+      ],
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku Set',
+      /* 定価（取り消し線）は出さない（2026-09-10 田崎さん決定）。
+         実測: 値引き10%以下の5商品は295閲覧でカート2件、取り消し線の有無では差が出ない。
+         今回は単品合計¥6,700に対し3%引きなので、併記すると「たった200円」に見える。 */
+      description: '赤身焼肉200g×2とバラ焼肉200g×1の3袋セット（合計600g）。赤身の噛みごたえを主役に、バラの脂で味を締める。焼いて分け合う日に。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
+    },
+    {
+      productId: 'P045', variantId: 'NINKI-4SET', sku: 'EDA-NINKI-4SET',
+      stripePriceId: '',
+      name: 'はじめてセット', variant: '4品 各200g・計800g',
+      price: 7900, weight: 800, stock: 4, temp: '冷凍',
+      published: true,
+      components: [
+        { name: '赤身スライス',     qty: 1 },
+        { name: 'バラ焼肉',         qty: 1 },
+        { name: 'サイコロステーキ', qty: 1 },
+        { name: '切り落とし',       qty: 1 }
+      ],
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Hajimete Set',
+      description: '初めてのご注文でいちばん多く選ばれている4品を、そのまま1つにまとめました。赤身スライス200g／バラ焼肉200g／サイコロステーキ200g／切り落とし200gの計800g。焼く・炒める・煮る、どれもこれ1つで揃います。迷ったらこれを選んでください。',
+      images: ['public/images/products/drive/hajimete-set.jpg']
+    },
+    {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
       stripePriceId: 'price_1Tcbx9GSkhU1UEcik9aUn4RT',
       name: 'ローストビーフ', variant: '1袋 300g',
@@ -402,8 +457,8 @@
       images: ['public/images/products/drive/wakeari-slice-set.jpg']
     },
 
-    /* ===== カメノコ焼肉 / シンシン焼肉 (2026-08-30 18:30 販売開始・数量限定) =====
-       シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 9/6(日) 18:30 に自動解禁。
+    /* ===== カメノコ焼肉 / シンシン焼肉 (2026-09-06 20:00 販売開始・数量限定) =====
+       シンタマ(マル)を4分割した希少部位。公式LINEの配信に合わせて 9/6(日) 20:00 に自動解禁。
        limitedStartAt を過ぎるまでカード・PDPともに「発売予定」で購入不可。
        限定期限は設けず、在庫が尽きたら通常どおり売り切れ表示になる。
        🔴 同じ肉で 2種セット(P037) も売る。セットは products シートの components
@@ -419,7 +474,7 @@
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
       price: 2700, weight: 200, stock: 8, temp: '冷凍',
       limitedTotal: 8,
-      limitedStartAt: '2026/09/06 18:30',
+      limitedStartAt: '2026/09/06 20:00',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
       description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。',
@@ -431,14 +486,14 @@
       name: 'シンシン焼肉', variant: '1袋 200g',
       price: 2700, weight: 200, stock: 6, temp: '冷凍',
       limitedTotal: 6,
-      limitedStartAt: '2026/09/06 18:30',
+      limitedStartAt: '2026/09/06 20:00',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
       description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。',
       images: ['public/images/products/drive/shinshin-yakiniku.jpg']
     },
 
-    /* ===== カメノコ・シンシン焼肉セット (2026-09-06 18:30 販売開始・数量限定) =====
+    /* ===== カメノコ・シンシン焼肉セット (2026-09-06 20:00 販売開始・数量限定) =====
        カメノコ200g + シンシン200g の2種セット。定価¥5,400 → ¥4,860 (10%オフ)。
        🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
           セット行そのものの stock は GAS 側で減らないので、フロントは
@@ -466,7 +521,7 @@
         { name: 'シンシン焼肉', qty: 1 }
       ],
       limitedTotal: 6,          /* 表示には出ない。限定品の仕組みを有効にするだけ */
-      limitedStartAt: '2026/09/06 18:30',
+      limitedStartAt: '2026/09/06 20:00',
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Shinshin Set',
       description: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。',

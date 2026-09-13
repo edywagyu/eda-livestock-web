@@ -8,7 +8,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>オンラインショップ｜江田畜産 — 無投薬 和牛・平飼い鶏</title>
-<meta name="description" content="サーロイン・赤身ステーキ・平飼い鶏の通販。最短3日で全国へ。¥11,000以上 送料無料（北海道のみ +¥500）。">
+<meta name="description" content="サーロイン・赤身ステーキ・平飼い鶏の通販。最短3日で全国へ。送料 ¥1,100（北海道・沖縄 ¥2,200）。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Online Shop | 江田畜産">
 <meta property="og:description" content="無投薬・長期肥育の黒毛和牛を冷凍便で全国へ。サーロイン・リブアイ・ヒレ・ハンバーグ・贈答ギフト揃えています。">
@@ -7000,6 +7000,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="SIRLOIN"] { background-image: url('public/images/products/drive/sirloin-2026.jpg'); }
 .product-card-img[data-label="RED MEAT"] { background-image: url('public/images/products/drive/red-meat-2026.jpg'); }
 .product-card-img[data-label="MISUJI"] { background-image: image-set(url('public/images/products/drive/misuji.webp') type('image/webp'), url('public/images/products/drive/misuji.jpg')); }
+.product-card-img[data-label="HAJIMETE SET"] { background-image: url('public/images/products/drive/hajimete-set.jpg'); }
 .product-card-img[data-label="CUBE STEAK"] { background-image: url('public/images/products/drive/cube-steak-2026.jpg'); }
 .product-card-img[data-label="FILLET"] { background-image: image-set(url('public/images/products/drive/fillet.webp') type('image/webp'), url('public/images/products/drive/fillet.jpg')); }
 .product-card-img[data-label="WAGYU SLICE"] { background-image: url('public/images/products/drive/wagyu-slice-2026.jpg'); }
@@ -7351,6 +7352,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  letter-spacing: 0.04em;
  z-index: 6;
  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.stock-badge-overlay.stock-preorder {
+ background: rgba(15, 61, 46, 0.92);
+ color: #fff;
+ border: 1px solid rgba(212, 169, 59, 0.55);
+ letter-spacing: 0.02em;
 }
 .stock-badge-overlay.stock-out {
  background: rgba(200, 16, 46, 0.92);
@@ -9611,6 +9618,7 @@ body.is-member .product-card--organic .org-chk-lock {
     <li><a href="about.html" data-en="About">会社案内</a></li>
     <li><a href="global.html" data-en="Global">海外展開</a></li>
     <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a href="furusato.html" data-en="Furusato Tax">ふるさと納税</a></li>
     <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
     <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
@@ -9720,7 +9728,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-trust-inner">
  <div class="shop-trust-item">❄️ <strong>冷凍便</strong> 賞味期限6ヶ月</div>
  <div class="shop-trust-item">🚫 <strong>抗生物質・ホルモン剤</strong> 不使用</div>
- <div class="shop-trust-item">¥11,000以上 <strong data-en="Free shipping">送料無料</strong>（北海道のみ +¥500）</div>
+ <div class="shop-trust-item">送料 <strong data-en="Shipping ¥1,100">¥1,100</strong>（北海道・沖縄 ¥2,200）</div>
  </div>
  </div>
 </div>
@@ -9745,7 +9753,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div style="flex:1;min-width:240px;">
  <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">🎁 初めてのお客様へ</p>
  <p style="margin:6px 0 0;font-size:14px;color:#1A1A1A;line-height:1.6;">
- まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「ハンバーグ 130g×3 (¥2,280)」</strong> をお試しください。 ¥11,000 以上で送料無料（北海道のみ +¥500）。
+ まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「特大ハンバーグ 250g (¥1,800)」</strong> をお試しください。 送料は ¥1,100（北海道・沖縄 ¥2,200）です。
  </p>
  </div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -9966,16 +9974,16 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
- <!-- ===== カメノコ焼肉 / シンシン焼肉 数量限定 (2026-08-30 18:30 販売開始) =====
+ <!-- ===== カメノコ焼肉 / シンシン焼肉 数量限定 (2026-09-06 20:00 販売開始) =====
       公式LINE配信に合わせて limitedStartAt で自動解禁。それまでは data-limited-scope で非表示。
       限定の終了日時は設けず、在庫が尽きたら通常の売り切れ表示になる。 -->
  <div class="shop-cat-head" data-cat="beef" data-limited-scope="カメノコ焼肉">
  <h2 class="shop-cat-title">数量限定 <span>/ Kamenoko &amp; Shinshin</span></h2>
- <p class="shop-cat-desc">モモの中の「シンタマ」を4つに分けた希少部位、カメノコとシンシン。<strong>普段は企業向け</strong>で店頭には出しません。今回だけ焼肉用にカットしました。カメノコ <b class="limited-left" data-limited-left="カメノコ焼肉">残り8袋</b> ／ シンシン <b class="limited-left" data-limited-left="シンシン焼肉">残り6袋</b>。なくなり次第終了です。</p>
+ <p class="shop-cat-desc">モモの中の「シンタマ」を4つに分けた希少部位、カメノコとシンシン。<strong>普段は企業向け</strong>で店頭には出しません。今回だけ焼肉用にカットしました。<strong>30パックの数量限定</strong>。なくなり次第終了です。</p>
  </div>
 
  <div class="product-grid cols-4" data-cat="beef" data-limited-scope="カメノコ焼肉">
- <!-- カメノコ・シンシン焼肉セット (2026-09-06 18:30 販売開始・数量限定)。
+ <!-- カメノコ・シンシン焼肉セット (2026-09-06 20:00 販売開始・数量限定)。
       セット行の stock は BOM で減らないので、残数は products-loader.js の
       applyBomStock が構成品(カメノコ/シンシン)の実在庫から計算する。
       単品が売れてもこの残数は減る。上限6＝シンシン6袋。 -->
@@ -9989,7 +9997,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">シンシン焼肉 <strong>200g</strong></div>
  <div class="product-stat-item wide">通常 &yen;5,400 &rarr; <strong>&yen;540 お得</strong></div>
  </div>
- <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="カメノコ・シンシン焼肉セット">残り6セット</b><span>なくなり次第終了</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left">30パック限定</b><span>なくなり次第終了</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -10003,7 +10011,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
  <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
- <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="カメノコ焼肉">残り8袋</b><span>数量限定・なくなり次第終了</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left">30パック限定</b><span>なくなり次第終了</span></div>
  <div class="product-buy"></div>
  </div>
 
@@ -10017,7 +10025,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
  <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
  </div>
- <div class="nikunohi-urgency"><b class="limited-left" data-limited-left="シンシン焼肉">残り6袋</b><span>数量限定・なくなり次第終了</span></div>
+ <div class="nikunohi-urgency"><b class="limited-left">30パック限定</b><span>なくなり次第終了</span></div>
  <div class="product-buy"></div>
  </div>
  </div>
@@ -10031,6 +10039,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- 牛肉 サブタブ（部位・調理スタイル別） -->
  <div class="sub-tab-row reveal" data-parent-cat="beef">
  <button class="sub-tab active" data-sub="all">すべて</button>
+ <!-- 2026-09-08 田崎さん指示で新設。初めての方に何を買えばいいか迷わせない入口。 -->
+ <button class="sub-tab" data-sub="hajimete">はじめての方</button>
  <button class="sub-tab" data-sub="steak">ステーキ</button>
  <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
  <button class="sub-tab" data-sub="yakiniku">焼肉</button>
@@ -10038,6 +10048,22 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
+
+ <!-- はじめてセット（2026-09-08 新設）。products.html のカードと同じ内容を保つ。
+      🔴 shop.html の牛肉は productPreviewInit で2件しか出ないため、
+         下の PREVIEW_PICKS の先頭にも名前を入れてトップに出している。 -->
+ <div class="product-card" data-sub="hajimete" data-variants='[{"id":50831007900451,"t":"1セット","p":7900}]'>
+ <div class="product-card-img" data-label="HAJIMETE SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Hajimete</span><span class="product-price">¥7,900</span></div>
+ <p class="product-name">はじめてセット</p>
+ <p class="product-desc">初めてのご注文でいちばん多く選ばれている4品を、そのまま1つに。赤身スライス・バラ焼肉・サイコロステーキ・切り落としを各200g。焼く、炒める、煮る。<strong>迷ったらこれ</strong>を選んでください。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">4品 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>800g</strong></div>
+ <div class="product-stat-item wide">100g <strong>¥988</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
 
  <!-- 肉の日限定セット（2026-08-27 たろ指示で牛肉グリッドの先頭にも転載）。
       data-sub="set" なので部位サブタブでは非表示。data-limited-scope で 8/30 23:59 に自動で消える。
@@ -10228,6 +10254,19 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">100g換算 <strong>¥585</strong></div>
  <div class="product-stat-item">個包装 <strong>1個 130g</strong></div>
  <div class="product-stat-item wide">冷蔵庫で <strong>約3時間</strong>で解凍</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="processed" data-variants='[{"id":51044025000001,"t":"1つ","p":1800}]'>
+ <div class="product-card-img" data-label="HAMBURG XL"></div>
+ <div class="product-tag-row"><span class="product-tag">Hamburg XL</span><span class="product-price">¥1,800</span></div>
+ <p class="product-name" data-en="Hamburg steak XL">特大ハンバーグ</p>
+ <p class="product-desc">和牛100%のシンプル配合を、たっぷり1個250gで。冷蔵庫で解凍してから、フライパンで両面を焼くだけ。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g換算 <strong>¥720</strong></div>
+ <div class="product-stat-item">個包装 <strong>1個 250g</strong></div>
+ <div class="product-stat-item wide">冷蔵庫で <strong>約5時間</strong>で解凍</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -10470,7 +10509,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  <h3 class="wagyu-guide-card-title">最短3日でクール便お届け。</h3>
  <p class="wagyu-guide-card-text">
- 宮崎の自社加工場から直接ご自宅へ。<strong>最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</strong> <strong>¥11,000 以上で送料無料（北海道のみ +¥500）</strong>。
+ 宮崎の自社加工場から直接ご自宅へ。<strong>最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</strong> <strong>送料 ¥1,100（北海道・沖縄 ¥2,200）</strong>。
  </p>
  </article>
 
@@ -10589,19 +10628,14 @@ body.is-member .product-card--organic .org-chk-lock {
    実質負担2,000円で、税金控除と一緒に上質な和牛を。
   </p>
   <p style="font-size: 12px; color: var(--color-ink-muted); margin: 0 auto 36px; max-width: 560px; line-height: 1.7;">
-   ※ 現在は<strong>楽天ふるさと納税</strong>と<strong>ふるさとチョイス</strong>の2サイトでお取り扱い中。ワンストップ特例対応。
+   ※ <strong>楽天ふるさと納税</strong>・<strong>さとふる</strong>・<strong>ふるさとチョイス</strong>ほか、9つのふるさと納税サイトでお取り扱い中。ワンストップ特例のオンライン申請に対応。
   </p>
-  <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 560px; margin: 0 auto 24px;">
-   <a href="https://search.rakuten.co.jp/search/mall/%E3%81%B5%E3%82%8B%E3%81%95%E3%81%A8%E7%B4%8D%E7%A8%8E%E3%80%80%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B/" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
-    <span style="color: #BF0000;">●</span> 楽天ふるさと納税で見る <span class="btn-arrow"></span>
-   </a>
-   <a href="https://www.furusato-tax.jp/search?q=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B&header=1&target=1" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; background: white; border: 1px solid #E8DCC4; border-radius: 999px; color: var(--color-forest); font-family: var(--font-jp); font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.25s;">
-    <span style="color: #E60013;">●</span> ふるさとチョイスで見る <span class="btn-arrow"></span>
+  <div style="display: flex; justify-content: center; margin: 0 auto 24px;">
+   <a href="furusato.html" class="furusato-cta-btn" style="border-radius: 999px; padding: 15px 34px;">
+    ふるさと納税の申込先を見る
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
    </a>
   </div>
-  <p style="font-size: 11.5px; color: var(--color-ink-muted); margin: 28px 0 0;">
-   検索ワード「<strong>江田和牛</strong>」でヒットします
-  </p>
  </div>
 </section>
 
@@ -10676,7 +10710,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="faq-list reveal">
  <div class="faq-item">
  <h4 class="faq-q">送料はいくらですか？</h4>
- <p class="faq-a">¥11,000（税込）以上のお買い上げで<strong>送料無料（北海道のみ +¥500）</strong>。¥11,000未満の場合、冷凍便送料として¥1,100〜¥1,540（地域による）を頂戴します。クール宅急便（ヤマト運輸/佐川急便/日本郵便）でお届けします。</p>
+ <p class="faq-a">冷凍便の送料として <strong>¥1,100（税込）</strong>、北海道・沖縄は <strong>¥2,200（税込）</strong> を頂戴します。贈り物としてお送りする場合は送料を頂戴しません。クール宅急便（ヤマト運輸/佐川急便/日本郵便）でお届けします。</p>
  </div>
 
  <div class="faq-item">
@@ -10711,7 +10745,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="faq-item">
  <h4 class="faq-q">ふるさと納税でも購入できますか？</h4>
- <p class="faq-a">はい。宮崎県高原町のふるさと納税返礼品として、<strong>楽天ふるさと納税</strong>と<strong>ふるさとチョイス</strong>の2サイトでご利用いただけます。冷凍配送、賞味期限6ヶ月以上。実質自己負担2,000円で江田和牛を楽しめます。</p>
+ <p class="faq-a">はい。宮崎県高原町のふるさと納税返礼品として、<strong>楽天ふるさと納税</strong>・<strong>さとふる</strong>・<strong>ふるさとチョイス</strong>ほか9つのふるさと納税サイトでご利用いただけます。冷凍配送、賞味期限6ヶ月以上。実質自己負担2,000円で江田和牛を楽しめます。<a href="furusato.html" style="color:var(--color-gold-soft);text-decoration:underline;">掲載サイトの一覧はこちら</a></p>
  </div>
  </div>
  </div>
@@ -10871,7 +10905,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-how-step">
  <div class="shop-how-num">02</div>
  <h4>カートを確認</h4>
- <p>右上のカートアイコンで<br/>内容・合計を確認。¥11,000 以上で送料無料（北海道のみ +¥500）。</p>
+ <p>右上のカートアイコンで<br/>内容・合計を確認。送料 ¥1,100（北海道・沖縄 ¥2,200）。</p>
  </div>
  <div class="shop-how-arrow">
  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -11106,6 +11140,29 @@ body.is-member .product-card--organic .org-chk-lock {
  inset 0 -2px 6px rgba(0,0,0,0.15);
  transition: all 0.3s var(--ease-out-expo);
 }
+.furusato-cta-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 10px;
+ margin-top: 20px;
+ padding: 14px 30px;
+ background: var(--color-forest);
+ color: #fff;
+ font-family: var(--font-jp);
+ font-size: 14px;
+ font-weight: 600;
+ letter-spacing: 0.03em;
+ text-decoration: none;
+ border: 1px solid var(--color-forest);
+ transition: background 0.3s, border-color 0.3s, transform 0.3s;
+}
+.furusato-cta-btn svg { transition: transform 0.3s; }
+.furusato-cta-btn:hover {
+ background: var(--color-gold-soft);
+ border-color: var(--color-gold-soft);
+ transform: translateY(-2px);
+}
+.furusato-cta-btn:hover svg { transform: translateX(4px); }
 .organic-tease-btn:hover {
  transform: translateY(-2px);
  box-shadow:
@@ -11160,14 +11217,14 @@ body.is-member .product-card--organic .org-chk-lock {
  <tr><th>保管方法</th><td>冷凍（-18℃以下）· 個別真空パック</td></tr>
  <tr><th>賞味期限</th><td>製造日から約6ヶ月</td></tr>
  <tr><th>配送</th><td>ヤマト運輸 / 佐川急便 / 日本郵便（クール冷凍便）</td></tr>
- <tr><th>送料</th><td>¥11,000以上で送料無料（北海道のみ +¥500）</td></tr>
+ <tr><th>送料</th><td>¥1,100（北海道・沖縄 ¥2,200）／贈り物は送料無料</td></tr>
  <tr><th>支払い</th><td>Visa / Mastercard / JCB / AMEX / Apple Pay / 銀行振込 (定期便はカード or Apple Pay のみ)</td></tr>
  <tr><th>輸出認証</th><td>EU・アメリカ向け 国際衛生基準クリア</td></tr>
  </table>
 
  <h3 style="margin-top: 48px;">ふるさと納税</h3>
  <p style="font-size: 14px; line-height: 1.85;">
- 宮崎県高原町のふるさと納税返礼品として、<strong>楽天ふるさと納税</strong>と<strong>ふるさとチョイス</strong>の2サイトでご利用いただけます。実質自己負担2,000円で江田和牛をお楽しみいただけます。冷凍配送、賞味期限6ヶ月以上。
+ 宮崎県高原町のふるさと納税返礼品として、<strong>楽天ふるさと納税</strong>・<strong>さとふる</strong>・<strong>ふるさとチョイス</strong>ほか、9つのふるさと納税サイトでご利用いただけます。実質自己負担2,000円で江田和牛をお楽しみいただけます。冷凍配送、賞味期限6ヶ月以上。
  </p>
  </div>
 </section>
@@ -11600,20 +11657,6 @@ function toggleUnboxingSound() {
  <button onclick="orderGift('take', 11000, '赤身ステーキ ギフト【竹】 600g')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
  </div>
  </div>
- <div class="gift-product-card">
- <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg'))">
- <span class="gift-product-rank rank-ume">梅</span>
- </div>
- <div class="gift-product-body">
- <h3>ハンバーグ ギフト【梅】</h3>
- <p>江田和牛100%・無投薬の手作りハンバーグ。お子様のいるご家庭・お引っ越し祝い・カジュアルな手土産に。</p>
- <div class="gift-product-meta">
- <span class="gift-product-vol">ハンバーグ 5個 / 130g×5</span>
- <span class="gift-product-price">¥5,500<small>送料込み・税込</small></span>
- </div>
- <button onclick="orderGift('ume', 5500, 'ハンバーグ ギフト【梅】 5個')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
- </div>
- </div>
  </div><!-- /.gift-products-grid -->
 
  <!-- 複数人へ送る導線（grid 外に移動: フル幅センター配置） -->
@@ -11767,7 +11810,7 @@ function toggleUnboxingSound() {
  <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
  </div>
  <div class="cart-shipping-note">
- ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
+ 送料 ¥1,100（北海道・沖縄 ¥2,200）。冷凍便でお届け。
  </div>
  <div class="cart-delivery-note" id="cartDelivery"></div>
 
@@ -12204,7 +12247,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* ======== DELIVERY DATE CALCULATOR ========
  3段階締切バケット:
- 〜10:00 → +2日 (本日10時まで → 2日後)
+ 〜10:00 → +3日 (本日10時まで → 3日後)
  〜17:00 → +3日 (本日17時まで → 3日後)
  〜22:00 → +3日 (本日22時まで → 3日後)
  22:00〜 → 翌日基点で+2日 = 今日から+3日
@@ -12214,12 +12257,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const DAYS_JP = ['日','月','火','水','木','金','土'];
  const now = new Date();
  /* JST offset */
- const jst = new Date(now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000);
+ const jst = new Date(now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000); /* 符号は「+」が正。「-」だとJST端末で18時間ずれ、16時以降だけバナーより1日後ろの日付が出ていた */
  const hour = jst.getHours();
 
  let addDays;
  let bucketLabel;
- if (hour < 10) { addDays = 2; bucketLabel = '本日10:00まで'; }
+ if (hour < 10) { addDays = 3; bucketLabel = '本日10:00まで'; }
  else if (hour < 17) { addDays = 3; bucketLabel = '本日17:00まで'; }
  else if (hour < 22) { addDays = 3; bucketLabel = '本日22:00まで'; }
  else { addDays = 3; bucketLabel = '明日10:00まで'; } // 22時以降は翌日朝までの注文として扱う
@@ -12523,6 +12566,13 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  } catch(e) {}
  return Infinity; /* master 不明時は制限なし (旧動作) */
  }
+ /* 📅 予約判定 (public/js/preorder.js) 用に商品そのものを引く */
+ function getProductByTitle(title) {
+ try {
+ const master = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+ return master.find(p => p.name === title) || null;
+ } catch(e) { return null; }
+ }
  function currentCartUnits(title) {
  return items
  .filter(i => i.title === title)
@@ -12540,7 +12590,10 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const stock = getStockForTitle(title);
  const addUnits = variantUnits(variant) * qtyToAdd;
  const currentUnits = currentCartUnits(title);
- if (currentUnits + addUnits > stock) {
+ /* 📅 在庫0でも「次回最短お届け日」を出せる品は予約として通す（2026-09-07 田崎さん決定） */
+ const _pre = (stock <= 0 && window.EDA_PREORDER)
+   ? window.EDA_PREORDER.dateFor(getProductByTitle(title)) : null;
+ if (!_pre && currentUnits + addUnits > stock) {
  const remaining = Math.max(0, stock - currentUnits);
  if (remaining === 0) {
  alert(`「${title}」は在庫切れです。\n再入荷をお待ちください。`);
@@ -12571,13 +12624,33 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
 
  /* --- Gift order: 単品/セットをギフトモードでcheckoutへ --- */
+ /* 🔴 products シートの name と「完全一致」でないと在庫が動かない。
+    GAS の validateStockBeforeCheckout / decrementStockAfterOrder は
+    どちらも products の name 列とカート item の title を突き合わせる方式で、
+    一致しない品は素通り = 在庫上限も効かず、売れても stock が減らない。
+    カードの表示名はサイズ付き(例「ヒレステーキ ギフト【松】 450g」)で
+    name(「ヒレステーキ ギフト【松】」)と一致していなかった。
+    gift.html は 2026-08-24 に修正済みだったが shop.html / products.html の
+    2枚に同じ修正が入っておらず、2026-09-05 のギフト注文(ヒレ【松】×2)でも
+    在庫が引かれなかった(2026-09-05 修正)。
+    → カートに積む title は下記のカタログ名に揃え、サイズは variant 側へ逃がす。
+    ⚠ ここを書き換えるときは products シートの name と1文字ずつ照合すること。
+    ⚠ Stripe Price ID の引き当ては従来どおり表示名(サイズ付き)で行う。 */
+ const GIFT_CATALOG = {
+ matsu: { name: 'ヒレステーキ ギフト【松】', variant: '450g' },
+ take: { name: '赤身ステーキ ギフト【竹】', variant: '600g' },
+ ume: { name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5' }
+ };
  window.orderGift = function(giftId, price, title) {
  const stripePriceId = lookupStripePriceId(title, '') || null;
+ const cat = GIFT_CATALOG[giftId];
+ const cartTitle = cat ? cat.name : title;
+ const cartVariant = cat ? cat.variant : 'ギフトセット';
  const giftItem = {
  variantId: 'gift-' + giftId,
  price: price,
- title: title,
- variant: 'ギフトセット',
+ title: cartTitle,
+ variant: cartVariant,
  img: 'public/images/products/drive/gift-box.jpg',
  qty: 1,
  gift: true,
@@ -12586,7 +12659,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  items.push(giftItem);
  save();
  /* 📊 Analytics: ギフトのカート追加イベント (カゴ落ち検知 gas/cart_holds.gs の入力) */
- if (window.edaAnalytics) window.edaAnalytics.addToCart(giftItem.variantId, price, { title: title, variant: 'ギフトセット' });
+ if (window.edaAnalytics) window.edaAnalytics.addToCart(giftItem.variantId, price, { title: cartTitle, variant: cartVariant });
  location.href = 'checkout.html?mode=gift';
  };
 
@@ -13144,7 +13217,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  return;
  }
  const stockByTitle = {};
- master.forEach(p => { if (p.name) stockByTitle[p.name] = p.stock; });
+ const masterByTitle = {};
+ master.forEach(p => { if (p.name) { stockByTitle[p.name] = p.stock; masterByTitle[p.name] = p; } });
 
  document.querySelectorAll('.product-card').forEach(card => {
  const nameEl = card.querySelector('.product-name');
@@ -13157,14 +13231,24 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  card.querySelectorAll('.stock-badge-overlay').forEach(el => el.remove());
 
  if (stock === 0) {
- /* 在庫切れ */
+ /* 📅 売り切れ。予約が受けられるなら日付バッジにしてボタンは生かす（products.html と同じ規則） */
+ const preLabel = window.EDA_PREORDER
+   ? window.EDA_PREORDER.labelFor(masterByTitle[title] || { stock: 0 }) : '';
  const b = document.createElement('div');
- b.className = 'stock-badge-overlay stock-out';
- b.textContent = '在庫切れ';
+ b.className = 'stock-badge-overlay ' + (preLabel ? 'stock-preorder' : 'stock-out');
+ b.textContent = preLabel ? (preLabel.replace(/（.）$/, '') + '〜お届け／予約可') : '在庫切れ';
  card.appendChild(b);
- /* カートボタン disable */
  const btn = card.querySelector('.btn-add-cart');
- if (btn) {
+ if (btn && preLabel) {
+ if (btn.dataset.stockDisabled === '1') {
+ btn.disabled = false;
+ btn.style.opacity = '';
+ btn.style.cursor = '';
+ delete btn.dataset.stockDisabled;
+ if (typeof btn._edaRefreshLabel === 'function') btn._edaRefreshLabel();
+ else if (btn.textContent.trim() === '在庫切れ') btn.textContent = 'カートに追加';
+ }
+ } else if (btn) {
  btn.disabled = true;
  btn.textContent = '在庫切れ';
  btn.style.opacity = '0.5';
@@ -13494,7 +13578,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const RECIPE_PRODUCTS = {
  'サーロインステーキ': { id: 50830136082730, price: 3400, title: 'サーロインステーキ', img: 'public/images/products/drive/sirloin.jpg' },
  '和牛の牛丼': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi.jpg' },
- 'ハンバーグ': { id: 50830191427882, price: 760, title: 'ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
+ 'ハンバーグ': { id: 51044025000001, price: 1800, title: '特大ハンバーグ', img: 'public/images/products/drive/hamburg.jpg' },
  '和牛のすき焼き': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
  '鶏ももの照り焼き': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のしゃぶしゃぶ': { id: 50830187200810, price: 2600, title: '赤身スライス', img: 'public/images/products/drive/wagyu-slice.jpg' },
@@ -13554,7 +13638,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const RECIPES = [
  /* ---- 和牛 ---- */
  { type: 'beef', rank: 3, time: 15, name: '赤身ステーキ', desc: '脂身少なめ、鉄分しっかり。塩だけで完結する赤身の主役。', img: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85', ingredients: ['赤身ステーキ', '塩', 'クレソン'] },
- { type: 'beef', rank: 3, time: 15, name: 'ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
+ { type: 'beef', rank: 3, time: 15, name: '特大ハンバーグ', desc: '解凍してフライパンで焼くだけ。手作りシンプル配合。', img: 'public/images/products/drive/hamburg.jpg', ingredients: ['ハンバーグ', '玉ねぎ'] },
  { type: 'beef', rank: 3, time: 15, name: '和牛の牛丼', desc: '解凍5分、煮るだけ。子どもおかわり必至。', img: 'https://images.pexels.com/photos/3799314/pexels-photo-3799314.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['切り落とし', '玉ねぎ'] },
  { type: 'beef', rank: 3, time: 25, season: ['autumn', 'winter'], name: '和牛のすき焼き', desc: 'しゃぶしゃぶ用赤身で、平日でもごちそう。', img: 'https://images.unsplash.com/photo-1648977555545-4dd006e30d3f?auto=format&fit=crop&w=900&q=85', ingredients: ['和牛赤身スライス', '割り下', '春菊'] },
  { type: 'beef', rank: 2, time: 15, season: ['summer'], name: '和牛のしゃぶしゃぶ', desc: '出汁に2秒。冷しゃぶにすれば、暑い日でもすすむ。', img: 'https://images.pexels.com/photos/37735951/pexels-photo-37735951.jpeg?auto=compress&cs=tinysrgb&w=900', ingredients: ['和牛赤身スライス', '昆布出汁'] },
@@ -14541,35 +14625,21 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  setInterval(update, 60 * 60 * 1000);
 })();
 
-/* ============ 配送カウントダウンバー（3段階締切・時間帯連動） ============
- 締切バケット:
- ▸ 〜10:00 → +2日後にお届け / 次の締切「本日 10:00」
- ▸ 〜17:00 → +3日後にお届け / 次の締切「本日 17:00」
- ▸ 〜22:00 → +3日後にお届け / 次の締切「本日 22:00」（最終）
- ▸ 22:00 以降 → 翌日10:00 締切扱い / +3日後（明日基点で2日後相当）
- ※ 日曜日着はスキップして月曜に繰り上げ
- ============================================================ */
+/* ============ 配送バー（最短お届け日のみ） ============
+ お届けは時間帯によらず一律3日後着。日曜着はスキップして月曜。
+ ※「本日◯◯まで受付中」の締切カウントダウンは、全時間帯で同じ3日後着に
+   なり実態と合わなくなったため 2026-09-07 に廃止（田崎さん判断）。
+ ※ 最短日を変えるときは商品カード getDeliveryDate / カートのプルダウン /
+   checkout.html の _deliveryBounds も合わせること。
+ ====================================================== */
 (function shipCountdownInit() {
  const headlineEl = document.getElementById('shipCdHeadline');
  const metaEl = document.getElementById('shipCdMeta');
  if (!headlineEl || !metaEl) return;
 
  const days = ['日','月','火','水','木','金','土'];
-
- // 3段階の締切バケット定義
- const CUTOFF_BUCKETS = [
- { until: 10, label: '10:00', addDays: 2, tag: '', lead: '朝のうちにご注文で' },
- { until: 17, label: '17:00', addDays: 3, tag: '', lead: '午後のご注文で' },
- { until: 22, label: '22:00', addDays: 3, tag: '', lead: '夜のご注文で' }
- ];
-
- function pickBucket(hour) {
- // hour < 10 → bucket[0], hour < 17 → bucket[1], hour < 22 → bucket[2]
- for (const b of CUTOFF_BUCKETS) {
- if (hour < b.until) return b;
- }
- return null; // 22:00 以降は翌日扱い
- }
+ const LEAD_DAYS = 3;
+ const NOTE = '※ 最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。';
 
  function calcArrival(orderBase, addDays) {
  const arrival = new Date(orderBase);
@@ -14580,66 +14650,18 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  return arrival;
  }
 
- function remainText(now, targetHour) {
- const cutoff = new Date(now);
- cutoff.setHours(targetHour, 0, 0, 0);
- if (cutoff <= now) cutoff.setDate(cutoff.getDate() + 1); // 翌日締切
- const diffMs = cutoff - now;
- if (diffMs <= 0) return null;
- const hours = Math.floor(diffMs / 3600000);
- const minutes = Math.floor((diffMs % 3600000) / 60000);
- if (hours < 1) return `あと ${minutes}分`;
- return `${hours}時間${String(minutes).padStart(2,'0')}分`;
- }
-
  function update() {
- const now = new Date();
- const hour = now.getHours();
- const bucket = pickBucket(hour);
-
- let arrival, cutoffLabel, addDays, tag, lead, isToday, remain;
-
- if (bucket) {
- // 本日内の締切に間に合う
- arrival = calcArrival(now, bucket.addDays);
- cutoffLabel = bucket.label;
- addDays = bucket.addDays;
- tag = bucket.tag;
- lead = bucket.lead;
- isToday = true;
- remain = remainText(now, bucket.until);
- } else {
- // 22:00 以降 → 翌日 10:00 締切（明日朝までに注文すれば +2 from tomorrow = +3 from today）
- const tomorrow = new Date(now);
- tomorrow.setDate(tomorrow.getDate() + 1);
- arrival = calcArrival(tomorrow, 2);
- cutoffLabel = '明日 10:00';
- addDays = 3;
- tag = '';
- lead = '深夜のご注文も';
- isToday = false;
- remain = remainText(now, 10);
- }
-
+ const arrival = calcArrival(new Date(), LEAD_DAYS);
  const m = arrival.getMonth() + 1;
  const d = arrival.getDate();
  const w = days[arrival.getDay()];
 
- headlineEl.innerHTML = `${tag} ${lead} <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
-
- if (isToday) {
- metaEl.innerHTML = `本日 <strong>${cutoffLabel}</strong> まで受付中` +
- (remain ? ` <span class="ship-cd-remain">残り ${remain}</span>` : '') +
- ` <span class="ship-cd-note">※ 最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</span>`;
- } else {
- metaEl.innerHTML = `<strong>${cutoffLabel}</strong> まで受付` +
- (remain ? ` <span class="ship-cd-remain">あと ${remain}</span>` : '') +
- ` <span class="ship-cd-note">※ 最短3日目安です。北海道は1〜2日長くなります。年末年始やお盆期間は通常より1〜2日長くなる場合があります。</span>`;
- }
+ headlineEl.innerHTML = `本日のご注文で <strong>最短 ${m}月${d}日（${w}）</strong>にお届け`;
+ metaEl.innerHTML = `<span class="ship-cd-note">${NOTE}</span>`;
  }
 
  update();
- setInterval(update, 60000); // 1分ごと更新
+ setInterval(update, 60000); // 1分ごと更新（日付が変わったら追従）
 })();
 
 (function couponPopInit() {
@@ -14746,14 +14768,16 @@ function copyPopCoupon() {
 /* ===== お届け日ドロップダウン: 実日付を最短日から14日分生成 + 選択保存 (Tom 2026-06) =====
    従来は <option>指定なし(最短)</option> のみで実質選べず、updateDeliveryNote() も未定義だった。 */
 (function(){
-  function jstNow(){ var n=new Date(); return new Date(n.getTime()+(9*60-n.getTimezoneOffset())*60000); }
+  function jstNow(){ var n=new Date(); return new Date(n.getTime()+(9*60+n.getTimezoneOffset())*60000); }  /* 符号は「+」が正。「-」だとJST端末で18時間先にずれ、最短日が1日後ろに動いていた */
   function fmtIso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   var DAYS=['日','月','火','水','木','金','土'];
   function buildDeliveryOptions(){
     var sel=document.getElementById('deliveryDate');
     if(!sel || sel.dataset.filled) return;
     var jst=jstNow();
-    var lead=jst.getHours()<10?2:3;            /* 最短: 朝10時前は2日後、以降3日後 */
+    /* 最短日は配送カウントダウンバー(shipCountdownInit)と同じルール = 時間帯によらず3日後着。
+       日曜着はこの下のループでスキップされる。バナー側を変えたらここも合わせること。 */
+    var lead=3;
     var cur=new Date(jst); cur.setDate(cur.getDate()+lead);
     var saved=null; try{ saved=localStorage.getItem('eda-deliv-date'); }catch(e){}
     var added=0;
@@ -14795,21 +14819,22 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-09-03-p042" defer></script>
-<script src="public/js/products-loader.js?v=005" defer></script>
+<script src="public/data/products-master.js?v=2026-09-10-yakiniku3" defer></script>
+<script src="public/js/preorder.js?v=003"></script>
+<script src="public/js/products-loader.js?v=007" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
 <script src="public/js/limited-stock.js?v=014" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-bundle.js?v=010" defer></script>
 <!-- 売れ行きランキング（#popularBar のバナーを描く。products.html は並べ替えにも使う） -->
 <script src="public/js/popular.js?v=5" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/member-gate.js" defer></script>
-<script src="public/js/gift-rules.js?v=002"></script>
+<script src="public/js/gift-rules.js?v=006"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=002" defer></script>
+<script src="public/js/gift-notice.js?v=005" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 
 <!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得し注文へ自動紐付け（通常ブラウザは無処理） -->
@@ -14862,7 +14887,7 @@ function copyPopCoupon() {
  var CAT_LABEL = { beef: '牛肉', chicken: '鶏肉' };
  /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
  var PREVIEW_PICKS = {
-   beef: { all: ['赤身スライス', '赤身焼肉'] }
+   beef: { all: ['はじめてセット', '赤身スライス'] }
  };
 
  function searchQuery() {

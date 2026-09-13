@@ -15,8 +15,9 @@
 (function (global) {
   'use strict';
 
-  // ↓↓↓ 本番 GAS Web App URL (2026-05-24 v7 デプロイ — LINE friends API integration) ↓↓↓
-  const GAS_URL_PROD = 'https://script.google.com/macros/s/AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ/exec';
+  // ↓↓↓ 本番 GAS Web App URL ↓↓↓
+  // 2026-09-10: サイトが使う窓口を1本に統一（旧 AKfycbxFfdz… は廃止予定・キャッシュ対策で当面は生かす）
+  const GAS_URL_PROD = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec';
   // ↓↓↓ テスト用 GAS Web App URL (未設定なら本番と同じ URL に test_mode=1 を付与) ↓↓↓
   const GAS_URL_TEST = ''; // ステージング GAS をデプロイしたらここに記入
   // ↑↑↑ ここまで ↑↑↑
@@ -70,15 +71,54 @@
     }
   }
 
+  /* 🔴 お客様ごとに中身が変わる問い合わせは、キャッシュを避ける。
+     GASのURLは毎回まったく同じなので、そのままだとブラウザとGoogle側の両方が
+     前の答えを使い回す。こちらでデータを直しても、お客様の画面は古いままになる。
+     2026-09-07 実際に起きた: 定期便を「ご利用中」に直したのに、お客様の画面は
+     「ご利用いただいていません」のまま。LINEの中のブラウザは特に長く持ち続ける。
+     ⚠️ 商品・在庫（public_catalog / public_products / public_subscriptions）は
+        ここに入れない。全員に同じ内容を返すものなので、キャッシュが効いた方が速い。 */
+  const NO_CACHE_ACTIONS = ['customer_lookup', 'repeat_shipping', 'coupon_status'];
+
+  /* 🔴 ログインの証拠（合言葉）を毎回そえる — 2026-09-10 追加
+     以前は「メールアドレスさえ送れば誰にでも」氏名・電話・住所・注文履歴が返り、
+     住所変更も解約も通っていた（ログインを通らなくても叩けた）。
+     ログイン時に受け取った合言葉を、すべての問い合わせに自動で付ける。 */
+  function edaAuthToken() {
+    try {
+      var s = JSON.parse(localStorage.getItem('eda-mypage-session') || 'null');
+      return (s && s.token) || '';
+    } catch (e) { return ''; }
+  }
+  /* サーバに「ログインが必要」と言われたら、古いログイン情報を捨ててログイン画面へ戻す */
+  function edaHandleAuth(res) {
+    try {
+      if (res && res.code === 'AUTH_REQUIRED') {
+        /* 🔴 合言葉を持っていなかったときは戻さない。
+           マイページには「前回の注文メールで自動ログインを試す」導線があり、
+           そこで断られるたびに mypage.html へ飛ばすと、読み込み→拒否→読み込み…と
+           無限に往復してしまう。持っていた合言葉が切れた場合だけ、ログイン画面へ戻す。 */
+        var had = !!edaAuthToken();
+        localStorage.removeItem('eda-mypage-session');
+        if (had && /mypage|subscription-/.test(location.pathname)) location.href = 'mypage.html';
+      }
+    } catch (e) {}
+    return res;
+  }
+
   // ヘルパー: GAS への fetch を統一
   global.EDA_API = {
     async get(action, params) {
       const url = new URL(FINAL_URL);
       url.searchParams.set('action', action);
       Object.entries(params || {}).forEach(([k, v]) => url.searchParams.set(k, v));
+      const tk = edaAuthToken();
+      if (tk) url.searchParams.set('token', tk);
+      const noCache = NO_CACHE_ACTIONS.indexOf(action) >= 0;
+      if (noCache) url.searchParams.set('_cb', Date.now() + '-' + Math.random().toString(36).slice(2, 8));
       try {
-        const res = await fetch(url.toString());
-        return await res.json();
+        const res = await fetch(url.toString(), noCache ? { cache: 'no-store' } : undefined);
+        return edaHandleAuth(await res.json());
       } catch (e) {
         console.error('[EDA_API.get]', action, e);
         return { ok: false, error: e.message };
@@ -87,14 +127,17 @@
     async post(action, body) {
       const url = new URL(FINAL_URL);
       url.searchParams.set('action', action);
+      const payload = Object.assign({}, body || {});
+      const tk = edaAuthToken();
+      if (tk) payload.token = tk;
       try {
         const res = await fetch(url.toString(), {
           method: 'POST',
           // GAS は text/plain で受け取れる (CORS 簡略化のため)
           headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify(body || {})
+          body: JSON.stringify(payload)
         });
-        return await res.json();
+        return edaHandleAuth(await res.json());
       } catch (e) {
         console.error('[EDA_API.post]', action, e);
         return { ok: false, error: e.message };

@@ -24,7 +24,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>江田畜産 — 無投薬 長期肥育の和牛・平飼い鶏 | 宮崎</title>
-<meta name="description" content="黒毛和牛・平飼い鶏を、ご家庭の食卓へ。長期肥育 無投薬で育てた江田畜産の直送便。¥11,000以上 送料無料（北海道のみ +¥500）・3-7日でお届け。">
+<meta name="description" content="黒毛和牛・平飼い鶏を、ご家庭の食卓へ。長期肥育 無投薬で育てた江田畜産の直送便。送料 ¥1,100（北海道・沖縄 ¥2,200）・3-7日でお届け。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="江田畜産 | 100年続く畜産を、創造する。">
 <meta property="og:description" content="無投薬・長期肥育の黒毛和牛と平飼い鶏を直販。冷凍便で全国へ毎日発送中。">
@@ -4192,6 +4192,7 @@ section.featured {
  <li><a href="about.html" data-en="About">会社案内</a></li>
  <li><a href="global.html" data-en="Global">海外展開</a></li>
  <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a href="furusato.html" data-en="Furusato Tax">ふるさと納税</a></li>
  <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
  <li><a href="mypage.html" class="nav-mypage-link" data-en="My Page">マイページ</a></li>
  </ul>
@@ -4540,7 +4541,7 @@ section.featured {
  &lt;small style=&quot;opacity:0.85&quot;&gt;Free shipping on orders over ¥11,000&lt;/small&gt;">
  <strong style="color:var(--color-forest)" data-en="Single orders:">単品ご注文：</strong>ご注文から最短3日でお届け<br/>
  <strong style="color:var(--color-forest)" data-en="Subscription:">定期便：</strong>毎月1日にお届け（決済は20日）<br/>
- <small style="opacity:0.85" data-en="Free shipping on orders over ¥11,000">¥11,000以上のご購入で送料無料</small>
+ <small style="opacity:0.85" data-en="Shipping ¥1,100 (Hokkaido / Okinawa ¥2,200)">送料 ¥1,100（北海道・沖縄 ¥2,200）</small>
  </p>
  </div>
  </div>
@@ -4798,7 +4799,7 @@ section.featured {
  <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
  </div>
  <div class="cart-shipping-note">
- ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
+ 送料 ¥1,100（北海道・沖縄 ¥2,200）。冷凍便でお届け。
  </div>
  <div class="cart-delivery-note" id="cartDelivery"></div>
  <button class="btn-checkout" id="cartCheckout" data-en="Proceed to checkout">レジに進む — Checkout</button>
@@ -4938,10 +4939,10 @@ section.featured {
  const DAYS_JP = ['日','月','火','水','木','金','土'];
  const now = new Date();
  /* JST offset */
- const jst = new Date(now.getTime() + (9 * 60 - now.getTimezoneOffset()) * 60000);
+ const jst = new Date(now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000); /* 符号は「+」が正。「-」だとJST端末で18時間ずれる */
  const hour = jst.getHours();
- /* Before 14:00 JST → +2 days, after → +3 days */
- let addDays = hour < 14 ? 2 : 3;
+ /* 最短は時間帯によらず3日後着（shop.html の配送バナーと同ルール） */
+ let addDays = 3;
  const delivery = new Date(jst);
  delivery.setDate(delivery.getDate() + addDays);
  /* Skip Sunday */
@@ -4949,7 +4950,7 @@ section.featured {
  const m = delivery.getMonth() + 1;
  const d = delivery.getDate();
  const day = DAYS_JP[delivery.getDay()];
- return { text: m + '月' + d + '日（' + day + '）', isToday14: hour < 14 };
+ return { text: m + '月' + d + '日（' + day + '）', isToday14: false };
  }
 
  /* Populate delivery estimates on product cards */
@@ -5217,7 +5218,7 @@ section.featured {
 <!-- 浮遊ボタンは eda-bundle.js の電話ボタン (.eda-floating-phone) に統一 -->
 
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-bundle.js?v=010" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>

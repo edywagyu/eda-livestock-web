@@ -1540,6 +1540,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  © 2026 Eda Livestock Co., Ltd. · <a href="contact.html" style="color: var(--color-gold-soft);" data-en="Need help? →">困った時はこちら →</a>
 </footer>
 
+<!-- 🔴 gift-rules.js は下のインライン定義(_GR)より先に読む。後ろに置くと
+     window.EDA_GIFT_RULES がまだ無い状態で評価され、checkout.html は
+     常にフォールバック側の値で動く（2026-09-08 発見）。 -->
+<script src="public/js/gift-rules.js?v=006"></script>
 <script>
 /* ============================================================
  * 4購入導線統合 Checkout — Mode 自動判定
@@ -1581,7 +1585,8 @@ let contactMethod = 'email';
       ここはその答えを表示するだけにする（LINE10 でフロントとバックがズレた事故の再発防止）。
    🔴 対象外は GAS 側で担保: 定期便・未入金/キャンセル注文・¥11,000以上（元から無料）。
    ============================================================ */
-var repeatShipHalf = false;    // GAS が「半額対象」と答えたか
+var repeatShipHalf = false;    // GAS が「優遇対象」と答えたか
+var repeatShipRate = 'half';   // 'half'=半額 / 'free'=無料。GAS の REPEAT_SHIP_RATE をそのまま受ける
 var repeatShipInfo = null;     // { daysLeft, limit } 表示用
 var _repeatShipKey = '';       // 同じ相手を何度も問い合わせない
 var _repeatShipTimer = null;
@@ -1617,6 +1622,9 @@ async function runRepeatShipCheck() {
   if (uid) params.line_uid = uid;
   const r = await window.EDA_API.get('repeat_shipping', params);
   const half = !!(r && r.ok && r.half);
+  /* 'free' 以外は half 扱い（GAS の repeatShipRate_ と同じ fail-safe。
+     返事が無い/古いデプロイのときに勝手に無料と表示しないため） */
+  repeatShipRate = (r && r.rate === 'free') ? 'free' : 'half';
   if (half === repeatShipHalf && !half) return;
   repeatShipHalf = half;
   repeatShipInfo = half ? { daysLeft: r.daysLeft, limit: r.limit } : null;
@@ -1642,11 +1650,19 @@ var REWARD_MARK = '🎁';          // staff.html / 注文明細で特典行を�
 /* 条件の正は public/js/gift-rules.js（右上の案内 gift-notice.js と同じものを見る＝
    画面の案内と実際に入る特典がズレない）。読めなかったときだけ下の値を使う。 */
 var _GR = window.EDA_GIFT_RULES || null;
-var REWARD_MIN_SUBTOTAL = (_GR && _GR.REWARD_MIN_SUBTOTAL) || 5000;
+/* 🔴 || は 0 を falsy として弾くので使えない（0＝金額条件なしが 5000 に化ける）。
+   gift-rules.js に数字が入っていればそれを使い、読めなかったときだけ 0 に倒す。 */
+var REWARD_MIN_SUBTOTAL = (_GR && typeof _GR.REWARD_MIN_SUBTOTAL === 'number') ? _GR.REWARD_MIN_SUBTOTAL : 0;
+/* 特典を公式LINE連携者だけにするか。gift-rules.js が正。読めなかったときは
+   限定しない側に倒す＝連携している人の特典を誤って落とさない(fail-open)。 */
+var REWARD_LINE_ONLY = !!(_GR && _GR.REWARD_LINE_ONLY);
+/* 🔴 gift-rules.js が読めなかったときだけ使う控え。中身は必ず向こうと同じにする
+      （ズレていると、読み込みに失敗した人だけ違う特典が付く）。 */
 var REWARD_BY_STAGE = (_GR && _GR.REWARD_BY_STAGE) || {
-  3: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '3回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
-  4: { title: 'ハンバーグ',       variant: '1個 130g', qty: 2, label: '4回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
-  5: { title: '赤身焼肉',         variant: '1袋 200g', qty: 1, label: '5回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
+  1: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '初回ご注文特典',   img: 'public/images/products/drive/chicken-thigh.jpg' },
+  2: { title: '平飼い鶏 モモ', variant: '1袋 200g', qty: 1, label: '2回目ご注文特典', img: 'public/images/products/drive/chicken-thigh.jpg' },
+  3: { title: 'ハンバーグ',    variant: '1個 130g', qty: 2, label: '3回目ご注文特典', img: 'public/images/products/drive/hamburg.jpg' },
+  4: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '4回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
 };
 var rewardStage = 0;        // 今回の注文が何回目か（customer_lookup の答え + 1）
 var rewardStock = {};       // { 商品名: 在庫 } 在庫を割った特典は付けない
@@ -1657,6 +1673,11 @@ var _rewardKey = '';
    5,000円を割ったら消える／ギフトだけの注文には付かない。 */
 function currentReward() {
   if (rewardDropped || subscription) return null;              // 定期便はプランに込みなので対象外
+  /* 🔗 2026-09-08 田崎さん指示: ご注文特典は公式LINEと連携している方だけ。
+     連携率が 758人中90人(12%)と低く、連携する理由が無かったため
+     「特典は連携した人のもの」にして理由をつくる。
+     判定は getLineUid() ＝ 決済画面の他の会員判定(クーポン等)と同じ物差し。 */
+  if (REWARD_LINE_ONLY && !getLineUid()) return null;
   var r = REWARD_BY_STAGE[rewardStage];
   if (!r) return null;
   var selfIds = (destinations[0] && destinations[0].itemIds) || [];
@@ -1666,7 +1687,11 @@ function currentReward() {
   }, 0);
   if (selfSubtotal < REWARD_MIN_SUBTOTAL) return null;
   var stock = rewardStock[r.title];
-  if (typeof stock === 'number' && stock < r.qty) return null;  // 在庫割れの特典を混ぜると注文ごと弾かれる
+  /* 🔴 在庫割れの品を ¥0 行として混ぜると、GAS の在庫検証で注文まるごと弾かれる。
+     だから行そのものは出さない。ただし特典が消えるわけではなく、
+     在庫のある別の品をこちらでお入れする（2026-09-08 田崎さん指示）。
+     その旨は rewardSubstituteHtml() が注意書きとして出す。 */
+  if (typeof stock === 'number' && stock < r.qty) return null;
   return {
     title: r.title,
     variant: r.variant + ' ／' + REWARD_MARK + r.label,
@@ -1694,11 +1719,11 @@ var CAMPAIGN_GIFT = (function () {
     title: '切り落とし',            // ← products の name と完全一致
     variant: '1袋 200g',
     qty: 1,
-    label: '肉の日キャンペーン特典',
+    label: '切り落としプレゼント',
     img: 'public/images/products/drive/kiriotoshi.jpg',
     minSubtotal: 10000,                             // 公式LINEに書いた「¥10,000以上のご注文で」
-    from:  new Date(2026, 7, 27, 0, 0, 0),
-    until: new Date(2026, 7, 30, 23, 59, 59)
+    from:  new Date(2026, 8, 7, 18, 0, 0),
+    until: new Date(2026, 8, 7, 23, 59, 59)
   };
 })();
 var campaignGiftDropped = false;
@@ -1763,7 +1788,9 @@ async function runRewardCheck(email, uid) {
   if (!window.EDA_API) return;
   _rewardKey = key;
   try {
-    var d = await window.EDA_API.get('customer_lookup', { email: email, line_uid: uid || '' });
+    /* 2026-09-10: ここはログイン前なので customer_lookup（要ログイン）は使えない。
+       個人情報を返さない order_count に切り替えた。数え方は下の reward-count.js のまま。 */
+    var d = await window.EDA_API.get('order_count', { email: email });
     /* 🔴 数え方は public/js/reward-count.js に集約（単品のみ・定期便は数えない/2026-08-26 田崎さん決定）。
        total_orders は定期便も重複行も含む全件なので使わない。ここを変えると
        マイページの「あと1回で◯◯」と実際に付く特典がズレる。 */
@@ -1784,6 +1811,81 @@ async function runRewardCheck(email, uid) {
   } catch (e) {
     rewardStage = 0;                                           // 分からないときは付けない(fail-closed)
   }
+}
+
+/* ============================================================
+   🔗 決済画面での公式LINE連携のご案内（2026-09-08 田崎さん指示）
+   ------------------------------------------------------------
+   連携率が 758人中90人(12%)しかない原因は「買う前に連携する道が無い」こと。
+   連携できたのはマイページと注文完了ページだけで、どちらも買った後か
+   自分で探しに来た人しか通らなかった。注文する人は必ずこの画面を通るので
+   ここに置く。
+   🔴 「連携してください」とは書かない。もらえる物（鶏モモ等）で誘う。
+      何が付くかは REWARD_BY_STAGE から引く＝特典を入れ替えても文言がズレない。
+   🔴 連携済みの人には出さない。金額が足りない人にも出さない
+      （連携しても付かないのに「付きます」と言うことになるため）。
+   ============================================================ */
+function lineLinkPromoHtml() {
+  if (!REWARD_LINE_ONLY || getLineUid() || subscription) return '';
+  var r = REWARD_BY_STAGE[rewardStage];
+  if (!r) return '';                                    /* もらえる物が無いなら黙っている */
+  var selfIds = (destinations[0] && destinations[0].itemIds) || [];
+  if (!selfIds.length) return '';                       /* ギフトだけの注文は対象外 */
+  var selfSubtotal = selfIds.reduce(function (sum, i) {
+    var it = cartItems[i]; return it ? sum + discountedUnit(it.price || 0) * (it.qty || 1) : sum;
+  }, 0);
+  if (selfSubtotal < REWARD_MIN_SUBTOTAL) return '';    /* 金額が届いていないうちは言わない */
+  var stock = rewardStock[r.title];
+  if (typeof stock === 'number' && stock < r.qty) return '';   /* 在庫が無い物を約束しない */
+
+  var mail = String((destinations[0] && destinations[0].email) || '').trim();
+  var liffId = (window.EDA_CONFIG && window.EDA_CONFIG.LIFF_ID) || '1657458587-mz1dR9e6';
+  var href = 'https://line.me/R/ti/p/@706sgiuq';
+  try {
+    if (mail && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) {
+      /* メールが分かっていれば連携まで一気に済む（注文完了ページと同じ仕掛け）。
+         btoa は非ASCIIで落ちるので、失敗したら素の友だち追加URLに倒す。 */
+      href = 'https://liff.line.me/' + liffId + '/line-link.html?e=' + encodeURIComponent(btoa(mail));
+    }
+  } catch (e) {}
+
+  var gift = r.title + (r.qty > 1 ? '（' + r.qty + '点）' : '');
+  return '<div style="margin-top:10px;padding:12px;border:1px solid #06C755;border-radius:10px;background:rgba(6,199,85,0.06)">' +
+    '<p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:var(--color-forest,#0F3D2E)">' +
+      '<strong>' + gift + '</strong> が無料で付きます。<br>' +
+      '<span style="font-size:12px;color:var(--color-ink-muted,#666)">公式LINEとつなぐと、' + r.label + 'としてお入れします。</span>' +
+    '</p>' +
+    '<a href="' + href + '" target="_blank" rel="noopener" ' +
+      'style="display:block;text-align:center;background:#06C755;color:#fff;padding:10px;border-radius:8px;' +
+      'text-decoration:none;font-weight:700;font-size:13px">LINEでつないで受け取る</a>' +
+  '</div>';
+}
+
+/* ============================================================
+   🎁 特典の在庫が無いときの注意書き（2026-09-08 田崎さん指示）
+   ------------------------------------------------------------
+   「在庫が無いなら何も付かない」ではなく「別の品をお入れする」運用にした。
+   ¥0 の行は出せない（在庫割れの品を混ぜると GAS の在庫検証で注文ごと
+   弾かれる）ので、行の代わりに一言だけ置いて、もらえることを伝える。
+   条件（回数・金額・連携）を満たしている人にだけ出す＝
+   もらえない人に「お付けします」と言わない。
+   ============================================================ */
+function rewardSubstituteHtml() {
+  if (subscription) return '';
+  var r = REWARD_BY_STAGE[rewardStage];
+  if (!r) return '';
+  if (REWARD_LINE_ONLY && !getLineUid()) return '';        /* 連携前の人には連携の案内を出している */
+  var selfIds = (destinations[0] && destinations[0].itemIds) || [];
+  if (!selfIds.length) return '';
+  var selfSubtotal = selfIds.reduce(function (sum, i) {
+    var it = cartItems[i]; return it ? sum + discountedUnit(it.price || 0) * (it.qty || 1) : sum;
+  }, 0);
+  if (selfSubtotal < REWARD_MIN_SUBTOTAL) return '';
+  var stock = rewardStock[r.title];
+  if (!(typeof stock === 'number' && stock < r.qty)) return '';   /* 在庫があるなら通常の¥0行が出ている */
+  return '<div class="summary-line-item" style="color:var(--color-ink-muted,#666);font-size:12px;line-height:1.6">'
+    + '<span>' + REWARD_MARK + ' ' + r.label + '：' + r.title + ' が品切れのため、'
+    + '同じくらいの品をお入れします。</span></div>';
 }
 
 function getLineUid() {
@@ -1905,6 +2007,13 @@ function restoreCheckoutForm() {
       セット商品の構成品まではここでは見ないので、それは従来どおり裏側で弾かれる。
    ============================================================ */
 var gStockBlocked = [];          // 買えない商品名の一覧（注文ボタンを止める根拠）
+/* 🚚 これが入っていれば送料無料になる商品名（products シートの freeShip 列が TRUE）。
+   GAS の hasFreeShipItem_ と同じ判定を画面側でもやって、表示と請求をそろえる。 */
+var gFreeShipTitles = {};
+/* 📅 予約注文（売り切れ商品）。public/js/preorder.js が出す
+   { items:[{title,label,iso,date}], date, iso, label }。無ければ date:null。
+   これが入っているとお届け希望日の下限が 予約日 まで上がり、注意書きが出る。 */
+var gPreorder = { items: [], date: null, iso: '', label: '' };
 var _stockCheckTries = 0;
 function _variantUnits(variant) {
  // 裏側 validateStockBeforeCheckout の variantUnits と同じ規則にそろえる
@@ -1927,15 +2036,28 @@ async function checkCartStock() {
   if (!list.length) return;                   // 取れなかったときは黙って従来どおり（買えなくしない）
   const stock = {};
   list.forEach(function (pr) { if (pr && pr.name) stock[pr.name] = Number(pr.stock); });
+  gFreeShipTitles = {};
+  list.forEach(function (pr) {
+   if (pr && pr.name && String(pr.freeShip).trim().toLowerCase() === 'true') gFreeShipTitles[pr.name] = true;
+  });
   const need = {};
   cartItems.forEach(function (it) {
    const t = it.title || '';
    need[t] = (need[t] || 0) + _variantUnits(it.variant) * (it.qty || 1);
   });
+  /* 📅 在庫0の品は「買えない」ではなく「予約」として通す（2026-09-07 田崎さん決定）。
+     在庫が1以上あるのに数が足りないケース（残り1点に2点）は従来どおり止める。 */
+  gPreorder = (window.EDA_PREORDER)
+    ? window.EDA_PREORDER.forCart(cartItems, list)
+    : { items: [], date: null, iso: '', label: '' };
+  var preTitles = {};
+  gPreorder.items.forEach(function (b) { preTitles[b.title] = true; });
   gStockBlocked = Object.keys(need).filter(function (t) {
+   if (preTitles[t]) return false;                                  // 予約で受けるので止めない
    return (t in stock) && !isNaN(stock[t]) && stock[t] < need[t];   // 台帳に無い商品は判定しない
   }).map(function (t) { return { title: t, need: need[t], stock: stock[t] }; });
- } catch (e) { gStockBlocked = []; }
+  renderDestinations();                                             // お届け日の下限と注意書きを描き直す
+ } catch (e) { gStockBlocked = []; gPreorder = { items: [], date: null, iso: '', label: '' }; }
  renderStockAlert();
  renderSummary();                              // 注文ボタンの止め／解除を反映
  if (gStockBlocked.length) {
@@ -2945,6 +3067,13 @@ function renderSummary() {
  itemsHtml += `<div class="summary-line-item" style="color:var(--color-gold,#D4A93B);font-weight:700"><span>${REWARD_MARK} ${_rwSum.title}<span class="qty">×${_rwSum.qty}</span></span><span>¥0</span></div>`;
  });
 
+ /* 🎁 特典が品切れのときは、行の代わりに「別の品をお入れします」と一言置く。 */
+ itemsHtml += rewardSubstituteHtml();
+
+ /* 🔗 連携すれば受け取れる特典があるのに、まだ連携していない人にだけ案内を出す。
+    「連携してください」ではなく「◯◯が付きます」と、もらえる物で誘う。 */
+ itemsHtml += lineLinkPromoHtml();
+
  if (!itemsHtml) {
  itemsHtml = '<p style="color: var(--color-ink-muted); font-size: 12px; text-align: center; padding: 12px 0;">アイテムなし</p>';
  }
@@ -2961,7 +3090,11 @@ function renderSummary() {
  const _shipBase = _remoteArea ? 2200 : 1100;
  // 🚚 リピート送料半額: 定期便は対象外（プランに送料込）。¥11,000以上は元から無料なので影響しない。
  const _shipHalfApplied = repeatShipHalf && !subscription && _selfSubtotal > 0 && _selfSubtotal < 11000;
- const shipping = (subscription || _selfSubtotal === 0) ? 0 : (_selfSubtotal >= 11000 ? 0 : (_shipHalfApplied ? _shipBase / 2 : _shipBase));
+ // 引く額は GAS の calcShipping と同じ: rate が 'free' なら 0円、それ以外は半額。
+ const _shipRepeatAmount = repeatShipRate === 'free' ? 0 : _shipBase / 2;
+ /* 🚚 freeShip 商品（はじめてセット等）が1点でもあれば自宅送料は 0 円。GAS 側と同じ規則。 */
+ const _freeShipItem = cartItems.some(function (it) { return !!gFreeShipTitles[(it && it.title) || '']; });
+ const shipping = (subscription || _selfSubtotal === 0 || _freeShipItem) ? 0 : (_selfSubtotal >= 11000 ? 0 : (_shipHalfApplied ? _shipRepeatAmount : _shipBase));
  const _hasGift = destinations.some(d => d.type === 'gift' && (d.itemIds || []).length > 0);
  const giftShipping = 0; // ★ ギフトは全部送料無料
  // 50% off if subscription only
@@ -2994,9 +3127,11 @@ function renderSummary() {
  <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
  </div>
  `;
- // 🚚 前回のお届けから40日以内 → 送料半額。適用されたことが分かるように1行出す。
- if (_shipHalfApplied && shipping > 0) {
- rowsHtml += `<div class="summary-row discount"><span>前回から${repeatShipInfo && repeatShipInfo.limit ? repeatShipInfo.limit : 40}日以内 送料半額</span><strong>−¥${(_shipBase - shipping).toLocaleString()}</strong></div>`;
+ // 🚚 前回のお届けから期限内 → 送料が半額または無料。適用されたことが分かるように1行出す。
+ //    無料のときは shipping が 0 になるので `shipping > 0` では出ない。差額が出ているかで見る。
+ if (_shipHalfApplied && _shipBase > shipping) {
+ const _repeatLabel = repeatShipRate === 'free' ? '送料無料' : '送料半額';
+ rowsHtml += `<div class="summary-row discount"><span>前回から${repeatShipInfo && repeatShipInfo.limit ? repeatShipInfo.limit : 40}日以内 ${_repeatLabel}</span><strong>−¥${(_shipBase - shipping).toLocaleString()}</strong></div>`;
  }
  if (_hasGift) {
  rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料</span><strong>無料</strong></div>`;
@@ -3023,13 +3158,10 @@ function renderSummary() {
  <strong>¥${total.toLocaleString()}</strong>
  </div>
  `;
- // 送料無料まであと (¥11,000以上で送料無料 / 北海道のみ +¥500)
- if (!subscription && shipping > 0 && subTotal > 0) {
- const remain = 11000 - _selfSubtotal; // 実際の送料判定と同じ基準(割引後・自宅分のみ)で表示。subTotal(割引前全体)だと表示と判定がズレる
- if (remain > 0) {
- rowsHtml += `<div class="summary-row" style="background:rgba(212,169,59,0.12);padding:12px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--color-forest);margin-top:8px;"><span>あと <strong style="color:var(--color-gold-soft);font-size:15px;">¥${remain.toLocaleString()}</strong> で送料無料</span></div>`;
- }
- }
+ /* 🔴 2026-09-08 田崎さん指示で「あと¥◯で送料無料」の案内をやめた。
+    送料は実額（¥1,100 / 北海道・沖縄 ¥2,200）で伝える方針に統一したため。
+    ¥11,000以上が無料になること自体は calcShipping で従来どおり効いている
+    （表示を消しただけで、請求は変わらない）。 */
  rows.innerHTML = rowsHtml;
 
  // タイトル更新
@@ -3057,7 +3189,7 @@ function renderSummary() {
 
 /* ---- 配送日オプション（お届け先ごと）----
  ▸ 定期便(自宅): 毎月1日固定・時間帯のみ
- ▸ ギフト / 単品(自宅): 最短3日後〜1か月先で日付指定可
+ ▸ ギフト / 単品(自宅): 最短日(バナーと同ルール)〜1か月先で日付指定可
  ▸ 単品(自宅) + 定期便: 「定期便と一緒(1日)」or「先に自宅へ(日付指定)」を選択
 */
 const DELIV_TIMES = ['', '午前中（〜12:00）', '14:00 - 16:00', '16:00 - 18:00', '18:00 - 20:00（推奨）', '19:00 - 21:00'];
@@ -3067,10 +3199,22 @@ const TIMECODE_TO_TEXT = { '': '', '0812': '午前中（〜12:00）', '1416': '1
 function _fmtIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function _deliveryBounds() {
  const now = new Date();
- const minD = new Date(now); minD.setDate(minD.getDate() + 3);
+ // 最短日は shop.html の配送カウントダウンバー(shipCountdownInit)と同じルール
+ // = 時間帯によらず3日後着。日曜着はスキップして月曜。
+ // バナー側を変えたらここも合わせること。
+ const _lead = 3;
+ const minD = new Date(now); minD.setDate(minD.getDate() + _lead);
+ if (minD.getDay() === 0) minD.setDate(minD.getDate() + 1);
+ /* 📅 予約商品が入っていれば、その最短お届け日より前は選べないようにする。
+    カレンダーの下限(min)を上げるだけで、それ以前の日はグレーになって押せない。
+    hint の「最短 ◯月◯日〜」も minLabel 経由で自動的にこの日付になる。
+    🔴 これは画面側の制限。受け取る側(GAS)でも同じ日付で弾く必要がある（未実装・下の PR 説明参照）。 */
+ if (gPreorder && gPreorder.date && gPreorder.date.getTime() > minD.getTime()) {
+  minD.setTime(gPreorder.date.getTime());
+ }
  const maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
  const first = new Date(now.getFullYear(), now.getMonth() + 1, 1);
- return { min: _fmtIso(minD), max: _fmtIso(maxD), first: _fmtIso(first), firstLabel: `${first.getMonth() + 1}月1日` };
+ return { min: _fmtIso(minD), max: _fmtIso(maxD), minLabel: `${minD.getMonth() + 1}月${minD.getDate()}日`, first: _fmtIso(first), firstLabel: `${first.getMonth() + 1}月1日` };
 }
 function _timeSelectHtml(dIdx, cur) {
  return `<select onchange="updateDestDelivery(${dIdx},'time',this.value)">`
@@ -3094,10 +3238,18 @@ function deliveryFieldHtml(dest, dIdx) {
    </div>
    <div class="dest-field"><label>お届け時間帯</label>${timeSel}</div>
   </div>`;
- const wrap = (inner) => `<div class="dest-delivery" style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(15,61,46,0.15)"><div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:8px">🚚 お届け日時</div>${inner}</div>`;
+ /* 📅 予約商品が入っているときの注意書き。日付を指定せず「最短」で頼まれた方に、
+    いつになるのかを必ず伝える（2026-09-07 田崎さん指示）。 */
+ const preNote = (gPreorder && gPreorder.date)
+  ? `<div style="margin-top:12px;background:#FFF8E8;border:1px solid rgba(212,169,59,.5);border-left:3px solid var(--color-gold);border-radius:0 8px 8px 0;padding:11px 14px;font-size:12px;color:#6B4E12;line-height:1.7">`
+    + `お届けまでお時間をいただく商品（${gPreorder.items.map(b => b.title).join('・')}）が含まれています。<br>`
+    + `日付を指定されない場合は、最短で <strong style="color:#4A360C">${gPreorder.label}</strong> のお届けとなります。`
+    + `</div>`
+  : '';
+ const wrap = (inner) => `<div class="dest-delivery" style="margin-top:14px;padding-top:14px;border-top:1px dashed rgba(15,61,46,0.15)"><div style="font-size:12px;font-weight:700;color:var(--color-forest);margin-bottom:8px">🚚 お届け日時</div>${inner}${preNote}</div>`;
  const timeOnly = `<div class="dest-form-row"><div class="dest-field"><label>お届け時間帯</label>${timeSel}</div></div>`;
 
- if (isGift) return wrap(pair('お届け希望日', '未指定＝最短でお届け（3日後〜1か月先まで指定可）'));
+ if (isGift) return wrap(pair('お届け希望日', `未指定＝最短でお届け（最短 ${b.minLabel}〜1か月先まで指定可）`));
 
  if (isSelf) {
   const selfHasItems = (dest.itemIds || []).length > 0;
@@ -3114,10 +3266,10 @@ function deliveryFieldHtml(dest, dIdx) {
      <label style="${optStyle(!sep)}"><input type="radio" name="deliv-mode-${dIdx}" value="with_sub" ${!sep ? 'checked' : ''} onchange="updateDestDelivery(${dIdx},'mode','with_sub')" style="accent-color:var(--color-forest)"><span>⭐ 定期便と一緒に毎月1日お届け（おすすめ）</span></label>
      <label style="${optStyle(sep)}"><input type="radio" name="deliv-mode-${dIdx}" value="separate" ${sep ? 'checked' : ''} onchange="updateDestDelivery(${dIdx},'mode','separate')" style="accent-color:var(--color-forest)"><span>📅 先に自宅へ届ける（日付を指定）</span></label>
     </div>
-    ${sep ? pair('お届け希望日', '3日後〜1か月先まで指定可') : timeOnly}`);
+    ${sep ? pair('お届け希望日', `最短 ${b.minLabel}〜1か月先まで指定可`) : timeOnly}`);
   }
   // 定期便なし・自宅に商品あり = 通常の日付指定
-  if (selfHasItems) return wrap(pair('お届け希望日', '未指定＝最短でお届け（3日後〜1か月先まで指定可）'));
+  if (selfHasItems) return wrap(pair('お届け希望日', `未指定＝最短でお届け（最短 ${b.minLabel}〜1か月先まで指定可）`));
   return ''; // 自宅に何も送らない（差出人住所のみ）= 日時欄なし
  }
  return '';
@@ -3481,11 +3633,11 @@ initCouponFromStorage();
 try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
-<script src="public/js/gift-rules.js?v=002"></script>
+<script src="public/js/preorder.js?v=003"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=002" defer></script>
+<script src="public/js/gift-notice.js?v=005" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-bundle.js?v=010" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 

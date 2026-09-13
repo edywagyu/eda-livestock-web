@@ -139,6 +139,7 @@ function generateOrderNumber() {
    staff_login は token 発行の入口なので除外。token は GET/POST とも e.parameter.token で受ける。 */
 var STAFF_PROTECTED = {
   staff_dashboard: 1, staff_month_summary: 1, staff_sub_month_rows: 1, setup_sub_month_rows: 1, staff_inventory: 1, staff_orders: 1, staff_analytics: 1, b2_csv: 1,
+  staff_subscription_addons: 1, staff_backfill_addons: 1,
   customers: 1, customers_csv: 1, customers_segment: 1, segment_stats: 1,
   orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
@@ -150,11 +151,116 @@ var STAFF_PROTECTED = {
   merge_dup_customers: 1
 };
 
+/* ============================================================
+   ログインの証拠（合言葉）— 2026-09-10 追加
+   ------------------------------------------------------------
+   これまで、お客様向けの窓口は「メールアドレスさえ渡せば誰にでも」
+   氏名・電話・住所・注文履歴・カード下4桁を返し、住所変更や解約まで
+   受け付けていた（ログインを通らなくても叩ける＝OWASP A01 と同じ形）。
+   ログイン自体は前からあり、合言葉(token)も発行していたが、
+   どこにも保管しておらず、どの窓口も確認していなかった。
+   → 発行した合言葉を sessions タブに保管し、窓口ごとに確認する。
+
+   切り替えスイッチ: スクリプトプロパティ REQUIRE_CUSTOMER_TOKEN
+     'off' … 何も見ない（従来どおり）
+     'log' … 合言葉が無くても通すが events に記録だけ残す（既定・様子見用）
+     'on'  … 合言葉が無ければ断る（本番運用）
+   ★ 画面側(mypage/subscription-*)が合言葉を送るようになってから 'on' にすること。
+   ============================================================ */
+var AUTH_TAB = 'sessions';
+var AUTH_DEFAULT_DAYS = 30;
+
+/* 合言葉が要る窓口。ここに無いものは誰でも叩ける（商品一覧・在庫など） */
+var CUSTOMER_PROTECTED = {
+  customer_lookup: 1, update_profile: 1,
+  skip_subscription: 1, resume_subscription: 1, cancel_subscription: 1,
+  unskip_subscription: 1, customize_subscription: 1,
+  change_subscription_plan: 1, change_subscription_cycle: 1
+};
+
+/* 2026-09-10: 画面側が合言葉を送るようになり、実際のログインで動作を確認できたので既定を 'on' にした。
+   戻すときは、スクリプトプロパティ REQUIRE_CUSTOMER_TOKEN に 'log' か 'off' を入れる
+   （プロパティが無いときだけこの既定値が使われる）。 */
+function authMode_() { return String(cfg('REQUIRE_CUSTOMER_TOKEN', 'on')).trim().toLowerCase(); }
+
+/* ログインが通ったときに1本発行して保管する */
+function authIssue_(email, method, days) {
+  var em = String(email || '').trim().toLowerCase();
+  if (!em) return '';
+  var token = Utilities.base64EncodeWebSafe(Utilities.getUuid() + Utilities.getUuid()).replace(/=+$/, '');
+  try {
+    var sh = sheet(AUTH_TAB, ['token', 'email', 'method', 'issued_at', 'expires_at']);
+    var exp = new Date();
+    exp.setDate(exp.getDate() + (Number(days) || AUTH_DEFAULT_DAYS));
+    sh.appendRow([token, em, String(method || ''), new Date(), exp]);
+  } catch (e) { return ''; }
+  return token;
+}
+
+/* 合言葉 → その人のメールアドレス。無効・期限切れなら '' */
+function authEmail_(token) {
+  var t = String(token || '').trim();
+  if (!t) return '';
+  try {
+    var sh = ss().getSheetByName(AUTH_TAB);
+    if (!sh) return '';
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return '';
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iT = h.indexOf('token'), iE = h.indexOf('email'), iX = h.indexOf('expires_at');
+    if (iT < 0 || iE < 0) return '';
+    var now = new Date();
+    for (var i = d.length - 1; i >= 1; i--) {
+      if (String(d[i][iT]) !== t) continue;
+      if (iX >= 0 && d[i][iX] && new Date(d[i][iX]) < now) return '';
+      return String(d[i][iE] || '').trim().toLowerCase();
+    }
+  } catch (e) {}
+  return '';
+}
+
+/* 窓口ごとの確認。通すときは null、断るときは返す中身を返す。
+   通ったときは「画面から来たメールアドレス」を合言葉から引いた本人のもので上書きする
+   ＝画面が誰のアドレスを送ってきても、本人の分しか触れない。 */
+function authGuard_(action, params, body) {
+  if (!CUSTOMER_PROTECTED[action]) return null;
+  var mode = authMode_();
+  if (mode === 'off') return null;
+  var who = authEmail_((params && params.token) || (body && body.token));
+  if (who) {
+    if (params) params.email = who;
+    if (body) body.email = who;
+    return null;
+  }
+  try { log('auth_missing', { action: action, mode: mode }); } catch (e) {}
+  if (mode !== 'on') return null;   /* 'log' は様子見なので通す */
+  return jsonResponse({ ok: false, code: 'AUTH_REQUIRED',
+    error: 'ログインが必要です。お手数ですが、もう一度ログインしてください。' });
+}
+
+/* GET order_count { email } — 特典が何回目かを数えるためだけの窓口（2026-09-10）。
+   レジ画面はログイン前なので customer_lookup を使えない。個人情報は一切返さず、
+   「注文番号・種別・届け先があるかどうか」だけを返す。数え方は従来どおり
+   画面側の public/js/reward-count.js に任せる（2つに分けるとズレるため）。 */
+function orderCountPublic(params) {
+  var email = String((params && params.email) || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return jsonResponse({ ok: false, error: 'invalid email' });
+  var orders = getOrdersByEmail(email) || [];
+  var slim = orders.map(function (o) {
+    var d = (o.destinations_json !== undefined) ? o.destinations_json : o.dest;
+    var has = Array.isArray(d) ? d.length > 0 : (!!String(d || '').trim() && String(d).trim() !== '[]');
+    return { num: String(o.order_number || o.num || ''), mode: String(o.mode || ''), dest: has ? [1] : [] };
+  });
+  return jsonResponse({ ok: true, orders: slim });
+}
+
 function doGet(e) {
   const action = (e.parameter && e.parameter.action) || 'ping';
   if (STAFF_PROTECTED[action] && !requireStaff(e)) {
     return jsonResponse({ ok:false, error: 'unauthorized' });
   }
+  var _agG = authGuard_(action, e.parameter, null);
+  if (_agG) return _agG;
   try {
     switch (action) {
       case 'ping':              return ping();
@@ -178,6 +284,7 @@ function doGet(e) {
       case 'customers_csv':     return customersCsv(e.parameter);
       case 'segment_stats':     return segmentStats();
       case 'customer_lookup':   return customerLookup(e.parameter);
+      case 'order_count':       return orderCountPublic(e.parameter);   /* レジ画面の特典判定用・個人情報なし */
       case 'check_config':      return jsonResponse(checkConfig());
       case 'setup':             return runSetup(e.parameter);
       case 'update_properties': return jsonResponse(setupAllProperties());
@@ -203,6 +310,8 @@ function doGet(e) {
         buildSubscriptionMonthRows(e.parameter.month, String(e.parameter.dry || '') === '1', e.parameter.names));
       case 'setup_sub_month_rows': return jsonResponse(setupSubscriptionMonthRowsTrigger());  /* 初回1回: 毎月1日7時トリガー設置(冪等) */
       case 'staff_inventory':   return staffInventory();
+      case 'staff_subscription_addons': return staffSubscriptionAddons();  /* 定期便の「今月だけ追加」一覧 */
+      case 'staff_backfill_addons':     return jsonResponse(backfillSubscriptionAddons());  /* 既存行の追記＋色付け(冪等) */
       case 'staff_orders':      return staffOrders();
       case 'staff_analytics':   return staffAnalytics(e.parameter);
       case 'b2_csv':            return b2CsvExport(e.parameter);
@@ -270,6 +379,9 @@ function doPost(e) {
     return jsonResponse({ ok:false, error: 'unauthorized' });
   }
 
+  var _agP = authGuard_(action, e.parameter, body);
+  if (_agP) return _agP;
+
   try {
     log(action, body);
     switch (action) {
@@ -303,6 +415,11 @@ function doPost(e) {
       case 'submit_inquiry':               return submitInquiry(body);
       case 'skip_subscription':            return skipSubscription(body);
       case 'cancel_subscription':          return cancelSubscription(body);
+      case 'change_subscription_plan':     return changeSubscriptionPlan(body);   /* 定期便のプラン変更申請 */
+      case 'change_subscription_cycle':    return changeSubscriptionCycle(body);  /* 定期便のお届け頻度の変更申請 */
+      case 'unskip_subscription':          return unskipSubscription(body);       /* スキップの取り消し */
+      case 'resume_subscription':          return resumeSubscription(body);       /* 一時停止からの再開 */
+      case 'customize_subscription':       return customizeSubscription(body);   /* 定期便の商品追加リクエスト */
       case 'client_error':                 return logClientError(body);
       default:                              return jsonResponse({ ok:false, error: 'Unknown action: ' + action });
     }
@@ -425,7 +542,9 @@ function createCheckout(body) {
     (body.customer && body.customer.email) || '',
     (body.customer && body.customer.line_uid) || ''
   );
-  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
+  /* 🚚 freeShip 商品（はじめてセット等）が入っていれば自宅送料も 0 円 */
+  const _freeShipItem = hasFreeShipItem_(items);
+  const shipping = (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
   if (shipping > 0) {
     lineItems.push({
       price_data: {
@@ -602,7 +721,9 @@ function createBankOrder(body) {
     (body.customer && body.customer.email) || '',
     (body.customer && body.customer.line_uid) || ''
   );
-  const shipping = _selfSubtotal > 0 ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
+  /* 🚚 freeShip 商品（はじめてセット等）が入っていれば自宅送料も 0 円 */
+  const _freeShipItem = hasFreeShipItem_(items);
+  const shipping = (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
 
   // 振込金額: クライアント計算済みの最終合計（クーポン適用後）を信頼。
   //   入金は Tom が実額照合（アナログ）するため、画面表示との一致を優先。無ければ subtotal+shipping。
@@ -984,7 +1105,17 @@ function createSubscriptionCheckout(body) {
   const demoCoupon = cfg('STRIPE_DEMO_COUPON');
   // ★ 初月50%OFF: Property 未設定でも 'FIRST50' にフォールバック（黙って割引が消える事故を防止）。
   const halfCoupon = cfg('STRIPE_COUPON_50OFF', 'FIRST50');
+  /* 🔁 旧カート(Shopify/WIX)からの切り替え（2026-09-10 田崎さん確定＝初回半額）。
+     初回半額は新規の方にも既に効いている(halfCoupon)ので、割引そのものは上乗せしない。
+     ここでは「誰が切り替えで入ってきたか」を数えられるように記録だけ残す。
+     画面から switch_from_legacy が来ても、定期便マスターで「有効・旧カート・肉」を
+     サーバ側で照合してからでないと切り替え扱いにならない。 */
+  const switchHit = body.switch_from_legacy
+    ? legacySubscriberByEmail_(String((body.customer && body.customer.email) || ''))
+    : null;
+  const isSwitch = !!(switchHit && /肉/.test(switchHit.category || ''));
   const applyCoupon = isTestCoupon ? 'DEMO100' : (demoCoupon || halfCoupon || '');
+  if (isSwitch) log('subscription_switch_offer', { email: (body.customer && body.customer.email) || '', from: switchHit.kubun, plan_before: switchHit.plan });
 
   /* ============================================================
      「今月だけ追加」(アドオン) を初月決済に載せる  ★2026-09-13
@@ -1101,6 +1232,7 @@ function createSubscriptionCheckout(body) {
       }])
     }
   };
+  if (isSwitch) sessionParams.metadata.switch_from = switchHit.kubun;
   if (applyCoupon && !subSkipCoupon) {
     sessionParams.discounts = [{ coupon: applyCoupon }];
   }
@@ -1441,18 +1573,37 @@ function createDelayedSubscription(session, meta) {
   const STRIPE = cfg('STRIPE_SECRET_KEY');
   if (!STRIPE) throw new Error('Stripe not configured');
   if (!session.customer) throw new Error('No customer on session');
-  if (!session.payment_intent) throw new Error('No payment_intent on session');
 
-  // PaymentIntent から saved PaymentMethod を取得
-  const piRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_intents/' + session.payment_intent, {
-    method: 'get',
-    headers: { 'Authorization': 'Bearer ' + STRIPE },
-    muteHttpExceptions: true
-  });
-  const pi = JSON.parse(piRes.getContentText());
-  if (pi.error) throw new Error('PI retrieval: ' + pi.error.message);
-  const paymentMethodId = pi.payment_method;
-  if (!paymentMethodId) throw new Error('No payment_method on PaymentIntent');
+  /* 🔴 初回が ¥0 のときは PaymentIntent が作られない（2026-09-10）
+     Stripe は合計0円の Checkout では PaymentIntent ではなく SetupIntent を作る。
+     旧実装は payment_intent が無いと throw していたので、
+     「初回1回分無料」で申し込むとカードだけ保存されて定期便が1本も作られない、
+     という事故になっていた（切り替え案内を出す前に発見）。
+     → PaymentIntent が無ければ SetupIntent からカードを取る。 */
+  var paymentMethodId = '';
+  if (session.payment_intent) {
+    const piRes = UrlFetchApp.fetch('https://api.stripe.com/v1/payment_intents/' + session.payment_intent, {
+      method: 'get',
+      headers: { 'Authorization': 'Bearer ' + STRIPE },
+      muteHttpExceptions: true
+    });
+    const pi = JSON.parse(piRes.getContentText());
+    if (pi.error) throw new Error('PI retrieval: ' + pi.error.message);
+    paymentMethodId = pi.payment_method;
+  } else if (session.setup_intent) {
+    const siRes = UrlFetchApp.fetch('https://api.stripe.com/v1/setup_intents/' + session.setup_intent, {
+      method: 'get',
+      headers: { 'Authorization': 'Bearer ' + STRIPE },
+      muteHttpExceptions: true
+    });
+    const si = JSON.parse(siRes.getContentText());
+    if (si.error) throw new Error('SI retrieval: ' + si.error.message);
+    paymentMethodId = si.payment_method;
+    log('subscription_zero_first_month', { session: session.id, customer: session.customer });
+  } else {
+    throw new Error('No payment_intent / setup_intent on session');
+  }
+  if (!paymentMethodId) throw new Error('No payment_method on intent');
 
   // (b) 冪等性ガード: 同一顧客に同じ price の active サブスクが既にあれば二重作成しない。
   //     webhook 二重発火で同一定期便サブスクが2本でき二重課金になる事故(ry ¥6,980×2)の再発防止。fail-open。
@@ -2018,9 +2169,15 @@ var AUTOMATION_CATALOG_TAB_NAME = '自動化一覧';
 // 状態=稼働中/停止中(オフ)/手動/未反映/未設置/エラー/裏方。
 // 分類=公式LINE(お客様のLINEに届くもの)/EC(サイト・注文まわり)/社内シート(スタッフ用の集計・通知)。
 var AUTOMATION_REGISTRY = [
+  ['EC', 'マイページの定期便セルフ操作（スキップ・一時停止・プラン変更・商品追加・隔月・解約）', 'お客様がボタンを押した時', '稼働中', 'マイページの定期便タブから、お客様自身が「次回をスキップ／取り消し」「一時停止／再開」「プラン変更」「次回分に商品追加（通常商品のみ・全品5%オフ）」「隔月に変更／毎月に戻す」「解約」を操作できる。押すと画面の表示（次回お届け日・ステータス・プラン名・お届けサイクル）がその場で変わり、backoffice@ へ通知メールが飛び、本番EC注文DBの「subscription_actions」タブに1行記録される。お届けは毎月1日で計算し、スキップは1回ぶん翌月へ送る。解約は毎月19日以降のお申し出なら翌月のお届けをもって終了、18日までは即終了。2026-09-07追加'],
+  ['EC', '定期便の操作をStripeの請求にも反映', 'お客様がボタンを押した時', '稼働中', '上のセルフ操作に合わせて、実際のStripeの請求も自動で変える。一時停止＝請求停止／再開＝請求再開／スキップ＝次回請求日を1ヶ月後ろへ／取り消し＝1ヶ月戻す／プラン変更＝価格の切替／解約＝即時または期末で解約。安全スイッチは本番EC注文DBの「定期便_決済連動」タブ（B2）。off=何もしない／test=B3に書いたメールの人だけ／on=全員。2026-09-07に on で稼働開始。結果は通知メールの末尾に「Stripe: 〜」として必ず残る'],
   ['公式LINE', '買った人を自動でLINE連携', '注文された瞬間', '稼働中', 'LINE経由で買った人のLINEと注文を自動でひも付け（次から個別に連絡できる）'],
   ['公式LINE', '連携で10%OFFクーポンを配布', 'LINE連携した瞬間', '稼働中', '連携してくれた人に割引クーポンを自動で送る'],
   ['公式LINE', '発送をLINEでお知らせ', '発送処理した時', '稼働中', '「発送しました＋お届け予定日」をLINEに自動送信（未連携の人にはメール）'],
+  ['公式LINE', 'お誕生日当日のお祝いメッセージ', '毎日 朝9時', '稼働中', 'マイページで誕生日を登録されたお客様に、その日の朝「お誕生日おめでとうございます」を1通お送りする。あわせて「今月中のご注文に赤身ステーキをお入れします（定期便の方は今月のお届けに自動で）」をご案内する。LINE連携済みの方はLINE、未連携の方はメール（発送通知と同じ振り分け）。同じ方に同じ年は二度送らない。2月29日生まれの方は平年は2月28日に送る。2026-09-07 に送信開始（スイッチ BIRTHDAY_MSG_ENABLED＝ON）。止めたいときは setBirthdayMsgOff を実行。送信の記録は本番EC注文DBの「誕生日メッセージ_送信ログ」タブ。2026-09-07追加'],
+  ['社内シート', '定期便のお客様に印をつける', '毎日 朝7時', '稼働中', '本番EC注文DBの「顧客」タブに「定期便」列、「注文」タブに「定期便のお客様」列を自動で作り、定期便をご利用中の方の行に「定期便」と書く。定期便かどうかは「定期便マスターの状態=有効（手管理の名簿。旧サイトからのお客様はここにしか居ない）」と「新ECで定期便のご注文がある」の両方を見て、どちらかに当たれば定期便として扱う。管理画面の注文一覧・発送画面にも同じ判定で「🔁 定期便の方」と出る。単品でご注文された定期便のお客様にも印が付く（梱包時の取り違えを防ぐため）。2026-09-07追加'],
+  ['EC', '誕生日プレゼントは月に1回だけ（早い方で渡す）', '発送処理した時', '稼働中', 'お誕生日の月に赤身ステーキをお入れするのは、お一人その月に1回まで。定期便の方が同じ月に単品でも買われた場合に2つ渡ってしまうのを防ぐ。先に発送した箱に入れる決まりで、発送を記録した時点で本番EC注文DBの「誕生日特典_付与ログ」タブに1行残る。同じ月の2件目以降の発送画面は「今月はお渡し済みです。この箱には入れないでください」というグレーの表示に変わる。2026-09-07追加'],
+  ['EC', '誕生日プレゼントを「この方に次の1回だけ」渡す指定', 'お客様がご注文した時', '稼働中', 'お誕生月が過ぎてしまった方に、日ごろのお礼として次のご注文で赤身ステーキとお手紙をお入れするための名簿。本番EC注文DBの「誕生日特典_手動付与」タブにメールを1行足すと、その方の次のご注文の発送画面に🎂の同梱指示とお手紙ボタンが出る。発送を記録した時点で「誕生日特典_付与ログ」に入り、名簿の状態が自動で「済」になる＝1回きり。誕生日の日付を書き換える運用はしない。2026-09-09追加'],
   ['EC', '発送予定日のお知らせ', '注文が確定した時／振込は入金確認した時', '稼働中', 'ご注文後すぐ「◯月◯日に発送予定です」をお知らせ（LINE連携済みはLINE・未連携はメール）。マイページの発送準備中カードにも同じ日付を表示。お届け希望日ありは希望日から逆算して1日前倒し（西日本2日前・東日本3日前＝社内の発送リマインドと同じ日）、最短は起点日+3日に着くよう逆算（西日本は起点+2日・東日本は起点+1日）。銀行振込は入金確認まで日付を出さない'],
   ['公式LINE', '一斉配信', 'あなたが送信した時', '手動（自動ではない）', 'LINEの友だち全員やセグメントへ配信。人が押して送る'],
   ['公式LINE', 'かご落ちのLINE催促', '1時間ごと', '稼働中', 'カートに入れて離脱した人へLINEで催促。購入済みの人には送らないよう修正済み'],
@@ -2028,10 +2185,12 @@ var AUTOMATION_REGISTRY = [
   ['EC', '初回クーポンの有効期限', '注文が作られる時', '稼働中', 'LINE連携特典の10%OFFクーポン(LINE10)に期限を付ける。期限＝「連携日＋7日」と「全員共通の下限日」の遅い方。決済ページは「◯月◯日まで・あと◯日」を表示し、期限切れなら適用を取り消す。本当の防波堤は決済を作るときのショップの裏側での確認（Stripeセッションを作る前に止めるので副作用ゼロ）。連携日が分からない人は止めない。2026-08-31 稼働開始（決済まわりへ反映済み）'],
   ['公式LINE', 'LINE数値（友だち数・属性）を毎朝記録', '毎朝7時', '稼働中', 'LINEから友だち数・ターゲットリーチ・ブロック数を取り「友達推移」タブの手入力列を自動で埋める。性別/年代/地域は「LINE属性」タブへ、配信種別ごとの件数は「LINE配信実績_日別API」タブへ。2026-08-22に自動実行の設定済み（初回で抜けていた8/20が埋まった）'],
   ['公式LINE', '顧客名簿（LINE連携）の自動更新', '毎日 朝7時', '稼働中', 'LINE連携した顧客を重複整理し、購入額の多い順に名簿シートへ毎日作り直す（この自動処理が正・手で書き換えても翌日消える）'],
+  ['社内シート', 'VIP内・割引客の自動判定', '毎日 朝7時', '稼働中', '「値引き＋セット」で買っている金額の割合が45%以上の人を自動で拾い、SNS運用管理シートの「VIP_割引客判定」タブに毎日作り直す。新EC分は注文明細×商品価格で自動計算、Shopify(旧サイト)分は自動取得できないため「Shopify購入_スナップショット」タブの実測値を読む（月1回 手で取り直す）。2026-09-05追加'],
   ['公式LINE', '配信ごとの開封率・クリックを毎朝記録', '毎朝10時ごろ', '稼働中', 'LINEマネージャー画面から配信ごとの開封率・ECクリック・売上を取り「LINE開封_自動」タブに毎朝まとめる（ブラウザ操作のためPC/アプリ起動中に実行するローカル定期タスク）。2026-08-23追加＝LINEのログインが切れている時はシートを書き換えずに中止し、r.tasaki@ へメールで知らせる（2026-08-09〜08-23はログイン切れのまま黙って止まり、2週間分の数字が古いままだった）'],
   ['EC', '発送リマインド', '毎朝8時', '稼働中', 'お客様の到着希望日から逆算して「そろそろ発送して」を社内に通知（東日本は4日前・西日本は3日前）'],
   ['EC', '振込のお願い催促', '毎朝10時', '稼働中', '銀行振込を選んだのに未入金の人を見つけてリマインドを送る'],
   ['EC', '発送リストを自動更新', '30分ごと', '稼働中', '発送すべき注文を、伝票印刷用の一覧に常に最新化する'],
+  ['社内シート', '販売実績（売れた数）の集計', '30分ごと', '稼働中', '注文明細から商品ごとの「売れた数」を数え、本番EC注文DBの「販売実績_自動」タブに作り直す。セットは中身(BOM)に展開して数えるので、ロット台帳の販売数を在庫からの逆算ではなく実売から出せる。EC外の出庫は入らない。2026-09-05追加'],
   ['EC', '在庫の自動引き算', '商品が売れた時', '稼働中', '売れると在庫数が自動で減る'],
   ['EC', '注文確認メール', '注文が入った時', '稼働中', 'お客様に確認メールを自動送信'],
   ['EC', '振込案内メール', '銀行振込を選んだ時', '稼働中', '振込先の案内を自動送信'],
@@ -2049,7 +2208,14 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '配信・リッチメニューのクリックを「誰が」まで記録', 'お客様がリンクを押した時', '稼働中', '配信リンク（クリック計測用の中継ページ）とリッチメニューのクリックを記録する。LINE連携済みの人は誰が押したかまで分かる（2026-08-21まで連携IDの取得キーが間違っており、誰が押したかは一度も残っていなかった）'],
   ['社内シート', 'クリックを「誰が・いつ・どれ」で集計', '1時間ごと', '稼働中', '記録されたクリックを本番EC注文DBの「クリック_明細」（1クリック=1行・LINE名つき）と「クリック_サマリ」（人別/リンク別/曜日別/時間帯別）に集計する。2026-08-22に自動実行の設定済み'],
   ['EC', '今月のまとめを管理画面に表示', '管理画面のホームを開くたび', '稼働中', '今月の売上・注文数・仕入れ額・粗利を、単品と定期便に分けてホーム画面に出す。仕入れ額は「今月売れた分の原価」で、単品はロット台帳の「原価/パック」×販売数（同じ商品でもロットで原価が変わるので注文日時点で最新のロットを使う）、定期便は「定期便損益」タブの当月行から計算する。ギフト注文は単品に含める。原価が登録されていない商品があれば品名と個数を画面に警告として出す'],
-  ['EC', '定期便の当月行を自動作成', '毎月1日 朝7時', '稼働中', '「定期便損益」タブに当月の行を、定期便マスターで有効な人のぶんだけ前月の行をまるごとコピーして作る（原価・販売価格・利益の計算式がそのまま引き継がれる）。作ったあと「商品を選定してください」というメールが1通届く。解約した人の行は作らず、新規の人は住所と配送料の確認が要ることをお知らせする']
+  ['EC', '定期便の当月行を自動作成', '毎月1日 朝7時', '稼働中', '「定期便損益」タブに当月の行を、定期便マスターで有効な人のぶんだけ前月の行をまるごとコピーして作る（原価・販売価格・利益の計算式がそのまま引き継がれる）。作ったあと「商品を選定してください」というメールが1通届く。解約した人の行は作らず、新規の人は住所と配送料の確認が要ることをお知らせする'],
+  ['社内シート', 'Stripe手数料の請求書を自動で取ってくる', '毎月5日 朝10時（取れなかった時だけ翌6日も）', '稼働中', 'Stripeの画面から前月分の決済手数料の請求書（インボイス＝適格請求書）をダウンロードし、「領収書_Stripe_（前月末日）（EC・◯月分 決済手数料 適格請求書 KHU1UECI-年-月）.pdf」という名前に直して、その月の経理フォルダ（デスクトップの「◯◯◯◯◯◯_経理アップロード用」）に入れる。中身を開いて手数料の金額と登録番号（Tから始まる番号）を読み取って報告する。Stripeの発行は毎月5日（過去17本中16本が5日・1本だけ6日）。ブラウザ操作のためPC/アプリ起動中に実行するローカル定期タスク。2026-09-04追加'],
+  ['公式LINE', '送料半額「残り1日」のお知らせ', '毎日10時（期限の前日に当たる人だけ送る）', '稼働中', '1回しか買っていない人へ、送料半額（2回目のご注文だけの特典）の期限が翌日に迫った日に1通だけ送る。LINE連携済みはLINE・未連携はメール。前回お届けから40日を過ぎた人には送らない（もう失効しているので案内すると嘘になる）。同じ人へ二度送らない。2026-09-07 送信開始'],
+  ['公式LINE', '初回お届け1週間後の「ご感想」', '毎日11時', '稼働中', '初めて買った人へ、お届けから7日目（10日目まで）に感想をたずねる1通を送る。目的は返信をもらうことで、次回特典の案内は最後の1行だけ。LINE連携済みはLINE・未連携はメール。2回目以降の人には送らない。同じ人へ二度送らない。2026-09-07 送信開始'],
+  ['公式LINE', '自動配信の予告メール（社内向け）', '毎朝8時', '稼働中', '今日どの自動配信が誰に飛ぶかを、LINEの表示名とご注文の名前を並べた表にして担当（r.tasaki@）へ1通送る。判定は実際に送るのと同じ処理を通すので、予告と実際がずれない。カゴ落ちだけは当日その場で発生して朝には決まらないため、これまで送った全件と、その後どうなったか（売れた／カートから外した／カートに残っている）と配信リンクを開いたかを出す。LINEに既読・未読を取る仕組みは無いのでリンクのクリックで代用。2026-09-07追加'],
+  ['EC', '売り切れ商品の予約受付と「次回最短お届け日」', '在庫が0になった時／お客様がページを開くたび', '稼働中', '売り切れても買えなくせず、予約でご注文を受ける。在庫が0になった日を自動で記録し、商品ページと商品一覧に「次回最短お届け日＝0になった日＋9日」を出す（加工7日＋出荷準備＋配送。全国どこでも同じ日付）。ボタンは通常商品と同じでそのままカートに入り、ご入金は注文時。ご注文手続きではその日より前の日付を選べなくし、日付を指定しない方には注意書きで日付を伝える。在庫が1以上に戻れば表示・日付制限・注意書きが全部自動で消える。記録が無い／過ぎている場合は「今日＋9日」に読み替えて過去日は出さない。2026-09-07追加'],
+  ['社内シート', '毎晩21時「今日やったこと」レポート', '毎晩21時', '稼働中', 'その日1日に何が起きたかを1通にまとめて担当（r.tasaki@）へ送る。上段＝システムが記録している事実の自動集計（ご注文件数・売上・はじめての方かリピーターか・商品ページの閲覧・カートに入れた人・決済でつまずいた回数・お問い合わせ／公式LINEの自動送信の内訳・配信リンクのクリック・LINE連携した人数）。下段＝本番EC注文DBの「作業ログ」タブに書いた、その日のクロードの作業。売上は税込・単品とギフトのみで定期便と社内注文は除く。20時のダイジェスト（誰に何が飛んだかの名簿）とは役割が違う。2026-09-07追加'],
+  ['EC', '入荷した肉を在庫に反映', 'ロット台帳のメニューを押した時', '稼働中', 'ロット台帳で「入荷済」にチェックを入れた行を、メニュー「📦 入荷 → 在庫に反映する」を押した時だけ、その歩留（パック数）を商品の在庫に足す。何度押しても二重に足さず、足した商品と、飛ばした行＋その理由（歩留が未記入／商品名が一致しない／もう反映済み）が一覧で出る。反映の記録は「反映日時」「反映数」の2列に残り、チェックを外して「反映を取り消す」を押すと足した分だけ戻る。2026-09-10にこの形へ作り直した（それまではチェックした瞬間に足す方式で、セルのコピペや一括操作で二重加算や無反応が起きていた）'],
 ];
 
 /* 一覧スプレッドを AUTOMATION_REGISTRY の内容で書き換える（毎朝トリガー＋setupから呼ばれる）。 */
@@ -2417,6 +2583,8 @@ function decrementStockAfterOrder(session, meta) {
       const cur = Number(data[i][stockIdx]) || 0;
       const next = Math.max(0, cur - consumed);
       sh.getRange(i + 1, stockIdx + 1).setValue(next);
+      /* 📅 ここで0に落ちた＝予約の起点。次回最短お届け日はこの日付から数える */
+      stampSoldOutAt_(sh, headers, i + 1, cur, next);
     }
   }
 }
@@ -2727,24 +2895,188 @@ var SUB_ADDONS = {
 };
 var SUB_ADDON_DISCOUNT = 0.10;  // 定期便と同時購入で 10%OFF
 
+var SUB_APP_HEADERS = ['ts','plan','customer_json','addons_json','追加購入','追加金額','お客様名'];
+
+/* アドオン配列 → 人が読める1行 + 合計金額。
+   フロントが price を送ってきていればそれを使い、無ければマスタから 10%OFF で計算する。 */
+function subAddonSummary(addons) {
+  var list = (addons && addons.length) ? addons : [];
+  var parts = [], total = 0;
+  for (var i = 0; i < list.length; i++) {
+    var a = list[i] || {};
+    var m = SUB_ADDONS[a.id] || {};
+    var name = a.name || m.n || a.id || '(不明)';
+    var qty  = Number(a.qty) || 1;
+    var unit = (a.price !== undefined && a.price !== null && a.price !== '')
+             ? Number(a.price)
+             : (m.p ? Math.round(m.p * (1 - SUB_ADDON_DISCOUNT)) : 0);
+    parts.push(name + '×' + qty);
+    total += unit * qty;
+  }
+  return { text: parts.join(' / '), total: total, count: list.length };
+}
+
 function logSubscriptionApplication(body) {
-  const sh = sheet('subscription_applications', ['ts','plan','customer_json','addons_json']);
+  const sh = sheet('subscription_applications', SUB_APP_HEADERS);
+  /* 既存シートは4列で作られている。見出しを足す（何度走らせても同じ結果になる）。 */
+  if (sh.getLastColumn() < SUB_APP_HEADERS.length) {
+    sh.getRange(1, 1, 1, SUB_APP_HEADERS.length).setValues([SUB_APP_HEADERS]);
+    sh.setFrozenRows(1);
+  }
+  const cust = body.customer || {};
+  const sum  = subAddonSummary(body.addons);
   sh.appendRow([
     new Date(),
     body.plan || '',
-    JSON.stringify(body.customer || {}),
-    JSON.stringify(body.addons || [])
+    JSON.stringify(cust),
+    JSON.stringify(body.addons || []),
+    sum.text,
+    sum.total,
+    cust.name || ''
   ]);
+  /* 追加購入があった申込は、シートを開いた瞬間に気づけるよう赤背景＋太字にする。 */
+  if (sum.count > 0) {
+    sh.getRange(sh.getLastRow(), 1, 1, SUB_APP_HEADERS.length)
+      .setBackground('#F8D7DA')
+      .setFontWeight('bold');
+  }
   return jsonResponse({ ok:true });
+}
+
+/* 既に入っている行にも「追加購入」「追加金額」「お客様名」を埋め、
+   アドオン有りの行を赤くする。何度実行しても同じ結果になる。 */
+function backfillSubscriptionAddons() {
+  const sh = sheet('subscription_applications', SUB_APP_HEADERS);
+  if (sh.getLastColumn() < SUB_APP_HEADERS.length) {
+    sh.getRange(1, 1, 1, SUB_APP_HEADERS.length).setValues([SUB_APP_HEADERS]);
+    sh.setFrozenRows(1);
+  }
+  const last = sh.getLastRow();
+  if (last < 2) return { ok:true, rows:0, marked:0 };
+  const data = sh.getRange(2, 1, last - 1, 4).getValues();
+  const out = [], marked = [];
+  for (var i = 0; i < data.length; i++) {
+    var cust = {}, addons = [];
+    try { cust = JSON.parse(data[i][2] || '{}'); } catch (e) {}
+    try { addons = JSON.parse(data[i][3] || '[]'); } catch (e) {}
+    var sum = subAddonSummary(addons);
+    out.push([sum.text, sum.total, cust.name || '']);
+    if (sum.count > 0) marked.push(i + 2);
+  }
+  sh.getRange(2, 5, out.length, 3).setValues(out);
+  for (var j = 0; j < marked.length; j++) {
+    sh.getRange(marked[j], 1, 1, SUB_APP_HEADERS.length)
+      .setBackground('#F8D7DA').setFontWeight('bold');
+  }
+  return { ok:true, rows: out.length, marked: marked.length };
+}
+
+/* GET staff_subscription_addons — 管理画面の「定期便の追加購入」一覧。
+   追加購入があった申込だけを新しい順に返す。 */
+function staffSubscriptionAddons() {
+  const sh = sheet('subscription_applications', SUB_APP_HEADERS);
+  const last = sh.getLastRow();
+  if (last < 2) return jsonResponse({ ok:true, rows: [] });
+  const data = sh.getRange(2, 1, last - 1, 4).getValues();
+  const rows = [];
+  for (var i = 0; i < data.length; i++) {
+    var addons = [];
+    try { addons = JSON.parse(data[i][3] || '[]'); } catch (e) {}
+    if (!addons.length) continue;
+    var cust = {};
+    try { cust = JSON.parse(data[i][2] || '{}'); } catch (e) {}
+    var sum = subAddonSummary(addons);
+    rows.push({
+      ts: data[i][0],
+      plan: data[i][1],
+      name: cust.name || '',
+      email: cust.email || '',
+      phone: cust.phone || '',
+      items: sum.text,
+      total: sum.total,
+      count: sum.count
+    });
+  }
+  rows.reverse();  /* 新しい順 */
+  return jsonResponse({ ok:true, rows: rows });
 }
 
 /* ============================================================
    POST: request_otp / verify_otp (マイページ認証)
    ============================================================ */
+/* ✉️ ログインコード送信のガード（2026-09-10 追加）
+   以前は「誰のアドレスにでも」【江田畜産】ログイン用 6桁コードを送っていた。
+   いたずらや自動プログラムで無関係の人に送られると迷惑メール報告が積み上がり、
+   注文確認メールや発送メールまで迷惑メール扱いされる（Gmailの1日の送信上限も食い潰す）。
+   → ①注文者/顧客として登録のあるアドレスにだけ送る
+     ②同じアドレスへは60秒に1回・24時間に10回まで
+   画面には常に同じ「送りました」を返す（登録の有無を外から判別させないため）。 */
+function isKnownCustomerEmail_(email) {
+  const target = String(email || '').trim().toLowerCase();
+  if (!target) return false;
+  try {
+    const sh = ss().getSheetByName('customers');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      if (data.length >= 2) {
+        const idx = data[0].indexOf('email');
+        if (idx !== -1) {
+          for (let i = 1; i < data.length; i++) {
+            if (String(data[i][idx] || '').trim().toLowerCase() === target) return true;
+          }
+        }
+      }
+    }
+  } catch (e) { /* customers が読めなければ orders で判定する */ }
+  try {
+    const osh = ss().getSheetByName('orders');
+    if (osh) {
+      const od = osh.getDataRange().getValues();
+      if (od.length >= 2) {
+        const oi = od[0].indexOf('customer_email');
+        if (oi !== -1) {
+          for (let i = 1; i < od.length; i++) {
+            if (String(od[i][oi] || '').trim().toLowerCase() === target) return true;
+          }
+        }
+      }
+    }
+  } catch (e) { /* noop */ }
+  /* ③ 旧カート(Shopify/WIX)の名簿。LegacyCustomers.js（本番GASのみ・公開リポジトリには置かない） */
+  try {
+    if (typeof legacyCustomerByEmail_ === 'function' && legacyCustomerByEmail_(target)) return true;
+  } catch (e) { /* noop */ }
+  return false;
+}
+
+function otpThrottled_(sh, email) {
+  const target = String(email || '').trim().toLowerCase();
+  try {
+    const data = sh.getDataRange().getValues();
+    const now = Date.now();
+    let within24h = 0;
+    for (let i = data.length - 1; i >= 1; i--) {
+      if (String(data[i][0] || '').trim().toLowerCase() !== target) continue;
+      const issued = new Date(data[i][2]).getTime() - 10*60*1000; // expires_at は発行時刻+10分
+      if (isNaN(issued)) continue;
+      const age = now - issued;
+      if (age > 24*60*60*1000) break;   // これより前は全部24時間より古い
+      if (age < 60*1000) return true;   // 60秒に1回
+      within24h++;
+      if (within24h >= 10) return true; // 24時間に10回
+    }
+  } catch (e) { /* 読めないときは止めない */ }
+  return false;
+}
+
 function requestOtp(body) {
   if (!body.email) throw new Error('email required');
-  const otp = String(Math.floor(100000 + Math.random() * 900000));
   const sh = sheet('otps', ['email','otp','expires_at','used']);
+  /* 送っても送らなくても同じ返事を返す（登録の有無を外から判別させない） */
+  const silentOk = jsonResponse({ ok:true, expires_in: 600 });
+  if (otpThrottled_(sh, body.email)) return silentOk;
+  if (!isKnownCustomerEmail_(body.email)) return silentOk;
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
   sh.appendRow([body.email, otp, new Date(Date.now() + 10*60*1000), false]); // 10分有効
 
   MailApp.sendEmail({
@@ -2769,7 +3101,8 @@ function verifyOtp(body) {
       sh.getRange(i+1, 4).setValue(true); // used
       const orders = getOrdersByEmail(body.email);
       const customer = getCustomerByEmail(body.email, orders);
-      const token = Utilities.base64Encode(body.email + ':' + Utilities.getUuid());
+      /* 2026-09-10: 発行しっぱなしだった合言葉を sessions タブに保管する */
+      const token = authIssue_(body.email, 'otp', AUTH_DEFAULT_DAYS);
       attachCardToCustomer(customer, orders);
       return jsonResponse({ ok:true, success: true, token: token, customer: customer, orders: orders });
     }
@@ -2817,6 +3150,11 @@ function getOrdersByEmail(email) {
 }
 
 function getCustomerByEmail(email, ordersHint) {
+  /* 旧カート定期便の方に切り替え案内を出す。中身は従来どおり getCustomerByEmailBase_ */
+  return attachSwitchOffer_(getCustomerByEmailBase_(email, ordersHint));
+}
+
+function getCustomerByEmailBase_(email, ordersHint) {
   // customers マスタから取得 (なければ orders から集計)
   try {
     const sh = ss().getSheetByName('customers');
@@ -2842,7 +3180,12 @@ function getCustomerByEmail(email, ordersHint) {
   } catch (e) { /* fallthrough */ }
   // orders だけから生成
   const orders = ordersHint || getOrdersByEmail(email);
-  const c = { email: email, name: email.split('@')[0] };
+  /* 旧カート(Shopify/WIX)の名簿にあればお名前を使う。
+     無いと「メールの@より前」がそのままお名前として画面に出てしまう。 */
+  let legacyHit = null;
+  try { if (typeof legacyCustomerByEmail_ === 'function') legacyHit = legacyCustomerByEmail_(email); } catch (e) {}
+  const c = { email: email, name: (legacyHit && legacyHit.name) || email.split('@')[0] };
+  if (legacyHit) c.legacy_src = legacyHit.src;
   c.total_orders = orders.length;
   c.total_spent = orders.reduce((s, o) => s + (Number(o.total) || 0), 0);
   // 直近注文の名前を使う
@@ -2894,6 +3237,15 @@ function getCardInfoFromOrders(orders) {
 
 /* customer に card_brand/card_last4/card_exp を付与（既にあれば何もしない・失敗しても customer をそのまま返す） */
 function attachCardToCustomer(customer, orders) {
+  /* マイページの定期便タブ用。LINEログイン経由でも必ず定期便が出るよう、
+     customer を返す全経路が通るこの関数で付ける（2026-09-07）。 */
+  try {
+    if (customer && customer.subscription === undefined) {
+      customer.subscription = subscriptionForCustomer_(customer.email || '', orders);
+    }
+  } catch (_se) {
+    if (customer) customer.subscription_error = String((_se && _se.message) || _se);
+  }
   try {
     if (!customer || customer.card_last4) return customer;
     // 保存カード(Stripe Customer の payment method)優先 → 無ければ直近注文の charge から
@@ -3040,6 +3392,10 @@ function customerLookup(params) {
     return jsonResponse({ success:false, message:'invalid email' });
   }
   const requestUid = params.line_uid ? String(params.line_uid).trim() : '';
+  try {
+    var _lk = CacheService.getScriptCache().get('lookup_' + String(email).toLowerCase());
+    if (_lk) return ContentService.createTextOutput(_lk).setMimeType(ContentService.MimeType.JSON);
+  } catch (_c) {}
   const orders = getOrdersByEmail(email);
   const customer = getCustomerByEmail(email, orders);
   // S3 IDOR対策（任意・既定OFF）: ENFORCE_LOOKUP_UID=true のとき、
@@ -3055,6 +3411,10 @@ function customerLookup(params) {
   }
   log('customer_lookup', { email: email, withUid: !!requestUid });
   attachCardToCustomer(customer, orders);
+  try { if (customer) customer.subscription = subscriptionForCustomer_(email, orders); }
+  catch (_e) { if (customer) customer.subscription_error = String((_e && _e.message) || _e); }   /* マイページの定期便タブ */
+  try { CacheService.getScriptCache().put('lookup_' + String(email).toLowerCase(),
+        JSON.stringify({ success:true, customer: customer, orders: orders }), 60); } catch (_c) {}   /* 60秒だけ覚えて表示を速く */
   return jsonResponse({ success:true, customer: customer, orders: orders });
 }
 
@@ -3065,29 +3425,61 @@ function skipSubscription(body) {
   // 実 Stripe で skip するなら 次回 invoice の period_end 操作が必要だが
   // シンプル運用: スタッフへメール通知 + シート記録
   const sh = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
-  sh.appendRow([new Date(), body.email || '', 'skip', body.subscription_id || '', body.note || '']);
+  var _pause = /pause/i.test(String(body.reason || body.note || ''));
+  var _target = _pause ? null : subNextDeliveryForEmail_(body.email || '');
+  var _targetYmd = _target ? _subYmd_(_target) : '';
+  var _after = _target ? _subYmd_(new Date(_target.getFullYear(), _target.getMonth() + 1, 1)) : '';
+  sh.appendRow([new Date(), body.email || '', _pause ? 'pause' : 'skip', body.subscription_id || '',
+    (_pause ? '一時停止' : '対象:' + _targetYmd) + ((body.note || body.reason) ? ' / ' + (body.note || body.reason) : '')]);
+  subCacheClear_(body.email || '');
 
+  var _stripe = subStripeApply_(_pause ? 'pause' : 'skip', body.email || '');
   MailApp.sendEmail({
     to: cfg('STAFF_NOTIFICATION_EMAIL') || 'tomoki@eda-livestock.com',
-    subject: '【江田畜産】定期便スキップ申請',
-    body: '顧客: ' + body.email + '\n対象: 次回お届け分\n備考: ' + (body.note || '(なし)') + '\n\n手動でStripe側の next invoice をスキップしてください。'
+    subject: _pause ? '【江田畜産】定期便 一時停止申請' : '【江田畜産】定期便スキップ申請',
+    body: '顧客: ' + body.email + '\n対象: ' + (_pause ? '一時停止（再開のご連絡まで）' : _targetYmd + ' のお届けをスキップ → 次回は ' + _after) + '\n備考: ' + (body.note || body.reason || '(なし)') + '\n\nStripe: ' + _stripe
   });
-  return jsonResponse({ ok:true });
+  if (_subStripeFailed_(_stripe)) return _subStripeFailJson_('スキップ／一時停止');
+  return jsonResponse({ ok:true, next_delivery: _after });
 }
 
 function cancelSubscription(body) {
-  const STRIPE = cfg('STRIPE_SECRET_KEY');
-  const sh = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
-  sh.appendRow([new Date(), body.email || '', 'cancel_request', body.subscription_id || '', body.reason || '']);
+  var email = String((body && body.email) || '').trim();
+  if (!email) return jsonResponse({ ok:false, error: 'email required' });
+  var reason = String((body && body.reason) || '').trim();
 
-  // 3ヶ月経過チェック (運用上、手動承認推奨)
+  /* 締めの決まり: 毎月19日以降のお申し出は「翌月のお届けをもって終了」、18日までは「即終了」 */
+  var today = new Date();
+  var day = Number(Utilities.formatDate(today, 'Asia/Tokyo', 'd'));
+  var lateInMonth = day >= 19;
+
+  var lastDelivery = '';
+  var mode, endText;
+  if (lateInMonth) {
+    mode = 'cancel_period_end';
+    lastDelivery = _subYmd_(subNextDeliveryForEmail_(email));
+    endText = lastDelivery + ' のお届けを最後に終了';
+  } else {
+    mode = 'cancel_now';
+    endText = 'すぐに終了（次回のお届けはありません）';
+  }
+
+  var sh = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
+  sh.appendRow([new Date(), email, mode, String((body && body.subscription_id) || ''),
+    endText + (reason ? ' / 理由:' + reason : '')]);
+  subCacheClear_(email);
+
+  var _sx = subStripeApply_(mode, email);
   MailApp.sendEmail({
     to: cfg('STAFF_NOTIFICATION_EMAIL') || 'tomoki@eda-livestock.com',
     subject: '【江田畜産】定期便 解約申請',
-    body: '顧客: ' + body.email + '\n理由: ' + (body.reason || '(未記入)') + '\n対象: ' + (body.subscription_id || '') +
-          '\n\n3ヶ月継続条件を確認の上、Stripe Dashboard から解約してください。'
+    body: 'お客様: ' + email + '\n終了時期: ' + endText + '\n理由: ' + (reason || '(未記入)') +
+          '\n\nStripe: ' + _sx
   });
-  return jsonResponse({ ok:true, message: '解約申請を受け付けました。スタッフより 1 営業日以内にご連絡します。' });
+  if (_subStripeFailed_(_sx)) return _subStripeFailJson_('解約');
+  return jsonResponse({ ok:true, cancel_note: endText, last_delivery: lastDelivery,
+    message: lateInMonth ? ('承りました。' + lastDelivery + ' のお届けを最後に終了します。')
+                         : '承りました。次回のお届けはありません。' });
 }
 
 /* ============================================================
@@ -3350,6 +3742,53 @@ function collectItems(body) {
    カート内の各 item が在庫を超えないかチェック
    返り値: error メッセージ配列 (空 = OK, 非空 = 在庫不足)
    ============================================================ */
+/* ============================================================
+   📅 予約注文 — 「在庫が0になった日」(products.soldOutAt) の押印
+   ------------------------------------------------------------
+   2026-09-07 田崎さん決定。売り切れた商品は買えなくするのではなく、
+   「次回最短お届け日 = 0になった日 + 9日」を出して予約で受ける。
+   その起点になる日付をここで記録する。
+
+   ・在庫が 1以上 → 0 に落ちた瞬間に今日の日付を書く
+   ・在庫が 0 → 1以上 に戻ったら消す（表示も指定日の下限も注意書きも全部消える）
+   ・列が無ければ右端に 'soldOutAt' を自動で作る。publicCatalog は
+     ヘッダーをそのまま返すので、GAS の他の変更なしでフロントに届く。
+
+   🔴 日付は文字列 'YYYY-MM-DD' で書く。Date を入れるとスプシのタイムゾーン変換で
+      前日にずれることがある（ロット台帳で実際に起きている）。
+   ============================================================ */
+function _soldOutAtCol_(sh, headers) {
+  var idx = headers.indexOf('soldOutAt');
+  if (idx !== -1) return idx;
+  var col = headers.length + 1;
+  sh.getRange(1, col).setValue('soldOutAt');
+  headers.push('soldOutAt');
+  return headers.length - 1;
+}
+function _todayIso_() {
+  return Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+}
+/* row は1始まりのシート行番号。prevStock→nextStock の遷移で押印/消去する */
+function stampSoldOutAt_(sh, headers, row, prevStock, nextStock) {
+  try {
+    var idx = _soldOutAtCol_(sh, headers);
+    var cell = sh.getRange(row, idx + 1);
+    if (nextStock <= 0 && prevStock > 0) {
+      cell.setNumberFormat('@');
+      cell.setValue(_todayIso_());
+    } else if (nextStock > 0) {
+      if (String(cell.getValue() || '') !== '') cell.setValue('');
+    }
+  } catch (e) {
+    log('soldoutat_stamp_error', { row: row, error: e.message });
+  }
+}
+
+/* 予約注文を受け付けるか。Script Property PREORDER_ENABLED = 'true' で有効。
+   🔴 既定は false。フロント(product/products/checkout)をマージする前に true にすること。
+      逆順にすると「カートに入るのに決済で弾かれる」状態になる。 */
+function preorderEnabled_() { return String(cfg('PREORDER_ENABLED', 'false')) === 'true'; }
+
 function validateStockBeforeCheckout(items) {
   const errors = [];
   try {
@@ -3389,6 +3828,13 @@ function validateStockBeforeCheckout(items) {
       const title = data[i][titleIdx];
       const stock = Number(data[i][stockIdx]) || 0;
       const needed = needByTitle[title] || 0;
+      /* 📅 在庫0の品は「売り切れ」ではなく「予約」として通す（フロントの
+         preorder.js / checkCartStock と同じ規則）。在庫が1以上あるのに
+         数が足りないケース（残り1点に2点）は従来どおり弾く。 */
+      if (needed > 0 && stock <= 0 && preorderEnabled_()) {
+        log('preorder_accepted', { title: title, qty: needed });
+        continue;
+      }
       if (needed > 0 && needed > stock) {
         errors.push(`「${title}」: 在庫 ${stock} 点 / 注文 ${needed} 点 (${needed - stock} 点 不足)`);
       }
@@ -3423,6 +3869,12 @@ function validateStockBeforeCheckout(items) {
    ============================================================ */
 function repeatShipEnabled_() { return String(cfg('REPEAT_SHIP_HALF', 'false')) === 'true'; }
 function repeatShipDays_()    { return Number(cfg('REPEAT_SHIP_DAYS', '40')) || 40; }
+/* 引く額。'free' 以外は全部 'half' 扱い（設定ミスで勝手に無料にしない fail-safe） */
+function repeatShipRate_()    { return String(cfg('REPEAT_SHIP_RATE', 'half')) === 'free' ? 'free' : 'half'; }
+/* 何回目のご注文に付ける特典か（2026-09-08 田崎さん指示で 2回目 → 5回目へ移動）。
+   「5回目に付く」＝支払い済みの注文が4件ある人の次の注文が対象。
+   1未満やゴミが入ったら 5 に倒す（全員一致してしまう 0 を避ける fail-safe）。 */
+function repeatShipStage_()   { var n = Number(cfg('REPEAT_SHIP_STAGE', '5')); return (n >= 1) ? n : 5; }
 
 /* この人の直近の「お届け日」を day number で返す（無ければ null）。
    email と line_uid のどちらか一致で本人とみなす（別メールで買われた場合は検知できない＝
@@ -3473,7 +3925,7 @@ function isRepeatShipHalf_(email, lineUid) {
        （特典階段そのものは進むので、3回目は従来どおり鶏モモになる）。
        実体の数え方は RepeatShipReminder.js の repeatShipPaidOrderCount_ 1本
        ＝通知の対象者と請求の判定が必ず同じ人になるようにする。 */
-    if (repeatShipPaidOrderCount_(email, lineUid) !== 1) return false;
+    if (repeatShipPaidOrderCount_(email, lineUid) !== repeatShipStage_() - 1) return false;
     var last = lastDeliveryDayNum_(email, lineUid);
     if (last === null) return false;
     var days = _jstDayNum(new Date()) - last;
@@ -3495,14 +3947,16 @@ function repeatShippingCheck(params) {
   }
   if (!repeatShipEnabled_()) return jsonResponse({ ok: true, enabled: false, half: false });
   var limit = repeatShipDays_();
+  var rate  = repeatShipRate_();    /* 'half' | 'free' — 画面の表示額を請求と一致させるために返す */
+  var stage = repeatShipStage_();   /* 何回目の特典か。マイページの階段表示がこれに追従する */
   /* 🔴 half は請求(isRepeatShipHalf_)と同じ条件で返す。「2回目だけ」の条件を
      ここに入れ忘れると、3回目以降の人の画面に半額と出て請求は満額になる
      （LINE10 でフロントとバックがズレた事故と同じ形）。 */
   var count = repeatShipPaidOrderCount_(email, uid);
-  var eligible = (count === 1);                    // 次の注文が2回目の人か
+  var eligible = (count === stage - 1);             // 次の注文が特典の回(既定5回目)にあたる人か
   var last = lastDeliveryDayNum_(email, uid);
   if (last === null) {
-    return jsonResponse({ ok: true, enabled: true, half: false, limit: limit, orders: count, eligible: eligible });
+    return jsonResponse({ ok: true, enabled: true, half: false, rate: rate, stage: stage, limit: limit, orders: count, eligible: eligible });
   }
   var days = _jstDayNum(new Date()) - last;
   var within = (days >= 0 && days <= limit);
@@ -3510,6 +3964,8 @@ function repeatShippingCheck(params) {
   return jsonResponse({
     ok: true, enabled: true,
     half: (eligible && within),
+    rate: rate,
+    stage: stage,
     eligible: eligible,
     orders: count,
     days: days, limit: limit,
@@ -3518,13 +3974,42 @@ function repeatShippingCheck(params) {
   });
 }
 
+/* 🚚 商品ごとの「これが入っていれば送料無料」（2026-09-09 田崎さん決定）
+   products シートの freeShip 列が TRUE の商品が1点でもカートにあれば、
+   その注文の自宅送料を 0 円にする。初回向けの「はじめてセット」用。
+   ・ギフト分の送料はもともと 0 円なので、効くのは自宅分だけ
+   ・freeShip 列が無い／読めないときは false を返す＝従来どおり送料を頂く(fail-safe)
+   ・照合キーは products の name と カートの title（在庫判定・BOM と同じ完全一致） */
+function hasFreeShipItem_(items) {
+  try {
+    const sh = ss().getSheetByName('products');
+    if (!sh) return false;
+    const data = sh.getDataRange().getValues();
+    if (data.length < 2) return false;
+    const headers = data[0];
+    const nameIdx = headers.indexOf('name');
+    const freeIdx = headers.indexOf('freeShip');
+    if (nameIdx === -1 || freeIdx === -1) return false;
+    const free = {};
+    for (var r = 1; r < data.length; r++) {
+      var v = String(data[r][freeIdx]).trim().toLowerCase();
+      if (v === 'true' || v === '1') free[String(data[r][nameIdx]).trim()] = true;
+    }
+    return (items || []).some(function (it) { return !!free[String((it && it.title) || '').trim()]; });
+  } catch (e) {
+    log('free_ship_check_warn', { error: e.message });
+    return false;
+  }
+}
+
 function calcShipping(subtotal, pref, halfOff) {
   if (subtotal >= 11000) return 0; // ¥11,000以上 送料無料
   // 北海道/沖縄は追加料金
   var base = (pref === '北海道' || pref === '沖縄県') ? 2200 : 1100;
   // 🚚 リピート送料半額（2026-08-23）: 前回のお届け日から N 日以内の再注文は半額。
   //    ¥11,000以上は上で 0 円になっているので、ここは「送料が発生する注文」だけが通る。
-  return halfOff ? base / 2 : base;
+  if (!halfOff) return base;
+  return repeatShipRate_() === 'free' ? 0 : base / 2;
 }
 
 function flattenForm(obj, prefix) {
@@ -3606,6 +4091,145 @@ function pendingOrderRow_(sessionId, orderNum) {
    電話は「9047241063」「090-412-09138」「819047241063」のような表記ゆれが実データにある。 */
 function custEmailKey_(v) {
   return String(v == null ? '' : v).trim().toLowerCase();
+}
+
+/* 🎂 誕生日を必ず 'MM-DD' の文字列にそろえる。
+   受け取る形が3通りあるため1箇所で吸収する:
+     ①マイページから 'MM-DD'（本来の形）
+     ②'YYYY-MM-DD'（将来 年つきで送られてきた場合）
+     ③Date オブジェクト（シートが日付として解釈してしまった古い行）
+   どれでもない/空なら '' を返す（＝未登録）。 */
+function normBirthday_(v) {
+  if (v == null || v === '') return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    if (isNaN(v.getTime())) return '';
+    return ('0' + (v.getMonth() + 1)).slice(-2) + '-' + ('0' + v.getDate()).slice(-2);
+  }
+  var s = String(v).trim();
+  var m = s.match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})/);   /* 'MM-DD' も 'YYYY-MM-DD' も末尾2つを拾う */
+  if (s.match(/^\d{4}[-\/]/)) m = s.slice(5).match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})/) || m;
+  if (!m) return '';
+  var mo = Number(m[1]), da = Number(m[2]);
+  if (!(mo >= 1 && mo <= 12) || !(da >= 1 && da <= 31)) return '';
+  return ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+}
+
+/* 🎂 顧客シートに書くときの形。年が分かれば 'YYYY-MM-DD'、分からなければ 'MM-DD'。
+   2026-09-09 にマイページで生まれた年もお伺いするようにしたため、年を落とさず残す。
+   ★プレゼントの判定・お祝いメッセージは今までどおり normBirthday_（MM-DD）だけを見る。
+     年は「何年生まれか」を知るためだけに置いてある。 */
+function normBirthdayFull_(v) {
+  var mmdd = normBirthday_(v);
+  if (!mmdd) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') return mmdd;   /* 年は当てにならないので落とす */
+  var y = String(v).trim().match(/^(\d{4})\s*[-\/年]/);
+  if (!y) return mmdd;
+  var yr = Number(y[1]);
+  if (!(yr >= 1900 && yr <= new Date().getFullYear())) return mmdd;
+  return yr + '-' + mmdd;
+}
+
+/* ============================================================
+   定期便のお客様かどうか（3か所から使う共通の判定）
+   ------------------------------------------------------------
+   使う場所（判定はここ1箇所だけ。増やさない）:
+     ・誕生日メッセージの文面の出し分け（BirthdayGreeting.gs）
+     ・顧客シート / 注文シートの「定期便」列（markSubscribers）
+     ・管理画面の注文一覧・発送画面のバッジ（staffOrders が is_subscriber を返す）
+   “正”が2つあるので両方を見て、どちらかに当たれば定期便とみなす:
+     ①「定期便マスター」の 状態=有効 … 手管理の名簿でこれが正
+        （WIX/Shopify 時代からのお客様は新ECの注文が無いのでここにしか居ない）
+        照合はお名前。空白は詰めて比べる（SubscriptionMonthRows と同じやり方）
+     ② orders に mode が subscription… のご注文がある … 新ECのお客様
+        こちらはメール/line_uid で確実に照合できる
+   🔴 外したときに困るのは「定期便の方に “ご注文ください” と送ってしまう」方なので、
+      迷ったら定期便側（＝ご注文へ誘導しない方）に倒す作りにしている。
+   ⚠️ ①はお名前での照合なので、同姓同名や表記ゆれには当たらないことがある。
+      ②（新ECのご注文）で当たる方はそちらで確実に拾える。
+   ============================================================ */
+function subNormName_(v) { return String(v || '').replace(/[\s　]/g, ''); }
+
+function subscriberIndex_() {
+  var out = { byEmail: {}, byUid: {}, byName: {} };
+
+  /* ① 定期便マスター（手管理・状態=有効） */
+  try {
+    var ms = ss().getSheetByName('定期便マスター');
+    if (ms) {
+      var mv = ms.getDataRange().getValues();
+      var MH = {};
+      (mv[0] || []).forEach(function (h, i) { MH[String(h).trim()] = i; });
+      if (MH['状態'] != null && MH['名前'] != null) {
+        for (var r = 1; r < mv.length; r++) {
+          if (String(mv[r][MH['状態']] || '').trim() !== '有効') continue;
+          var nm = subNormName_(mv[r][MH['名前']]);
+          if (nm) out.byName[nm] = true;
+        }
+      }
+    }
+  } catch (e) { /* マスターが読めなくても②で拾う */ }
+
+  /* ② orders に定期便のご注文がある */
+  try {
+    var os = sheet('orders');
+    var ov = os.getDataRange().getValues();
+    if (ov.length >= 2) {
+      var h = ov[0];
+      var iMode = h.indexOf('mode'), iMail = h.indexOf('customer_email'), iUid = h.indexOf('line_uid');
+      if (iMode >= 0) {
+        for (var r2 = 1; r2 < ov.length; r2++) {
+          if (String(ov[r2][iMode] || '').indexOf('subscription') !== 0) continue;
+          if (iMail >= 0 && ov[r2][iMail]) out.byEmail[custEmailKey_(ov[r2][iMail])] = true;
+          if (iUid  >= 0 && ov[r2][iUid])  out.byUid[String(ov[r2][iUid]).trim()] = true;
+        }
+      }
+    }
+  } catch (e) { /* orders が読めなくても①で拾う */ }
+
+  return out;
+}
+
+function isSubscriber_(idx, p) {
+  if (p.uid   && idx.byUid[p.uid]) return true;
+  if (p.email && idx.byEmail[p.email]) return true;
+  var nm = subNormName_(p.name);
+  return !!(nm && idx.byName[nm]);
+}
+
+/* 🎂 ご注文日の「月」を 'MM' で返す。
+   placed_at はシートの入り方によって Date のことも文字列のこともあるので両対応する。
+   Date のときは日本時間で月を出す（UTC で見ると月初/月末の注文が1つ前の月にずれる）。 */
+function orderMonth_(v) {
+  if (!v) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    if (isNaN(v.getTime())) return '';
+    return Utilities.formatDate(v, 'Asia/Tokyo', 'MM');
+  }
+  var s = String(v);
+  var m = s.match(/^(\d{4})-(\d{2})/);        /* 'YYYY-MM-DD' / ISO文字列 */
+  return m ? m[2] : '';
+}
+
+/* 🎂 customers の誕生日を「メール」と「line_uid」の2通りで引ける表にする。
+   staffOrders が注文1件ごとに顧客シートを読み直さないための前処理。 */
+function birthdayIndex_() {
+  var out = { byEmail: {}, byUid: {} };
+  try {
+    var sh = sheet('customers');
+    var data = sh.getDataRange().getValues();
+    if (data.length < 2) return out;
+    var h = data[0];
+    var bIdx = h.indexOf('birthday');
+    if (bIdx === -1) return out;                     /* 誕生日欄をまだ誰も登録していない */
+    var eIdx = h.indexOf('email'), uIdx = h.indexOf('line_uid');
+    for (var i = 1; i < data.length; i++) {
+      var b = normBirthday_(data[i][bIdx]);
+      if (!b) continue;
+      if (eIdx >= 0 && data[i][eIdx]) out.byEmail[custEmailKey_(data[i][eIdx])] = b;
+      if (uIdx >= 0 && data[i][uIdx]) out.byUid[String(data[i][uIdx]).trim()] = b;
+    }
+  } catch (e) { /* 顧客シートが読めなくても注文一覧は出す */ }
+  return out;
 }
 function custPhoneKey_(v) {
   var d = String(v == null ? '' : v).replace(/[^0-9]/g, '');
@@ -3796,6 +4420,8 @@ function sendStaffNotificationEmail(session, orderNum) {
     subject: '【新規注文】 ' + orderNum + ' ' + total,
     body:
       '【新規ご注文】\n\n' +
+      '▼ 管理画面でこの注文を開く\n' +
+      'https://www.eda-livestock.com/staff.html?order=' + encodeURIComponent(orderNum) + '\n\n' +
       '注文番号: ' + orderNum + '\n' +
       'モード: ' + (meta.mode || 'single') + '\n' +
       '合計: ' + total + '\n' +
@@ -3951,7 +4577,10 @@ function lineLogin(body) {
           }
         }
         attachCardToCustomer(customer, orders);
-        return jsonResponse({ ok:true, matched:true, customer, orders });
+        attachSwitchOffer_(customer);   /* 旧カート定期便の方に切り替え案内を出す */
+        /* 2026-09-10: LINEログインでも合言葉を発行して返す */
+        return jsonResponse({ ok:true, matched:true, customer, orders,
+                              token: authIssue_(customer.email, 'line', AUTH_DEFAULT_DAYS) });
       }
     }
     return jsonResponse({ ok:true, matched:false });
@@ -4067,7 +4696,8 @@ function updateProfile(body) {
   var headers = sh.getDataRange().getValues()[0];
   function col(n){ var i=headers.indexOf(n); if(i===-1){ i=headers.length; sh.getRange(1,i+1).setValue(n); headers.push(n);} return i; }
   var lineIdx=col('line_uid'), emailIdx=col('email'), nameIdx=col('name'), phoneIdx=col('phone'),
-      zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id');
+      zipIdx=col('zip'), addrIdx=col('address'), pcIdx=col('profile_complete'), idIdx=col('customer_id'),
+      bdayIdx=col('birthday');   /* 🎂 誕生日 (YYYY-MM-DD)。列が無ければ col() が作る */
   var data = sh.getDataRange().getValues();
   /* 🔴 探す順を固定 (2026-08-31)
      旧実装は line_uid と email の OR 一発で、シートの並び順で先に現れた行を取っていた。
@@ -4099,9 +4729,21 @@ function updateProfile(body) {
   if (body.zip)     sh.getRange(foundRow, zipIdx+1).setValue(body.zip);
   if (body.address) sh.getRange(foundRow, addrIdx+1).setValue(body.address);
   if (email && !String(sh.getRange(foundRow, emailIdx+1).getValue())) sh.getRange(foundRow, emailIdx+1).setValue(email);
+  /* 🎂 誕生日 (YYYY-MM-DD。年より前の登録は MM-DD のまま)。マイページの「お誕生日」欄から来る。
+     '' を送ると登録の取り消し。Sheets に日付として解釈されないよう必ず文字列で入れる。 */
+  if (body.birthday !== undefined) {
+    var bd = normBirthdayFull_(body.birthday);
+    var bdCell = sh.getRange(foundRow, bdayIdx+1);
+    bdCell.setNumberFormat('@');
+    bdCell.setValue(bd);
+  }
+  /* 🔴 profile_complete は「氏名・郵便番号・住所のどれかを送ってきたとき」だけ計算し直す。
+     誕生日だけを保存しに来た呼び出しでここを無条件に上書きすると、
+     住所を登録済みの方の profile_complete が空に戻ってしまう。 */
+  var touchesProfile = (body.name !== undefined || body.zip !== undefined || body.address !== undefined);
   var complete = !!(body.name && body.zip && body.address);
-  sh.getRange(foundRow, pcIdx+1).setValue(complete ? 'TRUE' : '');
-  log('update_profile', { uid: uid, email: email, complete: complete });
+  if (touchesProfile) sh.getRange(foundRow, pcIdx+1).setValue(complete ? 'TRUE' : '');
+  log('update_profile', { uid: uid, email: email, complete: complete, birthday: (body.birthday !== undefined) });
   var rowVals = sh.getRange(foundRow,1,1,headers.length).getValues()[0];
   var customer={}; headers.forEach(function(h,idx){ customer[h]=rowVals[idx]; });
   return jsonResponse({ ok:true, complete: complete, customer: customer });
@@ -5106,7 +5748,11 @@ function staffUpdateStock(body) {
     const stockIdx = headers.indexOf('stock');
     for (let i = 1; i < data.length; i++) {
       if (data[i][vidIdx] === body.variantId) {
-        sh.getRange(i + 1, stockIdx + 1).setValue(Number(body.stock) || 0);
+        const _prev = Number(data[i][stockIdx]) || 0;
+        const _next = Number(body.stock) || 0;
+        sh.getRange(i + 1, stockIdx + 1).setValue(_next);
+        /* 📅 管理画面で0にした＝予約開始／1以上に戻した＝予約日の表示を消す */
+        stampSoldOutAt_(sh, headers, i + 1, _prev, _next);
         return jsonResponse({ ok:true, row: i + 1 });
       }
     }
@@ -5325,6 +5971,50 @@ function staffOrders() {
     }).reverse().slice(0, 200);
     /* 🐔 chicken_perk 列は アンケートGAS(eda-survey-gas / Perk.gs)が書く。
        staffOrders は orders の全列をそのまま返すので、ここでは何もしない。 */
+
+    /* 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）の同梱判定。判定はここ1箇所だけ。
+       ルール (2026-09-07 田崎さん確定):
+         ・単品のお客様   … ご自身の誕生日“月”にご注文があった分に同梱する
+         ・定期便のお客様 … 誕生日“月”のお届けに必ず同梱する（ご注文の有無を問わない）
+       定期便は毎月お届けがあるので、「注文した月＝誕生日の月」という同じ式で
+       自動的に誕生日月の回だけが当たる。だから条件分岐は要らない。
+       お客様は customers の birthday(MM-DD) を line_uid → email の順で引く
+       （line_uid のほうが確実。[[顧客の二重登録]] と同じ優先順）。 */
+    var bdIndex = birthdayIndex_();
+    /* 🔁 「この“方”が定期便のお客様か」。そのご注文が定期便かどうか(mode)とは別物で、
+       定期便の方が単品で買ってくださったご注文にも立つ。梱包時に取り違えないため。 */
+    var subIndex = subscriberIndex_();
+    /* 🎂 誕生日プレゼントは お一人 その月に1回だけ（早い方で渡す）。
+       先に発送した注文が「誕生日特典_付与ログ」に入るので、それを引いて
+       2件目以降には「今月はお渡し済み」と出せるようにする。 */
+    var grantIndex = birthdayGrantIndex_();
+    /* 🎂 「お誕生月は過ぎたが次のご注文で渡す」手動の名簿（gas/BirthdayGiftManual.gs）。
+       誕生日の月に当たらない方でも、ここに載っていれば次のご注文が対象になる。 */
+    var manualIndex = birthdayManualIndex_();
+    orders.forEach(function (o) {
+      var b = bdIndex.byUid[String(o.line_uid || '').trim()] ||
+              bdIndex.byEmail[custEmailKey_(o.customer_email)] || '';
+      o.birthday = b;
+      var mo = orderMonth_(o.placed_at);
+      o.birthday_match = !!(b && mo && mo === b.slice(0, 2));
+      /* 手動の名簿に載っている方は、誕生日の月でなくても対象にする（発送画面の出し方は同じ） */
+      o.birthday_manual = !o.birthday_match &&
+        birthdayManualPending_(manualIndex, o.customer_email, o.line_uid);
+      if (o.birthday_manual) o.birthday_match = true;
+      if (o.birthday_match) {
+        var gk = bggPersonKey_(o.customer_email, o.line_uid) + '|' + bggYearMonth_(o.placed_at);
+        var by = grantIndex[gk] || '';
+        /* 自分自身の発送で付いた記録は「渡し済み（この注文で）」。別の注文なら二重同梱の警告になる */
+        o.birthday_given_by = by;
+        o.birthday_given_here = !!(by && String(by) === String(o.order_number));
+      }
+      o.is_subscriber = isSubscriber_(subIndex, {
+        email: custEmailKey_(o.customer_email),
+        uid:   String(o.line_uid || '').trim(),
+        name:  String(o.customer_name || '').trim()
+      });
+    });
+
     return jsonResponse({ ok:true, orders });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
@@ -5361,6 +6051,23 @@ function staffShip(body) {
       const tracking = String(body.tracking_number || '').trim();
       sh.getRange(i + 1, tnIdx + 1).setValue(tracking);
       if (stIdx >= 0) sh.getRange(i + 1, stIdx + 1).setValue('shipped');
+
+      /* 🎂 誕生日プレゼント（赤身ステーキ）は お一人 その月に1回だけ。
+         「早い方で渡す」（2026-09-07 田崎さん決定）＝ 先に発送した箱に入れる。
+         だから記録の起点は発送。ここで1行残すと、同じ月の次のご注文の発送画面には
+         「今月はお渡し済み」と出て、二重に入らない。
+         ⚠️ 記録に失敗しても発送そのものは止めない。 */
+      try {
+        var _bdRow = data[i];
+        var _bdGet = function (n) { var k = headers.indexOf(n); return k >= 0 ? _bdRow[k] : ''; };
+        recordBirthdayGiftIfDue_({
+          order_number: body.order_number,
+          email: _bdGet('customer_email'),
+          line_uid: _bdGet('line_uid'),
+          name: _bdGet('customer_name'),
+          placed_at: _bdGet('placed_at')
+        });
+      } catch (e) { log('birthday_gift_record_error', { order: body.order_number, error: e.message }); }
       // お届け予定日も orders に保存（マイページ「次回お届け予定」に反映。従来は通知のみで未保存＝日程調整中バグ）。
       if (body.delivery_date) {
         var _hdrNow = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
@@ -5683,6 +6390,8 @@ function writeShippingSheet() {
       const n = s.getName();
       if (n !== '発送リスト' && n !== '使い方') ss.deleteSheet(s);
     });
+    // 販売実績（売れた注文ベース）も同じ30分ごとのタイミングで作り直す
+    try { updateSoldCounts(); } catch (e2) {}
     return 'ok:' + b.rows.length;
   } catch (e) { log('shipping_sheet_error', { error: e.message }); return 'error:' + e.message; }
 }
@@ -5947,3 +6656,742 @@ function emptyAnalytics() {
     top_referrers: []
   };
 }
+
+/* ===== BEGIN mypage_subscription (auto-managed) ===== */
+/* マイページの定期便タブ用。customer_lookup が返す customer に subscription を付ける。
+   判定の正: 「定期便マスター」タブ(手管理・状態=有効/解約日が空)。
+   マスターに行が無い新規申込は、直近40日以内に定期便の注文(orders.mode=subscription_*)があれば利用中とみなす。
+   次回日: subscriptions タブ(started_at が初月注文と同時刻の行)の current_period_end を未来まで繰り上げ。
+           取れなければ 直近の定期便注文 + 1(隔月なら2)ヶ月。 */
+function subscriptionForCustomer_(email, orders) {
+  try {
+    var em = String(email || '').trim().toLowerCase();
+    if (!em) return null;
+
+    /* 表示を速くするため5分だけ結果を覚えておく（スキップ等の操作時は subCacheClear_ で消す） */
+    var _ck = 'subinfo_' + em;
+    try {
+      var _hit = CacheService.getScriptCache().get(_ck);
+      if (_hit) return JSON.parse(_hit);
+    } catch (e) {}
+
+    /* --- 1) 定期便マスター（手管理が正）
+           同じ人が複数行に居ることがある（旧カートで停止 + 新ECで有効 など）ので、
+           メール一致の行を全部集めてから「有効」を優先して1行選ぶ。
+           メールが空欄の行のために、名前一致（空白を除いて完全一致）も補助で見る。 --- */
+    var master = null;
+    try {
+      var custName = '';
+      for (var n = 0; n < (orders || []).length; n++) {
+        if (orders[n] && orders[n].customer_name) { custName = String(orders[n].customer_name).replace(/[\s　]/g, ''); break; }
+      }
+      var msh = ss().getSheetByName('定期便マスター');
+      if (msh) {
+        var md = msh.getDataRange().getValues();
+        if (md.length >= 2) {
+          var mh = md[0].map(function (x) { return String(x).trim(); });
+          var iMail = mh.indexOf('メール'), iState = mh.indexOf('状態'), iPlan = mh.indexOf('プラン');
+          var iFreq = mh.indexOf('頻度'), iCancel = mh.indexOf('解約日'), iName = mh.indexOf('名前');
+          var byMail = [], byName = [];
+          for (var i = 1; i < md.length; i++) {
+            var row = {
+              state: iState >= 0 ? String(md[i][iState] || '').trim() : '',
+              plan: iPlan >= 0 ? String(md[i][iPlan] || '').trim() : '',
+              freq: iFreq >= 0 ? String(md[i][iFreq] || '').trim() : '',
+              cancelled: iCancel >= 0 ? !!String(md[i][iCancel] || '').trim() : false
+            };
+            var mail = iMail >= 0 ? String(md[i][iMail] || '').trim().toLowerCase() : '';
+            var nm = iName >= 0 ? String(md[i][iName] || '').replace(/[\s　]/g, '') : '';
+            if (mail && mail === em) byMail.push(row);
+            else if (!mail && custName && nm && nm === custName) byName.push(row);
+          }
+          var cands = byMail.length ? byMail : byName;
+          for (var k2 = 0; k2 < cands.length; k2++) {
+            if (!cands[k2].cancelled && cands[k2].state.indexOf('有効') >= 0) { master = cands[k2]; break; }
+          }
+          if (!master && cands.length) master = cands[0];
+        }
+      }
+    } catch (e) {}
+
+    /* --- 2) orders の定期便注文（新しい順） --- */
+    var subOrders = (orders || []).filter(function (o) {
+      return String(o.mode || '').indexOf('subscription') === 0;
+    });
+
+    /* --- 3) 利用中かどうか --- */
+    var active = false;
+    if (master) {
+      active = !master.cancelled && master.state.indexOf('有効') >= 0;
+    } else if (subOrders.length) {
+      var newest = _subOrderDate_(subOrders[0]);
+      active = !!newest && (new Date().getTime() - newest.getTime()) < 40 * 24 * 3600 * 1000;
+    }
+    if (!active) {
+      try { CacheService.getScriptCache().put(_ck, 'null', 300); } catch (e) {}
+      return null;
+    }
+
+    /* --- 4) 開始日・次回日 --- */
+    var dates = subOrders.map(_subOrderDate_).filter(function (d) { return !!d; })
+                         .sort(function (a, b) { return a - b; });
+    var startDate = dates.length ? dates[0] : null;
+
+    /* お届けは毎月1日。次に来る1日を出し、スキップ済みならその分だけ翌月へずらす。 */
+    var info = subDeliveryInfoForEmail_(em);
+    var next = info.next;
+    var paused = subIsPausedForEmail_(em);
+    var planReq = subPlanRequestForEmail_(em);
+    var cancelInfo = subCancelInfoForEmail_(em);
+
+    /* --- 5) 金額（更新分の実績 → 契約台帳 → 初月） --- */
+    var price = 0;
+    for (var k = 0; k < subOrders.length; k++) {
+      if (String(subOrders[k].mode) === 'subscription_renewal') {
+        price = Number(subOrders[k].total) || 0;
+        if (price) break;
+      }
+    }
+    if (!price && master && master.plan) price = _subPlanPrice_(master.plan);
+    if (!price && subOrders.length) price = Number(subOrders[0].total) || 0;
+
+    var _out = {
+      active: true,
+      plan_name: planReq.name || ((master && master.plan) ? master.plan : '定期便'),
+      price: planReq.price || price,
+      cycle: _subCycleLabel_(subCycleForEmail_(em, master && master.freq)),
+      next_delivery: paused ? '' : _subFmt_(next),
+      start_date: _subFmt_(startDate),
+      skip_active: info.skipped.length > 0,
+      skipped_delivery: info.skipped.length ? info.skipped[info.skipped.length - 1] : '',
+      paused: paused,
+      cancel_pending: !!cancelInfo.pending,
+      cancel_note: cancelInfo.note || '',
+      status_label: cancelInfo.pending ? '解約予定' : (paused ? '一時停止中' : '利用中')
+    };
+    try { CacheService.getScriptCache().put(_ck, JSON.stringify(_out), 300); } catch (e) {}
+    return _out;
+  } catch (e) {
+    throw e;   /* 呼び出し側が customer.subscription_error に入れる（原因を画面/APIで見えるように） */
+  }
+}
+
+/* 日付を yyyy/MM/dd に。失敗しても落とさない */
+function _subFmt_(d) {
+  try {
+    if (!d) return '';
+    if (!(d instanceof Date) || isNaN(d.getTime())) return '';
+    return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy/MM/dd');
+  } catch (e) { return ''; }
+}
+
+function _subOrderDate_(o) {
+  try {
+    var v = (o && (o.placed_at || o.created_at)) || '';
+    if (v instanceof Date) return v;
+    var d = new Date(String(v).replace(/-/g, '/'));
+    return isNaN(d.getTime()) ? null : d;
+  } catch (e) { return null; }
+}
+
+/* お届け日は毎月1日。
+   subscription_actions の skip / unskip を差し引きして、飛ばす回を決める。
+   戻り値 { next: Date, skipped: ['2026/10/01', ...] } */
+function subDeliveryInfoForEmail_(email) {
+  var now = new Date();
+  var next = new Date(now.getFullYear(), now.getMonth(), 1);
+  if (next.getTime() < new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()) {
+    next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  }
+  var skipped = _subSkippedDates_(email);
+  var used = [], guard = 0;
+  while (skipped[_subYmd_(next)] && guard < 24) {
+    used.push(_subYmd_(next));
+    next = new Date(next.getFullYear(), next.getMonth() + 1, 1);
+    guard++;
+  }
+  return { next: next, skipped: used };
+}
+
+function subNextDeliveryForEmail_(email) {
+  return subDeliveryInfoForEmail_(email).next;
+}
+
+/* 一時停止中かどうか。subscription_actions の pause / resume のうち最後に記録された方を見る。 */
+function subIsPausedForEmail_(email) {
+  try {
+    var em = String(email || '').trim().toLowerCase();
+    if (!em) return false;
+    var sh = ss().getSheetByName('subscription_actions');
+    if (!sh) return false;
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return false;
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iMail = h.indexOf('email'), iAct = h.indexOf('action');
+    if (iMail < 0 || iAct < 0) return false;
+    var last = '';
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iMail] || '').trim().toLowerCase() !== em) continue;
+      var act = String(d[i][iAct] || '').trim();
+      if (act === 'pause' || act === 'resume') last = act;
+    }
+    return last === 'pause';
+  } catch (e) { return false; }
+}
+
+/* お届け頻度。マイページから「隔月に変更」が申し込まれていれば、その最新の希望を優先する。
+   まだ定期便マスターの「頻度」を直していなくても、画面には申し込んだ内容が出る。 */
+function subCycleForEmail_(email, masterFreq) {
+  var out = String(masterFreq || '毎月');
+  try {
+    var em = String(email || '').trim().toLowerCase();
+    if (!em) return out;
+    var sh = ss().getSheetByName('subscription_actions');
+    if (!sh) return out;
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return out;
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iMail = h.indexOf('email'), iAct = h.indexOf('action'), iNote = h.indexOf('note');
+    if (iMail < 0 || iAct < 0 || iNote < 0) return out;
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iMail] || '').trim().toLowerCase() !== em) continue;
+      if (String(d[i][iAct] || '').trim() !== 'cycle_change') continue;
+      var m = String(d[i][iNote] || '').split('→');
+      if (m.length > 1) out = m[m.length - 1].trim();
+    }
+  } catch (e) {}
+  return out;
+}
+
+/* 画面に出す言い方 */
+function _subCycleLabel_(freq) {
+  var f = String(freq || '毎月');
+  if (f.indexOf('隔月') >= 0) return '隔月（2ヶ月に1回）';
+  if (f.indexOf('毎月') >= 0) return '毎月';
+  return f;
+}
+
+/* マイページから申し込まれた最新のプラン変更（申し込んだ瞬間から画面に出す） */
+function subPlanRequestForEmail_(email) {
+  var out = { name: '', price: 0 };
+  try {
+    var em = String(email || '').trim().toLowerCase();
+    if (!em) return out;
+    var sh = ss().getSheetByName('subscription_actions');
+    if (!sh) return out;
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return out;
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iMail = h.indexOf('email'), iAct = h.indexOf('action'), iNote = h.indexOf('note');
+    if (iMail < 0 || iAct < 0 || iNote < 0) return out;
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iMail] || '').trim().toLowerCase() !== em) continue;
+      if (String(d[i][iAct] || '').trim() !== 'plan_change') continue;
+      var note = String(d[i][iNote] || '');
+      var mn = note.match(/プラン:([^\/]+)/);
+      var mp = note.match(/価格:(\d+)/);
+      if (mn) out.name = mn[1].trim();
+      if (mp) out.price = Number(mp[1]);
+    }
+  } catch (e) {}
+  return out;
+}
+
+/* 解約のお申し出があるか（終了時期つき） */
+function subCancelInfoForEmail_(email) {
+  var out = { pending: false, note: '' };
+  try {
+    var em = String(email || '').trim().toLowerCase();
+    if (!em) return out;
+    var sh = ss().getSheetByName('subscription_actions');
+    if (!sh) return out;
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return out;
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iMail = h.indexOf('email'), iAct = h.indexOf('action'), iNote = h.indexOf('note');
+    if (iMail < 0 || iAct < 0 || iNote < 0) return out;
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iMail] || '').trim().toLowerCase() !== em) continue;
+      var act = String(d[i][iAct] || '').trim();
+      if (act !== 'cancel_now' && act !== 'cancel_period_end' && act !== 'cancel_request') continue;
+      out.pending = true;
+      out.note = String(d[i][iNote] || '').split(' / ')[0];
+    }
+  } catch (e) {}
+  return out;
+}
+
+/* 定期便カードのキャッシュを消す（スキップ・取り消し・一時停止・再開のとき） */
+function subCacheClear_(email) {
+  var em = String(email || '').trim().toLowerCase();
+  try { CacheService.getScriptCache().remove('subinfo_' + em); } catch (e) {}
+  try { CacheService.getScriptCache().remove('lookup_' + em); } catch (e) {}
+}
+
+function _subYmd_(d) {
+  try { return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy/MM/dd'); } catch (e) { return ''; }
+}
+
+/* subscription_actions からこの人のスキップ対象日を集める。
+   skip で +1、unskip で -1。差し引きが1以上の日だけ「飛ばす」扱い（行は消さない）。 */
+function _subSkippedDates_(email) {
+  var out = {};
+  try {
+    var em = String(email || '').trim().toLowerCase();
+    if (!em) return out;
+    var sh = ss().getSheetByName('subscription_actions');
+    if (!sh) return out;
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return out;
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iMail = h.indexOf('email'), iAct = h.indexOf('action'), iNote = h.indexOf('note');
+    if (iMail < 0 || iAct < 0 || iNote < 0) return out;
+    var count = {};
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iMail] || '').trim().toLowerCase() !== em) continue;
+      var act = String(d[i][iAct] || '').trim();
+      if (act !== 'skip' && act !== 'unskip') continue;
+      var m = String(d[i][iNote] || '').match(/対象:(\d{4}\/\d{2}\/\d{2})/);
+      if (!m) continue;
+      count[m[1]] = (count[m[1]] || 0) + (act === 'skip' ? 1 : -1);
+    }
+    for (var k in count) { if (count[k] > 0) out[k] = true; }
+  } catch (e) {}
+  return out;
+}
+
+/* 「定期便_契約台帳」の照合キー列からプランの税込売価を引く */
+function _subPlanPrice_(planName) {
+  try {
+    var sh = ss().getSheetByName('定期便_契約台帳');
+    if (!sh) return 0;
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return 0;
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iPrice = -1, iKey = -1;
+    for (var c = 0; c < h.length; c++) {
+      if (h[c].indexOf('税込売価') >= 0) iPrice = c;
+      if (h[c].indexOf('照合キー') >= 0) iKey = c;
+    }
+    if (iPrice < 0 || iKey < 0) return 0;
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iKey] || '').trim() === String(planName).trim()) return Number(d[i][iPrice]) || 0;
+    }
+    return 0;
+  } catch (e) { return 0; }
+}
+/* ===== END mypage_subscription (auto-managed) ===== */
+
+/* ===== BEGIN subscription_selfservice (auto-managed) ===== */
+/* マイページの定期便セルフ操作。
+   スキップ / 一時停止 / プラン変更 / カスタマイズ（今月だけ追加）のどれを押しても
+   ①subscription_actions タブに1行記録 ②スタッフへメール通知 の2つが必ず走る。
+   ⚠ Stripe の課金・プランは自動では変えない（従来のスキップ/解約と同じく手作業）。 */
+function subActionRecord_(email, action, note) {
+  var sh = sheet('subscription_actions', ['ts', 'email', 'action', 'subscription_id', 'note']);
+  sh.appendRow([new Date(), String(email || ''), action, '', String(note || '')]);
+}
+
+function subActionMail_(subject, lines) {
+  MailApp.sendEmail({
+    to: cfg('STAFF_NOTIFICATION_EMAIL') || 'backoffice@eda-livestock.com',
+    subject: subject,
+    body: lines.join('\n')
+  });
+}
+
+/* POST change_subscription_plan { email, current_plan, new_plan, note } */
+function changeSubscriptionPlan(body) {
+  var email = String((body && body.email) || '').trim();
+  if (!email) return jsonResponse({ ok: false, error: 'email required' });
+  var from = String((body && body.current_plan) || '').trim();
+  var to   = String((body && body.new_plan) || '').trim();
+  if (!to) return jsonResponse({ ok: false, error: 'new_plan required' });
+  var note = String((body && body.note) || '').trim();
+
+  var planId   = String((body && body.plan_id) || '').trim();
+  var planName = String((body && body.plan_name) || '').trim();
+  var planPrice = Number((body && body.plan_price) || 0);
+
+  subActionRecord_(email, 'plan_change',
+    (from ? from : '(不明)') + ' → ' + to +
+    (planName ? ' / プラン:' + planName : '') +
+    (planPrice ? ' / 価格:' + planPrice : '') +
+    (note ? ' / ' + note : ''));
+  subCacheClear_(email);
+
+  var _sp = subStripeApply_('plan', email, planId);
+  subActionMail_('【江田畜産】定期便 プラン変更申請', [
+    'お客様: ' + email,
+    '現在のプラン: ' + (from || '(不明)'),
+    'ご希望のプラン: ' + to,
+    'ご要望: ' + (note || '(なし)'),
+    '',
+    'Stripe: ' + _sp
+  ]);
+  if (_subStripeFailed_(_sp)) return _subStripeFailJson_('プランの変更');
+  return jsonResponse({ ok: true, message: 'プランを変更しました。' });
+}
+
+function _subYen_(n) { return '\u00a5' + Number(n || 0).toLocaleString('ja-JP'); }
+
+/* POST resume_subscription { email } — 一時停止からの再開 */
+function resumeSubscription(body) {
+  var email = String((body && body.email) || '').trim();
+  if (!email) return jsonResponse({ ok: false, error: 'email required' });
+  if (!subIsPausedForEmail_(email)) return jsonResponse({ ok: false, error: '一時停止中ではありません' });
+
+  var sh = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
+  sh.appendRow([new Date(), email, 'resume', '', '再開']);
+  subCacheClear_(email);
+
+  var _sr = subStripeApply_('resume', email);
+  subActionMail_('【江田畜産】定期便 再開のご依頼', [
+    'お客様: ' + email,
+    '一時停止していた定期便の再開をご希望です。',
+    '',
+    'Stripe: ' + _sr
+  ]);
+  if (_subStripeFailed_(_sr)) return _subStripeFailJson_('定期便の再開');
+  return jsonResponse({ ok: true, next_delivery: _subYmd_(subNextDeliveryForEmail_(email)) });
+}
+
+/* POST unskip_subscription { email } — 直近で有効なスキップを1回取り消す（行は消さず打ち消しを追記） */
+function unskipSubscription(body) {
+  var email = String((body && body.email) || '').trim();
+  if (!email) return jsonResponse({ ok: false, error: 'email required' });
+  var info = subDeliveryInfoForEmail_(email);
+  if (!info.skipped.length) return jsonResponse({ ok: false, error: 'スキップされたお届けはありません' });
+  var target = info.skipped[info.skipped.length - 1];
+
+  var sh = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
+  sh.appendRow([new Date(), email, 'unskip', '', '対象:' + target + ' / スキップ取り消し']);
+  subCacheClear_(email);
+
+  var _st = subStripeApply_('unskip', email);
+  subActionMail_('【江田畜産】定期便 スキップの取り消し', [
+    'お客様: ' + email,
+    '取り消した回: ' + target + ' のお届け',
+    '',
+    'Stripe: ' + _st
+  ]);
+  if (_subStripeFailed_(_st)) return _subStripeFailJson_('スキップの取り消し');
+  return jsonResponse({ ok: true, next_delivery: target });
+}
+
+/* POST change_subscription_cycle { email, cycle, current_cycle } */
+function changeSubscriptionCycle(body) {
+  var email = String((body && body.email) || '').trim();
+  if (!email) return jsonResponse({ ok: false, error: 'email required' });
+  var cycle = String((body && body.cycle) || '').trim() || '隔月';
+  var from  = String((body && body.current_cycle) || '').trim();
+
+  /* first_delivery: 'keep' = 次回はお届けする / 'skip' = 次回は休んで翌々月から */
+  var firstDelivery = String((body && body.first_delivery) || 'keep').trim();
+
+  subActionRecord_(email, 'cycle_change', (from || '(不明)') + ' → ' + cycle);
+
+  var skipLine = '次回のお届け: あり（そこから隔月）';
+  var _sc;
+  if (cycle.indexOf('隔月') >= 0) {
+    /* 請求そのものを「2ヶ月ごと」の価格に切り替える（金額は毎月と同額）。
+       次回を休むときは、価格の切り替えと同時に次回請求日を1ヶ月うしろへ送る
+       （2回に分けて呼ぶと、間隔変更のたびに請求日が切り直されて二重にズレる） */
+    if (firstDelivery === 'skip') {
+      var t = subNextDeliveryForEmail_(email);
+      var sh2 = sheet('subscription_actions', ['ts','email','action','subscription_id','note']);
+      sh2.appendRow([new Date(), email, 'skip', '', '対象:' + _subYmd_(t) + ' / 隔月変更にともなうお休み']);
+      skipLine = '次回のお届け: なし（' + _subYmd_(t) + ' はお休み、翌々月から）';
+      _sc = subStripeApply_('cycle_every_other', email, 1);
+    } else {
+      _sc = subStripeApply_('cycle_every_other', email);
+    }
+  } else {
+    _sc = subStripeApply_('cycle_monthly', email);
+  }
+  subCacheClear_(email);
+
+  subActionMail_('【江田畜産】定期便 お届け頻度の変更申請', [
+    'お客様: ' + email,
+    '現在: ' + (from || '(不明)'),
+    'ご希望: ' + cycle,
+    skipLine,
+    '',
+    'Stripe: ' + _sc,
+    '定期便マスターの「頻度」も直してください。'
+  ]);
+  if (_subStripeFailed_(_sc)) return _subStripeFailJson_('お届け頻度の変更');
+  return jsonResponse({ ok: true, message: 'お届け頻度を変更しました。' });
+}
+
+/* POST customize_subscription { email, items:[{name, qty}], note } */
+function customizeSubscription(body) {
+  var email = String((body && body.email) || '').trim();
+  if (!email) return jsonResponse({ ok: false, error: 'email required' });
+  var items = (body && body.items) || [];
+  if (!items.length) return jsonResponse({ ok: false, error: 'items required' });
+  var note = String((body && body.note) || '').trim();
+
+  var lines = [], total = 0;
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i] || {};
+    var qty = Number(it.qty) || 1;
+    var unit = Number(it.price) || 0;          /* 5%オフ後の単価 */
+    var list = Number(it.list_price) || 0;     /* 元の単価 */
+    total += unit * qty;
+    lines.push('・' + String(it.name || '') + ' × ' + qty +
+      (unit ? '　' + _subYen_(unit) + (list && list !== unit ? '（通常 ' + _subYen_(list) + ' の5%オフ）' : '') : ''));
+  }
+  var totalLine = '合計（5%オフ後）: ' + _subYen_(total);
+  subActionRecord_(email, 'customize', lines.join(' / ') + ' / ' + totalLine + (note ? ' / ' + note : ''));
+  subActionMail_('【江田畜産】定期便 商品追加リクエスト', [
+    'お客様: ' + email,
+    '次回のお届けに追加のご希望:',
+    lines.join('\n'),
+    '',
+    totalLine + '（定期便のお客様は追加分すべて5%オフ）',
+    '',
+    'ご要望: ' + (note || '(なし)'),
+    '',
+    '※ 追加分は自動では課金・出荷されません。定期便損益タブの「今月だけ追加」に反映し、金額を調整してください。'
+  ]);
+  return jsonResponse({ ok: true, message: '追加のご希望を受け付けました。担当者よりご連絡します。' });
+}
+/* ===== END subscription_selfservice (auto-managed) ===== */
+
+/* ===== BEGIN subscription_stripe_link (auto-managed) ===== */
+/* 定期便のセルフ操作を Stripe の請求にも反映する。
+   🔴 安全装置: スプレッドシートのタブ「定期便_決済連動」で切り替える。
+      B2 = off  … Stripe は一切触らない（既定）
+      B2 = test … B3 に書いたメールアドレスの人だけ実際に反映
+      B2 = on   … 全員に反映
+   どの操作も失敗しても例外は投げず、結果の文字列を返してスタッフメールに書く。 */
+var SUB_STRIPE_TAB = '定期便_決済連動';
+
+function _subStripeSettings_() {
+  var out = { mode: 'off', emails: [] };
+  try {
+    var s = ss();
+    var sh = s.getSheetByName(SUB_STRIPE_TAB);
+    if (!sh) {
+      sh = s.insertSheet(SUB_STRIPE_TAB);
+      sh.getRange('A1:C3').setValues([
+        ['設定', '値', '説明'],
+        ['モード', 'off', 'off=Stripeを触らない / test=下の対象メールだけ反映 / on=全員に反映'],
+        ['テスト対象メール', '', 'test のときだけ有効。複数はカンマ区切り']
+      ]);
+      sh.setFrozenRows(1);
+      return out;
+    }
+    out.mode = String(sh.getRange('B2').getValue() || 'off').trim().toLowerCase();
+    out.emails = String(sh.getRange('B3').getValue() || '').toLowerCase()
+                   .split(/[,\s]+/).filter(function (x) { return !!x; });
+  } catch (e) {}
+  return out;
+}
+
+function _subStripeAllowed_(email) {
+  var st = _subStripeSettings_();
+  if (st.mode === 'on') return true;
+  if (st.mode !== 'test') return false;
+  return st.emails.indexOf(String(email || '').trim().toLowerCase()) >= 0;
+}
+
+function _subStripeCall_(path, payload) {
+  var key = cfg('STRIPE_SECRET_KEY');
+  var opt = {
+    method: payload ? 'post' : 'get',
+    headers: { Authorization: 'Bearer ' + key },
+    muteHttpExceptions: true
+  };
+  if (payload) opt.payload = payload;
+  var res = UrlFetchApp.fetch('https://api.stripe.com/v1/' + path, opt);
+  var body = JSON.parse(res.getContentText());
+  if (body && body.error) throw new Error(body.error.message || 'stripe error');
+  return body;
+}
+
+/* メールから Stripe の定期便を1件みつける（active / trialing / paused を対象） */
+function _subStripeFind_(email) {
+  var cus = _subStripeCall_('customers?limit=5&email=' + encodeURIComponent(String(email || '').trim()));
+  var list = (cus && cus.data) || [];
+  for (var i = 0; i < list.length; i++) {
+    var subs = _subStripeCall_('subscriptions?limit=10&status=all&customer=' + encodeURIComponent(list[i].id));
+    var d = (subs && subs.data) || [];
+    for (var j = 0; j < d.length; j++) {
+      var st = String(d[j].status || '');
+      if (st === 'active' || st === 'trialing' || st === 'past_due') return d[j];
+    }
+  }
+  return null;
+}
+
+/* subscription_plans タブから planId → stripePriceId を引く */
+function _subPlanPriceId_(planId) {
+  try {
+    var sh = ss().getSheetByName('subscription_plans');
+    if (!sh) return '';
+    var d = sh.getDataRange().getValues();
+    if (d.length < 2) return '';
+    var h = d[0].map(function (x) { return String(x).trim(); });
+    var iId = h.indexOf('planId'), iPrice = h.indexOf('stripePriceId');
+    if (iId < 0 || iPrice < 0) return '';
+    for (var i = 1; i < d.length; i++) {
+      if (String(d[i][iId] || '').trim() === String(planId || '').trim()) return String(d[i][iPrice] || '').trim();
+    }
+    return '';
+  } catch (e) { return ''; }
+}
+
+
+/* 毎月の Price ID → 隔月（2ヶ月ごと）の Price ID。2026-09-10 に Stripe で9本作成。
+   金額は毎月と同額で、請求間隔だけ「2ヶ月ごと」。地域別に3本ずつあるので、
+   いま契約している Price ID からそのまま引ける（都道府県を見直す必要がない）。 */
+var SUB_PRICE_EVERY_OTHER = {
+  /* 本州・四国・九州 */
+  'price_1UA1ExGSkhU1UEciD52SzdAe': 'price_1UE1fPGSkhU1UEciMERdJEmG',  // ミニ ¥9,280
+  'price_1UA1GMGSkhU1UEciBOKaOXWT': 'price_1UE1ggGSkhU1UEciSe4mSehv',  // スターター ¥12,300
+  'price_1UA1HKGSkhU1UEciSPZnzKoJ': 'price_1UE1hjGSkhU1UEciQUXeyceK',  // レギュラー ¥21,800
+  /* 北海道 */
+  'price_1UA1FHGSkhU1UEciEd1vN806': 'price_1UE1fPGSkhU1UEcicig08x2C',  // ミニ ¥10,280
+  'price_1UA1GYGSkhU1UEciRlFUb6Ve': 'price_1UE1ggGSkhU1UEciHwOjqQcv',  // スターター ¥13,300
+  'price_1UA1HVGSkhU1UEcilV5tKDSI': 'price_1UE1hjGSkhU1UEcixbHhC1QH',  // レギュラー ¥22,800
+  /* 沖縄 */
+  'price_1UA1FVGSkhU1UEcidfaEPxmF': 'price_1UE1fPGSkhU1UEcilazWMprp',  // ミニ ¥9,980
+  'price_1UA1GlGSkhU1UEciITrkTHHe': 'price_1UE1ggGSkhU1UEci14JZR0kb',  // スターター ¥13,000
+  'price_1UA1HjGSkhU1UEciMKE1kuBg': 'price_1UE1hjGSkhU1UEciZntpdvj1',  // レギュラー ¥22,500
+  /* 旧価格のまま続けている方むけ。値上げにならないよう、同額の隔月価格を用意した（2026-09-10）。
+     旧価格は地域別になっていないので、隔月も同額1本ずつ。 */
+  'price_1TWAN0GSkhU1UEciNGZHORc3': 'price_1UE2E7GSkhU1UEciaGgbhUsB',  // 旧ミニプラン ¥6,980（松本友美様）
+  'price_1TWAN0GSkhU1UEciKod4PGpk': 'price_1UE2FBGSkhU1UEciZYfhaJyo'   // 旧プロプラン ¥12,800（大澤英里子様ほか）
+};
+
+/* 毎月 → 隔月。無ければ '' */
+function _subPriceEveryOther_(monthlyId) {
+  return SUB_PRICE_EVERY_OTHER[String(monthlyId || '')] || '';
+}
+/* 隔月 → 毎月。無ければ ''（＝いまは隔月ではない） */
+function _subPriceMonthly_(everyOtherId) {
+  var id = String(everyOtherId || '');
+  for (var k in SUB_PRICE_EVERY_OTHER) {
+    if (SUB_PRICE_EVERY_OTHER[k] === id) return k;
+  }
+  return '';
+}
+/* Stripe の定期便オブジェクトから、いま課金に使われている Price ID を取り出す */
+function _subCurPriceId_(sub) {
+  var items = (sub && sub.items && sub.items.data) || [];
+  if (!items.length) return '';
+  var it = items[0];
+  return String((it.price && it.price.id) || (it.plan && it.plan.id) || '');
+}
+
+/* 🔴 Stripeの反映結果を、お客様の画面に正しく出すための判定（2026-09-10 追加）。
+   これまでは Stripe が失敗しても必ず ok:true を返しており、実際は何も変わっていないのに
+   お客様の画面には「変更しました」と出ていた。失敗はスタッフ宛メールにしか書かれないため、
+   隔月切り替えが400で失敗し続けていたことに誰も気づけなかった。
+     '失敗:'   … Stripe が明確に断った → お客様にも失敗として返す（下の関数）
+     '未反映（' … 安全スイッチOFFなど。申請は記録済みで人が対応するので、従来どおり成功扱い */
+function _subStripeFailed_(res) { return String(res || '').indexOf('失敗') === 0; }
+function _subStripeFailJson_(what) {
+  return jsonResponse({ ok: false,
+    error: what + 'ができませんでした。恐れ入りますが、もう一度お試しいただくかお問い合わせください。' });
+}
+
+/* action: 'skip' | 'unskip' | 'pause' | 'resume' → 結果の説明文を返す（例外は投げない） */
+function subStripeApply_(action, email, extra) {
+  try {
+    if (!_subStripeAllowed_(email)) return '未反映（安全スイッチOFF）';
+    if (!cfg('STRIPE_SECRET_KEY')) return '未反映（Stripeの鍵が未設定）';
+    var sub = _subStripeFind_(email);
+    if (!sub) return '未反映（Stripeに対象の定期便が見つかりません）';
+
+    if (action === 'pause') {
+      _subStripeCall_('subscriptions/' + sub.id, { 'pause_collection[behavior]': 'void' });
+      return '請求を停止しました（' + sub.id + '）';
+    }
+    if (action === 'resume') {
+      _subStripeCall_('subscriptions/' + sub.id, { 'pause_collection': '' });
+      return '請求を再開しました（' + sub.id + '）';
+    }
+    if (action === 'plan') {
+      var pid = _subPlanPriceId_(extra);
+      if (!pid) return '未反映（プランのPrice IDが見つかりません）';
+      var items = (sub.items && sub.items.data) || [];
+      if (!items.length) return '未反映（Stripeの明細が取れません）';
+      /* いまが隔月の契約なら、プランを変えても隔月のまま（毎月に戻さない） */
+      if (_subPriceMonthly_(_subCurPriceId_(sub))) pid = _subPriceEveryOther_(pid) || pid;
+      _subStripeCall_('subscriptions/' + sub.id, {
+        'items[0][id]': items[0].id, 'items[0][price]': pid, 'proration_behavior': 'none'
+      });
+      return 'プランを切り替えました（' + pid + '・' + sub.id + '）';
+    }
+    if (action === 'cancel_now') {
+      var res = UrlFetchApp.fetch('https://api.stripe.com/v1/subscriptions/' + sub.id, {
+        method: 'delete', headers: { Authorization: 'Bearer ' + cfg('STRIPE_SECRET_KEY') }, muteHttpExceptions: true
+      });
+      var body = JSON.parse(res.getContentText());
+      if (body && body.error) throw new Error(body.error.message);
+      return '即時解約しました（' + sub.id + '）';
+    }
+    if (action === 'cancel_period_end') {
+      _subStripeCall_('subscriptions/' + sub.id, { 'cancel_at_period_end': 'true' });
+      return '次回のお届けを最後に解約する設定にしました（' + sub.id + '）';
+    }
+    if (action === 'cycle_every_other' || action === 'cycle_monthly') {
+      var cItems = (sub.items && sub.items.data) || [];
+      if (!cItems.length) return '未反映（Stripeの明細が取れません）';
+      var curId = _subCurPriceId_(sub);
+      var toId  = (action === 'cycle_every_other') ? _subPriceEveryOther_(curId) : _subPriceMonthly_(curId);
+      if (!toId) {
+        return (action === 'cycle_every_other')
+          ? '未反映（いまの価格 ' + curId + ' に対応する隔月価格がありません）'
+          : '未反映（すでに毎月の請求です）';
+      }
+      /* 🔴 請求間隔を変えると Stripe は請求サイクルの切り直しを必ず要求する。
+         billing_cycle_anchor='unchanged' を渡すと 400
+         「Changing plan intervals. There's no way to leave billing cycle unchanged.」
+         （2026-09-10 実測）。かといって省略すると"今すぐ"で切り直され、その場で課金されてしまう。
+         → いまの期間末を trial_end に渡して、そこを次回請求日として切り直す。
+            これなら今日は課金されず、次回はいままでどおりの日、その次から2ヶ月ごとになる。
+         extra に月数を渡すと、その分だけ次回請求日を後ろへ送る（隔月変更で次回を休むとき用）。 */
+      var cBase = Number(sub.current_period_end || 0);
+      if (!cBase) return '未反映（次回請求日が取れません）';
+      var cD = new Date(cBase * 1000);
+      var cShift = Number(extra) || 0;
+      if (cShift) cD.setMonth(cD.getMonth() + cShift);
+      var cTs = Math.floor(cD.getTime() / 1000);
+      if (cTs <= Math.floor(new Date().getTime() / 1000) + 300) {
+        return '未反映（次回請求日が近すぎます。手動でご確認ください）';
+      }
+      _subStripeCall_('subscriptions/' + sub.id, {
+        'items[0][id]': cItems[0].id,
+        'items[0][price]': toId,
+        'proration_behavior': 'none',
+        'trial_end': String(cTs)
+      });
+      return (action === 'cycle_every_other'
+        ? '請求を2ヶ月ごとに切り替えました（次回請求 '
+        : '請求を毎月に戻しました（次回請求 ') + _subYmd_(cD) + '・' + toId + '・' + sub.id + '）';
+    }
+    if (action === 'skip' || action === 'unskip') {
+      var base = Number(sub.current_period_end || 0);
+      if (!base) return '未反映（次回請求日が取れません）';
+      var d = new Date(base * 1000);
+      d.setMonth(d.getMonth() + (action === 'unskip' ? -1 : 1));
+      var ts = Math.floor(d.getTime() / 1000);
+      if (ts <= Math.floor(new Date().getTime() / 1000) + 300) {
+        return '未反映（変更後の請求日が近すぎます。手動でご確認ください）';
+      }
+      _subStripeCall_('subscriptions/' + sub.id, {
+        'trial_end': String(ts), 'proration_behavior': 'none'
+      });
+      return (action === 'unskip' ? '次回請求を1ヶ月まえへ' : '次回請求を1ヶ月あとへ') +
+             '（' + _subYmd_(d) + '・' + sub.id + '）';
+    }
+    return '未反映（不明な操作）';
+  } catch (e) {
+    return '失敗: ' + (e && e.message ? e.message : e);
+  }
+}
+/* ===== END subscription_stripe_link (auto-managed) ===== */

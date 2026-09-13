@@ -1170,7 +1170,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 </style>
 
 <!-- ★ 商品マスター（shop.html と共有・単一データソース）— ?v= を更新するとキャッシュ突破 -->
-<script src="public/data/products-master.js?v=2026-09-03-p042"></script>
+<script src="public/data/products-master.js?v=2026-09-10-yakiniku3"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap">
@@ -1819,6 +1819,7 @@ let pinBuffer = '';
 let inventoryCache = [];
 let ordersCache = [];
 let selectedOrder = null;
+let deeplinkOrder = '';   /* 社内メール通知の ?order=EDA-... を保持（ログイン後に開く） */
 
 /* ================ TOAST ================ */
 function toast(msg, type) {
@@ -1945,6 +1946,9 @@ function enterApp() {
   }
 
   loadDashboard();
+
+  /* 社内メールの「管理画面（この注文）」リンクから来たとき＝その注文を開く */
+  if (deeplinkOrder) { const _o = deeplinkOrder; deeplinkOrder = ''; openOrderDeepLink(_o); }
 }
 
 /* ================ DEMO DATA ================
@@ -3004,6 +3008,20 @@ function normalizeStaffOrder(o) {
     // 🐔 鶏ムネ特典（購入時アンケート回答者への次回同梱）。GAS が orders の
     //    chicken_perk 列 or ライブ判定で '要同梱（鶏ムネ1個）' / '同梱済…' / '特典発生元…' を返す。
     chickenPerk: String(o.chicken_perk || '').trim(),
+    // 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）。判定は GAS(staffOrders) が持っている。
+    //    customers.birthday(MM-DD) と「ご注文した月」を突き合わせて birthday_match を立てて返す。
+    //    ここでは受け取るだけ。画面側で月を数え直さない（数え直すと判定が2箇所になる）。
+    birthday: String(o.birthday || ''),
+    birthdayMatch: o.birthday_match === true,
+    // 🎂 お誕生月ではないが「次のご注文で渡す」と手で指定された方（誕生日特典_手動付与タブ）
+    birthdayManual: o.birthday_manual === true,
+    // 🎂 プレゼントは お一人 その月に1回だけ（早い方で渡す）。
+    //    先に発送した注文の番号が入る。空＝まだ誰にも渡していない。
+    birthdayGivenBy: String(o.birthday_given_by || ''),
+    birthdayGivenHere: o.birthday_given_here === true,
+    // 🔁 「この“方”が定期便のお客様か」。そのご注文が定期便か(mode)とは別物で、
+    //    定期便の方が単品で買ってくださったご注文にも立つ。判定は GAS 側だけが持つ。
+    isSubscriber: o.is_subscriber === true,
     phone: d0.tel || o.customer_phone || '',
     zip: d0.zip || '',
     pref: d0.pref || '',
@@ -3168,7 +3186,7 @@ function orderRowHtml(o) {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}${o.birthdayMatch ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#B4508A;border-radius:4px;padding:1px 6px;margin-left:4px">🎂 誕生日</span>' : ''}${o.isSubscriber ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#2563EB;border-radius:4px;padding:1px 6px;margin-left:4px">🔁 定期便の方</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}${o.purchaseCount ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#1E5C3A;background:#E8F5EC;border-radius:4px;padding:1px 6px;margin-left:4px">' + o.purchaseCount + '回目</span>' : ''}</div>
           <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
@@ -3184,6 +3202,19 @@ function selectOrder(orderId) {
   if (!selectedOrder) return;
   switchTab('ship');
   renderShipDetail();
+}
+
+/* 新規注文の社内メール（【新規注文】）にある管理画面リンク ?order=EDA-... で飛んで来たとき、
+   注文一覧を取り直してその注文の発送処理画面を直接開く。
+   まだ一覧に出ていない場合は注文一覧を表示して知らせる（勝手に別の注文を開かない）。 */
+async function openOrderDeepLink(orderId) {
+  const want = String(orderId || '').trim().toUpperCase();
+  if (!want) return;
+  try { await loadOrders(); } catch (e) { /* 取得失敗時は下のフォールバックへ */ }
+  const hit = ordersCache.find(o => String(o.id || '').trim().toUpperCase() === want);
+  if (hit) { selectOrder(hit.id); return; }
+  switchTab('orders');
+  toast('注文 ' + orderId + ' が見つかりません（注文一覧を表示しました）', 'error');
 }
 
 function renderShipEmpty() {
@@ -3221,6 +3252,7 @@ function renderShipDetail() {
   // 明細リスト（受注ID…配送STS）の中に差し込む「購入者」「配送先」の行。
   const buyerRows = `
       <div class="detail-row"><span class="label">🧾 ご購入者</span><span class="value">${escapeHtml(buyer.name || '（名前なし）')}${o.purchaseCount ? ' <span style="font-size:11px;color:var(--gold-soft)">' + o.purchaseCount + '回目</span>' : ''}</span></div>
+      ${o.isSubscriber ? `<div class="detail-row"><span class="label">🔁 定期便</span><span class="value"><span style="display:inline-block;font-size:12px;font-weight:800;color:#fff;background:#2563EB;border-radius:4px;padding:2px 10px">定期便のお客様</span>${isSubOrder(o) ? '' : '<span style="font-size:11px;color:var(--muted);margin-left:8px">今回は単品のご注文です</span>'}</span></div>` : ''}
       <div class="detail-row"><span class="label">購入者 住所</span><span class="value">${escapeHtml((buyer.zip ? '〒' + buyer.zip + '　' : '') + (buyer.address || '（住所の登録なし）'))}</span></div>
       ${buyer.tel ? `<div class="detail-row"><span class="label">購入者 電話</span><span class="value">${escapeHtml(buyer.tel)}</span></div>` : ''}
       ${buyer.email ? `<div class="detail-row"><span class="label">購入者 メール</span><span class="value" style="font-size:12px">${escapeHtml(buyer.email)}</span></div>` : ''}`;
@@ -3300,7 +3332,54 @@ function renderShipDetail() {
       ✓ 鶏ムネ特典は同梱済みとして記録されています
     </div>` : '');
 
-  document.getElementById('shipContent').innerHTML = perkBanner + `
+  /* 🎂 お誕生日プレゼント（赤身ステーキ＋お手紙）のバナー。
+     出すかどうかは GAS(staffOrders) の birthday_match だけで決まる。ここで月を数え直さない。
+     ・単品   … ご自身の誕生日“月”にご注文があった分に同梱
+     ・定期便 … 誕生日“月”のお届けに必ず同梱（ご注文の有無を問わない）
+     🔴 プレゼントは お一人 その月に1回だけ（「早い方で渡す」2026-09-07 田崎さん決定）。
+        先に発送した注文が付与ログに入るので、2件目以降はグレーの「お渡し済み」に変わる。
+        判定は GAS が birthday_given_by で返す。画面では数え直さない。
+     お手紙は birthday-letter.html（A4・1枚）を開いてPDFで保存/印刷する。 */
+  const bdBtnStyle = 'display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:8px;' +
+                     'background:#B4508A;color:#fff;font-weight:800;font-size:13px;border:0;cursor:pointer';
+  /* 別の注文で今月ぶんを渡し済み＝この箱には入れない */
+  const bdAlreadyElsewhere = o.birthdayMatch && o.birthdayGivenBy && !o.birthdayGivenHere;
+
+  const birthdayBanner = !o.birthdayMatch ? '' : (bdAlreadyElsewhere ? `
+    <div class="card" style="border:1px solid #D7C3CE;background:#F6F1F4;padding:12px;margin-bottom:12px">
+      <div style="font-size:14px;font-weight:800;color:#6B5A64;margin-bottom:4px">🎂 今月のお誕生日プレゼントはお渡し済みです</div>
+      <div style="font-size:12px;color:#6B5A64;line-height:1.7">
+        <strong>この箱には入れないでください。</strong>
+        今月は先に発送した ご注文 <strong>${escapeHtml(o.birthdayGivenBy)}</strong> にお入れしています。<br>
+        プレゼントはお一人 その月に1回、早い方のお届けにお入れする決まりです。
+      </div>
+    </div>` : `
+    <div class="card" style="border:2px solid #B4508A;background:#FCEBF5;padding:14px;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:800;color:#8A2F66;margin-bottom:6px">${o.birthdayManual
+        ? '🎂 誕生日プレゼントをお入れする方です（お礼としての手動指定）'
+        : '🎂 お誕生日月のお客様です' + (o.birthday ? '（' + Number(o.birthday.slice(0, 2)) + '月' + Number(o.birthday.slice(3, 5)) + '日）' : '')}</div>
+      <div style="font-size:12px;color:#7A2A5A;line-height:1.7">
+        この発送分に <strong>赤身ステーキ 1パック</strong> と <strong>お祝いのお手紙</strong> を無料で同梱してください。<br>
+        ${o.birthdayManual
+          ? 'お誕生月は過ぎていますが、日ごろのお礼として<strong>この1回だけ</strong>お入れします。'
+          : (isSubOrder(o)
+            ? '<strong>定期便のお客様です。ご注文の有無にかかわらず必ずお入れします。</strong>'
+            : '単品のご注文です。お誕生日の月のご注文なので対象です。')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px">
+        <button type="button" style="${bdBtnStyle}" onclick="openBirthdayLetter()">🎂 お手紙を開く（PDFで保存／印刷）</button>
+      </div>
+      <div style="font-size:11px;color:#8A2F66;margin-top:6px">
+        お手紙には <strong>${escapeHtml(buyer.name || '（名前なし）')}</strong> 様のお名前が入ります。ギフトの場合はご注意ください。<br>
+        ${o.birthdayGivenHere
+          ? 'このご注文で今月ぶんをお渡し済みとして記録されています。'
+          : (o.birthdayManual
+            ? '発送を記録した時点で名簿が「済」になり、次のご注文には出なくなります。'
+            : 'お一人 その月に1回だけです。発送を記録した時点で「お渡し済み」になります。')}
+      </div>
+    </div>`);
+
+  document.getElementById('shipContent').innerHTML = birthdayBanner + perkBanner + `
     <div class="detail-card">
       <div class="detail-row"><span class="label">受注ID</span><span class="value">${escapeHtml(o.id)}</span></div>
       <div class="detail-row"><span class="label">受注日</span><span class="value">${escapeHtml(o.orderDate || '')}</span></div>
@@ -3386,6 +3465,13 @@ function renderShipDetail() {
 
 /* 特典用紙を新しいタブで開く。お名前は入力欄の値をそのまま渡す
    （初期値はご購入者名。ギフトで宛名を変えたいときはこの欄を書き換えてから押す）。 */
+/* 🎂 お誕生日のお手紙（A4・1枚）を開く。お名前はご購入者名を入れる。 */
+function openBirthdayLetter() {
+  const p = (selectedOrder && selectedOrder.purchaser) || {};
+  const nm = String(p.name || (selectedOrder && selectedOrder.customerName) || '').trim();
+  window.open('birthday-letter.html?name=' + encodeURIComponent(nm), '_blank', 'noopener');
+}
+
 function openPerkSheet(num) {
   const el = document.getElementById('perkSheetName');
   const nm = el ? String(el.value || '').trim() : '';
@@ -5240,6 +5326,9 @@ function enterDemoQuick() {
     return;
   }
 
+  // ?order=EDA-... → ログイン後にその注文の発送処理画面を開く（社内メール通知のリンク）
+  deeplinkOrder = String(params.get('order') || '').trim();
+
   // ?demo=1 → 即デモ起動（PIN不要）
   if (params.get('demo') === '1') {
     enterDemoQuick();
@@ -5254,7 +5343,7 @@ function enterDemoQuick() {
 })();
 </script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-bundle.js?v=010" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 </body>
 </html>

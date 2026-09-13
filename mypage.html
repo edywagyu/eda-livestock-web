@@ -1040,10 +1040,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .cancel-reason-comment:focus { outline: none; border-color: var(--color-forest); }
 .eda-modal-btn.danger[disabled] { opacity: 0.45; cursor: not-allowed; }
 /* TOP3 もう一度買う */
-.top3-row--tap { cursor: pointer; border-radius: 8px; margin: -4px -6px; padding: 4px 6px; transition: background 0.2s; }
-.top3-row--tap:hover { background: rgba(212,169,59,0.12); }
-.top3-row--tap:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
-.top3-reorder { flex-shrink: 0; margin-left: 10px; color: #FFD773; display: flex; align-items: center; }
 /* 注文履歴 もう一度買う */
 .order-reorder-btn {
  display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -1355,16 +1351,50 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
 /* Tappable coupon stat (header) */
 /* 上部カード: 選ばれた商品 TOP3 */
-.welcome-top3-wrap { display: block; padding: 18px 20px 20px; }
-.top3-head { font-family: var(--font-jp); font-size: 11px; letter-spacing: 0.1em; color: rgba(255,255,255,0.72); text-transform: none; margin: 0 0 12px; font-weight: 600; }
-.top3-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.top3-row { display: flex; align-items: center; gap: 12px; }
-.top3-rank { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; color: #3a2f10; background: #FFD773; }
-.top3-rank-2 { background: #E6E1D4; color: #4a4a44; }
-.top3-rank-3 { background: #D9B48A; color: #3a2b18; }
-.top3-name { flex: 1; font-family: var(--font-jp); font-size: 14px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.top3-count { flex-shrink: 0; font-family: var(--font-jp); font-size: 12px; color: rgba(255,255,255,0.7); }
-.top3-empty { font-family: var(--font-jp); font-size: 12.5px; color: rgba(255,255,255,0.72); line-height: 1.6; }
+.welcome-card-slot { display: block; padding: 18px 20px 20px; }
+/* 🎂 会員カードの一番下＝マイページを開いて最初に目に入る場所。
+   ここは深緑の暗いカードの中なので、文字は金と白で書く（深緑・黒は沈んで見えない）。
+   2026-09-07 田崎さん指示で「選ばれた商品 TOP3」からこのご案内に差し替えた。 */
+.bd-prompt { display: flex; align-items: flex-start; gap: 12px; }
+.bd-prompt-ico { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+ background: rgba(212,169,59,0.18); border: 1px solid rgba(212,169,59,0.45);
+ display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; }
+.bd-prompt-body { flex: 1; min-width: 0; }
+.bd-prompt-title { font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+ color: #FFD773; margin: 0 0 4px; line-height: 1.5; }
+.bd-prompt-text { font-family: var(--font-jp); font-size: 12.5px; line-height: 1.8;
+ color: rgba(255,255,255,0.86); margin: 0; }
+.bd-prompt-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+ padding: 9px 18px; border: 0; border-radius: 8px; cursor: pointer;
+ background: #FFD773; color: #3a2f10;
+ font-family: var(--font-jp); font-size: 13px; font-weight: 800; letter-spacing: 0.02em; }
+.bd-prompt-btn:hover { background: #FFE49A; }
+.bd-prompt-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.bd-prompt-date { display: inline-block; margin-top: 8px; padding: 3px 12px; border-radius: 999px;
+ background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18);
+ font-family: var(--font-jp); font-size: 12.5px; font-weight: 700; color: #fff; }
+.bd-prompt-edit { margin-left: 10px; background: none; border: 0; cursor: pointer; padding: 0;
+ font-family: var(--font-jp); font-size: 11.5px; color: rgba(255,255,255,0.62); text-decoration: underline; }
+.bd-prompt--now { border: 1px solid rgba(212,169,59,0.45); border-radius: 10px; padding: 12px 14px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.16), rgba(212,169,59,0.04)); }
+/* 誕生月でない間にこの枠へ出すもの（定期便の方＝次回お届け／それ以外＝人気商品） */
+.ws-eyebrow { font-family: var(--font-jp); font-size: 11px; letter-spacing: .1em; font-weight: 600;
+ color: rgba(255,255,255,0.72); margin: 0 0 10px; }
+.ws-date { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; margin: 0 0 6px; line-height: 1.3; }
+.ws-sub { font-family: var(--font-jp); font-size: 12px; line-height: 1.8; color: rgba(255,255,255,0.72); margin: 0; }
+.ws-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.ws-row { display: flex; align-items: center; gap: 12px; }
+.ws-rank { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+ justify-content: center; font-family: var(--font-display); font-size: 12px; font-weight: 700;
+ color: #3a2f10; background: #FFD773; }
+.ws-rank-2 { background: #E6E1D4; color: #4a4a44; }
+.ws-rank-3 { background: #D9B48A; color: #3a2b18; }
+.ws-name { flex: 1; font-family: var(--font-jp); font-size: 14px; font-weight: 600; color: #fff;
+ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; padding: 8px 16px;
+ border-radius: 8px; border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.06);
+ color: #fff; text-decoration: none; font-family: var(--font-jp); font-size: 12.5px; font-weight: 700; }
+.ws-link:hover { background: rgba(255,255,255,0.14); }
 .welcome-stat-tappable { cursor: pointer; border-radius: 12px; transition: background 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; }
 .welcome-stat-tappable:hover { background: rgba(212, 169, 59, 0.10); transform: translateY(-1px); }
 .welcome-stat-tappable:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 2px; }
@@ -2016,12 +2046,14 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: rgba(255,255,255,0.9);
 }
 .settings-row:last-child { border-bottom: none; }
+/* 🔴 設定タブは .dashboard-section が深緑グラデーションの「暗い」画面。
+   ラベルも値もインク色（ほぼ黒）だと背景に沈んで読めない。白系で書く。 */
 .settings-label {
- color: var(--color-ink-muted); font-size: 12px; min-width: 80px;
+ color: rgba(255,255,255,0.60); font-size: 12px; min-width: 80px;
  font-family: var(--font-jp); flex-shrink: 0;
 }
 .settings-value {
- color: var(--color-ink); font-family: var(--font-jp); text-align: right;
+ color: rgba(255,255,255,0.94); font-family: var(--font-jp); text-align: right;
  word-break: break-all;
 }
 .settings-empty {
@@ -2034,6 +2066,136 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .settings-note {
  font-size: 12px !important; color: var(--color-ink-muted) !important;
 }
+/* 🙋 定期便を続けているかを、ご本人に聞くカード（2026-09-10）。
+   こちらのデータでは旧カート(Shopify/WIX)の定期便の方を判別できない
+   （対象10アドレスは顧客リストにもLINE連携にも1件も載っていない）ので、
+   当てにいくのをやめて本人に聞く。お誕生日の案内より上に置く。
+   🔴 ここも深緑の暗い背景。文字は金と白で書く。 */
+.subcheck {
+ margin: 0 0 28px; padding: 22px 24px;
+ background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+ border: 1px solid rgba(255,255,255,0.22); border-radius: 14px;
+}
+.subcheck--offer {
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.05));
+ border-color: rgba(212,169,59,0.45);
+}
+#subCheck .subcheck-title {
+ font-family: var(--font-jp); font-size: 17px; font-weight: 700; line-height: 1.6;
+ color: #fff; margin: 0 0 8px;
+}
+.subcheck-title strong { color: #FFD773; }
+#subCheck .subcheck-text {
+ font-family: var(--font-jp); font-size: 13px; line-height: 1.9;
+ color: rgba(255,255,255,0.88); margin: 0 0 16px;
+}
+.subcheck-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.subcheck-btn {
+ flex: 1 1 auto; min-width: 150px;
+ display: inline-flex; align-items: center; justify-content: center;
+ padding: 13px 20px; border-radius: 10px; border: none; cursor: pointer;
+ font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+ text-decoration: none; transition: all .2s;
+}
+.subcheck-btn--yes { background: #FFD773; color: var(--color-forest-deep); }
+.subcheck-btn--yes:hover { background: #FFE49A; }
+.subcheck-btn--no {
+ background: transparent; color: rgba(255,255,255,0.9);
+ border: 1px solid rgba(255,255,255,0.35);
+}
+.subcheck-btn--no:hover { background: rgba(255,255,255,0.08); }
+.subcheck-field { margin-bottom: 12px; }
+#subCheck .subcheck-label {
+ display: block; font-family: var(--font-jp); font-size: 12px; font-weight: 600;
+ color: rgba(255,255,255,0.8); margin: 0 0 5px;
+}
+#subCheck .subcheck-input,
+#subCheck .subcheck-select {
+ width: 100%; padding: 11px 13px; border-radius: 8px;
+ border: 1px solid rgba(0,0,0,0.15); background: #fff;
+ font-family: var(--font-jp); font-size: 14px; color: #1A1A1A;
+}
+/* ブラウザの自動入力でも白背景・濃い文字のままにする（暗い背景に白文字だと自動入力で読めなくなる） */
+#subCheck .subcheck-input:-webkit-autofill,
+#subCheck .subcheck-input:-webkit-autofill:focus {
+ -webkit-text-fill-color: #1A1A1A;
+ box-shadow: 0 0 0 1000px #fff inset;
+}
+#subCheck .subcheck-input::placeholder { color: #9A9A9A; }
+#subCheck .subcheck-select option { color: #1A1A1A; }
+#subCheck .subcheck-note {
+ font-family: var(--font-jp); font-size: 11.5px; line-height: 1.8;
+ color: rgba(255,255,255,0.65); margin: 12px 0 0;
+}
+.subcheck-err {
+ font-family: var(--font-jp); font-size: 12.5px; color: #FFB4A2; margin: 10px 0 0;
+}
+@media (max-width: 600px) {
+ .subcheck { padding: 18px 16px; }
+ .subcheck-btn { flex: 1 1 100%; }
+}
+/* 🔁 旧カート（Shopify/WIX）の定期便の方への切り替え案内。お誕生日の上に置く。
+   出るかどうかは GAS が決める（customer.switch_offer が付いた方だけ）。
+   🔴 ここも深緑の暗い背景。文字は金と白で書く（インク色は沈んで読めない）。 */
+.switch-offer {
+ margin: 0 0 28px; padding: 22px 24px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.18), rgba(212,169,59,0.05));
+ border: 1px solid rgba(212,169,59,0.45); border-radius: 14px;
+}
+.switch-offer-eyebrow {
+ font-family: var(--font-jp); font-size: 11px; font-weight: 700;
+ letter-spacing: 0.12em; color: #FFD773; margin: 0 0 8px;
+}
+.switch-offer-title {
+ font-family: var(--font-jp); font-size: 19px; font-weight: 700; line-height: 1.5;
+ color: #fff; margin: 0 0 10px;
+}
+.switch-offer-title strong { color: #FFD773; }
+.switch-offer-body {
+ font-family: var(--font-jp); font-size: 13px; line-height: 1.9;
+ color: rgba(255,255,255,0.92); margin: 0 0 14px;
+}
+.switch-offer-list {
+ margin: 0 0 18px; padding-left: 1.1em;
+ font-family: var(--font-jp); font-size: 13px; line-height: 1.9;
+ color: rgba(255,255,255,0.92);
+}
+.switch-offer-list strong { color: #FFD773; font-weight: 700; }
+.switch-offer-btn {
+ display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+ padding: 14px 28px; border-radius: 10px;
+ font-family: var(--font-jp); font-size: 15px; font-weight: 700;
+ color: var(--color-forest-deep); background: #FFD773;
+ text-decoration: none; transition: all .2s;
+}
+.switch-offer-btn:hover { background: #FFE49A; transform: translateY(-1px); }
+.switch-offer-note {
+ font-family: var(--font-jp); font-size: 11.5px; line-height: 1.8;
+ color: rgba(255,255,255,0.7); margin: 12px 0 0;
+}
+@media (max-width: 600px) {
+ .switch-offer { padding: 18px 16px; }
+ .switch-offer-title { font-size: 17px; }
+ .switch-offer-btn { width: 100%; }
+}
+/* 🎂 お誕生日カードの「特典のご案内」。金の細枠で、登録する理由が先に目に入るようにする。
+   🔴 マイページの設定タブは .dashboard-section が深緑グラデーションの「暗い」画面。
+      文字を深緑やインク色にすると背景に沈んで読めない。ここは必ず金と白で書く。 */
+.birthday-perk {
+ margin: 0 24px; padding: 14px 16px;
+ background: linear-gradient(135deg, rgba(212,169,59,0.14), rgba(212,169,59,0.04));
+ border: 1px solid rgba(212,169,59,0.38); border-radius: 10px;
+}
+.birthday-perk-title {
+ font-family: var(--font-jp); font-size: 14px; font-weight: 700;
+ color: #FFD773; margin: 0 0 8px;
+}
+.birthday-perk-list {
+ margin: 0; padding-left: 1.1em;
+ font-family: var(--font-jp); font-size: 12.5px; line-height: 1.9;
+ color: rgba(255,255,255,0.92);
+}
+.birthday-perk-list strong { color: #FFD773; font-weight: 700; }
 .settings-add-btn {
  display: inline-flex; align-items: center; gap: 6px;
  padding: 10px 20px; border-radius: 8px; font-size: 13px;
@@ -2046,11 +2208,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding: 20px 24px 0; display: grid;
  grid-template-columns: 1fr 1fr; gap: 16px;
 }
+/* 🎂 お誕生日だけは 年・月・日 の3つ。2列のままだと「日」が次の行にひとりで落ちるので3列にする */
+.settings-form-grid.bd3 { grid-template-columns: 1fr 1fr 1fr; }
 .settings-field { display: flex; flex-direction: column; gap: 6px; }
 .settings-field:not(.half) { grid-column: 1 / -1; }
+/* 🔴 同じ理由。暗い画面なので入力欄のラベルも白系で書く（黒だと「月」「日」が見えない）。
+   ⚠️ 共通CSS public/css/a11y.css の
+      `label:not(.checkout-consent):not(.payment-option) { color: var(--color-forest) }`
+      が全ページ共通で当たっていて、詳細度も読み込み順もあちらが上。
+      なので .dashboard-section .settings-card を前に付けて詳細度で上回らせている。
+      ここを短く書き直すと、また「月」「日」が見えなくなる。 */
 .settings-field label {
  font-family: var(--font-jp); font-size: 12px; font-weight: 600;
- color: var(--color-ink-muted); letter-spacing: 0.02em;
+ color: rgba(255,255,255,0.78); letter-spacing: 0.02em;
+}
+.dashboard-section .settings-card .settings-field label {
+ font-size: 12px; color: rgba(255,255,255,0.78);
 }
 .settings-field .required { color: var(--color-red); font-size: 10px; }
 .settings-field input,
@@ -2107,6 +2280,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 @media (max-width: 640px) {
  .settings-form-grid { grid-template-columns: 1fr; padding: 16px 16px 0; }
+ .settings-form-grid.bd3 { grid-template-columns: 1fr; }   /* 🎂 スマホは1列に戻す */
  .settings-field.half { grid-column: auto; }
  .settings-card-header { padding: 14px 16px; }
  .settings-data { padding: 12px 16px; }
@@ -2539,7 +2713,7 @@ button:focus-visible, a:focus-visible {
  .order-item { font-size: 12px; }
  .order-total-price { font-size: 18px; }
  .sub-card { padding: 20px 16px; }
- .sub-action-btn { font-size: 12px !important; padding: 9px 12px !important; }
+ .sub-action-btn { white-space: normal; text-align: center; line-height: 1.35; font-size: 12px !important; padding: 9px 12px !important; }
  .rj-header { padding: 20px 16px 16px; }
  .rj-step-content { padding: 16px 16px 16px 0; }
  .rj-step-rail { width: 44px; }
@@ -2574,8 +2748,12 @@ button:focus-visible, a:focus-visible {
 .sub-action-btn {
  display: inline-flex;
  align-items: center;
+ justify-content: center;
+ white-space: normal;
+ text-align: center;
+ line-height: 1.35;
  gap: 6px;
- padding: 11px 16px;
+ padding: 11px 12px;
  background: white;
  border: 1.5px solid var(--color-bone);
  border-radius: 10px;
@@ -2587,7 +2765,8 @@ button:focus-visible, a:focus-visible {
  transition: all 0.2s;
 }
 .sub-action-btn:hover { border-color: var(--color-gold); transform: translateY(-1px); }
-.sub-action-btn.cancel { color: var(--color-red); margin-left: auto; border-color: var(--color-error-border); }
+.sub-action-btn.undo { color: var(--color-gold-text); border-color: var(--color-gold); }
+.sub-action-btn.cancel { color: var(--color-red); border-color: var(--color-error-border); }
 .sub-action-btn.cancel:hover { border-color: var(--color-red); background: var(--color-error-bg); }
 
 /* (old reward-prog styles removed — replaced by .rj-* journey styles above) */
@@ -2971,6 +3150,83 @@ button:focus-visible, a:focus-visible {
 <section class="dashboard-section" id="dashboard">
  <div class="container-narrow">
 
+ <!-- 🔁 旧カート（Shopify / WIX）の定期便をご利用中の方への切り替え案内。
+      出す・出さないは GAS が決める（customer.switch_offer が付いた方だけ display:block になる）。
+      対象＝定期便マスターで「状態=有効・区分=shopify/WIX・カテゴリ=肉」の方。
+      米・玄米の契約は新ECの定期便に受け皿が無いので出ない。
+      オファーは「初回半額」（2026-09-10 田崎さん確定）。初回半額は新規の方にも
+      既に適用されているので、割引そのものは切り替え専用ではない。 -->
+ <div class="switch-offer" id="switchOffer" style="display:none;">
+ <p class="switch-offer-eyebrow">定期便をご利用のお客様へ</p>
+ <h2 class="switch-offer-title">新しい定期便へ、<strong>初回半額</strong>で移れます</h2>
+ <p class="switch-offer-body" id="switchOfferBody"></p>
+ <ul class="switch-offer-list">
+  <li>最初のお届けが <strong>半額</strong>になります</li>
+  <li>お届け日の変更・お休み・解約が、このマイページからできます</li>
+  <li>切り替えが終わるまで、<strong>今のお届けはそのまま</strong>続きます</li>
+ </ul>
+ <a class="switch-offer-btn" href="subscription.html?switch=1">新しい定期便を見る</a>
+ <p class="switch-offer-note">※ 内容とお値段は次のページでご確認いただけます。ご不明な点は LINE 公式（@706sgiuq）までお気軽にどうぞ。</p>
+ </div>
+ <!-- 🙋 定期便を続けているかの確認（2026-09-10・案A）。
+      旧カートの定期便の方をこちらのデータで当てられないので、ご本人に聞く。
+      答えは localStorage に覚えて二度目は出さない。「はい」の回答はお問い合わせとして
+      サーバに残り、田崎さんへ通知メールが飛ぶ（既存の submit_inquiry を使うので
+      サーバ側の追加は不要）。 -->
+ <div class="subcheck" id="subCheck" style="display:none;">
+  <p id="subCheckPreviewTag" style="display:none;margin:0 0 14px;padding:7px 12px;border-radius:8px;background:rgba(255,255,255,0.14);font-family:var(--font-jp);font-size:11.5px;font-weight:700;color:#FFD773;">👀 見本モード（?subcheck=preview）— 押しても記録も通知もされません</p>
+
+ <!-- ① 質問 -->
+ <div id="subCheckAsk">
+  <h2 class="subcheck-title">定期便は、いまもご利用中でしょうか？</h2>
+  <p class="subcheck-text">江田畜産のお肉が毎月届く定期便のことです。お手続きの行き違いを防ぐため、確認させてください。</p>
+  <div class="subcheck-actions">
+  <button type="button" class="subcheck-btn subcheck-btn--yes" onclick="subCheckAnswer('yes')">はい、続けています</button>
+  <button type="button" class="subcheck-btn subcheck-btn--no" onclick="subCheckAnswer('no')">いいえ、利用していません</button>
+  </div>
+ </div>
+
+ <!-- ② 「はい」→ 確認したいことを聞く -->
+ <div id="subCheckForm" style="display:none;">
+  <h2 class="subcheck-title">ありがとうございます。<br>お手数ですが、確認させてください</h2>
+  <p class="subcheck-text">いまのご契約と、このマイページを結びつけるために使います。</p>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckName">お名前</label>
+  <input type="text" class="subcheck-input" id="subCheckName" placeholder="江田 太郎" autocomplete="name">
+  </div>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckEmail">お申し込みのときのメールアドレス</label>
+  <input type="email" class="subcheck-input" id="subCheckEmail" placeholder="taro@example.com" autocomplete="email">
+  </div>
+  <div class="subcheck-field">
+  <label class="subcheck-label" for="subCheckPhone">お電話番号（任意）</label>
+  <input type="tel" class="subcheck-input" id="subCheckPhone" placeholder="090-1234-5678" autocomplete="tel">
+  </div>
+  <div class="subcheck-actions">
+  <button type="button" class="subcheck-btn subcheck-btn--yes" id="subCheckSend" onclick="subCheckSubmit()">この内容で送る</button>
+  </div>
+  <p class="subcheck-err" id="subCheckErr" style="display:none;"></p>
+  <p class="subcheck-note">※ 内容を確認のうえ、担当の田崎よりご連絡いたします。</p>
+ </div>
+
+ <!-- ③ 「いいえ」→ 定期便のご案内 -->
+ <div id="subCheckOffer" style="display:none;">
+  <h2 class="subcheck-title">毎月おいしいところが届く、<strong>定期便</strong>はいかがですか</h2>
+  <p class="subcheck-text">その月にいちばん良いお肉を、江田畜産が選んでお届けします。<strong>最初のお届けは半額</strong>でお試しいただけます。お休みも解約も、このマイページからいつでもできます。</p>
+  <div class="subcheck-actions">
+  <a class="subcheck-btn subcheck-btn--yes" href="subscription.html" onclick="subCheckRemember('no_clicked')">定期便を見る</a>
+  <button type="button" class="subcheck-btn subcheck-btn--no" onclick="subCheckClose()">とじる</button>
+  </div>
+ </div>
+
+ <!-- ④ 送信できたとき -->
+ <div id="subCheckDone" style="display:none;">
+  <h2 class="subcheck-title">ありがとうございました</h2>
+  <p class="subcheck-text" style="margin:0;">確認のうえ、担当の田崎よりご連絡いたします。引き続きよろしくお願いいたします。</p>
+ </div>
+
+ </div>
+
  <!-- Welcome Card -->
  <div class="welcome-card fade-in" id="welcomeCard" role="banner" aria-label="会員情報">
  <div class="welcome-card-top">
@@ -2985,7 +3241,7 @@ button:focus-visible, a:focus-visible {
  </div>
  <p class="welcome-member-since" id="memberSince"></p>
  </div>
- <div class="welcome-card-bottom welcome-top3-wrap" id="welcomeTop3"></div>
+ <div class="welcome-card-bottom welcome-card-slot" id="welcomeSlot"></div>
  <!-- 旧: ご注文回数/累計お買い上げ/利用可能クーポン。集計は保持のため隠しノードで残す -->
  <span id="totalOrders" hidden>0</span>
  <span id="totalSpent" hidden>-</span>
@@ -3046,16 +3302,24 @@ button:focus-visible, a:focus-visible {
  <div id="subSection" style="display:none;">
  <h3 class="dash-section-title">SUBSCRIPTION</h3>
  <div class="sub-card" id="subCard"></div>
- <div id="subActions" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
- <button class="sub-action-btn skip" onclick="subSkip()">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-  次回をスキップ
- </button>
+ <div id="subActions" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px">
  <button class="sub-action-btn change" onclick="subChange()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
   プラン変更
  </button>
- <button class="sub-action-btn pause" onclick="subPause()">
+ <button class="sub-action-btn customize" onclick="subCustomize()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  次回分に商品追加
+ </button>
+ <button class="sub-action-btn cycle" id="subCycleBtn" onclick="subCycle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+  隔月に変更
+ </button>
+ <button class="sub-action-btn skip" id="subSkipBtn" onclick="subSkip()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+  次回をスキップ
+ </button>
+ <button class="sub-action-btn pause" id="subPauseBtn" onclick="subPause()">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
   一時停止
  </button>
@@ -3175,6 +3439,82 @@ button:focus-visible, a:focus-visible {
    <button class="settings-cancel-btn" onclick="toggleShippingEdit()">キャンセル</button>
   </div>
   <p class="settings-form-note">※ 次回のご注文時に自動で入力されます</p>
+  </div>
+ </div>
+
+ <!-- お誕生日 -->
+ <!-- 🎂 誕生日プレゼント（赤身ステーキ＋お手紙）のための欄。
+      お預かりするのは「生まれた年」「月」「日」の3つ（2026-09-09に年を追加）。
+      保存の形は 'YYYY-MM-DD'。年より前に登録した方は 'MM-DD' のまま入っているので、
+      読むときは必ず bdMMDD() を通して月日だけ取り出すこと。
+      プレゼントの判定は月だけ。年は使わない（GAS の normBirthday_ が年を落として MM-DD にする）。
+      同梱の条件は下の birthday-perk に書いてあるものが正で、
+      判定の実体は GAS の staffOrders（注文した月＝誕生日の月）。 -->
+ <h3 class="dash-section-title" style="margin-top:32px;">お誕生日</h3>
+ <div class="settings-card" id="birthdayCard">
+  <div class="settings-card-header">
+  <div class="settings-card-icon" aria-hidden="true">
+   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-8H4v8"/><path d="M2 13h20"/><path d="M4 13V9a2 2 0 012-2h12a2 2 0 012 2v4"/><path d="M12 7V4"/><path d="M8 7V5"/><path d="M16 7V5"/></svg>
+  </div>
+  <div class="settings-card-title">お誕生日</div>
+  <button class="settings-edit-btn" id="birthdayEditBtn" onclick="toggleBirthdayEdit()" aria-label="お誕生日を編集" style="display:none;">
+   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+   編集
+  </button>
+  </div>
+
+  <!-- 特典のご案内 -->
+  <div class="birthday-perk">
+  <p class="birthday-perk-title">お誕生日の月に「赤身ステーキ」をプレゼント</p>
+  <ul class="birthday-perk-list">
+   <li>単品でお買い物の方 … <strong>お誕生日の月にご注文いただいた分</strong>に、お入れします。</li>
+   <li>定期便の方 … お誕生日の月のお届けに<strong>必ず</strong>お入れします（ご注文は要りません）。</li>
+   <li>お祝いのお手紙を添えてお届けします。</li>
+  </ul>
+  </div>
+
+  <!-- 表示モード -->
+  <div id="birthdayDisplay">
+  <div class="settings-empty" id="birthdayEmpty">
+   <p>お誕生日が未登録です</p>
+   <button class="settings-add-btn" onclick="toggleBirthdayEdit()">
+   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+   お誕生日を登録
+   </button>
+  </div>
+  <div class="settings-data" id="birthdayData" style="display:none;">
+   <div class="settings-row"><span class="settings-label">お誕生日</span><span class="settings-value" id="dispBirthday"></span></div>
+  </div>
+  </div>
+
+  <!-- 編集モード -->
+  <div id="birthdayForm" style="display:none;">
+  <div class="settings-form-grid bd3">
+   <div class="settings-field half">
+   <label for="bdYear">生まれた年 <span class="required">*</span></label>
+   <select id="bdYear" onchange="fillBirthdayDays()">
+    <option value="">--</option>
+   </select>
+   </div>
+   <div class="settings-field half">
+   <label for="bdMonth">月 <span class="required">*</span></label>
+   <select id="bdMonth" onchange="fillBirthdayDays()">
+    <option value="">--</option>
+    <option value="01">1月</option><option value="02">2月</option><option value="03">3月</option><option value="04">4月</option>
+    <option value="05">5月</option><option value="06">6月</option><option value="07">7月</option><option value="08">8月</option>
+    <option value="09">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+   </select>
+   </div>
+   <div class="settings-field half">
+   <label for="bdDay">日 <span class="required">*</span></label>
+   <select id="bdDay"><option value="">--</option></select>
+   </div>
+  </div>
+  <div class="settings-form-actions">
+   <button class="settings-save-btn" onclick="saveBirthday()">保存する</button>
+   <button class="settings-cancel-btn" onclick="toggleBirthdayEdit()">キャンセル</button>
+  </div>
+  <p class="settings-form-note">※ お誕生日は、お祝いのご案内以外には使いません。</p>
   </div>
  </div>
 
@@ -3320,29 +3660,173 @@ async function sendOtp() {
  if (!email || !email.includes('@')) { showOtpError('メールアドレスを入力してください'); return; }
  _otpEmail = email;
  try {
-   const res = await fetch(GAS_API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'request_otp', email}) });
+   const res = await fetch(GAS_API_URL + '?action=request_otp', { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'request_otp', email}) });
    const data = await res.json();
    if (data.ok) {
      document.getElementById('otpStep1').style.display = 'none';
      document.getElementById('otpStep2').style.display = 'block';
      showOtpError('');
-   } else { showOtpError(data.error || '送信失敗。登録されていないメールアドレスの可能性があります'); }
+   } else { showOtpError(otpErrorJa(data.error, '送信失敗。登録されていないメールアドレスの可能性があります')); }
  } catch(e) { showOtpError('通信エラー。しばらくしてお試しください'); }
 }
 async function verifyOtp() {
  const code = document.getElementById('otpCodeInput').value.trim();
  if (!code || code.length < 6) { showOtpError('6桁のコードを入力してください'); return; }
  try {
-   const res = await fetch(GAS_API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'verify_otp', email: _otpEmail, code}) });
+   const res = await fetch(GAS_API_URL + '?action=verify_otp', { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'verify_otp', email: _otpEmail, code}) });
    const data = await res.json();
    if (data.ok) {
      showOtpError('');
      // OTP 認証成功 → セッション+キャッシュ保存してダッシュボード表示
-     const session = { email: _otpEmail, auth: 'otp', ts: Date.now(), cache: { customer: data.customer || null, orders: data.orders || [] } };
+     /* 2026-09-10: サーバが発行した合言葉を保存する。以降の問い合わせに自動で付く */
+     const session = { email: _otpEmail, auth: 'otp', ts: Date.now(), token: data.token || '', cache: { customer: data.customer || null, orders: data.orders || [] } };
      try { localStorage.setItem('eda-mypage-session', JSON.stringify(session)); } catch(e){}
      renderDashboard(data.customer || { name: _otpEmail.split('@')[0], email: _otpEmail }, data.orders || []);
-   } else { showOtpError(data.error || 'コードが正しくないか期限切れです'); }
+   } else { showOtpError(otpErrorJa(data.error, 'コードが正しくないか、有効期限（10分）が切れています。もう一度お試しください。')); }
  } catch(e) { showOtpError('通信エラー'); }
+}
+/* ============================================================
+   🙋 定期便を続けているかの確認（2026-09-10・案A）
+   ------------------------------------------------------------
+   なぜ聞くのか:
+     旧カート(Shopify/WIX)で定期便を続けている11軒を、こちらのデータからは
+     特定できない（対象10アドレスは顧客リストにもLINE連携にも1件も無い）。
+     当てにいくのをやめて、マイページに来た方に直接うかがう。
+   保存:
+     ・答えは localStorage（この端末に覚える）。二度目からは出さない。
+     ・「はい」はお問い合わせとしてサーバにも残り、田崎さんへ通知が飛ぶ
+       （既存の submit_inquiry を使うのでサーバ側の追加は不要）。
+     ・「いいえ」は log_event に残す（何人に聞いて何人が定期便を使っていないか数えるため）。
+   ============================================================ */
+var SUBCHECK_KEY = 'eda-subcheck-2026-09';
+var _subCheckCustomer = null;
+
+/* 👀 見本モード: mypage.html?subcheck=preview
+   すでに登録済みの人（田崎さん・江田さん）だと、このカードは条件に合わず出ない。
+   仕様を確認したいときのために、条件を無視して出すだけのモードを用意する。
+   このモードでは「答えを覚える」「お問い合わせを送る」を一切しない＝何度でも見られるし、
+   押しても田崎さんに通知は飛ばない。 */
+function subCheckIsPreview() {
+ try { return new URLSearchParams(location.search).get('subcheck') === 'preview'; } catch (e) { return false; }
+}
+
+function subCheckSaved() {
+ try { return JSON.parse(localStorage.getItem(SUBCHECK_KEY) || 'null'); } catch (e) { return null; }
+}
+function subCheckRemember(answer) {
+ if (subCheckIsPreview()) return;   /* 見本モードでは覚えない */
+ try { localStorage.setItem(SUBCHECK_KEY, JSON.stringify({ answer: answer, at: new Date().toISOString() })); } catch (e) {}
+}
+function subCheckLog(eventType, meta) {
+ try {
+  if (window.EDA_API && window.EDA_API.post) {
+   window.EDA_API.post('log_event', { event_type: eventType, page: 'mypage.html', meta: meta || {} });
+  }
+ } catch (e) {}
+}
+
+function initSubCheck(customer) {
+ _subCheckCustomer = customer || {};
+ var el = document.getElementById('subCheck');
+ if (!el) return;
+ if (subCheckIsPreview()) {
+  /* 見本モード: 条件を全部飛ばして出す。記録も通知もしない */
+  var pv = document.getElementById('subCheckPreviewTag');
+  if (pv) pv.style.display = 'block';
+  el.style.display = 'block';
+  return;
+ }
+ if (subCheckSaved()) return;                                   // もう答えていただいた
+ if (customer && customer.switch_offer) return;                 // こちらで分かっている方
+ if (customer && customer.subscription && customer.subscription.active) return;  // 今の定期便がある方
+ el.style.display = 'block';
+ subCheckLog('subcheck_shown', { email: (customer && customer.email) || '' });
+}
+
+function subCheckAnswer(answer) {
+ var ask = document.getElementById('subCheckAsk');
+ if (ask) ask.style.display = 'none';
+ if (answer === 'yes') {
+  var c = _subCheckCustomer || {};
+  var n = document.getElementById('subCheckName');
+  var m = document.getElementById('subCheckEmail');
+  var t = document.getElementById('subCheckPhone');
+  if (n && !n.value) n.value = c.name || '';
+  if (m && !m.value) m.value = c.email || '';
+  if (t && !t.value) t.value = c.phone || '';
+  document.getElementById('subCheckForm').style.display = 'block';
+  subCheckLog('subcheck_yes', { email: c.email || '' });
+ } else {
+  document.getElementById('subCheck').classList.add('subcheck--offer');
+  document.getElementById('subCheckOffer').style.display = 'block';
+  subCheckRemember('no');
+  subCheckLog('subcheck_no', { email: (_subCheckCustomer && _subCheckCustomer.email) || '' });
+ }
+}
+
+function subCheckClose() {
+ var el = document.getElementById('subCheck');
+ if (el) el.style.display = 'none';
+}
+
+function subCheckSubmit() {
+ var err = document.getElementById('subCheckErr');
+ var btn = document.getElementById('subCheckSend');
+ var name = (document.getElementById('subCheckName').value || '').trim();
+ var email = (document.getElementById('subCheckEmail').value || '').trim();
+ var phone = (document.getElementById('subCheckPhone').value || '').trim();
+ function fail(msg) { if (err) { err.textContent = msg; err.style.display = 'block'; } }
+ if (!name) { fail('お名前をご入力ください'); return; }
+ if (!email || email.indexOf('@') === -1) { fail('メールアドレスをご入力ください'); return; }
+ if (err) err.style.display = 'none';
+ if (btn) { btn.disabled = true; btn.textContent = '送信中...'; }
+
+ var c = _subCheckCustomer || {};
+ var msg = '【マイページより：定期便を継続中とのご回答】\n' +
+  'マイページのお名前: ' + (c.name || '(未登録)') + '\n' +
+  'マイページのメール: ' + (c.email || '(未登録)') + '\n' +
+  'LINE表示名: ' + (c.line_name || '(なし)');
+
+ if (subCheckIsPreview()) {
+  /* 見本モード: 実際には送らず、送れたときの画面だけ見せる */
+  document.getElementById('subCheckForm').style.display = 'none';
+  document.getElementById('subCheckDone').style.display = 'block';
+  if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
+  return;
+ }
+ if (!(window.EDA_API && window.EDA_API.post)) {
+  if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
+  fail('通信の準備ができていません。ページを読み込み直してお試しください。');
+  return;
+ }
+ window.EDA_API.post('submit_inquiry', {
+  inquiry_type: '定期便の継続確認',
+  name: name, email: email, phone: phone,
+  message: msg,
+  source: 'mypage.html 定期便の継続確認'
+ }).then(function (r) {
+  if (!r || r.ok === false) throw new Error((r && r.error) || '送信できませんでした');
+  subCheckRemember('yes');
+  document.getElementById('subCheckForm').style.display = 'none';
+  document.getElementById('subCheckDone').style.display = 'block';
+  subCheckLog('subcheck_yes_sent', { email: email });
+ }).catch(function (e) {
+  if (btn) { btn.disabled = false; btn.textContent = 'この内容で送る'; }
+  fail('送信できませんでした。お手数ですが LINE 公式（@706sgiuq）までお知らせください。');
+  console.error('[subCheckSubmit]', e);
+ });
+}
+
+/* GAS が返すエラー文は英語。そのまま出すとお客様の画面に英語が出るので日本語に置き換える。
+   （例: verify_otp は 'Invalid or expired OTP' を返す） */
+function otpErrorJa(raw, fallback) {
+ const s = String(raw || '');
+ if (!s) return fallback;
+ if (/invalid|expired/i.test(s)) return 'コードが正しくないか、有効期限（10分）が切れています。もう一度お試しください。';
+ if (/email and code required/i.test(s)) return 'メールアドレスと6桁のコードをご入力ください';
+ if (/email required/i.test(s)) return 'メールアドレスをご入力ください';
+ if (/unknown action/i.test(s)) return '通信に失敗しました。しばらくしてからもう一度お試しください。';
+ return fallback;
 }
 function showOtpError(msg) {
  const el = document.getElementById('otpError');
@@ -3614,6 +4098,7 @@ async function tryLineLogin(profile) {
   window.unlockMember({ line_uid: profile.userId, name: profile.displayName, email: result.customer.email });
  }
  lineSession.email = result.customer.email || '';
+ lineSession.token = result.token || '';   /* 2026-09-10: 合言葉を保存 */
  localStorage.setItem('eda-mypage-session', JSON.stringify(lineSession));
  renderDashboard(result.customer, result.orders || []);
  return;
@@ -3798,7 +4283,17 @@ document.getElementById('dashTabs').addEventListener('click', function(e) {
  btn.setAttribute('aria-selected', 'true');
  var panel = document.getElementById('panel-' + tabId);
  if (panel) panel.classList.add('active');
+ try { localStorage.setItem('eda-mypage-tab', tabId); } catch (_) {}   /* 開いていたタブを覚える */
 });
+/* 前に開いていたタブを復元する（更新してもホームに戻らない） */
+function restoreLastTab() {
+ try {
+  var last = localStorage.getItem('eda-mypage-tab');
+  if (!last || last === 'home') return;
+  var btn = document.querySelector('.dash-tab[data-tab="' + last + '"]');
+  if (btn) btn.click();
+ } catch (_) {}
+}
 function switchTab(tabId) {
  var btn = document.querySelector('.dash-tab[data-tab="' + tabId + '"]');
  if (btn) btn.click();
@@ -3849,7 +4344,6 @@ function reorderItems(items) {
  window.location.href = added > 0 ? 'shop.html?cart=1' : 'shop.html';
 }
 function reorderOrder(oi) { var o = (window._edaOrders || [])[oi]; if (o) reorderItems(o.items || []); }
-function reorderProduct(pi) { var s = (window._edaTop3Samples || [])[pi]; if (s) reorderItems([s]); }
 
 /* お付き合い起点日: eda-member-linked-at → customer.created_at → 最古の注文日 → 今 */
 function getRelationshipStart(customer, orders) {
@@ -3875,39 +4369,120 @@ function formatRelationship(start) {
  return Math.max(m, 1) + 'ヶ月';
 }
 
-/* 注文明細を集計して「選ばれた商品 TOP3」を描画 */
-function renderTop3(custName, orders) {
- var el = document.getElementById('welcomeTop3');
+/* 会員カードの一番下＝マイページを開いて最初に目に入る1枠
+   ------------------------------------------------------------
+   ここに何を出すかの優先順位（2026-09-07 田崎さん決定）:
+     ①お誕生月のあいだ … お祝いのご案内（誕生月の「1日前」から出す＝前月の末日から）
+     ②誕生日が未登録   … 登録のお願い（ここでしか気づいてもらえないので②に置く）
+     ③定期便の方       … 次回のお届け（お客様がマイページを開く一番の理由）
+     ④それ以外         … いま売れている商品 TOP3
+
+   ⚠️ ここは深緑の暗いカードの中。文字は金(#FFD773)と白だけを使う。
+      深緑やインク色は背景に沈んで見えない（PR #263 と同じ罠）。 */
+var _lastCustomer = null;   /* 誕生日を保存した直後にこの枠を描き直すため、直近の会員情報を覚えておく */
+function renderWelcomeSlot(customer) {
+ var el = document.getElementById('welcomeSlot');
  if (!el) return;
- var counts = {}, samples = {};
- (orders || []).forEach(function(o){
-  (o.items || []).forEach(function(it){
-   var name = (it.title || it.name || '').toString().trim();
-   if (!name) return;
-   counts[name] = (counts[name] || 0) + (Number(it.qty) || 1);
-   if (!samples[name] || ((it.variantId || it.id) && !(samples[name].variantId || samples[name].id))) samples[name] = it;
-  });
- });
- var ranked = Object.keys(counts).map(function(k){ return { name: k, qty: counts[k], sample: samples[k] }; })
-  .sort(function(a, b){ return b.qty - a.qty; }).slice(0, 3);
- if (!ranked.length) {
-  el.innerHTML = '<div class="top3-empty">ご注文が増えると、' + escapeHtml(custName) + '様に選ばれた商品トップ3を表示します</div>';
+ if (customer) _lastCustomer = customer; else customer = _lastCustomer;
+ var bd = loadBirthday();
+
+ /* ── ① お誕生月のあいだ ───────────────────────────── */
+ var win = birthdayWindow(bd);
+ if (win.inWindow) {
+  var body = win.isEve
+   ? '<p class="bd-prompt-title">明日から お誕生月です（' + win.label + '）</p>' +
+     '<p class="bd-prompt-text">来月中にご注文いただいた分に、お祝いの「赤身ステーキ」とお手紙をお入れします。' +
+      '定期便の方は、来月のお届けに自動でお入れします。</p>'
+   : '<p class="bd-prompt-title">今月はお誕生月です（' + win.label + '）</p>' +
+     '<p class="bd-prompt-text">今月中にご注文いただいた分に、お祝いの「赤身ステーキ」とお手紙をお入れします。' +
+      '定期便の方は、今月のお届けに自動でお入れします。</p>';
+  el.innerHTML = '<div class="bd-prompt bd-prompt--now"><div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
+   '<div class="bd-prompt-body">' + body + '</div></div>';
   return;
  }
- window._edaTop3Samples = ranked.map(function(r){ return r.sample; });
- var cartSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>';
- var rows = ranked.map(function(r, i){
-  var canRe = r.sample && (r.sample.variantId || r.sample.id);
-  var attrs = canRe ? ' class="top3-row top3-row--tap" role="button" tabindex="0" onclick="reorderProduct(' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();reorderProduct(' + i + ');}"' : ' class="top3-row"';
-  return '<li' + attrs + '>' +
-   '<span class="top3-rank top3-rank-' + (i + 1) + '">' + (i + 1) + '</span>' +
-   '<span class="top3-name">' + escapeHtml(r.name) + '</span>' +
-   '<span class="top3-count">' + r.qty + '回</span>' +
-   (canRe ? '<span class="top3-reorder" aria-label="もう一度買う">' + cartSvg + '</span>' : '') +
-  '</li>';
- }).join('');
- el.innerHTML = '<div class="top3-head">' + escapeHtml(custName) + '様に選ばれた商品 TOP3</div>' +
-  '<ol class="top3-list">' + rows + '</ol>';
+
+ /* ── ② 誕生日が未登録 ─────────────────────────────── */
+ if (!bd) {
+  el.innerHTML =
+   '<div class="bd-prompt">' +
+    '<div class="bd-prompt-ico" aria-hidden="true">🎂</div>' +
+    '<div class="bd-prompt-body">' +
+     '<p class="bd-prompt-title">お誕生日を教えてください</p>' +
+     '<p class="bd-prompt-text">お誕生日の月にご注文いただくと、お祝いに「赤身ステーキ」をお入れします。' +
+      '定期便の方は、その月のお届けに自動でお入れします。</p>' +
+     '<button type="button" class="bd-prompt-btn" onclick="goBirthdaySetting()">お誕生日を登録する</button>' +
+    '</div>' +
+   '</div>';
+  return;
+ }
+
+ /* ── ③ 定期便の方 ────────────────────────────────── */
+ var sub = customer && customer.subscription;
+ if (sub && sub.active) {
+  var next = sub.next_delivery ? formatDateLong(sub.next_delivery) : '毎月1日';
+  el.innerHTML =
+   '<p class="ws-eyebrow">定期便 次回のお届け</p>' +
+   '<p class="ws-date">' + escapeHtml(next) + '</p>' +
+   '<p class="ws-sub">次回お届けする商品は、毎月20日ごろに決まります。決まりましたら「定期便」タブでご覧いただけます。</p>' +
+   '<a class="ws-link" href="javascript:void(0)" onclick="switchTab(\'subscription\')">定期便を見る' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
+  return;
+ }
+
+ /* ── ④ それ以外 … いま売れている商品 ─────────────────── */
+ el.innerHTML = '<p class="ws-eyebrow">いま売れている商品</p>' +
+  '<p class="ws-sub">読み込んでいます…</p>';
+ loadPopularForSlot(el);
+}
+
+/* 「お誕生月のあいだ」か。誕生月の1日前（前月の末日）から、誕生月の終わりまで。
+   例: 9月15日生まれの方 → 8月31日から9月30日まで出る。 */
+function birthdayWindow(bd) {
+ bd = bdMMDD(bd);          /* 年つき 'YYYY-MM-DD' で来ても月日だけで見る */
+ if (!bd) return { inWindow: false };
+ var bm = Number(bd.slice(0, 2)), bday = Number(bd.slice(3, 5));
+ var now = new Date();
+ var m = now.getMonth() + 1, d = now.getDate();
+ var label = bm + '月' + bday + '日';
+ if (m === bm) return { inWindow: true, isEve: false, label: label };
+ /* 前月の末日だけ「明日から」。12月末→1月生まれ も拾う */
+ var lastDay = new Date(now.getFullYear(), m, 0).getDate();
+ var nextMonth = (m === 12) ? 1 : m + 1;
+ if (d === lastDay && nextMonth === bm) return { inWindow: true, isEve: true, label: label };
+ return { inWindow: false };
+}
+
+/* 人気商品は products-loader と同じデプロイから取る。
+   🔴 EDA_CONFIG.GAS_URL は別デプロイで public_popular を知らない（popular.js と同じ理由）。 */
+var WS_POPULAR_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_popular';
+function loadPopularForSlot(el) {
+ fetch(WS_POPULAR_URL, { cache: 'no-store' })
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+   var list = (d && d.ranking ? d.ranking : []).slice(0, 3);
+   if (!list.length) { el.innerHTML = ''; return; }   /* 取れなければ何も出さない（嘘を出さない） */
+   var rows = list.map(function (r, i) {
+    return '<li class="ws-row"><span class="ws-rank ws-rank-' + (i + 1) + '">' + (i + 1) + '</span>' +
+     '<span class="ws-name">' + escapeHtml(r.name || '') + '</span></li>';
+   }).join('');
+   el.innerHTML = '<p class="ws-eyebrow">いま売れている商品</p>' +
+    '<ol class="ws-list">' + rows + '</ol>' +
+    '<a class="ws-link" href="shop.html">お買い物へ' +
+     '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>';
+  })
+  .catch(function () { el.innerHTML = ''; });
+}
+
+/* ご案内から設定タブの誕生日欄まで連れて行く（入力欄も開いた状態にする） */
+function goBirthdaySetting() {
+ try { switchTab('settings'); } catch (e) {}
+ setTimeout(function () {
+  var card = document.getElementById('birthdayCard');
+  if (!card) return;
+  var form = document.getElementById('birthdayForm');
+  if (form && form.style.display === 'none') { try { toggleBirthdayEdit(); } catch (e) {} }
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+ }, 120);
 }
 
 function renderDashboard(customer, orders) {
@@ -3921,6 +4496,26 @@ function renderDashboard(customer, orders) {
 
  spinner.classList.remove('show');
  loginSection.style.display = 'none';
+
+ /* 🔁 旧カート定期便の方だけ、お誕生日の上に切り替え案内を出す（判定はGAS側） */
+ try {
+ var _so = customer && customer.switch_offer;
+ var _soEl = document.getElementById('switchOffer');
+ if (_so && _soEl) {
+  var _soName = (_so.name || customer.name || '').trim();
+  var _soPlan = (_so.plan || '').trim();
+  document.getElementById('switchOfferBody').textContent =
+  (_soName ? _soName + ' 様は現在、' : '現在、') +
+  (_soPlan ? '「' + _soPlan + '」' : '定期便') +
+  'をご利用いただいております。いつもありがとうございます。';
+  _soEl.style.display = 'block';
+ }
+ } catch (_soErr) { /* 案内が出ないだけ。マイページ本体は止めない */ }
+
+ /* 🙋 定期便を続けているかの確認。出す条件は「まだ答えていない方」だけ。
+    ・こちらで旧カートの定期便と分かっている方（switch_offer）には出さない＝もう聞く必要がない
+    ・いまの定期便がある方にも出さない＝答えは分かっている */
+ try { initSubCheck(customer); } catch (_scErr) { /* 出ないだけ */ }
  var _pgH = document.getElementById('pageHeader');
  if (_pgH) _pgH.style.display = 'none';
  dashboard.classList.add('show');
@@ -3951,8 +4546,8 @@ function renderDashboard(customer, orders) {
   sinceEl.textContent = custName + '様とのお付き合い ' + formatRelationship(startDate) + '目';
  }
 
- /* ★ お客様に選ばれた商品 TOP3（注文明細を集計） */
- renderTop3(custName, orders);
+ /* 会員カードの一番下の1枠（誕生月／未登録／定期便／人気商品 を出し分け） */
+ renderWelcomeSlot(customer);
 
  /* ★ Premium: Available coupons count（下カード/一覧と同じ判定に統一） */
  var coupons = customer.coupons || generateDemoCoupons(orderCount);
@@ -3963,6 +4558,8 @@ function renderDashboard(customer, orders) {
  var couponStatEl = document.getElementById('couponStat');
  if (couponHintEl) couponHintEl.textContent = activeCoupons.length > 0 ? 'タップで表示 ›' : '';
  if (couponStatEl) couponStatEl.style.display = ''; // 常に表示（0でもタップで特典タブへ）
+
+ setTimeout(restoreLastTab, 0);
 
  /* Subscription badge */
  var badgeArea = document.getElementById('subBadgeArea');
@@ -4107,7 +4704,10 @@ function renderOrders(orders) {
    🔴 対象は「次のご注文が2回目の人」だけ。3回目以降の人には出さない
       （eligible が false で返る）。
    ============================================================ */
-var mpRepeatShip = null;      // { enabled, eligible, half, daysLeft, deadline } / 未取得は null
+var mpRepeatShip = null;      // { enabled, eligible, half, rate, stage, daysLeft, deadline } / 未取得は null
+/* 送料特典が何回目に付くかは GAS(repeatShipStage_)が正。既定5回目。
+   ここを固定値にすると、回を移したときに期限表示だけ前の回に残る。 */
+function mpShipStage() { var n = mpRepeatShip && Number(mpRepeatShip.stage); return (n >= 1) ? n : 5; }
 
 function mpFmtDeadline(ymd) {
   var m = String(ymd || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -4121,7 +4721,11 @@ function mpRepeatShipNote() {
   if (!r || !r.enabled || !r.eligible) return '';
   if (r.half) {
     var d = mpFmtDeadline(r.deadline);
-    return '<span class="rj-deadline">\u23F3 ' + d + 'まで（あと' + Number(r.daysLeft) + '日）</span>';
+    /* 残り0日を「あと0日」と出すと意味が伝わらないので、LINE・メールの文面
+       （RepeatShipReminder.gs の rsr_leftLabel_）と同じ「本日最終日」に揃える。 */
+    var left = Number(r.daysLeft);
+    var leftLabel = (left > 0) ? ('あと' + left + '日') : '本日最終日';
+    return '<span class="rj-deadline">\u23F3 ' + d + 'まで（' + leftLabel + '）</span>';
   }
   return '<span class="rj-deadline rj-deadline--over">期限が過ぎました</span>';
 }
@@ -4141,11 +4745,17 @@ async function mpLoadRepeatShip(orderCount) {
 }
 
 var REWARD_STAGES = [
- { num: 1, label: '1回目のご注文', reward: '初回 10%OFF', desc: '初回ご注文の感謝として全品10%OFF', code: 'エダチク10', icon: '1' },
- { num: 2, label: '2回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '2', auto: true },
- { num: 3, label: '3回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
- { num: 4, label: '4回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
- { num: 5, label: '5回目のご注文', reward: '赤身焼肉 200g プレゼント', desc: 'ウデの赤身を焼肉用にカット。脂は控えめ（ご注文時に自動でお付けします）', code: '', icon: '5', auto: true },
+ /* 🎁 2026-09-08 田崎さん指示で組み替え。実体は gift-rules.js の REWARD_BY_STAGE と
+    Code.js の repeatShipStage_(送料)。ここの文言と必ず対で維持する。
+      ・初回を10%OFFクーポンから鶏モモ1袋へ
+      ・送料は「半額・2回目」から「無料・5回目」へ。現物特典は全部ひとつ前へ繰り下げ */
+ { num: 1, label: '1回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '1', auto: true },
+ { num: 2, label: '2回目のご注文', reward: '鶏モモ 200g プレゼント', desc: '自社牧場育ち平飼い鶏をお届け（ご注文時に自動でお付けします）', code: '', icon: '2', auto: true },
+ { num: 3, label: '3回目のご注文', reward: '無添加ハンバーグ 2個', desc: '130g×2 自家製・無添加（ご注文時に自動でお付けします）', code: '', icon: '3', auto: true },
+ { num: 4, label: '4回目のご注文', reward: '赤身焼肉 200g プレゼント', desc: 'ウデの赤身を焼肉用にカット。脂は控えめ（ご注文時に自動でお付けします）', code: '', icon: '4', auto: true },
+ /* 送料が半額か無料かは GAS(REPEAT_SHIP_RATE)が正。desc も rate に追従させる
+    （下の renderRewardJourney で差し替える）。ここは読めなかったときの控え。 */
+ { num: 5, label: '5回目のご注文', reward: '送料半額', desc: '前回のお届けから40日以内のご注文で送料が半額（自動適用）', code: '', icon: '5', auto: true },
  { num: 6, label: '6回目のご注文', reward: '限定部位を買える権利', desc: 'イチボ・シンシンなど、通常は店頭に出さない希少部位をご購入いただけます', code: '', icon: '6', member: true },
  { num: 7, label: '7回目のご注文', reward: '？？？', desc: '7回目以降の特典はお楽しみに', code: '', icon: '7', locked: true },
  { num: 8, label: '8回目のご注文', reward: '？？？', desc: '', code: '', icon: '8', locked: true }
@@ -4161,7 +4771,9 @@ function getNextReward(count) {
 }
 
 /* Common reward/coupon conditions text */
-var REWARD_CONDITIONS = '※ クーポン特典は 5,000円（税込）以上のご注文で利用可能・他クーポンとの併用不可（送料半額は自動適用・金額条件なし）';
+/* 2026-09-08 田崎さん指示で更新。クーポン方式をやめて現物の自動同梱にしたこと、
+   公式LINE連携が条件になったこと、品切れ時は別の品をお入れすることを明記する。 */
+var REWARD_CONDITIONS = '※ ご注文特典は公式LINE連携済みの方が対象です。ご注文金額の条件はありません。クーポンコードの入力も要りません（ご注文時に自動でお入れします）。在庫が無い場合は、同じくらいの品をお入れします。';
 
 /* ---- Render Reward Journey (特典タブ) ---- */
 function renderRewardJourney(count) {
@@ -4182,11 +4794,23 @@ function renderRewardJourney(count) {
  } else {
   dotContent = s.icon;
  }
+ /* 🚚 送料の特典は「何回目か」も「半額か無料か」も GAS(repeatShipStage_/
+    repeatShipRate_)が正。名前と説明文の両方をその返事に合わせる。
+    片方でも固定文言のままにすると「画面は半額・請求は無料」の類のズレが出る。 */
+ var _reward = s.reward;
+ var _desc = s.desc;
+ if (s.num === mpShipStage() && mpRepeatShip) {
+  var _free = (mpRepeatShip.rate === 'free');
+  _reward = _free ? '送料無料' : '送料半額';
+  var _lim = Number(mpRepeatShip.limit) || 40;
+  _desc = '前回のお届けから' + _lim + '日以内のご注文で送料が' + (_free ? '無料' : '半額') + '（自動適用）';
+ }
+
  var descContent = isDone
   ? '<span class="rj-done-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> 獲得済み</span>'
-  : (isLocked ? '' : escapeHtml(s.desc));
- /* \u23F3 送料半額(2回目)だけは期限がある。まだ獲得していない人に残り日数と期日を出す。 */
- if (s.num === 2 && !isDone) {
+  : (isLocked ? '' : escapeHtml(_desc));
+ /* \u23F3 送料の特典だけは期限がある。まだ獲得していない人に残り日数と期日を出す。 */
+ if (s.num === mpShipStage() && !isDone) {
   var _note = mpRepeatShipNote();
   if (_note) descContent = (descContent ? descContent + '<br>' : '') + _note;
  }
@@ -4195,7 +4819,7 @@ function renderRewardJourney(count) {
   '<div class="rj-step-rail"><div class="rj-step-dot">' + dotContent + '</div><div class="rj-step-line"></div></div>' +
   '<div class="rj-step-content">' +
    '<p class="rj-step-label">' + s.label + '</p>' +
-   '<p class="rj-step-reward">' + escapeHtml(s.reward) + '</p>' +
+   '<p class="rj-step-reward">' + escapeHtml(_reward) + '</p>' +
    (descContent ? '<p class="rj-step-desc">' + descContent + '</p>' : '') +
   '</div></div>';
  });
@@ -4212,7 +4836,7 @@ function renderRewardJourney(count) {
  var next = REWARD_STAGES[Math.min(count, 5)];   /* 中身が入っているのは6段目まで */
  var remaining = next.num - count;
  /* 次が2回目の人には、いつまでに頼めば半額になるかを同じ行で伝える */
- var _bnote = (next.num === 2) ? mpRepeatShipNote() : '';
+ var _bnote = (next.num === mpShipStage()) ? mpRepeatShipNote() : '';
  bannerHtml = '<div class="rj-next-banner"><p>あと <strong>' + remaining + '回</strong> のご注文で <strong>' + escapeHtml(next.reward) + '</strong>' +
   (_bnote ? '<br/><small style="opacity:0.9">' + _bnote + '</small>' : '') + '</p></div>';
  }
@@ -4240,6 +4864,7 @@ function renderRewardJourney(count) {
 /* ---- Settings Tab: Shipping & Payment ---- */
 var SHIP_KEY = 'eda-member-shipping';
 var CARD_KEY = 'eda-member-card';
+var BD_KEY   = 'eda-member-birthday';   /* 🎂 'YYYY-MM-DD'（年より前の登録は 'MM-DD'）。サーバー(customers.birthday)の写し */
 
 function loadShipping() {
  try { return JSON.parse(localStorage.getItem(SHIP_KEY) || 'null'); } catch(e) { return null; }
@@ -4313,6 +4938,10 @@ function renderSettings(customer, orders) {
   if (cardEmpty) cardEmpty.style.display = '';
   if (cardData) cardData.style.display = 'none';
  }
+ /* 🎂 お誕生日 — サーバー(customers.birthday)を正とし、無ければ端末の控えを出す。
+    renderSettings は保存直後に renderSettings({}) でも呼ばれるので、
+    customer が空でも控えから描けるようにしておく。 */
+ renderBirthday(customer);
  /* Account info */
  var email = (customer && customer.email) || '';
  try { email = email || localStorage.getItem('eda-member-email') || ''; } catch(e){}
@@ -4376,6 +5005,147 @@ function saveShipping() {
  document.getElementById('shippingForm').style.display = 'none';
  document.getElementById('shippingDisplay').style.display = '';
  renderSettings({});
+}
+
+/* ================= 🎂 お誕生日 =================
+   お預かりするのは 生まれた年・月・日（'YYYY-MM-DD'）。
+   2026-09-09 より前に登録された方は 'MM-DD'（年なし）のまま入っている。
+   どちらの形も受け取れるようにし、月日だけ要るところは bdMMDD() を通す。
+   保存先は customers.birthday（GAS の update_profile）。
+   端末の localStorage には表示を速くするための控えだけを置く。 */
+
+var BD_YEAR_MIN = 1926;   /* 年の選択肢の下限。上限は今年 */
+
+/* 'YYYY-MM-DD'（年があれば）または 'MM-DD' にそろえる。読めなければ '' */
+function normBirthdayStr(v) {
+  var s = String(v == null ? '' : v).trim();
+  var m = s.match(/(\d{1,2})\s*[-\/月]\s*(\d{1,2})\s*日?\s*$/);
+  if (!m) return '';
+  var mo = Number(m[1]), da = Number(m[2]);
+  if (!(mo >= 1 && mo <= 12) || !(da >= 1 && da <= 31)) return '';
+  var mmdd = ('0' + mo).slice(-2) + '-' + ('0' + da).slice(-2);
+  var y = s.match(/^(\d{4})\s*[-\/年]/);   /* 先頭の4桁だけを年とみなす */
+  if (!y) return mmdd;
+  var yr = Number(y[1]);
+  if (!(yr >= 1900 && yr <= new Date().getFullYear())) return mmdd;
+  return yr + '-' + mmdd;
+}
+
+/* 月日だけ取り出す（'MM-DD'）。年つき・年なしのどちらでも同じ答えになる */
+function bdMMDD(v) {
+  var b = normBirthdayStr(v);
+  return b ? b.slice(-5) : '';
+}
+/* 生まれた年（無ければ ''） */
+function bdYearOf(v) {
+  var b = normBirthdayStr(v);
+  return (b && b.length === 10) ? b.slice(0, 4) : '';
+}
+
+function loadBirthday() {
+  try { return normBirthdayStr(localStorage.getItem(BD_KEY) || ''); } catch (e) { return ''; }
+}
+
+/* 年の選択肢を作る（今年 → 1926年の順） */
+function fillBirthdayYears() {
+  var sel = document.getElementById('bdYear');
+  if (!sel || sel.options.length > 1) return;   /* 一度作ったら作り直さない */
+  var now = new Date().getFullYear();
+  var html = '<option value="">--</option>';
+  for (var y = now; y >= BD_YEAR_MIN; y--) html += '<option value="' + y + '">' + y + '年</option>';
+  sel.innerHTML = html;
+}
+
+/* 月（と年）を選ぶと日の選択肢を作り直す。2月の末日は年が決まっていれば閏年で判断する */
+function fillBirthdayDays() {
+  var mo = Number(document.getElementById('bdMonth').value || 0);
+  var yrEl = document.getElementById('bdYear');
+  var yr = Number((yrEl && yrEl.value) || 0);
+  var sel = document.getElementById('bdDay');
+  var keep = sel.value;
+  var feb = (yr && !((yr % 4 === 0 && yr % 100 !== 0) || yr % 400 === 0)) ? 28 : 29;
+  var max = mo === 2 ? feb : ([4, 6, 9, 11].indexOf(mo) >= 0 ? 30 : 31);
+  var html = '<option value="">--</option>';
+  for (var d = 1; d <= max; d++) {
+    var v = ('0' + d).slice(-2);
+    html += '<option value="' + v + '">' + d + '日</option>';
+  }
+  sel.innerHTML = html;
+  if (keep && Number(keep) <= max) sel.value = keep;
+}
+
+function renderBirthday(customer) {
+  var bd = normBirthdayStr(customer && customer.birthday);
+  if (bd) { try { localStorage.setItem(BD_KEY, bd); } catch (e) {} }
+  else    { bd = loadBirthday(); }
+
+  var empty = document.getElementById('birthdayEmpty');
+  var data  = document.getElementById('birthdayData');
+  var btn   = document.getElementById('birthdayEditBtn');
+  if (!empty || !data) return;
+
+  if (bd) {
+    empty.style.display = 'none';
+    data.style.display = '';
+    var md = bdMMDD(bd), yr = bdYearOf(bd);
+    document.getElementById('dispBirthday').textContent =
+      (yr ? yr + '年' : '') + Number(md.slice(0, 2)) + '月' + Number(md.slice(3, 5)) + '日';
+    if (btn) btn.style.display = '';
+  } else {
+    empty.style.display = '';
+    data.style.display = 'none';
+    if (btn) btn.style.display = 'none';
+  }
+}
+
+function toggleBirthdayEdit() {
+  var form = document.getElementById('birthdayForm');
+  var disp = document.getElementById('birthdayDisplay');
+  if (!form || !disp) return;
+  var opening = form.style.display === 'none';
+  if (opening) {
+    var bd = loadBirthday(), md = bdMMDD(bd);
+    fillBirthdayYears();
+    document.getElementById('bdYear').value = bdYearOf(bd);
+    document.getElementById('bdMonth').value = md ? md.slice(0, 2) : '';
+    fillBirthdayDays();
+    document.getElementById('bdDay').value = md ? md.slice(3, 5) : '';
+    form.style.display = '';
+    disp.style.display = 'none';
+  } else {
+    form.style.display = 'none';
+    disp.style.display = '';
+  }
+}
+
+function saveBirthday() {
+  var yr = document.getElementById('bdYear').value;
+  var mo = document.getElementById('bdMonth').value;
+  var da = document.getElementById('bdDay').value;
+  var hasErr = false;
+  ['bdYear', 'bdMonth', 'bdDay'].forEach(function (id) {
+    var f = document.getElementById(id); if (!f) return;
+    var w = f.closest('.settings-field'); if (!w) return;
+    w.classList.remove('has-error');
+    if (!f.value) { w.classList.add('has-error'); hasErr = true; }
+  });
+  if (hasErr) return;
+
+  var bd = normBirthdayStr(yr + '-' + mo + '-' + da);
+  if (!bd) return;
+  try { localStorage.setItem(BD_KEY, bd); } catch (e) {}
+
+  if (window.EDA_API) {
+    var uid = '', em = '';
+    try { uid = localStorage.getItem('eda-member-line-uid') || ''; } catch (e) {}
+    try { em  = localStorage.getItem('eda-member-email') || ''; } catch (e) {}
+    window.EDA_API.post('update_profile', { line_uid: uid, email: em, birthday: bd }).catch(function () {});
+  }
+
+  document.getElementById('birthdayForm').style.display = 'none';
+  document.getElementById('birthdayDisplay').style.display = '';
+  renderBirthday({});
+  renderWelcomeSlot();   /* 一番上の枠もその場で切り替える（登録のお願い → 登録済みの表示） */
 }
 
 /* 郵便番号 → 住所自動入力 */
@@ -4881,8 +5651,43 @@ function generateDemoCoupons(orderCount) {
 }
 
 /* ---- Subscription Actions (GAS 連携版) ---- */
+var _lastSub = null;
+/* 定期便カードだけ静かに描き直す（ページを再読み込みしないので、開いているタブも位置も動かない） */
+async function refreshSubscription() {
+ try {
+  if (!currentSession || !currentSession.email) return;
+  var d = await window.EDA_API.get('customer_lookup', { email: currentSession.email });
+  var sub = d && d.customer && d.customer.subscription;
+  var badgeArea = document.getElementById('subBadgeArea');
+  if (sub && sub.active) {
+   if (badgeArea) badgeArea.innerHTML = '<div class="sub-badge active"><span class="sub-badge-dot"></span>' +
+    (sub.paused ? '定期便 一時停止中' : '定期便ご利用中') + '</div>';
+   renderSubscription(sub);
+   document.getElementById('subSection').style.display = '';
+   document.getElementById('subEmpty').style.display = 'none';
+  }
+ } catch (e) {}
+}
 async function subSkip() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+
+ /* すでにスキップ済みなら取り消し */
+ if (_lastSub && _lastSub.skip_active) {
+  var undoOk = await edaConfirm('スキップの取り消し',
+   (_lastSub.skipped_delivery || '') + ' のお届けを、通常どおりお届けに戻しますか？', { ok: '取り消す' });
+  if (!undoOk) return;
+  try {
+   const undo = await window.EDA_API.post('unskip_subscription', { email: currentSession.email });
+   if (undo.ok) {
+    toast(undo.next_delivery ? ('スキップを取り消しました。次回は ' + undo.next_delivery + ' です') : 'スキップを取り消しました', 'success');
+    refreshSubscription();
+   } else {
+    toast('取り消しに失敗しました: ' + (undo.error || ''), 'error');
+   }
+  } catch (e) { toast('通信エラーが発生しました', 'error'); }
+  return;
+ }
+
  var ok = await edaConfirm('配送スキップ', '次回の定期便配送をスキップしますか？\n（次々回から再開されます）\n\nスタッフがLINE/メールで詳細をご連絡いたします', { ok: 'スキップする' });
  if (!ok) return;
  try {
@@ -4891,7 +5696,8 @@ async function subSkip() {
  reason: 'mypage_user_action'
  });
  if (result.ok) {
- toast('スキップ申請を受け付けました', 'success');
+ toast(result.next_delivery ? ('スキップしました。次回は ' + result.next_delivery + ' です') : 'スキップ申請を受け付けました', 'success');
+ refreshSubscription();   /* 次回お届け日の表示を更新 */
  } else {
  toast('申請に失敗しました: ' + (result.error || ''), 'error');
  }
@@ -4900,12 +5706,86 @@ async function subSkip() {
  }
 }
 async function subChange() {
- var ok = await edaConfirm('プラン変更', 'プラン変更はLINEでご相談ください。\n（LINE公式アカウントを開きます）', { ok: 'LINEを開く' });
- if (!ok) return;
- window.open('https://line.me/R/ti/p/@706sgiuq', '_blank');
+ location.href = 'subscription-change.html';
+}
+/* お届け頻度（毎月／隔月）の変更申請 */
+async function subCycle() {
+ if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+ var btn = document.getElementById('subCycleBtn');
+ var target = (btn && btn.dataset.target) || '隔月';
+ var current = target === '隔月' ? '毎月' : '隔月';
+ var firstDelivery = 'keep';
+ if (target === '隔月') {
+  var choice = await subCycleChoiceModal(_lastSub && _lastSub.next_delivery);
+  if (!choice) return;
+  firstDelivery = choice;
+ } else {
+  var okM = await edaConfirm('お届け頻度の変更', 'お届けを毎月に戻しますか？', { ok: '毎月にする' });
+  if (!okM) return;
+ }
+ try {
+  const result = await window.EDA_API.post('change_subscription_cycle', {
+   email: currentSession.email, cycle: target, current_cycle: current, first_delivery: firstDelivery
+  });
+  if (result.ok) {
+   toast(result.message || 'お届け頻度を変更しました', 'success');
+   refreshSubscription();
+  }
+  else toast('変更できませんでした: ' + (result.error || ''), 'error');
+ } catch (err) {
+  toast('通信エラーが発生しました', 'error');
+ }
+}
+
+/* 隔月にするとき、次回のお届けをどうするか選ぶ */
+function subCycleChoiceModal(nextDate) {
+ return new Promise(function(resolve){
+  var d = nextDate ? formatDate(nextDate) : '次回';
+  var overlay = document.createElement('div');
+  overlay.className = 'eda-modal-overlay';
+  overlay.innerHTML = '<div class="eda-modal">' +
+   '<h3 class="eda-modal-title">隔月（2ヶ月に1回）に変更</h3>' +
+   '<p class="eda-modal-body" style="text-align:left">' + escapeHtml(d) + ' のお届けはどうしますか？</p>' +
+   '<div class="cancel-reason-list">' +
+    '<label class="cancel-reason-opt"><input type="radio" name="cycleFirst" value="keep" checked><span>' + escapeHtml(d) + ' は受け取る（そこから隔月）</span></label>' +
+    '<label class="cancel-reason-opt"><input type="radio" name="cycleFirst" value="skip"><span>' + escapeHtml(d) + ' は休む（翌々月から）</span></label>' +
+   '</div>' +
+   '<div class="eda-modal-actions vertical">' +
+    '<button class="eda-modal-btn" id="cycleOk">この内容で変更する</button>' +
+    '<button class="eda-modal-btn secondary" id="cycleNo">やめる</button>' +
+   '</div></div>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ overlay.classList.add('show'); }); });
+  function close(v){ overlay.classList.remove('show'); setTimeout(function(){ overlay.remove(); resolve(v); }, 180); }
+  overlay.querySelector('#cycleOk').addEventListener('click', function(){
+   var sel = overlay.querySelector('input[name="cycleFirst"]:checked');
+   close(sel ? sel.value : 'keep');
+  });
+  overlay.querySelector('#cycleNo').addEventListener('click', function(){ close(null); });
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) close(null); });
+ });
+}
+/* 次回のお届けに商品を足すリクエスト */
+async function subCustomize() {
+ location.href = 'subscription-customize.html';
 }
 async function subPause() {
  if (!currentSession || !currentSession.email) { await edaAlert('ログインが必要です', '再度ログインしてください'); return; }
+
+ /* 一時停止中なら再開 */
+ if (_lastSub && _lastSub.paused) {
+  var okR = await edaConfirm('定期便の再開', '定期便を再開しますか？\n\nスタッフが確認のうえ、次回のお届け日をご連絡いたします', { ok: '再開する' });
+  if (!okR) return;
+  try {
+   const r = await window.EDA_API.post('resume_subscription', { email: currentSession.email });
+   if (r.ok) {
+    toast(r.next_delivery ? ('再開しました。次回は ' + r.next_delivery + ' です') : '再開を受け付けました', 'success');
+    refreshSubscription();
+   } else { toast('再開に失敗しました: ' + (r.error || ''), 'error'); }
+  } catch (e) { toast('通信エラーが発生しました', 'error'); }
+  return;
+ }
+
  var ok = await edaConfirm('定期便の一時停止', '定期便を一時停止しますか？\nいつでも再開できます\n\nスタッフから停止期間の確認連絡をいたします', { ok: '一時停止する' });
  if (!ok) return;
  try {
@@ -4913,7 +5793,10 @@ async function subPause() {
  email: currentSession.email,
  reason: 'mypage_user_pause_request'
  });
- if (result.ok) toast('一時停止リクエストを受け付けました', 'success');
+ if (result.ok) {
+  toast('一時停止を受け付けました', 'success');
+  refreshSubscription();
+ }
  else toast('申請に失敗しました', 'error');
  } catch (err) {
  toast('通信エラーが発生しました', 'error');
@@ -4997,7 +5880,10 @@ async function subCancel() {
  email: currentSession.email,
  reason: reasonFull
  });
- if (result.ok) toast('解約申請を受け付けました。担当者からご連絡します');
+ if (result.ok) {
+  toast(result.message || '解約を承りました', 'success');
+  refreshSubscription();
+ }
  else toast('申請に失敗しました: ' + (result.error || ''));
  } catch (err) {
  toast('通信エラーが発生しました');
@@ -5113,13 +5999,46 @@ function renderSubscription(sub) {
  '<span class="sub-plan-price">' + formatYen(sub.price || 0) + '<small>/月</small></span>' +
  '</div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">ステータス</span>' +
- '<span class="sub-detail-value" style="color:var(--color-gold)">利用中</span></div>' +
+ '<span class="sub-detail-value" style="color:' + (sub.paused ? 'var(--color-ink)' : 'var(--color-gold)') + '">' +
+ escapeHtml(sub.status_label || (sub.paused ? '一時停止中' : '利用中')) + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">次回お届け日</span>' +
- '<span class="sub-detail-value">' + (sub.next_delivery ? formatDate(sub.next_delivery) : '-') + '</span></div>' +
+ '<span class="sub-detail-value">' + (sub.paused ? '再開後にご案内します' : (sub.next_delivery ? formatDate(sub.next_delivery) : '-')) + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">お届けサイクル</span>' +
  '<span class="sub-detail-value">' + escapeHtml(sub.cycle || '毎月') + '</span></div>' +
  '<div class="sub-detail-row"><span class="sub-detail-label">ご利用開始日</span>' +
  '<span class="sub-detail-value">' + (sub.start_date ? formatDate(sub.start_date) : '-') + '</span></div>';
+
+ /* スキップ済みなら「スキップを取り消す」に変える */
+ _lastSub = sub;
+ var skipBtn = document.getElementById('subSkipBtn');
+ if (skipBtn) {
+  skipBtn.lastChild.textContent = sub.skip_active ? ' スキップを取り消す ' : ' 次回をスキップ ';
+  skipBtn.classList.toggle('undo', !!sub.skip_active);
+ }
+ if (sub.cancel_pending && sub.cancel_note) {
+  card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">終了予定</span>' +
+   '<span class="sub-detail-value">' + escapeHtml(sub.cancel_note) + '</span></div>';
+ }
+ if (sub.skip_active && sub.skipped_delivery) {
+  card.innerHTML += '<div class="sub-detail-row"><span class="sub-detail-label">お休みする回</span>' +
+   '<span class="sub-detail-value">' + escapeHtml(sub.skipped_delivery) + ' のお届け</span></div>';
+ }
+
+ /* 一時停止中なら「再開する」に変える。停止中はスキップ操作を隠す */
+ var pauseBtn = document.getElementById('subPauseBtn');
+ if (pauseBtn) {
+  pauseBtn.lastChild.textContent = sub.paused ? ' 再開する ' : ' 一時停止 ';
+  pauseBtn.classList.toggle('undo', !!sub.paused);
+ }
+ if (skipBtn) skipBtn.style.display = sub.paused ? 'none' : '';
+
+ /* お届け頻度のボタンは、いまが毎月なら「隔月に変更」、隔月なら「毎月に戻す」 */
+ var cycleBtn = document.getElementById('subCycleBtn');
+ if (cycleBtn) {
+  var isEvery2 = String(sub.cycle || '').indexOf('隔月') >= 0;
+  cycleBtn.dataset.target = isEvery2 ? '毎月' : '隔月';
+  cycleBtn.lastChild.textContent = isEvery2 ? ' 毎月に戻す ' : ' 隔月に変更 ';
+ }
 }
 
 /* ---- Logout (LIFF) ---- */
@@ -5200,12 +6119,12 @@ function copyTrackingFallback(text) {
 }
 </script>
 <!-- 商品カタログ（ライブ）— shop.html と同一。products-master.js=静的fallback → products-loader.js が GAS(スプシ public_catalog)から最新の価格/在庫/Stripe価格IDを取得し window.EDA_PRODUCTS_MASTER を上書き。クイックカートはこれを正本とし価格ドリフトを根絶。 -->
-<script src="public/data/products-master.js?v=2026-09-03-p042" defer></script>
-<script src="public/js/products-loader.js?v=005" defer></script>
+<script src="public/data/products-master.js?v=2026-09-10-yakiniku3" defer></script>
+<script src="public/js/products-loader.js?v=007" defer></script>
 <!-- アクセス解析（他ページと同じ analytics.js。ここが無いとこのページの改修は効果を測れない） -->
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-bundle.js?v=010" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
