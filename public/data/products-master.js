@@ -110,6 +110,41 @@
       images: ['public/images/products/drive/hamburg.jpg']
     },
 
+    /* ===== シルバーウィーク大皿セット (2026-09-14 新設・9/20 23:59 まで) =====
+       9/19(土)〜9/23(水)の5連休向け。和牛5種を各200g・計1.0kg にまとめ、
+       送料込み ¥11,000 で出す。単品合計 ¥12,200 ＋ 送料 ¥1,100 ＝ ¥13,300 相当。
+       🧩 components(BOM) は必須。これが無いとセットが売れても5品の在庫が減らず、
+          売り切れていても注文が通る。
+       🔴 総数(20セット)は表示に出さない。出すのは「残り◯セット」だけ(2026-08-31 たろ指示)。
+          単品と在庫を共有しているので「全部で◯セット」という決まった数が存在しない。
+          limitedTotal は限定品の仕組み(締切・残数表示・自動消滅)を有効にする
+          スイッチとして 0 より大きい値が要るだけで、表示には使われない。
+       🚚 送料無料は products シートの freeShip 列(TRUE)が正。小計 ¥11,000 は
+          既存のしきい値でも送料0になるが、しきい値を変えても崩れないようフラグも立てる。
+       ⏰ limitedSoldOutAt = 9/20 23:59 で購入停止(完売表示)、
+          limitedUntil = 9/22 12:00 でカードごと自動で消える。 */
+    {
+      productId: 'P047', variantId: 'SW-OOZARA-SET', sku: 'EDA-SW-OOZARA-SET',
+      stripePriceId: '',
+      name: 'シルバーウィーク大皿セット', variant: '和牛5種 各200g・計1.0kg',
+      /* stock は applyBomStock が構成品から作り直す。ここは取得失敗時の目安 */
+      price: 11000, listPrice: 12200, weight: 1000, stock: 20, temp: '冷凍',
+      published: true,
+      components: [
+        { name: '霜降スライス', qty: 1 },
+        { name: '赤身スライス', qty: 1 },
+        { name: '切り落とし',   qty: 1 },
+        { name: 'バラ焼肉',     qty: 1 },
+        { name: '赤身焼肉',     qty: 1 }
+      ],
+      limitedTotal: 20,         /* 表示には出ない。限定品の仕組みを有効にするだけ */
+      limitedSoldOutAt: '2026/09/20 23:59',
+      limitedUntil: '2026/09/22 12:00',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Silver Week Set',
+      description: '霜降スライス・赤身スライス・切り落とし・バラ焼肉・赤身焼肉を各200g、合計1.0kg。すき焼き、しゃぶしゃぶ、焼肉、牛丼。連休のあいだ何日か分をこれ1つで。送料込みでお届けします。',
+      images: ['public/images/products/drive/sw-oozara-set.jpg']
+    },
     /* ===== はじめてセット (2026-09-08 新設) =====
        全購入者42人の「初めてのご注文」に何が入っていたかを数えて、上位4品で組んだ。
        サイコロステーキ11人 / 切り落とし8人 / バラ焼肉7人 / 赤身スライス7人。
