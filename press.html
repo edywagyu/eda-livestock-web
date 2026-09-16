@@ -3608,6 +3608,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     <li><a href="about.html" data-en="About">会社案内</a></li>
     <li><a href="global.html" data-en="Global">海外展開</a></li>
     <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a href="furusato.html" data-en="Furusato Tax">ふるさと納税</a></li>
     <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
     <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
@@ -4019,7 +4020,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
     </div>
     <div class="cart-shipping-note">
-      ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
+      送料 ¥1,100（北海道・沖縄 ¥2,200）。冷凍便でお届け。
     </div>
     <div class="cart-delivery-note" id="cartDelivery"></div>
     <button class="btn-checkout" id="cartCheckout" data-en="Proceed to checkout">レジに進む — Checkout</button>
@@ -4191,8 +4192,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
   /* ======== CART SYSTEM ======== */
   (function() {
-    // GAS URL は public/js/eda-config.js で集中管理 (デプロイ時1ヶ所のみ変更)
-    const GAS_API_URL = (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || '';
     const CART_KEY = 'eda-cart';
     const FREE_SHIP = 11000;
 
@@ -4387,47 +4386,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       });
     }
 
-    /* --- Checkout → Stripe via GAS API --- */
+    /* --- Checkout → 正規のレジ画面 (checkout.html) ---
+       2026-09-10: ここは以前、住所も送料もギフト指定も飛ばして直接 Stripe を叩く
+       旧式の導線だった。しかもこの3ページ(booking/journey/press)は eda-config.js を
+       読み込んでいないため GAS_API_URL が空文字になり、サイト自身にPOSTして
+       「決済エラー: Unexpected token '<'」で必ず失敗していた。
+       カートは shop と同じ eda-cart を共有しているので、shop.html と同じく
+       checkout.html に渡すだけでよい。 */
     if (checkBtn) {
-      checkBtn.addEventListener('click', async () => {
+      checkBtn.addEventListener('click', () => {
         if (items.length === 0) return;
-
-        /* ボタンをローディング状態に */
-        checkBtn.disabled = true;
-        const originalText = checkBtn.textContent;
-        checkBtn.textContent = '決済ページへ移動中...';
-
-        try {
-          const dateEl = document.getElementById('deliveryDate');
-          const timeEl = document.getElementById('deliveryTime');
-          const res = await fetch(GAS_API_URL + '?action=create_checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              items: items.map(i => ({
-                title: i.title,
-                variant: i.variant,
-                price: i.price,
-                qty: i.qty,
-                variantId: i.variantId
-              })),
-              deliveryDate: dateEl ? dateEl.value : '',
-              deliveryTime: timeEl ? timeEl.value : ''
-            })
-          });
-
-          const result = await res.json();
-
-          if (result.url) {
-            window.location.href = result.url;
-          } else {
-            throw new Error(result.error || '決済セッションの作成に失敗しました');
-          }
-        } catch (err) {
-          alert('決済エラー: ' + err.message + '\nもう一度お試しください。');
-          checkBtn.disabled = false;
-          checkBtn.textContent = originalText;
-        }
+        save(); // 念のため最新を保存
+        location.href = 'checkout.html';
       });
     }
 

@@ -298,26 +298,34 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
-    /* ===== 不揃い品セット（2026-09-03(木) 18:30 発売）=====
-       和牛5種を各200g・計1kg。ステーキはミスジか赤身のランダム。
-       🔴 components なし＝別枠在庫。セットが売れても構成品(ミンチ/赤身ステーキ/
-          赤身スライス/バラ焼肉/切り落とし)の在庫は自動で減らない＝手で調整する
-          （2026-09-02 ryotaro「在庫はこっちでやる」）。
-       🔴 stock は products シート(P043)が正。下の値は取得失敗時のフォールバック。
-       冷凍焼けの実物写真は商品詳細ページ(product.html?id=P043)の2枚目に置く。 */
+    /* ===== 特大ハンバーグ (P044) 2026-09-07 =====
+       田崎さん指示（2026-09-07）。9/4に一般公開した新商品を、公式LINE会員限定
+       ページにも転載する。値引きはしない（通常の商品一覧と同じ ¥1,800）。
+       10%OFF は既存の LINE10 クーポンで決済時に効く＝products の price は触らない。
+       アレルギー: 小麦を使用。 */
     {
-      productId: 'P043', variantId: 'FUZOROI-SET',
-      detailId: 'P043', detailLabel: '実物の写真を見る',
-      name: '不揃い品セット',
-      variant: '和牛5種 各200g 計1kg',
-      price: 7980, listPrice: 10850, stock: 3, limitedTotal: 0,
-      startAt: '2026-09-03T18:30:00+09:00',
-      startLabel: '9月3日（木）18:30',
-      endAt: '2026-09-06T23:59:00+09:00',
-      endLabel: '9月6日（日）23:59',
-      img: 'public/images/products/drive/fuzoroi-set.jpg',
-      desc: '和牛ミンチ／ステーキ（ミスジか赤身がランダムで入ります）／赤身スライス（無くなり次第 霜降スライスとなります）／バラ焼肉／切り落とし。スライス・バラ焼肉・切り落としは冷凍焼けで、表面の色が黒っぽく変わっています。ステーキは形が不揃いです。内容量も味も、通常の商品と同じです。'
+      productId: 'P044', variantId: 'HAMBURG-XL',
+      detailId: 'P044',
+      memberOnly: false,
+      name: '特大ハンバーグ',
+      variant: '1個 250g',
+      price: 1800, listPrice: 0, stock: 20, limitedTotal: 20,
+      img: 'public/images/products/drive/hamburg.jpg',
+      desc: '和牛100%、1個250g。味つけは有機調味料のみ。冷蔵庫で解凍して、フライパンで両面を焼くだけ。※小麦を使用しています。小麦アレルギーの方はご遠慮ください。'
     },
+    /* ===== 不揃い品セット (P043) は 2026-09-07 から「リンクを知っている方だけ」に =====
+       田崎さん指示（2026-09-07）。会員限定ページのカードを外し、商品詳細ページ
+       (product.html?id=P043) の直リンクだけで購入できる状態にする。
+       ミスジ(P023)と同じ運用＝一覧には並べず、個別トークで送ったリンクからのみ。
+       products の published は TRUE のまま・stock も動かしていない（PDPを開くため）。
+       戻すときは下のカードを書き戻す:
+         productId 'P043' / variantId 'FUZOROI-SET' / detailId 'P043'
+         detailLabel '実物の写真を見る' / name '不揃い品セット'
+         variant '和牛5種 各200g 計1kg' / price 7980 / listPrice 10850
+         img 'public/images/products/drive/fuzoroi-set.jpg'
+       🔴 components なし＝別枠在庫。セットが売れても構成品(ミンチ/赤身ステーキ/
+          赤身スライス/バラ焼肉/切り落とし)の在庫は自動で減らない＝手で調整する。
+       冷凍焼けの実物写真は商品詳細ページの2枚目に置いてある。 */
     /* ---------- 一番上はミスジステーキ（2026-09-02 ryotaro指示） ---------- */
     {
       productId: 'P023', variantId: 'MISUJI-STEAK',
@@ -405,29 +413,17 @@ body{
       img: 'public/images/products/drive/yakiniku-set-2.jpg',
       desc: '赤身のうまみのウデと、脂ののったトモバラ。1袋ずつ買うより500円お得です。ご家庭の焼肉・BBQに。'
     }*/
-    {
-      /* 2026-09-06(日) 18:30 発売の数量限定セット。
-         🔴 在庫は本番DBの components (BOM) で カメノコ1 + シンシン1 に展開される。
-            セットが売れると単品(P035/P036)の在庫が自動で減る＝二重販売しない。
-            だから在庫は取り分けず、カメノコ8袋 / シンシン6袋 を単品と共有する
-            (2026-08-30 ryotaro判断・案2)。components を消すと売り越す。
-         🔴 下の stock は取得失敗時の目安。実際は syncCatalog が構成品から
-            min(カメノコ, シンシン) で作り直す。セット行の stock は動かないので
-            そのまま使うと肉が無くなっても完売表示にならない (2026-08-31 修正)。 */
-      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
-      detailId: 'P037',
-      /* 通常サイト(shop.html / products.html)にも同じ商品を出している。
-         name は在庫減算と決済の突合キーなので両方で完全一致させること。
-         会員限定ではないので memberOnly:false ＝「会員限定」バッジを出さない。 */
-      memberOnly: false,
-      name: 'カメノコ・シンシン焼肉セット',
-      variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 6,
-      startAt: '2026-09-06T18:30:00+09:00',
-      startLabel: '9月6日（日）18:30',
-      img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
-      desc: 'モモの中のシンタマを4つに分けた希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。'
-    },
+    /* ===== カメノコ・シンシン焼肉セット (P037) は 2026-09-07 に販売終了 =====
+       田崎さん指示で単品(P035 カメノコ / P036 シンシン)ごと店頭から下げた。
+       本番DB products では P035/P036/P037 とも published=FALSE、P037 は stock=0。
+       単品の実在庫はカメノコ7袋・シンシン5袋が残っている(products の stock はそのまま)。
+       再開するときは products の published を TRUE に戻し、ここに下のカードを書き戻す:
+         productId 'P037' / variantId 'KAMENOKO-SHINSHIN-SET' / detailId 'P037'
+         memberOnly:false / name 'カメノコ・シンシン焼肉セット'
+         variant 'カメノコ200g ＋ シンシン200g' / price 4860 / listPrice 5400 / limitedTotal 6
+         img 'public/images/products/drive/kamenoko-shinshin-set.jpg'
+       在庫は products の components (BOM) で カメノコ1 + シンシン1 に展開されるので、
+       セット行の stock は取り分けず、syncCatalog が min(カメノコ, シンシン) で作り直す。 */
     {
       productId: 'P032', variantId: 'HIRE-CUBE',
       detailId: 'P032',

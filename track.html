@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EDA-LIVESTOCK — Live Shipment Tracking</title>
+<title>EDA-LIVESTOCK — Shipment Tracking</title>
 <meta name="robots" content="noindex" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,7 +12,7 @@
 <style>
   :root{
     --green:#0F3D2E; --green-soft:#1d6e56; --gold:#D4A93B; --gold-deep:#854F0B;
-    --cream:#FAF7F0; --ink:#23241f; --muted:#7c8079; --line:rgba(15,61,46,.13); --line2:rgba(15,61,46,.07);
+    --cream:#FAF7F0; --ink:#23241f; --muted:#56645e; --line:rgba(15,61,46,.13); --line2:rgba(15,61,46,.07);
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -101,6 +101,47 @@
     .prov{margin:16px 18px 0;}
     .locbar{margin-left:18px; margin-right:18px;}
   }
+
+  /* Buyer hierarchy: schedule first, route second, documents/details third. */
+  .hero{padding:28px; align-items:flex-start; gap:14px}
+  .hero>div:first-of-type{flex:1;min-width:230px}
+  .hero h1{font-size:28px;letter-spacing:-.7px;line-height:1.2}
+  .hero .desc{margin-top:10px;font-size:15px}
+  .hero .ic{display:none}
+  .hero .spacer{display:none}
+  .etabox{min-width:245px;text-align:left;padding:16px 20px;background:#edf4f0;border:0}
+  .etabox .k{font-size:12px;color:#365749}
+  .etabox .v{font-size:21px;color:var(--green);line-height:1.4;margin-top:5px}
+  .etabox .timezone{font-size:12px;color:#365749;margin-top:4px}
+  .locbar{background:#f5f7f5;border-color:#d5dfd9;margin-bottom:6px}
+  .locbar .lk{color:#465b50}
+  .locbar .lv{font-size:15px}
+  .map-heading{font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .map-heading button{font:inherit;font-size:12px;min-height:40px;padding:8px 12px;border:1px solid #cbd8d0;border-radius:8px;background:#fff;color:var(--green);cursor:pointer}
+  #map{background:#e9f0f2;height:440px}
+  .main{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}
+  .main>*{min-width:0}
+  .mapnote{font-size:12px;line-height:1.6;text-align:left;padding:6px 0}
+  .fld{font-size:14px;gap:12px}.fld .v{min-width:0;overflow-wrap:anywhere}
+  .fld .k{max-width:35%;white-space:normal}
+  .leg .fn svg,.cpy svg{width:16px;height:16px;flex-shrink:0}
+  .cpy{min-height:40px;min-width:44px;justify-content:center;color:var(--green)}
+  .awb{flex-wrap:wrap;justify-content:flex-end;font-size:15px}
+  .leg .tm{font-size:13px;line-height:1.6}.leg .trk{min-height:44px;display:inline-flex;align-items:center;font-size:12px}
+  .schedule-note{font-size:13px;color:var(--muted);max-width:740px;margin:0 0 20px}
+  .leaflet-tooltip.ap-tip{font-size:12px;padding:5px 9px}
+  .leaflet-control-attribution{font-size:10px}
+  button:focus-visible,a:focus-visible{outline:3px solid #b8861d;outline-offset:3px}
+  @media(max-width:760px){
+    .hero{padding:24px 18px 18px}.hero>div:first-of-type{min-width:0;flex-basis:100%}
+    .hero h1{font-size:26px}.etabox{width:100%;min-width:0}.etabox .v{font-size:22px}
+    .hd{gap:14px;padding-top:12px;padding-bottom:12px}.hd .ord{font-size:12px}.hd .sub{font-size:11px}
+    .main{grid-template-columns:minmax(0,1fr)}#map{height:320px}
+    .tl{grid-template-rows:none!important}.card{padding:16px}.locbar{gap:8px;padding:12px}
+    .locbar .lv{font-size:14px}.locbar .lv span{display:block;margin-top:5px}
+    .live{order:3}.tlsec{padding-top:16px}
+  }
+  @media(prefers-reduced-motion:reduce){.live .pulse{animation:none}.plane-i{transition:none}}
 </style>
   <script src="public/js/error-tracker.js?v=1"></script>
 </head>
@@ -124,19 +165,21 @@
     <div class="etabox" id="etaBox" style="display:none"></div>
   </section>
 
+  <p class="mapnote" id="informationAsOf" style="padding:0 26px 12px;margin:0" role="note"></p>
+
   <div class="locbar" id="locbar" style="display:none">
     <span class="lic" id="locIcon"></span>
-    <div><span class="lk">Current location</span><span class="lv" id="locText"></span></div>
+    <div><span class="lk" id="locLabel">Location · based on schedule</span><span class="lv" id="locText"></span></div>
   </div>
 
   <div class="main" id="mainGrid">
-    <div><div id="map"></div><div class="mapnote" id="mapNote"></div></div>
+    <div class="map-panel"><div class="map-heading">Flight route <button id="resetMap" type="button">Show full route</button></div><div id="map" aria-label="Shipment flight route"></div><div class="mapnote" id="mapNote" role="status"></div><div class="mapnote" id="dataFreshness" role="status"></div></div>
     <div class="card" id="detail"></div>
   </div>
 
-  <section class="tlsec" id="tlsec"><h3>Shipment progress</h3><ul class="tl" id="tl"></ul></section>
+  <section class="tlsec" id="tlsec"><h3>Shipment schedule</h3><p class="schedule-note">Scheduled milestones are not confirmation of completion. Airport arrival is separate from import clearance and delivery.</p><ul class="tl" id="tl"></ul></section>
 
-  <footer class="ft"><div class="awbf" id="awbf">EDA-LIVESTOCK</div><div class="tag">live tracking by EDA-LIVESTOCK</div></footer>
+  <footer class="ft"><div class="awbf" id="awbf">EDA-LIVESTOCK</div><div class="tag">Shipment tracking by EDA-LIVESTOCK</div></footer>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -163,11 +206,10 @@ var AIRPORTS = {
   RMQ:{name:"Taichung",     city:"Taichung", ll:[24.2647,120.6213]},
   AKL:{name:"Auckland",     city:"Auckland", ll:[-37.0082,174.7850]}
 };
-var BOXES_PER_PALLET = 24;            // company rule: 1 pallet per 24 boxes (round up)
 var DEFAULT_DEMO_T = "2026-07-01T15:30:00Z";
 
 var P = new URLSearchParams(location.search);
-var ID = P.get("id") || "carnes-0626";
+var ID = P.get("id") || "";
 var mode, now;
 // 🔴 Default = LIVE (real time). Buyer-facing links must reflect reality, never a
 // simulated in-flight view. Demo is opt-in via ?demo=1; ?t=... scrubs a fixed time.
@@ -228,7 +270,7 @@ function ico(name){
 }
 
 /* ---------- live position (ADS-B via airplanes.live — CORS-enabled, keyless) ---------- */
-var planeMarker=null, liveTimer=null;
+var planeMarker=null, liveTimer=null, activeMap=null;
 function setMapNote(txt,live){ var n=document.getElementById("mapNote"); if(!n)return; n.textContent=txt; n.style.color= live?"var(--gold-deep)":"var(--muted)"; }
 function planeIcon(deg){
   return L.divIcon({className:"",iconSize:[36,36],iconAnchor:[18,18],
@@ -241,22 +283,48 @@ function liveFetch(cs){
     .then(function(r){ return r.ok? r.json() : null; })
     .then(function(d){
       if(!d||!d.ac) return null;
-      for(var i=0;i<d.ac.length;i++){ var a=d.ac[i]; if(a.lat!=null&&a.lon!=null) return {lat:a.lat,lon:a.lon,track:(a.track!=null?a.track:0),alt:(typeof a.alt_baro==="number"?a.alt_baro:null),gs:(typeof a.gs==="number"?a.gs:null)}; }
+      for(var i=0;i<d.ac.length;i++){ var a=d.ac[i]; if(Number.isFinite(a.lat)&&Number.isFinite(a.lon)&&Number.isFinite(a.seen_pos)&&a.seen_pos<=120&&a.seen_pos>=0) return {lat:a.lat,lon:a.lon,track:(a.track!=null?a.track:0),alt:(typeof a.alt_baro==="number"?a.alt_baro:null),gs:(typeof a.gs==="number"?a.gs:null)}; }
       return null;
     }).catch(function(){ return null; });
 }
 function nowHHMM(){ return new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); }
+var liveGeneration=0;
+function stopLive(){liveGeneration++;if(liveTimer){clearInterval(liveTimer);liveTimer=null;}}
 function startLive(cs, fromU){
-  var got=false;
+  stopLive();var generation=liveGeneration;
   function tick(){
+    if(mode==="live") now=Date.now();
     liveFetch(cs).then(function(p){
-      if(!p){ if(!got) setMapNote("Estimated from flight schedule · live position appears once airborne", false); return; }
-      got=true;
-      if(planeMarker) planeMarker.setLatLng([p.lat, unwrap(p.lon, fromU)]).setIcon(planeIcon(p.track));
-      setMapNote("Live position · ADS-B"+(p.alt?(" · "+Math.round(p.alt)+" ft"):"")+" · updated "+nowHHMM(), true);
+      if(generation!==liveGeneration||!S||state.phase!=="flying" || S.legs[state.legIdx].callsign!==cs)return;
+      var badge=document.getElementById("liveBadge");
+      if(!p){
+        badge.style.display="none";
+        document.getElementById("locLabel").textContent="Location · based on schedule";
+        document.getElementById("status").textContent="In flight · scheduled";
+        state=estimatePosition();
+        if(planeMarker && state.phase==="flying") planeMarker.setLatLng([state.pos[0],unwrap(state.pos[1],fromU)]).setIcon(planeIcon(state.head));
+        setMapNote("Live aircraft position unavailable. The marker is estimated from the flight schedule; it is not cargo GPS.",false);
+        return;
+      }
+      badge.style.display="inline-flex";
+      document.getElementById("locLabel").textContent="Aircraft location · live signal";
+      document.getElementById("status").textContent="Aircraft position available";
+      if(planeMarker) planeMarker.setLatLng([p.lat,unwrap(p.lon,fromU)]).setIcon(planeIcon(p.track));
+      setMapNote("Aircraft signal updated "+new Date().toISOString().slice(11,16)+" UTC · refreshes every 45 seconds. Cargo delivery is confirmed separately.",true);
     });
   }
-  tick(); liveTimer=setInterval(tick, 45000);
+  tick(); liveTimer=setInterval(tick,45000);
+}
+// Bundled public-domain land geometry: no tile credentials or watermarks.
+function addBasemap(map){
+  map.createPane("land");map.getPane("land").style.zIndex=200;
+  map.attributionControl.addAttribution('<a href="https://www.naturalearthdata.com/about/terms-of-use/">Natural Earth</a>');
+  fetch("public/vendor/ne_110m_land.geojson").then(function(r){if(!r.ok)throw Error("map");return r.json();}).then(function(data){
+    if(activeMap!==map)return;
+    [-360,0,360].forEach(function(offset){
+      L.geoJSON(data,{pane:"land",interactive:false,coordsToLatLng:function(c){return L.latLng(c[1],c[0]+offset);},style:{color:"#c7d3ca",weight:.7,fillColor:"#f7f9f5",fillOpacity:1}}).addTo(map);
+    });
+  }).catch(function(){setMapNote("Background map unavailable. The flight route and schedule remain available.",false);});
 }
 function probeView(cs){
   document.getElementById("ord").textContent="live flight";
@@ -267,11 +335,11 @@ function probeView(cs){
   document.getElementById("status").textContent="Locating "+cs+"…";
   document.getElementById("statusSub").textContent="live ADS-B · airplanes.live";
   var pmap=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true});
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:9,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(pmap);
+  activeMap=pmap; addBasemap(pmap);
   pmap.setView([25,10],2);
   function tick(){
     liveFetch(cs).then(function(p){
-      if(!p){ document.getElementById("status").textContent="Not currently airborne"; document.getElementById("statusSub").textContent=cs+" — no live ADS-B signal right now"; setMapNote("airplanes.live · no signal",false); return; }
+      if(!p){ document.getElementById("liveBadge").style.display="none"; document.getElementById("status").textContent="Live signal unavailable"; document.getElementById("statusSub").textContent=cs+" — no live ADS-B signal right now"; setMapNote("airplanes.live · no signal",false); return; }
       document.getElementById("status").textContent="In flight (live)";
       document.getElementById("statusSub").textContent=cs+(p.alt?(" · "+Math.round(p.alt)+" ft"):"")+(p.gs?(" · "+Math.round(p.gs)+" kt"):"");
       document.getElementById("liveBadge").style.display="inline-flex";
@@ -292,6 +360,7 @@ function notFound(id,err){
 }
 
 function render(){
+  document.getElementById("locLabel").textContent="Location · based on schedule";
   state = estimatePosition();
   document.getElementById("ord").textContent = "order "+S.order;
   document.getElementById("ordsub").textContent = S.buyer;
@@ -300,22 +369,25 @@ function render(){
   document.getElementById("liveLink").href = "?id="+ID+"&live=1";
 
   var dest = AIRPORTS[S.route[S.route.length-1]].name;
-  var statusText, subText, showEta=false;
-  if(state.phase==="prep"){ statusText="Preparing for departure"; subText="Departing "+AIRPORTS[S.legs[0].from].name+" ·"+S.etd.split("·")[1]+" · destination "+dest; }
-  else if(state.phase==="flying"){ var lg=S.legs[state.legIdx]; statusText="In flight"; subText=lg.flight+" · "+lg.carrier+" · "+AIRPORTS[lg.from].name+" → "+AIRPORTS[lg.to].name+" · "+Math.round(state.frac*100)+"% complete"; showEta=true; }
-  else if(state.phase==="transit"){ statusText="In transit"; subText="Connecting at "+AIRPORTS[state.at].name+" · next leg to "+dest; showEta=true; }
-  else { statusText="Delivered to "+dest; subText="Thank you for choosing Eda-Livestock"; }
+  var statusText, subText, showEta=true;
+  if(state.phase==="prep"){ statusText=S.statusNote||"Preparing for departure"; subText=S.legs[0].flight+" · "+S.airline+" · departs "+S.legs[0].depDisp; }
+  else if(state.phase==="flying"){ var lg=S.legs[state.legIdx]; statusText="In flight · scheduled"; subText=lg.flight+" · "+lg.carrier+" · "+AIRPORTS[lg.from].name+" → "+AIRPORTS[lg.to].name+" · "+"scheduled flight progress"; showEta=true; }
+  else if(state.phase==="transit"){ statusText="Connection · scheduled"; subText="Connecting at "+AIRPORTS[state.at].name+" · next leg to "+dest; showEta=true; }
+  else { statusText="Arrival confirmation pending"; subText="Scheduled arrival time has passed. Airport arrival and delivery have not been confirmed here."; }
   document.getElementById("status").textContent = statusText;
   document.getElementById("statusSub").textContent = subText;
-  if(showEta){ var e=document.getElementById("etaBox"); e.style.display="block"; e.innerHTML='<div class="k">Arriving</div><div class="v">'+S.eta+'</div>'; }
-  if(state.phase==="flying"||state.phase==="transit") document.getElementById("liveBadge").style.display="inline-flex";
+  var checked=Date.parse(S.informationAsOf||"");
+  document.getElementById("informationAsOf").textContent=(Number.isFinite(checked)?"Information as of "+new Date(checked).toLocaleString("en-GB",{timeZone:"Asia/Tokyo",day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:false})+" JST.":"Information verification date not recorded.")+" Flight times are scheduled and subject to change. Loading and delivery require separate confirmation.";
+
+  if(showEta){ var e=document.getElementById("etaBox"); e.style.display="block"; e.innerHTML='<div class="k">Scheduled airport arrival</div><div class="v">'+S.eta+'</div><div class="timezone">'+S.legs[S.legs.length-1].arrDisp+' · destination local time</div>'; }
+  document.getElementById("liveBadge").style.display="none";
 
   /* current location bar */
   var cl;
-  if(state.phase==="prep") cl={ic:"pin", t:AIRPORTS[S.legs[0].from].name+" cargo terminal", n:"awaiting departure ·"+S.etd.split("·")[1]};
-  else if(state.phase==="flying"){ var l2=S.legs[state.legIdx]; cl={ic:"plane", t:"In the air · "+l2.flight+" "+AIRPORTS[l2.from].city+" → "+AIRPORTS[l2.to].city, n:Math.round(state.frac*100)+"% complete · ETA "+S.eta}; }
+  if(state.phase==="prep") cl={ic:"pin", t:AIRPORTS[S.legs[0].from].name+" cargo terminal", n:"departure scheduled · "+S.legs[0].depDisp};
+  else if(state.phase==="flying"){ var l2=S.legs[state.legIdx]; cl={ic:"plane", t:"In the air · "+l2.flight+" "+AIRPORTS[l2.from].city+" → "+AIRPORTS[l2.to].city, n:"estimated from schedule · ETA "+S.eta}; }
   else if(state.phase==="transit") cl={ic:"pin", t:AIRPORTS[state.at].name+" airport", n:"in transit · awaiting next flight"};
-  else cl={ic:"pin", t:dest, n:"delivered"};
+  else cl={ic:"pin", t:dest, n:"scheduled arrival passed · awaiting confirmation"};
   document.getElementById("locbar").style.display="flex";
   document.getElementById("locIcon").innerHTML=ico(cl.ic);
   document.getElementById("locText").innerHTML=cl.t+' <span style="font-weight:400;color:var(--muted)">— '+cl.n+'</span>';
@@ -325,7 +397,7 @@ function render(){
   for(var i=0;i<S.legs.length;i++){
     var lg2=S.legs[i], act=(state.phase==="flying"&&state.legIdx===i);
     legHtml+='<div class="leg'+(act?' act':'')+'"><div class="top"><span class="fn">'+ico("plane")+lg2.flight+'</span>'+
-      '<a class="trk" href="'+lg2.track+'" target="_blank" rel="noopener">track live ▸</a></div>'+
+      '<a class="trk" href="'+lg2.track+'" target="_blank" rel="noopener">Flight status ↗</a></div>'+
       '<div class="rt">'+AIRPORTS[lg2.from].city+' ('+lg2.from+') → '+AIRPORTS[lg2.to].city+' ('+lg2.to+')</div>'+
       '<div class="tm">'+lg2.depDisp+' → '+lg2.arrDisp+'</div></div>';
   }
@@ -338,7 +410,7 @@ function render(){
     '<div class="fld"><span class="k">Carrier</span><span class="v"><span class="carrier">'+ico("plane")+S.airline+'</span></span></div>'+
     '<div style="padding-top:10px"><div class="k" style="color:var(--muted);font-size:13.5px;margin-bottom:6px">Flights</div><div class="legs">'+legHtml+'</div></div>'+
     '<div class="fld"><span class="k">Cargo</span><span class="v">'+S.product+'</span></div>'+
-    '<div class="fld"><span class="k">Pallets</span><span class="v">'+Math.ceil(S.boxes/BOXES_PER_PALLET)+' pallets</span></div>'+
+    '<div class="fld"><span class="k">Pallets</span><span class="v">'+(Number.isInteger(S.pallets)&&S.pallets>0?S.pallets+' pallets':'Not confirmed')+'</span></div>'+
     '<div class="fld"><span class="k">Boxes</span><span class="v">'+S.boxes+' boxes · '+S.temp+'</span></div>'+
     '<div class="fld"><span class="k">Departure (ETD)</span><span class="v">'+S.etd+'</span></div>'+
     '<div class="fld" style="border-bottom:none"><span class="k">Arrival (ETA)</span><span class="v">'+S.eta+'</span></div>';
@@ -361,12 +433,12 @@ function render(){
   document.getElementById("tl").style.gridTemplateRows="repeat("+rows+",auto)";
   for(var i=0;i<n;i++){
     var st=S.steps[i], cls, icon, isFlight=(st.air===true);
-    if(i<curIdx){ cls="done"; icon=ico("check"); }
-    else if(i===curIdx){ cls="active"; icon=ico(isFlight?"plane":"check"); }
+    if(st.verified===true && now>=Date.parse(st.t)){ cls="done"; icon=ico("check"); }
+    else if(i===curIdx){ cls="active"; icon=ico("tag"); }
     else { cls="pending"; icon=ico("tag"); }
     if(i===rows-1) cls+=" col-end";
     html+='<li class="'+cls+'"><span class="dot">'+icon+'</span>'+
-          '<div class="lab">'+st.lab+(st.est?'<span class="est">est.</span>':'')+'</div>'+
+          '<div class="lab">'+st.lab+(st.verified===true?'<span class="est">Confirmed</span>':'<span class="est">Scheduled</span>')+'</div>'+
           '<div class="sub">'+st.sub+'</div></li>';
   }
   tl.innerHTML=html;
@@ -376,8 +448,11 @@ function render(){
 
 /* ---------- map (antimeridian-safe via longitude unwrapping) ---------- */
 function drawMap(){
-  var map=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true});
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:9,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
+  stopLive();
+  if(activeMap){activeMap.remove();activeMap=null;}
+  planeMarker=null;
+  var map=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true,minZoom:1,maxZoom:6,zoomSnap:0.25});
+  activeMap=map; addBasemap(map);
 
   var uLon={}, prevU;
   for(var i=0;i<S.route.length;i++){
@@ -398,7 +473,7 @@ function drawMap(){
   }
   S.route.forEach(function(code){
     L.circleMarker(apLL(code),{radius:5,weight:2,color:"#0F3D2E",fillColor:"#ffffff",fillOpacity:1}).addTo(map)
-      .bindTooltip(code,{permanent:true,direction:"bottom",offset:[0,7],className:"ap-tip"});
+      .bindTooltip(AIRPORTS[code].name+" · "+code,{permanent:true,direction:"bottom",offset:[0,7],className:"ap-tip"});
   });
 
   if(state.phase==="flying"){
@@ -411,26 +486,51 @@ function drawMap(){
       '<svg viewBox="0 0 24 24" width="40" height="40"><path fill="currentColor" stroke="#854F0B" stroke-width="0.6" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5"/></svg></div>';
     L.marker(here,{icon:L.divIcon({className:"",html:pinHtml,iconSize:[40,40],iconAnchor:[20,40]}),zIndexOffset:1000}).addTo(map);
   }
-  setTimeout(function(){ map.fitBounds(L.latLngBounds(routePts).pad(0.15)); },60);
+  function fit(){map.invalidateSize();map.fitBounds(L.latLngBounds(routePts),{padding:[50,40],maxZoom:5});}
+  map.on("resize",fit);
+  document.getElementById("resetMap").onclick=fit;
+  setTimeout(fit,60);
 
-  var note="Estimated position from flight schedule";
+  var note="Route and location based on the flight schedule. Cargo delivery is confirmed separately.";
   if(mode==="live" && state.phase==="flying") note="Estimating from schedule · acquiring live ADS-B…";
   setMapNote(note,false);
 }
 
+/* Refresh the published record; a successful download does not mean the carrier updated it. */
+var dataLoading=false, dataLoadedAt=null, dataRefreshFailed=false;
+function refreshShipment(){
+  if(dataLoading)return Promise.resolve();
+  dataLoading=true;
+  return fetch("track-data.json?ts="+Date.now(),{cache:"no-store"})
+    .then(function(r){if(!r.ok)throw Error("http "+r.status);return r.json();})
+    .then(function(data){
+      var next=data[ID];
+      if(!next){S=null;stopLive();notFound(ID,false);return;}
+      if(!Array.isArray(next.steps)||!Number.isInteger(next.boxes)||next.boxes<=0||!Array.isArray(next.legs)||!next.legs.length||!Array.isArray(next.route)||next.route.length!==next.legs.length+1||
+        next.legs.some(function(l,i){return !AIRPORTS[l.from]||!AIRPORTS[l.to]||next.route[i]!==l.from||next.route[i+1]!==l.to||!Number.isFinite(Date.parse(l.dep))||!Number.isFinite(Date.parse(l.arr))||Date.parse(l.dep)>=Date.parse(l.arr);}))throw Error("invalid schedule");
+      var changed=dataRefreshFailed||JSON.stringify(next)!==JSON.stringify(S);dataRefreshFailed=false;
+      S=next;dataLoadedAt=new Date().toISOString();
+      if(mode==="demo")now=Date.parse(S.demoT||DEFAULT_DEMO_T);
+      else if(mode==="live")now=Date.now();
+      if(changed)render();
+      document.getElementById("dataFreshness").textContent="Published schedule checked: "+dataLoadedAt.replace("T"," ").replace(/\.\d+Z$/," UTC")+" · Carrier changes require confirmation.";
+    }).catch(function(){
+      if(!S){notFound(ID,true);return;}
+      dataRefreshFailed=true;stopLive();document.getElementById("liveBadge").style.display="none";
+      document.getElementById("locLabel").textContent="Location update unavailable";
+      document.getElementById("status").textContent="Tracking refresh unavailable";
+      document.getElementById("dataFreshness").textContent="Schedule refresh unavailable. Showing previously loaded information; confirm changes with EDA-LIVESTOCK.";
+    }).finally(function(){dataLoading=false;});
+}
 /* ---------- boot: load data, route by ?id ---------- */
 if(P.get("probe")){
   probeView(P.get("probe").toUpperCase().trim());
-} else {
-  fetch("track-data.json?ts="+Date.now(),{cache:"no-store"})
-    .then(function(r){ if(!r.ok) throw new Error("http "+r.status); return r.json(); })
-    .then(function(data){
-      S = data[ID];
-      if(!S){ notFound(ID,false); return; }
-      if(mode==="demo") now = Date.parse(S.demoT || DEFAULT_DEMO_T);
-      render();
-    })
-    .catch(function(){ notFound(ID,true); });
+} else if(!ID){notFound("",false);} else {
+  refreshShipment();
+  if(mode==="live"){
+    setInterval(refreshShipment,60000);
+    setInterval(function(){if(!S||dataRefreshFailed)return;now=Date.now();var next=estimatePosition();if(next.phase!==state.phase||next.legIdx!==state.legIdx)render();},30000);
+  }
 }
 </script>
 </body>

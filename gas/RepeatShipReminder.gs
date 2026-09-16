@@ -37,6 +37,13 @@ function rsr_url_()         { return String(cfg('REPEAT_SHIP_REMIND_URL', '') ||
 function rsr_stamp_(d)      { return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy-MM-dd HH:mm'); }
 function rsr_dayToDate_(n)  { return new Date(n * 86400000 - 9 * 3600000); }
 function rsr_md_(n)         { var d = rsr_dayToDate_(n); return Utilities.formatDate(d, 'Asia/Tokyo', 'M月d日'); }
+/* 残り日数の見せ方。期限当日（残り0日）は「あと0日」ではなく「本日最終日」と出す（2026-09-03 田崎さん指示）。 */
+function rsr_leftLabel_(n)  { return (Number(n) > 0) ? ('あと' + Number(n) + '日') : '本日最終日'; }
+
+/* ---- 手動エントリポイント（この2本を set 系より前に置く＝ファイルを開いた時に
+        ONスイッチが選ばれてしまう事故を防ぐ。先頭は送らない Dry。2026-09-07）---- */
+function runRepeatShipRemindDry()  { return repeatShipRemind_('dry');  }   // 送らない。候補だけシートに出す
+function runRepeatShipRemindLive() { return repeatShipRemind_('live'); }   // 実送信（ENABLED=true 必須）
 
 /* ---- 本番ON/OFF（エディタから手で実行する）---- */
 function setRepeatShipRemindOn()  { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_REMIND_ENABLED', 'true');  return 'REPEAT_SHIP_REMIND_ENABLED=true'; }
@@ -46,15 +53,53 @@ function setRepeatShipRemindOff() { PropertiesService.getScriptProperties().setP
 function setRepeatShipHalfOn()  { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_HALF', 'true');  return 'REPEAT_SHIP_HALF=true'; }
 function setRepeatShipHalfOff() { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_HALF', 'false'); return 'REPEAT_SHIP_HALF=false'; }
 
-/* ---- 手動エントリポイント ---- */
-function runRepeatShipRemindDry()  { return repeatShipRemind_('dry');  }   // 送らない。候補だけシートに出す
-function runRepeatShipRemindLive() { return repeatShipRemind_('live'); }   // 実送信（ENABLED=true 必須）
+/* ---- 送料を「半額」か「無料」かで切り替える（2026-09-08 田崎さん指示）----
+   サイト側(決済画面・マイページ・リマインドのLINE/メール)は全部この設定を
+   見ているので、ここを変えるだけで表示と請求が同時に切り替わる。
+   🔴 サイトを先に本番反映してから切り替えること（順序が逆だと表示と請求がズレる）。 */
+function setRepeatShipRateFree() { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_RATE', 'free'); return 'REPEAT_SHIP_RATE=free（送料無料）'; }
+function setRepeatShipRateHalf() { PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_RATE', 'half'); return 'REPEAT_SHIP_RATE=half（送料半額）'; }
+
+/* ---- 何回目のご注文に付けるか（既定5回目）---- */
+function setRepeatShipStage(n) {
+  var v = Number(n);
+  if (!(v >= 1)) return '1以上の数字を渡してください（例: setRepeatShipStage(5)）';
+  PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_STAGE', String(v));
+  return 'REPEAT_SHIP_STAGE=' + v + '（' + v + '回目のご注文に付く）';
+}
+
+/* ---- 期限の日数（既定40日）---- */
+function setRepeatShipDays(n) {
+  var v = Number(n);
+  if (!(v >= 1)) return '1以上の数字を渡してください（例: setRepeatShipDays(60)）';
+  PropertiesService.getScriptProperties().setProperty('REPEAT_SHIP_DAYS', String(v));
+  return 'REPEAT_SHIP_DAYS=' + v + '（前回のお届けから' + v + '日以内）';
+}
+
+/* ---- いまの設定をまとめて確認する（読むだけ・何も変えない）---- */
+function showRepeatShipSettings() {
+  var out = {
+    有効: repeatShipEnabled_(),
+    引く額: repeatShipRate_() === 'free' ? '無料' : '半額',
+    何回目: repeatShipStage_() + '回目',
+    期限: repeatShipDays_() + '日以内',
+    リマインド実送信: rsr_enabled_(),
+    リマインド送信日: rsr_remindDays_() + '日目'
+  };
+  Logger.log(JSON.stringify(out, null, 2));
+  return out;
+}
 
 /* ---- 日次トリガー設置（冪等・1回だけ実行）---- */
 function installRepeatShipRemindTrigger() {
-  var has = ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'runRepeatShipRemindLive'; });
-  if (!has) ScriptApp.newTrigger('runRepeatShipRemindLive').timeBased().everyDays(1).atHour(10).create();
-  return { ok: true, created: !has };
+  /* 2026-09-07 田崎さん指示で 10時 → 18時（カゴ落ち以外は18時に統一）。
+     時刻を変えても効くよう、既存は消して作り直す。 */
+  var removed = 0;
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === 'runRepeatShipRemindLive') { ScriptApp.deleteTrigger(t); removed++; }
+  });
+  ScriptApp.newTrigger('runRepeatShipRemindLive').timeBased().everyDays(1).atHour(18).create();
+  return { ok: true, hour: 18, removed: removed };
 }
 
 /* ============================================================
@@ -184,7 +229,7 @@ function sendRepeatShipLine_(p) {
     '2回目のご注文は送料が半額になります。\n' +
     '　送料 1,100円 → 550円\n' +
     '　（北海道・沖縄は 2,200円 → 1,100円）\n\n' +
-    'お使いいただける期限：' + rsr_md_(p.deadline) + '（あと' + p.daysLeft + '日）\n' +
+    'お使いいただける期限：' + rsr_md_(p.deadline) + '（' + rsr_leftLabel_(p.daysLeft) + '）\n' +
     'クーポンコードは要りません。ご注文時に自動で半額になります。\n\n' +
     '▼ご注文はこちら\n' + rsr_url_();
   return sendLinePush(p.uid, [{ type: 'text', text: text }]);
@@ -196,12 +241,12 @@ function sendRepeatShipMail_(p) {
   MailApp.sendEmail({
     to: p.email,
     name: BRAND_MAIL.sender,
-    subject: '【あと' + p.daysLeft + '日】2回目のご注文は送料半額です｜江田畜産',
+    subject: '【' + rsr_leftLabel_(p.daysLeft) + '】2回目のご注文は送料半額です｜江田畜産',
     body:
       greeting + '\n\n' +
       '2回目のご注文は送料が半額になります。\n' +
       '  送料 1,100円 → 550円（北海道・沖縄は 2,200円 → 1,100円）\n\n' +
-      'お使いいただける期限: ' + deadline + '（あと' + p.daysLeft + '日）\n' +
+      'お使いいただける期限: ' + deadline + '（' + rsr_leftLabel_(p.daysLeft) + '）\n' +
       'クーポンコードは要りません。ご注文時に自動で半額になります。\n\n' +
       '▼ご注文はこちら\n' + rsr_url_() + '\n\n' +
       '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
@@ -213,7 +258,7 @@ function sendRepeatShipMail_(p) {
       rows: [
         ['送料（通常配送）', '<span style="text-decoration:line-through;color:#9aa5a0;">1,100円</span>　550円'],
         ['送料（北海道・沖縄）', '<span style="text-decoration:line-through;color:#9aa5a0;">2,200円</span>　1,100円'],
-        ['ご利用期限', deadline + '（あと' + p.daysLeft + '日）']
+        ['ご利用期限', deadline + '（' + rsr_leftLabel_(p.daysLeft) + '）']
       ],
       ctaLabel: 'ご注文はこちら',
       ctaUrl: rsr_url_(),

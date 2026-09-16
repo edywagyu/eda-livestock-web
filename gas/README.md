@@ -17,11 +17,24 @@ clasp pull            # 本番を取り出す
 # ここで diff を見て、本番にだけある変更を必ず取り込んでから編集する
 clasp push -f
 clasp deploy -i AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ -d <説明>
-clasp deploy -i AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ -d <説明>
 ```
 
-公開設定は上の2本がサイトから使われている（他の7本は過去の版）。
-両方を新しい版に更新しないと、片方だけ古いコードで動き続ける。
+**2026-09-10 以降、サイトが使う窓口は上の1本（`AKfycbx7u3D5…`）に統一した。**
+それまでは決済・マイページ系が `AKfycbxFfdz…`、商品・在庫系が `AKfycbx7u3D5…` と
+2本に分かれており、片方だけ版上げすると「直したのに直らない」が起きていた
+（2026-09-06 のマイページがこれ）。
+
+⚠️ **当面は `AKfycbxFfdz…` も一緒に版上げしておくこと。**
+お客様のブラウザ（特に LINE 内ブラウザ）が古い JS をキャッシュしている間は、
+そちらを叩き続けるため。
+
+```bash
+clasp deploy -i AKfycbxFfdz-H6VcwSypiEFaW1uoPVgkgMfGZbMsMcgIk8KZMUY8_4q-JKU06dnQfd1D6ARcOQ -d <説明>   # 旧窓口（キャッシュ対策・当面のみ）
+```
+
+なお **@HEAD デプロイ（`AKfycbyx9MeW…`）はサイトからは使えない**。
+Google のログイン画面にリダイレクトされる（2026-09-10 実測）ため、
+「push だけで即反映される窓口」をお客様向けに使うことはできない。
 
 ## このフォルダに入れていないファイル
 

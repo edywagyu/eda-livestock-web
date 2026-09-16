@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>リンク集 | 江田畜産 EDA LIVESTOCK</title>
+<meta name="description" content="江田畜産のリンク集。オンラインショップ・公式LINE・ふるさと納税へのご案内です。">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#0A2D21">
+<meta property="og:type" content="website">
+<meta property="og:title" content="リンク集 | 江田畜産 EDA LIVESTOCK">
+<meta property="og:description" content="オンラインショップ・公式LINE・ふるさと納税へのご案内。">
+<meta property="og:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
+<meta property="og:url" content="https://www.eda-livestock.com/links.html">
+<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="https://www.eda-livestock.com/links.html">
+<link rel="icon" href="public/images/favicon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@400..600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --color-forest: #0F3D2E;
+  --color-forest-deep: #0A2D21;
+  --color-forest-light: #143D2B;
+  --color-gold: #D4A93B;
+  --color-gold-bright: #E5B547;
+  --color-cream: #FAF7F0;
+  --font-display: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+  --font-body: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-cream);
+  background: var(--color-forest-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(32px, 8vw, 72px) 20px;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(20, 61, 43, 0.85) 0%, rgba(10, 45, 33, 0.97) 55%, #0A2D21 100%),
+    url('public/images/hero/wagyu-cube-dark.jpg') center / cover no-repeat;
+  opacity: 1;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+/* ================ BRAND ================ */
+.brand { margin-bottom: clamp(28px, 6vw, 40px); }
+.brand-mark {
+  width: clamp(84px, 22vw, 104px);
+  margin: 0 auto 18px;
+  opacity: 0.95;
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  margin: 0;
+}
+.brand-en {
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin: 8px 0 0;
+}
+.brand-lead {
+  font-size: 13px;
+  line-height: 1.9;
+  color: rgba(250, 247, 240, 0.72);
+  margin: 16px 0 0;
+}
+
+/* ================ LINKS ================ */
+.links { display: flex; flex-direction: column; gap: 14px; }
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  text-align: left;
+  background: rgba(250, 247, 240, 0.06);
+  border: 1px solid rgba(212, 169, 59, 0.28);
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.4s var(--ease-out-expo), background 0.3s ease, border-color 0.3s ease;
+}
+.link-card:hover, .link-card:focus-visible {
+  background: rgba(250, 247, 240, 0.11);
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+  outline: none;
+}
+.link-icon {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(212, 169, 59, 0.14);
+  color: var(--color-gold-bright);
+}
+.link-icon svg { width: 22px; height: 22px; display: block; }
+.link-icon.is-line svg { width: 24px; height: 24px; }
+.link-body { flex: 1 1 auto; min-width: 0; display: block; }
+.link-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+.link-desc {
+  display: block;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(250, 247, 240, 0.68);
+  margin: 4px 0 0;
+}
+.link-arrow {
+  flex: 0 0 auto;
+  color: var(--color-gold);
+  opacity: 0.7;
+  transition: transform 0.4s var(--ease-out-expo), opacity 0.3s ease;
+}
+.link-card:hover .link-arrow { transform: translateX(4px); opacity: 1; }
+.link-arrow svg { width: 16px; height: 16px; display: block; }
+
+/* ================ FOOTER ================ */
+.foot {
+  margin-top: clamp(32px, 8vw, 48px);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(250, 247, 240, 0.45);
+}
+.foot p { margin: 0 0 6px; }
+.foot .rule {
+  width: 40px;
+  height: 1px;
+  background: rgba(212, 169, 59, 0.4);
+  margin: 0 auto 16px;
+}
+
+@media (max-width: 380px) {
+  .link-card { padding: 16px; gap: 13px; }
+  .link-icon { flex-basis: 40px; width: 40px; height: 40px; }
+  .link-title { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-card, .link-arrow { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <div class="brand">
+    <picture>
+      <source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp">
+      <img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK" class="brand-mark" width="104" height="104">
+    </picture>
+    <h1 class="brand-name">江田畜産</h1>
+    <p class="brand-en">Eda Livestock</p>
+    <p class="brand-lead">宮崎・霧島連山の麓で育てた無投薬<br>「江田和牛」をお届けしています。</p>
+  </div>
+
+  <nav class="links">
+
+    <a class="link-card" href="https://www.eda-livestock.com/shop.html?src=instagram&amp;l=shop">
+      <span class="link-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+          <path d="M3 6h18"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </span>
+      <span class="link-body">
+        <span class="link-title">オンラインショップ</span>
+        <span class="link-desc">産地直送。</span>
+      </span>
+      <span class="link-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <a class="link-card" href="https://lin.ee/S8GFrFk" data-line-cta="instagram-links">
+      <span class="link-icon is-line" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5.1 8.3v7.4h3.1"/>
+          <path d="M10.6 8.3v7.4"/>
+          <path d="M13.1 15.7V8.3l4 7.4V8.3"/>
+          <path d="M22 8.3h-3.1v7.4H22"/>
+          <path d="M18.9 12h2.6"/>
+        </svg>
+      </span>
+      <span class="link-body">
+        <span class="link-title">公式LINE</span>
+        <span class="link-desc">新商品・数量限定のお知らせをいち早くお届け</span>
+      </span>
+      <span class="link-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </a>
+
+    <a class="link-card" href="https://www.eda-livestock.com/furusato.html?src=instagram&amp;l=furusato">
+      <span class="link-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="8" width="18" height="13" rx="1.5"/>
+          <path d="M12 8v13"/>
+          <path d="M3 12h18"/>
+          <path d="M12 8S9.5 3 7.5 3a2.5 2.5 0 0 0 0 5"/>
+          <path d="M12 8s2.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>
+        </svg>
+      </span>
+      <span class="link-body">
+        <span class="link-title">ふるさと納税</span>
+        <span class="link-desc">宮崎県高原町の返礼品「厳選 江田和牛」</span>
+      </span>
+      <span class="link-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </span>
+    </a>
+
+  </nav>
+
+  <footer class="foot">
+    <div class="rule"></div>
+    <p>江田畜産 / 宮崎県西諸県郡高原町</p>
+    <p>&copy; EDA LIVESTOCK</p>
+  </footer>
+
+</main>
+
+<!-- アクセス解析: このページの表示(page_view)と、LINEボタンのクリック(line_click)を events に記録。
+     ショップ / ふるさと納税は遷移先で ?src=instagram&l=… を拾って src_click が記録される。 -->
+<script src="public/js/analytics.js?v=005" defer></script>
+<script>
+/* lin.ee は analytics.js の自動計測（href に line.me を含むリンク）に当たらないので、ここで拾う */
+document.addEventListener('click', function (e) {
+  var a = e.target && e.target.closest && e.target.closest('a[href*="lin.ee"]');
+  if (a && window.edaAnalytics && window.edaAnalytics.lineClick) {
+    window.edaAnalytics.lineClick();
+  }
+}, true);
+</script>
+
+</body>
+</html>
