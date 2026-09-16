@@ -109,6 +109,8 @@
       description: '和牛 100%、1個 250g。冷蔵庫で解凍してから、フライパンで蒸し焼き。',
       images: ['public/images/products/drive/hamburg.jpg']
     },
+<<<<<<< HEAD
+=======
 
     /* ===== シルバーウィーク大皿セット (2026-09-14 新設・9/20 23:59 まで) =====
        9/19(土)〜9/23(水)の5連休向け。和牛5種を各200g・計1.0kg にまとめ、
@@ -191,6 +193,7 @@
       description: '初めてのご注文でいちばん多く選ばれている4品を、そのまま1つにまとめました。赤身スライス200g／バラ焼肉200g／サイコロステーキ200g／切り落とし200gの計800g。焼く・炒める・煮る、どれもこれ1つで揃います。迷ったらこれを選んでください。',
       images: ['public/images/products/drive/hajimete-set.jpg']
     },
+>>>>>>> origin/main
     {
       productId: 'P009', variantId: 'ROAST-BEEF', sku: 'EDA-ROAST-300',
       stripePriceId: 'price_1Tcbx9GSkhU1UEcik9aUn4RT',

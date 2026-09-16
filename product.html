@@ -501,6 +501,16 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-sub-sec { margin-top: 88px; padding-top: 72px; border-top: 1px solid var(--color-bone); }
 .pdp-sub-wrap { max-width: 560px; margin: 0 auto; }
 
+.pdp-ing { margin: 0 0 12px; }
+.pdp-ing b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 3px; }
+.pdp-ing-note { display: inline-block; margin-left: 6px; font-size: 12.5px; color: var(--color-red); }
+.pdp-nutri { margin: 0 0 12px; }
+.pdp-nutri > div { display: grid; grid-template-columns: 140px 1fr; gap: 16px;
+  padding: 9px 0; border-bottom: 1px solid var(--color-line); font-size: 13.5px; }
+.pdp-nutri dt { margin: 0; color: var(--color-ink-muted); }
+.pdp-nutri dd { margin: 0; color: var(--color-ink); }
+.pdp-ing-src { margin: 0; font-size: 11.5px; color: var(--color-ink-muted); }
+
 /* ============ 部位・調理・併買（2026-09-02 追加） ============ */
 .pdp-cook-steps { list-style: none; counter-reset: cs; margin: 0; padding: 0; }
 .pdp-cook-steps li { counter-increment: cs; display: grid; grid-template-columns: 38px 1fr;
@@ -818,13 +828,23 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         強火で表面を焼き固め、肉汁を閉じ込めます。</p>
       </div>
     </details>
+    <details class="pdp-detail-item" id="pdpLabelItem" hidden>
+      <summary class="pdp-detail-summary">原材料名・栄養成分</summary>
+      <div class="pdp-detail-body" id="pdpLabelBody"></div>
+    </details>
     <details class="pdp-detail-item">
       <summary class="pdp-detail-summary">配送について</summary>
       <div class="pdp-detail-body">
         <p>ヤマト運輸クール宅急便 (冷凍便) でお届けします。<br>
+<<<<<<< HEAD
+        <b>ご入金の確認後、2 営業日以内に発送</b>します。最短 3 日でお届け（目安）。<br>
+        お届け日時のご指定も可能です。<br>
+        ¥11,000 (税込) 以上のご注文で送料無料。北海道のみ追加 ¥500 を頂戴します。</p>
+=======
         最短 3 日でお届け（目安）。お届け日時のご指定も可能です。<br>
         送料は ¥1,100 (税込)、北海道・沖縄は ¥2,200 (税込) を頂戴します。<br>
         贈り物としてお送りする場合は、送料は頂戴しません。</p>
+>>>>>>> origin/main
       </div>
     </details>
     <details class="pdp-detail-item">
@@ -893,8 +913,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
+<<<<<<< HEAD
+<script src="public/data/products-master.js?v=2026-09-04-p044"></script>
+<script src="public/data/pdp-content.js?v=2026-09-14a"></script>
+=======
 <script src="public/data/products-master.js?v=2026-09-14-sw-oozara2"></script>
 <script src="public/data/pdp-content.js?v=2026-09-03-nocook"></script>
+>>>>>>> origin/main
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -925,7 +950,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const hide = (sel) => { const el = document.querySelector(sel); if (el) el.style.display = 'none'; };
     ['.pdp-gallery', '.pdp-variant-section', '.pdp-qty-section', '.pdp-cta-section',
      '#pdpSubscriptionUpsell', '#pdpGiftOption', '.pdp-meta', '.pdp-details',
-     '.pdp-price', '.pdp-price-note', '.pdp-variant-label', '#stickyCta', '#pdpBundle', '#pdpBand', '#pdpRaiseSec', '#pdpSubSec'].forEach(hide);
+     '.pdp-price', '.pdp-price-note', '.pdp-variant-label', '#stickyCta', '#pdpBundle', '#pdpBand', '#pdpRaiseSec', '#pdpSubSec', '#pdpLabelItem'].forEach(hide);
     const t = document.getElementById('pdpTitle');
     if (t) t.textContent = 'お取り扱いを終了しました';
     const d = document.getElementById('pdpDescription');
@@ -1050,6 +1075,23 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   } else {
     const cutItem = document.getElementById('pdpCutItem');
     if (cutItem) cutItem.hidden = true;
+  }
+  /* 原材料名・栄養成分（加工食品だけ。生鮮食品は表示義務がないので出さない） */
+  if (C && C.label) {
+    const L = C.label;
+    const body = document.getElementById('pdpLabelBody');
+    if (body) {
+      body.innerHTML =
+        '<p class="pdp-ing"><b>原材料名</b>' + esc(L.ingredients) +
+        (L.note ? '<span class="pdp-ing-note">' + esc(L.note) + '</span>' : '') + '</p>' +
+        '<p class="pdp-ing"><b>栄養成分表示（' + esc(L.basis) + '）</b></p>' +
+        '<dl class="pdp-nutri">' + (L.nutrition || []).map(function (r) {
+          return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>';
+        }).join('') + '</dl>' +
+        '<p class="pdp-ing-src">' + esc(L.source) + '</p>';
+      const item = document.getElementById('pdpLabelItem');
+      if (item) item.hidden = false;
+    }
   }
   if (PROF && PROF.how) {
     const originEl = document.getElementById('pdpOriginInfo');
