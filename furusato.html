@@ -3,26 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
-<link rel="apple-touch-icon" href="public/images/favicon.svg">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<!-- LINE 限定ページ: サイト導線なし＋検索エンジン非掲載（公式LINEのリンクからのみ利用） -->
-<meta name="robots" content="noindex, nofollow">
-<title>ギフト｜江田畜産 — のし対応・化粧箱入りの和牛ギフト</title>
-<meta name="description" content="のし・名入れ無料、オリジナル化粧箱。出産内祝い・母の日・父の日・お中元・お歳暮・法人ギフトに、江田畜産の和牛ギフト。">
+<title>ふるさと納税で江田和牛を | 宮崎県高原町 返礼品 — 江田畜産</title>
+<meta name="description" content="宮崎県高原町のふるさと納税で選べる江田和牛。楽天ふるさと納税・さとふる・ふるさとチョイス・ANA・JAL・セゾン・Yahoo!・大丸松坂屋・高原町公式「たかふる」の掲載ページ一覧です。">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Gift | 江田畜産の和牛ギフト">
-<meta property="og:description" content="のし対応・化粧箱入り。大切な方への贈り物に江田和牛を。">
+<meta property="og:title" content="ふるさと納税で江田和牛を | 宮崎県高原町 返礼品">
+<meta property="og:description" content="霧島連山の麓で長期肥育した黒毛和牛「江田和牛」。高原町の返礼品を扱うふるさと納税サイトの一覧と、返礼品ラインナップ。">
 <meta property="og:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
-<meta property="og:url" content="https://www.eda-livestock.com/gift.html">
+<meta property="og:url" content="https://www.eda-livestock.com/furusato.html">
 <meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gift | 江田畜産の和牛ギフト">
-<meta name="twitter:description" content="のし対応・化粧箱入り。大切な方への贈り物に江田和牛を。">
+<meta name="twitter:title" content="ふるさと納税で江田和牛を | 宮崎県高原町 返礼品">
+<meta name="twitter:description" content="高原町の返礼品「厳選 江田和牛」を扱うふるさと納税サイトの一覧。">
 <meta name="twitter:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
-<link rel="canonical" href="https://www.eda-livestock.com/gift.html">
+<link rel="canonical" href="https://www.eda-livestock.com/furusato.html">
 
 <style>/* ================================================================
  * EDA-LIVESTOCK Design System
@@ -1510,24 +1504,142 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  aspect-ratio: 4/3;
  position: relative;
  overflow: hidden;
+ background: var(--color-bone);
 }
 .restaurant-card-map iframe {
  position: absolute;
  inset: 0;
  width: 100%;
  height: 100%;
+ border: 0;
+ pointer-events: none;
 }
+.restaurant-card:hover .restaurant-card-map iframe { pointer-events: auto; }
 .restaurant-card-map .restaurant-flag {
  position: absolute;
- top: 16px; left: 16px;
- background: rgba(0,0,0,0.5);
+ top: 12px; left: 12px;
+ background: rgba(15,61,46,0.92);
  color: white;
  font-family: var(--font-display);
- font-size: 11px;
+ font-size: 10.5px;
  letter-spacing: var(--tracking-widest);
- padding: 6px 12px;
- z-index: 2;
+ padding: 5px 12px;
+ z-index: 3;
  pointer-events: none;
+ border: 1px solid rgba(212,169,59,0.5);
+ border-radius: 4px;
+}
+
+/* ===== PREMIUM RESTAURANT CARD ===== */
+.restaurant-card-hero {
+ aspect-ratio: 5/3;
+ position: relative;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 36px 28px;
+ background: linear-gradient(155deg, #080808 0%, #141414 50%, #0f3d2e 100%);
+}
+.restaurant-card-hero::before {
+ content: '';
+ position: absolute;
+ inset: 0;
+ background: radial-gradient(ellipse at 30% 40%, rgba(212,169,59,0.06) 0%, transparent 65%);
+ pointer-events: none;
+}
+.restaurant-card-hero::after {
+ content: '';
+ position: absolute;
+ bottom: 0; left: 10%; right: 10%;
+ height: 1px;
+ background: linear-gradient(90deg, transparent, rgba(212,169,59,0.5), transparent);
+}
+.restaurant-card:hover .restaurant-card-hero {
+ background: linear-gradient(155deg, #0c0c0c 0%, #1a1a1a 50%, #143d2b 100%);
+}
+.restaurant-city-badge {
+ position: absolute;
+ top: 16px; left: 16px;
+ font-family: var(--font-display);
+ font-size: 9.5px;
+ letter-spacing: 0.3em;
+ text-transform: uppercase;
+ color: var(--color-gold);
+ border: 1px solid rgba(212,169,59,0.25);
+ padding: 5px 14px;
+ z-index: 2;
+}
+.restaurant-brand-logo {
+ text-align: center;
+ position: relative;
+ z-index: 1;
+}
+.restaurant-brand-logo .brand-main {
+ display: block;
+ font-family: var(--font-display);
+ font-size: clamp(17px, 1.8vw, 24px);
+ font-weight: 300;
+ color: white;
+ letter-spacing: 0.22em;
+ text-transform: uppercase;
+ line-height: 1.25;
+}
+.restaurant-brand-logo .brand-sub {
+ display: block;
+ font-family: var(--font-display);
+ font-size: 10px;
+ letter-spacing: 0.35em;
+ text-transform: uppercase;
+ color: var(--color-gold);
+ margin-top: 10px;
+}
+.restaurant-brand-logo .brand-icon {
+ display: block;
+ font-size: 20px;
+ margin-bottom: 12px;
+ opacity: 0.7;
+}
+.restaurant-desc {
+ font-size: 14.5px;
+ line-height: 1.85;
+ color: var(--color-ink-muted);
+ margin: 0 0 14px;
+ display: -webkit-box;
+ -webkit-line-clamp: 3;
+ -webkit-box-orient: vertical;
+ overflow: hidden;
+}
+.restaurant-card-body .restaurant-meta {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 10px;
+}
+.restaurant-stars {
+ font-size: 10px;
+ letter-spacing: 2px;
+ color: var(--color-gold);
+}
+/* ── Global Presence badges ── */
+.gp-badge {
+ display: inline-block;
+ padding: 10px 24px;
+ border: 1px solid rgba(212,169,59,0.25);
+ border-radius: 4px;
+ font-family: var(--font-display);
+ font-size: 13px;
+ letter-spacing: 0.2em;
+ color: rgba(255,255,255,0.85);
+ background: rgba(255,255,255,0.03);
+ transition: all 0.3s ease;
+ cursor: default;
+}
+.gp-badge:hover {
+ border-color: rgba(212,169,59,0.5);
+ background: rgba(212,169,59,0.08);
+ color: white;
 }
 .restaurant-card-img::after {
  content: attr(data-label);
@@ -1573,9 +1685,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  color: var(--color-forest);
 }
 .restaurant-loc { font-size: 13px; color: var(--color-ink-muted); margin: 0 0 20px; }
-.restaurant-actions { display: flex; gap: 12px; border-top: 1px solid var(--color-bone); padding-top: 20px; }
+.restaurant-note { font-size: 12px; line-height: 1.7; color: var(--color-ink-muted); margin: 12px 0 0; }
+.restaurant-actions { display: flex; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--color-bone); padding-top: 20px; }
 .restaurant-action {
- flex: 1;
+ flex: 1 1 110px;
  padding: 12px 0;
  font-family: var(--font-display);
  font-size: 11px;
@@ -1592,11 +1705,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .tab {
  padding: 12px 24px;
  font-family: var(--font-display);
- font-size: 12px;
+ font-size: 13px;
+ font-weight: 600;
  letter-spacing: var(--tracking-widest);
- background: transparent;
- border: 1px solid var(--color-bone);
- color: var(--color-ink-muted);
+ background: rgba(255,255,255,0.85);
+ border: 1.5px solid var(--color-forest);
+ color: var(--color-forest);
  cursor: pointer;
  transition: all 0.3s;
 }
@@ -3121,7 +3235,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  .restaurant-card-body { padding: 16px; }
  .restaurant-name { font-size: 16px; }
  .restaurant-loc { font-size: 12px; margin-bottom: 14px; }
- .restaurant-card-img, .restaurant-card-map { aspect-ratio: 3/2; }
+ .restaurant-card-img, .restaurant-card-map, .restaurant-card-hero { aspect-ratio: 3/2; }
+ .restaurant-card-hero { padding: 24px 16px; }
+ .restaurant-brand-logo .brand-main { font-size: 15px !important; }
+ .restaurant-brand-logo .brand-sub { font-size: 9px; }
+ .restaurant-desc { font-size: 13px; -webkit-line-clamp: 2; }
  .restaurant-actions { padding-top: 14px; }
  .restaurant-action { font-size: 10px; padding: 10px 0; }
 
@@ -3605,664 +3723,175 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 
-/* ============ GIFT PAGE (from shop.html) ============ */
-/* ============ 贈答用（写真+商品2点） — 緑トーンで weekly-menu と差別化 ============ */
-.gift-highlight {
- background:
- radial-gradient(circle at 20% 30%, rgba(212,169,59,0.10), transparent 50%),
- linear-gradient(180deg, #143D2B 0%, #0F3D2E 100%);
- padding: 100px 0;
- color: white;
+/* ================================================================
+ * FURUSATO NOZEI PAGE  (furusato.html)
+ * ================================================================ */
+.fz-hero {
+ background: var(--color-forest);
+ color: #fff;
+ padding: clamp(140px, 18vw, 210px) 0 clamp(72px, 9vw, 110px);
  position: relative;
-}
-.gift-highlight::before {
- /* 上部に金色の細い区切り線 — weekly-menu との明確な切り分け */
- content: '';
- position: absolute;
- top: 0; left: 50%; transform: translateX(-50%);
- width: clamp(240px, 50%, 480px); height: 2px;
- background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-}
-.gift-highlight .eyebrow { color: var(--color-gold) !important; }
-.gift-highlight h2 { color: white !important; }
-.gift-highlight p { color: rgba(255,255,255,0.85) !important; }
-.gift-highlight strong { color: var(--color-gold) !important; }
-.gift-hi-inner {
- display: grid;
- grid-template-columns: 1.05fr 1fr;
- gap: 56px;
- align-items: center;
- margin-bottom: 56px;
-}
-.gift-hi-photo {
- position: relative;
- border-radius: 18px;
  overflow: hidden;
- box-shadow: 0 24px 60px rgba(15, 61, 46, 0.18);
- aspect-ratio: 5/4;
- background: var(--color-bone);
 }
-.gift-hi-photo img {
- width: 100%;
- height: 100%;
- object-fit: cover;
- display: block;
- transition: transform 0.6s var(--ease-out-expo);
-}
-.gift-hi-photo:hover img { transform: scale(1.03); }
-.gift-hi-photo-caption {
- position: absolute;
- bottom: 0; left: 0; right: 0;
- padding: 24px 28px 22px;
- background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 100%);
- color: white;
-}
-.gift-hi-photo-tag {
- display: inline-block;
- font-family: var(--font-jp);
- font-size: 11px;
- letter-spacing: 0.04em;
- background: var(--color-gold);
- color: var(--color-forest-deep);
- padding: 5px 12px;
- border-radius: 12px;
- font-weight: 700;
- margin-bottom: 8px;
-}
-.gift-hi-photo-caption p {
- margin: 0;
- font-size: 13px;
- font-weight: 500;
- line-height: 1.6;
- text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-}
-.gift-hi-content h2 {
- font-family: var(--font-jp-serif);
- font-size: clamp(28px, 4.5vw, 42px);
- color: var(--color-forest);
- margin: 0 0 16px;
- line-height: 1.3;
- font-weight: 700;
-}
-.gift-hi-content p {
- color: var(--color-ink-muted);
- line-height: 1.85;
- font-size: 14px;
- margin: 0 0 22px;
-}
-.gift-hi-features {
- list-style: none;
- padding: 0;
- margin: 0 0 22px;
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 6px 16px;
-}
-.gift-hi-features li {
- font-size: 13px;
- color: var(--color-forest);
- font-weight: 500;
-}
-.gift-hi-occasions {
- display: flex;
- flex-wrap: wrap;
- gap: 6px;
-}
-.gift-hi-occ {
- background: white;
- border: 1px solid var(--color-bone);
- font-size: 12px;
- font-weight: 500;
- color: var(--color-forest);
- padding: 6px 12px;
- border-radius: 14px;
-}
-/* 暗緑背景の gift-highlight 内では白基調に */
-.gift-highlight .gift-hi-features li { color: rgba(255,255,255,0.92); }
-.gift-highlight .gift-hi-occ {
- background: rgba(255,255,255,0.08);
- border-color: rgba(212,169,59,0.35);
- color: white;
-}
-
-/* ============ シーズンギフトバナー（強調版） ============ */
-.gift-season-banner {
- position: relative;
- background:
- radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.28), transparent 60%),
- radial-gradient(ellipse at 100% 0%, rgba(255,229,148,0.18), transparent 50%),
- linear-gradient(135deg, #B89030 0%, #D4A93B 40%, #FFE594 70%, #D4A93B 100%);
- border: 2.5px solid #FFE594;
- border-radius: 22px;
- padding: 28px 32px;
- margin: 0 0 36px;
- overflow: hidden;
- box-shadow:
- 0 24px 60px rgba(212,169,59,0.35),
- 0 8px 24px rgba(0,0,0,0.15),
- inset 0 2px 4px rgba(255,255,255,0.5),
- inset 0 -2px 8px rgba(0,0,0,0.15);
-}
-/* シャイン光沢: 斜めにキラッと走る */
-.gift-season-banner::before {
+.fz-hero::before {
  content: '';
- position: absolute;
- top: -50%; left: -120%;
- width: 60%; height: 200%;
- background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
- transform: skewX(-18deg);
- animation: giftSeasonShine 6s ease-in-out infinite;
- pointer-events: none;
+ position: absolute; inset: 0;
+ background: radial-gradient(circle at 78% 22%, rgba(212,169,59,0.14) 0%, transparent 52%);
 }
-@keyframes giftSeasonShine {
- 0% { left: -120%; }
- 60% { left: 130%; }
- 100% { left: 130%; }
-}
-/* 装飾用パターン: 右側にうっすら模様 */
-.gift-season-banner::after {
+.fz-hero::after {
  content: '';
- position: absolute;
- top: 0; right: 0; width: 220px; height: 100%;
+ position: absolute; inset: 0;
  background-image:
- radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 2px, transparent 3px);
- background-size: 28px 28px;
- opacity: 0.6;
+  repeating-linear-gradient(45deg, rgba(212,169,59,0.05) 0 1px, transparent 1px 14px),
+  repeating-linear-gradient(-45deg, rgba(212,169,59,0.05) 0 1px, transparent 1px 14px);
+ opacity: 0.7;
  pointer-events: none;
- mask-image: linear-gradient(90deg, transparent, black 60%);
- -webkit-mask-image: linear-gradient(90deg, transparent, black 60%);
 }
-
-/* シーズン別カラー上書き（ブランドカラー = 深緑 × 金 の範疇で表現） */
-/* 母の日: 金色寄り（明るい・華やか） */
-.gift-season-banner[data-season="mother"] {
- background:
- radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.50), transparent 60%),
- radial-gradient(ellipse at 100% 0%, rgba(255,200,140,0.30), transparent 50%),
- linear-gradient(135deg, #8E6010 0%, #B89030 40%, #FFE594 70%, #D4A93B 100%);
- border-color: #FFE594;
- box-shadow: 0 24px 60px rgba(184,144,48,0.45), 0 8px 24px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.5), inset 0 -2px 8px rgba(0,0,0,0.15);
-}
-/* 父の日: 深緑寄り（落ち着き・上質） */
-.gift-season-banner[data-season="father"] {
- background:
- radial-gradient(ellipse at 0% 50%, rgba(212,169,59,0.35), transparent 60%),
- radial-gradient(ellipse at 100% 0%, rgba(255,229,148,0.20), transparent 50%),
- linear-gradient(135deg, #061410 0%, #0F3D2E 35%, #143D2B 65%, #1B5E3F 100%);
- border-color: var(--color-gold);
- box-shadow: 0 24px 60px rgba(15,61,46,0.5), 0 8px 24px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,229,148,0.18), inset 0 -2px 8px rgba(0,0,0,0.25);
-}
-/* お中元: 中間（緑 × 金のバランス） */
-.gift-season-banner[data-season="ochugen"] {
- background:
- radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.40), transparent 60%),
- radial-gradient(ellipse at 100% 0%, rgba(212,169,59,0.25), transparent 50%),
- linear-gradient(135deg, #143D2B 0%, #1B5E3F 35%, #B89030 75%, #D4A93B 100%);
- border-color: #FFE594;
- box-shadow: 0 24px 60px rgba(27,94,63,0.45), 0 8px 24px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,229,148,0.35), inset 0 -2px 8px rgba(0,0,0,0.18);
-}
-/* お歳暮: 深い金 × 黒（重厚・年末感） */
-.gift-season-banner[data-season="oseibo"] {
- background:
- radial-gradient(ellipse at 0% 50%, rgba(255,229,148,0.45), transparent 60%),
- radial-gradient(ellipse at 100% 0%, rgba(212,169,59,0.30), transparent 50%),
- linear-gradient(135deg, #060F0B 0%, #2D1F08 30%, #8E6010 65%, #D4A93B 100%);
- border-color: #FFE594;
- box-shadow: 0 24px 60px rgba(46,31,8,0.55), 0 8px 24px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,229,148,0.4), inset 0 -2px 8px rgba(0,0,0,0.3);
-}
-
-.gift-season-banner-inner {
- display: flex;
- align-items: center;
- gap: 24px;
- position: relative;
- z-index: 2;
-}
-.gift-season-icon {
- font-size: 64px;
- flex-shrink: 0;
- filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
- animation: giftSeasonBounce 2.4s ease-in-out infinite;
-}
-@keyframes giftSeasonBounce {
- 0%, 100% { transform: translateY(0) rotate(-6deg) scale(1); }
- 50% { transform: translateY(-6px) rotate(6deg) scale(1.05); }
-}
-.gift-season-text {
- flex: 1;
- display: flex;
- flex-direction: column;
- gap: 4px;
-}
-.gift-season-eyebrow {
- font-family: var(--font-numeric);
- font-size: 11.5px;
- letter-spacing: 0.32em;
- font-weight: 800;
- color: rgba(255,255,255,0.95);
- text-transform: uppercase;
- text-shadow: 0 2px 4px rgba(0,0,0,0.3);
- margin-bottom: 6px;
-}
-.gift-season-headline {
+.fz-hero-inner { position: relative; z-index: 1; }
+.fz-mizuhiki { display: block; width: min(280px, 60vw); height: auto; margin: 0 0 28px; }
+.fz-hero-title {
  font-family: var(--font-jp-serif);
- font-size: 26px;
- font-weight: 800;
- color: white;
- line-height: 1.3;
- margin-bottom: 6px;
- text-shadow: 0 3px 10px rgba(0,0,0,0.35);
-}
-.gift-season-meta {
- display: flex;
- flex-wrap: wrap;
- gap: 18px;
- align-items: center;
- margin-top: 10px;
- padding: 10px 16px;
- background: rgba(0,0,0,0.22);
- border-radius: 12px;
- border: 1px solid rgba(255,255,255,0.18);
- width: fit-content;
-}
-.gift-season-meta-item {
- display: flex;
- align-items: center;
- gap: 6px;
- font-family: var(--font-jp);
- font-size: 12.5px;
- color: white;
-}
-.gift-season-meta-item strong {
- font-size: 11px;
- color: rgba(255,255,255,0.85) !important;
- font-weight: 700;
+ font-size: clamp(34px, 5.6vw, 68px);
+ line-height: 1.32;
  letter-spacing: 0.04em;
+ margin: 0 0 28px;
 }
-.gift-season-meta-item span {
- font-variant-numeric: tabular-nums;
- font-weight: 700;
-}
-.gift-season-deadline {
- background: rgba(255,255,255,0.18);
- padding: 6px 12px;
- border-radius: 8px;
-}
-.gift-season-deadline strong { color: rgba(255,255,255,0.85) !important; }
-.gift-season-deadline span { color: #FFE8A0; font-weight: 800; font-size: 13px; }
-
-.gift-season-cta {
- flex-shrink: 0;
- display: inline-flex;
- align-items: center;
- gap: 8px;
- padding: 18px 32px;
- background: white;
- color: #1a1a1a;
- border-radius: 32px;
- font-family: var(--font-jp);
- font-size: 14.5px;
- font-weight: 800;
- letter-spacing: 0.02em;
- text-decoration: none;
- border: 2px solid rgba(255,255,255,0.9);
- box-shadow:
- 0 14px 32px rgba(0,0,0,0.35),
- inset 0 2px 4px rgba(255,255,255,0.6);
- transition: all 0.25s var(--ease-out-expo);
- white-space: nowrap;
- position: relative;
- z-index: 3;
-}
-.gift-season-cta:hover {
- transform: translateY(-3px) scale(1.04);
- box-shadow: 0 20px 44px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.6);
-}
-
-@media (max-width: 720px) {
- /* gift-season banner: コンパクト + 改行禁則 (Tom指示で更に小さく) */
- .gift-season-banner {
- padding: 12px 14px;
- margin-bottom: 14px;
- border-radius: 12px;
- }
- .gift-season-banner-inner {
- flex-direction: row;
- align-items: center;
- gap: 10px;
- flex-wrap: nowrap;
- }
- .gift-season-icon {
- font-size: 24px;
- flex-shrink: 0;
- align-self: center;
- filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
- }
- .gift-season-eyebrow {
- font-size: 8.5px;
- letter-spacing: 0.14em;
- margin-bottom: 2px;
- white-space: nowrap;
- }
- .gift-season-headline {
- font-size: 12.5px;
- text-align: left;
- word-break: keep-all;
- overflow-wrap: anywhere;
- line-height: 1.35;
- margin-bottom: 3px;
- }
- .gift-season-text {
- align-items: flex-start;
- text-align: left;
- flex: 1;
- min-width: 0;
- }
- .gift-season-meta {
- flex-direction: row;
- align-items: center;
- gap: 4px;
- padding: 0;
- width: auto;
- background: transparent;
- border: 0;
- flex-wrap: nowrap;
- margin-top: 2px;
- }
- /* 受付期間・出荷日は非表示 (情報過多防止) — 締切のみ表示 */
- .gift-season-meta > .gift-season-meta-item:not(.gift-season-deadline) {
- display: none !important;
- }
- /* 2026-05-27: Tom 指示によりカウントダウン (.gift-season-deadline) も非表示 */
- .gift-season-deadline {
- display: none !important;
- padding: 2px 8px;
- background: rgba(255,255,255,0.18);
- border-radius: 8px;
- margin-top: 0;
- }
- .gift-season-deadline strong {
- font-size: 8.5px !important;
- white-space: nowrap;
- }
- .gift-season-deadline span {
- font-size: 12px !important;
- white-space: nowrap;
- }
- .gift-season-cta {
- width: auto;
- justify-content: center;
- padding: 8px 14px;
- font-size: 11.5px;
- flex-shrink: 0;
- align-self: center;
- border-radius: 18px;
- min-height: 36px;
- }
-}
-
-/* ギフト商品 3点グリッド（松・竹・梅） */
-.gift-products-grid {
- display: grid;
- grid-template-columns: repeat(3, 1fr);
- gap: 20px;
- margin-top: 20px;
-}
-.gift-product-card {
- background: white;
- border-radius: 16px;
- overflow: hidden;
- display: flex;
- flex-direction: column;
- gap: 0;
- border: 1px solid var(--color-bone);
- transition: all 0.35s var(--ease-out-expo);
-}
-.gift-product-card:hover {
- transform: translateY(-4px);
- box-shadow: 0 16px 40px rgba(15,61,46,0.12);
- border-color: var(--color-gold);
-}
-.gift-product-img {
- width: 100%;
- aspect-ratio: 4/3; /* バランス重視: 縦長ではなく自然な比率に */
- background-size: cover;
- background-position: center;
- position: relative;
- background-color: #000;
-}
-/* 松（ヒレ）専用: fillet.jpg を綺麗にセンタリング（重心がやや上にあるので調整） */
-.gift-product-img--fillet {
- background-size: cover;
- background-position: center 40%; /* 肉の重心をフレーム中央へ */
- background-color: #1a1a1a;
-}
-.gift-product-rank {
- position: absolute;
- top: 14px; left: 14px;
- width: 40px; height: 40px;
- border-radius: 50%;
- background: var(--color-gold);
- color: var(--color-forest-deep);
- display: flex;
- align-items: center;
- justify-content: center;
- font-family: var(--font-jp-serif);
- font-size: 20px;
- font-weight: 700;
- box-shadow: 0 4px 12px rgba(212,169,59,0.4);
-}
-/* 竹は深緑 / 梅は紅梅 */
-.gift-product-rank.rank-take {
- background: linear-gradient(135deg, #1B5E3F, #0F3D2E);
- color: #FFE594;
- box-shadow: 0 4px 12px rgba(15,61,46,0.4);
-}
-.gift-product-rank.rank-ume {
- background: linear-gradient(135deg, #C44569, #8E2746);
- color: #FFEFE5;
- box-shadow: 0 4px 12px rgba(142,39,70,0.4);
-}
-.gift-product-body {
- flex: 1;
- padding: 22px 24px;
- display: flex;
- flex-direction: column;
-}
-.gift-product-body h3 {
- font-family: var(--font-jp-serif);
- font-size: 15px;
- font-weight: 700;
- color: var(--color-forest);
- margin: 0 0 8px;
- line-height: 1.4;
-}
-.gift-product-body p {
- font-size: 12.5px;
- color: var(--color-ink); /* 視認性UP（muted→ink） */
- line-height: 1.7;
- margin: 0 0 16px;
- flex: 1;
- display: -webkit-box;
- -webkit-line-clamp: 3;
- -webkit-box-orient: vertical;
- overflow: hidden;
-}
-.gift-product-meta {
- display: flex;
- flex-direction: column;
- align-items: flex-start;
- gap: 6px;
- margin-bottom: 14px;
- padding-bottom: 14px;
- border-bottom: 1px solid var(--color-bone);
-}
-.gift-product-vol {
- font-size: 12px;
- color: var(--color-ink); /* muted→ink で視認性UP */
- font-weight: 600;
-}
-.gift-product-price {
- font-family: var(--font-numeric);
- font-size: 22px;
- font-weight: 700;
- color: var(--color-forest);
- letter-spacing: -0.01em;
- display: flex;
- flex-direction: column;
- gap: 2px;
-}
-.gift-product-price small {
- font-family: var(--font-jp);
- font-size: 12px;
- color: var(--color-ink-muted);
- font-weight: 600;
-}
-.gift-product-cta {
- font-family: var(--font-jp);
- font-size: 13px;
- font-weight: 600;
- color: var(--color-forest); /* gold-soft → forest (WCAG 17:1) */
- text-decoration: none;
- letter-spacing: 0.02em;
- padding: 14px 0;
- border-bottom: 1px solid var(--color-forest);
- display: inline-block;
- min-height: 44px;
- transition: opacity 0.2s;
-}
-.gift-product-cta:hover { opacity: 0.7; }
-
-@media (max-width: 720px) {
- .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
- .gift-hi-features { grid-template-columns: 1fr; }
- /* モバイル: 縦スクロール 1列 で大きめに表示（読みやすさ優先） */
- /* モバイル: 横スクロール (松・竹・梅) — Tom指示 */
- .gift-products-grid {
- display: flex;
- flex-direction: row;
- grid-template-columns: unset;
- overflow-x: auto;
- overflow-y: hidden;
- gap: 12px;
- scroll-snap-type: x mandatory;
- -webkit-overflow-scrolling: touch;
- padding: 4px 16px 12px;
- margin: 0 -16px;
- scrollbar-width: none;
- }
- .gift-products-grid::-webkit-scrollbar { display: none; }
- .gift-product-card {
- border-radius: 12px;
- flex: 0 0 70%;
- max-width: 250px;
- scroll-snap-align: start;
- }
- /* 画像: アスペクト比 1:1 で正方形にしてスタイリッシュに (180px固定→aspect-ratio 1) */
- .gift-product-img { flex: 0 0 auto; aspect-ratio: 1 / 1; height: auto; }
- /* 本体: パディング詰めて情報を密に */
- .gift-product-body { padding: 14px 14px 14px; gap: 6px; }
- .gift-product-body h3 { font-size: 13.5px; line-height: 1.35; margin: 0 0 4px; }
- .gift-product-body p { font-size: 11.5px; line-height: 1.55; -webkit-line-clamp: 2; margin: 0 0 8px; flex: 0 0 auto; }
- .gift-product-meta { gap: 2px; margin-bottom: 10px; padding-bottom: 10px; }
- .gift-product-vol { font-size: 11px; }
- .gift-product-price { font-size: 18px; flex-direction: row; align-items: baseline; gap: 6px; }
- .gift-product-price small { font-size: 12px; }
- .gift-product-cta { font-size: 12px; padding: 8px 0; min-height: 36px; }
- .gift-product-vol { font-size: 11px; }
- .gift-product-price { font-size: 18px; }
- .gift-product-cta { font-size: 12px; }
-}
-.gift-hi-photo {
- position: relative;
- border-radius: 18px;
- overflow: hidden;
- box-shadow: 0 24px 60px rgba(15, 61, 46, 0.18);
- aspect-ratio: 5/4;
- background: var(--color-bone);
-}
-.gift-hi-photo img {
- width: 100%;
- height: 100%;
- object-fit: cover;
- display: block;
- transition: transform 0.6s var(--ease-out-expo);
-}
-.gift-hi-photo:hover img { transform: scale(1.03); }
-.gift-hi-photo-caption {
- position: absolute;
- bottom: 0; left: 0; right: 0;
- padding: 24px 28px 22px;
- background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 100%);
- color: white;
-}
-.gift-hi-photo-tag {
- display: inline-block;
+.fz-hero-title .accent { color: var(--color-gold); }
+.fz-hero-en {
  font-family: var(--font-display);
- font-size: 11px;
- letter-spacing: 0.14em;
- background: var(--color-gold);
- color: var(--color-forest-deep);
- padding: 5px 12px;
- border-radius: 12px;
- font-weight: 700;
- margin-bottom: 8px;
-}
-.gift-hi-photo-caption p {
- margin: 0;
- font-size: 13px;
- font-weight: 500;
- line-height: 1.6;
- text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-}
-.gift-hi-content h2 {
- font-family: var(--font-jp-serif);
- font-size: clamp(28px, 4.5vw, 44px);
- color: var(--color-forest);
- margin: 0 0 16px;
- line-height: 1.3;
- font-weight: 700;
-}
-.gift-hi-content p {
- color: var(--color-ink-muted);
- line-height: 1.85;
- font-size: 15px;
- margin: 0 0 24px;
-}
-.gift-hi-features {
- list-style: none;
- padding: 0;
- margin: 0 0 24px;
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 8px 16px;
-}
-.gift-hi-features li {
- font-size: 13px;
- color: var(--color-forest);
- font-weight: 500;
-}
-.gift-hi-occasions {
- display: flex;
- flex-wrap: wrap;
- gap: 6px;
+ font-size: clamp(11px, 1vw, 13px);
+ letter-spacing: var(--tracking-widest);
+ color: var(--color-gold);
+ text-transform: uppercase;
+ display: block;
  margin-bottom: 20px;
 }
-.gift-hi-occ {
- background: white;
- border: 1px solid var(--color-bone);
+.fz-hero-lead { font-size: clamp(15px, 1.3vw, 18px); line-height: 1.95; max-width: 660px; opacity: 0.92; margin: 0 0 36px; }
+.fz-hero-meta { display: flex; flex-wrap: wrap; gap: 10px; }
+.fz-tag {
+ border: 1px solid rgba(212,169,59,0.5);
+ color: var(--color-gold);
  font-size: 12px;
- font-weight: 500;
- color: var(--color-forest);
- padding: 6px 12px;
- border-radius: 14px;
-}
-@media (max-width: 720px) {
- .gift-hi-inner { grid-template-columns: 1fr; gap: 32px; }
- .gift-hi-features { grid-template-columns: 1fr; }
- .gift-highlight { padding: 60px 0; }
+ letter-spacing: 0.08em;
+ padding: 7px 15px;
+ border-radius: 999px;
 }
 
+/* ---- 共通セクション見出し ---- */
+.fz-sec { padding: clamp(56px, 8vw, 104px) 0; }
+.fz-sec-head { max-width: 760px; margin: 0 0 48px; }
+.fz-sec-title {
+ font-family: var(--font-jp-serif);
+ font-size: clamp(24px, 3.4vw, 40px);
+ color: var(--color-forest);
+ line-height: 1.45;
+ margin: 14px 0 18px;
+ letter-spacing: 0.02em;
+}
+.fz-sec-lead { font-size: 16px; line-height: 1.95; color: var(--color-ink-muted); margin: 0; }
+.fz-rule { width: 56px; height: 2px; background: var(--color-gold); margin: 0 0 22px; }
+
+/* ---- 3ステップ ---- */
+.fz-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.fz-step {
+ background: #fff;
+ border: 1px solid var(--color-bone);
+ border-top: 3px solid var(--color-gold);
+ padding: 30px 26px 28px;
+}
+.fz-step-no {
+ font-family: var(--font-display);
+ font-size: 11px; letter-spacing: var(--tracking-widest);
+ color: var(--color-gold-soft); display: block; margin-bottom: 12px;
+}
+.fz-step h3 { font-family: var(--font-jp-serif); font-size: 19px; color: var(--color-forest); margin: 0 0 10px; }
+.fz-step p { font-size: 14px; line-height: 1.85; color: var(--color-ink-muted); margin: 0; }
+
+/* ---- ポータル一覧 ---- */
+.fz-portals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.fz-portal {
+ display: flex; flex-direction: column;
+ background: #fff;
+ border: 1px solid var(--color-bone);
+ padding: 28px 26px 24px;
+ position: relative;
+ transition: transform 0.45s var(--ease-out-expo), box-shadow 0.45s var(--ease-out-expo), border-color 0.3s;
+}
+.fz-portal:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(15,61,46,0.10); border-color: var(--color-gold); }
+.fz-portal-badge {
+ font-family: var(--font-display);
+ font-size: 10px; letter-spacing: var(--tracking-widest);
+ color: var(--color-gold-soft); margin-bottom: 14px;
+}
+.fz-portal-name {
+ font-family: var(--font-jp-serif);
+ font-size: 21px; color: var(--color-forest); line-height: 1.4; margin: 0 0 6px;
+}
+.fz-portal-en { font-size: 11px; letter-spacing: 0.12em; color: var(--color-ink-muted); margin: 0 0 16px; }
+.fz-portal-note { font-size: 13px; line-height: 1.8; color: var(--color-ink-muted); margin: 0 0 22px; flex: 1; }
+.fz-portal-link {
+ font-size: 13px; font-weight: 600; color: var(--color-forest);
+ border-top: 1px solid var(--color-line); padding-top: 14px;
+ display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.fz-portal:hover .fz-portal-link { color: var(--color-gold-soft); }
+.fz-portal-link span:last-child { transition: transform 0.35s var(--ease-out-expo); }
+.fz-portal:hover .fz-portal-link span:last-child { transform: translateX(5px); }
+
+/* ---- 返礼品テーブル ---- */
+.fz-items-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.fz-items { width: 100%; border-collapse: collapse; min-width: 620px; background: #fff; }
+.fz-items thead th {
+ font-family: var(--font-display);
+ font-size: 10px; letter-spacing: var(--tracking-widest);
+ color: var(--color-gold-soft); text-align: left;
+ padding: 14px 18px; border-bottom: 2px solid var(--color-gold);
+ white-space: nowrap; font-weight: 600;
+}
+.fz-items tbody td { padding: 16px 18px; border-bottom: 1px solid var(--color-bone); font-size: 14px; line-height: 1.7; vertical-align: middle; }
+.fz-items tbody tr:hover { background: rgba(212,169,59,0.05); }
+.fz-item-name { font-family: var(--font-jp-serif); font-size: 15px; color: var(--color-forest); }
+.fz-item-code { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.1em; color: var(--color-ink-muted); white-space: nowrap; }
+.fz-item-amount { font-family: var(--font-display); font-size: 16px; color: var(--color-forest); white-space: nowrap; font-weight: 600; }
+.fz-item-amount small { font-size: 11px; font-weight: 400; opacity: 0.7; margin-left: 2px; }
+.fz-items-note { font-size: 13px; line-height: 1.85; color: var(--color-ink-muted); margin: 18px 0 0; }
+
+/* ---- 生産者パネル ---- */
+.fz-maker { background: var(--color-forest); color: #fff; }
+.fz-maker .fz-sec-title { color: #fff; }
+.fz-maker-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.fz-maker p { font-size: 16px; line-height: 2; opacity: 0.92; margin: 0 0 22px; }
+.fz-facts { border-top: 1px solid var(--color-line); }
+.fz-fact { display: grid; grid-template-columns: 128px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--color-line); font-size: 14px; }
+.fz-fact dt { color: var(--color-gold); font-size: 12px; letter-spacing: 0.08em; }
+.fz-fact dd { margin: 0; opacity: 0.94; line-height: 1.8; }
+
+/* ---- 注意書き ---- */
+.fz-notes { background: var(--color-paper); }
+.fz-note-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 40px; }
+.fz-note h4 { font-family: var(--font-jp-serif); font-size: 16px; color: var(--color-forest); margin: 0 0 8px; }
+.fz-note p { font-size: 14px; line-height: 1.9; color: var(--color-ink-muted); margin: 0; }
+
+/* ---- 最終CTA ---- */
+.fz-cta { background: var(--color-cream); text-align: center; }
+.fz-cta-inner { max-width: 640px; margin: 0 auto; }
+.fz-btn {
+ display: inline-block;
+ background: var(--color-forest); color: #fff;
+ font-size: 14px; letter-spacing: 0.06em;
+ padding: 16px 40px; margin-top: 8px;
+ transition: background 0.3s, transform 0.3s;
+}
+.fz-btn:hover { background: var(--color-gold-soft); transform: translateY(-2px); }
+
+@media (max-width: 1024px) {
+ .fz-portals { grid-template-columns: repeat(2, 1fr); }
+ .fz-maker-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+ .fz-steps, .fz-portals, .fz-note-grid { grid-template-columns: 1fr; }
+ .fz-fact { grid-template-columns: 104px 1fr; }
+}
 </style>
 <link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
@@ -4282,11 +3911,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </a>
  <nav class="primary-nav">
   <ul class="nav-list">
-    <li><a class="current" href="shop.html" data-en="Shop">ショップ</a></li>
+    <li><a href="shop.html" data-en="Shop">ショップ</a></li>
     <li><a href="organic.html" data-en="Organic">オーガニック</a></li>
     <li><a href="about.html" data-en="About">会社案内</a></li>
     <li><a href="global.html" data-en="Global">海外展開</a></li>
     <li><a href="restaurants.html" data-en="Stockists">お取扱店</a></li>
+    <li><a class="current" href="furusato.html" data-en="Furusato Tax">ふるさと納税</a></li>
     <li><a href="contact.html" data-en="Contact">お問い合わせ</a></li>
     <li><a class="nav-mypage-link" href="mypage.html" data-en="My Page">マイページ</a></li>
   </ul>
@@ -4324,348 +3954,243 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
 </header>
 
-<!-- ========= GIFT PAGE HEADER ========= -->
-<section class="page-header">
- <div class="container page-header-content">
- <span class="eyebrow page-eyebrow">— Gift / 贈答用 —</span>
- <h1 class="page-title">
- A Gift of<br/>
- <span class="accent">Eda Wagyu.</span>
- </h1>
- <p class="page-subtitle">
- 大切な方へ、上質な江田和牛を。のし・名入れ無料、オリジナル化粧箱でお届けします。<br/>
- 出産内祝い・母の日・父の日・お中元・お歳暮・法人ギフトに。
- </p>
+<!-- ========= HERO ========= -->
+<section class="fz-hero">
+ <div class="container fz-hero-inner">
+  <svg class="fz-mizuhiki" viewBox="0 0 280 54" fill="none" aria-hidden="true">
+   <path d="M2 30 C 46 2, 92 2, 122 24 C 132 32, 148 32, 158 24 C 188 2, 234 2, 278 30" stroke="#D4A93B" stroke-width="1.6" opacity="0.95"/>
+   <path d="M2 40 C 46 12, 92 12, 122 34 C 132 42, 148 42, 158 34 C 188 12, 234 12, 278 40" stroke="#D4A93B" stroke-width="1.6" opacity="0.5"/>
+   <path d="M2 20 C 46 -8, 92 -8, 122 14 C 132 22, 148 22, 158 14 C 188 -8, 234 -8, 278 20" stroke="#D4A93B" stroke-width="1.6" opacity="0.28"/>
+  </svg>
+  <span class="fz-hero-en">Furusato Tax Donation — Takaharu, Miyazaki</span>
+  <h1 class="fz-hero-title">ふるさと納税で、<br/><span class="accent">江田和牛</span>を受け取る。</h1>
+  <p class="fz-hero-lead">江田畜産は、宮崎県高原町のふるさと納税の返礼品事業者です。<br/>
+  霧島連山の麓で長期肥育した黒毛和牛「江田和牛」を、下記のふるさと納税サイトからお選びいただけます。<br/>
+  どのサイトからでも、お届けするお肉は同じ、江田畜産から直接発送するものです。</p>
+  <div class="fz-hero-meta">
+   <span class="fz-tag">宮崎県 高原町</span>
+   <span class="fz-tag">抗生物質・成長促進剤・ホルモン剤 不使用</span>
+   <span class="fz-tag">ワンストップ特例 オンライン申請対応</span>
+  </div>
  </div>
 </section>
 
-<section class="gift-highlight" id="gift-highlight">
-<!-- 旧 footer link 互換用 anchor -->
-<span id="gift" style="display:block;position:relative;top:-80px"></span>
+<!-- ========= ふるさと納税サイト一覧 ========= -->
+<section class="fz-sec reveal" style="background: var(--color-cream);">
  <div class="container">
+  <div class="fz-sec-head">
+   <div class="fz-rule"></div>
+   <span class="eyebrow" style="color: var(--color-gold-soft);">Where to Donate</span>
+   <h2 class="fz-sec-title">江田和牛を掲載しているふるさと納税サイト</h2>
+   <p class="fz-sec-lead">お使いのサイトのボタンから、江田和牛の返礼品ページへ直接移動できます。寄附金額・在庫・発送時期は各サイトの表示が最新です。</p>
+  </div>
 
- <!-- ====== シーズン別ギフト受付バナー（自動切替） ====== -->
- <div class="gift-season-banner" id="giftSeasonBanner" data-season="">
- <div class="gift-season-banner-inner">
- <div class="gift-season-icon" id="giftSeasonIcon">🎁</div>
- <div class="gift-season-text">
- <div class="gift-season-eyebrow" id="giftSeasonEyebrow">NOW ACCEPTING</div>
- <div class="gift-season-headline" id="giftSeasonHeadline">大切な方へのGIFT 受付中</div>
- <div class="gift-season-meta">
- <span class="gift-season-meta-item">
- <strong>📅 受付期間</strong>
- <span id="giftSeasonRange">通年</span>
- </span>
- <span class="gift-season-meta-item">
- <strong>🚚 出荷日</strong>
- <span id="giftSeasonShip">ご注文後 3〜5 日以内</span>
- </span>
- <span class="gift-season-meta-item gift-season-deadline" id="giftSeasonDeadlineBox" style="display:none">
- <strong>⏳ 締切まで</strong>
- <span id="giftSeasonDeadline">残り — 日</span>
- </span>
- </div>
- </div>
- <a href="#gift-products" class="gift-season-cta" id="giftSeasonCta">予約する →</a>
- </div>
- </div>
+  <div class="fz-portals">
 
- <div class="gift-hi-inner">
- <div class="gift-hi-photo">
- <picture><source type="image/webp" srcset="public/images/products/drive/gift-box.webp"><img src="public/images/products/drive/gift-box.jpg" alt="江田畜産 御歳暮ギフトボックス（のし対応・化粧箱入り）" loading="lazy"></picture>
- <div class="gift-hi-photo-caption">
- <span class="gift-hi-photo-tag">のし対応 / 化粧箱</span>
- <p>御歳暮・お中元・内祝い、すべての贈答シーンに。</p>
- </div>
- </div>
- <div class="gift-hi-content">
- <span class="eyebrow text-gold has-dash" style="margin-bottom: 12px; display:block;">For Someone You Care</span>
- <h2>気遣いの贈り物に。</h2>
- <p>健康を大切にされる方への、特別な贈り物。<br/>江田畜産オリジナル化粧箱・のし無料・直接配送対応。<br/>冷凍で6ヶ月日持ちするから、相手の都合に合わせて召し上がっていただけます。</p>
- <ul class="gift-hi-features">
- <li>✓ のし・名入れ 無料</li>
- <li>✓ オリジナル化粧箱</li>
- <li>✓ 直接配送・カード同梱</li>
- <li>✓ 賞味期限6ヶ月で日持ち</li>
- </ul>
- <div class="gift-hi-occasions">
- <span class="gift-hi-occ">👶 出産・内祝い</span>
- <span class="gift-hi-occ">🌸 母の日・父の日</span>
- <span class="gift-hi-occ">🎁 お中元・お歳暮</span>
- <span class="gift-hi-occ">🏢 法人ギフト</span>
- </div>
- </div>
- </div>
+   <a class="fz-portal" href="https://search.rakuten.co.jp/search/mall/%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B/?sid=350305" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">01</span>
+    <h3 class="fz-portal-name">楽天ふるさと納税</h3>
+    <p class="fz-portal-en">RAKUTEN</p>
+    <p class="fz-portal-note">普段お使いの楽天市場のアカウント・カートのまま、寄附のお手続きができます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
 
- <!-- ギフト仕様の詳細は購入確定後のチェックアウト/確認ページに記載 -->
+   <a class="fz-portal" href="https://www.satofull.jp/products/list.php?q=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">02</span>
+    <h3 class="fz-portal-name">さとふる</h3>
+    <p class="fz-portal-en">SATOFULL</p>
+    <p class="fz-portal-note">さとふるに掲載中の、江田和牛の返礼品一覧が開きます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
 
- <!-- ギフト商品 — 静的 HTML はフォールバック / スプシ動的レンダリング上書き対応 -->
- <div class="gift-products-grid" id="gift-products">
- <div class="gift-product-card">
- <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/fillet.webp') type('image/webp'), url('public/images/products/drive/fillet.jpg'))">
- <span class="gift-product-rank">松</span>
- </div>
- <div class="gift-product-body">
- <h3>ヒレステーキ ギフト【松】</h3>
- <p>江田畜産が誇る希少部位 ヒレ。きめ細かな赤身で、脂身が少なく食べやすい上等。大切な方への上等の贈り物に。</p>
- <div class="gift-product-meta">
- <span class="gift-product-vol">ヒレステーキ 150g×3（計450g）</span>
- <span class="gift-product-price">¥12,900<small>送料込み・税込</small></span>
- </div>
- <button onclick="orderGift('matsu', 12900, 'ヒレステーキ ギフト【松】 450g')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
- </div>
- </div>
- <div class="gift-product-card">
- <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/red-meat.webp') type('image/webp'), url('public/images/products/drive/red-meat.jpg'))">
- <span class="gift-product-rank rank-take">竹</span>
- </div>
- <div class="gift-product-body">
- <h3>赤身ステーキ ギフト【竹】</h3>
- <p>脂身少なめで鉄分・たんぱく質がしっかり摂れる赤身。健康志向・ご年配・筋トレ層への贈り物に。無投薬・ホルモン剤不使用。</p>
- <div class="gift-product-meta">
- <span class="gift-product-vol">赤身ステーキ 600g</span>
- <span class="gift-product-price">¥11,000<small>送料込み・税込</small></span>
- </div>
- <button onclick="orderGift('take', 11000, '赤身ステーキ ギフト【竹】 600g')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
- </div>
- </div>
- </div><!-- /.gift-products-grid -->
+   <a class="fz-portal" href="https://www.furusato-tax.jp/search?q=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B&amp;incsoldout=1" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">03</span>
+    <h3 class="fz-portal-name">ふるさとチョイス</h3>
+    <p class="fz-portal-en">FURUSATO CHOICE</p>
+    <p class="fz-portal-note">品切れ中の品もあわせた、江田和牛の返礼品一覧が開きます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
 
- <!-- 複数人へ送る導線（grid 外に移動: フル幅センター配置） -->
- <div class="gift-multi-cta">
- <div class="gift-multi-cta-inner">
- <span class="gift-multi-cta-icon" aria-hidden="true">
- <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
- <polyline points="20 12 20 22 4 22 4 12"/>
- <rect x="2" y="7" width="20" height="5"/>
- <line x1="12" y1="22" x2="12" y2="7"/>
- <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
- <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
- </svg>
- </span>
- <div class="gift-multi-cta-text">
- <strong>複数の方へ、まとめて贈りたい</strong>
- <small>1注文で <b>最大5箇所</b> までお届け先を分けて発送。各送り先で個別の<b>のし対応</b>。</small>
- </div>
- <a href="checkout.html?mode=multi" class="gift-multi-cta-btn">複数人へ送る →</a>
- </div>
- </div>
- <style>
- .gift-multi-cta {
- margin: 32px auto 8px;
- max-width: 880px;
- padding: 22px 32px;
- background:
- radial-gradient(circle at 0% 50%, rgba(255,229,148,0.12), transparent 60%),
- linear-gradient(135deg, rgba(212,169,59,0.14), rgba(212,169,59,0.04));
- border: 1.5px solid rgba(212,169,59,0.45);
- border-radius: 16px;
- box-shadow: 0 8px 24px rgba(212,169,59,0.12);
- }
- .gift-multi-cta-inner {
- display: flex;
- align-items: center;
- gap: 22px;
- }
- .gift-multi-cta-icon {
- font-size: 32px;
- flex-shrink: 0;
- width: 56px; height: 56px;
- display: inline-flex; align-items: center; justify-content: center;
- background: rgba(212,169,59,0.18);
- border-radius: 50%;
- border: 1.5px solid rgba(212,169,59,0.4);
- }
- .gift-multi-cta-text { flex: 1; display: flex; flex-direction: column; gap: 4px; line-height: 1.5; color: white; }
- .gift-multi-cta-text strong { font-family: var(--font-jp); font-size: 16px; font-weight: 700; color: white; letter-spacing: 0.02em; }
- .gift-multi-cta-text small { font-size: 12.5px; color: rgba(255,255,255,0.78); }
- .gift-multi-cta-text b { color: var(--color-gold); font-weight: 700; }
- .gift-multi-cta-btn {
- flex-shrink: 0;
- padding: 14px 26px;
- background: linear-gradient(135deg, #FFE594, var(--color-gold), #B89030);
- color: var(--color-forest-deep);
- border-radius: 28px;
- font-family: var(--font-jp);
- font-size: 13.5px;
- font-weight: 700;
- text-decoration: none;
- white-space: nowrap;
- border: 1.5px solid rgba(255,229,148,0.6);
- box-shadow: 0 8px 22px rgba(212,169,59,0.4);
- transition: transform .2s;
- }
- .gift-multi-cta-btn:hover { transform: translateY(-2px); }
- @media (max-width: 720px) {
- .gift-multi-cta { padding: 16px 18px; margin: 32px 0 8px; }
- .gift-multi-cta-inner { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
- .gift-multi-cta-icon { font-size: 26px; width: 48px; height: 48px; }
- .gift-multi-cta-text { align-items: center; }
- .gift-multi-cta-text strong { font-size: 14px; }
- .gift-multi-cta-text small { font-size: 11.5px; }
- .gift-multi-cta-btn { width: 100%; text-align: center; padding: 13px; }
- }
- </style>
+   <a class="fz-portal" href="https://furusato.ana.co.jp/donation/goods/search.aspx?search=x&amp;keyword=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">04</span>
+    <h3 class="fz-portal-name">ANAのふるさと納税</h3>
+    <p class="fz-portal-en">ANA</p>
+    <p class="fz-portal-note">ANAのふるさと納税に掲載中の、江田和牛の返礼品一覧が開きます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
+
+   <a class="fz-portal" href="https://furusato.jal.co.jp/goods/?w=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">05</span>
+    <h3 class="fz-portal-name">JALふるさと納税</h3>
+    <p class="fz-portal-en">JAL</p>
+    <p class="fz-portal-note">JALふるさと納税に掲載中の、江田和牛の返礼品一覧が開きます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
+
+   <a class="fz-portal" href="https://furusato.saisoncard.co.jp/products/list.php?name=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">06</span>
+    <h3 class="fz-portal-name">セゾンのふるさと納税</h3>
+    <p class="fz-portal-en">SAISON</p>
+    <p class="fz-portal-note">セゾンのふるさと納税に掲載中の、江田和牛の返礼品一覧が開きます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
+
+   <a class="fz-portal" href="https://furusato.shopping.yahoo.co.jp/search?p=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">07</span>
+    <h3 class="fz-portal-name">Yahoo!ふるさと納税</h3>
+    <p class="fz-portal-en">YAHOO! JAPAN</p>
+    <p class="fz-portal-note">Yahoo! JAPAN IDのまま、寄附のお手続きができます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
+
+   <a class="fz-portal" href="https://www.furusatonouzei.daimaru-matsuzakaya.jp/search/?keyword=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">08</span>
+    <h3 class="fz-portal-name">ふるさと納税デパート</h3>
+    <p class="fz-portal-en">DAIMARU MATSUZAKAYA</p>
+    <p class="fz-portal-note">大丸松坂屋が運営するサイトです。江田和牛の返礼品一覧が開きます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
+
+   <a class="fz-portal" href="https://furusato.takaharutown.jp/?s=%E6%B1%9F%E7%94%B0%E5%92%8C%E7%89%9B" target="_blank" rel="noopener">
+    <span class="fz-portal-badge">09</span>
+    <h3 class="fz-portal-name">たかふる</h3>
+    <p class="fz-portal-en">TAKAHARU OFFICIAL</p>
+    <p class="fz-portal-note">高原町が運営する公式の特設サイトです。町の返礼品をまとめてご覧いただけます。</p>
+    <span class="fz-portal-link"><span>江田和牛の返礼品を見る</span><span>&rarr;</span></span>
+   </a>
+
+  </div>
  </div>
 </section>
 
-<script>
-/* --- Gift order: shop.html と同一挙動（カートに積んで gift モードで checkout へ） --- */
-(function () {
- const CART_KEY = 'eda-cart';
- /* shop.html の STRIPE_PRICE_BY_TITLE のギフト部分（lookup 仕様も同一: title + ':1つ'） */
- const STRIPE_PRICE_BY_TITLE = {
- 'ヒレステーキ ギフト【松】 450g': 'price_1TcbwYGSkhU1UEciMRd5Kyu2',
- '赤身ステーキ ギフト【竹】 750g': 'price_1TcbwhGSkhU1UEciSyTKt2YQ',
- 'ハンバーグ ギフト【梅】 5個': 'price_1TcbwoGSkhU1UEciEiu3ymJ0'
- };
- function lookupStripePriceId(title, variant) {
- const key = title + ':' + (variant || '1つ');
- return STRIPE_PRICE_BY_TITLE[key] || null;
- }
- /* 🔴 products シートの name と「完全一致」でないと在庫が動かない。
-    GAS の validateStockBeforeCheckout / decrementStockAfterOrder は
-    どちらも products の name 列とカート item の title を突き合わせる方式で、
-    一致しない品は素通り = 在庫上限も効かず、売れても stock が減らない。
-    カードの表示名はサイズ付き(例「ヒレステーキ ギフト【松】 450g」)で
-    name(「ヒレステーキ ギフト【松】」)と一致していなかったため、
-    ギフト注文だけ在庫が引かれていなかった(2026-08-24 修正)。
-    → カートに積む title は下記のカタログ名に揃え、サイズは variant 側へ逃がす。
-    ⚠ ここを書き換えるときは products シートの name と1文字ずつ照合すること。 */
- const GIFT_CATALOG = {
- matsu: { name: 'ヒレステーキ ギフト【松】', variant: '450g' },
- take: { name: '赤身ステーキ ギフト【竹】', variant: '600g' },
- ume: { name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5' }
- };
- window.orderGift = function (giftId, price, title) {
- const stripePriceId = lookupStripePriceId(title, '') || null;
- const cat = GIFT_CATALOG[giftId];
- const cartTitle = cat ? cat.name : title;
- const cartVariant = cat ? cat.variant : 'ギフトセット';
- const items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
- items.push({
- variantId: 'gift-' + giftId,
- price: price,
- title: cartTitle,
- variant: cartVariant,
- img: 'public/images/products/drive/gift-box.jpg',
- qty: 1,
- gift: true,
- stripePriceId: stripePriceId
- });
- localStorage.setItem(CART_KEY, JSON.stringify(items));
- /* 📊 Analytics: ギフトのカート追加イベント (カゴ落ち検知の対象にする) */
- if (window.edaAnalytics) window.edaAnalytics.addToCart('gift-' + giftId, price, { title: cartTitle, variant: cartVariant });
- location.href = 'checkout.html?mode=gift';
- };
-})();
-</script>
-<script>
-/* ============ シーズンギフトバナー（自動切替）============
- 受付期間 40日 / シーズン:
- · 母の日: 5月第2日曜が出荷期限。40日前から受付
- · 父の日: 6月第3日曜が出荷期限。40日前から受付
- · お中元: 7月15日着希望が一般的 → 40日前から受付
- · お歳暮: 12月20日着希望が一般的 → 40日前から受付
- · 通常(大切な方へのGIFT): 上記以外
- ============================================================ */
-(function giftSeasonInit() {
- const banner = document.getElementById('giftSeasonBanner');
- if (!banner) return;
+<!-- ========= 返礼品ラインナップ ========= -->
+<section class="fz-sec reveal" style="background: var(--color-paper);">
+ <div class="container">
+  <div class="fz-sec-head">
+   <div class="fz-rule"></div>
+   <span class="eyebrow" style="color: var(--color-gold-soft);">Line-up</span>
+   <h2 class="fz-sec-title">高原町の返礼品「厳選 江田和牛」</h2>
+   <p class="fz-sec-lead">すべて江田畜産で長期肥育した黒毛和牛です。小分け・冷凍でお届けします。</p>
+  </div>
 
- // Nth日曜を取得（n=2 → 第2日曜）
- function nthSundayOfMonth(year, monthIdx, n) {
- const first = new Date(year, monthIdx, 1);
- const offset = (7 - first.getDay()) % 7; // 最初の日曜までのオフセット
- return new Date(year, monthIdx, 1 + offset + 7 * (n - 1));
- }
+  <div class="fz-items-wrap">
+   <table class="fz-items">
+    <thead>
+     <tr>
+      <th>返礼品</th>
+      <th>内容量</th>
+      <th>寄附金額</th>
+      <th>返礼品番号</th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr><td class="fz-item-name">江田和牛 モモスライス</td><td>800g（200g×4p）</td><td class="fz-item-amount">30,000<small>円</small></td><td class="fz-item-code">TF745</td></tr>
+     <tr><td class="fz-item-name">江田和牛 モモステーキ</td><td>800g（200g×4枚）</td><td class="fz-item-amount">34,000<small>円</small></td><td class="fz-item-code">TF744</td></tr>
+     <tr><td class="fz-item-name">江田和牛 サーロインステーキ</td><td>600g（200g×3枚）</td><td class="fz-item-amount">45,000<small>円</small></td><td class="fz-item-code">TF695</td></tr>
+     <tr><td class="fz-item-name">江田和牛 赤身スライス</td><td>1.0kg（200g×5p）</td><td class="fz-item-amount">45,000<small>円</small></td><td class="fz-item-code">TF714</td></tr>
+     <tr><td class="fz-item-name">江田和牛 ヒレステーキ</td><td>450g（150g×3枚）</td><td class="fz-item-amount">60,000<small>円</small></td><td class="fz-item-code">TF711</td></tr>
+     <tr><td class="fz-item-name">江田和牛 ローススライス</td><td>1.0kg（200g×5p）</td><td class="fz-item-amount">60,000<small>円</small></td><td class="fz-item-code">TF713</td></tr>
+     <tr><td class="fz-item-name">江田和牛 霜赤スライス</td><td>1.0kg（200g×5p）</td><td class="fz-item-amount">70,000<small>円</small></td><td class="fz-item-code">TF697</td></tr>
+     <tr><td class="fz-item-name">江田和牛 サーロインステーキ</td><td>1.0kg（200g×5枚）</td><td class="fz-item-amount">85,000<small>円</small></td><td class="fz-item-code">TF710</td></tr>
+     <tr><td class="fz-item-name">江田和牛 ヒレステーキ</td><td>900g（150g×6枚）</td><td class="fz-item-amount">120,000<small>円</small></td><td class="fz-item-code">TF712</td></tr>
+    </tbody>
+   </table>
+  </div>
+  <p class="fz-items-note">このほかに、スライスセットを全4回に分けてお届けする定期便（TF804／TF805）もございます。<br/>
+  寄附金額・内容量・在庫・発送時期は変更になる場合があります。最新の内容は各ふるさと納税サイトの表示をご確認ください。</p>
+ </div>
+</section>
 
- function buildSeasons(year) {
- const motherShip = nthSundayOfMonth(year, 4, 2); // 5月(月idx=4)第2日曜
- const fatherShip = nthSundayOfMonth(year, 5, 3); // 6月(月idx=5)第3日曜
- const ochugenShip = new Date(year, 6, 15); // 7月15日
- const oseiboShip = new Date(year, 11, 20); // 12月20日
+<!-- ========= ふるさと納税の流れ ========= -->
+<section class="fz-sec reveal" style="background: var(--color-cream);">
+ <div class="container">
+  <div class="fz-sec-head">
+   <div class="fz-rule"></div>
+   <span class="eyebrow" style="color: var(--color-gold-soft);">How it works</span>
+   <h2 class="fz-sec-title">お申し込みから、お手元に届くまで</h2>
+  </div>
+  <div class="fz-steps">
+   <div class="fz-step">
+    <span class="fz-step-no">STEP 01</span>
+    <h3>サイトを選んで寄附する</h3>
+    <p>上のサイトから江田和牛の返礼品を選び、そのサイトのお手続きで宮崎県高原町へ寄附します。</p>
+   </div>
+   <div class="fz-step">
+    <span class="fz-step-no">STEP 02</span>
+    <h3>江田畜産からお届け</h3>
+    <p>ご入金の確認後、江田畜産から冷凍便で発送します。発送時期は返礼品ページの記載をご確認ください。</p>
+   </div>
+   <div class="fz-step">
+    <span class="fz-step-no">STEP 03</span>
+    <h3>控除のお手続き</h3>
+    <p>ワンストップ特例、または確定申告でお手続きいただきます。高原町はワンストップ特例のオンライン申請に対応しています。</p>
+   </div>
+  </div>
+ </div>
+</section>
 
- function startOf(d) {
- const s = new Date(d);
- s.setDate(s.getDate() - 40);
- s.setHours(0, 0, 0, 0);
- return s;
- }
- return [
- { key: 'mother', label: '母の日', emoji: '🌷',
- eyebrow: 'MOTHER\'S DAY · 母の日',
- headline: '母の日ギフト 予約受付中',
- start: startOf(motherShip), end: motherShip, ship: motherShip },
- { key: 'father', label: '父の日', emoji: '👔',
- eyebrow: 'FATHER\'S DAY · 父の日',
- headline: '父の日ギフト 予約受付中',
- start: startOf(fatherShip), end: fatherShip, ship: fatherShip },
- { key: 'ochugen', label: 'お中元', emoji: '🌻',
- eyebrow: 'CHUGEN · お中元',
- headline: 'お中元ギフト 予約受付中',
- start: startOf(ochugenShip), end: ochugenShip, ship: ochugenShip },
- { key: 'oseibo', label: 'お歳暮', emoji: '🎍',
- eyebrow: 'OSEIBO · お歳暮',
- headline: 'お歳暮ギフト 予約受付中',
- start: startOf(oseiboShip), end: oseiboShip, ship: oseiboShip }
- ];
- }
+<!-- ========= 生産者 ========= -->
+<section class="fz-sec fz-maker reveal">
+ <div class="container">
+  <div class="fz-maker-grid">
+   <div>
+    <div class="fz-rule"></div>
+    <span class="eyebrow" style="color: var(--color-gold);">The Producer</span>
+    <h2 class="fz-sec-title">つくっているのは、江田畜産です。</h2>
+    <p>宮崎県高原町。霧島連山の伏流水が湧く土地で、繁殖から肥育までを一貫して行っています。抗生物質・成長促進剤・ホルモン剤は使わず、通常より長い35ヶ月以上をかけて育てます。</p>
+    <p>返礼品として届く牛肉も、当社のオンラインショップでお届けしているものと同じ、江田畜産の牛です。</p>
+   </div>
+   <div>
+    <dl class="fz-facts">
+     <div class="fz-fact"><dt>事業者</dt><dd>江田畜産株式会社</dd></div>
+     <div class="fz-fact"><dt>所在地</dt><dd>宮崎県西諸県郡高原町</dd></div>
+     <div class="fz-fact"><dt>飼育</dt><dd>繁殖・肥育一貫／35ヶ月以上の長期肥育</dd></div>
+     <div class="fz-fact"><dt>不使用</dt><dd>抗生物質・成長促進剤・ホルモン剤</dd></div>
+     <div class="fz-fact"><dt>産地</dt><dd>内閣総理大臣賞を4大会連続で受賞した「宮崎牛」の産地</dd></div>
+    </dl>
+   </div>
+  </div>
+ </div>
+</section>
 
- function fmtMD(d) {
- return (d.getMonth() + 1) + '月' + d.getDate() + '日';
- }
- function fmtMDW(d) {
- const days = ['日','月','火','水','木','金','土'];
- return (d.getMonth() + 1) + '月' + d.getDate() + '日（' + days[d.getDay()] + '）';
- }
+<!-- ========= 注意事項 ========= -->
+<section class="fz-sec fz-notes reveal">
+ <div class="container">
+  <div class="fz-sec-head">
+   <div class="fz-rule"></div>
+   <span class="eyebrow" style="color: var(--color-gold-soft);">Notes</span>
+   <h2 class="fz-sec-title">お申し込みの前に</h2>
+  </div>
+  <div class="fz-note-grid">
+   <div class="fz-note">
+    <h4>お申し込み・お支払いは各サイトで</h4>
+    <p>ふるさと納税のお申し込み、お支払い、寄附金受領証明書の発行は、各ふるさと納税サイトと高原町のお取り扱いになります。当サイトでは受け付けておりません。</p>
+   </div>
+   <div class="fz-note">
+    <h4>寄附金額・在庫について</h4>
+    <p>このページの内容は掲載時点のものです。寄附金額の改定や品切れが生じる場合がありますので、最新の情報は各サイトの返礼品ページをご確認ください。</p>
+   </div>
+   <div class="fz-note">
+    <h4>お届けについて</h4>
+    <p>冷凍便でお届けします。発送時期・配送日のご指定については、各返礼品ページの記載に準じます。</p>
+   </div>
+   <div class="fz-note">
+    <h4>お問い合わせ</h4>
+    <p>寄附のお手続き・控除に関することは高原町へ、お届けした返礼品の内容に関することは江田畜産へお問い合わせください。</p>
+   </div>
+  </div>
+ </div>
+</section>
 
- function update() {
- const now = new Date();
- // 今年と来年のシーズンを合わせて評価（年末→年明けの遷移にも対応）
- const seasons = [...buildSeasons(now.getFullYear()), ...buildSeasons(now.getFullYear() + 1)];
- const active = seasons.find(s => now >= s.start && now <= s.end);
-
- const iconEl = document.getElementById('giftSeasonIcon');
- const eyebrowEl = document.getElementById('giftSeasonEyebrow');
- const headlineEl = document.getElementById('giftSeasonHeadline');
- const rangeEl = document.getElementById('giftSeasonRange');
- const shipEl = document.getElementById('giftSeasonShip');
- const ddlBox = document.getElementById('giftSeasonDeadlineBox');
- const ddlEl = document.getElementById('giftSeasonDeadline');
-
- if (active) {
- banner.dataset.season = active.key;
- iconEl.textContent = active.emoji;
- eyebrowEl.textContent = active.eyebrow;
- headlineEl.textContent = active.headline;
- rangeEl.textContent = fmtMD(active.start) + ' 〜 ' + fmtMD(active.end);
- shipEl.textContent = fmtMDW(active.ship) + '着まで対応';
-
- // 2026-05-27: Tom 指示によりカウントダウン残日数を表示しない (subscription と統一)
- const daysLeft = Math.ceil((active.end - now) / (1000 * 60 * 60 * 24));
- if (daysLeft > 0) {
- ddlBox.style.display = 'none'; // 残N日 表示を抑制
- ddlEl.textContent = '';
- } else {
- ddlBox.style.display = 'none';
- }
- } else {
- // 通常シーズン（大切な方へのGIFT）
- banner.dataset.season = 'normal';
- iconEl.textContent = '🎁';
- eyebrowEl.textContent = 'NOW ACCEPTING · 通年';
- headlineEl.textContent = '大切な方へのGIFT 受付中';
- rangeEl.textContent = '通年（定例の贈り物に）';
- shipEl.textContent = 'ご注文後 3〜5 日以内に出荷';
- ddlBox.style.display = 'none';
- }
- }
- update();
- // 1時間ごと再評価（日付またぎでも自動更新）
- setInterval(update, 60 * 60 * 1000);
-})();
-</script>
+<!-- ========= CTA ========= -->
+<section class="fz-sec fz-cta reveal">
+ <div class="container fz-cta-inner">
+  <div class="fz-rule" style="margin: 0 auto 22px;"></div>
+  <h2 class="fz-sec-title" style="margin-top:0;">ふるさと納税以外のご購入は、オンラインショップから。</h2>
+  <p class="fz-sec-lead" style="margin-bottom: 28px;">返礼品にはないカットやセット、月の定期便もご用意しています。</p>
+  <a class="fz-btn" href="shop.html">オンラインショップを見る</a>
+ </div>
+</section>
 
 <footer class="site-footer">
  <div class="container">
@@ -4738,7 +4263,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <span class="cart-subtotal-price" id="cartSubtotal">¥0</span>
  </div>
  <div class="cart-shipping-note">
- ¥11,000以上で<strong data-en="Free shipping">送料無料</strong>。冷凍便でお届け。
+ 送料 ¥1,100（北海道・沖縄 ¥2,200）。冷凍便でお届け。
  </div>
  <div class="cart-delivery-note" id="cartDelivery"></div>
  <button class="btn-checkout" id="cartCheckout" data-en="Proceed to checkout">レジに進む — Checkout</button>
@@ -5069,8 +4594,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  }
  save();
  renderCart();
- /* 📊 Analytics: カート追加イベント (shop.html と同一。カゴ落ち検知 gas/cart_holds.gs の入力) */
- if (window.edaAnalytics) window.edaAnalytics.addToCart(variantId, price, { title: title, variant: variant });
  openCart();
  }
 
@@ -5142,8 +4665,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  })();
 </script>
 
-<script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=006" defer></script>
+<script src="public/js/eda-bundle.js?v=007" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
