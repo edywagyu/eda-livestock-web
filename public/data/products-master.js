@@ -129,7 +129,7 @@
       name: 'シルバーウィーク大皿セット', variant: '和牛5種 各200g・計1.0kg',
       /* stock は applyBomStock が構成品から作り直す。ここは取得失敗時の目安 */
       price: 11000, listPrice: 12200, weight: 1000, stock: 20, temp: '冷凍',
-      published: false,  /* 2026-09-14 田崎さん指示で一旦非表示。出すときは true に戻す */
+      published: true,
       components: [
         { name: '霜降スライス', qty: 1 },
         { name: '赤身スライス', qty: 1 },
