@@ -1297,10 +1297,7 @@ function createSubscriptionCheckout(body) {
       }])
     }
   };
-<<<<<<< HEAD
-=======
   if (isSwitch) sessionParams.metadata.switch_from = switchHit.kubun;
->>>>>>> origin/main
   if (applyCoupon && !subSkipCoupon) {
     sessionParams.discounts = [{ coupon: applyCoupon }];
   }
@@ -2963,8 +2960,6 @@ var SUB_ADDONS = {
 };
 var SUB_ADDON_DISCOUNT = 0.10;  // 定期便と同時購入で 10%OFF
 
-<<<<<<< HEAD
-=======
 var SUB_APP_HEADERS = ['ts','plan','customer_json','addons_json','追加購入','追加金額','お客様名'];
 
 /* アドオン配列 → 人が読める1行 + 合計金額。
@@ -2986,7 +2981,6 @@ function subAddonSummary(addons) {
   return { text: parts.join(' / '), total: total, count: list.length };
 }
 
->>>>>>> origin/main
 function logSubscriptionApplication(body) {
   const sh = sheet('subscription_applications', SUB_APP_HEADERS);
   /* 既存シートは4列で作られている。見出しを足す（何度走らせても同じ結果になる）。 */
