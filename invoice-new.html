@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="robots" content="noindex,nofollow">
+<title>お支払いリンクの発行（社内用）｜江田畜産</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+
+<style>
+:root {
+ --color-forest: #0F3D2E; --color-forest-deep: #0A2D21; --color-gold: #D4A93B;
+ --color-cream: #FAF7F0; --color-paper: #F5EFE3; --color-bone: #EFE8D7;
+ --color-ink: #1A1A1A; --color-ink-muted: #5C5C5C; --color-red: #C8102E;
+ --font-display: 'Shippori Mincho', 'Noto Serif JP', serif;
+ --font-jp: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+ --shadow-sm: 0 2px 8px rgba(15,61,46,0.06);
+ --shadow-md: 0 8px 24px rgba(15,61,46,0.10), 0 2px 6px rgba(0,0,0,0.04);
+}
+* { box-sizing: border-box; }
+body {
+ margin: 0; font-family: var(--font-jp); font-size: 16px; line-height: 1.8; color: var(--color-ink);
+ background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%); min-height: 100vh;
+}
+h1, h2 { font-weight: 400; margin: 0; }
+button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
+a { color: inherit; }
+.wrap { max-width: 940px; margin: 0 auto; padding: 28px 20px 80px; }
+.head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.head img { height: 30px; }
+.head span { font-family: var(--font-display); font-size: 12px; letter-spacing: 0.2em; color: var(--color-forest); border-left: 1px solid var(--color-bone); padding-left: 10px; }
+h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-forest); margin-top: 18px; }
+.lead { font-size: 13.5px; color: var(--color-ink-muted); margin-bottom: 24px; }
+.grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+@media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+.card { background: white; border: 1px solid var(--color-bone); border-radius: 14px; box-shadow: var(--shadow-sm); padding: 24px 26px; }
+@media (max-width: 600px) { .card { padding: 20px 18px; } }
+.card + .card { margin-top: 18px; }
+.card-title { font-size: 14.5px; font-weight: 700; color: var(--color-forest); padding-bottom: 12px; border-bottom: 1px solid var(--color-bone); margin-bottom: 18px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.row.one { grid-template-columns: 1fr; }
+@media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field > label { font-size: 12.5px; font-weight: 700; color: var(--color-forest); }
+.field input, .field select, .field textarea { border-radius: 8px; }
+.field small { font-size: 11.5px; color: var(--color-ink-muted); line-height: 1.6; }
+.opts { display: flex; gap: 10px; flex-wrap: wrap; }
+/* 🔴 頭の .opts は詳細度のため（a11y.css の label:not(...) に負けないように） */
+.opts label.opt { flex: 1 1 140px; display: flex; align-items: center; gap: 9px; padding: 12px 14px; border: 1.5px solid var(--color-bone); border-radius: 10px; background: white; cursor: pointer; font-size: 13px; color: var(--color-forest); font-weight: 700; }
+.opts label.opt.selected { border-color: var(--color-forest); background: rgba(15,61,46,0.03); }
+.opts label.opt input { margin: 0; padding: 0; min-height: 0; width: auto; accent-color: var(--color-forest); }
+.quick { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.quick button { font-size: 12px; padding: 6px 12px; border: 1px solid var(--color-bone); border-radius: 999px; background: white; color: var(--color-forest); }
+.quick button:hover { border-color: var(--color-gold); background: rgba(212,169,59,0.06); }
+.pv-row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 5px 0; }
+.pv-row.muted { color: var(--color-ink-muted); font-size: 12.5px; }
+.pv-row.total { margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--color-bone); font-weight: 700; color: var(--color-forest); font-size: 15px; }
+.pv-row.total span:last-child { font-size: 23px; }
+.side { position: sticky; top: 24px; }
+.out { margin-top: 18px; }
+.out textarea {
+ width: 100%; min-height: 96px; font-size: 12.5px !important; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+ border: 1px solid var(--color-bone); border-radius: 10px; padding: 12px 14px; background: #FBFAF6; color: var(--color-ink); resize: vertical;
+}
+.btn-main { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--color-gold), #E5B547); color: var(--color-forest-deep); border-radius: 12px; font-size: 14.5px; font-weight: 700; box-shadow: 0 10px 26px rgba(212,169,59,0.28); }
+.btn-main:disabled { background: var(--color-bone); color: var(--color-ink-muted); box-shadow: none; cursor: not-allowed; }
+.btn-sub { display: block; width: 100%; margin-top: 10px; padding: 13px; text-align: center; border: 1.5px solid var(--color-forest); border-radius: 12px; color: var(--color-forest); font-size: 13.5px; font-weight: 700; text-decoration: none; }
+.note { margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: rgba(212,169,59,0.08); border: 1px solid rgba(212,169,59,0.3); font-size: 12.5px; color: var(--color-forest); line-height: 1.8; }
+.note b { color: var(--color-red); }
+.toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--color-forest); color: var(--color-gold); padding: 12px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; opacity: 0; transition: all .25s; pointer-events: none; }
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+ <div class="head">
+  <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK"></picture>
+  <span>STAFF</span>
+ </div>
+ <h1>お支払いリンクの発行</h1>
+ <p class="lead">金額・税・送料をここで決めて、お客様に送るリンクを作ります。お客様側の画面では、お名前・住所・電話番号・お届け希望日を入れて、銀行振込かカード払いを選べます。</p>
+
+ <div class="grid">
+  <div>
+   <!-- 請求内容 -->
+   <div class="card">
+    <div class="card-title">① 請求内容</div>
+    <div class="row one">
+     <div class="field"><label>品目名（お客様の画面に出ます）</label>
+      <input type="text" id="iLabel" placeholder="例：和牛焼肉セット 1.2kg">
+      <small>お客様の画面と、ご注文メール・発送リストにこの名前で出ます。<br>⚠️ ECの商品名と<b>完全に同じ</b>名前にすると、その商品の在庫が1つ減ります。減らしたくないときは名前を少し変えてください。</small></div>
+    </div>
+    <div class="row">
+     <div class="field"><label>金額（円）</label>
+      <input type="number" id="iAmount" inputmode="numeric" min="0" step="1" placeholder="48000">
+      <div class="quick">
+       <button type="button" data-amt="5000">5,000</button>
+       <button type="button" data-amt="10000">10,000</button>
+       <button type="button" data-amt="30000">30,000</button>
+       <button type="button" data-amt="50000">50,000</button>
+      </div></div>
+     <div class="field"><label>税の扱い</label>
+      <div class="opts">
+       <label class="opt selected"><input type="radio" name="tax" value="in" checked>税込</label>
+       <label class="opt"><input type="radio" name="tax" value="out">税別（+10%）</label>
+      </div>
+      <small>「税込」＝上の金額がそのまま請求額。「税別」＝上の金額に消費税10%を足して請求します。</small></div>
+    </div>
+   </div>
+
+   <!-- 送料 -->
+   <div class="card">
+    <div class="card-title">② 送料</div>
+    <div class="opts" style="margin-bottom:14px">
+     <label class="opt selected"><input type="radio" name="ship" value="in" checked>送料込み（別途もらわない）</label>
+     <label class="opt"><input type="radio" name="ship" value="add">送料を別でもらう</label>
+    </div>
+    <div class="row one" id="shipAmountWrap" style="display:none">
+     <div class="field"><label>送料（円）</label>
+      <input type="number" id="iShip" inputmode="numeric" min="0" step="1" value="1100">
+      <div class="quick">
+       <button type="button" data-ship="1100">1,100（通常）</button>
+       <button type="button" data-ship="2200">2,200（北海道・沖縄）</button>
+       <button type="button" data-ship="0">0</button>
+      </div>
+      <small>ここで入れた額で確定します（ECの自動計算は使いません）。</small></div>
+    </div>
+   </div>
+
+   <!-- 任意項目 -->
+   <div class="card">
+    <div class="card-title">③ 任意（空でも作れます）</div>
+    <div class="row">
+     <div class="field"><label>お客様名</label>
+      <input type="text" id="iTo" placeholder="江田 太郎">
+      <small>画面の冒頭に「◯◯ 様」と出ます。</small></div>
+     <div class="field"><label>請求番号</label>
+      <input type="text" id="iNo" placeholder="2026-0920-01">
+      <small>画面と社内メモに出ます。</small></div>
+    </div>
+    <div class="row one">
+     <div class="field"><label>ひとこと（請求内容の下に出ます）</label>
+      <textarea id="iNote" rows="2" placeholder="例：お電話でご相談いただいた内容です。冷凍便でお届けします。"></textarea></div>
+    </div>
+   </div>
+  </div>
+
+  <!-- 右：プレビューと出来上がったリンク -->
+  <aside class="side">
+   <div class="card">
+    <div class="card-title">お客様に見える金額</div>
+    <div id="preview"></div>
+    <div class="out">
+     <textarea id="outUrl" readonly placeholder="金額を入れるとここにリンクが出ます"></textarea>
+     <button class="btn-main" id="btnCopy" disabled>リンクをコピー</button>
+     <a class="btn-sub" id="btnOpen" href="#" target="_blank" rel="noopener" style="display:none">お客様の画面を確認する</a>
+    </div>
+    <div class="note">
+     ・このリンクは<b>誰でも開けます</b>。渡す相手を間違えないでください。<br>
+     ・リンクの金額を書き換えると「使用できません」と出て払えなくなります。<br>
+     ・カード払いは Stripe の画面へ、銀行振込はお申込み時点で注文が記録され、入金確認後に発送する流れです（通常のECと同じ）。
+    </div>
+   </div>
+  </aside>
+ </div>
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script src="public/js/invoice-link.js?v=001"></script>
+<script>
+(function () {
+  'use strict';
+  var IV = window.EDA_INVOICE;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function radio(name) { var c = document.querySelector('input[name="' + name + '"]:checked'); return c ? c.value : ''; }
+  function syncOpts() {
+    document.querySelectorAll('.opt').forEach(function (el) { el.classList.toggle('selected', !!el.querySelector('input:checked')); });
+    $('shipAmountWrap').style.display = radio('ship') === 'add' ? '' : 'none';
+  }
+
+  function current() {
+    return {
+      label: $('iLabel').value.trim(),
+      amount: IV.toInt($('iAmount').value),
+      tax: radio('tax'),
+      ship: radio('ship') === 'add' ? IV.toInt($('iShip').value) : 0,
+      to: $('iTo').value.trim(),
+      no: $('iNo').value.trim(),
+      note: $('iNote').value.trim()
+    };
+  }
+
+  function render() {
+    syncOpts();
+    var inv = current();
+    var B = IV.breakdown(inv);
+    var h = '';
+    function row(k, v, cls) { return '<div class="pv-row' + (cls ? ' ' + cls : '') + '"><span>' + k + '</span><span>' + v + '</span></div>'; }
+    if (B.taxOut) {
+      h += row('商品代金（税抜）', IV.yen(B.base));
+      h += row('消費税（10%）', IV.yen(B.tax));
+    } else {
+      h += row('商品代金（税込）', IV.yen(B.goods));
+      h += row('うち消費税（10%）', IV.yen(B.tax), 'muted');
+    }
+    h += B.ship > 0 ? row('送料', IV.yen(B.ship)) : row('送料', '無料（込み）');
+    h += row('請求合計', IV.yen(B.total), 'total');
+    $('preview').innerHTML = h;
+
+    var ok = inv.amount > 0 && !!inv.label;
+    var url = '';
+    if (ok) {
+      var base = location.origin && location.protocol.indexOf('http') === 0
+        ? location.origin + location.pathname.replace(/invoice-new\.html$/, 'invoice.html')
+        : 'https://www.eda-livestock.com/invoice.html';
+      url = base + '?' + IV.buildQuery(inv);
+    }
+    $('outUrl').value = url;
+    $('btnCopy').disabled = !ok;
+    $('btnCopy').textContent = ok ? 'リンクをコピー' : '品目名と金額を入れてください';
+    var open = $('btnOpen');
+    if (ok) { open.href = url; open.style.display = ''; } else { open.style.display = 'none'; }
+  }
+
+  ['iLabel', 'iAmount', 'iShip', 'iTo', 'iNo', 'iNote'].forEach(function (id) {
+    $(id).addEventListener('input', render);
+  });
+  document.querySelectorAll('input[name="tax"], input[name="ship"]').forEach(function (r) { r.addEventListener('change', render); });
+  document.querySelectorAll('[data-amt]').forEach(function (b) {
+    b.addEventListener('click', function () { $('iAmount').value = b.getAttribute('data-amt'); render(); });
+  });
+  document.querySelectorAll('[data-ship]').forEach(function (b) {
+    b.addEventListener('click', function () { $('iShip').value = b.getAttribute('data-ship'); render(); });
+  });
+
+  $('btnCopy').addEventListener('click', async function () {
+    var v = $('outUrl').value;
+    if (!v) return;
+    try { await navigator.clipboard.writeText(v); }
+    catch (e) { $('outUrl').select(); document.execCommand('copy'); }
+    var t = $('toast'); t.classList.add('on');
+    setTimeout(function () { t.classList.remove('on'); }, 1600);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -544,7 +544,10 @@ function createCheckout(body) {
   );
   /* 🚚 freeShip 商品（はじめてセット等）が入っていれば自宅送料も 0 円 */
   const _freeShipItem = hasFreeShipItem_(items);
-  const shipping = (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
+  /* 🧾 請求リンク(invoice.html): 送料はスタッフが1件ずつ決める（込み=0 / 実額を指定）。
+     mode==='invoice' のときだけ invoice_shipping をそのまま使う＝通常の注文の自動計算には触らない。 */
+  const shipping = invoiceShippingOverride_(body,
+    (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0);
   if (shipping > 0) {
     lineItems.push({
       price_data: {
@@ -723,7 +726,10 @@ function createBankOrder(body) {
   );
   /* 🚚 freeShip 商品（はじめてセット等）が入っていれば自宅送料も 0 円 */
   const _freeShipItem = hasFreeShipItem_(items);
-  const shipping = (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0;
+  /* 🧾 請求リンク(invoice.html): 送料はスタッフが1件ずつ決める（込み=0 / 実額を指定）。
+     mode==='invoice' のときだけ invoice_shipping をそのまま使う＝通常の注文の自動計算には触らない。 */
+  const shipping = invoiceShippingOverride_(body,
+    (_selfSubtotal > 0 && !_freeShipItem) ? calcShipping(_selfSubtotal, body.customer && body.customer.pref, _halfShip) : 0);
 
   // 振込金額: クライアント計算済みの最終合計（クーポン適用後）を信頼。
   //   入金は Tom が実額照合（アナログ）するため、画面表示との一致を優先。無ければ subtotal+shipping。
@@ -4075,6 +4081,24 @@ function calcShipping(subtotal, pref, halfOff) {
   //    ¥11,000以上は上で 0 円になっているので、ここは「送料が発生する注文」だけが通る。
   if (!halfOff) return base;
   return repeatShipRate_() === 'free' ? 0 : base / 2;
+}
+
+/* ============================================================
+   🧾 請求リンク(invoice.html)の送料
+   ------------------------------------------------------------
+   お電話・LINEで受けた個別のご注文にスタッフが金額を付けて送るリンク。
+   送料は「商品代金に込み(0円)」か「実額を別でもらう」かをスタッフが
+   1件ずつ決めるので、EC の自動計算(calcShipping)を使わない。
+
+   ・body.mode === 'invoice' かつ body.invoice_shipping が 0以上の数値の
+     ときだけ、その額を採用する。それ以外は計算済みの値をそのまま返す
+     ＝通常の注文(single/gift/subscription)の挙動は一切変わらない。
+   ============================================================ */
+function invoiceShippingOverride_(body, computed) {
+  if (!body || body.mode !== 'invoice') return computed;
+  var v = Number(body.invoice_shipping);
+  if (!isFinite(v) || v < 0) return computed;
+  return Math.round(v);
 }
 
 function flattenForm(obj, prefix) {

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<link rel="apple-touch-icon" href="public/images/favicon.svg">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- 🔴 個別のお客様へお送りするリンク。検索結果に出さない。 -->
+<meta name="robots" content="noindex,nofollow">
+<title>お支払いのご案内｜江田畜産</title>
+<meta name="description" content="ご請求内容のご確認とお支払い手続き。">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+
+<!-- 🔴 <style> は css の <link> より後に置く。a11y.css が後勝ちで
+     こちらの指定を打ち消すのを避けるため（checkout.html の実測メモ参照）。 -->
+<style>
+:root {
+ --color-forest: #0F3D2E;
+ --color-forest-deep: #0A2D21;
+ --color-gold: #D4A93B;
+ --color-cream: #FAF7F0;
+ --color-paper: #F5EFE3;
+ --color-bone: #EFE8D7;
+ --color-ink: #1A1A1A;
+ --color-ink-muted: #5C5C5C;
+ --color-red: #C8102E;
+ --font-display: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+ --font-jp: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+ --font-numeric: 'Inter', 'Noto Sans JP', -apple-system, sans-serif;
+ --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+ --shadow-sm: 0 2px 8px rgba(15, 61, 46, 0.06);
+ --shadow-md: 0 8px 24px rgba(15, 61, 46, 0.10), 0 2px 6px rgba(0,0,0,0.04);
+}
+* { box-sizing: border-box; }
+body {
+ margin: 0;
+ font-family: var(--font-jp);
+ font-size: 16px;
+ line-height: 1.8;
+ color: var(--color-ink);
+ background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-paper) 100%);
+ min-height: 100vh;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { border: 0; background: none; cursor: pointer; font: inherit; color: inherit; }
+h1, h2, h3 { font-weight: 400; margin: 0; }
+.container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== HEADER ===== */
+.inv-header {
+ background: rgba(255,255,255,0.92);
+ border-bottom: 1px solid var(--color-bone);
+ position: sticky; top: 0; z-index: 50;
+ backdrop-filter: blur(8px);
+}
+.inv-header-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+.inv-brand { display: flex; align-items: center; gap: 10px; }
+.inv-brand img { height: 30px; width: auto; }
+.inv-brand-name {
+ font-family: var(--font-display); font-size: 12px; letter-spacing: 0.22em;
+ color: var(--color-forest); border-left: 1px solid var(--color-bone); padding-left: 10px;
+}
+.inv-secure {
+ display: inline-flex; align-items: center; gap: 6px;
+ font-size: 11.5px; color: var(--color-forest); opacity: 0.85;
+ font-family: var(--font-display); letter-spacing: 0.06em;
+}
+.inv-secure svg { width: 14px; height: 14px; }
+
+/* ===== LAYOUT ===== */
+.inv-main { padding: 32px 0 80px; }
+.inv-title { font-family: var(--font-display); font-size: 26px; color: var(--color-forest); letter-spacing: 0.04em; }
+.inv-title-sub { font-size: 13px; color: var(--color-ink-muted); margin-top: 6px; }
+.inv-grid { display: grid; grid-template-columns: 1fr 360px; gap: 28px; align-items: start; margin-top: 26px; }
+.inv-col { display: flex; flex-direction: column; gap: 20px; }
+@media (max-width: 900px) {
+ .inv-grid { grid-template-columns: 1fr; }
+ .inv-sidebar { order: 2; }
+}
+
+/* ===== BLOCK (checkout.html と同じ見た目) ===== */
+.inv-block {
+ background: white; border-radius: 14px; padding: 26px 28px;
+ border: 1px solid var(--color-bone); box-shadow: var(--shadow-sm);
+}
+@media (max-width: 600px) { .inv-block { padding: 20px 18px; } }
+.inv-block-head {
+ display: flex; align-items: center; gap: 12px;
+ margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--color-bone);
+}
+.inv-block-num {
+ width: 28px; height: 28px; border-radius: 50%;
+ background: var(--color-forest); color: var(--color-gold);
+ display: flex; align-items: center; justify-content: center;
+ font-family: var(--font-display); font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.inv-block-title { font-size: 15px; color: var(--color-forest); font-weight: 700; letter-spacing: 0.02em; }
+
+/* ===== 請求内容 ===== */
+.inv-bill-label {
+ font-family: var(--font-display); font-size: 19px; color: var(--color-forest); line-height: 1.5;
+}
+.inv-bill-no { font-size: 12px; color: var(--color-ink-muted); margin-top: 2px; font-family: var(--font-numeric); }
+.inv-bill-note {
+ margin-top: 14px; padding: 12px 14px; border-radius: 8px;
+ background: rgba(212,169,59,0.08); border: 1px solid rgba(212,169,59,0.28);
+ font-size: 13.5px; color: var(--color-forest); white-space: pre-wrap;
+}
+.inv-bill-rows { margin-top: 18px; border-top: 1px dashed var(--color-bone); padding-top: 14px; }
+.inv-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; padding: 5px 0; }
+.inv-row span:last-child { font-family: var(--font-numeric); font-feature-settings: 'tnum' 1; }
+.inv-row.muted { color: var(--color-ink-muted); font-size: 12.5px; }
+.inv-row.total {
+ margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--color-bone);
+ font-size: 15px; font-weight: 700; color: var(--color-forest);
+}
+.inv-row.total span:last-child { font-size: 24px; font-family: var(--font-numeric); }
+
+/* ===== FORM ===== */
+.inv-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.inv-form-row.one { grid-template-columns: 1fr; }
+@media (max-width: 600px) { .inv-form-row { grid-template-columns: 1fr; } }
+.inv-field { display: flex; flex-direction: column; gap: 5px; }
+.inv-field > label { font-size: 12.5px; font-weight: 700; color: var(--color-forest); }
+.inv-field .req { color: var(--color-red); font-size: 11px; margin-left: 3px; }
+.inv-field input, .inv-field select { border-radius: 8px; }
+.inv-field small { font-size: 11.5px; color: var(--color-ink-muted); line-height: 1.6; }
+.inv-form.show-errors .inv-field.field-error input,
+.inv-form.show-errors .inv-field.field-error select { border: 1px solid var(--color-red); background: #FFF6F6; }
+.inv-form.show-errors .inv-field.field-error > label { color: var(--color-red); }
+
+/* ===== PAYMENT ===== */
+.inv-pay-grid { display: flex; flex-direction: column; gap: 10px; }
+/* 🔴 セレクタ頭の .inv-pay-grid は飾りではない。public/css/a11y.css が後から
+   label:not(.checkout-consent):not(.payment-option) { display:block } を当てており、
+   .inv-pay-option 単独(詳細度0,1,0)では負けて横並びが崩れる（checkout.html の
+   .dest-group と同じ対処）。親クラスを1つ足して詳細度を同点にし、後出しで勝たせる。 */
+.inv-pay-grid label.inv-pay-option {
+ display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+ border: 1.5px solid var(--color-bone); border-radius: 10px; cursor: pointer;
+ background: white; transition: all 0.25s var(--ease-out-expo);
+}
+.inv-pay-grid label.inv-pay-option:hover { border-color: var(--color-gold); background: rgba(212,169,59,0.04); }
+.inv-pay-grid label.inv-pay-option.selected { border-color: var(--color-forest); background: rgba(15,61,46,0.03); }
+.inv-pay-grid label.inv-pay-option input { margin: 0; accent-color: var(--color-forest); min-height: 0; padding: 0; width: auto; }
+.inv-pay-icon { font-size: 20px; flex-shrink: 0; }
+.inv-pay-option-body { flex: 1; display: block; }
+.inv-pay-name { font-size: 13.5px; color: var(--color-forest); font-weight: 700; }
+.inv-pay-desc { font-size: 11.5px; color: var(--color-ink-muted); line-height: 1.6; }
+.inv-pay-info {
+ margin-top: 14px; padding: 14px 16px; border-radius: 10px;
+ background: rgba(15,61,46,0.04); border: 1px solid rgba(15,61,46,0.12);
+ font-size: 12.5px; color: var(--color-ink-muted); line-height: 1.75;
+}
+.inv-pay-info strong { display: block; color: var(--color-forest); font-size: 13px; margin-bottom: 4px; }
+
+/* ===== SIDEBAR ===== */
+.inv-summary {
+ background: white; border-radius: 14px; padding: 24px;
+ border: 1px solid var(--color-bone); box-shadow: var(--shadow-md);
+ position: sticky; top: 88px;
+}
+.inv-summary-title {
+ font-family: var(--font-display); font-size: 15px; color: var(--color-forest);
+ letter-spacing: 0.06em; padding-bottom: 12px; border-bottom: 1px solid var(--color-bone); margin-bottom: 14px;
+}
+.btn-pay {
+ width: 100%; padding: 17px; margin-top: 16px;
+ background: linear-gradient(135deg, var(--color-gold), #E5B547);
+ color: var(--color-forest-deep); border-radius: 12px;
+ font-size: 15px; font-weight: 700; letter-spacing: 0.04em;
+ box-shadow: 0 12px 32px rgba(212,169,59,0.3);
+ transition: all 0.3s var(--ease-out-expo);
+}
+.btn-pay:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(212,169,59,0.45); }
+.btn-pay:disabled { background: var(--color-bone); color: var(--color-ink-muted); box-shadow: none; transform: none; cursor: not-allowed; }
+.inv-trust { margin-top: 12px; font-size: 11.5px; color: var(--color-ink-muted); text-align: center; line-height: 1.7; }
+.inv-error {
+ margin-top: 12px; padding: 12px 14px; border-radius: 8px;
+ background: #FFF6F6; border: 1px solid rgba(200,16,46,0.35);
+ color: var(--color-red); font-size: 13px; white-space: pre-wrap; display: none;
+}
+.inv-testbar {
+ background: #856A20; color: #fff; text-align: center; font-size: 12px;
+ padding: 7px 14px; font-weight: 700; display: none;
+}
+
+/* ===== 無効リンク ===== */
+.inv-dead {
+ max-width: 560px; margin: 60px auto; background: white; border-radius: 14px;
+ border: 1px solid var(--color-bone); box-shadow: var(--shadow-md); padding: 40px 32px; text-align: center;
+}
+.inv-dead h2 { font-family: var(--font-display); font-size: 21px; color: var(--color-forest); margin-bottom: 12px; }
+.inv-dead p { font-size: 14px; color: var(--color-ink-muted); }
+.inv-dead a.line { display: inline-block; margin-top: 18px; padding: 12px 24px; background: var(--color-forest); color: var(--color-gold); border-radius: 10px; font-size: 13.5px; font-weight: 700; }
+
+/* ===== FOOTER ===== */
+.inv-footer { border-top: 1px solid var(--color-bone); padding: 22px 0; text-align: center; font-size: 11.5px; color: var(--color-ink-muted); }
+.inv-footer a { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="inv-testbar" id="testBar">⚠️ ローカル確認モード — 送信しても決済・注文は発生しません</div>
+
+<header class="inv-header">
+ <div class="container inv-header-inner">
+  <a href="index.html" class="inv-brand">
+   <picture><source type="image/webp" srcset="public/images/logo/eda-livestock-logo-transparent.webp"><img src="public/images/logo/eda-livestock-logo-transparent.png" alt="EDA LIVESTOCK"></picture>
+   <span class="inv-brand-name">PAYMENT</span>
+  </a>
+  <div class="inv-secure">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7 a5 5 0 0 1 10 0v4"/>
+   </svg>
+   <span>SSL 暗号化通信 · 安全な決済</span>
+  </div>
+ </div>
+</header>
+
+<!-- ===== 無効なリンク ===== -->
+<div id="deadView" style="display:none">
+ <div class="inv-dead">
+  <h2>このお支払いリンクは使用できません</h2>
+  <p>リンクが途中で切れている、または内容が変更された可能性があります。<br>お手数ですが、担当者へご連絡ください。</p>
+  <a class="line" href="https://line.me/R/ti/p/@706sgiuq" target="_blank" rel="noopener">LINEで問い合わせる</a>
+ </div>
+</div>
+
+<!-- ===== 本体 ===== -->
+<main class="inv-main" id="mainView" style="display:none">
+<div class="container">
+
+ <h1 class="inv-title">お支払いのご案内</h1>
+ <div class="inv-title-sub" id="greeting"></div>
+
+ <div class="inv-grid">
+  <div class="inv-col">
+
+   <!-- ① ご請求内容 -->
+   <section class="inv-block">
+    <div class="inv-block-head"><span class="inv-block-num">1</span><span class="inv-block-title">ご請求内容</span></div>
+    <div class="inv-bill-label" id="billLabel"></div>
+    <div class="inv-bill-no" id="billNo"></div>
+    <div class="inv-bill-note" id="billNote" style="display:none"></div>
+    <div class="inv-bill-rows" id="billRows"></div>
+   </section>
+
+   <!-- ② お届け先・ご連絡先 -->
+   <section class="inv-block">
+    <div class="inv-block-head"><span class="inv-block-num">2</span><span class="inv-block-title">お届け先・ご連絡先</span></div>
+    <div class="inv-form" id="invForm">
+     <div class="inv-form-row">
+      <div class="inv-field" data-req="1"><label>お名前<span class="req">必須</span></label>
+       <input type="text" id="fName" autocomplete="name" placeholder="江田 太郎"></div>
+      <div class="inv-field" data-req="1"><label>電話番号<span class="req">必須</span></label>
+       <input type="tel" id="fTel" autocomplete="tel" placeholder="09012345678"></div>
+     </div>
+     <div class="inv-form-row one">
+      <div class="inv-field" data-req="1"><label>メールアドレス<span class="req">必須</span></label>
+       <input type="email" id="fEmail" autocomplete="email" placeholder="example@mail.com">
+       <small>ご注文内容・お振込先・発送のご連絡をお送りします。</small></div>
+     </div>
+     <div class="inv-form-row">
+      <div class="inv-field" data-req="1"><label>郵便番号<span class="req">必須</span></label>
+       <input type="text" id="fZip" autocomplete="postal-code" inputmode="numeric" placeholder="8890111"></div>
+      <div class="inv-field" data-req="1"><label>都道府県<span class="req">必須</span></label>
+       <select id="fPref"><option value="">選択してください</option></select></div>
+     </div>
+     <div class="inv-form-row one">
+      <div class="inv-field" data-req="1"><label>住所（市区町村・番地・建物名）<span class="req">必須</span></label>
+       <input type="text" id="fAddr" autocomplete="street-address" placeholder="宮崎県◯◯市◯◯町1-2-3 ◯◯マンション101"></div>
+     </div>
+     <div class="inv-form-row">
+      <div class="inv-field"><label>お届け希望日</label>
+       <input type="date" id="fDate">
+       <small id="dateHint"></small></div>
+      <div class="inv-field"><label>お届け時間帯</label>
+       <select id="fTime"></select></div>
+     </div>
+    </div>
+   </section>
+
+   <!-- ③ お支払い方法 -->
+   <section class="inv-block">
+    <div class="inv-block-head"><span class="inv-block-num">3</span><span class="inv-block-title">お支払い方法</span></div>
+    <div class="inv-pay-grid">
+     <label class="inv-pay-option selected">
+      <input type="radio" name="pay" value="card" checked>
+      <span class="inv-pay-icon">💳</span>
+      <span class="inv-pay-option-body">
+       <span class="inv-pay-name" style="display:block">クレジットカード</span>
+       <span class="inv-pay-desc" style="display:block">VISA · Mastercard · JCB · AMEX</span>
+      </span>
+     </label>
+     <label class="inv-pay-option">
+      <input type="radio" name="pay" value="bank">
+      <span class="inv-pay-icon">🏦</span>
+      <span class="inv-pay-option-body">
+       <span class="inv-pay-name" style="display:block">銀行振込</span>
+       <span class="inv-pay-desc" style="display:block">お申込み後に振込先をご案内 · ご入金確認後の発送</span>
+      </span>
+     </label>
+    </div>
+    <div class="inv-pay-info" id="payInfo">
+     <strong>カード番号は次の安全な決済画面で入力します</strong>
+     「お支払いへ進む」を押すと <b>Stripe</b>（世界中で使われている決済システム）の画面に移り、そこでカード情報をご入力いただきます。このページにカード情報は保存されません。
+    </div>
+   </section>
+
+  </div>
+
+  <!-- ===== サマリー ===== -->
+  <aside class="inv-sidebar">
+   <div class="inv-summary">
+    <div class="inv-summary-title">お支払い金額</div>
+    <div id="sumRows"></div>
+    <button class="btn-pay" id="btnPay">お支払いへ進む →</button>
+    <div class="inv-error" id="errBox"></div>
+    <div class="inv-trust">
+     SSL暗号化通信で保護されています<br>
+     お問い合わせ：<a href="tel:09047241063" style="text-decoration:underline">090-4724-1063</a>
+    </div>
+   </div>
+  </aside>
+
+ </div>
+</div>
+</main>
+
+<footer class="inv-footer">
+ <div class="container">
+  江田畜産株式会社 · 宮崎県北諸県郡三股町<br>
+  <a href="tokushoho.html">特定商取引法に基づく表記</a> · <a href="privacy.html">プライバシーポリシー</a> · <a href="terms.html">利用規約</a>
+ </div>
+</footer>
+
+<script src="public/js/eda-config.js?v=20260920a"></script>
+<script src="public/js/invoice-link.js?v=001"></script>
+<script>
+/* ============================================================
+   お支払いリンク（請求リンク）
+   ------------------------------------------------------------
+   ・金額・税区分・送料は URL に入っている（発行は invoice-new.html）
+   ・お客様は 氏名/住所/電話/メール/希望到着日 と 支払い方法を入れるだけ
+   ・カード  → 既存 create_checkout（Stripe Checkout へ）
+   ・銀行振込 → 既存 create_bank_order（注文を awaiting_payment で記録）
+   🔴 送料は URL の値で確定させる。GAS 側は mode==='invoice' のとき
+      invoice_shipping をそのまま使う（通常注文の自動計算には触らない）。
+   ============================================================ */
+(function () {
+  'use strict';
+  var IV = window.EDA_INVOICE;
+  var INV = IV.parse(location.search);
+
+  /* --- リンクの正当性（URL の金額を書き換えられていないか） --- */
+  if (!IV.valid(INV)) {
+    document.getElementById('deadView').style.display = '';
+    return;
+  }
+  document.getElementById('mainView').style.display = '';
+
+  var B = IV.breakdown(INV);
+
+  /* --- ローカル確認モード（本番 Stripe を叩かない） --- */
+  var IS_LOCAL = /(^|\.)localhost$|^127\.0\.0\.1$|\.local$/.test(location.hostname) || location.protocol === 'file:';
+  /* 🔴 .inv-testbar は CSS 側で display:none。'' に戻すと CSS が効いて出ないので block を明示する。 */
+  if (IS_LOCAL) document.getElementById('testBar').style.display = 'block';
+
+  /* ===== ① 請求内容の描画 ===== */
+  document.getElementById('billLabel').textContent = INV.label;
+  document.getElementById('billNo').textContent = INV.no ? ('請求番号 ' + INV.no) : '';
+  if (INV.note) {
+    var nb = document.getElementById('billNote');
+    nb.textContent = INV.note; nb.style.display = '';
+  }
+  if (INV.to) document.getElementById('greeting').textContent = INV.to + ' 様 — 下記の内容でご請求申し上げます。';
+
+  function rowsHtml() {
+    var h = '';
+    if (B.taxOut) {
+      h += row('商品代金（税抜）', IV.yen(B.base));
+      h += row('消費税（10%）', IV.yen(B.tax));
+    } else {
+      h += row('商品代金（税込）', IV.yen(B.goods));
+      h += row('うち消費税（10%）', IV.yen(B.tax), 'muted');
+    }
+    h += B.ship > 0 ? row('送料', IV.yen(B.ship)) : row('送料', '無料（商品代金に含みます）');
+    h += row('合計', IV.yen(B.total), 'total');
+    return h;
+  }
+  function row(k, v, cls) {
+    return '<div class="inv-row' + (cls ? ' ' + cls : '') + '"><span>' + k + '</span><span>' + v + '</span></div>';
+  }
+  document.getElementById('billRows').innerHTML = rowsHtml();
+  document.getElementById('sumRows').innerHTML = rowsHtml();
+
+  /* ===== ② フォームの初期化 ===== */
+  var PREFS = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+  var selPref = document.getElementById('fPref');
+  PREFS.forEach(function (p) {
+    var o = document.createElement('option'); o.value = p; o.textContent = p; selPref.appendChild(o);
+  });
+
+  /* 時間帯は checkout.html と同じ選択肢（B2伝票の時間帯コードに合わせてある） */
+  var TIMES = ['', '午前中（〜12:00）', '14:00 - 16:00', '16:00 - 18:00', '18:00 - 20:00（推奨）', '19:00 - 21:00'];
+  var selTime = document.getElementById('fTime');
+  TIMES.forEach(function (t) {
+    var o = document.createElement('option'); o.value = t; o.textContent = t || '指定なし';
+    if (t === '18:00 - 20:00（推奨）') o.selected = true;
+    selTime.appendChild(o);
+  });
+
+  /* 最短お届け日 = checkout.html / shop.html のカウントダウンバーと同じ規則（3日後着・日曜着はスキップ） */
+  function fmtIso(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var now = new Date();
+  var minD = new Date(now); minD.setDate(minD.getDate() + 3);
+  if (minD.getDay() === 0) minD.setDate(minD.getDate() + 1);
+  var maxD = new Date(now); maxD.setMonth(maxD.getMonth() + 1);
+  var fDate = document.getElementById('fDate');
+  fDate.min = fmtIso(minD); fDate.max = fmtIso(maxD);
+  document.getElementById('dateHint').textContent =
+    '最短 ' + (minD.getMonth() + 1) + '月' + minD.getDate() + '日〜1か月先までご指定いただけます。未指定の場合は最短でお届けします。';
+
+  /* ===== ③ 支払い方法の切り替え ===== */
+  var payInfo = document.getElementById('payInfo');
+  var btn = document.getElementById('btnPay');
+  function currentPay() {
+    var c = document.querySelector('input[name="pay"]:checked');
+    return c ? c.value : 'card';
+  }
+  function syncPay() {
+    document.querySelectorAll('.inv-pay-option').forEach(function (el) {
+      el.classList.toggle('selected', !!el.querySelector('input:checked'));
+    });
+    if (currentPay() === 'bank') {
+      btn.textContent = 'お申込みを確定して振込先を受け取る →';
+      payInfo.innerHTML = '<strong>お振込先はお申込み後にご案内します</strong>' +
+        'お申込み確定後、ご登録のメールアドレス（LINE連携のお客様はLINE）へ <b>振込先口座</b> と <b>振込金額 ' + IV.yen(B.total) + '</b> をお送りします。ご入金の確認後に発送いたします。振込手数料はお客様負担にてお願いいたします。';
+    } else {
+      btn.textContent = 'お支払いへ進む →';
+      payInfo.innerHTML = '<strong>カード番号は次の安全な決済画面で入力します</strong>' +
+        '「お支払いへ進む」を押すと <b>Stripe</b>（世界中で使われている決済システム）の画面に移り、そこでカード情報をご入力いただきます。このページにカード情報は保存されません。';
+    }
+  }
+  document.querySelectorAll('input[name="pay"]').forEach(function (r) { r.addEventListener('change', syncPay); });
+  syncPay();
+
+  /* ===== 送信 ===== */
+  var form = document.getElementById('invForm');
+  var errBox = document.getElementById('errBox');
+  function showErr(msg) { errBox.textContent = msg; errBox.style.display = msg ? '' : 'none'; }
+
+  function validate() {
+    var bad = [];
+    form.classList.add('show-errors');
+    [['fName', 'お名前'], ['fTel', '電話番号'], ['fEmail', 'メールアドレス'], ['fZip', '郵便番号'], ['fPref', '都道府県'], ['fAddr', '住所']].forEach(function (p) {
+      var el = document.getElementById(p[0]);
+      var ok = !!String(el.value || '').trim();
+      if (ok && p[0] === 'fEmail') ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
+      if (ok && p[0] === 'fTel') ok = String(el.value).replace(/[^\d]/g, '').length >= 10;
+      el.closest('.inv-field').classList.toggle('field-error', !ok);
+      if (!ok) bad.push(p[1]);
+    });
+    return bad;
+  }
+
+  function payload(pay) {
+    var name = document.getElementById('fName').value.trim();
+    var tel = document.getElementById('fTel').value.trim();
+    var email = document.getElementById('fEmail').value.trim();
+    var zip = document.getElementById('fZip').value.trim();
+    var pref = document.getElementById('fPref').value;
+    var addr = document.getElementById('fAddr').value.trim();
+    var delivery = { mode: '', date: fDate.value || '', time: selTime.value || '' };
+    var item = { title: INV.label, variant: '', price: B.goods, qty: 1 };
+    return {
+      /* 🧾 mode='invoice' … 請求リンク経由の注文。STAFF では単品タブに出る
+         （isSubOrder は 'subscription' 始まりだけを定期便として扱う）。 */
+      mode: 'invoice',
+      invoice_no: INV.no || '',
+      /* 🔴 送料はスタッフが決めた額で確定させる（GAS の自動計算を使わない） */
+      invoice_shipping: B.ship,
+      customer: {
+        name: name, email: email, phone: tel, zip: zip, pref: pref, address: addr,
+        line_uid: '', line_name: '', contact_method: 'email'
+      },
+      destinations: [{
+        type: 'self', name: name, tel: tel, zip: zip, pref: pref, address: addr,
+        noshi: null, fromName: null, delivery: delivery,
+        items: [{ title: INV.label, variant: '', qty: 1 }]
+      }],
+      items: [item],
+      couponCode: null,
+      subscription: null,
+      payment_method: pay,
+      display_total: B.total,
+      delivery: delivery
+    };
+  }
+
+  btn.addEventListener('click', async function () {
+    showErr('');
+    var bad = validate();
+    if (bad.length) {
+      showErr('次の項目をご入力ください：' + bad.join(' / '));
+      var first = form.querySelector('.field-error input, .field-error select');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    var pay = currentPay();
+    var body = payload(pay);
+
+    btn.disabled = true;
+    var label = btn.textContent;
+    btn.textContent = '送信中…';
+
+    /* 🛡 ローカル確認モード: 本番 Stripe / 本番注文DB を叩かない */
+    if (IS_LOCAL) {
+      console.log('[invoice] payload', body);
+      alert('ローカル確認モードのため送信しません。\n\n' +
+        '支払方法: ' + (pay === 'bank' ? '銀行振込' : 'カード') + '\n' +
+        '品目: ' + INV.label + '\n' +
+        '商品代金: ' + IV.yen(B.goods) + '\n送料: ' + IV.yen(B.ship) + '\n合計: ' + IV.yen(B.total) + '\n\n' +
+        '（内容は開発者ツールのコンソールにも出しています）');
+      btn.disabled = false; btn.textContent = label;
+      return;
+    }
+
+    try {
+      if (!window.EDA_API) throw new Error('決済システムの初期化に失敗しました。ページを再読み込みしてください。');
+
+      if (pay === 'bank') {
+        var bres = await window.EDA_API.post('create_bank_order', body);
+        if (!bres || !bres.ok || !bres.order_number) {
+          throw new Error((bres && (bres.message || bres.error)) || 'お申込みの登録に失敗しました。お手数ですが LINE 公式 (@706sgiuq) までご連絡ください。');
+        }
+        var recItems = [{ title: INV.label, variant: '', qty: 1, price: B.goods }];
+        if (B.ship > 0) recItems.push({ title: '配送料', qty: 1, price: B.ship, variantId: 'shipping' });
+        localStorage.setItem('eda-last-order', JSON.stringify({
+          num: bres.order_number, session_id: '', mode: 'invoice',
+          date: new Date().toISOString(), email: body.customer.email,
+          total: bres.total || B.total, shipping: B.ship,
+          items: recItems, destinations: body.destinations,
+          payment_method: 'bank', bank: bres.bank || null
+        }));
+        location.href = 'order-complete.html?order=' + encodeURIComponent(bres.order_number) + '&pay=bank';
+        return;
+      }
+
+      var res = await window.EDA_API.post('create_checkout', body);
+      if (!res || !res.ok || !res.url) {
+        throw new Error((res && (res.message || res.error)) || '決済画面の準備に失敗しました。お手数ですが LINE 公式 (@706sgiuq) までご連絡ください。');
+      }
+      localStorage.setItem('eda-last-order', JSON.stringify({
+        num: res.order_number || '', session_id: res.session_id, mode: 'invoice',
+        date: new Date().toISOString(), email: body.customer.email
+      }));
+      location.href = res.url;
+    } catch (e) {
+      showErr(e && e.message ? e.message : String(e));
+      btn.disabled = false; btn.textContent = label;
+    }
+  });
+})();
+</script>
+</body>
+</html>
