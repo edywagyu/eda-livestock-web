@@ -56,7 +56,7 @@
       name: '赤身スライス', variant: '1袋 200g',
       price: 2600, weight: 200, stock: 12, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Slice',
-      description: '2mm 厚の薄切り。出汁に数秒くぐらせる、しゃぶしゃぶに。すき焼きにも。',
+      description: '薄切りにした赤身。出汁に数秒くぐらせる、しゃぶしゃぶに。すき焼きにも。',
       images: ['public/images/products/drive/wagyu-slice.jpg']
     },
     {
@@ -65,8 +65,8 @@
       name: '切り落とし', variant: '1袋 200g',
       price: 1600, weight: 200, stock: 30, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kiriotoshi',
-      description: '部位を選ばず集めた、家庭用の切り落とし。煮込み、炒め、丼に。',
-      images: ['public/images/products/drive/kiriotoshi.jpg']
+      description: 'ウデ・肩ロース・ソトモモから取れる切り落とし。煮込み、炒め、丼に。',
+      images: ['public/images/products/drive/kiriotoshi-2026.jpg']
     },
 
     /* ===== 牛肉 焼肉系 ===== */
@@ -87,7 +87,7 @@
       name: 'ホルモン', variant: '1袋 200g',
       price: 840, weight: 200, stock: 8, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Offal',
-      description: '小腸と大腸のミックス。下処理済み。もつ鍋に、焼きホルモンに。',
+      description: '小腸のみ。下処理済み。もつ鍋に、焼きホルモンに。',
       images: ['public/images/products/drive/offal.jpg']
     },
 
@@ -270,7 +270,7 @@
       name: '霜降スライス', variant: '1袋 200g',
       price: 3700, weight: 200, stock: 10, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled Slice',
-      description: '霜降り部分を約2mm厚の薄切りに。すき焼き・しゃぶしゃぶで脂の甘みがだしに溶ける。',
+      description: '霜降り部分を薄切りに。すき焼き・しゃぶしゃぶで脂の甘みがだしに溶ける。',
       images: ['public/images/products/drive/shimofuri-slice.jpg']
     },
 
@@ -645,7 +645,7 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Kiriotoshi',
       description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざるため、通常の切り落とし（200g ¥1,600）より1袋400円お安くしています。中身は同じ江田和牛です。煮込み、炒め、丼にそのまま使えます。2枚目が実際の商品の一例です。',
       images: [
-        'public/images/products/drive/kiriotoshi.jpg',
+        'public/images/products/drive/kiriotoshi-2026.jpg',
         'public/images/products/drive/fusoroi-sample.jpg'
       ]
     },
