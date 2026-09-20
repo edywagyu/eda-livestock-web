@@ -312,7 +312,7 @@
        🔴 2026-09 時点で鶏は全て在庫0（熊本の災害で供給停止）。入荷までは
           published:false / stock:0 で伏せる。入荷したら products シートの
           published を TRUE にして stock を入れるだけで店頭に出る。
-       🔴 画像は未設定。用意でき次第 images と .product-card-img[data-label="CHICKEN SET"] のCSSを足す。 */
+       画像は 2026-09-20 に田崎さんからもらったもの（chicken-set.jpg）。 */
     {
       productId: 'P048', variantId: 'CHK-SET', sku: 'EDA-CHK-SET',
       stripePriceId: '',
@@ -326,7 +326,7 @@
       ],
       category: 'chicken', categoryLabel: '鶏肉', tagEn: 'Free-range Chicken Set',
       description: '大分県・無投薬の平飼い鶏を、モモとムネで1袋ずつ。照り焼き・唐揚げにモモ、サラダチキン・バンバンジーにムネ。単品で買うと ¥1,900 → ¥1,780。',
-      images: []
+      images: ['public/images/products/drive/chicken-set.jpg']
     },
 
     /* ===== 鶏肉 オーガニック（プレミアム）— 200g パック ===== */
