@@ -1170,7 +1170,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 </style>
 
 <!-- ★ 商品マスター（shop.html と共有・単一データソース）— ?v= を更新するとキャッシュ突破 -->
-<script src="public/data/products-master.js?v=2026-09-17-sw-live"></script>
+<script src="public/data/products-master.js?v=2026-09-20-datafix"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap">
@@ -1962,8 +1962,8 @@ const DEMO_PRODUCTS_FALLBACK = [
   { productId: 'P002', variantId: 'RED-MEAT',         name: '赤身ステーキ',                 variant: '1枚 200g',  price: 3400, stock: 15, temp: '冷凍', category: '牛肉', sku: 'EDA-REDMEAT-200', weight: 200, description: 'モモ系の赤身から、柔らかい部分を厳選カット。脂身が少なく、鉄分・たんぱく質がしっかり摂れる。', images: ['public/images/products/drive/red-meat.jpg'] },
   { productId: 'P003', variantId: 'CUBE-STEAK',       name: 'サイコロステーキ',             variant: '1袋 200g',  price: 1000, stock: 22, temp: '冷凍', category: '牛肉', sku: 'EDA-CUBE-200',    weight: 200, description: 'ステーキ用の正肉を一口大にカット。フライパンで転がすだけ。お子さまにも大人気。', images: ['public/images/products/drive/cube-steak.jpg'] },
   /* ===== 牛肉 スライス・切り落とし ===== */
-  { productId: 'P004', variantId: 'WAGYU-SLICE',      name: '赤身スライス',                 variant: '1袋 200g',  price: 2600, stock: 12, temp: '冷凍', category: '牛肉', sku: 'EDA-WSLICE-200',  weight: 200, description: '約2mm厚の薄切り。しゃぶしゃぶ・すき焼き・冷しゃぶサラダに。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
-  { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: '部位の端材を集めたお得な切り落とし。牛丼・カレー・肉じゃが・炒め物に。', images: ['public/images/products/drive/kiriotoshi.jpg'] },
+  { productId: 'P004', variantId: 'WAGYU-SLICE',      name: '赤身スライス',                 variant: '1袋 200g',  price: 2600, stock: 12, temp: '冷凍', category: '牛肉', sku: 'EDA-WSLICE-200',  weight: 200, description: '薄切りにした赤身。しゃぶしゃぶ・すき焼き・冷しゃぶサラダに。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
+  { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: 'ウデ・肩ロース・ソトモモから取れる切り落とし。牛丼・カレー・肉じゃが・炒め物に。', images: ['public/images/products/drive/kiriotoshi-2026.jpg'] },
   /* ===== 牛肉 焼肉系 ===== */
   { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 200g',  price: 1500, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-200',    weight: 200, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
   { productId: 'P007', variantId: 'OFFAL',            name: '和牛ホルモン',                 variant: '1袋 150g',  price:  840, stock:  8, temp: '冷凍', category: '牛肉', sku: 'EDA-OFFAL-150',   weight: 150, description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。', images: ['public/images/products/drive/offal.jpg'] },

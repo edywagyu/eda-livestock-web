@@ -51,7 +51,7 @@
       variant: '1袋 200g',
       qty: 1,
       label: '切り落としプレゼント',
-      img: 'public/images/products/drive/kiriotoshi.jpg',
+      img: 'public/images/products/drive/kiriotoshi-2026.jpg',
       minSubtotal: 10000,
       from:  [2026, 8, 7, 18, 0, 0],      /* 月は 0 始まり＝8 は9月 */
       until: [2026, 8, 7, 23, 59, 59]
