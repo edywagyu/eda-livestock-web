@@ -2928,8 +2928,20 @@ function removeDestination(idx) {
    値引きは下の discountedUnit() が単価を書き換えて実現する（Stripe coupon は使わない）。 */
 var COUPONS = {
  'エダチク10': { type: 'percent', value: 10, label: '初回購入10%OFF' },
- 'LINE10':     { type: 'percent', value: 10, label: 'LINE連携特典 全品10%OFF' }
+ 'LINE10':     { type: 'percent', value: 10, label: 'LINE連携特典 全品10%OFF' },
+ /* 🎟️ 期間限定コード（2026-09-22 新設）。until を過ぎたら適用しない。
+    🔴 gas/Code.gs の normalizeCustomerCoupon_ と必ず対で維持すること。
+       片方だけに足すと「入力できるのに割引されない」「割引されるのに記録されない」になる。 */
+ 'エダチク':   { type: 'percent', value: 10, label: '10%OFF（9/27まで）', until: '2026-09-27' }
 };
+/* until 付きコードの期限判定（JSTの日付で比較・当日中は有効） */
+function couponExpiredByUntil(c) {
+ if (!c || !c.until) return false;
+ var jst = new Date(Date.now() + (new Date().getTimezoneOffset() + 540) * 60000);
+ var p = function (n) { return (n < 10 ? '0' : '') + n; };
+ var today = jst.getFullYear() + '-' + p(jst.getMonth() + 1) + '-' + p(jst.getDate());
+ return today > c.until;
+}
 var appliedCoupon = null;
 var gShipping = 0;
 function discountRate() {
@@ -2988,6 +3000,12 @@ function applyCoupon() {
      msg.className='coupon-msg error';
    }
    trackBlocked('coupon_member_only', { code: code.slice(0, 24) });
+   renderSummary(); return;
+ }
+ if (couponExpiredByUntil(c)) {
+   appliedCoupon = null;
+   if (msg) { msg.textContent = 'このクーポンは' + c.until + 'で有効期限が切れています'; msg.className = 'coupon-msg error'; }
+   trackBlocked('coupon_expired', { code: String(code).slice(0, 24) });
    renderSummary(); return;
  }
  appliedCoupon = { code: code, type: c.type, value: c.value, label: c.label };

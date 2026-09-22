@@ -5029,6 +5029,13 @@ function normalizeCustomerCoupon_(body) {
   if (!raw) return '';
   var allowed = { 'エダチク10': true };
   allowed[linkCouponCode_()] = true;         // 既定 LINE10（LINK_COUPON_CODE で変更可）
+  /* 🎟️ 期間限定コード「エダチク」(2026-09-22 新設・9/27まで)。
+     期限は固定日。過ぎたら許可リストに入れない＝案内した締切を嘘にしない。
+     🔴 checkout.html の COUPONS(until) と必ず対で維持すること。 */
+  var EDACHIKU_UNTIL = cfg('EDACHIKU_COUPON_UNTIL', '2026-09-27');
+  if (Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd') <= EDACHIKU_UNTIL) {
+    allowed['エダチク'] = true;
+  }
   if (!allowed[raw]) {
     log('coupon_unknown_code', { code: raw.slice(0, 32) });
     return '';                               // 未知コードは無視（フロントが弾く前提の保険）
