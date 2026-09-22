@@ -1244,15 +1244,6 @@ ul { list-style: none; padding: 0; margin: 0; }
     <!-- ============ HOME ============ -->
     <section class="section active" id="sec-home">
 
-      <!-- 🧾 道具 — 単発の請求リンクを作る画面への入口 -->
-      <div class="section-label">🧾 道具</div>
-      <a href="invoice-new.html" class="btn-primary" style="margin-top:0;text-decoration:none">
-        <span>🧾 請求リンクを作る</span>
-      </a>
-      <div style="margin:6px 0 18px;font-size:11px;color:var(--muted);line-height:1.7">
-        お電話・LINEで受けたご注文に金額を付けて、お客様に送るリンクを作ります（税込/税別・送料の込み/実額もここで指定）。
-      </div>
-
       <!-- 📦 本日発送する顧客（東日本=到着3日前 / 西日本=到着2日前） -->
       <div class="section-label">📦 本日発送する顧客 <span id="shipTodayCount" class="count-pill">-</span></div>
       <div class="card ship-today-card">
@@ -1438,6 +1429,15 @@ ul { list-style: none; padding: 0; margin: 0; }
           </div>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
+        <!-- 🧾 請求リンク（invoice-new.html）— 電話/LINEで受けた注文に金額を付けて送るリンクを作る -->
+        <a class="settings-item" href="invoice-new.html" style="text-decoration:none;color:inherit">
+          <div class="settings-item-icon" style="background:#FAF0D7;color:#856A20"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12a1 1 0 0 1 1 1v18l-3-2-2 2-2-2-2 2-3-2V3a1 1 0 0 1 1-1z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg></div>
+          <div class="settings-item-text">
+            <div class="settings-item-title">請求リンク</div>
+            <div class="settings-item-sub">金額・税・送料を決めて送る</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
     </section>
 
@@ -1748,6 +1748,10 @@ ul { list-style: none; padding: 0; margin: 0; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
       <span>販促</span>
     </div>
+    <a class="tab" href="invoice-new.html" style="text-decoration:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12a1 1 0 0 1 1 1v18l-3-2-2 2-2-2-2 2-3-2V3a1 1 0 0 1 1-1z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg>
+      <span>請求</span>
+    </a>
   </nav>
 
 </div>
