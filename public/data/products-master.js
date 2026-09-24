@@ -374,6 +374,9 @@
     /* ===== ギフトボックス（送料込み・税込） ===== */
     {
       productId: 'P017', variantId: 'GIFT-MATSU', sku: 'EDA-GIFT-MATSU-450',
+      /* 🚫 予約を受けない: 中身のヒレステーキ(P024)が入荷未定のため作れない（2026-09-24 田崎さん指示）。
+         公開はするが在庫0のあいだは「売り切れ」で止める。 */
+      noPreorder: 'TRUE',
       stripePriceId: 'price_1TcbwYGSkhU1UEciMRd5Kyu2',
       name: 'ヒレステーキ ギフト【松】', variant: '450g',
       price: 12900, weight: 450, stock: 10, temp: '冷凍',
