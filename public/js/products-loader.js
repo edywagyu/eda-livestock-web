@@ -211,6 +211,9 @@
       /* 📅 予約注文 (public/js/preorder.js)。products シートの soldOutAt 列＝在庫が0になった日。
          列がまだ無ければ undefined のまま来る＝preorder.js が「今日+9日」に読み替える。 */
       soldOutAt:        keep(p, 'soldOutAt') || '',
+      /* 🚫 予約を受けない印（products シートの noPreorder 列）。
+         ここで捨てると preorder.js まで届かず、入荷未定の品まで予約日を約束してしまう。 */
+      noPreorder:       keep(p, 'noPreorder') || '',
       /* 🚚 これが入っていれば送料無料になる商品（products シートの freeShip 列）。
          ここで捨てると商品ページが「別途 送料 ¥1,100」のままになる。 */
       freeShip:         keep(p, 'freeShip')
