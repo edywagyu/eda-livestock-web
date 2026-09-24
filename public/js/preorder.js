@@ -82,8 +82,20 @@
     return d.getTime() > today().getTime() ? skipSunday(d) : null;   /* 過去日は出さない */
   }
 
+  /* 🚫 この商品は予約を受けない（products シートの noPreorder 列に TRUE）。
+     入荷の見通しが立たない品（災害で止まっている鶏、原料待ちの希少部位）は、
+     自動計算の「今日+9日」を約束してしまうと守れない。TRUE を入れると
+     在庫0のとき従来どおり「売り切れ」でボタンが止まる。
+     空欄・列そのものが無い＝これまでどおり予約を受ける。 */
+  function noPreorder(product) {
+    var v = product && (product.noPreorder !== undefined ? product.noPreorder : product.nopreorder);
+    if (v === true) return true;
+    return String(v == null ? '' : v).trim().toUpperCase() === 'TRUE';
+  }
+
   /* 在庫が無い＝予約受付の対象か */
   function isPreorder(product) {
+    if (noPreorder(product)) return false;
     var s = stockOf(product);
     return s !== null && s <= 0;
   }
@@ -141,6 +153,7 @@
 
   window.EDA_PREORDER = {
     LEAD_DAYS: LEAD_DAYS,
+    noPreorder: noPreorder,
     isPreorder: isPreorder,
     dateFor: dateFor,
     labelFor: labelFor,
