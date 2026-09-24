@@ -4133,6 +4133,54 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 .gift-product-cta:hover { opacity: 0.7; }
 
+/* ============================================================
+   在庫バッジ（商品一覧 products.html と同じ見せ方に揃える）
+   ・在庫0で予約が受けられる → 深緑の帯に「◯月◯日〜お届け／予約可」
+   ・予約日が出せない       → 赤い帯で「売り切れ」、ボタンは押せない
+   ・products の published が FALSE → カードごと出さない
+   ============================================================ */
+.gift-stock-badge {
+ position: absolute;
+ top: 14px; right: 14px;
+ padding: 5px 12px;
+ border-radius: 14px;
+ font-family: var(--font-jp);
+ font-size: 11px;
+ font-weight: 700;
+ letter-spacing: 0.02em;
+ z-index: 6;
+ box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.gift-stock-badge.is-preorder {
+ background: rgba(15, 61, 46, 0.92);
+ color: #fff;
+ border: 1px solid rgba(212, 169, 59, 0.55);
+}
+.gift-stock-badge.is-out {
+ background: rgba(200, 16, 46, 0.92);
+ color: #fff;
+}
+.gift-highlight p.gift-preorder-note,
+.gift-preorder-note {
+ font-family: var(--font-jp);
+ font-size: 11.5px;
+ line-height: 1.6;
+ /* 🔴 .gift-highlight p { color: rgba(255,255,255,0.85) !important } が上に効いていて、
+    白背景のカード内で白文字＝読めなくなる。ここだけ !important で押し返す。 */
+ color: #0F3D2E !important;
+ background: rgba(15, 61, 46, 0.06);
+ border-radius: 8px;
+ padding: 8px 10px;
+ margin: 0 0 10px;
+}
+.gift-product-card.is-unpublished { display: none !important; }
+.gift-product-cta[disabled] {
+ opacity: 0.45;
+ cursor: not-allowed;
+ pointer-events: none;
+ border-bottom-color: rgba(15,61,46,0.3);
+}
+
 @media (max-width: 720px) {
  .gift-hi-inner { grid-template-columns: 1fr; gap: 24px; margin-bottom: 28px; }
  .gift-hi-features { grid-template-columns: 1fr; }
@@ -4402,7 +4450,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 
  <!-- ギフト商品 — 静的 HTML はフォールバック / スプシ動的レンダリング上書き対応 -->
  <div class="gift-products-grid" id="gift-products">
- <div class="gift-product-card">
+ <div class="gift-product-card" data-gift-id="matsu" data-product-name="ヒレステーキ ギフト【松】">
  <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/fillet.webp') type('image/webp'), url('public/images/products/drive/fillet.jpg'))">
  <span class="gift-product-rank">松</span>
  </div>
@@ -4416,7 +4464,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  <button onclick="orderGift('matsu', 12900, 'ヒレステーキ ギフト【松】 450g')" class="gift-product-cta" data-en="Order as a gift →">贈答用に注文する →</button>
  </div>
  </div>
- <div class="gift-product-card">
+ <div class="gift-product-card" data-gift-id="take" data-product-name="赤身ステーキ ギフト【竹】">
  <div class="gift-product-img" style="background-image: image-set(url('public/images/products/drive/red-meat.webp') type('image/webp'), url('public/images/products/drive/red-meat.jpg'))">
  <span class="gift-product-rank rank-take">竹</span>
  </div>
@@ -4539,6 +4587,13 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  ume: { name: '和牛ハンバーグ ギフト【梅】', variant: '5個 / 130g×5' }
  };
  window.orderGift = function (giftId, price, title) {
+ /* 🔴 在庫0・非公開のカードから決済まで通ってしまった事故(2026-09-24)の歯止め。
+    表示を直すだけだと、古いHTMLがキャッシュされた端末から同じことが起きる。 */
+ const _card = document.querySelector('.gift-product-card[data-gift-id="' + giftId + '"]');
+ if (_card && _card.dataset.giftBuyable === '0') {
+   alert('申し訳ございません。こちらの商品はただいま承ることができません。');
+   return;
+ }
  const stripePriceId = lookupStripePriceId(title, '') || null;
  const cat = GIFT_CATALOG[giftId];
  const cartTitle = cat ? cat.name : title;
@@ -4559,6 +4614,100 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  if (window.edaAnalytics) window.edaAnalytics.addToCart('gift-' + giftId, price, { title: cartTitle, variant: cartVariant });
  location.href = 'checkout.html?mode=gift';
  };
+})();
+</script>
+<script>
+/* ============================================================
+   ギフトカードを在庫とつなぐ（2026-09-24）
+   ------------------------------------------------------------
+   🔴 このページは長らく在庫とまったく連動しておらず、products の
+      stock を 0 にしても published を FALSE にしても、カードは
+      そのまま並び、ボタンも押せて決済まで通っていた。
+      2026-09-24 に在庫0・非公開の「ヒレステーキ ギフト【松】」が
+      実際に1件売れて発覚（EDA-20260924-C3C3AF）。
+
+   やること — 商品一覧(products.html)とまったく同じ規則に揃える:
+     ・published が FALSE → カードごと出さない
+     ・在庫0で予約日が出せる → 「◯月◯日〜お届け／予約可」を出し、
+       そのまま買える（決済側 validateStockBeforeCheckout も
+       PREORDER_ENABLED=true で在庫0を予約として通している）
+     ・在庫0で予約日が出せない → 「売り切れ」でボタンを止める
+     ・在庫が戻れば全部自動で消える
+
+   ⚠ 突合キーは data-product-name ＝ products シートの name と完全一致。
+      ここがズレると在庫が読めず、また素通りで売れてしまう。
+      カードを足すときは1文字ずつ照合すること。
+   ============================================================ */
+(function giftStockInit() {
+ const GRID = document.getElementById('gift-products');
+ if (!GRID) return;
+
+ function masterByName() {
+   const list = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+   const map = {};
+   list.forEach(p => { if (p && p.name) map[p.name] = p; });
+   return map;
+ }
+
+ function decorate() {
+   const byName = masterByName();
+   GRID.querySelectorAll('.gift-product-card').forEach(card => {
+     const name = card.getAttribute('data-product-name');
+     const p = name ? byName[name] : null;
+     const btn = card.querySelector('.gift-product-cta');
+     const img = card.querySelector('.gift-product-img');
+     const body = card.querySelector('.gift-product-body');
+
+     /* 既存の表示を一度消す（5分ごとの再取得で呼び直されるため） */
+     card.querySelectorAll('.gift-stock-badge').forEach(el => el.remove());
+     card.querySelectorAll('.gift-preorder-note').forEach(el => el.remove());
+     card.classList.remove('is-unpublished');
+     if (btn) { btn.disabled = false; card.dataset.giftBuyable = '1'; }
+
+     /* products に行が無い＝突合できない。勝手に隠さず、そのまま出す
+        （名前の打ち間違いでギフトが全部消えるほうが事故が大きい） */
+     if (!p) return;
+
+     if (p.published === false || p.published === 'FALSE' || p.published === 'false') {
+       card.classList.add('is-unpublished');
+       card.dataset.giftBuyable = '0';
+       return;
+     }
+
+     const stock = Number(p.stock);
+     if (isNaN(stock) || stock > 0) return;   /* 在庫あり → 通常表示 */
+
+     const label = (window.EDA_PREORDER && window.EDA_PREORDER.labelFor(p)) || '';
+     const badge = document.createElement('div');
+     badge.className = 'gift-stock-badge ' + (label ? 'is-preorder' : 'is-out');
+     badge.textContent = label ? (label.replace(/（.）$/, '') + '〜お届け') : '売り切れ';
+     if (img) img.appendChild(badge);
+
+     if (label) {
+       /* 予約として受ける。贈答なので「いつ届くか」を本文にも必ず書く */
+       const note = document.createElement('p');
+       note.className = 'gift-preorder-note';
+       note.textContent = 'ただいま在庫を切らしております。ご予約として承り、次回最短 ' + label + ' 以降のお届けとなります。';
+       if (btn && btn.parentNode) btn.parentNode.insertBefore(note, btn);
+     } else if (btn) {
+       btn.disabled = true;
+       btn.textContent = '売り切れ';
+       card.dataset.giftBuyable = '0';
+     }
+   });
+ }
+
+ /* products-loader.js が GAS から在庫を取り終えたら呼んでくれる */
+ window.refreshStockBadges = decorate;
+
+ /* 初回。master が届くまで少し待つ（products.html の tryDecorate と同じ考え方） */
+ let tries = 0;
+ (function waitMaster() {
+   const ready = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products || []).length;
+   if (ready || tries > 40) { decorate(); return; }
+   tries++;
+   setTimeout(waitMaster, 200);
+ })();
 })();
 </script>
 <script>
@@ -5143,6 +5292,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  })();
 </script>
 
+<script src="public/js/preorder.js?v=003"></script>
+<script src="public/data/products-master.js?v=2026-09-24-gift" defer></script>
+<script src="public/js/products-loader.js?v=007" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=010" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
