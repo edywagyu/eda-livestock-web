@@ -237,6 +237,8 @@
     },
     {
       productId: 'P032', variantId: 'HIRE-CUBE', sku: 'EDA-HIRECUBE-200',
+      /* 🚫 予約を受けない: 入荷未定（2026-09-24 田崎さん指示で予約停止） */
+      noPreorder: 'TRUE',
       stripePriceId: '',
       name: 'ヒレサイコロステーキ', variant: '1袋 200g',
       price: 2500, weight: 200, stock: 3, temp: '冷凍',
@@ -246,6 +248,8 @@
     },
     {
       productId: 'P024', variantId: 'HIRE-STEAK', sku: 'EDA-HIRE-150',
+      /* 🚫 予約を受けない: 入荷未定（2026-09-24 田崎さん指示で予約停止） */
+      noPreorder: 'TRUE',
       stripePriceId: '',
       /* 2026-08-31 田崎さん確認: 1枚は150g（200g表記が誤り）。商品コードEDA-HIRE-150とも一致。
          ギフト【松】450g＝3枚 の内訳とも合う。価格¥4,750は据え置き。 */
@@ -332,6 +336,8 @@
     /* ===== 鶏肉 オーガニック（プレミアム）— 200g パック ===== */
     {
       productId: 'P014', variantId: 'ORG-CHK-BREAST', sku: 'EDA-ORG-CHK-BREAST-200',
+      /* 🚫 予約を受けない: 入荷未定（熊本の災害で鶏の供給が停止中・2026-09） */
+      noPreorder: 'TRUE',
       stripePriceId: 'price_1Tccv8GSkhU1UEciIJRR3EgR',
       name: 'オーガニックチキン ムネ', variant: '1袋 200g',
       price: 2760, weight: 200, stock: 6, temp: '冷凍',
@@ -342,6 +348,8 @@
     },
     {
       productId: 'P015', variantId: 'ORG-CHK-THIGH', sku: 'EDA-ORG-CHK-THIGH-200',
+      /* 🚫 予約を受けない: 入荷未定（熊本の災害で鶏の供給が停止中・2026-09） */
+      noPreorder: 'TRUE',
       stripePriceId: 'price_1TccvFGSkhU1UEcieBG9ameg',
       name: 'オーガニックチキン モモ', variant: '1袋 200g',
       price: 2940, weight: 200, stock: 6, temp: '冷凍',
@@ -352,6 +360,8 @@
     },
     {
       productId: 'P016', variantId: 'ORG-CHK-MINCED', sku: 'EDA-ORG-CHK-MINCED-200',
+      /* 🚫 予約を受けない: 入荷未定（熊本の災害で鶏の供給が停止中・2026-09） */
+      noPreorder: 'TRUE',
       stripePriceId: 'price_1TccvLGSkhU1UEciMdkgzxet',
       name: 'オーガニックチキン ミンチ', variant: '1袋 200g',
       price: 2400, weight: 200, stock: 5, temp: '冷凍',
