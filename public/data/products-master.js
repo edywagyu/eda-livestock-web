@@ -620,7 +620,7 @@
     {
       productId: 'P043', variantId: 'FUZOROI-SET', sku: 'EDA-FUZOROI-SET',
       stripePriceId: '',
-      name: '不揃い品セット', variant: '和牛5種 各200g 計1kg',
+      name: '不揃いセット', variant: '和牛5種 各200g 計1kg',
       price: 7980, listPrice: 11950, weight: 1000, stock: 3, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Fuzoroi Assortment Set',
       description: '和牛5種を、各200g・計1kg。バラ焼肉／和牛ミンチ／ステーキ（赤身ステーキかミスジステーキが入ります）／霜降スライス／切り落とし。スライス・バラ焼肉・切り落としは冷凍焼けで、表面の色が黒っぽく変わっています。2枚目の写真が冷凍焼けの例です。ステーキは形が不揃いです。内容量も味も、通常の商品と同じです。見た目のぶんだけお安くしました。単品で買うと ¥11,950 → ¥7,980。',
