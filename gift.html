@@ -4649,6 +4649,22 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
    return map;
  }
 
+ /* 管理画面「ギフト管理」の公開/下書きは gifts シート側にある（products とは別の行）。
+    products-loader.js が public_catalog の gifts を持ってきて __renderGifts を呼ぶので、
+    ここで受けて「下書き」のカードも消せるようにする。
+    ＝ 管理画面のどちらのスイッチ（商品管理 / ギフト管理）で下書きにしても店頭から消える。
+
+    ⚠ public_catalog の gifts は「公開中だけ」に絞られて届く（GAS publicCatalog が
+       published でフィルタしている）。つまり "配列に居ない＝下書き" が判定。
+       ただし配列が空で届いたときは、シートが読めなかった等の事故と区別できないので
+       何も判断しない（全カードを消してしまうほうが被害が大きい）。 */
+ let publishedGiftIds = null;   /* null = まだ判断材料が無い */
+ window.__renderGifts = function (gifts) {
+   const ids = (gifts || []).map(g => g && g.giftId).filter(Boolean);
+   publishedGiftIds = ids.length ? ids : null;
+   decorate();
+ };
+
  function decorate() {
    const byName = masterByName();
    GRID.querySelectorAll('.gift-product-card').forEach(card => {
@@ -4668,7 +4684,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
         （名前の打ち間違いでギフトが全部消えるほうが事故が大きい） */
      if (!p) return;
 
-     if (p.published === false || p.published === 'FALSE' || p.published === 'false') {
+     const giftId = card.getAttribute('data-gift-id');
+     const draftInGifts = !!(publishedGiftIds && giftId && publishedGiftIds.indexOf(giftId) === -1);
+     const draftInProducts = (p.published === false || p.published === 'FALSE' || p.published === 'false');
+     if (draftInGifts || draftInProducts) {
        card.classList.add('is-unpublished');
        card.dataset.giftBuyable = '0';
        return;
