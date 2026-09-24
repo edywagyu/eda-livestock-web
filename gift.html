@@ -3627,6 +3627,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .gift-highlight h2 { color: white !important; }
 .gift-highlight p { color: rgba(255,255,255,0.85) !important; }
 .gift-highlight strong { color: var(--color-gold) !important; }
+/* 🔴 上の3行は「深緑の背景に白文字」を効かせるためのものだが、この節の中には
+   白背景のギフトカードが載っている。カードの中まで白文字になり、商品説明文が
+   ずっと読めなかった（2026-09-24 発見。松・竹とも本文が消えていた）。
+   カードの中だけ元の文字色に戻す。 */
+.gift-highlight .gift-product-body p { color: var(--color-ink) !important; }
+.gift-highlight .gift-product-body strong { color: var(--color-forest) !important; }
 .gift-hi-inner {
  display: grid;
  grid-template-columns: 1.05fr 1fr;
