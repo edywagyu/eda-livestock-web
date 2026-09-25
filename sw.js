@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-09-25-341-yaiba-collab';
+const CACHE_VERSION = 'eda-v2026-09-25-342-yaiba-cardlink';
 const CORE_ASSETS = [
   './',
   'index.html',
