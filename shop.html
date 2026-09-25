@@ -7023,6 +7023,11 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="SHIMOFURI SLICE"] { background-image: url('public/images/products/drive/shimofuri-slice.jpg'); }
 .product-card-img[data-label="ICHIBO STEAK"] { background-image: url('public/images/products/drive/ichibo-steak.jpg'); }
 .product-card-img[data-label="KAMESHIN SET"] { background-image: url('public/images/products/drive/kamenoko-shinshin-set.jpg'); }
+/* ===== 刃コラボ（特別セット品）2026-09-25 ===== */
+.product-card-img[data-label="YAIBA SET"] { background-image: url('public/images/products/drive/yaiba-set.jpg?v=5'); }
+.product-card-img[data-label="YAIBA ROAST"] { background-image: url('public/images/products/drive/yaiba-roast.jpg?v=5'); }
+.yaiba-mark { font-family: var(--font-jp-serif); font-weight: 700; letter-spacing: .09em; color: #7A5E14; }
+.yaiba-head .shop-cat-desc strong { color: var(--color-forest); font-weight: 700; }
 .product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/kamenoko-yakiniku.jpg'); }
 .product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/shinshin-yakiniku.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
@@ -9977,58 +9982,28 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
- <!-- ===== カメノコ焼肉 / シンシン焼肉 数量限定 (2026-09-06 20:00 販売開始) =====
-      公式LINE配信に合わせて limitedStartAt で自動解禁。それまでは data-limited-scope で非表示。
-      限定の終了日時は設けず、在庫が尽きたら通常の売り切れ表示になる。 -->
- <div class="shop-cat-head" data-cat="beef" data-limited-scope="カメノコ焼肉">
- <h2 class="shop-cat-title">数量限定 <span>/ Kamenoko &amp; Shinshin</span></h2>
- <p class="shop-cat-desc">モモの中の「シンタマ」を4つに分けた希少部位、カメノコとシンシン。<strong>普段は企業向け</strong>で店頭には出しません。今回だけ焼肉用にカットしました。<strong>30パックの数量限定</strong>。なくなり次第終了です。</p>
+ <!-- ===== 刃（YAIBA）コラボ 特別セット品 — 2026-09-25 =====
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。 -->
+ <div class="shop-cat-head yaiba-head" data-cat="beef">
+ <h2 class="shop-cat-title">特別セット品 <span>/ YAIBA &times; 江田和牛</span></h2>
+ <p class="shop-cat-desc">希少な果実と和三盆で甘みを組み立てたタレ「<span class="yaiba-mark">YAIBA -刃-</span>」。<br>六十年の家族の味を最高峰の素材で再構築した<strong>無添加</strong>のタレと、<strong>無投薬</strong>の江田和牛を組み合わせた特別セット商品です。</p>
  </div>
 
- <div class="product-grid cols-4" data-cat="beef" data-limited-scope="カメノコ焼肉">
- <!-- カメノコ・シンシン焼肉セット (2026-09-06 20:00 販売開始・数量限定)。
-      セット行の stock は BOM で減らないので、残数は products-loader.js の
-      applyBomStock が構成品(カメノコ/シンシン)の実在庫から計算する。
-      単品が売れてもこの残数は減る。上限6＝シンシン6袋。 -->
- <div class="product-card product-card--limited" data-sub="set" data-limited-scope="カメノコ・シンシン焼肉セット" data-variants='[{"id":50903004860101,"t":"1セット","p":4860}]'>
- <div class="product-card-img" data-label="KAMESHIN SET"><span class="limited-ribbon">限定商品</span></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Kamenoko &amp; Shinshin</span><span class="product-price"><s>&yen;5,400</s> &yen;4,860</span></div>
- <p class="product-name">カメノコ・シンシン焼肉セット</p>
- <p class="product-desc">カメノコ200gとシンシン200gの2種セット。1袋ずつ買うより<strong>540円お得</strong>です。<strong>普段は企業向け</strong>の部位を、今回だけ焼肉用にカットしました。</p>
- <div class="product-stats">
- <div class="product-stat-item">カメノコ焼肉 <strong>200g</strong></div>
- <div class="product-stat-item">シンシン焼肉 <strong>200g</strong></div>
- <div class="product-stat-item wide">通常 &yen;5,400 &rarr; <strong>&yen;540 お得</strong></div>
- </div>
- <div class="nikunohi-urgency"><b class="limited-left">30パック限定</b><span>なくなり次第終了</span></div>
+ <div class="product-grid cols-4" data-cat="beef">
+ <div class="product-card" data-sub="set" data-variants='[{"id":50925010800011,"t":"1セット","p":10800}]'>
+ <div class="product-card-img" data-label="YAIBA SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; YAIBA</span><span class="product-price">&yen;10,800</span></div>
+ <p class="product-name">YAIBA × 江田和牛 焼肉200g / ステーキ200g</p>
+ <p class="product-desc">六十年の味と、希少な果実の個性が溶け合う瞬間を封じ込めた、無添加のタレ「<span class="yaiba-mark">YAIBA</span>」。江田和牛赤身焼肉・赤身ステーキとのセット商品です。</p>
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="カメノコ焼肉" data-variants='[{"id":50831002700401,"t":"1袋","p":2700}]'>
- <div class="product-card-img" data-label="KAMENOKO YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
- <div class="product-tag-row"><span class="product-tag">Yakiniku · Kamenoko</span><span class="product-price">¥2,700</span></div>
- <p class="product-name">カメノコ焼肉</p>
- <p class="product-desc">モモの中の「シンタマ」を4つに分けたうちの一つ。きめが細かく、脂は控えめ。<strong>普段は企業向け</strong>の部位を、今回だけ焼肉用にカットしました。</p>
- <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥1,350</strong></div>
- <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
- </div>
- <div class="nikunohi-urgency"><b class="limited-left">30パック限定</b><span>なくなり次第終了</span></div>
- <div class="product-buy"></div>
- </div>
-
- <div class="product-card product-card--limited" data-sub="yakiniku" data-limited-scope="シンシン焼肉" data-variants='[{"id":50831002700501,"t":"1袋","p":2700}]'>
- <div class="product-card-img" data-label="SHINSHIN YAKINIKU"><span class="limited-ribbon">限定商品</span></div>
- <div class="product-tag-row"><span class="product-tag">Yakiniku · Shinshin</span><span class="product-price">¥2,700</span></div>
- <p class="product-name">シンシン焼肉</p>
- <p class="product-desc">シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。<strong>普段は企業向け</strong>の希少部位を、今回だけ焼肉用にカットしました。</p>
- <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥1,350</strong></div>
- <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
- </div>
- <div class="nikunohi-urgency"><b class="limited-left">30パック限定</b><span>なくなり次第終了</span></div>
+ <div class="product-card" data-sub="set" data-variants='[{"id":50925010800021,"t":"1セット","p":10800}]'>
+ <div class="product-card-img" data-label="YAIBA ROAST"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; YAIBA</span><span class="product-price">&yen;10,800</span></div>
+ <p class="product-name">YAIBA × 江田和牛 プレミアム生ロースト400g</p>
+ <p class="product-desc">六十年の味と、希少な果実の個性が溶け合う瞬間を封じ込めた、無添加のタレ「<span class="yaiba-mark">YAIBA</span>」。江田和牛プレミアム生ローストとのセット商品です。</p>
  <div class="product-buy"></div>
  </div>
  </div>
@@ -14878,7 +14853,7 @@ function copyPopCoupon() {
 <script src="public/js/cart-holds.js?v=001" defer></script>
 <script src="public/js/limited-stock.js?v=014" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=010" defer></script>
+<script src="public/js/eda-bundle.js?v=011" defer></script>
 <!-- 売れ行きランキング（#popularBar のバナーを描く。products.html は並べ替えにも使う） -->
 <script src="public/js/popular.js?v=5" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
