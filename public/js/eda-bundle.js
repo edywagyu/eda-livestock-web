@@ -497,6 +497,14 @@
       if (e.key === 'Escape' && overlay.classList.contains('open')) close();
     });
 
+    /* 🔴 戻るボタンで戻ったとき、開いたままの拡大表示が残る問題への対処（2026-09-25）
+       商品カードの画像タップは「PDPへ遷移」と「拡大表示を開く」が両方走る。
+       遷移が先に決まるので拡大表示は見えないまま履歴に載り、ブラウザバックで
+       bfcache から復元されると、一覧の上に拡大画像が貼り付いた状態になる。
+       復元時(pageshow)と離脱時(pagehide)に必ず閉じる。 */
+    window.addEventListener('pageshow', () => { if (overlay.classList.contains('open')) close(); });
+    window.addEventListener('pagehide', close);
+
     /* 商品画像クリック → lightbox オープン */
     document.addEventListener('click', (e) => {
       const card = e.target.closest('.product-card-img, .gift-product-img, [data-lightbox]');

@@ -719,6 +719,34 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Tasting Set B',
       description: '同じ焼き方で、赤身とサシを食べ比べ。一頭からわずかしか取れないミスジを2枚に、赤身ステーキを1枚。希少部位を主役にしたい方はこちら。',
       images: ['public/images/products/drive/tabekurabe-b.jpg']
+    },
+    /* ===== 刃（YAIBA）コラボ 特別セット品 — 2026-09-25 =====
+       株式会社ITADAKI（山口県下松市）のタレ「刃」との共同商品。
+       価格・商品説明は刃公式サイト(itadaki-yaiba.com)の記載に合わせている。
+       🔴 products シート(本番DB)にも2行を登録すること。未登録だと
+          ①在庫チェックが fail-open で売り越す ②PDPリンクが切れて
+          「お取り扱いを終了しました」になる。 */
+    {
+      productId: 'P049', variantId: 'YAIBA-YS-SET', sku: 'EDA-YAIBA-YS',
+      stripePriceId: '',
+      name: 'YAIBA × 江田和牛 焼肉200g / ステーキ200g', variant: '赤身焼肉 200g ＋ 赤身ステーキ 200g',
+      price: 10800, weight: 400, stock: 10, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'YAIBA × EDA Wagyu',
+      description: '六十年の家族の味を、最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。',
+      images: [
+        'public/images/products/drive/yaiba-set.jpg?v=5',
+        'public/images/products/drive/yaiba-yakiniku.jpg?v=5',
+        'public/images/products/drive/yaiba-steak.jpg?v=5'
+      ]
+    },
+    {
+      productId: 'P050', variantId: 'YAIBA-ROAST-SET', sku: 'EDA-YAIBA-ROAST',
+      stripePriceId: '',
+      name: 'YAIBA × 江田和牛 プレミアム生ロースト400g', variant: 'プレミアム生ロースト 400g',
+      price: 10800, weight: 400, stock: 10, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'YAIBA × EDA Wagyu',
+      description: '六十年の家族の味を、最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。',
+      images: ['public/images/products/drive/yaiba-roast.jpg?v=5']
     }
   ];
 

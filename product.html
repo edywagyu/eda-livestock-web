@@ -461,6 +461,42 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 }
 
 /* ============ 数字の帯 + どう育てたか（2026-09-02 追加） ============ */
+/* ===== 刃（YAIBA）紹介ブロック — 2026-09-25。P049/P050 でだけ表示 ===== */
+.pdp-yaiba { background:#0B0B0B; color:#EDE7DA; padding:66px 20px 60px; margin:64px 0 0; position:relative; overflow:hidden; }
+.pdp-yaiba::after { content:""; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,169,59,.10), transparent 62%); }
+.pdp-yaiba-in { position:relative; z-index:1; max-width:880px; margin:0 auto; }
+.pdp-yaiba-mark { width:46px; height:46px; margin:0 auto 20px; border:1px solid rgba(212,169,59,.55);
+  display:flex; align-items:center; justify-content:center; transform:rotate(45deg); }
+.pdp-yaiba-mark span { transform:rotate(-45deg); font-family:var(--font-jp-serif); font-size:22px; color:var(--color-gold); }
+.pdp-yaiba-eyebrow { text-align:center; font-size:10px; letter-spacing:.34em; color:var(--color-gold); font-weight:700; margin:0 0 16px; }
+.pdp-yaiba-lead { text-align:center; font-family:var(--font-jp-serif); font-size:26px; font-weight:500;
+  line-height:1.7; margin:0 0 26px; color:#F7F2E6; }
+.pdp-yaiba-body, .pdp-yaiba-close { max-width:640px; margin:0 auto 32px; text-align:center;
+  font-size:14.5px; line-height:2.1; color:rgba(237,231,218,.78); }
+.pdp-yaiba-body em { font-style:normal; color:var(--color-gold); }
+.pdp-yaiba-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:rgba(212,169,59,.22); border:1px solid rgba(212,169,59,.22); margin:0 0 32px; }
+.pdp-yaiba-i { background:#0B0B0B; padding:24px 14px; text-align:center; }
+.pdp-yaiba-i span { display:block; font-size:10.5px; letter-spacing:.1em; color:var(--color-gold); margin-bottom:8px; }
+.pdp-yaiba-i b { display:block; font-family:var(--font-jp-serif); font-size:16px; font-weight:600; color:#F7F2E6; margin-bottom:5px; }
+.pdp-yaiba-i em { display:block; font-style:normal; font-size:11.5px; line-height:1.7; color:rgba(237,231,218,.6); }
+.pdp-yaiba-link { display:block; width:fit-content; margin:0 auto; padding:12px 26px;
+  border:1px solid rgba(212,169,59,.55); color:var(--color-gold); text-decoration:none;
+  font-size:12px; letter-spacing:.14em; font-weight:700; }
+.pdp-yaiba-cred { text-align:center; font-size:10.5px; letter-spacing:.14em; color:rgba(237,231,218,.4); margin:22px 0 0; }
+/* 刃の紹介が終わって、ここから江田和牛の話だと分かるようにする見出し */
+.pdp-eda-lead { max-width:880px; margin:64px auto 0; padding:0 20px; text-align:center; }
+.pdp-eda-lead .eyebrow { font-size:10px; letter-spacing:.34em; color:var(--color-gold-soft); font-weight:700; margin:0 0 14px; }
+.pdp-eda-lead h2 { font-family:var(--font-jp-serif); font-size:28px; font-weight:600; color:var(--color-forest); margin:0 0 14px; line-height:1.5; }
+.pdp-eda-lead p { font-size:14.5px; line-height:2; color:var(--color-ink-muted); margin:0 auto; max-width:620px; }
+.pdp-eda-lead hr { width:40px; height:1px; border:0; background:var(--color-gold); margin:26px auto 0; }
+@media (max-width:720px){ .pdp-eda-lead { margin-top:44px; } .pdp-eda-lead h2 { font-size:22px; } }
+@media (max-width:720px){
+  .pdp-yaiba { padding:48px 18px 44px; }
+  .pdp-yaiba-lead { font-size:21px; }
+  .pdp-yaiba-grid { grid-template-columns:repeat(2,1fr); }
+}
 .pdp-band { margin: 72px 0 0;
   background: linear-gradient(180deg, #FAF6EE 0%, #F2EBD9 100%);
   border-top: 1px solid rgba(212,169,59,.35); border-bottom: 1px solid rgba(212,169,59,.25); }
@@ -790,6 +826,45 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     </section>
   </div>
 
+  <!-- ============ 刃（YAIBA）の紹介 — P045/P046 のときだけ出す ============ -->
+  <section class="pdp-yaiba" id="pdpYaiba" hidden>
+    <div class="pdp-yaiba-in">
+      <div class="pdp-yaiba-mark"><span>刃</span></div>
+      <p class="pdp-yaiba-eyebrow">ABOUT YAIBA</p>
+      <h2 class="pdp-yaiba-lead">赤身の肉に合うタレを。</h2>
+      <p class="pdp-yaiba-body">
+        刃の原点は、祖母が 60 年以上守り続けた家族の味。<br>
+        その記憶を、最高峰の素材で再構築させました。<br>
+        味の骨格となるのは、入手困難な最高峰の果実たち。
+      </p>
+      <p class="pdp-yaiba-body">
+        刃は、何にでも合うことを目指したソースではありません。<br>
+        表面で味を主張せず、素材の中に入り込み、なじむことで完成する設計です。<br>
+        <em>赤身の肉でこそ、きれいに成立する。</em>
+      </p>
+      <div class="pdp-yaiba-grid">
+        <div class="pdp-yaiba-i"><span>沖縄</span><b>アップルバナナ</b><em>濃厚な芳醇さを放つ</em></div>
+        <div class="pdp-yaiba-i"><span>和歌山</span><b>あら川の桃</b><em>名産地の一点もの</em></div>
+        <div class="pdp-yaiba-i"><span>鳥取</span><b>西条柿</b><em>渋を抜いた深い甘み</em></div>
+        <div class="pdp-yaiba-i"><span>香川</span><b>和三盆</b><em>200年以上続く手仕事</em></div>
+      </div>
+      <p class="pdp-yaiba-close">
+        いずれも生産量が極めて限られ、安定供給が難しい希少原料。<br>
+        化学調味料や保存料に一切頼らず、素材同士のバランスだけで到達したタレです。
+      </p>
+      <a class="pdp-yaiba-link" href="https://itadaki-yaiba.com/" target="_blank" rel="noopener">刃 公式サイトを見る →</a>
+      <p class="pdp-yaiba-cred">YAIBA ／ MasterCraft Sauce 刃 — ITADAKI Co., Ltd.</p>
+    </div>
+  </section>
+
+  <!-- ここから先は江田和牛の話だと分かるようにする見出し。P049/P050 のときだけ -->
+  <section class="pdp-eda-lead" id="pdpEdaLead" hidden>
+    <p class="eyebrow">ABOUT EDA WAGYU</p>
+    <h2>合わせるのは、江田和牛。</h2>
+    <p>宮崎県・自社牧場で 35 ヶ月以上。抗生物質・成長促進剤・ホルモン剤を使わずに育てた赤身の和牛です。</p>
+    <hr>
+  </section>
+
   <!-- ============ ACCORDION DETAILS ============ -->
   <!-- ============ 数字の帯 + どう育てたか（2026-09-02） ============ -->
   <section class="pdp-band" id="pdpBand" hidden><div class="pdp-band-in" id="pdpBandIn"></div></section>
@@ -989,6 +1064,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      （商品ごとの分岐は不要。マスターの読み込み後に refreshLimitedStock が走る） */
   if (typeof window.refreshLimitedStock === 'function') window.refreshLimitedStock();
   document.getElementById('pdpDescription').textContent = product.description;
+  /* 刃（YAIBA）コラボ商品のときだけ、刃の紹介ブロックを出す — 2026-09-25 */
+  if (['P049', 'P050'].indexOf(productId) >= 0) {
+    const _y = document.getElementById('pdpYaiba');
+    if (_y) _y.hidden = false;
+    const _e = document.getElementById('pdpEdaLead');
+    if (_e) _e.hidden = false;
+  }
   document.getElementById('stickyName').textContent = product.name;
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
 
@@ -1034,6 +1116,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     ['保管', '冷凍 (-18°C 以下)'],
     C ? ['包装', C.pack] : null,
     ['賞味期限', '製造日より 6 ヶ月'],
+    /* 刃コラボはタレが同梱される。タレの保存期間は1年（ITADAKI提供情報） */
+    (['P049', 'P050'].indexOf(productId) >= 0) ? ['タレの賞味期限', '製造日より 1 年'] : null,
     C ? ['解凍', C.thaw] : null,
     ['アレルゲン', isChicken ? '鶏肉' : '牛肉']
   ].filter(Boolean);
@@ -1479,7 +1563,7 @@ function giftThisProduct() {
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="public/js/liff-uid.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
-<script src="public/js/eda-bundle.js?v=010" defer></script>
+<script src="public/js/eda-bundle.js?v=011" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script>
 /* PDP: view_item イベント送信
