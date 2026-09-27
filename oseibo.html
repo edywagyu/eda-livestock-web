@@ -104,7 +104,9 @@ body{
   display:flex; flex-direction:column;
 }
 .card-img{
-  width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
+  /* 支給写真が 1200×1200 の正方形。4/3 だと上下が切れて熨斗箱が欠けるので 1/1 にする
+     （2026-09-27 お歳暮の商品写真差し替え時） */
+  width:100%; aspect-ratio:1/1; background:#EDE8DC center/cover no-repeat;
   display:block;
 }
 .card-body{padding:14px 15px 16px; flex:1; display:flex; flex-direction:column;}
@@ -371,7 +373,7 @@ body{
       variant: '赤身スライス200g ＋ 霜降スライス200g（計400g）',
       price: 7200, listPrice: 0, stock: 30, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/slice-pile.jpg',
+      img: 'public/images/products/drive/oseibo-slice.jpg',
       compareNote: '単品でそろえると ¥7,400（商品 ¥6,300 ＋ 送料 ¥1,100）',
       desc: 'あっさりした赤身のモモと、とろける肩ロースの霜降り。すき焼き・しゃぶしゃぶで一度に食べ比べられます。2〜3人前。'
     },
@@ -381,7 +383,7 @@ body{
       variant: '赤身スライス200g ＋ 霜降スライス200g×2（計600g）',
       price: 10980, listPrice: 0, stock: 30, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/premium-slice.jpg',
+      img: 'public/images/products/drive/oseibo-slice.jpg',
       compareNote: '単品でそろえると ¥11,100（商品 ¥10,000 ＋ 送料 ¥1,100）',
       desc: '霜降りを2袋に増やした600g。ご家族で囲む鍋に十分な量です。3〜4人前。'
     },
@@ -391,7 +393,7 @@ body{
       variant: '赤身ステーキ200g ＋ サーロインステーキ200g（計400g）',
       price: 7980, listPrice: 0, stock: 30, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/red-meat-2026.jpg',
+      img: 'public/images/products/drive/oseibo-steak.jpg',
       compareNote: '単品でそろえると ¥8,100（商品 ¥7,000 ＋ 送料 ¥1,100）',
       desc: '脂の少ないモモの赤身ステーキと、サーロイン。焼き分けて味の違いを楽しむ一箱です。2人前。'
     },
@@ -401,7 +403,7 @@ body{
       variant: '赤身ステーキ200g×2 ＋ サーロインステーキ200g×2（計800g）',
       price: 12900, listPrice: 0, stock: 20, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/sirloin-2026.jpg',
+      img: 'public/images/products/drive/oseibo-steak.jpg',
       compareNote: '単品でそろえると ¥14,000（商品 ¥14,000・送料無料）',
       desc: 'ステーキ4枚、800g。ご家族そろっての食卓や、法人のご贈答に。4〜5人前。'
     },
@@ -411,7 +413,7 @@ body{
       variant: '赤身焼肉200g ＋ 赤身ステーキ200g ＋ 刃ソース80ml（計400g）',
       price: 11200, listPrice: 0, stock: 20, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/yaiba-set.jpg', tag: '刃 コラボ',
+      img: 'public/images/products/drive/oseibo-yaiba-set.jpg', tag: '刃 コラボ',
       desc: '化学調味料も保存料も使わないタレ「刃（YAIBA）」とのセット。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。無添加のタレと、無投薬で育てた和牛の組み合わせです。2人前。'
     },
     {
@@ -420,7 +422,7 @@ body{
       variant: 'プレミアム生ロースト400g ＋ 刃ソース80ml（計400g）',
       price: 11200, listPrice: 0, stock: 20, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/yaiba-roast.jpg', tag: '刃 コラボ',
+      img: 'public/images/products/drive/oseibo-yaiba-roast.jpg', tag: '刃 コラボ',
       compareNote: '単品でそろえると ¥14,207（江田畜産 ¥9,867 ＋ 送料 ¥1,100 ＋ 刃80ml ¥3,240）',
       desc: '塩も加えず低温でじっくり火を入れた、生に近いローストビーフ400g。解凍して薄く切るだけ。無添加のタレ「刃」を添えて。2〜3人前。'
     },
@@ -430,7 +432,7 @@ body{
       variant: 'プレミアム生ロースト400g ＋ 霜降スライス200g（計600g）',
       price: 12960, listPrice: 0, stock: 20, limitedTotal: 0,
       endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/roast-beef.jpg',
+      img: 'public/images/products/drive/oseibo-roast-shimofuri.jpg',
       compareNote: '単品でそろえると ¥13,567（商品 ¥13,567・送料無料）',
       desc: '切るだけの生ローストと、鍋にできる霜降りスライス。前菜からメインまで一箱でそろいます。3〜4人前。'
     }
