@@ -23,9 +23,9 @@
     /* ===== 牛肉 ステーキ系 ===== */
     {
       productId: 'P001', variantId: 'SIRLOIN', sku: 'EDA-SIRLOIN-200',
-      stripePriceId: 'price_1TW74kGSkhU1UEcizECKFnxX',
+      stripePriceId: '',
       name: 'サーロインステーキ', variant: '1枚 200g',
-      price: 3400, weight: 200, stock: 18, temp: '冷凍',
+      price: 3600, weight: 200, stock: 18, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Sirloin Steak',
       description: 'ロース芯から切り出した一枚。塩のみで、フライパンに 90 秒。日曜の昼食に。',
       images: ['public/images/products/drive/sirloin.jpg']
