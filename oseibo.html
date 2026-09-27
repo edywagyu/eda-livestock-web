@@ -87,11 +87,13 @@ body{
 /* ---------- カードの段組み（2026-09-27 田崎さん指示）----------
    7品なので 3列だと 3/3/1、2列だと 2/2/2/1 になる。最後の1枚が寂しく見えないよう
    grid は auto-fill ではなく列数を明示し、カード高さは flex で揃える。 */
+/* スマホでも2列にする（2026-09-27 田崎さん指示）。
+   375pxで1枚あたり約165px。文字と余白を段階的に詰めないと縦に伸びるだけなので、
+   〜759px は「小さいカード」の指定をセットで当てる。 */
 #cards{
-  display:grid; gap:16px; grid-template-columns:1fr; align-items:stretch;
+  display:grid; gap:10px; grid-template-columns:repeat(2,1fr); align-items:stretch;
 }
-@media(min-width:640px){ #cards{grid-template-columns:repeat(2,1fr); gap:18px;} }
-@media(min-width:1020px){
+@media(min-width:760px){
   #cards{grid-template-columns:repeat(3,1fr); gap:20px;}
   /* 7品なので最後の行が1枚だけになる。左端に取り残されると寂しいので中央に置く */
   #cards > .card:last-child:nth-child(3n+1){grid-column:2;}
@@ -249,6 +251,41 @@ body{
   letter-spacing:.06em;cursor:pointer;font-family:inherit}
 .lm-bd-btn:disabled{opacity:.4;cursor:default}
 
+/* ---- 〜759px（スマホ2列）の圧縮 ---- */
+@media(max-width:759px){
+  .card{border-radius:10px;}
+  .card-body{padding:10px 10px 12px;}
+  .card-tag{font-size:9px;padding:2px 7px;margin-bottom:6px;letter-spacing:.04em;}
+  .card h3{font-size:12.5px;line-height:1.45;margin:0 0 4px;}
+  .card-variant{font-size:10px;margin:0 0 6px;line-height:1.5;}
+  .card-desc{font-size:10.5px;margin:0 0 7px;line-height:1.6;}
+  .price-now{font-size:17px;}
+  .price-was{font-size:11px;}
+  .stock-line{font-size:10px;margin:0 0 6px;}
+  .compare-note{font-size:9.5px;margin:-4px 0 8px;}
+  /* 165px幅に「数量」ラベル＋ボックスは入らないのでラベルを落とす */
+  .qty-label{display:none;}
+  .qty-row{gap:8px;margin-bottom:8px;}
+  .qty-box{width:100%;justify-content:space-between;}
+  .qty-box button{width:34px;height:34px;font-size:16px;}
+  .qty-box span{width:auto;flex:1;font-size:14px;}
+  .btn-add{font-size:13px;padding:12px 8px;border-radius:9px;}
+  .var-opt{padding:9px 10px;}
+  .var-opt .t{font-size:11.5px;}
+  /* 165px幅だと文章が折り返して1枚709pxまで伸びる。行数を切って高さを揃える。
+     🔴 -webkit-line-clamp は使えない。card-body が flex なので中の要素は flex item になり、
+        display:-webkit-box が flow-root に潰されて clamp が無効になる（実機で確認）。
+        代わりに「行数×行の高さ」の max-height で切る。 */
+  .card h3{max-height:54px;overflow:hidden;}        /* 12.5px × 1.45 × 3行 */
+  .card-variant{max-height:30px;overflow:hidden;}   /* 10px × 1.5 × 2行 */
+  .card-desc{
+    max-height:34px;overflow:hidden;                 /* 10.5px × 1.6 × 2行 */
+    /* 語中で切れると雑に見えるので、末尾をぼかして「続きがある」表示にする */
+    -webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);
+    mask-image:linear-gradient(to bottom,#000 55%,transparent 100%);
+  }
+  .compare-note{max-height:31px;overflow:hidden;}   /* 9.5px × 1.6 × 2行 */
+}
 </style>
 </head>
 <body>
