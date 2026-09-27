@@ -383,6 +383,11 @@ body{ background:var(--ink-deep); color:var(--cream); }
   color:var(--gold-light); letter-spacing:.06em; margin-bottom:8px;
 }
 .about-grid p{ margin:0; font-size:12px; line-height:1.9; color:rgba(250,247,240,.66); }
+.about-close{
+  font-family:'Shippori Mincho',serif; font-size:14px; line-height:2.1;
+  color:var(--gold-light); letter-spacing:.06em; margin:26px 0 0;
+}
+.about-note{ font-size:12.5px; color:rgba(250,247,240,.62); margin:-8px 0 22px; }
 .partners{ list-style:none; padding:0; margin:0; display:grid; gap:0; grid-template-columns:1fr; }
 @media(min-width:560px){ .partners{ grid-template-columns:repeat(2,1fr); column-gap:28px; } }
 .partners li{
@@ -432,7 +437,7 @@ body{ background:var(--ink-deep); color:var(--cream); }
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
   <div class="hero-badge">お歳暮 2026</div>
-  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">無投薬・ホルモン剤不使用で育てた江田和牛の、冬の贈り物。<br>のし・エダチクBOX・送料すべて込みの価格です。</p>
+  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">一年の感謝を、宮崎の自社牧場で育てた江田和牛で。<br>のし・エダチクBOX・送料まで、すべて込みの価格です。</p>
 </div>
 
 <div class="wrap">
@@ -451,7 +456,7 @@ body{ background:var(--ink-deep); color:var(--cream); }
 
   <!-- ギフトの共通仕様。checkout.html が既に持っている機能をここで明示する -->
   <div class="giftinfo">
-    <p class="giftinfo-t">お歳暮ギフトについて</p>
+    <p class="giftinfo-t">贈り物として、そのままお届けします</p>
     <ul>
       <li><b>のし・名入れ無料</b>／<b>エダチクBOX</b>でお届けします</li>
       <li><b>表示価格は送料込み</b>（北海道・沖縄も追加料金はいただきません）</li>
@@ -481,13 +486,15 @@ body{ background:var(--ink-deep); color:var(--cream); }
       日本でこれを徹底する農家は、ごくわずかです。
     </p>
     <div class="about-grid">
-      <div><span>無投薬飼育</span><p>抗生物質・成長促進剤・ホルモン剤を使わずに育てています。</p></div>
-      <div><span>長期肥育</span><p>通常より長く時間をかけ、香りと旨みがのるまで待ちます。</p></div>
-      <div><span>雌牛だけ</span><p>江田和牛は未経産（お産をしていない）の雌牛のみ。きめが細かく、脂の口どけがやわらかいのが特徴です。</p></div>
+      <div><span>無投薬飼育</span><p>抗生物質・成長促進剤・ホルモン剤など、無駄な化学物質は一切不使用。<br>安心安全な和牛をお届けいたします。</p></div>
+      <div><span>長期肥育</span><p>通常より長く時間をかけ、香りと旨みが溢れ出す和牛をお楽しみください。</p></div>
+      <div><span>メス牛</span><p>メス牛を採用。<br>きめが細かく、脂の口どけがやわらかいのが特徴です。</p></div>
     </div>
+    <p class="about-close">年に一度のご挨拶に、私たちが育てた一頭をお届けします。</p>
 
     <p class="about-label" style="margin-top:44px;">RESTAURANTS &amp; HOTELS</p>
     <h2 class="about-title">お取り扱いいただいている店</h2>
+    <p class="about-note">全国のホテル・レストランでお使いいただいている和牛です。</p>
     <!-- 🔴 出所＝「国内営業4期目」部位別提案先一覧の最終納品日。2026年に納品実績のある先だけ。
          卸・商社（オザワ食肉センター／太平フーズ／さつま屋産業）と個人名の案件は消費者向けに
          意味がないので載せない。入れ替えるときは必ず同じシートを見て、日付が2026年のものに限る。 -->
