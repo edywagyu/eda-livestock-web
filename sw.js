@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-09-27-343-oseibo-2026';
+const CACHE_VERSION = 'eda-v2026-09-27-344-oseibo-grid';
 const CORE_ASSETS = [
   './',
   'index.html',
