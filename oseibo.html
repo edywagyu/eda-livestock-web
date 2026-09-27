@@ -157,7 +157,7 @@ body{
   font-size:10.5px;font-weight:700;color:#fff;background:#C0392B;
   padding:2px 7px;border-radius:4px;white-space:nowrap;
 }
-.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;margin-top:auto;}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
 .qty-label{font-size:12.5px;color:var(--muted);}
 .qty-box{display:flex;align-items:center;border:1px solid rgba(15,61,46,.2);border-radius:8px;overflow:hidden;}
 .qty-box button{
@@ -253,6 +253,143 @@ body{
   letter-spacing:.06em;cursor:pointer;font-family:inherit}
 .lm-bd-btn:disabled{opacity:.4;cursor:default}
 
+/* ============================================================
+   ギフト仕様のテーマ（2026-09-27 田崎さん指示「ギフト感・高級感」）
+   支給写真が黒背景×金リボンなので、クリーム地だと写真だけ浮いていた。
+   ブランド配色（forest #0F3D2E / gold #D4A93B / cream #FAF7F0）のまま
+   地を深緑の黒に倒し、罫線と価格を金、文字をクリームにして写真と地続きにする。
+   ⚠️ このブロックは <style> の「最後から2番目」。この後ろにスマホ用の
+      @media(max-width:759px) が来る（前に置くと寸法指定が後勝ちで潰れる）。
+   ============================================================ */
+:root{ --ink-deep:#07130E; --panel:rgba(255,255,255,.035); --hair:rgba(212,169,59,.26); }
+body{ background:var(--ink-deep); color:var(--cream); }
+
+/* ---- ヘッダー ---- */
+.hero{
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(212,169,59,.10) 0%, transparent 60%),
+    linear-gradient(180deg,#0F3D2E 0%, #07130E 100%);
+  padding:54px 18px 46px; position:relative;
+}
+.hero::after{
+  content:''; position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+  width:min(560px,82%); height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.hero-brand{ font-size:10.5px; letter-spacing:.42em; color:rgba(212,169,59,.85); margin:0 0 18px; }
+.hero-badge{
+  border:0; background:none; padding:0; margin:0;
+  font-family:'Shippori Mincho',serif; font-weight:600;
+  font-size:clamp(28px,8vw,42px); letter-spacing:.14em; color:var(--gold-light);
+  display:block; line-height:1.25;
+}
+.hero p{ color:rgba(250,247,240,.72); font-size:13px; letter-spacing:.04em; margin-top:16px; }
+
+/* ---- 仕様（のし・送料込みなど） ---- */
+.giftinfo{
+  background:var(--panel); border:1px solid var(--hair); border-radius:3px;
+  padding:22px 24px; margin:34px auto 30px;
+}
+.giftinfo-t{
+  font-family:'Shippori Mincho',serif; font-size:13px; letter-spacing:.2em;
+  color:var(--gold); text-align:center; margin:0 0 16px;
+}
+.giftinfo ul{ list-style:none; padding:0; margin:0; }
+.giftinfo li{
+  color:rgba(250,247,240,.78); font-size:12.5px; line-height:1.9;
+  padding:9px 0 9px 18px; border-top:1px solid rgba(250,247,240,.07); position:relative;
+}
+.giftinfo li:first-child{ border-top:0; }
+.giftinfo li::before{
+  content:''; position:absolute; left:2px; top:17px;
+  width:5px; height:5px; border:1px solid var(--gold); transform:rotate(45deg);
+}
+.giftinfo li b{ color:var(--cream); font-weight:600; }
+
+/* ---- 商品カード ---- */
+.card{
+  background:var(--panel); border:1px solid var(--hair); border-radius:3px;
+  box-shadow:none; transition:border-color .25s ease, background .25s ease;
+}
+.card:hover{ border-color:rgba(212,169,59,.55); background:rgba(255,255,255,.055); }
+.card-img{ background-color:#000; border-bottom:1px solid var(--hair); }
+.card-body{ padding:18px 18px 20px; }
+.card-tag{
+  background:none; border:1px solid var(--hair); color:var(--gold);
+  font-size:9.5px; letter-spacing:.18em; padding:4px 10px; border-radius:2px;
+}
+.card h3{ color:var(--cream); font-size:16px; line-height:1.6; margin:12px 0 8px; }
+.card-variant{ color:rgba(250,247,240,.58); font-size:11.5px; letter-spacing:.02em; }
+.price-row{
+  /* 商品名の行数が違っても、価格→数量→ボタンの位置を行内で揃える */
+  margin-top:auto; padding-top:14px; border-top:1px solid rgba(250,247,240,.09);
+}
+.price-now{ color:var(--gold-light); font-size:23px; letter-spacing:.02em; }
+.price-was{ color:rgba(250,247,240,.42); }
+
+/* ---- 数量・ボタン ---- */
+.qty-label{ color:rgba(250,247,240,.5); }
+.qty-box{ border:1px solid rgba(250,247,240,.2); border-radius:2px; background:transparent; }
+.qty-box button{ background:transparent; color:var(--gold-light); }
+.qty-box span{ color:var(--cream); }
+.btn-add{
+  background:linear-gradient(180deg,#E3BC55 0%, var(--gold) 100%);
+  color:#07130E; border-radius:2px; font-size:14px; letter-spacing:.14em; padding:16px 12px;
+}
+.btn-add:disabled{ background:rgba(250,247,240,.14); color:rgba(250,247,240,.45); }
+.btn-add.added{ background:none; border:1px solid var(--gold); color:var(--gold-light); }
+
+/* ---- 下部のカートバー ---- */
+.cartbar{
+  background:rgba(7,19,14,.96); border-top:1px solid var(--hair);
+  box-shadow:0 -10px 30px rgba(0,0,0,.5); backdrop-filter:blur(8px);
+}
+.cartbar-sum{ color:rgba(250,247,240,.6); }
+.cartbar-sum b{ color:var(--cream); }
+.cartbar a{
+  background:linear-gradient(180deg,#E3BC55 0%, var(--gold) 100%) !important;
+  color:#07130E !important; border-radius:2px; letter-spacing:.1em;
+}
+
+/* ---- フッター・そのほか ---- */
+.foot{ color:rgba(250,247,240,.42); font-size:11.5px; letter-spacing:.08em; padding:30px 18px 0; }
+.gate{ background:var(--panel); border:1px dashed var(--hair); }
+.gate h2{ color:var(--gold-light); }
+.gate p,.gate-note{ color:rgba(250,247,240,.6); }
+.stock-line{ color:#E39A8F; }
+.var-opt{ background:transparent; border-color:rgba(250,247,240,.18); }
+.var-opt .t{ color:var(--cream); }
+.var-opt.sel{ border-color:var(--gold); background:rgba(212,169,59,.10); box-shadow:none; }
+.var-opt .dot{ border-color:rgba(250,247,240,.35); }
+.var-opt.sel .dot{ border-color:var(--gold); background:radial-gradient(circle,var(--gold) 0 45%,transparent 46%); }
+
+/* ---- ページ下部: 江田和牛について／取扱先 ---- */
+.about{ margin:56px auto 0; max-width:760px; text-align:center; }
+.about::before{
+  content:''; display:block; width:100%; height:1px; margin-bottom:46px;
+  background:linear-gradient(90deg,transparent,var(--hair),transparent);
+}
+.about-label{ font-size:10px; letter-spacing:.38em; color:rgba(212,169,59,.8); margin:0 0 10px; }
+.about-title{
+  font-family:'Shippori Mincho',serif; font-weight:600; font-size:20px;
+  letter-spacing:.1em; color:var(--cream); margin:0 0 20px;
+}
+.about-lead{ font-size:13px; line-height:2.1; color:rgba(250,247,240,.72); margin:0 0 30px; }
+.about-lead b{ color:var(--gold-light); font-weight:600; }
+.about-grid{ display:grid; gap:14px; grid-template-columns:1fr; text-align:left; }
+@media(min-width:700px){ .about-grid{ grid-template-columns:repeat(3,1fr); } }
+.about-grid div{ border:1px solid var(--hair); border-radius:3px; padding:16px 16px 18px; background:var(--panel); }
+.about-grid span{
+  display:block; font-family:'Shippori Mincho',serif; font-size:13.5px;
+  color:var(--gold-light); letter-spacing:.06em; margin-bottom:8px;
+}
+.about-grid p{ margin:0; font-size:12px; line-height:1.9; color:rgba(250,247,240,.66); }
+.partners{ list-style:none; padding:0; margin:0; display:grid; gap:0; grid-template-columns:1fr; }
+@media(min-width:560px){ .partners{ grid-template-columns:repeat(2,1fr); column-gap:28px; } }
+.partners li{
+  font-size:12.5px; letter-spacing:.06em; color:rgba(250,247,240,.8);
+  padding:11px 0; border-bottom:1px solid rgba(250,247,240,.08); text-align:left;
+}
+
 /* ---- 〜759px（スマホ2列）の圧縮 ---- */
 @media(max-width:759px){
   .card{border-radius:10px;}
@@ -279,7 +416,7 @@ body{
         display:-webkit-box が flow-root に潰されて clamp が無効になる（実機で確認）。
         代わりに「行数×行の高さ」の max-height で切る。 */
   .card h3{max-height:54px;overflow:hidden;}        /* 12.5px × 1.45 × 3行 */
-  .card-variant{max-height:30px;overflow:hidden;}   /* 10px × 1.5 × 2行 */
+  .card-variant{max-height:45px;overflow:hidden;}   /* 10px × 1.5 × 3行。特松の内容量が2行だと切れる */
   .card-desc{
     max-height:34px;overflow:hidden;                 /* 10.5px × 1.6 × 2行 */
     /* 語中で切れると雑に見えるので、末尾をぼかして「続きがある」表示にする */
@@ -295,7 +432,7 @@ body{
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
   <div class="hero-badge">お歳暮 2026</div>
-  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">無投薬・ホルモン剤不使用で育てた江田和牛の、冬の贈り物。<br>のし・化粧箱・送料すべて込みの価格です。<br><b style="color:#FFE594;">ご注文は 12月20日（日）23:59 まで</b></p>
+  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">無投薬・ホルモン剤不使用で育てた江田和牛の、冬の贈り物。<br>のし・エダチクBOX・送料すべて込みの価格です。</p>
 </div>
 
 <div class="wrap">
@@ -316,7 +453,7 @@ body{
   <div class="giftinfo">
     <p class="giftinfo-t">お歳暮ギフトについて</p>
     <ul>
-      <li><b>のし・名入れ無料</b>／江田畜産オリジナル化粧箱でお届けします</li>
+      <li><b>のし・名入れ無料</b>／<b>エダチクBOX</b>でお届けします</li>
       <li><b>表示価格は送料込み</b>（北海道・沖縄も追加料金はいただきません）</li>
       <li><b>お届け日をご指定いただけます</b>（レジのお届け先ごとに選べます）</li>
       <li><b>1回のご注文で最大5箇所</b>まで、お届け先を分けて発送できます。お届け先ごとに違う商品・違うのしをお選びいただけます</li>
@@ -328,6 +465,44 @@ body{
   <div id="members" hidden>
     <div id="cards"></div>
   </div>
+
+  <!-- ===== 江田和牛について（2026-09-27 田崎さん指示で追加）=====
+       文言は index.html / restaurants.html で既に公開しているものを使う。
+       🔴 載せてよい訴求は「無投薬飼育・35ヶ月以上の長期肥育・循環型」まで。
+          健康被害／オレイン酸／◯%／匿名シェフ の話は書かない。
+       🔴 取扱先は restaurants.html に載っている＝すでに公開済みの店だけ。
+          非公開の取引先をここに足さないこと。 -->
+  <section class="about">
+    <p class="about-label">ABOUT</p>
+    <h2 class="about-title">江田和牛について</h2>
+    <p class="about-lead">
+      宮崎・霧島連山のふもと、高原町の自社牧場で育てています。<br>
+      <b>抗生物質・成長促進剤・ホルモン剤、いずれも一切不使用。</b><br>
+      日本でこれを徹底する農家は、ごくわずかです。
+    </p>
+    <div class="about-grid">
+      <div><span>無投薬飼育</span><p>抗生物質・成長促進剤・ホルモン剤を使わずに育てています。</p></div>
+      <div><span>35ヶ月以上の長期肥育</span><p>通常より長く時間をかけ、香りと旨みがのるまで待ちます。</p></div>
+      <div><span>循環型の飼料づくり</span><p>自社の堆肥から飼料を一部育て、再び牛に与えています。</p></div>
+    </div>
+
+    <p class="about-label" style="margin-top:44px;">RESTAURANTS &amp; HOTELS</p>
+    <h2 class="about-title">お取り扱いいただいている店</h2>
+    <ul class="partners">
+      <li>Tokyo EDITION Ginza</li>
+      <li>The Ritz-Carlton, Tokyo</li>
+      <li>The Ritz-Carlton, Fukuoka</li>
+      <li>The Tokyo Station Hotel</li>
+      <li>Four Seasons Hotel, Tokyo</li>
+      <li>Fairmont Tokyo</li>
+      <li>Hotel MiraCosta</li>
+      <li>Mitsukoshi Ginza</li>
+      <li>WITH THE STYLE FUKUOKA</li>
+      <li>LA TERRE</li>
+      <li>サロン覺 salon KAKU</li>
+      <li>HINATA 大島</li>
+    </ul>
+  </section>
 
 </div>
 
@@ -364,77 +539,58 @@ body{
           単品在庫が減り、価格も取り違える。
        🔴 detailId は付けない。product.html は products-master.js を読むので、
           そこに無い品へ飛ばすと別商品に化ける。
-       ⏳ 仮置き：endAt(締切) と stock(受注上限) は田崎さんの確定待ち。
-          締切を過ぎるとカードが「販売は終了しました」になり、買えなくなる。
+       ⏳ 仮置き：stock(受注上限) は田崎さんの確定待ち。
+       🔴 注文期限は出さない（2026-09-27 田崎さん指示）。endAt を外したので自動終了もしない。
+          売り止めるときは stock を 0 にするか、このページを非公開にする。
        📅 お届け希望日・のし・お届け先（最大5箇所）は checkout.html 側が既に持っている。 */
     {
       productId: 'P051', variantId: 'OSEIBO-UME',
       name: 'お歳暮 梅｜江田和牛 赤身×霜降り スライス食べ比べ',
       variant: '赤身スライス200g ＋ 霜降スライス200g（計400g）',
       price: 7200, listPrice: 0, stock: 30, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-slice.jpg',
-      compareNote: '単品でそろえると ¥7,400（商品 ¥6,300 ＋ 送料 ¥1,100）',
-      desc: 'あっさりした赤身のモモと、とろける肩ロースの霜降り。すき焼き・しゃぶしゃぶで一度に食べ比べられます。2〜3人前。'
+      img: 'public/images/products/drive/oseibo-slice.jpg'
     },
     {
       productId: 'P052', variantId: 'OSEIBO-TAKE',
       name: 'お歳暮 竹｜江田和牛 赤身×霜降り スライス食べ比べ 600g',
       variant: '赤身スライス200g ＋ 霜降スライス200g×2（計600g）',
       price: 10980, listPrice: 0, stock: 30, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-slice.jpg',
-      compareNote: '単品でそろえると ¥11,100（商品 ¥10,000 ＋ 送料 ¥1,100）',
-      desc: '霜降りを2袋に増やした600g。ご家族で囲む鍋に十分な量です。3〜4人前。'
+      img: 'public/images/products/drive/oseibo-slice.jpg'
     },
     {
       productId: 'P053', variantId: 'OSEIBO-MATSU',
       name: 'お歳暮 松｜江田和牛 赤身×霜降り ステーキ食べ比べ',
       variant: '赤身ステーキ200g ＋ サーロインステーキ200g（計400g）',
       price: 7980, listPrice: 0, stock: 30, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-steak.jpg',
-      compareNote: '単品でそろえると ¥8,100（商品 ¥7,000 ＋ 送料 ¥1,100）',
-      desc: '脂の少ないモモの赤身ステーキと、サーロイン。焼き分けて味の違いを楽しむ一箱です。2人前。'
+      img: 'public/images/products/drive/oseibo-steak.jpg'
     },
     {
       productId: 'P054', variantId: 'OSEIBO-TOKUMATSU',
       name: 'お歳暮 特松｜江田和牛 赤身×霜降り ステーキ食べ比べ 800g',
       variant: '赤身ステーキ200g×2 ＋ サーロインステーキ200g×2（計800g）',
       price: 12900, listPrice: 0, stock: 20, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-steak.jpg',
-      compareNote: '単品でそろえると ¥14,000（商品 ¥14,000・送料無料）',
-      desc: 'ステーキ4枚、800g。ご家族そろっての食卓や、法人のご贈答に。4〜5人前。'
+      img: 'public/images/products/drive/oseibo-steak.jpg'
     },
     {
       productId: 'P055', variantId: 'OSEIBO-YAIBA-YS',
       name: 'お歳暮｜刃 × 江田和牛 焼肉＆ステーキ',
       variant: '赤身焼肉200g ＋ 赤身ステーキ200g ＋ 刃ソース80ml（計400g）',
       price: 11200, listPrice: 0, stock: 20, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-yaiba-set.jpg', tag: '刃 コラボ',
-      desc: '化学調味料も保存料も使わないタレ「刃（YAIBA）」とのセット。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。無添加のタレと、無投薬で育てた和牛の組み合わせです。2人前。'
+      img: 'public/images/products/drive/oseibo-yaiba-set.jpg', tag: '刃 コラボ'
     },
     {
       productId: 'P056', variantId: 'OSEIBO-YAIBA-ROAST',
       name: 'お歳暮｜刃 × 江田和牛 プレミアム生ロースト',
       variant: 'プレミアム生ロースト400g ＋ 刃ソース80ml（計400g）',
       price: 11200, listPrice: 0, stock: 20, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-yaiba-roast.jpg', tag: '刃 コラボ',
-      compareNote: '単品でそろえると ¥14,207（江田畜産 ¥9,867 ＋ 送料 ¥1,100 ＋ 刃80ml ¥3,240）',
-      desc: '塩も加えず低温でじっくり火を入れた、生に近いローストビーフ400g。解凍して薄く切るだけ。無添加のタレ「刃」を添えて。2〜3人前。'
+      img: 'public/images/products/drive/oseibo-yaiba-roast.jpg', tag: '刃 コラボ'
     },
     {
       productId: 'P057', variantId: 'OSEIBO-ROAST-SHIMO',
       name: 'お歳暮｜江田和牛 生ロースト＆霜降スライス',
       variant: 'プレミアム生ロースト400g ＋ 霜降スライス200g（計600g）',
       price: 12960, listPrice: 0, stock: 20, limitedTotal: 0,
-      endAt: '2026-12-20T23:59:59+09:00', endLabel: '12月20日（日）23:59',
-      img: 'public/images/products/drive/oseibo-roast-shimofuri.jpg',
-      compareNote: '単品でそろえると ¥13,567（商品 ¥13,567・送料無料）',
-      desc: '切るだけの生ローストと、鍋にできる霜降りスライス。前菜からメインまで一箱でそろいます。3〜4人前。'
+      img: 'public/images/products/drive/oseibo-roast-shimofuri.jpg'
     }
   ];
 
@@ -582,7 +738,7 @@ body{
           '<span class="card-tag">' + (it.tag || 'お歳暮ギフト') + '</span>' +
           '<h3>' + it.name + '</h3>' +
           '<p class="card-variant">' + it.variant + '</p>' +
-          '<p class="card-desc">' + it.desc + '</p>' +
+          (it.desc ? '<p class="card-desc">' + it.desc + '</p>' : '') +
           /* 商品詳細ページへのリンク。detailId を持つ品だけに出す（2026-09-02 ryotaro指示）。
              🔴 全部に出してはいけない。product.html は products-master.js から引くので、
                 そこに無い品(P033/P034/P042 など)へ飛ばすとサーロイン(売り切れ)に化ける。
