@@ -7028,6 +7028,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="YAIBA ROAST"] { background-image: url('public/images/products/drive/yaiba-roast.jpg?v=5'); }
 .yaiba-mark { font-family: var(--font-jp-serif); font-weight: 700; letter-spacing: .09em; color: #7A5E14; }
 .yaiba-head .shop-cat-desc strong { color: var(--color-forest); font-weight: 700; }
+.yaiba-head { scroll-margin-top: 96px; }
 .product-card-img[data-label="KAMENOKO YAKINIKU"] { background-image: url('public/images/products/drive/kamenoko-yakiniku.jpg'); }
 .product-card-img[data-label="SHINSHIN YAKINIKU"] { background-image: url('public/images/products/drive/shinshin-yakiniku.jpg'); }
 /* 限定品「発売前(予告)」= カードは見せるが購入不可。購入UIを隠し「◯/◯発売予定」ラベルに差し替え(limited-stock.js が limited-upcoming クラスと data-upcoming-label を付与)。
@@ -9985,7 +9986,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- ===== 刃（YAIBA）コラボ 特別セット品 — 2026-09-25 =====
       🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
       🔴 このカードに reveal を付けない（付けると表示されない）。 -->
- <div class="shop-cat-head yaiba-head" data-cat="beef">
+ <div class="shop-cat-head yaiba-head" id="yaiba" data-cat="beef">
  <h2 class="shop-cat-title">特別セット品 <span>/ YAIBA &times; 江田和牛</span></h2>
  <p class="shop-cat-desc">希少な果実と和三盆で甘みを組み立てたタレ「<span class="yaiba-mark">YAIBA -刃-</span>」。<br>六十年の家族の味を最高峰の素材で再構築した<strong>無添加</strong>のタレと、<strong>無投薬</strong>の江田和牛を組み合わせた特別セット商品です。</p>
  </div>
