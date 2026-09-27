@@ -23,7 +23,9 @@ body{
   font-family:'Inter','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
   line-height:1.7; -webkit-text-size-adjust:100%;
 }
-.wrap{max-width:680px;margin:0 auto;padding:0 18px 80px;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px 90px;}
+/* ギフト説明は読み物なので、段組みとは別に読みやすい幅で中央に置く */
+.giftinfo{max-width:760px;margin-left:auto;margin-right:auto;}
 
 /* ---------- ヘッダー ---------- */
 .hero{
@@ -82,36 +84,52 @@ body{
 }
 .giftinfo ul{margin:0;padding-left:1.1em;}
 .giftinfo li{font-size:13px;color:#4A4A4A;margin:0 0 6px;line-height:1.7;}
+/* ---------- カードの段組み（2026-09-27 田崎さん指示）----------
+   7品なので 3列だと 3/3/1、2列だと 2/2/2/1 になる。最後の1枚が寂しく見えないよう
+   grid は auto-fill ではなく列数を明示し、カード高さは flex で揃える。 */
+#cards{
+  display:grid; gap:16px; grid-template-columns:1fr; align-items:stretch;
+}
+@media(min-width:640px){ #cards{grid-template-columns:repeat(2,1fr); gap:18px;} }
+@media(min-width:1020px){
+  #cards{grid-template-columns:repeat(3,1fr); gap:20px;}
+  /* 7品なので最後の行が1枚だけになる。左端に取り残されると寂しいので中央に置く */
+  #cards > .card:last-child:nth-child(3n+1){grid-column:2;}
+}
 .card{
-  background:#fff; border:1px solid rgba(15,61,46,.1); border-radius:14px;
-  overflow:hidden; margin-bottom:22px; box-shadow:0 2px 10px rgba(0,0,0,.04);
+  background:#fff; border:1px solid rgba(15,61,46,.1); border-radius:12px;
+  overflow:hidden; margin-bottom:0; box-shadow:0 2px 10px rgba(0,0,0,.04);
+  display:flex; flex-direction:column;
 }
 .card-img{
   width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
   display:block;
 }
-.card-body{padding:18px 18px 20px;}
+.card-body{padding:14px 15px 16px; flex:1; display:flex; flex-direction:column;}
 .card-tag{
   display:inline-block; background:var(--forest); color:var(--gold-light);
-  font-size:10.5px; letter-spacing:.1em; padding:4px 10px; border-radius:4px; margin-bottom:10px;
+  font-size:10px; letter-spacing:.08em; padding:3px 9px; border-radius:4px; margin-bottom:8px;
+  /* card-body を flex 化したので、指定しないとタグが横いっぱいの帯になる */
+  align-self:flex-start;
 }
 .card h3{
-  font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 6px; color:var(--ink);
+  font-family:'Shippori Mincho',serif; font-size:15.5px; line-height:1.5;
+  margin:0 0 6px; color:var(--ink);
 }
-.card-variant{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
-.card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 10px;}
+.card-variant{font-size:11.5px;color:var(--muted);margin:0 0 9px;line-height:1.6;}
+.card-desc{font-size:12px;color:#4A4A4A;margin:0 0 10px;line-height:1.7;}
     .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
-.price-now{font-family:'Shippori Mincho',serif;font-size:27px;font-weight:700;color:var(--forest);}
+.price-now{font-family:'Shippori Mincho',serif;font-size:21px;font-weight:700;color:var(--forest);}
 .price-off{
   background:#C0392B;color:#fff;font-size:11.5px;font-weight:700;
   padding:3px 9px;border-radius:4px;
 }
-.stock-line{font-size:12.5px;color:#C0392B;font-weight:600;margin:0 0 14px;}
+.stock-line{font-size:11.5px;color:#C0392B;font-weight:600;margin:0 0 10px;}
 /* 単品でそろえた場合との比較。取り消し線の「定価」ではなく、実在する単品価格の合計を
    事実として書くだけにする（架空の定価を作らない）。 */
-.compare-note{font-size:12px;color:var(--muted);margin:-8px 0 14px;line-height:1.6;}
+.compare-note{font-size:11px;color:var(--muted);margin:-6px 0 12px;line-height:1.6;}
 .stock-line.plain{color:var(--muted);font-weight:500;}
 .var-row{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;}
 .var-opt{
@@ -135,7 +153,7 @@ body{
   font-size:10.5px;font-weight:700;color:#fff;background:#C0392B;
   padding:2px 7px;border-radius:4px;white-space:nowrap;
 }
-.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;margin-top:auto;}
 .qty-label{font-size:12.5px;color:var(--muted);}
 .qty-box{display:flex;align-items:center;border:1px solid rgba(15,61,46,.2);border-radius:8px;overflow:hidden;}
 .qty-box button{
@@ -176,24 +194,6 @@ body{
    2026-09-02 ryotaro指示で「江田畜産らしく」＝案3 深緑の箔押しカードに変更。
    角丸を落として明朝体にし、現在地は深緑の中に金の細枠を1本。
    4つ並ぶと横がきついので、狭い画面では自動で2段に折り返す。 */
-.pagenav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px;}
-.pagenav a{
-  flex:1 1 calc(50% - 10px);text-align:center;text-decoration:none;
-  font-family:'Shippori Mincho','Noto Serif JP',serif;
-  font-weight:600;font-size:14.5px;letter-spacing:.05em;
-  color:var(--forest);background:#fff;padding:15px 4px;line-height:1.3;
-  border:1px solid rgba(15,61,46,.16);border-radius:3px;
-  box-shadow:0 1px 2px rgba(0,0,0,.04);
-}
-.pagenav a.on{
-  background:linear-gradient(180deg,var(--forest) 0%,#0A2C21 100%);
-  color:var(--gold-light);border-color:var(--forest);
-  box-shadow:inset 0 0 0 1px rgba(212,169,59,.5);
-}
-/* 通常のショップへ出る導線は、限定ページの中では控えめに（点線＝外に出る） */
-.pagenav a.out{color:var(--muted);border-style:dashed;background:transparent;box-shadow:none;}
-@media(min-width:560px){.pagenav a{flex:1 1 0;}}
-@media(max-width:400px){.pagenav a{font-size:13px;padding:14px 2px;letter-spacing:.02em;}}
 .foot{text-align:center;font-size:11.5px;color:var(--muted);padding:24px 0 0;line-height:1.8;}
 .foot a{color:var(--forest);}
 
@@ -261,12 +261,6 @@ body{
 
 <div class="wrap">
 
-  <!-- 上部ボタン（2026-09-02 ryotaro指示）。現在地は on クラス／通常ショップへ出る導線は out クラス -->
-  <nav class="pagenav">
-    <a class="on" href="oseibo.html">お歳暮ギフト</a>
-    <a class="out" href="products.html">通常商品一覧</a>
-  </nav>
-
   <!-- 未連携: 鍵 -->
   <div class="gate" id="gate" hidden>
     <div class="gate-icon">🔒</div>
@@ -306,8 +300,7 @@ body{
 </div>
 
 <p class="foot">
-  江田畜産（宮崎県西諸県郡高原町）<br>
-  <a href="shop.html">通常のオンラインショップはこちら</a>
+  江田畜産（宮崎県西諸県郡高原町）
 </p>
 
 <script src="public/js/analytics.js?v=005" defer></script>
