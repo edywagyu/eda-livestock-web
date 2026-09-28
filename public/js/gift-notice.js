@@ -166,6 +166,45 @@
     });
   }
 
+  /* ------------------------------------------------------------
+     🎁 キャンペーン特典の帯 — 店頭(shop/products)とPDPの「買う前に分かる」告知。
+     文面は gift-rules.js の CAMPAIGN から組む＝特典を差し替えるときHTMLを触らない。
+     期間外は host ごと hidden にする＝終わったあとの撤去作業は不要。
+     ------------------------------------------------------------ */
+  function deadlineText(d) {
+    var w = ['日', '月', '火', '水', '木', '金', '土'][d.getDay()];
+    var hh = ('0' + d.getHours()).slice(-2), mm = ('0' + d.getMinutes()).slice(-2);
+    return (d.getMonth() + 1) + '/' + d.getDate() + '（' + w + '）' + hh + ':' + mm + 'まで';
+  }
+
+  function renderCampaignBars() {
+    var slots = [].slice.call(document.querySelectorAll('[data-gift-campaign]'));
+    if (!slots.length) return;
+    var R = window.EDA_GIFT_RULES, C = R && R.CAMPAIGN;
+    var now = new Date();
+    var live = !!(C && now >= R.at(C.from) && now <= R.at(C.until));
+
+    /* 金額条件なし(0)のときは「あと¥◯」ではなく「ご注文の方全員に」と言い切る。 */
+    var cond = (C && C.minSubtotal > 0)
+      ? yen(C.minSubtotal) + '以上のご注文で'
+      : 'ご注文の方全員に';
+    var item = C ? C.title + ' ' + C.variant + (C.qty > 1 ? '×' + C.qty : '') : '';
+    var html = C ? ('<div class="gcb-inner">'
+      + '<span class="gcb-badge">🎁 プレゼント</span>'
+      + '<span class="gcb-copy">'
+      + '<strong>' + esc(cond) + esc(item) + ' をおつけします</strong>'
+      + '<small>' + esc(deadlineText(R.at(C.until)))
+      + (C.minSubtotal > 0 ? '' : ' ／ 金額の条件はありません')
+      + '</small></span></div>') : '';
+
+    slots.forEach(function (slot) {
+      var host = slot.closest('[data-gift-campaign-host]') || slot;
+      if (!live) { host.hidden = true; slot.innerHTML = ''; return; }
+      host.hidden = false;
+      if (slot.innerHTML !== html) slot.innerHTML = html;
+    });
+  }
+
   function refresh() {
     var hidden = false;
     try { hidden = localStorage.getItem(HIDE_KEY) === new Date().toDateString(); } catch (e) {}
@@ -173,6 +212,7 @@
     var onCheckout = !!document.getElementById('summaryLineItems');
     render((hidden || onCheckout) ? null : build());
     renderCartProgress();
+    renderCampaignBars();
   }
 
   function start() {

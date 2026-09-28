@@ -204,3 +204,28 @@ h1, h2, h3 {
   background:rgba(15,61,46,.07); border-style:solid; border-color:rgba(15,61,46,.35);
 }
 #summaryRows .egn-cart-line{margin-top:10px}
+
+/* ============================================================
+   🎁 キャンペーン特典の帯（shop.html / products.html / product.html）
+   ------------------------------------------------------------
+   「ご注文の方全員に◯◯をおつけします」を買う前に見せる告知。
+   中身は gift-notice.js が gift-rules.js の CAMPAIGN から組む＝
+   次に特典を差し替えるときHTMLもCSSも触らなくていい。
+   期間外は hidden 属性で丸ごと消えるので撤去作業は不要。
+   ============================================================ */
+.gift-campaign-bar[hidden]{display:none!important}
+.gift-campaign-bar{margin:0 0 18px;opacity:1}
+.gcb-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:14px 20px;border-radius:14px;
+  background:linear-gradient(100deg,#0F3D2E 0%,#1B5B44 58%,#2A7A5B 100%);
+  border:1px solid rgba(212,169,59,.55);
+  box-shadow:0 6px 20px rgba(15,61,46,.18);color:#fff}
+.gcb-badge{flex:0 0 auto;font-size:12px;font-weight:700;letter-spacing:.06em;
+  padding:6px 12px;border-radius:999px;background:#D4A93B;color:#2A1B00;white-space:nowrap}
+.gcb-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+.gcb-copy strong{font-size:15px;font-weight:700;line-height:1.55}
+.gcb-copy small{font-size:12px;opacity:.88}
+@media(max-width:600px){
+  .gcb-inner{padding:12px 14px;gap:10px}
+  .gcb-copy strong{font-size:14px}
+}
