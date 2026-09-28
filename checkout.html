@@ -1306,7 +1306,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260928a">
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1543,7 +1543,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <!-- 🔴 gift-rules.js は下のインライン定義(_GR)より先に読む。後ろに置くと
      window.EDA_GIFT_RULES がまだ無い状態で評価され、checkout.html は
      常にフォールバック側の値で動く（2026-09-08 発見）。 -->
-<script src="public/js/gift-rules.js?v=006"></script>
+<script src="public/js/gift-rules.js?v=007"></script>
 <script>
 /* ============================================================
  * 4購入導線統合 Checkout — Mode 自動判定
@@ -1700,7 +1700,7 @@ function currentReward() {
 }
 
 /* ============================================================
-   🥩 肉の日キャンペーン特典（2026-08-27〜08-30 / たろ指示）
+   🥩 肉の日キャンペーン特典（いまは 2026-09-28 19:00〜09-29 23:59 / たろ指示）
    ------------------------------------------------------------
    購入回数特典とまったく同じ「¥0 の1行を足す」方式。小計・送料判定・税額は
    どれも動かさない（¥0 は ¥0）。購入回数特典とは併用できる。
@@ -1716,20 +1716,20 @@ var CAMPAIGN_GIFT = (function () {
     minSubtotal: c.minSubtotal, from: _GR.at(c.from), until: _GR.at(c.until)
   };
   return {                                          // gift-rules.js が読めなかったとき用
-    title: '切り落とし',            // ← products の name と完全一致
+    title: 'バラ焼肉',              // ← products の name と完全一致
     variant: '1袋 200g',
     qty: 1,
-    label: '切り落としプレゼント',
-    img: 'public/images/products/drive/kiriotoshi-2026.jpg',
-    minSubtotal: 10000,                             // 公式LINEに書いた「¥10,000以上のご注文で」
-    from:  new Date(2026, 8, 7, 18, 0, 0),
-    until: new Date(2026, 8, 7, 23, 59, 59)
+    label: 'バラ焼肉プレゼント',
+    img: 'public/images/products/drive/yakiniku-brisket-2026.jpg',
+    minSubtotal: 0,                                 // 肉の日は金額条件なし（全注文）
+    from:  new Date(2026, 8, 28, 19, 0, 0),
+    until: new Date(2026, 8, 29, 23, 59, 59)
   };
 })();
 var campaignGiftDropped = false;
 
-/* いま付くキャンペーン特典（無ければ null）。条件は都度評価する＝カートを減らして
-   1万円を割ったら消える／ギフトだけの注文には付かない／期間外は付かない。 */
+/* いま付くキャンペーン特典（無ければ null）。条件は都度評価する＝金額条件を
+   設けているときは小計を割ったら消える／ギフトだけの注文には付かない／期間外は付かない。 */
 function currentCampaignGift() {
   if (campaignGiftDropped || subscription) return null;        // 定期便はプランに込みなので対象外
   var now = new Date();
@@ -3653,7 +3653,7 @@ try { scheduleRepeatShipCheck(); } catch (e) {}
 
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=005" defer></script>
+<script src="public/js/gift-notice.js?v=006" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=011" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>

@@ -9620,7 +9620,7 @@ body.is-member .product-card--organic .org-chk-lock {
 .animate-paused-when-offscreen { animation-play-state: paused; }
 .animate-paused-when-offscreen.in-view { animation-play-state: running; }
 </style>
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260928a">
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
@@ -9757,6 +9757,11 @@ body.is-member .product-card--organic .org-chk-lock {
  style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:0;cursor:pointer;font-size:18px;color:var(--color-ink-muted);padding:4px 8px;display:none;">×</button>
  </div>
 
+ <!-- ========= 🎁 キャンペーン特典の帯（中身と表示期間は public/js/gift-rules.js の CAMPAIGN が正。
+     期間外は gift-notice.js が hidden にするので、終わったあとの撤去作業は不要） ========= -->
+ <div class="gift-campaign-bar" data-gift-campaign-host hidden>
+ <div data-gift-campaign></div>
+ </div>
  <!-- ========= 肉の日限定バナー（2026-08-27〜08-30 / 8/29 焼肉の日。終了は limitedUntil で自動） ========= -->
  <div class="nikunohi-bar" data-limited-scope="肉の日限定セット">
  <a class="nikunohi-inner" href="#products" onclick="var t=document.querySelector('.tab[data-filter=&quot;nikunohi&quot;]'); if(t){t.click(); return false;}">
@@ -13326,9 +13331,9 @@ function copyPopCoupon() {
 <!-- 売れ行き順（popular.json のランクを配る。並べ替え本体は上の sortProductCards） -->
 <script src="public/js/popular.js?v=5" defer></script>
 <script src="public/js/member-gate.js" defer></script>
-<script src="public/js/gift-rules.js?v=006"></script>
+<script src="public/js/gift-rules.js?v=007"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=005" defer></script>
+<script src="public/js/gift-notice.js?v=006" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 
 <!-- LINE内ブラウザ(LIFF)なら line_uid を自動取得し注文へ自動紐付け（通常ブラウザは無処理） -->

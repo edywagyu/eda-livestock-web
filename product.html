@@ -16,7 +16,7 @@
 <meta property="og:locale" content="ja_JP">
 <link rel="canonical" id="canonicalLink" href="https://www.eda-livestock.com/product.html">
 
-<link rel="stylesheet" href="public/css/eda-core.css?v=20260827a">
+<link rel="stylesheet" href="public/css/eda-core.css?v=20260928a">
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
@@ -721,6 +721,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
            金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
       <p class="pdp-price-note">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
+
+      <!-- ========= 🎁 キャンペーン特典の帯（中身と表示期間は public/js/gift-rules.js の CAMPAIGN が正。
+     期間外は gift-notice.js が hidden にするので、終わったあとの撤去作業は不要） ========= -->
+      <div class="gift-campaign-bar" data-gift-campaign-host hidden style="margin:14px 0 4px">
+        <div data-gift-campaign></div>
+      </div>
 
       <!-- 限定品の締切・残数。中身は public/js/limited-stock.js が products シートの
            limitedTotal / limitedUntil から組み立てる。キャンペーンごとの編集も、
@@ -1587,9 +1593,9 @@ window.addEventListener('load', () => {
   });
 });
 </script>
-<script src="public/js/gift-rules.js?v=006"></script>
+<script src="public/js/gift-rules.js?v=007"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=005" defer></script>
+<script src="public/js/gift-notice.js?v=006" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
 </body>
 </html>
