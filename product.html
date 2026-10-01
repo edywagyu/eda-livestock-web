@@ -990,7 +990,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 <!-- ============ SCRIPTS ============ -->
 <script src="public/data/products-master.js?v=2026-10-01-slice-desc"></script>
 <script src="public/data/pdp-content.js?v=2026-09-17a"></script>
-<script src="public/js/cut-map.js?v=2026-10-01a"></script>
+<script src="public/js/cut-map.js?v=2026-10-01b"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -1136,9 +1136,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const cutEl = document.getElementById('pdpCutCopy');
     if (cutEl) cutEl.textContent = C.cutCopy;
     /* 牛の部位図（2026-10-01 田崎さん指示）。
-       鶏・内臓(ホルモン)・複数商品セットは public/js/cut-map.js 側で対象外にしてある。 */
+       図を持っている商品だけに出る。登録は public/js/cut-map.js の IMAGES。 */
     if (cutEl && window.EDA_CUT_MAP) {
-      window.EDA_CUT_MAP.render(cutEl.parentNode, productId, C.cut);
+      window.EDA_CUT_MAP.render(cutEl.parentNode, productId);
     }
     const thawEl = document.getElementById('pdpThaw');
     if (thawEl) thawEl.innerHTML = '<p>' + esc(C.thaw) + '。<br>解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>';
