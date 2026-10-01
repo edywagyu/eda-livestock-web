@@ -56,7 +56,7 @@
       name: '赤身スライス', variant: '1袋 200g',
       price: 2600, weight: 200, stock: 12, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Slice',
-      description: '薄切りにした赤身。出汁に数秒くぐらせる、しゃぶしゃぶに。すき焼きにも。',
+      description: '後脚の外側「ソトモモ」を薄切りにしています。よく動く部位で繊維がしっかりしているぶん、薄く引くと赤身の味がまっすぐ出ます。しゃぶしゃぶ、すき焼きに。',
       images: ['public/images/products/drive/wagyu-slice.jpg']
     },
     {
