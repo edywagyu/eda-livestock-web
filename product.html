@@ -990,7 +990,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 <!-- ============ SCRIPTS ============ -->
 <script src="public/data/products-master.js?v=2026-10-01-slice-desc"></script>
 <script src="public/data/pdp-content.js?v=2026-09-17a"></script>
-<script src="public/js/cut-map.js?v=2026-10-01b"></script>
+<script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -1136,7 +1136,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const cutEl = document.getElementById('pdpCutCopy');
     if (cutEl) cutEl.textContent = C.cutCopy;
     /* 牛の部位図（2026-10-01 田崎さん指示）。
-       図を持っている商品だけに出る。登録は public/js/cut-map.js の IMAGES。 */
+       図を持っている商品だけに出る。登録は public/js/cut-map.js の MAP。 */
     if (cutEl && window.EDA_CUT_MAP) {
       window.EDA_CUT_MAP.render(cutEl.parentNode, productId);
     }
