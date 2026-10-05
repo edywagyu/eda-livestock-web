@@ -80,6 +80,43 @@
     '鶏ミンチ':           { img: 'public/images/products/drive/chicken-minced.jpg',  desc: 'つくね・そぼろに' }
   };
 
+  /* 系統（お客さんが最初に選ぶ3つの入口）。
+     判定は planId の頭だけ。シートに列を足さなくても増やせる。
+     写真は使わない（絵文字＋一言）＝画像の用意が不要。 */
+  var LINES = [
+    { key: 'mix',     emoji: '🥩🍗', name: '和牛＋鶏', lead: '迷ったらこちら',
+      note: '和牛と鶏、どちらも毎月。いちばん人気の組み合わせです。',
+      test: function (id) { return !/^wagyu_|^chicken_/.test(id); } },
+    { key: 'wagyu',   emoji: '🥩',   name: '和牛だけ', lead: '和牛だけ頼みたい方はこちら',
+      note: '月ごとに用途（ステーキ／焼肉／すき焼き／しゃぶしゃぶ）が変わります。',
+      test: function (id) { return /^wagyu_/.test(id); } },
+    { key: 'chicken', emoji: '🍗',   name: '鶏だけ',   lead: '鶏だけ頼みたい方はこちら',
+      note: '大分県・無投薬の平飼い鶏。モモとムネを半分ずつお届けします。',
+      test: function (id) { return /^chicken_/.test(id); } }
+  ];
+
+  function lineOf(planId) {
+    for (var i = 0; i < LINES.length; i++) if (LINES[i].test(String(planId || ''))) return LINES[i];
+    return LINES[0];
+  }
+
+  /* 公開中のプランを系統ごとにまとめる。
+     中身が1件も無い系統は返さない＝published=TRUE にした系統だけが店頭に出る。 */
+  function groupByLine(rows) {
+    return LINES.map(function (ln) {
+      var plans = rows.filter(function (r) { return ln.test(r.planId); })
+                      .sort(function (a, b) { return a.price - b.price; });
+      if (!plans.length) return null;
+      return {
+        key: ln.key, emoji: ln.emoji, name: ln.name, lead: ln.lead, note: ln.note,
+        plans: plans,
+        minPrice: plans[0].price,
+        maxPrice: plans[plans.length - 1].price,
+        featured: plans.some(function (p) { return p.featured; })
+      };
+    }).filter(Boolean);
+  }
+
   /* 全プラン共通の仕様（プランごとに変わらないのでシートに持たせない） */
   var SHARED_SPEC = {
     origin:  '肉(宮崎) / 鶏(大分)',
@@ -249,6 +286,12 @@
     return pending;
   }
 
+  /* products-loader.js のように「シートの生の行」を既に持っている画面向け。
+     もう一度通信せずに正規化だけする。 */
+  function fromRows(rows) {
+    return sortByPrice((rows || []).map(normalize));
+  }
+
   function sortByPrice(rows) {
     return rows.slice().sort(function (a, b) { return a.price - b.price; });
   }
@@ -273,6 +316,10 @@
 
   global.EdaPlans = {
     load: load,
+    fromRows: fromRows,
+    LINES: LINES,
+    lineOf: lineOf,
+    groupByLine: groupByLine,
     get: get,
     byId: byId,
     asMap: asMap,
