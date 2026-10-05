@@ -160,10 +160,29 @@
     var yearly = (individual > 0)
       ? Math.max(0, (individual - price) * 11 + (individual - half)) : 0;
 
+    /* "600g" / "1.6kg" の見せ方（カードの牛・鶏の内訳に使う） */
+    function gLabel(g) {
+      if (!g) return '';
+      return g >= 1000 ? (Math.round(g / 100) / 10) + 'kg' : g + 'g';
+    }
+
     return {
       planId: row.planId,
       name: row.name,
       target: row.target,
+      /* 「1人暮らし · 1.2kg · 全6品（牛 600g + 鶏 600g）」 */
+      targetLong: [
+        row.target,
+        spec.weight,
+        spec.count ? ('全' + spec.count + '品') : ''
+      ].filter(Boolean).join(' · ') + (function () {
+        var parts = [];
+        if (beef) parts.push('牛 ' + gLabel(beef));
+        if (chicken) parts.push('鶏 ' + gLabel(chicken));
+        return parts.length ? ('（' + parts.join(' + ') + '）') : '';
+      })(),
+      beefLabel: gLabel(beef),
+      chickenLabel: gLabel(chicken),
       cycleLabel: CYCLE[row.planId] || String(row.planId || '').toUpperCase().replace(/_/g, ' '),
       spec: row.spec,
       weight: spec.weight,
@@ -172,9 +191,11 @@
       beefGrams: beef,
       chickenGrams: chicken,
       price: price,
+      regular: price,          /* 既存コードが .regular を見ているための別名 */
       half: half,
       savings: num(row.savings),
       individualPrice: individual,
+      individual: individual,  /* 同上 */
       savingsPct: savingsPct,
       yearlySavings: yearly,
       items: parsed.list,
@@ -184,7 +205,11 @@
       vipPerk: String(row.vipPerk || '').trim(),
       image: String(row.image || '').trim(),
       stripePriceId: String(row.stripePriceId || '').trim(),
-      shared: SHARED_SPEC
+      shared: SHARED_SPEC,
+      origin: SHARED_SPEC.origin,
+      process: SHARED_SPEC.process,
+      feed: SHARED_SPEC.feed,
+      storage: SHARED_SPEC.storage
     };
   }
 

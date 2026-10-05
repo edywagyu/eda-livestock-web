@@ -2001,6 +2001,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
 <script src="public/js/geo-restrict.js" defer></script>
+<!-- 定期便プランの正本(subscription_plans シート)を読む部品。直書きしないための要 -->
+<script src="public/js/eda-plans.js?v=001"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap">
@@ -2376,150 +2378,8 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </p>
  </div>
 
- <div class="sub-plans-grid">
- <article class="sub-plan-card" data-plan="starter">
- <div class="sub-plan-cycle">MINI · 毎月お届け</div>
- <div class="sub-plan-name">ミニ</div>
- <div class="sub-plan-target">1人暮らし向け</div>
-
- <div class="sub-plan-summary">
- <div class="sub-plan-summary-total">1.2kg<small>/ 全6品</small></div>
- <div class="sub-plan-summary-split">
- <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 600g</span>
- <span class="sub-plan-summary-divider">+</span>
- <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 600g</span>
- </div>
- </div>
-
- <div class="sub-plan-items">
- <div class="sub-plan-detail-label">お届け例（部位は月替わり）</div>
- <div class="meat-group meat-group--beef">
- <div class="meat-group-head">
- <span class="meat-group-icon">🥩</span>
- <span class="meat-group-name">牛</span>
- <span class="meat-group-weight">600g / 3品</span>
- </div>
- <div class="meat-group-items">赤身ステーキ 200g · 赤身スライス 200g · 切り落とし 200g</div>
- </div>
- <div class="meat-group meat-group--chicken">
- <div class="meat-group-head">
- <span class="meat-group-icon">🍗</span>
- <span class="meat-group-name">鶏</span>
- <span class="meat-group-weight">600g / 3品</span>
- </div>
- <div class="meat-group-items">モモ 200g · ムネ 200g · ミンチ 200g</div>
- </div>
- <div class="sub-plan-items-note">※部位の組み合わせは月により変わる場合があります。総重量・品数は記載のとおり確定です。</div>
- </div>
-
- <div class="sub-plan-pricing">
- <div class="sub-plan-old-price">通常 ¥9,280</div>
- <div class="sub-plan-price">¥4,640<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月50%OFF + 送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>
- <div class="sub-plan-yearly">
- <span class="sub-plan-yearly-label">1年続けると</span>
- <span class="sub-plan-yearly-amount">およそ¥16,000<small>お得</small></span>
- </div>
- <div class="sub-plan-note">2ヶ月目以降 ¥9,280/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>
- </div>
- <div class="sub-plan-select-btn">このプランを選ぶ →</div>
- </article>
-
- <article class="sub-plan-card featured" data-plan="regular">
- <div class="sub-plan-cycle">LIGHT · 毎月お届け<span class="sub-plan-tag">★ 人気 No.1</span></div>
- <div class="sub-plan-name">ライト</div>
- <div class="sub-plan-target">1-2名向け</div>
-
- <div class="sub-plan-summary">
- <div class="sub-plan-summary-total">1.6kg<small>/ 全8品</small></div>
- <div class="sub-plan-summary-split">
- <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 800g</span>
- <span class="sub-plan-summary-divider">+</span>
- <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 800g</span>
- </div>
- </div>
-
- <div class="sub-plan-items">
- <div class="sub-plan-detail-label">お届け例（部位は月替わり）</div>
- <div class="meat-group meat-group--beef">
- <div class="meat-group-head">
- <span class="meat-group-icon">🥩</span>
- <span class="meat-group-name">牛</span>
- <span class="meat-group-weight">800g / 4品</span>
- </div>
- <div class="meat-group-items">赤身ステーキ 200g · サイコロステーキ 200g · 赤身スライス 200g · 切り落とし 200g</div>
- </div>
- <div class="meat-group meat-group--chicken">
- <div class="meat-group-head">
- <span class="meat-group-icon">🍗</span>
- <span class="meat-group-name">鶏</span>
- <span class="meat-group-weight">800g / 4品</span>
- </div>
- <div class="meat-group-items">モモ 200g · ムネ 200g · ミンチ 200g×2</div>
- </div>
- <div class="sub-plan-items-note">※部位の組み合わせは月により変わる場合があります。総重量・品数は記載のとおり確定です。</div>
- </div>
-
- <div class="sub-plan-pricing">
- <div class="sub-plan-old-price">通常 ¥12,300</div>
- <div class="sub-plan-price">¥6,150<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月50%OFF + 送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>
- <div class="sub-plan-yearly">
- <span class="sub-plan-yearly-label">1年続けると</span>
- <span class="sub-plan-yearly-amount">およそ¥13,000<small>お得</small></span>
- </div>
- <div class="sub-plan-note">2ヶ月目以降 ¥12,300/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>
- </div>
- <div class="sub-plan-select-btn">このプランを選ぶ →</div>
- </article>
-
- <article class="sub-plan-card sub-plan-card--vip" data-plan="volume">
- <div class="sub-plan-cycle">FAMILY · 毎月お届け<span class="sub-plan-tag sub-plan-tag--vip">💰 お得</span></div>
- <div class="sub-plan-name">ファミリー</div>
- <div class="sub-plan-target">3-4名向け</div>
-
- <div class="sub-plan-summary">
- <div class="sub-plan-summary-total">2.8kg<small>/ 全14品</small></div>
- <div class="sub-plan-summary-split">
- <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 1.6kg</span>
- <span class="sub-plan-summary-divider">+</span>
- <span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 1.2kg</span>
- </div>
- </div>
-
- <div class="sub-plan-items">
- <div class="sub-plan-detail-label">お届け例（部位は月替わり）</div>
- <div class="meat-group meat-group--beef">
- <div class="meat-group-head">
- <span class="meat-group-icon">🥩</span>
- <span class="meat-group-name">牛</span>
- <span class="meat-group-weight">1.6kg / 8品</span>
- </div>
- <div class="meat-group-items">赤身ステーキ 200g×2 · 赤身スライス 200g×2 · 切り落とし 200g×2 · 霜降スライス 200g · サイコロステーキ 200g</div>
- </div>
- <div class="meat-group meat-group--chicken">
- <div class="meat-group-head">
- <span class="meat-group-icon">🍗</span>
- <span class="meat-group-name">鶏</span>
- <span class="meat-group-weight">1.2kg / 6品</span>
- </div>
- <div class="meat-group-items">モモ 200g×2 · ムネ 200g×2 · ミンチ 200g×2</div>
- </div>
- <div class="sub-plan-items-note">※部位の組み合わせは月により変わる場合があります。総重量・品数は記載のとおり確定です。</div>
- </div>
-
- <div class="sub-plan-pricing">
- <div class="sub-plan-old-price">通常 ¥21,800</div>
- <div class="sub-plan-price">¥10,900<small>/初月</small></div>
- <div class="sub-plan-savings">🎁 初月50%OFF + 送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>
- <div class="sub-plan-yearly">
- <span class="sub-plan-yearly-label">1年続けると</span>
- <span class="sub-plan-yearly-amount">およそ¥62,000<small>お得</small></span>
- </div>
- <div class="sub-plan-note">2ヶ月目以降 ¥21,800/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>
- </div>
- <div class="sub-plan-select-btn">このプランを選ぶ →</div>
- </article>
+ <div class="sub-plans-grid" id="subPlansGrid">
+<!-- カードは public/js/eda-plans.js がシートの内容から作る（直書きしない） -->
  </div>
  </div>
 </section>
@@ -3524,7 +3384,7 @@ function toggleSubUnboxingSound() {
  <details class="faq-item">
  <summary class="faq-q">2回目以降の金額は？</summary>
  <div class="faq-a">
- <strong>2回目以降は通常価格</strong>でお届けします。ミニ ¥9,280 / ライト ¥12,300 / ファミリー ¥21,800（すべて税込・送料込）。初月50%OFFは初回ご利用の方限定でございます。<br>※北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
+ <strong>2回目以降は通常価格</strong>でお届けします。<span class="js-plan-price-list">ミニ ¥9,280 / ライト ¥12,300 / ファミリー ¥21,800</span>（すべて税込・送料込）。初月50%OFFは初回ご利用の方限定でございます。<br>※北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
  </div>
  </details>
 
@@ -3638,7 +3498,7 @@ function toggleSubUnboxingSound() {
 
  <dt style="font-weight:600;margin-top:18px;">初月割引について</dt>
  <dd style="margin:6px 0 0 0;padding-left:1em;border-left:2px solid rgba(15,61,46,0.15);color:#3A3A3A;">
- 初月50%OFFは、はじめてご利用の方限定です。2回目以降は通常価格（ミニ ¥9,280 / ライト ¥12,300 / ファミリー ¥21,800・税込・送料込）でのお届けとなります。北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
+ 初月50%OFFは、はじめてご利用の方限定です。2回目以降は通常価格（<span class="js-plan-price-list">ミニ ¥9,280 / ライト ¥12,300 / ファミリー ¥21,800</span>・税込・送料込）でのお届けとなります。北海道は +1,000円、沖縄は +700円 の追加送料を頂戴します。
  </dd>
  </dl>
 
@@ -3708,79 +3568,98 @@ function toggleSubUnboxingSound() {
   }
 })();
 
-/* ============ プラン定義 ============ */
-const PLANS = {
- starter: {
- name: 'ミニ',
- target: '1人暮らし向け · 1.2kg · 全 6品（牛 600g + 鶏 600g）',
- regular: 9280,
- half: 4640,
- weight: '1.2kg',
- productCount: 6,
- origin: '肉(宮崎) / 鶏(大分)',
- process: '宮崎',
- feed: '抗生物質 / ホルモンフリー',
- storage: '冷凍',
- individual: 10300,
- savingsPct: 10,
- items: [
- { name: '赤身ステーキ', qty: '200g', img: 'public/images/products/drive/red-meat.jpg', desc: 'モモ系赤身・脂少なめ' },
- { name: '赤身スライス', qty: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ・すき焼きに' },
- { name: '切り落とし', qty: '200g', img: 'public/images/products/drive/kiriotoshi-2026.jpg', desc: '牛丼・カレー・肉じゃがに' },
- { name: '鶏モモ', qty: '200g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・平飼い・万能部位' },
- { name: '鶏ムネ', qty: '200g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
- { name: '鶏ミンチ', qty: '200g', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
- ]
- },
- regular: {
- name: 'ライト',
- target: '1-2名向け · 1.6kg · 全 8品（牛 800g + 鶏 800g）',
- regular: 12300,
- half: 6150,
- weight: '1.6kg',
- productCount: 8,
- origin: '肉(宮崎) / 鶏(大分)',
- process: '宮崎',
- feed: '抗生物質 / ホルモンフリー',
- storage: '冷凍',
- individual: 12900,
- savingsPct: 5,
- items: [
- { name: '赤身ステーキ', qty: '200g', img: 'public/images/products/drive/red-meat.jpg', desc: 'モモ系赤身・脂少なめ' },
- { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '一口サイズ・お弁当にも' },
- { name: '赤身スライス', qty: '200g', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ・すき焼きに' },
- { name: '切り落とし', qty: '200g', img: 'public/images/products/drive/kiriotoshi-2026.jpg', desc: '牛丼・カレー・肉じゃがに' },
- { name: '鶏モモ', qty: '200g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・万能部位' },
- { name: '鶏ムネ', qty: '200g', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
- { name: '鶏ミンチ', qty: '200g × 2', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
- ]
- },
- volume: {
- name: 'ファミリー',
- target: '3-4名向け · 2.8kg · 全 14品（牛 1.6kg + 鶏 1.2kg）',
- regular: 21800,
- half: 10900,
- weight: '2.8kg',
- productCount: 14,
- origin: '肉(宮崎) / 鶏(大分)',
- process: '宮崎',
- feed: '抗生物質 / ホルモンフリー',
- storage: '冷凍',
- individual: 26100,
- savingsPct: 16,
- vipPerk: '🌿 有機JAS 黒毛和牛 優先案内 (2026年夏 解禁・月20頭限定の優先購入権)',
- items: [
- { name: '赤身ステーキ', qty: '200g × 2', img: 'public/images/products/drive/red-meat.jpg', desc: 'モモ系赤身・脂少なめ' },
- { name: '赤身スライス', qty: '200g × 2', img: 'public/images/products/drive/wagyu-slice.jpg', desc: 'しゃぶしゃぶ・すき焼きに' },
- { name: '切り落とし', qty: '200g × 2', img: 'public/images/products/drive/kiriotoshi-2026.jpg', desc: '牛丼・カレー・肉じゃがに' },
- { name: '霜降スライス', qty: '200g', img: 'public/images/products/drive/shimofuri-slice.jpg', desc: 'とろける甘み・すき焼きに' },
- { name: 'サイコロステーキ', qty: '200g', img: 'public/images/products/drive/cube-steak.jpg', desc: '一口サイズ・お弁当にも' },
- { name: '鶏モモ', qty: '200g × 2', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '無投薬・万能部位' },
- { name: '鶏ムネ', qty: '200g × 2', img: 'public/images/products/drive/chicken-breast.jpg', desc: '高たんぱく・低脂肪' },
- { name: '鶏ミンチ', qty: '200g × 2', img: 'public/images/products/drive/chicken-minced.jpg', desc: 'つくね・そぼろに' }
- ]
+/* ============ プラン定義 ============
+   🔴 ここには書かない。正本は本番シートの subscription_plans タブ。
+      init() で EdaPlans.load() が入れる。 */
+let PLANS = {};
+
+/* シートの内容からプランカードを作る */
+function renderPlanCards(rows) {
+ const grid = document.getElementById('subPlansGrid');
+ if (!grid) return;
+ const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const yen = (n) => '¥' + Number(n || 0).toLocaleString('ja-JP');
+
+ grid.innerHTML = rows.map(p => {
+ const cls = ['sub-plan-card'];
+ if (p.featured) cls.push('featured');
+ if (p.vipPerk) cls.push('sub-plan-card--vip');
+
+ const tag = p.badgeLabel
+ ? '<span class="sub-plan-tag' + (p.vipPerk ? ' sub-plan-tag--vip' : '') + '">' +
+   (p.featured ? '★ ' : '') + esc(p.badgeLabel) + '</span>'
+ : '';
+
+ /* 総量の下に出す「牛 600g + 鶏 600g」 */
+ const split = [];
+ if (p.beefLabel) split.push('<span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--beef"></span>牛 ' + esc(p.beefLabel) + '</span>');
+ if (p.chickenLabel) split.push('<span class="sub-plan-summary-split-item"><span class="sub-plan-summary-split-dot sub-plan-summary-split-dot--chicken"></span>鶏 ' + esc(p.chickenLabel) + '</span>');
+ const splitHtml = split.length
+ ? '<div class="sub-plan-summary-split">' + split.join('<span class="sub-plan-summary-divider">+</span>') + '</div>'
+ : '';
+
+ /* 中身。品目の一覧があれば牛・鶏に分けて出す。
+    和牛プランのように「下記6種から毎月お届け：…」という文章のときはそれを出す。 */
+ let itemsHtml = '';
+ if (p.items.length) {
+ const group = (kind, icon, label, weight) => {
+ const list = p.items.filter(it => it.kind === kind);
+ if (!list.length) return '';
+ const names = list.map(it => {
+ /* 鶏の欄では「鶏モモ」→「モモ」と見せる */
+ const n = kind === 'chicken' ? it.name.replace(/^鶏/, '') : it.name;
+ return esc(n) + (it.qty ? ' ' + esc(it.qty.replace(/\s*×\s*/, '×')) : '');
+ }).join(' · ');
+ const packs = list.reduce((a, it) => a + it.packs, 0);
+ return '<div class="meat-group meat-group--' + kind + '">' +
+   '<div class="meat-group-head"><span class="meat-group-icon">' + icon + '</span>' +
+   '<span class="meat-group-name">' + label + '</span>' +
+   '<span class="meat-group-weight">' + esc(weight) + ' / ' + packs + '品</span></div>' +
+   '<div class="meat-group-items">' + names + '</div></div>';
+ };
+ itemsHtml =
+ '<div class="sub-plan-detail-label">お届け例（部位は月替わり）</div>' +
+ group('beef', '🥩', '牛', p.beefLabel) +
+ group('chicken', '🍗', '鶏', p.chickenLabel) +
+ '<div class="sub-plan-items-note">※部位の組み合わせは月により変わる場合があります。総重量・品数は記載のとおり確定です。</div>';
+ } else if (p.itemsNote) {
+ itemsHtml =
+ '<div class="sub-plan-detail-label">お届けする部位</div>' +
+ '<div class="meat-group meat-group--beef"><div class="meat-group-items">' + esc(p.itemsNote) + '</div></div>' +
+ '<div class="sub-plan-items-note">※月ごとに用途（ステーキ／焼肉／すき焼き／しゃぶしゃぶ）が変わります。パック数は毎月変わりません。入荷状況により内容が変更になる場合があります。</div>';
  }
-};
+
+ const yearly = p.yearlySavings
+ ? '<div class="sub-plan-yearly"><span class="sub-plan-yearly-label">1年続けると</span>' +
+   '<span class="sub-plan-yearly-amount">およそ' + yen(Math.floor(p.yearlySavings / 1000) * 1000) + '<small>お得</small></span></div>'
+ : '';
+
+ const halfLine = p.half
+ ? '<div class="sub-plan-price">' + yen(p.half) + '<small>/初月</small></div>' +
+   '<div class="sub-plan-savings">🎁 初月50%OFF + 送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>'
+ : '<div class="sub-plan-price">' + yen(p.price) + '<small>/月</small></div>' +
+   '<div class="sub-plan-savings">送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>';
+
+ return '<article class="' + cls.join(' ') + '" data-plan="' + esc(p.planId) + '">' +
+ '<div class="sub-plan-cycle">' + esc(p.cycleLabel) + ' · 毎月お届け' + tag + '</div>' +
+ '<div class="sub-plan-name">' + esc(p.name) + '</div>' +
+ '<div class="sub-plan-target">' + esc(p.target) + '向け</div>' +
+ '<div class="sub-plan-summary"><div class="sub-plan-summary-total">' + esc(p.weight) +
+   '<small>/ 全' + p.productCount + '品</small></div>' + splitHtml + '</div>' +
+ '<div class="sub-plan-items">' + itemsHtml + '</div>' +
+ '<div class="sub-plan-pricing">' +
+   '<div class="sub-plan-old-price">通常 ' + yen(p.price) + '</div>' +
+   halfLine + yearly +
+   '<div class="sub-plan-note">2ヶ月目以降 ' + yen(p.price) + '/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>' +
+ '</div>' +
+ '<div class="sub-plan-select-btn">このプランを選ぶ →</div>' +
+ '</article>';
+ }).join('');
+
+ /* FAQ本文の「ミニ ¥9,280 / ライト ¥12,300 / …」もシートの値に合わせる */
+ const listText = rows.map(p => p.name + ' ' + yen(p.price)).join(' / ');
+ document.querySelectorAll('.js-plan-price-list').forEach(el => { el.textContent = listText; });
+}
 
 /* ============ URL ?plan= 取得 ============ */
 function getInitialPlan() {
@@ -3789,7 +3668,8 @@ function getInitialPlan() {
  // 旧 planId (mini/pro/vip) のリンク・ブックマークも受ける
  const ALIAS = { mini: 'starter', pro: 'regular', vip: 'volume' };
  if (ALIAS[p]) p = ALIAS[p];
- if (PLANS[p]) return p;
+ /* PLANS はまだ空（シートの読み込み前）。妥当性は読み込み後に確かめる */
+ if (p) return p;
  return 'regular'; // 内部デフォルト (detail/checkout 用)
 }
 let currentPlan = getInitialPlan();
@@ -3840,14 +3720,19 @@ function selectPlan(planKey, fromUser) {
 }
 
 /* ============ プランカード クリック ============ */
-document.querySelectorAll('.sub-plan-card').forEach(card => {
- card.addEventListener('click', () => {
- const p = card.dataset.plan;
- selectPlan(p, true);
- // 詳細セクションへスクロール
+/* ============ プランカード クリック ============
+   カードは EdaPlans の内容から後で作られるので、
+   個々のカードに付けるのではなく入れ物に1つだけ付ける（イベント委譲）。 */
+(function () {
+ const grid = document.getElementById('subPlansGrid');
+ if (!grid) return;
+ grid.addEventListener('click', (e) => {
+ const card = e.target.closest('.sub-plan-card');
+ if (!card || !card.dataset.plan) return;
+ selectPlan(card.dataset.plan, true);
  document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
  });
-});
+})();
 
 /* ============ チェックアウト ラジオボタン ============ */
 document.querySelectorAll('.checkout-radio input').forEach(input => {
@@ -4188,8 +4073,22 @@ async function handleSubmit(e) {
 
 renderAddons();
 
-/* ============ 初期化 ============ */
-selectPlan(currentPlan);
+/* ============ 初期化 ============
+   プランの名前・価格・中身は本番シート(subscription_plans)が正本。
+   読み終わってからカードを作り、初期選択する。 */
+EdaPlans.load().then(rows => {
+ PLANS = EdaPlans.asMap(rows);
+ renderPlanCards(rows);
+ /* ?plan= が無効だった場合は、おすすめ（featured）か一番安いプランに寄せる */
+ if (!PLANS[currentPlan]) {
+ const fb = rows.find(r => r.featured) || rows[0];
+ if (fb) currentPlan = fb.planId;
+ isUserSelected = false;
+ }
+ selectPlan(currentPlan);
+}).catch(err => {
+ try { console.error('[subscription] プランの読み込みに失敗:', err); } catch (e) {}
+});
 
 /* ============ URLに ?plan= がある場合: プラン選択セクション圧縮 + アドオンへスクロール ============ */
 (function streamlineFromShop() {
