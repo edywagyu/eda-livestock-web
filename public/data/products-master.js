@@ -642,6 +642,29 @@
         'public/images/products/drive/fuzoroi-setsumei.jpg'
       ]
     },
+    /* ===== ステーキ3種 食べ比べセット（2026-10-05 新設・P051）=====
+       サーロイン200g ＋ 赤身ステーキ200g ＋ ミスジ150g ＝ 計550g。
+       単品合計 ¥10,500 → ¥8,980（14.5%引き）。
+       🔴 components あり＝stock は applyBomStock が構成品から
+          「あと何セット作れるか」に再計算する。ミスジ(P023)14枚が上限。
+          ここの stock は取得失敗時のフォールバック。
+       原価(直近ロット・税抜)＝サーロイン1,493＋赤身ステーキ1,251＋ミスジ2,499＝¥5,243。
+       税抜売価¥8,315に対し粗利率36.9%、送料・資材・決済まで引いた利益率は22.9%。 */
+    {
+      productId: 'P051', variantId: 'STEAK3-SET', sku: 'EDA-STEAK3-SET',
+      stripePriceId: '',
+      name: 'ステーキ3種 食べ比べセット', variant: 'サーロイン200g＋赤身ステーキ200g＋ミスジ150g 計550g',
+      price: 8980, listPrice: 10500, weight: 550, stock: 14, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Steak 3 Cuts Tasting Set',
+      components: [
+        { name: 'サーロインステーキ', qty: 1 },
+        { name: '赤身ステーキ',       qty: 1 },
+        { name: 'ミスジステーキ',     qty: 1 }
+      ],
+      description: 'ステーキ3種を食べ比べていただけるセットです。サーロイン200g（サシの入った定番）、赤身ステーキ200g（モモの赤身。肉の味がはっきり出ます）、ミスジ150g（肩甲骨の内側から数枚しか取れない部位）。計550g。単品で揃えると ¥10,500 のところ、セットで ¥8,980。35ヶ月以上かけて育てた、抗生物質・ホルモン剤不使用の江田和牛です。冷凍便でお届けします。',
+      images: ['public/images/products/drive/steak3-set.jpg']
+    },
     /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。

@@ -7052,6 +7052,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="MISUJI"] { background-image: image-set(url('public/images/products/drive/misuji.webp') type('image/webp'), url('public/images/products/drive/misuji.jpg')); }
 .product-card-img[data-label="HAJIMETE SET"] { background-image: url('public/images/products/drive/hajimete-set.jpg'); }
 .product-card-img[data-label="FUZOROI SET"] { background-image: image-set(url('public/images/products/drive/fuzoroi-set.webp') type('image/webp'), url('public/images/products/drive/fuzoroi-set.jpg')); }
+.product-card-img[data-label="STEAK3 SET"] { background-image: url('public/images/products/drive/steak3-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
 .product-card-img[data-label="CUBE STEAK"] { background-image: url('public/images/products/drive/cube-steak-2026.jpg'); }
@@ -9985,6 +9986,24 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">5品 <strong>各200g</strong></div>
  <div class="product-stat-item">合計 <strong>1kg</strong></div>
  <div class="product-stat-item wide">単品合計 <strong>¥11,950</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <!-- ステーキ3種 食べ比べセット（2026-10-05 新設・P051）
+      サーロイン200g＋赤身ステーキ200g＋ミスジ150g・計550g。単品合計 ¥10,500 → ¥8,980。
+      🔴 components あり＝構成品(P001 サーロイン/P002 赤身ステーキ/P023 ミスジ)の在庫から
+         「あと何セット作れるか」が applyBomStock で自動計算される。ミスジ14枚が上限。
+      🔴 .product-name は products の name と1文字も変えない。 -->
+ <div class="product-card" data-sub="set" data-variants='[{"id":51005089800511,"t":"1セット","p":8980}]'>
+ <div class="product-card-img" data-label="STEAK3 SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Steak 3 Cuts</span><span class="product-price">&yen;8,980</span></div>
+ <p class="product-name"><a href="product.html?id=P051" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">ステーキ3種 食べ比べセット</a></p>
+ <p class="product-desc">サシの<strong>サーロイン</strong>、モモの<strong>赤身ステーキ</strong>、肩甲骨の内側から数枚しか取れない<strong>ミスジ</strong>。3種を食べ比べていただけるセットです。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">3種 <strong>計550g</strong></div>
+ <div class="product-stat-item">1枚 <strong>150〜200g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;10,500</strong></div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -13393,7 +13412,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-10-01-slice-desc" defer></script>
+<script src="public/data/products-master.js?v=2026-10-05-steak3-set" defer></script>
 <script src="public/js/products-loader.js?v=008" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
