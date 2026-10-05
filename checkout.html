@@ -1556,10 +1556,13 @@ const CART_KEY = 'eda-cart';
 const SUB_KEY = 'eda-subscription-pending';
 
 /* ---- プラン定義 (subscription と整合) ---- */
+/* 🔴 ここは subscription_plans シート(= GAS ?action=public_subscriptions)が正本。
+      実際の課金額は GAS が price_id からシートを引いて決めるので、ここがズレると
+      「画面に出た金額」と「請求された金額」が食い違う。シートを直したら必ずここも直す。 */
 const PLANS = {
- starter: { name: 'ミニ', regular: 6980, half: 3490 },
- regular: { name: 'スターター', regular: 12800, half: 6400 },
- volume: { name: 'レギュラー', regular: 24400, half: 12200 }
+ starter: { name: 'ミニ',      regular: 9280,  half: 4640 },
+ regular: { name: 'ライト',    regular: 12300, half: 6150 },
+ volume:  { name: 'ファミリー', regular: 21800, half: 10900 }
 };
 
 /* ---- 状態 ---- */
