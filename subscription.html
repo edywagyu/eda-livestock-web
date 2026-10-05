@@ -3610,7 +3610,8 @@ function renderPlanCards(rows) {
  const n = kind === 'chicken' ? it.name.replace(/^鶏/, '') : it.name;
  return esc(n) + (it.qty ? ' ' + esc(it.qty.replace(/\s*×\s*/, '×')) : '');
  }).join(' · ');
- const packs = list.reduce((a, it) => a + it.packs, 0);
+ /* 選出型は一覧が「候補」なので、品数は候補数でなくプランの品数を出す */
+ const packs = p.isPool ? p.productCount : list.reduce((a, it) => a + it.packs, 0);
  return '<div class="meat-group meat-group--' + kind + '">' +
    '<div class="meat-group-head"><span class="meat-group-icon">' + icon + '</span>' +
    '<span class="meat-group-name">' + label + '</span>' +
@@ -3618,15 +3619,22 @@ function renderPlanCards(rows) {
    '<div class="meat-group-items">' + names + '</div></div>';
  };
  itemsHtml =
- '<div class="sub-plan-detail-label">お届け例（部位は月替わり）</div>' +
+ '<div class="sub-plan-detail-label">' +
+   (p.isPool
+     ? (p.items.length + '種から毎月' + (p.productCount || '') + '品お届け')
+     : 'お届け例（部位は月替わり）') + '</div>' +
  group('beef', '🥩', '牛', p.beefLabel) +
  group('chicken', '🍗', '鶏', p.chickenLabel) +
- '<div class="sub-plan-items-note">※部位の組み合わせは月により変わる場合があります。総重量・品数は記載のとおり確定です。</div>';
+ '<div class="sub-plan-items-note">' +
+   (p.isPool
+     ? '※月ごとに用途（ステーキ／焼肉／すき焼き／しゃぶしゃぶ）が変わります。総重量・品数は記載のとおり確定です。入荷状況により内容が変更になる場合があります。'
+     : '※部位の組み合わせは月により変わる場合があります。総重量・品数は記載のとおり確定です。') +
+ '</div>';
  } else if (p.itemsNote) {
  itemsHtml =
  '<div class="sub-plan-detail-label">お届けする部位</div>' +
  '<div class="meat-group meat-group--beef"><div class="meat-group-items">' + esc(p.itemsNote) + '</div></div>' +
- '<div class="sub-plan-items-note">※月ごとに用途（ステーキ／焼肉／すき焼き／しゃぶしゃぶ）が変わります。パック数は毎月変わりません。入荷状況により内容が変更になる場合があります。</div>';
+ '<div class="sub-plan-items-note">※入荷状況により内容が変更になる場合があります。</div>';
  }
 
  const yearly = p.yearlySavings

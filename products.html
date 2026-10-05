@@ -9666,25 +9666,32 @@ body.is-member .product-card--organic .org-chk-lock {
    写真は使わず絵文字＋一言。公開中の系統が2つ以上あるときだけ出る。
    生成は public/js/eda-plans.js + __renderPlans()。 */
 .sub-lines-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+/* 文字色は2色だけ。主役＝白、補足＝白の62%（セクション本文と同じ濃さ）。
+   opacity は使わず色で指定する（親の透過に引きずられないため）。 */
 .sub-line-card {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: 26px 18px 20px; border: 1px solid rgba(212,169,59,.35); border-radius: 14px;
-  background: rgba(255,255,255,.04); color: inherit; cursor: pointer;
+  background: rgba(255,255,255,.04); color: #fff; cursor: pointer;
   font: inherit; text-align: center; transition: border-color .18s, background .18s, transform .18s;
 }
 .sub-line-card:hover { border-color: rgba(212,169,59,.8); background: rgba(255,255,255,.07); transform: translateY(-2px); }
 .sub-line-card.featured { border-color: rgba(212,169,59,.8); }
 .sub-line-card.selected { border-color: #D4A93B; background: rgba(212,169,59,.12); }
 .sub-line-emoji { font-size: 40px; line-height: 1.1; letter-spacing: -2px; }
-.sub-line-name  { font-size: 20px; font-weight: 700; }
-.sub-line-lead  { font-size: 12px; opacity: .78; line-height: 1.6; }
-.sub-line-price { font-size: 17px; font-weight: 700; color: #D4A93B; margin-top: 2px; }
-.sub-line-price small { font-size: 11px; font-weight: 400; opacity: .8; }
-.sub-line-cta   { font-size: 12px; opacity: .85; margin-top: 4px; }
+.sub-line-name  { font-size: 20px; font-weight: 700; color: #fff; }
+.sub-line-lead  { font-size: 12px; line-height: 1.6; color: rgba(255,255,255,.62); }
+.sub-line-price { font-size: 17px; font-weight: 700; color: #fff; margin-top: 2px; }
+.sub-line-price small { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.62); }
+.sub-line-cta   { font-size: 12px; color: rgba(255,255,255,.62); margin-top: 4px; }
 .sub-line-card[aria-expanded="true"] .sub-line-cta::after { content: ' ▾'; }
 
 #subLinePanels { margin-top: 18px; }
-.sub-line-panel-note { font-size: 12px; opacity: .8; text-align: center; margin: 0 0 14px; line-height: 1.7; }
+.sub-line-panel-note { font-size: 12px; color: rgba(255,255,255,.62); text-align: center; margin: 0 0 14px; line-height: 1.7; }
+/* 月替わりの選出型プランで、品目一覧の上に出す一行 */
+.sub-plan-pool-note { font-size: 11px; color: rgba(255,255,255,.62); line-height: 1.6; margin: 0 0 4px; }
+/* 右上の丸バッジ(36px・right:14px)に英字ラベルが潜らないよう逃がす */
+.sub-plan-mini .sub-plan-cycle,
+.sub-plan-card .sub-plan-cycle { padding-right: 58px; }
 @media (max-width: 720px) {
   .sub-lines-grid { grid-template-columns: 1fr; gap: 12px; }
   .sub-line-card { flex-direction: row; justify-content: flex-start; text-align: left; padding: 16px; gap: 14px; flex-wrap: wrap; }
@@ -11712,8 +11719,15 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
     function sizeCard(p, i) {
       const tier = TIER[Math.min(i, 2)];
       const savings = p.savings || (p.price - p.half);
+      /* 毎月同じ中身でも、月替わりの選出型でも、見た目は同じ箇条書きに揃える。
+         選出型だけ一行添える。文言はシートの書き方に依らず
+         「候補の数」と「プランの品数」から組み立てる（「毎月」が重複しない）。 */
+      const poolNote = p.isPool
+        ? '<div class="sub-plan-pool-note">'
+          + p.items.length + '種から毎月' + (p.productCount || '') + '品お届け</div>'
+        : '';
       const itemsHtml = p.items.length
-        ? '<ul class="sub-plan-items">' + p.items.map(it =>
+        ? poolNote + '<ul class="sub-plan-items">' + p.items.map(it =>
             '<li>' + esc(it.name + (it.qty ? ' ' + it.qty.replace(/\s*×\s*/, '×') : '')) + '</li>').join('') + '</ul>'
         : (p.itemsNote ? '<ul class="sub-plan-items"><li>' + esc(p.itemsNote) + '</li></ul>' : '');
       const perkHtml = p.vipPerk
@@ -11727,7 +11741,9 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
         + (p.featured ? ' featured' : '') + (tier === 'vip' ? ' sub-plan-mini--vip' : '') + '">'
         + (p.badgeLabel ? '<span class="sub-plan-tag' + (p.featured ? '' : ' sub-plan-tag--vip') + '">' + esc(p.badgeLabel) + '</span>' : '')
         + '<div class="sub-plan-badge sub-plan-badge--' + tier + '">' + ICON[tier] + '</div>'
-        + '<div class="sub-plan-cycle">' + esc(p.cycleLabel) + ' · 毎月お届け</div>'
+        /* 「· 毎月お届け」は上の見出しとカード下部に書いてあるので入れない。
+           入れると狭いカードで2行に折れて右上のバッジに寄る。 */
+        + '<div class="sub-plan-cycle">' + esc(p.cycleLabel) + '</div>'
         + '<div class="sub-plan-name">' + esc(p.name) + '</div>'
         + '<div class="sub-plan-target"><span class="sub-plan-target-size">' + esc(p.target) + '</span>'
         + '<span class="sub-plan-target-spec">' + esc(p.spec) + '</span></div>'
@@ -11763,7 +11779,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
       + '<span class="sub-line-name">' + esc(ln.name) + '</span>'
       + '<span class="sub-line-lead">' + esc(ln.lead) + '</span>'
       + '<span class="sub-line-price">' + yen(ln.minPrice) + '〜<small>/月</small></span>'
-      + '<span class="sub-line-cta">サイズを選ぶ →</span>'
+      + '<span class="sub-line-cta">プランを選ぶ →</span>'
       + '</button>').join('');
 
     let panels = document.getElementById('subLinePanels');

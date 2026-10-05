@@ -55,10 +55,12 @@
 
   /* プランの英字ラベル（カードの上に出す「MINI · 毎月お届け」の左側）。
      ここに無い planId は planId から機械的に作る。 */
+  /* 長いラベル（WAGYU FAMILY 等）はカード右上のバッジに重なるため、
+     サイズだけにする。系統は入口とプラン名（和牛ミニ 等）で分かる。 */
   var CYCLE = {
     starter: 'MINI', regular: 'LIGHT', volume: 'FAMILY',
-    wagyu_mini: 'WAGYU MINI', wagyu_light: 'WAGYU LIGHT', wagyu_family: 'WAGYU FAMILY',
-    chicken_mini: 'CHICKEN MINI', chicken_light: 'CHICKEN LIGHT', chicken_family: 'CHICKEN FAMILY'
+    wagyu_mini: 'MINI', wagyu_light: 'LIGHT', wagyu_family: 'FAMILY',
+    chicken_mini: 'MINI', chicken_light: 'LIGHT', chicken_family: 'FAMILY'
   };
 
   /* 品目名 → 写真と一言。プランではなく「商品」の情報なので、
@@ -143,14 +145,46 @@
     return { weight: weight, count: c ? Number(c[1]) : 0, grams: grams };
   }
 
-  /* "赤身ステーキ 200g, 鶏ミンチ 200g×2" → [{name,qty,packs,grams,kind,img,desc}]
-     items が文章（和牛プランの「下記6種から…」）のときは空配列を返し、
-     代わりに note に原文を入れて呼び出し側で出し分けられるようにする。 */
+  /* items の2つの書き方を、どちらも同じ「品目の配列」に直す。
+     見た目を揃えるため、文章形でも箇条書きにできる形で返す。
+
+     ① 毎月同じ中身: "赤身ステーキ 200g, 鶏ミンチ 200g×2"
+     ② 月替わりの選出: "下記6種から毎月お届け：赤身ステーキ／サーロインステーキ／…（各200g）"
+        → pool=true を立てる。②は「候補」であって実際の内訳ではないので、
+          牛/鶏のg数の計算には使わない（6種×200g=1.2kg だが実際は800g 等になる）。 */
   function parseItems(items) {
     var raw = String(items || '').trim();
-    if (!raw) return { list: [], note: '' };
-    /* 「：」を含むものは一覧ではなく説明文として扱う */
-    if (/[:：]/.test(raw)) return { list: [], note: raw };
+    if (!raw) return { list: [], note: '', pool: false };
+
+    /* ② 選出型: 「：」の後ろを「／」で割る */
+    if (/[:：]/.test(raw)) {
+      var sp = raw.split(/[:：]/);
+      var head = sp.shift().trim();
+      var tail = sp.join('：').trim();
+      if (tail.indexOf('／') >= 0 || tail.indexOf('/') >= 0) {
+        /* 末尾の（各200g）を全品共通の単位として取り出す */
+        var unitAll = '';
+        tail = tail.replace(/[（(]\s*各\s*([\d.]+\s*(?:kg|g))\s*[)）]\s*$/i, function (m, u) {
+          unitAll = u.replace(/\s+/g, ''); return '';
+        }).trim();
+        var names = tail.split(/\s*[／/]\s*/).map(function (x) { return x.trim(); }).filter(Boolean);
+        if (names.length) {
+          return {
+            pool: true,
+            note: head,
+            list: names.map(function (nm) {
+              var meta = ITEM_META[nm] || {};
+              return {
+                name: nm, qty: unitAll, packs: 1, grams: 0,
+                kind: /^鶏/.test(nm) ? 'chicken' : 'beef',
+                img: meta.img || '', desc: meta.desc || ''
+              };
+            })
+          };
+        }
+      }
+      return { list: [], note: raw, pool: false };
+    }
 
     var list = raw.split(/\s*,\s*/).filter(Boolean).map(function (chunk) {
       var m = chunk.match(/^(.+?)\s*([\d.]+\s*(?:kg|g))\s*(?:[×x*]\s*(\d+))?\s*$/i);
@@ -169,7 +203,7 @@
         desc: meta.desc || ''
       };
     });
-    return { list: list, note: '' };
+    return { list: list, note: '', pool: false };
   }
 
   /* シート1行 → 画面が使いやすい形 */
@@ -181,13 +215,17 @@
     var individual = num(row.individualPrice);
 
     var beef = 0, chicken = 0;
-    parsed.list.forEach(function (it) {
-      if (it.kind === 'chicken') chicken += it.grams; else beef += it.grams;
-    });
-    /* 一覧が取れないプラン（和牛のみ・鶏のみ）は名前から振り分ける */
-    if (!parsed.list.length) {
+    if (!parsed.pool) {
+      parsed.list.forEach(function (it) {
+        if (it.kind === 'chicken') chicken += it.grams; else beef += it.grams;
+      });
+    }
+    /* 選出型、または一覧が取れないときはプラン名から振り分ける
+       （候補の合計は実際の内訳ではないので使わない） */
+    if (parsed.pool || !parsed.list.length) {
       if (/^和牛/.test(row.name)) beef = spec.grams;
       else if (/^鶏/.test(row.name)) chicken = spec.grams;
+      else beef = spec.grams;
     }
 
     /* 単品で買うより何%お得か。individualPrice が未入力なら出さない（0を返す） */
@@ -238,6 +276,7 @@
       yearlySavings: yearly,
       items: parsed.list,
       itemsNote: parsed.note,
+      isPool: !!parsed.pool,   /* true=「この中から毎月選ぶ」候補。実際の内訳ではない */
       featured: isTrue(row.featured),
       badgeLabel: String(row.badgeLabel || '').trim(),
       vipPerk: String(row.vipPerk || '').trim(),
