@@ -12643,52 +12643,27 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const isBig = (fam === 'fam_5plus' || (fam === 'fam_34_big' && freq === 'freq_high') || budget === 'budget_high');
 
  /* ★ プラン定義は subscription.html と完全同期 */
- const PLAN_DATA = {
- starter: {
- name: 'ミニ', key: 'starter', price: 9280, weight: '1.2kg', items: 6,
- cycle: 'MINI · 毎月お届け',
- desc: '1人暮らし・お試し向け',
- contents: [
- '赤身ステーキ 200g',
- '赤身スライス 200g',
- '切り落とし 200g',
- '鶏モモ 200g',
- '鶏ムネ 200g',
- '鶏ミンチ 200g'
- ]
- },
- regular: {
- name: 'ライト', key: 'regular', price: 12300, weight: '1.6kg', items: 8,
- cycle: 'LIGHT · 毎月お届け',
- desc: '1-2名・週末に和牛も楽しみたい',
- featured: true,
- contents: [
- '赤身ステーキ 200g',
- 'サイコロステーキ 200g',
- '赤身スライス 200g',
- '切り落とし 200g',
- '鶏モモ 200g',
- '鶏ムネ 200g',
- '鶏ミンチ 200g × 2'
- ]
- },
- volume: {
- name: 'ファミリー', key: 'volume', price: 21800, weight: '2.8kg', items: 14,
- cycle: 'FAMILY · 毎月お届け',
- desc: '3-4名の家族・ヘビーユーザー向け',
- vip: true,
- contents: [
- '赤身ステーキ 200g × 2',
- '赤身スライス 200g × 2',
- '切り落とし 200g × 2',
- '霜降スライス 200g',
- 'サイコロステーキ 200g',
- '鶏モモ 200g × 2',
- '鶏ムネ 200g × 2',
- '鶏ミンチ 200g × 2'
- ]
+ /* 🔴 ここに金額を書かない。正本は subscription_plans シート。
+    診断の結果表示に使う形へ EdaPlans から組み立てる。
+    読み込み前に診断されても動くよう、まず保険の内容で作り、届いたら差し替える。 */
+ function __planDataFrom(rows) {
+  const m = {};
+  rows.forEach(r => {
+   m[r.planId] = {
+    name: r.name, key: r.planId, price: r.price, weight: r.weight,
+    items: r.productCount, cycle: r.cycleLabel + ' · 毎月お届け',
+    desc: r.target, featured: r.featured, vip: !!r.vipPerk,
+    contents: r.items.length
+     ? r.items.map(it => it.name + (it.qty ? ' ' + it.qty.replace(/\s*×\s*/, ' × ') : ''))
+     : (r.itemsNote ? [r.itemsNote] : [])
+   };
+  });
+  return m;
  }
- };
+ let PLAN_DATA = window.EdaPlans ? __planDataFrom(EdaPlans.fromRows(EdaPlans.FALLBACK)) : {};
+ if (window.EdaPlans) {
+  EdaPlans.load().then(rows => { PLAN_DATA = __planDataFrom(rows); }).catch(() => {});
+ }
  const SHARED_SPECS = [
  { k: '商品', v: '和牛 + 鶏肉' },
  { k: '産地', v: '肉 (宮崎) / 鶏 (大分)' },

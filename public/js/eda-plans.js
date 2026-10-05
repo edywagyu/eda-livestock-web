@@ -82,15 +82,16 @@
 
   /* 系統（お客さんが最初に選ぶ3つの入口）。
      判定は planId の頭だけ。シートに列を足さなくても増やせる。
-     写真は使わない（絵文字＋一言）＝画像の用意が不要。 */
+     写真は使わない（絵文字＋一言）＝画像の用意が不要。
+     絵文字は肉(🥩🍗)ではなく動物(🐃🐓)。生産者が育てているものを出す。 */
   var LINES = [
-    { key: 'mix',     emoji: '🥩🍗', name: '和牛＋鶏', lead: '迷ったらこちら',
+    { key: 'mix',     emoji: '🐃🐓', name: '和牛＋鶏', lead: 'バランスよく楽しみたい方',
       note: '和牛と鶏、どちらも毎月。いちばん人気の組み合わせです。',
       test: function (id) { return !/^wagyu_|^chicken_/.test(id); } },
-    { key: 'wagyu',   emoji: '🥩',   name: '和牛だけ', lead: '和牛だけ頼みたい方はこちら',
+    { key: 'wagyu',   emoji: '🐃',   name: '和牛だけ', lead: '和牛のみ楽しみたい方',
       note: '月ごとに用途（ステーキ／焼肉／すき焼き／しゃぶしゃぶ）が変わります。',
       test: function (id) { return /^wagyu_/.test(id); } },
-    { key: 'chicken', emoji: '🍗',   name: '鶏だけ',   lead: '鶏だけ頼みたい方はこちら',
+    { key: 'chicken', emoji: '🐓',   name: '鶏だけ',   lead: '鶏肉のみ楽しみたい方',
       note: '大分県・無投薬の平飼い鶏。モモとムネを半分ずつお届けします。',
       test: function (id) { return /^chicken_/.test(id); } }
   ];

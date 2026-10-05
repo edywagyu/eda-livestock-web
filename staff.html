@@ -1176,6 +1176,18 @@ ul { list-style: none; padding: 0; margin: 0; }
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="public/css/eda-core.css?v=20260928a">
+<!-- 定期便プラン名の正本を読む部品（管理画面に直書きしないため） -->
+<script src="public/js/eda-plans.js?v=001"></script>
+<script>
+(function () {
+  if (!window.EdaPlans) return;
+  EdaPlans.load().then(function (rows) {
+    var m = {};
+    rows.forEach(function (r) { m[r.planId] = r.name; });
+    window.__EDA_PLAN_LABEL__ = m;
+  }).catch(function () {});
+})();
+</script>
 </head>
 <body>
 
@@ -5147,7 +5159,8 @@ function renderSubAddons() {
     list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px 20px;font-size:13px">追加購入はまだありません</div>';
     return;
   }
-  const PLAN_LABEL = { starter:'ミニ', regular:'ライト', volume:'ファミリー' };
+  /* プラン名は subscription_plans シートが正本。取れなければ従来の3つで表示する。 */
+  const PLAN_LABEL = (window.__EDA_PLAN_LABEL__ || { starter:'ミニ', regular:'ライト', volume:'ファミリー' });
   list.innerHTML = subAddonsCache.map(r => {
     const d = r.ts ? new Date(r.ts) : null;
     const ds = d && !isNaN(d) ? (d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate()) : '';

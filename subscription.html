@@ -4076,6 +4076,10 @@ renderAddons();
 /* ============ 初期化 ============
    プランの名前・価格・中身は本番シート(subscription_plans)が正本。
    読み終わってからカードを作り、初期選択する。 */
+if (!window.EdaPlans) {
+ /* 部品が落ちたときに以降の処理まで止めない（ReferenceError を出さない） */
+ try { console.error('[subscription] eda-plans.js が読み込めていません'); } catch (e) {}
+} else
 EdaPlans.load().then(rows => {
  PLANS = EdaPlans.asMap(rows);
  renderPlanCards(rows);
