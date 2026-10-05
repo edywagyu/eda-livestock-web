@@ -9613,6 +9613,46 @@ body.is-member .product-card--organic .org-chk-lock {
   else boot();
 })();
 </script>
+<style>
+/* ===== 定期便の入口（和牛＋鶏／和牛だけ／鶏だけ）=====
+   写真は使わず絵文字＋一言。公開中の系統が2つ以上あるときだけ出る。
+   生成は public/js/eda-plans.js + __renderPlans()。 */
+.sub-lines-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+/* 文字色は2色だけ。主役＝白、補足＝白の62%（セクション本文と同じ濃さ）。
+   opacity は使わず色で指定する（親の透過に引きずられないため）。 */
+.sub-line-card {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 26px 18px 20px; border: 1px solid rgba(212,169,59,.35); border-radius: 14px;
+  background: rgba(255,255,255,.04); color: #fff; cursor: pointer;
+  font: inherit; text-align: center; transition: border-color .18s, background .18s, transform .18s;
+}
+.sub-line-card:hover { border-color: rgba(212,169,59,.8); background: rgba(255,255,255,.07); transform: translateY(-2px); }
+.sub-line-card.featured { border-color: rgba(212,169,59,.8); }
+.sub-line-card.selected { border-color: #D4A93B; background: rgba(212,169,59,.12); }
+.sub-line-emoji { font-size: 40px; line-height: 1.1; letter-spacing: -2px; }
+.sub-line-name  { font-size: 20px; font-weight: 700; color: #fff; }
+.sub-line-lead  { font-size: 12px; line-height: 1.6; color: rgba(255,255,255,.62); }
+.sub-line-price { font-size: 17px; font-weight: 700; color: #fff; margin-top: 2px; }
+.sub-line-price small { font-size: 11px; font-weight: 400; color: rgba(255,255,255,.62); }
+.sub-line-cta   { font-size: 12px; color: rgba(255,255,255,.62); margin-top: 4px; }
+.sub-line-card[aria-expanded="true"] .sub-line-cta::after { content: ' ▾'; }
+
+#subLinePanels { margin-top: 18px; }
+.sub-line-panel-note { font-size: 12px; color: rgba(255,255,255,.62); text-align: center; margin: 0 0 14px; line-height: 1.7; }
+/* 月替わりの選出型プランで、品目一覧の上に出す一行 */
+.sub-plan-pool-note { font-size: 11px; color: rgba(255,255,255,.62); line-height: 1.6; margin: 0 0 4px; }
+/* 右上の丸バッジ(36px・right:14px)に英字ラベルが潜らないよう逃がす */
+.sub-plan-mini .sub-plan-cycle,
+.sub-plan-card .sub-plan-cycle { padding-right: 58px; }
+@media (max-width: 720px) {
+  .sub-lines-grid { grid-template-columns: 1fr; gap: 12px; }
+  .sub-line-card { flex-direction: row; justify-content: flex-start; text-align: left; padding: 16px; gap: 14px; flex-wrap: wrap; }
+  .sub-line-emoji { font-size: 30px; }
+  .sub-line-lead { flex: 1 1 100%; }
+}
+</style>
+<!-- 定期便プランの正本(subscription_plans シート)を読む部品 -->
+<script src="public/js/eda-plans.js?v=001"></script>
 </head>
 <body>
 <a href="#main" class="skip-link" data-en="Skip to main content">本文へスキップ</a>
@@ -13105,57 +13145,116 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
   window.__renderPlans = function(plans) {
     const grid = document.querySelector('.sub-plans-grid');
     if (!grid || !Array.isArray(plans) || plans.length === 0) return;
-    grid.innerHTML = plans.map(p => {
-      const planId = esc(p.planId);
-      const name = esc(p.name);
-      const target = esc(p.target);
-      const spec = esc(p.spec);
-      const oldPrice = Number(p.oldPrice || 0);
-      const firstPrice = Number(p.firstMonthPrice || 0);
-      const savings = Number(p.savings || (oldPrice - firstPrice));
-      const items = String(p.items || '').split(/[,、]\s*/).filter(Boolean);
-      const featured = (p.featured === true || p.featured === 'TRUE' || p.featured === 'true');
-      const badgeLabel = esc(p.badgeLabel || '');
-      const vipPerk = esc(p.vipPerk || '');
-      const featuredClass = featured ? ' featured' : '';
-      const featuredTag = featured && badgeLabel ? '<span class="sub-plan-tag">' + badgeLabel + '</span>' : '';
-      const vipTag = !featured && badgeLabel ? '<span class="sub-plan-tag sub-plan-tag--vip">' + badgeLabel + '</span>' : '';
-      /* シートの planId は starter / regular / volume（subscription.html の PLANS キーと同じ）。
-         旧 mini / pro / vip も当面受ける。ラベルは MINI / LIGHT / FAMILY で静的HTMLと揃える。 */
-      const PLAN_TIER = { starter:'mini', mini:'mini', regular:'pro', pro:'pro', volume:'vip', vip:'vip' };
-      const CYCLE_LABEL = { mini:'MINI', pro:'LIGHT', vip:'FAMILY' };
-      const tier = PLAN_TIER[planId] || '';
-      /* planId が未設定なら、誤ったラベル(FAMILY等)を出さずに「毎月お届け」だけにする */
-      const cycleLabel = CYCLE_LABEL[tier] || '';
-      const planBadgeIcon = tier === 'mini' ? '🌱' : (tier === 'pro' ? '🏆' : '👑');
-      const planBadgeCls = 'sub-plan-badge--' + (tier || 'vip');
-      const vipClass = tier === 'vip' ? ' sub-plan-mini--vip' : '';
-      const itemsHtml = items.length ? '<ul class="sub-plan-items">' + items.map(it => '<li>' + esc(it) + '</li>').join('') + '</ul>' : '';
-      const vipPerkHtml = vipPerk ? ''
-        + '<div class="sub-plan-vip-perk">'
-        + '  <span class="sub-plan-vip-perk-icon">🌿</span>'
-        + '  <div class="sub-plan-vip-perk-text">'
-        + '    <strong>' + esc(vipPerk.split(/\s*\(/)[0]) + '</strong>'
-        + (vipPerk.includes('(') ? '    <small>' + esc(vipPerk.replace(/^[^(]+\(/, '').replace(/\)\s*$/, '')) + '</small>' : '')
-        + '  </div>'
-        + '</div>' : '';
+    /* 部品が読めていなければ静的HTMLのまま（画面を壊さない） */
+    if (!window.EdaPlans) return;
+
+    const rows  = EdaPlans.fromRows(plans);
+    const lines = EdaPlans.groupByLine(rows);
+    const yen   = n => '¥' + Number(n || 0).toLocaleString('ja-JP');
+    const TIER  = ['mini', 'pro', 'vip'];
+    const ICON  = { mini: '🌱', pro: '🏆', vip: '👑' };
+
+    /* サイズ1枚ぶんのカード。バッジは planId ではなく「安い順の位置」で決める
+       ＝プランが増えても対応表を直さなくて済む。 */
+    function sizeCard(p, i) {
+      const tier = TIER[Math.min(i, 2)];
+      const savings = p.savings || (p.price - p.half);
+      /* 毎月同じ中身でも、月替わりの選出型でも、見た目は同じ箇条書きに揃える。
+         選出型だけ一行添える。文言はシートの書き方に依らず
+         「候補の数」と「プランの品数」から組み立てる（「毎月」が重複しない）。 */
+      const poolNote = p.isPool
+        ? '<div class="sub-plan-pool-note">'
+          + p.items.length + '種から毎月' + (p.productCount || '') + '品お届け</div>'
+        : '';
+      const itemsHtml = p.items.length
+        ? poolNote + '<ul class="sub-plan-items">' + p.items.map(it =>
+            '<li>' + esc(it.name + (it.qty ? ' ' + it.qty.replace(/\s*×\s*/, '×') : '')) + '</li>').join('') + '</ul>'
+        : (p.itemsNote ? '<ul class="sub-plan-items"><li>' + esc(p.itemsNote) + '</li></ul>' : '');
+      const perkHtml = p.vipPerk
+        ? '<div class="sub-plan-vip-perk"><span class="sub-plan-vip-perk-icon">🌿</span>'
+          + '<div class="sub-plan-vip-perk-text"><strong>' + esc(p.vipPerk.split(/\s*\(/)[0]) + '</strong>'
+          + (p.vipPerk.indexOf('(') >= 0 ? '<small>' + esc(p.vipPerk.replace(/^[^(]+\(/, '').replace(/\)\s*$/, '')) + '</small>' : '')
+          + '</div></div>'
+        : '';
       return ''
-        + '<a href="subscription.html' + (planId ? '?plan=' + escAttr(planId) : '') + '" class="sub-plan-mini' + featuredClass + vipClass + '">'
-        + (featuredTag || vipTag)
-        + '<div class="sub-plan-badge ' + planBadgeCls + '">' + planBadgeIcon + '</div>'
-        + '<div class="sub-plan-cycle">' + (cycleLabel ? cycleLabel + ' · ' : '') + '毎月お届け</div>'
-        + '<div class="sub-plan-name">' + name + '</div>'
-        + '<div class="sub-plan-target"><span class="sub-plan-target-size">' + target + '</span><span class="sub-plan-target-spec">' + spec + '</span></div>'
-        + itemsHtml
-        + vipPerkHtml
+        + '<a href="subscription.html?plan=' + escAttr(p.planId) + '" class="sub-plan-mini'
+        + (p.featured ? ' featured' : '') + (tier === 'vip' ? ' sub-plan-mini--vip' : '') + '">'
+        + (p.badgeLabel ? '<span class="sub-plan-tag' + (p.featured ? '' : ' sub-plan-tag--vip') + '">' + esc(p.badgeLabel) + '</span>' : '')
+        + '<div class="sub-plan-badge sub-plan-badge--' + tier + '">' + ICON[tier] + '</div>'
+        /* 「· 毎月お届け」は上の見出しとカード下部に書いてあるので入れない。
+           入れると狭いカードで2行に折れて右上のバッジに寄る。 */
+        + '<div class="sub-plan-cycle">' + esc(p.cycleLabel) + '</div>'
+        + '<div class="sub-plan-name">' + esc(p.name) + '</div>'
+        + '<div class="sub-plan-target"><span class="sub-plan-target-size">' + esc(p.target) + '</span>'
+        + '<span class="sub-plan-target-spec">' + esc(p.spec) + '</span></div>'
+        + itemsHtml + perkHtml
         + '<div class="sub-plan-pricing">'
-        + '  <div class="sub-plan-old-price">¥' + oldPrice.toLocaleString() + '</div>'
-        + '  <div class="sub-plan-price">¥' + firstPrice.toLocaleString() + '<small>/初月</small></div>'
-        + (savings ? '  <div class="sub-plan-savings">−¥' + savings.toLocaleString() + ' OFF</div>' : '')
+        + '  <div class="sub-plan-old-price">' + yen(p.price) + '</div>'
+        + (p.half
+            ? '  <div class="sub-plan-price">' + yen(p.half) + '<small>/初月</small></div>'
+            : '  <div class="sub-plan-price">' + yen(p.price) + '<small>/月</small></div>')
+        + (savings ? '  <div class="sub-plan-savings">−' + yen(savings) + ' OFF</div>' : '')
         + '</div>'
         + '<div class="sub-plan-cta-link">🛒 購入する →</div>'
         + '</a>';
-    }).join('');
+    }
+
+    /* 公開中の系統が1つだけ（= いまはミックスのみ）なら入口を挟まず
+       サイズを直接出す。従来とまったく同じ見え方。
+       和牛・鶏を published=TRUE にした瞬間に入口が現れる。 */
+    if (lines.length <= 1) {
+      grid.classList.remove('sub-lines-grid');
+      grid.innerHTML = (lines[0] ? lines[0].plans : rows).map(sizeCard).join('');
+      const old = document.getElementById('subLinePanels');
+      if (old) old.remove();
+      return;
+    }
+
+    /* 入口（絵文字＋一言）。写真は使わない */
+    grid.classList.add('sub-lines-grid');
+    grid.innerHTML = lines.map(ln => ''
+      + '<button type="button" class="sub-line-card' + (ln.featured ? ' featured' : '') + '"'
+      + ' data-line="' + escAttr(ln.key) + '" aria-expanded="false">'
+      + '<span class="sub-line-emoji">' + ln.emoji + '</span>'
+      + '<span class="sub-line-name">' + esc(ln.name) + '</span>'
+      + '<span class="sub-line-lead">' + esc(ln.lead) + '</span>'
+      + '<span class="sub-line-price">' + yen(ln.minPrice) + '〜<small>/月</small></span>'
+      + '<span class="sub-line-cta">プランを選ぶ →</span>'
+      + '</button>').join('');
+
+    let panels = document.getElementById('subLinePanels');
+    if (!panels) {
+      panels = document.createElement('div');
+      panels.id = 'subLinePanels';
+      grid.parentNode.insertBefore(panels, grid.nextSibling);
+    }
+    panels.innerHTML = lines.map(ln => ''
+      + '<div class="sub-line-panel" data-line="' + escAttr(ln.key) + '" hidden>'
+      + '<p class="sub-line-panel-note">' + esc(ln.note) + '</p>'
+      + '<div class="sub-plans-grid">' + ln.plans.map(sizeCard).join('') + '</div>'
+      + '</div>').join('');
+
+    /* 入口の開閉。再描画で二重に付かないよう1回だけ束ねる */
+    if (!grid.dataset.lineBound) {
+      grid.dataset.lineBound = '1';
+      grid.addEventListener('click', function (e) {
+        const btn = e.target.closest('.sub-line-card');
+        if (!btn) return;
+        const pane = document.getElementById('subLinePanels');
+        if (!pane) return;
+        const key = btn.dataset.line;
+        const open = btn.getAttribute('aria-expanded') !== 'true';
+        grid.querySelectorAll('.sub-line-card').forEach(b => {
+          const on = open && b === btn;
+          b.setAttribute('aria-expanded', on ? 'true' : 'false');
+          b.classList.toggle('selected', on);
+        });
+        pane.querySelectorAll('.sub-line-panel').forEach(pn => {
+          pn.hidden = !(open && pn.dataset.line === key);
+        });
+        if (open) pane.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
   };
 })();
 </script>
@@ -14093,52 +14192,27 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const isBig = (fam === 'fam_5plus' || (fam === 'fam_34_big' && freq === 'freq_high') || budget === 'budget_high');
 
  /* ★ プラン定義は subscription.html と完全同期 */
- const PLAN_DATA = {
- starter: {
- name: 'ミニ', key: 'starter', price: 9280, weight: '1.2kg', items: 6,
- cycle: 'MINI · 毎月お届け',
- desc: '1人暮らし・お試し向け',
- contents: [
- '赤身ステーキ 200g',
- '赤身スライス 200g',
- '切り落とし 200g',
- '鶏モモ 200g',
- '鶏ムネ 200g',
- '鶏ミンチ 200g'
- ]
- },
- regular: {
- name: 'ライト', key: 'regular', price: 12300, weight: '1.6kg', items: 8,
- cycle: 'LIGHT · 毎月お届け',
- desc: '1-2名・週末に和牛も楽しみたい',
- featured: true,
- contents: [
- '赤身ステーキ 200g',
- 'サイコロステーキ 200g',
- '赤身スライス 200g',
- '切り落とし 200g',
- '鶏モモ 200g',
- '鶏ムネ 200g',
- '鶏ミンチ 200g × 2'
- ]
- },
- volume: {
- name: 'ファミリー', key: 'volume', price: 21800, weight: '2.8kg', items: 14,
- cycle: 'FAMILY · 毎月お届け',
- desc: '3-4名の家族・ヘビーユーザー向け',
- vip: true,
- contents: [
- '赤身ステーキ 200g × 2',
- '赤身スライス 200g × 2',
- '切り落とし 200g × 2',
- '霜降スライス 200g',
- 'サイコロステーキ 200g',
- '鶏モモ 200g × 2',
- '鶏ムネ 200g × 2',
- '鶏ミンチ 200g × 2'
- ]
+ /* 🔴 ここに金額を書かない。正本は subscription_plans シート。
+    診断の結果表示に使う形へ EdaPlans から組み立てる。
+    読み込み前に診断されても動くよう、まず保険の内容で作り、届いたら差し替える。 */
+ function __planDataFrom(rows) {
+  const m = {};
+  rows.forEach(r => {
+   m[r.planId] = {
+    name: r.name, key: r.planId, price: r.price, weight: r.weight,
+    items: r.productCount, cycle: r.cycleLabel + ' · 毎月お届け',
+    desc: r.target, featured: r.featured, vip: !!r.vipPerk,
+    contents: r.items.length
+     ? r.items.map(it => it.name + (it.qty ? ' ' + it.qty.replace(/\s*×\s*/, ' × ') : ''))
+     : (r.itemsNote ? [r.itemsNote] : [])
+   };
+  });
+  return m;
  }
- };
+ let PLAN_DATA = window.EdaPlans ? __planDataFrom(EdaPlans.fromRows(EdaPlans.FALLBACK)) : {};
+ if (window.EdaPlans) {
+  EdaPlans.load().then(rows => { PLAN_DATA = __planDataFrom(rows); }).catch(() => {});
+ }
  const SHARED_SPECS = [
  { k: '商品', v: '和牛 + 鶏肉' },
  { k: '産地', v: '肉 (宮崎) / 鶏 (大分)' },
