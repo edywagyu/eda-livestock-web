@@ -144,7 +144,7 @@ var STAFF_PROTECTED = {
   orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
   staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
-  staff_ship: 1, staff_confirm_payment: 1, staff_invoice_link_log: 1, staff_invoice_links: 1,
+  staff_ship: 1, staff_confirm_payment: 1, staff_invoice_link_log: 1, staff_invoice_links: 1, staff_invoice_link_delete: 1,
   line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1,
@@ -406,6 +406,7 @@ function doPost(e) {
       case 'staff_ship':                   return staffShip(body);
       case 'staff_confirm_payment':        return staffConfirmPayment(body);
       case 'staff_invoice_link_log':       return staffInvoiceLinkLog(body);   /* お支払いリンクの控えを1行残す */
+      case 'staff_invoice_link_delete':    return staffInvoiceLinkDelete(body);   /* 控えを1行消す */
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
       case 'log_event':                    return logEvent(body);
@@ -7676,13 +7677,15 @@ function staffInvoiceLinks() {
   if (last < 2) return jsonResponse({ ok: true, links: [] });
 
   var rows = t.sh.getRange(2, 1, Math.min(last - 1, 300), t.hdr.length).getValues();
+  /* 削除のときに「画面で見ていた行」と「いま表にある行」が同じか照合するため、行番号も返す */
   var ymd = function (v) {
     return (v instanceof Date) ? Utilities.formatDate(v, 'JST', 'yyyy/MM/dd HH:mm') : String(v || '');
   };
-  var links = rows.map(function (r) {
+  var links = rows.map(function (r, i) {
     var o = {};
-    t.hdr.forEach(function (h, i) { o[h] = r[i]; });
+    t.hdr.forEach(function (h, k) { o[h] = r[k]; });
     return {
+      row: i + 2,
       at: ymd(o['日時']),
       no: String(o['請求番号'] || ''),
       to: String(o['お客様名'] || ''),
@@ -7700,6 +7703,52 @@ function staffInvoiceLinks() {
   }).filter(function (x) { return x.label || x.no; });
 
   return jsonResponse({ ok: true, links: links });
+}
+
+/* ------------------------------------------------------------
+   控えを1行消す（管理画面の「請求 → 一覧」のゴミ箱）
+   ------------------------------------------------------------
+   🔴 消してよいのは「請求リンク」タブだけ。注文(orders)には一切さわらない。
+   🔴 画面を開いてから誰かが新しい控えを足すと行がずれる。行番号だけで消すと
+      別の行を消してしまうので、画面で見えていた中身（控えID・品目・合計）が
+      その行と一致するときだけ消す。一致しなければ何もせず「開き直して」と返す。
+   🔴 消した中身は _logs に残す（間違って消しても内容は追える）。
+   ------------------------------------------------------------ */
+function staffInvoiceLinkDelete(body) {
+  var b = body || {};
+  var row = Math.floor(Number(b.row) || 0);
+  if (row < 2) return jsonResponse({ ok: false, error: '消す行が分かりません' });
+  if (!ss().getSheetByName(INVOICE_LINK_TAB)) return jsonResponse({ ok: false, error: '控えの表がありません' });
+
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (e) {}
+  try {
+    var t = invoiceLinkSheet_();
+    if (row > t.sh.getLastRow()) {
+      return jsonResponse({ ok: false, error: 'その行はもうありません。一覧を開き直してください。' });
+    }
+    var vals = t.sh.getRange(row, 1, 1, t.hdr.length).getValues()[0];
+    var cur = {};
+    t.hdr.forEach(function (h, i) { cur[h] = vals[i]; });
+
+    /* 画面で見ていたものと同じ行かを照合する */
+    var sameRid   = String(cur['控えID'] || '').trim() === String(b.rid || '').trim();
+    var sameLabel = String(cur['品目'] || '').trim()   === String(b.label || '').trim();
+    var sameTotal = (Number(cur['請求合計']) || 0)     === (Number(b.total) || 0);
+    if (!(sameRid && sameLabel && sameTotal)) {
+      return jsonResponse({ ok: false, error: '一覧が古くなっています。更新してからもう一度お試しください。' });
+    }
+
+    log('staff_invoice_link_delete', {
+      row: row, rid: cur['控えID'], no: cur['請求番号'], to: cur['お客様名'],
+      label: cur['品目'], total: cur['請求合計'], status: cur['状況'], order: cur['注文番号'],
+      url: String(cur['リンク'] || '').slice(0, 500)
+    });
+    t.sh.deleteRow(row);
+    return jsonResponse({ ok: true });
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 /* 注文の行から控えIDと請求番号を取り出す（列が無い古い行でも落ちない） */
