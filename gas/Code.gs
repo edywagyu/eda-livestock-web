@@ -144,7 +144,7 @@ var STAFF_PROTECTED = {
   orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
   staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
-  staff_ship: 1, staff_confirm_payment: 1, staff_invoice_link_log: 1,
+  staff_ship: 1, staff_confirm_payment: 1, staff_invoice_link_log: 1, staff_invoice_links: 1,
   line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1,
@@ -313,6 +313,7 @@ function doGet(e) {
       case 'staff_subscription_addons': return staffSubscriptionAddons();  /* 定期便の「今月だけ追加」一覧 */
       case 'staff_backfill_addons':     return jsonResponse(backfillSubscriptionAddons());  /* 既存行の追記＋色付け(冪等) */
       case 'staff_orders':      return staffOrders();
+      case 'staff_invoice_links': return staffInvoiceLinks();   /* 発行したお支払いリンクの控え一覧 */
       case 'staff_analytics':   return staffAnalytics(e.parameter);
       case 'b2_csv':            return b2CsvExport(e.parameter);
       /* ===== 経営ダッシュボード追加アクション (Code_v2_Additions.gs に実装) ===== */
@@ -7655,6 +7656,43 @@ function markInvoiceLink_(rid, no, status, orderNum) {
   } catch (e) {
     log('mark_invoice_link_error', { rid: rid, no: no, status: status, error: e.message });
   }
+}
+
+/* ------------------------------------------------------------
+   控えの一覧を管理画面へ返す（新しいものが先頭）。
+   表に書いてある文字をそのまま返すだけ＝画面側で解釈し直さない。
+   ------------------------------------------------------------ */
+function staffInvoiceLinks() {
+  if (!ss().getSheetByName(INVOICE_LINK_TAB)) return jsonResponse({ ok: true, links: [] });
+  var t = invoiceLinkSheet_();
+  var last = t.sh.getLastRow();
+  if (last < 2) return jsonResponse({ ok: true, links: [] });
+
+  var rows = t.sh.getRange(2, 1, Math.min(last - 1, 300), t.hdr.length).getValues();
+  var ymd = function (v) {
+    return (v instanceof Date) ? Utilities.formatDate(v, 'JST', 'yyyy/MM/dd HH:mm') : String(v || '');
+  };
+  var links = rows.map(function (r) {
+    var o = {};
+    t.hdr.forEach(function (h, i) { o[h] = r[i]; });
+    return {
+      at: ymd(o['日時']),
+      no: String(o['請求番号'] || ''),
+      to: String(o['お客様名'] || ''),
+      label: String(o['品目'] || ''),
+      total: Number(o['請求合計']) || 0,
+      tax: String(o['税の扱い'] || ''),
+      ship: Number(o['送料']) || 0,
+      note: String(o['ひとこと'] || ''),
+      url: String(o['リンク'] || ''),
+      status: String(o['状況'] || ''),
+      order: String(o['注文番号'] || ''),
+      updated: ymd(o['更新日時']),
+      rid: String(o['控えID'] || '')
+    };
+  }).filter(function (x) { return x.label || x.no; });
+
+  return jsonResponse({ ok: true, links: links });
 }
 
 /* 注文の行から控えIDと請求番号を取り出す（列が無い古い行でも落ちない） */
