@@ -3313,9 +3313,34 @@ function renderInvoiceLinks() {
           ? '<button onclick="openInvoiceReceipt(' + i + ')" style="flex:1;padding:9px;border:0;border-radius:8px;color:#0A2D21;font-size:12px;font-weight:700;background:linear-gradient(135deg,#D4A93B,#E5B547)">領収書</button>'
           : '<button onclick="copyInvoiceLink(' + i + ')" style="flex:1;padding:9px;border:1.5px solid #0F3D2E;border-radius:8px;color:#0F3D2E;font-size:12px;font-weight:700;background:#fff">リンクをコピー</button>') +
         '<a href="' + escapeHtml(v.url || '#') + '" target="_blank" rel="noopener" style="flex:1;padding:9px;border:1.5px solid #E2DACA;border-radius:8px;color:#5C5C5C;font-size:12px;font-weight:700;background:#fff;text-align:center;text-decoration:none">お客様の画面</a>' +
+        '<button onclick="deleteInvoiceLink(' + i + ')" title="この控えを消す" style="width:40px;padding:9px;border:1.5px solid #E2DACA;border-radius:8px;color:#B03A3A;font-size:14px;background:#fff">🗑</button>' +
       '</div>' +
     '</div>';
   }).join('');
+}
+
+/* 控えを1行消す。
+   消えるのは「請求リンク」タブのその行だけで、注文・入金・発送には何も起きない。
+   消した中身はサーバー側のログに残るので、間違って消しても内容は追える。 */
+async function deleteInvoiceLink(i) {
+  const v = invoiceLinksCache[i];
+  if (!v) return;
+  const name = (v.to || '（お客様名なし）') + '／' + (v.label || '') + '／¥' + Number(v.total || 0).toLocaleString();
+  if (!confirm('この控えを消します。\n\n' + name + '\n\nお客様に渡したリンクは消えません（払える状態のままです）。\n注文や入金の記録にも影響しません。')) return;
+  try {
+    const res = await fetch(GAS_URL + '?action=staff_invoice_link_delete' + authQS(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ row: v.row, rid: v.rid || '', label: v.label || '', total: Number(v.total) || 0 })
+    });
+    const d = await res.json();
+    if (handleAuthError(d)) return;
+    if (!d || d.ok === false) { toast((d && d.error) || '消せませんでした', 'error'); return; }
+    toast('消しました', 'success');
+    loadInvoiceLinks();                 /* 行番号がずれるので取り直す */
+  } catch (e) {
+    toast('消せませんでした: ' + e.message, 'error');
+  }
 }
 
 /* 控えの1行から領収書を開く（再発行）。中身は sessionStorage で receipt.html へ渡す */
