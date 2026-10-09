@@ -111,9 +111,18 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
      <div class="field"><label>税の扱い</label>
       <div class="opts">
        <label class="opt selected"><input type="radio" name="tax" value="in" checked>税込</label>
-       <label class="opt"><input type="radio" name="tax" value="out">税別（+10%）</label>
+       <label class="opt"><input type="radio" name="tax" value="out">税別（上に足す）</label>
       </div>
-      <small>「税込」＝上の金額がそのまま請求額。「税別」＝上の金額に消費税10%を足して請求します。</small></div>
+      <small>「税込」＝上の金額がそのまま請求額。「税別」＝上の金額に消費税を足して請求します。</small></div>
+    </div>
+    <div class="row one">
+     <div class="field"><label>消費税の率</label>
+      <div class="opts">
+       <label class="opt selected"><input type="radio" name="rate" value="8" checked>8%（お肉・食品）</label>
+       <label class="opt"><input type="radio" name="rate" value="10">10%（それ以外）</label>
+      </div>
+      <small>お肉などの食品は軽減税率8%です。加工賃・雑貨など食品でないものは10%。<br>
+      送料を別でもらう場合、送料は「配送料」なので<b>いつでも10%</b>として領収書の内訳に出ます。</small></div>
     </div>
    </div>
 
@@ -125,7 +134,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
      <label class="opt"><input type="radio" name="ship" value="add">送料を別でもらう</label>
     </div>
     <div class="row one" id="shipAmountWrap" style="display:none">
-     <div class="field"><label>送料（円）</label>
+     <div class="field"><label>送料（円・税込）</label>
       <input type="number" id="iShip" inputmode="numeric" min="0" step="1" value="1100">
       <div class="quick">
        <button type="button" data-ship="1100">1,100（通常）</button>
@@ -179,7 +188,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
 <div class="toast" id="toast">コピーしました</div>
 
 <script src="public/js/eda-config.js?v=20260920a"></script>
-<script src="public/js/invoice-link.js?v=002"></script>
+<script src="public/js/invoice-link.js?v=003"></script>
 <script>
 (function () {
   'use strict';
@@ -216,6 +225,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
       label: $('iLabel').value.trim(),
       amount: IV.toInt($('iAmount').value),
       tax: radio('tax'),
+      rate: Number(radio('rate')) === 10 ? 10 : 8,
       ship: radio('ship') === 'add' ? IV.toInt($('iShip').value) : 0,
       to: $('iTo').value.trim(),
       no: $('iNo').value.trim(),
@@ -232,12 +242,17 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
     function row(k, v, cls) { return '<div class="pv-row' + (cls ? ' ' + cls : '') + '"><span>' + k + '</span><span>' + v + '</span></div>'; }
     if (B.taxOut) {
       h += row('商品代金（税抜）', IV.yen(B.base));
-      h += row('消費税（10%）', IV.yen(B.tax));
+      h += row('消費税（' + B.rate + '%）', IV.yen(B.tax));
     } else {
       h += row('商品代金（税込）', IV.yen(B.goods));
-      h += row('うち消費税（10%）', IV.yen(B.tax), 'muted');
+      h += row('うち消費税（' + B.rate + '%）', IV.yen(B.tax), 'muted');
     }
-    h += B.ship > 0 ? row('送料', IV.yen(B.ship)) : row('送料', '無料（込み）');
+    if (B.ship > 0) {
+      h += row('送料（税込）', IV.yen(B.ship));
+      h += row('うち消費税（10%）', IV.yen(B.shipTax), 'muted');
+    } else {
+      h += row('送料', '無料（込み）');
+    }
     h += row('請求合計', IV.yen(B.total), 'total');
     $('preview').innerHTML = h;
 
@@ -262,7 +277,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
   ['iLabel', 'iAmount', 'iShip', 'iTo', 'iNo', 'iNote'].forEach(function (id) {
     $(id).addEventListener('input', render);
   });
-  document.querySelectorAll('input[name="tax"], input[name="ship"]').forEach(function (r) { r.addEventListener('change', render); });
+  document.querySelectorAll('input[name="tax"], input[name="ship"], input[name="rate"]').forEach(function (r) { r.addEventListener('change', render); });
   document.querySelectorAll('[data-amt]').forEach(function (b) {
     b.addEventListener('click', function () { $('iAmount').value = b.getAttribute('data-amt'); render(); });
   });
@@ -299,7 +314,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
       headers: { 'Content-Type': 'text/plain' },   /* GAS 側の決まり（CORS を増やさないため） */
       body: JSON.stringify({
         label: inv.label, to: inv.to, no: inv.no, note: inv.note,
-        tax: inv.tax, ship: B.ship, total: B.total, url: $('outUrl').value,
+        tax: inv.tax, rate: B.rate, ship: B.ship, total: B.total, url: $('outUrl').value,
         rid: inv.rid
       })
     });

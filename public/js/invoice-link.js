@@ -8,7 +8,9 @@
    URL パラメータ
      n  品目名（お客様に見える請求内容の名前）
      a  金額（円・整数）      … t=in なら税込額 / t=out なら税抜額
-     t  税区分 in=税込 / out=税別（10%を上に乗せる）
+     t  税区分 in=税込 / out=税別（税率ぶんを上に乗せる）
+     r  税率 8=軽減税率（お肉・食品）/ 省略＝10%
+        ※ 送料は「配送料」なので軽減税率の対象外＝いつでも10%として内訳を出す
      s  送料（円・整数）      … 0 = 送料込み（別途請求しない）
      to お客様名（任意・画面に「◯◯ 様」と出すだけ）
      m  ひとこと（任意・請求内容の下に出す）
@@ -28,9 +30,16 @@
 
   /* 検査値: 金額・税区分・送料・品目名から作る短い文字列。
      お客様が URL の金額を書き換えると一致しなくなり、支払い画面が無効になる。 */
+  /* 税率は 8 か 10 のどちらか。未指定は 10（これまでのリンクと同じ扱い） */
+  function rateOf(inv) { return Number(inv && inv.rate) === 8 ? 8 : 10; }
+
   function sign(inv) {
+    /* 🔴 8% のときだけ検査値に混ぜる。10%（＝これまでの全リンク）の検査値は
+       以前とまったく同じ文字列のままになり、すでにお客様へ渡したリンクが
+       「使用できません」にならない。 */
     var s = 'EDA|' + toInt(inv.amount) + '|' + (inv.tax === 'out' ? 'out' : 'in') + '|' +
-            toInt(inv.ship) + '|' + String(inv.label || '');
+            toInt(inv.ship) + '|' + String(inv.label || '') +
+            (rateOf(inv) === 8 ? '|r8' : '');
     var h = 5381;
     for (var i = 0; i < s.length; i++) h = (((h * 33) ^ s.charCodeAt(i)) >>> 0);
     return h.toString(36).slice(0, 7);
@@ -44,9 +53,16 @@
     var a = toInt(inv.amount);
     var ship = toInt(inv.ship);
     var out = (inv.tax === 'out');
-    var tax = out ? Math.round(a * 0.1) : (a - Math.round(a / 1.1));
+    var rate = rateOf(inv);
+    var k = rate / 100;
+    var tax = out ? Math.round(a * k) : (a - Math.round(a / (1 + k)));
     var goods = out ? a + tax : a;
-    return { base: a, tax: tax, goods: goods, ship: ship, total: goods + ship, taxOut: out };
+    /* 送料は税込で受け取る。配送料は軽減税率の対象外なので内訳はいつでも10%。 */
+    var shipTax = ship > 0 ? (ship - Math.round(ship / 1.1)) : 0;
+    return {
+      base: a, tax: tax, goods: goods, ship: ship, shipTax: shipTax,
+      total: goods + ship, taxOut: out, rate: rate
+    };
   }
 
   function buildQuery(inv) {
@@ -58,6 +74,7 @@
     if (inv.to)   p.set('to', String(inv.to));
     if (inv.note) p.set('m', String(inv.note));
     if (inv.no)   p.set('no', String(inv.no));
+    if (rateOf(inv) === 8) p.set('r', '8');
     if (inv.rid)  p.set('rid', String(inv.rid));
     p.set('k', sign(inv));
     return p.toString();
@@ -73,6 +90,7 @@
       to: (p.get('to') || '').slice(0, 40),
       note: (p.get('m') || '').slice(0, 200),
       no: (p.get('no') || '').slice(0, 40),
+      rate: (p.get('r') === '8' ? 8 : 10),
       rid: (p.get('rid') || '').slice(0, 24),
       k: p.get('k') || ''
     };
@@ -85,7 +103,7 @@
   function yen(n) { return '¥' + Number(n || 0).toLocaleString('ja-JP'); }
 
   global.EDA_INVOICE = {
-    toInt: toInt, sign: sign, breakdown: breakdown,
+    toInt: toInt, sign: sign, breakdown: breakdown, rateOf: rateOf,
     buildQuery: buildQuery, parse: parse, valid: valid, yen: yen
   };
 })(window);
