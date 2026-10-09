@@ -179,7 +179,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
 <div class="toast" id="toast">コピーしました</div>
 
 <script src="public/js/eda-config.js?v=20260920a"></script>
-<script src="public/js/invoice-link.js?v=001"></script>
+<script src="public/js/invoice-link.js?v=002"></script>
 <script>
 (function () {
   'use strict';
@@ -187,6 +187,15 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
   var $ = function (id) { return document.getElementById(id); };
 
   var saved = false, savedUrl = '';
+
+  /* 控えID — この1回の発行につき1つ。お客様が申し込むと、この目印で
+     「どの請求リンクが払われたか」が控えの行に自動で付く。
+     内容を変えても同じIDのまま（同じ1枚の請求を直しただけ）。控えに残した
+     あとだけ、次の発行に備えて新しいIDにする。 */
+  var rid = newRid();
+  function newRid() {
+    return 'L' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
 
   function toast(msg) {
     var t = $('toast');
@@ -210,7 +219,8 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
       ship: radio('ship') === 'add' ? IV.toInt($('iShip').value) : 0,
       to: $('iTo').value.trim(),
       no: $('iNo').value.trim(),
-      note: $('iNote').value.trim()
+      note: $('iNote').value.trim(),
+      rid: rid
     };
   }
 
@@ -289,7 +299,8 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
       headers: { 'Content-Type': 'text/plain' },   /* GAS 側の決まり（CORS を増やさないため） */
       body: JSON.stringify({
         label: inv.label, to: inv.to, no: inv.no, note: inv.note,
-        tax: inv.tax, ship: B.ship, total: B.total, url: $('outUrl').value
+        tax: inv.tax, ship: B.ship, total: B.total, url: $('outUrl').value,
+        rid: inv.rid
       })
     });
     return res.json();
@@ -317,6 +328,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
       }
       if (d && d.ok) {
         saved = true; savedUrl = $('outUrl').value;
+        rid = newRid();                              /* 次に作る請求は別の控えとして数える */
         $('btnSave').textContent = '控えに残しました';
         toast('控えに残しました');
       } else {
