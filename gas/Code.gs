@@ -144,7 +144,7 @@ var STAFF_PROTECTED = {
   orders: 1, subscriptions: 1, survey_responses: 1, quiz_responses: 1, shipments: 1,
   staff_update_stock: 1, staff_product_save: 1, staff_product_delete: 1,
   staff_gift_save: 1, staff_gift_delete: 1, staff_subscription_save: 1, staff_subscription_delete: 1,
-  staff_ship: 1, staff_confirm_payment: 1,
+  staff_ship: 1, staff_confirm_payment: 1, staff_invoice_link_log: 1,
   line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1,
@@ -404,6 +404,7 @@ function doPost(e) {
       case 'staff_subscription_delete':    return staffSubscriptionDelete(body);
       case 'staff_ship':                   return staffShip(body);
       case 'staff_confirm_payment':        return staffConfirmPayment(body);
+      case 'staff_invoice_link_log':       return staffInvoiceLinkLog(body);   /* お支払いリンクの控えを1行残す */
       case 'submit_quiz':                  return submitQuiz(body);
       case 'submit_survey':                return submitSurvey(body);
       case 'log_event':                    return logEvent(body);
@@ -7491,3 +7492,54 @@ function subStripeApply_(action, email, extra) {
   }
 }
 /* ===== END subscription_stripe_link (auto-managed) ===== */
+
+/* ============================================================
+   お支払いリンクの控え（invoice-new.html の「控えに残す」）
+   ------------------------------------------------------------
+   リンクを発行しただけでは、どこにも何も残らない。中身は全部 URL の
+   中に入っているだけで、お客様が申し込むまでは「誰に・いくらで出したか」
+   がどこからも追えない（画面を閉じた時点で消える）。
+   そこで、発行した時点で控えを1行だけ残す。
+
+   ・注文ではない。入金・発送・在庫はこの行とは一切関係しない。
+   ・新しいものが一番上（見出しの直下に差し込む）。
+   ・同じ請求番号で2回押せば2行になる＝「出し直した」履歴として残す。
+   ============================================================ */
+var INVOICE_LINK_TAB = '請求リンク';
+var INVOICE_LINK_HEADERS = ['日時', '請求番号', 'お客様名', '品目', '請求合計', '税の扱い', '送料', 'ひとこと', 'リンク'];
+
+function staffInvoiceLinkLog(body) {
+  var b = body || {};
+  var label = String(b.label || '').slice(0, 80);
+  var total = Number(b.total) || 0;
+  if (!label || total <= 0) {
+    return jsonResponse({ ok: false, error: '品目名と金額が必要です' });
+  }
+
+  var sh = sheet(INVOICE_LINK_TAB, INVOICE_LINK_HEADERS);
+  if (sh.getLastRow() < 1) {           /* 見出しだけ無い状態を作らない */
+    sh.appendRow(INVOICE_LINK_HEADERS);
+    sh.setFrozenRows(1);
+  }
+
+  var row = [
+    new Date(),
+    String(b.no || '').slice(0, 40),
+    String(b.to || '').slice(0, 40),
+    label,
+    total,
+    (b.tax === 'out' ? '税別（+10%）' : '税込'),
+    Number(b.ship) || 0,
+    String(b.note || '').slice(0, 200),
+    String(b.url || '').slice(0, 2000)
+  ];
+
+  sh.insertRowBefore(2);
+  sh.getRange(2, 1, 1, row.length).setValues([row]);
+  sh.getRange(2, 1).setNumberFormat('yyyy/MM/dd HH:mm');
+  sh.getRange(2, 5).setNumberFormat('#,##0');
+  sh.getRange(2, 7).setNumberFormat('#,##0');
+
+  log('staff_invoice_link_log', { no: row[1], total: total });
+  return jsonResponse({ ok: true, tab: INVOICE_LINK_TAB });
+}

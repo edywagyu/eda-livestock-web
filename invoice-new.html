@@ -72,6 +72,7 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
 .btn-main { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--color-gold), #E5B547); color: var(--color-forest-deep); border-radius: 12px; font-size: 14.5px; font-weight: 700; box-shadow: 0 10px 26px rgba(212,169,59,0.28); }
 .btn-main:disabled { background: var(--color-bone); color: var(--color-ink-muted); box-shadow: none; cursor: not-allowed; }
 .btn-sub { display: block; width: 100%; margin-top: 10px; padding: 13px; text-align: center; border: 1.5px solid var(--color-forest); border-radius: 12px; color: var(--color-forest); font-size: 13.5px; font-weight: 700; text-decoration: none; }
+.btn-sub:disabled { border-color: var(--color-bone); color: var(--color-ink-muted); cursor: not-allowed; }
 .note { margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: rgba(212,169,59,0.08); border: 1px solid rgba(212,169,59,0.3); font-size: 12.5px; color: var(--color-forest); line-height: 1.8; }
 .note b { color: var(--color-red); }
 .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--color-forest); color: var(--color-gold); padding: 12px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; opacity: 0; transition: all .25s; pointer-events: none; }
@@ -161,12 +162,14 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
     <div class="out">
      <textarea id="outUrl" readonly placeholder="金額を入れるとここにリンクが出ます"></textarea>
      <button class="btn-main" id="btnCopy" disabled>リンクをコピー</button>
+     <button class="btn-sub" id="btnSave" disabled>この内容を控えに残す</button>
      <a class="btn-sub" id="btnOpen" href="#" target="_blank" rel="noopener" style="display:none">お客様の画面を確認する</a>
     </div>
     <div class="note">
      ・このリンクは<b>誰でも開けます</b>。渡す相手を間違えないでください。<br>
      ・リンクの金額を書き換えると「使用できません」と出て払えなくなります。<br>
-     ・カード払いは Stripe の画面へ、銀行振込はお申込み時点で注文が記録され、入金確認後に発送する流れです（通常のECと同じ）。
+     ・カード払いは Stripe の画面へ、銀行振込はお申込み時点で注文が記録され、入金確認後に発送する流れです（通常のECと同じ）。<br>
+     ・「控えに残す」は<b>社内の記録だけ</b>です。お客様には何も起きません。押さないと、この画面を閉じた時点でリンクは消えます。
     </div>
    </div>
   </aside>
@@ -175,12 +178,23 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
 
 <div class="toast" id="toast">コピーしました</div>
 
+<script src="public/js/eda-config.js?v=20260920a"></script>
 <script src="public/js/invoice-link.js?v=001"></script>
 <script>
 (function () {
   'use strict';
   var IV = window.EDA_INVOICE;
   var $ = function (id) { return document.getElementById(id); };
+
+  var saved = false, savedUrl = '';
+
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.classList.remove('on'); }, 1800);
+  }
 
   function radio(name) { var c = document.querySelector('input[name="' + name + '"]:checked'); return c ? c.value : ''; }
   function syncOpts() {
@@ -227,6 +241,9 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
     }
     $('outUrl').value = url;
     $('btnCopy').disabled = !ok;
+    /* 中身を1文字でも変えたら「まだ控えていない」状態に戻す（同じ内容の二度押しだけ防ぐ） */
+    if (url !== savedUrl) { saved = false; $('btnSave').textContent = 'この内容を控えに残す'; }
+    $('btnSave').disabled = !ok || saved;
     $('btnCopy').textContent = ok ? 'リンクをコピー' : '品目名と金額を入れてください';
     var open = $('btnOpen');
     if (ok) { open.href = url; open.style.display = ''; } else { open.style.display = 'none'; }
@@ -248,8 +265,70 @@ h1 { font-family: var(--font-display); font-size: 25px; color: var(--color-fores
     if (!v) return;
     try { await navigator.clipboard.writeText(v); }
     catch (e) { $('outUrl').select(); document.execCommand('copy'); }
-    var t = $('toast'); t.classList.add('on');
-    setTimeout(function () { t.classList.remove('on'); }, 1600);
+    toast('コピーしました');
+  });
+
+  /* ============================================================
+     控えに残す — 社内の記録を1行だけ足す
+     ------------------------------------------------------------
+     書き込み先は本番の注文スプレッドの「請求リンク」タブ（新しい順）。
+     合言葉は STAFF 画面(staff.html)と同じものを使い回す。まだ無い／
+     切れている（12時間）ときだけ、その場でPINを聞いて取り直す。
+     ============================================================ */
+  var STAFF_TOKEN_KEY = 'eda-staff-token';
+
+  function gasUrl() { return (window.EDA_CONFIG && window.EDA_CONFIG.GAS_URL) || ''; }
+  function staffToken() { try { return localStorage.getItem(STAFF_TOKEN_KEY) || ''; } catch (e) { return ''; } }
+
+  async function postLog(token) {
+    var inv = current(), B = IV.breakdown(inv);
+    /* 🔴 合言葉は URL に付ける。POST の中身に入れてもサーバは見ない（doPost は e.parameter.token を読む） */
+    var u = gasUrl() + '?action=staff_invoice_link_log' + (token ? '&token=' + encodeURIComponent(token) : '');
+    var res = await fetch(u, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },   /* GAS 側の決まり（CORS を増やさないため） */
+      body: JSON.stringify({
+        label: inv.label, to: inv.to, no: inv.no, note: inv.note,
+        tax: inv.tax, ship: B.ship, total: B.total, url: $('outUrl').value
+      })
+    });
+    return res.json();
+  }
+
+  async function login() {
+    var pin = prompt('STAFF の4桁PINを入れてください（控えを残すときだけ必要です）');
+    if (!pin) return '';
+    var res = await fetch(gasUrl() + '?action=staff_login&pin=' + encodeURIComponent(pin.trim()));
+    var d = await res.json();
+    if (!d || !d.success || !d.token) return '';
+    try { localStorage.setItem(STAFF_TOKEN_KEY, d.token); } catch (e) {}
+    return d.token;
+  }
+
+  $('btnSave').addEventListener('click', async function () {
+    if ($('btnSave').disabled) return;
+    $('btnSave').disabled = true;
+    $('btnSave').textContent = '保存しています…';
+    try {
+      var d = await postLog(staffToken());
+      if (d && d.ok === false && /unauthorized/i.test(String(d.error || ''))) {
+        var t = await login();                       /* 合言葉が無い／切れている */
+        if (t) d = await postLog(t);
+      }
+      if (d && d.ok) {
+        saved = true; savedUrl = $('outUrl').value;
+        $('btnSave').textContent = '控えに残しました';
+        toast('控えに残しました');
+      } else {
+        $('btnSave').textContent = 'この内容を控えに残す';
+        $('btnSave').disabled = false;
+        toast('保存できませんでした：' + ((d && d.error) || '通信エラー'));
+      }
+    } catch (e) {
+      $('btnSave').textContent = 'この内容を控えに残す';
+      $('btnSave').disabled = false;
+      toast('保存できませんでした：' + e.message);
+    }
   });
 
   render();
