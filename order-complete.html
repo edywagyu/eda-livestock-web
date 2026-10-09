@@ -1065,6 +1065,18 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  </div>
  </div>
 
+ <!-- 🧾 領収書（入金が済んでいる注文だけ出す） -->
+ <div id="receiptBox" style="display:none;margin-bottom:18px">
+  <button type="button" id="receiptBtn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:14px;background:#fff;border:1.5px solid #0F3D2E;border-radius:12px;color:#0F3D2E;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12a1 1 0 0 1 1 1v18l-3-2-2 2-2-2-2 2-3-2V3a1 1 0 0 1 1-1z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+   領収書を表示する
+  </button>
+  <p style="font-size:11.5px;color:#888;margin:8px 2px 0;line-height:1.7">宛名はご自由に書き換えていただけます。適格請求書発行事業者 登録番号（T3350001018284）入りです。</p>
+ </div>
+ <div id="receiptPending" style="display:none;margin-bottom:18px;padding:13px 16px;background:#FFF9E8;border:1px solid #F0DFA8;border-radius:12px;font-size:12.5px;color:#7A6327;line-height:1.8">
+  領収書は<b>ご入金の確認後</b>に発行できます。確認でき次第、こちらからご案内いたします。
+ </div>
+
  <!-- LINE 連携 (軽量バナー版) — クリックで詳細展開 -->
  <details class="line-track-compact" style="background:white;border:1px solid #06C755;border-radius:12px;padding:14px 16px;margin-bottom:18px;box-shadow:0 2px 8px rgba(6,199,85,0.08)">
  <summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;font-weight:600;color:#0F3D2E">
@@ -1514,6 +1526,30 @@ function renderOrder(order) {
  document.getElementById('summarySubtotal').textContent = formatYen(subtotal - shipping);
  document.getElementById('summaryShipping').textContent = shipping > 0 ? formatYen(shipping) : '無料';
  document.getElementById('summaryTotal').textContent = formatYen(total);
+
+ /* 🧾 領収書の材料を用意する。
+    ・支払いが済んでいる注文だけボタンを出す（振込の入金前は出さない）
+    ・中身は sessionStorage で receipt.html に渡す＝サーバーに問い合わせない */
+ try {
+   var _bank = (order.payment_method === 'bank') ||
+     (new URLSearchParams(window.location.search).get('pay') === 'bank');
+   var _status = String(order.payment_status || '').toLowerCase();
+   var _paid = _status === 'paid' || _status === 'shipped' || _status === 'delivered' ||
+               (!_bank && _status !== 'awaiting_payment');
+   var _names = (order.items || []).map(function (it) { return it.title || it.name || ''; }).filter(Boolean);
+   var _label = _names.length > 1 ? (_names[0] + ' ほか') : (_names[0] || 'お品');
+   var _to = order.customer_name ||
+     ((order.destinations && order.destinations[0] && order.destinations[0].name) || '');
+   var _rate = Number(order.invoice_tax_rate) === 10 ? 10 : 8;
+   sessionStorage.setItem('eda-receipt', JSON.stringify({
+     no: orderNum, orderNumber: orderNum, date: order.placed_at || order.date || new Date().toISOString(),
+     to: _to, label: _label, total: total, ship: shipping, rate: _rate,
+     method: _bank ? 'bank' : 'card', back: location.pathname + location.search
+   }));
+   document.getElementById('receiptBox').style.display = _paid ? '' : 'none';
+   document.getElementById('receiptPending').style.display = _paid ? 'none' : '';
+   document.getElementById('receiptBtn').onclick = function () { location.href = 'receipt.html'; };
+ } catch (e) { /* 領収書が出せなくても完了画面は壊さない */ }
 
  /* 🏦 銀行振込: 振込先案内を表示し、文言を「入金待ち」向けに調整 */
  const _isBank = (order.payment_method === 'bank') ||

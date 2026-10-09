@@ -3309,11 +3309,30 @@ function renderInvoiceLinks() {
         (v.no ? ' <span style="color:#8A8A8A">／ ' + escapeHtml(v.no) + '</span>' : '') + '</div>' +
       (v.order ? '<div style="font-size:11px;color:#8A8A8A;margin-top:3px">注文番号 ' + escapeHtml(v.order) + '（' + escapeHtml(v.updated || '') + '）</div>' : '') +
       '<div style="display:flex;gap:8px;margin-top:10px">' +
-        '<button onclick="copyInvoiceLink(' + i + ')" style="flex:1;padding:9px;border:1.5px solid #0F3D2E;border-radius:8px;color:#0F3D2E;font-size:12px;font-weight:700;background:#fff">リンクをコピー</button>' +
+        (/支払済み|入金済み/.test(status)
+          ? '<button onclick="openInvoiceReceipt(' + i + ')" style="flex:1;padding:9px;border:0;border-radius:8px;color:#0A2D21;font-size:12px;font-weight:700;background:linear-gradient(135deg,#D4A93B,#E5B547)">領収書</button>'
+          : '<button onclick="copyInvoiceLink(' + i + ')" style="flex:1;padding:9px;border:1.5px solid #0F3D2E;border-radius:8px;color:#0F3D2E;font-size:12px;font-weight:700;background:#fff">リンクをコピー</button>') +
         '<a href="' + escapeHtml(v.url || '#') + '" target="_blank" rel="noopener" style="flex:1;padding:9px;border:1.5px solid #E2DACA;border-radius:8px;color:#5C5C5C;font-size:12px;font-weight:700;background:#fff;text-align:center;text-decoration:none">お客様の画面</a>' +
       '</div>' +
     '</div>';
   }).join('');
+}
+
+/* 控えの1行から領収書を開く（再発行）。中身は sessionStorage で receipt.html へ渡す */
+function openInvoiceReceipt(i) {
+  const v = invoiceLinksCache[i];
+  if (!v) return;
+  const rate = /8%/.test(v.tax || '') ? 8 : (/10%/.test(v.tax || '') ? 10 : 8);
+  try {
+    sessionStorage.setItem('eda-receipt', JSON.stringify({
+      no: v.no || v.order || '', orderNumber: v.order || '', date: v.updated || v.at || '',
+      to: v.to || '', label: v.label || 'お品', total: Number(v.total) || 0,
+      ship: Number(v.ship) || 0, rate: rate,
+      method: /カード/.test(v.status || '') ? 'card' : 'bank',
+      back: 'staff.html'
+    }));
+  } catch (e) { toast('領収書を開けませんでした', 'error'); return; }
+  location.href = 'receipt.html';
 }
 
 async function copyInvoiceLink(i) {

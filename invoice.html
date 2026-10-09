@@ -345,7 +345,7 @@ h1, h2, h3 { font-weight: 400; margin: 0; }
 </footer>
 
 <script src="public/js/eda-config.js?v=20260920a"></script>
-<script src="public/js/invoice-link.js?v=002"></script>
+<script src="public/js/invoice-link.js?v=003"></script>
 <script>
 /* ============================================================
    お支払いリンク（請求リンク）
@@ -389,12 +389,17 @@ h1, h2, h3 { font-weight: 400; margin: 0; }
     var h = '';
     if (B.taxOut) {
       h += row('商品代金（税抜）', IV.yen(B.base));
-      h += row('消費税（10%）', IV.yen(B.tax));
+      h += row('消費税（' + B.rate + '%）', IV.yen(B.tax));
     } else {
       h += row('商品代金（税込）', IV.yen(B.goods));
-      h += row('うち消費税（10%）', IV.yen(B.tax), 'muted');
+      h += row('うち消費税（' + B.rate + '%）', IV.yen(B.tax), 'muted');
     }
-    h += B.ship > 0 ? row('送料', IV.yen(B.ship)) : row('送料', '無料（商品代金に含みます）');
+    if (B.ship > 0) {
+      h += row('送料（税込）', IV.yen(B.ship));
+      h += row('うち消費税（10%）', IV.yen(B.shipTax), 'muted');
+    } else {
+      h += row('送料', '無料（商品代金に含みます）');
+    }
     h += row('合計', IV.yen(B.total), 'total');
     return h;
   }
@@ -490,6 +495,8 @@ h1, h2, h3 { font-weight: 400; margin: 0; }
       invoice_no: INV.no || '',
       /* 控えID。社内の「請求リンク」タブの行と、この注文を結びつける目印 */
       invoice_link_id: INV.rid || '',
+      /* 領収書の内訳に使う。お肉=8% / それ以外=10%、送料はいつでも10% */
+      invoice_tax_rate: B.rate,
       /* 🔴 送料はスタッフが決めた額で確定させる（GAS の自動計算を使わない） */
       invoice_shipping: B.ship,
       customer: {

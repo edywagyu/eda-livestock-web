@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="robots" content="noindex,nofollow">
+<title>領収書｜江田畜産</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+ --forest:#0F3D2E; --gold:#D4A93B; --cream:#FAF7F0; --bone:#EFE8D7;
+ --ink:#1A1A1A; --muted:#5C5C5C;
+ --mincho:'Shippori Mincho','Noto Serif JP',serif;
+ --gothic:'Noto Sans JP',-apple-system,sans-serif;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--cream); color:var(--ink); font-family:var(--gothic); font-size:15px; line-height:1.9; }
+.wrap { max-width:720px; margin:0 auto; padding:24px 16px 64px; }
+
+.bar { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+.btn { padding:12px 20px; border:0; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+.btn-print { background:linear-gradient(135deg,var(--gold),#E5B547); color:#0A2D21; box-shadow:0 8px 20px rgba(212,169,59,.28); }
+.btn-back { background:#fff; color:var(--forest); border:1.5px solid var(--bone); text-decoration:none; display:inline-block; }
+.hint { font-size:12px; color:var(--muted); margin-bottom:18px; line-height:1.8; }
+
+/* ===== 領収書そのもの ===== */
+.paper { background:#fff; border:1px solid var(--bone); border-radius:4px; padding:46px 44px; box-shadow:0 8px 28px rgba(15,61,46,.08); }
+@media (max-width:600px) { .paper { padding:30px 22px; } }
+
+.ttl { font-family:var(--mincho); font-size:30px; letter-spacing:.42em; text-align:center; color:var(--forest); margin:0 0 6px; }
+.ttl-rule { width:150px; height:1px; background:var(--forest); margin:0 auto 26px; }
+.meta { display:flex; justify-content:flex-end; gap:22px; font-size:12px; color:var(--muted); margin-bottom:26px; }
+
+.to { font-family:var(--mincho); font-size:20px; color:var(--ink); border-bottom:1px solid #D9D2C2; padding-bottom:7px; margin-bottom:28px; display:flex; align-items:baseline; gap:8px; }
+.to input { font:inherit; font-family:var(--mincho); border:0; border-bottom:1px dashed #C9C0AC; background:#FCFAF4; flex:1; min-width:0; padding:2px 6px; color:inherit; }
+.to input:focus { outline:none; border-bottom-color:var(--gold); background:#FFFCF2; }
+.to span { font-size:16px; white-space:nowrap; }
+
+.amount-box { text-align:center; border:2px solid var(--forest); border-radius:6px; padding:16px; margin-bottom:22px; }
+.amount-box .lbl { font-size:11px; letter-spacing:.2em; color:var(--muted); }
+.amount-box .val { font-family:var(--mincho); font-size:36px; font-weight:700; color:var(--forest); letter-spacing:.04em; }
+@media (max-width:600px) { .amount-box .val { font-size:28px; } }
+
+.note-line { font-size:14px; margin-bottom:24px; }
+.note-line b { font-weight:700; }
+
+table.bd { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:10px; }
+table.bd th, table.bd td { border:1px solid #E3DCCB; padding:8px 10px; }
+table.bd th { background:#FBF8F1; color:var(--forest); font-weight:700; text-align:left; width:52%; }
+table.bd td { text-align:right; }
+table.bd tr.sum th, table.bd tr.sum td { background:#F6F2E8; font-weight:700; }
+.pay { font-size:12px; color:var(--muted); margin-bottom:30px; }
+
+.issuer { border-top:1px solid #E3DCCB; padding-top:18px; font-size:13px; line-height:1.95; }
+.issuer .nm { font-family:var(--mincho); font-size:17px; color:var(--forest); font-weight:600; }
+.issuer .reg { margin-top:4px; letter-spacing:.02em; }
+
+.err { background:#fff; border:1px solid var(--bone); border-radius:12px; padding:30px 24px; text-align:center; color:var(--muted); font-size:14px; line-height:2; }
+
+@media print {
+  body { background:#fff; }
+  .wrap { padding:0; max-width:none; }
+  .bar, .hint { display:none !important; }
+  .paper { border:0; box-shadow:none; padding:10mm 12mm; border-radius:0; }
+  .to input { border-bottom:0; background:transparent; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+ <div class="bar" id="bar" style="display:none">
+  <button class="btn btn-print" onclick="window.print()">印刷 / PDFで保存</button>
+  <a class="btn btn-back" href="#" id="backLink" style="display:none">戻る</a>
+ </div>
+ <div class="hint" id="hint" style="display:none">
+  宛名は書き換えられます（会社名で欲しいと言われたらここを打ち替えてから印刷してください）。<br>
+  印刷画面で「PDFとして保存」を選ぶとPDFになります。
+ </div>
+
+ <div id="paper" class="paper" style="display:none">
+  <h1 class="ttl">領収書</h1>
+  <div class="ttl-rule"></div>
+
+  <div class="meta">
+   <span>No. <b id="rNo">-</b></span>
+   <span id="rDate">-</span>
+  </div>
+
+  <div class="to"><input id="rTo" type="text" value="" aria-label="宛名"><span>様</span></div>
+
+  <div class="amount-box">
+   <div class="lbl">金 額</div>
+   <div class="val" id="rTotal">¥-</div>
+  </div>
+
+  <div class="note-line">但し <b id="rFor">-</b> として、上記正に領収いたしました。</div>
+
+  <table class="bd" id="rTable"></table>
+  <div class="pay" id="rPay"></div>
+
+  <div class="issuer">
+   <div class="nm">江田畜産株式会社</div>
+   <div>〒889-4411　宮崎県西諸県郡高原町大字広原2025-2</div>
+   <div class="reg">適格請求書発行事業者 登録番号：T3350001018284</div>
+  </div>
+ </div>
+
+ <div id="err" class="err" style="display:none"></div>
+</div>
+
+<script>
+/* ============================================================
+   領収書 — 画面で見て、そのまま印刷（PDF保存）する用
+   ------------------------------------------------------------
+   中身は sessionStorage の 'eda-receipt' から受け取る。
+     ・お客様 … お支払い完了画面の「領収書を表示する」が入れる
+     ・スタッフ … 管理画面の請求一覧の「領収書」が入れる
+   サーバーには何も問い合わせない＝注文番号を知っているだけの
+   他人が他人の領収書を開けることがない。
+
+   消費税の出し方（御請求書の実務に合わせる）
+     ・お肉などの食品 … 軽減税率 8%
+     ・送料（配送料）  … 軽減税率の対象外なので 10%
+     ・請求リンクで「10%」を選んで出した分は、その率で計算する
+   金額はすべて税込で受け取り、そこから内税を割り戻す。
+   ============================================================ */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var yen = function (n) { return '¥' + Number(n || 0).toLocaleString('ja-JP'); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]; }); };
+
+  function ymd(d) {
+    var x = (d instanceof Date) ? d : new Date(d || Date.now());
+    if (isNaN(x.getTime())) x = new Date();
+    return x.getFullYear() + '年' + (x.getMonth() + 1) + '月' + x.getDate() + '日';
+  }
+
+  function read() {
+    try { return JSON.parse(sessionStorage.getItem('eda-receipt') || 'null'); } catch (e) { return null; }
+  }
+
+  var d = read();
+  if (!d || !(Number(d.total) > 0)) {
+    $('err').style.display = '';
+    $('err').innerHTML = '領収書の内容を受け取れませんでした。<br>' +
+      'お支払い完了の画面、または管理画面の「請求 → 一覧」から開き直してください。';
+    return;
+  }
+
+  var total = Number(d.total) || 0;
+  var ship  = Number(d.ship) || 0;
+  var rate  = (Number(d.rate) === 10) ? 10 : 8;     /* 品物の税率。未指定は食品＝8% */
+  var goods = Math.max(0, total - ship);
+  var inTax = function (amount, r) { return amount > 0 ? (amount - Math.round(amount / (1 + r / 100))) : 0; };
+  var goodsTax = inTax(goods, rate);
+  var shipTax  = inTax(ship, 10);
+
+  $('rNo').textContent    = d.no || d.orderNumber || '—';
+  $('rDate').textContent  = ymd(d.date);
+  $('rTo').value          = d.to || '';
+  $('rTotal').textContent = yen(total);
+  $('rFor').textContent   = (d.label || 'お品代') + '代';
+
+  /* 税率が1つしか出てこないときは、その行だけ出す（空の 0円行を並べない） */
+  var rows = '';
+  rows += '<tr><th>' + rate + '%対象（' + (rate === 8 ? '軽減税率・食品' : '標準税率') + '）</th><td>' + yen(goods) + '</td></tr>';
+  rows += '<tr><th style="padding-left:24px;font-weight:400;color:#5C5C5C">うち消費税</th><td>' + yen(goodsTax) + '</td></tr>';
+  if (ship > 0) {
+    rows += '<tr><th>10%対象（送料）</th><td>' + yen(ship) + '</td></tr>';
+    rows += '<tr><th style="padding-left:24px;font-weight:400;color:#5C5C5C">うち消費税</th><td>' + yen(shipTax) + '</td></tr>';
+  }
+  rows += '<tr class="sum"><th>合計（税込）</th><td>' + yen(total) + '</td></tr>';
+  $('rTable').innerHTML = rows;
+
+  var method = d.method === 'bank' ? '銀行振込' : (d.method === 'card' ? 'クレジットカード' : '');
+  $('rPay').innerHTML = (method ? 'お支払方法：' + esc(method) + '　' : '') +
+    (d.orderNumber ? 'ご注文番号：' + esc(d.orderNumber) : '');
+
+  if (d.back) { $('backLink').href = d.back; $('backLink').style.display = ''; }
+  $('paper').style.display = '';
+  $('bar').style.display = '';
+  $('hint').style.display = '';
+})();
+</script>
+</body>
+</html>

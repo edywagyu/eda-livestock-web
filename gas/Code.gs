@@ -616,6 +616,7 @@ function createCheckout(body) {
   if (body.mode === 'invoice') {
     checkoutParams.metadata.invoice_no = String(body.invoice_no || '').slice(0, 40);
     checkoutParams.metadata.invoice_link_id = String(body.invoice_link_id || '').slice(0, 24);
+    checkoutParams.metadata.invoice_tax_rate = String(Number(body.invoice_tax_rate) === 10 ? 10 : 8);
   }
 
   // ★ (B) Customer 紐付け時: 保存カードの再利用UI + 新規カード保存。失敗時(空)は customer_email のまま(無変更)。
@@ -779,6 +780,7 @@ function createBankOrder(body) {
   if (body.mode === 'invoice') {
     meta.invoice_no = String(body.invoice_no || '').slice(0, 40);
     meta.invoice_link_id = String(body.invoice_link_id || '').slice(0, 24);
+    meta.invoice_tax_rate = String(Number(body.invoice_tax_rate) === 10 ? 10 : 8);
   }
 
   // orders に直接記録（awaiting_payment）。session_id は擬似値で重複ガード兼用。
@@ -823,6 +825,7 @@ function createBankOrder(body) {
         };
         if (meta.invoice_no) sh.getRange(_row2, _ensure2('invoice_no')).setValue(meta.invoice_no);
         if (meta.invoice_link_id) sh.getRange(_row2, _ensure2('invoice_link_id')).setValue(meta.invoice_link_id);
+        if (meta.invoice_tax_rate) sh.getRange(_row2, _ensure2('invoice_tax_rate')).setValue(meta.invoice_tax_rate);
       }
     } catch (e) { log('delivery_write_error', { order: orderNum, error: e.message }); }
   } finally {
@@ -2542,6 +2545,7 @@ function finalizeOrder(session) {
         };
         if (meta.invoice_no) sh.getRange(_row2, _ensure2('invoice_no')).setValue(meta.invoice_no);
         if (meta.invoice_link_id) sh.getRange(_row2, _ensure2('invoice_link_id')).setValue(meta.invoice_link_id);
+        if (meta.invoice_tax_rate) sh.getRange(_row2, _ensure2('invoice_tax_rate')).setValue(meta.invoice_tax_rate);
       }
     } catch (e) { log('delivery_write_error', { order: orderNum, error: e.message }); }
   } finally {
@@ -7590,7 +7594,10 @@ function staffInvoiceLinkLog(body) {
     'お客様名': String(b.to || '').slice(0, 40),
     '品目': label,
     '請求合計': total,
-    '税の扱い': (b.tax === 'out' ? '税別（+10%）' : '税込'),
+    '税の扱い': (function () {
+      var r = (Number(b.rate) === 10 ? 10 : 8);
+      return (b.tax === 'out' ? '税別（+' + r + '%）' : '税込（' + r + '%）');
+    })(),
     '送料': Number(b.ship) || 0,
     'ひとこと': String(b.note || '').slice(0, 200),
     'リンク': String(b.url || '').slice(0, 2000),
