@@ -14,6 +14,9 @@
      m  ひとこと（任意・請求内容の下に出す）
      no 請求番号（任意・画面と注文メモに出す）
      k  検査値（上のうち a/t/s/n から計算。URL の数字を書き換えると無効になる）
+     rid 控えID（社内用。どの請求リンクが払われたかを突き合わせるための目印。
+         お客様には見えても意味が無い文字列で、金額の検査値 k には含めない
+         ＝古いリンク（rid なし）もそのまま払える）
    ============================================================ */
 (function (global) {
   'use strict';
@@ -55,6 +58,7 @@
     if (inv.to)   p.set('to', String(inv.to));
     if (inv.note) p.set('m', String(inv.note));
     if (inv.no)   p.set('no', String(inv.no));
+    if (inv.rid)  p.set('rid', String(inv.rid));
     p.set('k', sign(inv));
     return p.toString();
   }
@@ -69,6 +73,7 @@
       to: (p.get('to') || '').slice(0, 40),
       note: (p.get('m') || '').slice(0, 200),
       no: (p.get('no') || '').slice(0, 40),
+      rid: (p.get('rid') || '').slice(0, 24),
       k: p.get('k') || ''
     };
   }

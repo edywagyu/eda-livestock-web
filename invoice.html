@@ -345,7 +345,7 @@ h1, h2, h3 { font-weight: 400; margin: 0; }
 </footer>
 
 <script src="public/js/eda-config.js?v=20260920a"></script>
-<script src="public/js/invoice-link.js?v=001"></script>
+<script src="public/js/invoice-link.js?v=002"></script>
 <script>
 /* ============================================================
    お支払いリンク（請求リンク）
@@ -488,6 +488,8 @@ h1, h2, h3 { font-weight: 400; margin: 0; }
          （isSubOrder は 'subscription' 始まりだけを定期便として扱う）。 */
       mode: 'invoice',
       invoice_no: INV.no || '',
+      /* 控えID。社内の「請求リンク」タブの行と、この注文を結びつける目印 */
+      invoice_link_id: INV.rid || '',
       /* 🔴 送料はスタッフが決めた額で確定させる（GAS の自動計算を使わない） */
       invoice_shipping: B.ship,
       customer: {

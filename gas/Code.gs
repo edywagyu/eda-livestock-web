@@ -609,6 +609,14 @@ function createCheckout(body) {
     }
   };
 
+  /* 🧾 請求リンク経由の注文だけ、控えの目印を Stripe に預ける。
+     決済が終わったあと finalizeOrder がこれを読んで、社内の「請求リンク」タブの
+     その行に「支払済み」と注文番号を書き戻す。短い2値なので metadata 500字制限に無関係。 */
+  if (body.mode === 'invoice') {
+    checkoutParams.metadata.invoice_no = String(body.invoice_no || '').slice(0, 40);
+    checkoutParams.metadata.invoice_link_id = String(body.invoice_link_id || '').slice(0, 24);
+  }
+
   // ★ (B) Customer 紐付け時: 保存カードの再利用UI + 新規カード保存。失敗時(空)は customer_email のまま(無変更)。
   if (checkoutCustomerId) {
     delete checkoutParams.customer_email;            // customer と customer_email は同時指定不可
@@ -766,6 +774,11 @@ function createBankOrder(body) {
     coupon_code: custCoupon,
     payment_method: 'bank'
   };
+  /* 🧾 請求リンク経由なら控えの目印も持たせる（控えの行に書き戻すため） */
+  if (body.mode === 'invoice') {
+    meta.invoice_no = String(body.invoice_no || '').slice(0, 40);
+    meta.invoice_link_id = String(body.invoice_link_id || '').slice(0, 24);
+  }
 
   // orders に直接記録（awaiting_payment）。session_id は擬似値で重複ガード兼用。
   const sh = sheet('orders', [
@@ -798,10 +811,25 @@ function createBankOrder(body) {
         if (meta.delivery_date) { var _cd = sh.getRange(_appended, _ensureCol('delivery_date')); _cd.setNumberFormat('@'); _cd.setValue(meta.delivery_date); }
         if (meta.delivery_time) { var _ct = sh.getRange(_appended, _ensureCol('delivery_time')); _ct.setNumberFormat('@'); _ct.setValue(meta.delivery_time); }
       }
+      /* 🧾 請求リンク経由なら、注文行に控えの目印を残す（あとで突き合わせできるように） */
+      if (meta.invoice_no || meta.invoice_link_id) {
+        var _hdr2 = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+        var _row2 = sh.getLastRow();
+        var _ensure2 = function (name) {
+          var idx = _hdr2.indexOf(name);
+          if (idx === -1) { sh.getRange(1, _hdr2.length + 1).setValue(name); _hdr2.push(name); idx = _hdr2.length - 1; }
+          return idx + 1;
+        };
+        if (meta.invoice_no) sh.getRange(_row2, _ensure2('invoice_no')).setValue(meta.invoice_no);
+        if (meta.invoice_link_id) sh.getRange(_row2, _ensure2('invoice_link_id')).setValue(meta.invoice_link_id);
+      }
     } catch (e) { log('delivery_write_error', { order: orderNum, error: e.message }); }
   } finally {
     lock.releaseLock();
   }
+
+  /* 🧾 請求リンクの控えに「申込あり」を書き戻す（まだ入金はされていない） */
+  markInvoiceLink_(meta.invoice_link_id, meta.invoice_no, '申込あり（入金待ち・振込）', orderNum);
 
   // 顧客へ振込案内（LINE連携時は LINE、無ければメール）
   let bankPushed = false;
@@ -2259,6 +2287,7 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '顧客名簿（LINE連携）の自動更新', '毎日 朝7時', '稼働中', 'LINE連携した顧客を重複整理し、購入額の多い順に名簿シートへ毎日作り直す（この自動処理が正・手で書き換えても翌日消える）'],
   ['社内シート', 'VIP内・割引客の自動判定', '毎日 朝7時', '稼働中', '「値引き＋セット」で買っている金額の割合が45%以上の人を自動で拾い、SNS運用管理シートの「VIP_割引客判定」タブに毎日作り直す。新EC分は注文明細×商品価格で自動計算、Shopify(旧サイト)分は自動取得できないため「Shopify購入_スナップショット」タブの実測値を読む（月1回 手で取り直す）。2026-09-05追加'],
   ['公式LINE', '配信ごとの開封率・クリックを毎朝記録', '毎朝10時ごろ', '稼働中', 'LINEマネージャー画面から配信ごとの開封率・ECクリック・売上を取り「LINE開封_自動」タブに毎朝まとめる（ブラウザ操作のためPC/アプリ起動中に実行するローカル定期タスク）。2026-08-23追加＝LINEのログインが切れている時はシートを書き換えずに中止し、r.tasaki@ へメールで知らせる（2026-08-09〜08-23はログイン切れのまま黙って止まり、2週間分の数字が古いままだった）'],
+  ['公式LINE', '配信ログへの数字の自動記入', '毎日1回（SNS運用管理シートの毎時処理の中で）', '稼働中', '配信ログ（1配信＝1行の正の記録）に、開封数・LINEのクリック数・配信後の注文件数・売上・配信リンクのクリック数を毎日自動で入れる。これまで人が手で書き写していた作業。開封とクリックは4〜6日かけて伸びるので直近10日ぶんを毎日取り直す。同じ時間帯に2本出した回は注文と売上を共通の窓で数え、その行に「合算値なので足し算しない」と注記する。開封数だけはLINEマネージャーにログインしないと取れないため「LINE開封_自動」タブ経由で、3日以上取れていなければ r.tasaki@ へメールで知らせる。今すぐ回したいときはSNS運用管理シートのメニュー「ECマーケ更新 ＞ 配信ログの数字を今すぐ更新」。2026-09-13追加'],
   ['EC', '発送リマインド', '毎朝8時', '稼働中', 'お客様の到着希望日から逆算して「そろそろ発送して」を社内に通知（東日本は4日前・西日本は3日前）'],
   ['EC', '振込のお願い催促', '毎朝10時', '稼働中', '銀行振込を選んだのに未入金の人を見つけてリマインドを送る'],
   ['EC', '発送リストを自動更新', '30分ごと', '稼働中', '発送すべき注文を、伝票印刷用の一覧に常に最新化する'],
@@ -2501,10 +2530,27 @@ function finalizeOrder(session) {
         if (meta.delivery_date) { var _cd = sh.getRange(_appended, _ensureCol('delivery_date')); _cd.setNumberFormat('@'); _cd.setValue(meta.delivery_date); }
         if (meta.delivery_time) { var _ct = sh.getRange(_appended, _ensureCol('delivery_time')); _ct.setNumberFormat('@'); _ct.setValue(meta.delivery_time); }
       }
+      /* 🧾 請求リンク経由なら、注文行に控えの目印を残す（あとで突き合わせできるように） */
+      if (meta.invoice_no || meta.invoice_link_id) {
+        var _hdr2 = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+        var _row2 = sh.getLastRow();
+        var _ensure2 = function (name) {
+          var idx = _hdr2.indexOf(name);
+          if (idx === -1) { sh.getRange(1, _hdr2.length + 1).setValue(name); _hdr2.push(name); idx = _hdr2.length - 1; }
+          return idx + 1;
+        };
+        if (meta.invoice_no) sh.getRange(_row2, _ensure2('invoice_no')).setValue(meta.invoice_no);
+        if (meta.invoice_link_id) sh.getRange(_row2, _ensure2('invoice_link_id')).setValue(meta.invoice_link_id);
+      }
     } catch (e) { log('delivery_write_error', { order: orderNum, error: e.message }); }
   } finally {
     lock.releaseLock();
   }
+
+  /* 🧾 請求リンクの控えに結果を書き戻す */
+  markInvoiceLink_(meta.invoice_link_id, meta.invoice_no,
+    (String(session.payment_status || '').toLowerCase() === 'paid' ? '支払済み（カード）' : '申込あり（' + (session.payment_status || '確認中') + '）'),
+    orderNum);
 
   // 顧客への受注通知 (①注文確定):
   //   LINE 連携済み → LINE で簡潔に送り、メールは送らない (Tom 指示: LINE繋がってる方はメールNG)。
@@ -6252,6 +6298,12 @@ function staffConfirmPayment(body) {
         sh.getRange(i + 1, _pIdx + 1).setValue(paidAt);
       } catch (e) { log('paid_at_write_error', { order: body.order_number, error: e.message }); }
 
+      /* 🧾 請求リンク経由の注文なら、控えの行も「入金済み」に変える */
+      try {
+        var _ref = invoiceRefFromOrderRow_(headers, data[i]);
+        markInvoiceLink_(_ref.rid, _ref.no, '入金済み（振込）', body.order_number);
+      } catch (e) { log('mark_invoice_link_confirm_error', { order: body.order_number, error: e.message }); }
+
       // 在庫減算（card と同様、入金確定時に減算）。失敗してもステータス更新は維持。
       try {
         decrementStockAfterOrder({}, { items_json: itemsIdx >= 0 ? String(data[i][itemsIdx] || '[]') : '[]' });
@@ -7501,12 +7553,26 @@ function subStripeApply_(action, email, extra) {
    がどこからも追えない（画面を閉じた時点で消える）。
    そこで、発行した時点で控えを1行だけ残す。
 
-   ・注文ではない。入金・発送・在庫はこの行とは一切関係しない。
+   ・注文ではない。発行しただけの段階では、入金・発送・在庫に無関係。
    ・新しいものが一番上（見出しの直下に差し込む）。
    ・同じ請求番号で2回押せば2行になる＝「出し直した」履歴として残す。
+   ・お客様が申し込む／払うと、その行の「状況」と「注文番号」が自動で埋まる
+     （markInvoiceLink_ を注文の各段から呼ぶ）。目印は URL の rid＝控えID。
    ============================================================ */
 var INVOICE_LINK_TAB = '請求リンク';
-var INVOICE_LINK_HEADERS = ['日時', '請求番号', 'お客様名', '品目', '請求合計', '税の扱い', '送料', 'ひとこと', 'リンク'];
+var INVOICE_LINK_HEADERS = ['日時', '請求番号', 'お客様名', '品目', '請求合計', '税の扱い', '送料',
+                            'ひとこと', 'リンク', '状況', '注文番号', '更新日時', '控えID'];
+
+/* 見出しに無い列は右端に足す（既に使っている表を壊さずに列を増やすため） */
+function invoiceLinkSheet_() {
+  var sh = sheet(INVOICE_LINK_TAB, INVOICE_LINK_HEADERS);
+  if (sh.getLastRow() < 1) { sh.appendRow(INVOICE_LINK_HEADERS); sh.setFrozenRows(1); }
+  var hdr = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0];
+  INVOICE_LINK_HEADERS.forEach(function (name) {
+    if (hdr.indexOf(name) === -1) { sh.getRange(1, hdr.length + 1).setValue(name); hdr.push(name); }
+  });
+  return { sh: sh, hdr: hdr, col: function (name) { return hdr.indexOf(name) + 1; } };
+}
 
 function staffInvoiceLinkLog(body) {
   var b = body || {};
@@ -7516,30 +7582,94 @@ function staffInvoiceLinkLog(body) {
     return jsonResponse({ ok: false, error: '品目名と金額が必要です' });
   }
 
-  var sh = sheet(INVOICE_LINK_TAB, INVOICE_LINK_HEADERS);
-  if (sh.getLastRow() < 1) {           /* 見出しだけ無い状態を作らない */
-    sh.appendRow(INVOICE_LINK_HEADERS);
-    sh.setFrozenRows(1);
-  }
+  var t = invoiceLinkSheet_();
+  var values = {
+    '日時': new Date(),
+    '請求番号': String(b.no || '').slice(0, 40),
+    'お客様名': String(b.to || '').slice(0, 40),
+    '品目': label,
+    '請求合計': total,
+    '税の扱い': (b.tax === 'out' ? '税別（+10%）' : '税込'),
+    '送料': Number(b.ship) || 0,
+    'ひとこと': String(b.note || '').slice(0, 200),
+    'リンク': String(b.url || '').slice(0, 2000),
+    '状況': '発行済み（まだ申込なし）',
+    '注文番号': '',
+    '更新日時': '',
+    '控えID': String(b.rid || '').slice(0, 24)
+  };
 
-  var row = [
-    new Date(),
-    String(b.no || '').slice(0, 40),
-    String(b.to || '').slice(0, 40),
-    label,
-    total,
-    (b.tax === 'out' ? '税別（+10%）' : '税込'),
-    Number(b.ship) || 0,
-    String(b.note || '').slice(0, 200),
-    String(b.url || '').slice(0, 2000)
-  ];
+  t.sh.insertRowBefore(2);
+  var row = t.hdr.map(function (h) { return Object.prototype.hasOwnProperty.call(values, h) ? values[h] : ''; });
+  t.sh.getRange(2, 1, 1, row.length).setValues([row]);
+  t.sh.getRange(2, t.col('日時')).setNumberFormat('yyyy/MM/dd HH:mm');
+  t.sh.getRange(2, t.col('請求合計')).setNumberFormat('#,##0');
+  t.sh.getRange(2, t.col('送料')).setNumberFormat('#,##0');
 
-  sh.insertRowBefore(2);
-  sh.getRange(2, 1, 1, row.length).setValues([row]);
-  sh.getRange(2, 1).setNumberFormat('yyyy/MM/dd HH:mm');
-  sh.getRange(2, 5).setNumberFormat('#,##0');
-  sh.getRange(2, 7).setNumberFormat('#,##0');
-
-  log('staff_invoice_link_log', { no: row[1], total: total });
+  log('staff_invoice_link_log', { no: values['請求番号'], total: total, rid: values['控えID'] });
   return jsonResponse({ ok: true, tab: INVOICE_LINK_TAB });
+}
+
+/* ------------------------------------------------------------
+   控えの行に「どうなったか」を書き戻す
+     rid      … 控えID（URL の rid）。これが一番確実な目印。
+     no       … 請求番号。控えIDが無い古いリンク用の予備。
+     status   … 申込あり（入金待ち）/ 支払済み（カード）/ 入金済み など
+     orderNum … 注文番号
+   見つからなければ何もしない（注文そのものは絶対に止めない）。
+   ------------------------------------------------------------ */
+function markInvoiceLink_(rid, no, status, orderNum) {
+  try {
+    rid = String(rid || '').trim();
+    no  = String(no  || '').trim();
+    if (!rid && !no) return;
+    if (!ss().getSheetByName(INVOICE_LINK_TAB)) return;   /* 控えを一度も残していない運用なら何もしない */
+
+    var t = invoiceLinkSheet_();
+    var last = t.sh.getLastRow();
+    if (last < 2) return;
+
+    var cRid = t.col('控えID'), cNo = t.col('請求番号');
+    var ridCol = t.sh.getRange(2, cRid, last - 1, 1).getValues();
+    var noCol  = t.sh.getRange(2, cNo,  last - 1, 1).getValues();
+
+    var target = -1;
+    if (rid) {
+      for (var i = 0; i < ridCol.length; i++) {
+        if (String(ridCol[i][0] || '').trim() === rid) { target = i + 2; break; }
+      }
+    }
+    /* 控えIDが付く前に発行したリンクは請求番号で拾う（新しい行が上なので最初に当たった行＝最新） */
+    if (target === -1 && no) {
+      for (var j = 0; j < noCol.length; j++) {
+        if (String(noCol[j][0] || '').trim() === no) { target = j + 2; break; }
+      }
+    }
+    if (target === -1) return;
+
+    t.sh.getRange(target, t.col('状況')).setValue(status);
+    if (orderNum) t.sh.getRange(target, t.col('注文番号')).setValue(orderNum);
+    var c = t.sh.getRange(target, t.col('更新日時'));
+    c.setValue(new Date());
+    c.setNumberFormat('yyyy/MM/dd HH:mm');
+  } catch (e) {
+    log('mark_invoice_link_error', { rid: rid, no: no, status: status, error: e.message });
+  }
+}
+
+/* 注文の行から控えIDと請求番号を取り出す（列が無い古い行でも落ちない） */
+function invoiceRefFromOrderRow_(headers, row) {
+  var get = function (name) {
+    var i = headers.indexOf(name);
+    return i >= 0 ? String(row[i] || '').trim() : '';
+  };
+  var rid = get('invoice_link_id'), no = get('invoice_no');
+  if (!rid && !no) {                       /* 列が無い時代の行は metadata_json から拾う */
+    try {
+      var m = JSON.parse(get('metadata_json') || '{}');
+      rid = String(m.invoice_link_id || '').trim();
+      no  = String(m.invoice_no || '').trim();
+    } catch (e) {}
+  }
+  return { rid: rid, no: no };
 }
