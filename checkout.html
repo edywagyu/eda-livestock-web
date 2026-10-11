@@ -1545,7 +1545,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 <!-- 🔴 gift-rules.js は下のインライン定義(_GR)より先に読む。後ろに置くと
      window.EDA_GIFT_RULES がまだ無い状態で評価され、checkout.html は
      常にフォールバック側の値で動く（2026-09-08 発見）。 -->
-<script src="public/js/gift-rules.js?v=008"></script>
+<script src="public/js/gift-rules.js?v=009"></script>
 <script>
 /* ============================================================
  * 4購入導線統合 Checkout — Mode 自動判定
@@ -1728,47 +1728,58 @@ function currentReward() {
 var CAMPAIGN_GIFT = (function () {
   var c = _GR && _GR.CAMPAIGN;
   if (c) return {
-    title: c.title, variant: c.variant, qty: c.qty, label: c.label, img: c.img,
-    minSubtotal: c.minSubtotal, from: _GR.at(c.from), until: _GR.at(c.until)
+    label: c.label, minSubtotal: c.minSubtotal,
+    from: _GR.at(c.from), until: _GR.at(c.until),
+    items: _GR.campaignItems()
   };
   return {                                          // gift-rules.js が読めなかったとき用
-    title: 'バラ焼肉',              // ← products の name と完全一致
-    variant: '1袋 200g',
-    qty: 1,
-    label: 'バラ焼肉プレゼント',
-    img: 'public/images/products/drive/yakiniku-brisket-2026.jpg',
-    minSubtotal: 0,                                 // 肉の日は金額条件なし（全注文）
-    from:  new Date(2026, 8, 28, 14, 0, 0),
-    until: new Date(2026, 8, 29, 23, 59, 59)
+    label: '¥15,000以上プレゼント',
+    minSubtotal: 15000,
+    from:  new Date(2026, 9, 6, 18, 0, 0),          // 月は 0 始まり＝9 は10月
+    until: new Date(2026, 9, 11, 23, 59, 59),
+    items: [                                        // ← title は products の name と完全一致
+      { title: 'ミンチ',   variant: '1袋 200g', qty: 1,
+        img: 'public/images/products/drive/minced.jpg' },
+      { title: 'バラ焼肉', variant: '1袋 200g', qty: 1,
+        img: 'public/images/products/drive/yakiniku-brisket-2026.jpg' }
+    ]
   };
 })();
-var campaignGiftDropped = false;
+/* 在庫/カート確保で弾かれた品だけを覚える（{ 商品名: true }）。
+   🔴 真偽値1つにすると、2品のうち1品が在庫切れしただけで特典が丸ごと消える。 */
+var campaignGiftDropped = {};
 
-/* いま付くキャンペーン特典（無ければ null）。条件は都度評価する＝金額条件を
-   設けているときは小計を割ったら消える／ギフトだけの注文には付かない／期間外は付かない。 */
-function currentCampaignGift() {
-  if (campaignGiftDropped || subscription) return null;        // 定期便はプランに込みなので対象外
+/* いま付くキャンペーン特典（無ければ空配列）。条件は都度評価する＝金額条件を
+   設けているときは小計を割ったら消える／ギフトだけの注文には付かない／期間外は付かない。
+   🔴 2026-10-11 から特典は複数品になりうる。在庫を割った品だけが外れ、
+      残りの品は付いたままにする＝1品の在庫切れで特典が全部消えない。 */
+function currentCampaignGifts() {
+  if (subscription) return [];                                 // 定期便はプランに込みなので対象外
   var now = new Date();
-  if (now < CAMPAIGN_GIFT.from || now > CAMPAIGN_GIFT.until) return null;
+  if (now < CAMPAIGN_GIFT.from || now > CAMPAIGN_GIFT.until) return [];
   var selfIds = (destinations[0] && destinations[0].itemIds) || [];
-  if (!selfIds.length) return null;                            // 自宅に届く荷物が無い注文には付けない
+  if (!selfIds.length) return [];                              // 自宅に届く荷物が無い注文には付けない
   var selfSubtotal = selfIds.reduce(function (sum, i) {
     var it = cartItems[i]; return it ? sum + discountedUnit(it.price || 0) * (it.qty || 1) : sum;
   }, 0);
-  if (selfSubtotal < CAMPAIGN_GIFT.minSubtotal) return null;
-  var stock = rewardStock[CAMPAIGN_GIFT.title];
-  if (typeof stock === 'number' && stock < CAMPAIGN_GIFT.qty) return null;  // 在庫割れは混ぜない
-  return {
-    title: CAMPAIGN_GIFT.title,
-    variant: CAMPAIGN_GIFT.variant + ' ／' + REWARD_MARK + CAMPAIGN_GIFT.label,
-    qty: CAMPAIGN_GIFT.qty, price: 0, baseUnit: 0, img: CAMPAIGN_GIFT.img,
-    label: CAMPAIGN_GIFT.label, reward: true
-  };
+  if (selfSubtotal < CAMPAIGN_GIFT.minSubtotal) return [];
+  return CAMPAIGN_GIFT.items.filter(function (g) {
+    if (campaignGiftDropped[g.title]) return false;            // 一度弾かれた品は足し直さない
+    var stock = rewardStock[g.title];
+    return !(typeof stock === 'number' && stock < g.qty);      // 在庫割れは混ぜない
+  }).map(function (g) {
+    return {
+      title: g.title,
+      variant: g.variant + ' ／' + REWARD_MARK + CAMPAIGN_GIFT.label,
+      qty: g.qty, price: 0, baseUnit: 0, img: g.img,
+      label: CAMPAIGN_GIFT.label, reward: true
+    };
+  });
 }
 
 /* いま付く ¥0 の特典すべて（購入回数特典 + キャンペーン特典）。表示・payload とも必ずこれを通す。 */
 function currentGifts() {
-  return [currentReward(), currentCampaignGift()].filter(Boolean);
+  return [currentReward()].filter(Boolean).concat(currentCampaignGifts());
 }
 
 /* 注文回数と特典商品の在庫を1回だけ取りに行く（メール確定のたび・相手が変わったときだけ） */
@@ -1782,7 +1793,7 @@ async function postOrderWithRewardFallback(action, payload) {
   }) : [];
   if (hit.length) {
     hit.forEach(function (g) {
-      if (g.label === CAMPAIGN_GIFT.label) campaignGiftDropped = true; else rewardDropped = true;
+      if (g.label === CAMPAIGN_GIFT.label) campaignGiftDropped[g.title] = true; else rewardDropped = true;
     });
     payload.items = buildPayloadItems();
     var _keep = currentGifts();   /* 落ちなかった方の特典は残す */
@@ -3669,7 +3680,7 @@ try { scheduleRepeatShipCheck(); } catch (e) {}
 
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
-<script src="public/js/gift-notice.js?v=006" defer></script>
+<script src="public/js/gift-notice.js?v=007" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=011" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>

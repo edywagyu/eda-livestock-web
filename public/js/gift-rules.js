@@ -40,25 +40,47 @@
       4: { title: '赤身焼肉',      variant: '1袋 200g', qty: 1, label: '4回目ご注文特典', img: 'public/images/products/drive/akami-yakiniku.jpg' }
     },
 
-    /* キャンペーン特典（¥0 で同梱する1品）。期間を過ぎたら自動で付かなくなる＝撤去作業は不要。
-       2026-09-28 更新（田崎さん指示）: 9/29 の肉の日にあわせて「バラ焼肉 1袋」を全注文に。
-         ・🔴 金額条件なし（minSubtotal: 0）＝自宅に届く荷物がある注文なら必ず1袋付く。
-           金額で絞りたくなったらここに数字を戻すだけでよい。
-         ・9/28(月) 14:00 〜 9/29(火) 23:59。田崎さん指示で当日14時台から即開始
-           （当初は 19:00 開始で作ったが「今の時間から本番反映していい」に変更）。
-         ・バラ焼肉の在庫（9/28時点 31袋）が特典ぶんを割ったら checkout.html 側で
-           自動的に付かなくなる＝売り越さない。ただし焼肉セット・はじめてセット等の
-           構成品でもあるので、在庫はキャンペーン中に見ておく。
-       前回は 2026-09-07 の切り落とし1袋・¥10,000以上だった。 */
+    /* キャンペーン特典（¥0 で同梱する品）。期間を過ぎたら自動で付かなくなる＝撤去作業は不要。
+       2026-10-11 更新（田崎さん指示）: 公式LINEで 10/6・10/8・10/11 の3配信で告知した
+       「¥15,000以上のご注文に 和牛ミンチ200g＋バラ焼肉200g の2袋」。
+         ・🔴 ここが2品になったのは今回が初めて。items 配列が正で、1品だけのときも
+           items に1件書く。古い単品キー(title/variant/qty/img)も読めるようにしてあるが、
+           新しく書くときは items を使う。
+         ・🔴 title は products シートの name と1文字も変えない。和牛ミンチの name は
+           「和牛ミンチ」ではなく『ミンチ』。お客様に見せる名前は display に書く。
+         ・¥15,000 は「自宅に届く荷物」の小計で判定する（ギフトだけの注文には付かない）。
+         ・10/6(火) 18:00 〜 10/11(日) 23:59。配信本文の締切と1分もズラさない。
+         ・ミンチ・バラ焼肉とも他のセットの構成品でもあるので、在庫はキャンペーン中に見ておく。
+           在庫を割った品は checkout.html 側で自動的に外れる＝売り越さない。
+       前回は 2026-09-29 の肉の日・バラ焼肉1袋・金額条件なしだった。 */
     CAMPAIGN: {
-      title: 'バラ焼肉',                  /* ← products の name と1文字も変えない */
-      variant: '1袋 200g',
-      qty: 1,
-      label: 'バラ焼肉プレゼント',
-      img: 'public/images/products/drive/yakiniku-brisket-2026.jpg',
-      minSubtotal: 0,                     /* 0 = 金額条件なし（全注文） */
-      from:  [2026, 8, 28, 14, 0, 0],     /* 月は 0 始まり＝8 は9月 */
-      until: [2026, 8, 29, 23, 59, 59]
+      label: '¥15,000以上プレゼント',
+      minSubtotal: 15000,                 /* 0 = 金額条件なし（全注文） */
+      from:  [2026, 9, 6, 18, 0, 0],      /* 月は 0 始まり＝9 は10月 */
+      until: [2026, 9, 11, 23, 59, 59],
+      items: [
+        { title: 'ミンチ',   variant: '1袋 200g', qty: 1, display: '和牛ミンチ 200g',
+          img: 'public/images/products/drive/minced.jpg' },
+        { title: 'バラ焼肉', variant: '1袋 200g', qty: 1, display: 'バラ焼肉 200g',
+          img: 'public/images/products/drive/yakiniku-brisket-2026.jpg' }
+      ]
+    },
+
+    /* キャンペーン特典の品を配列で返す。items があればそれ、無ければ古い単品キーを
+       1件の配列に包む＝過去の書き方のまま置いてある CAMPAIGN も壊さない。 */
+    campaignItems: function () {
+      var c = this.CAMPAIGN;
+      if (!c) return [];
+      if (c.items && c.items.length) return c.items;
+      return c.title ? [{ title: c.title, variant: c.variant, qty: c.qty, display: c.display, img: c.img }] : [];
+    },
+
+    /* お客様に見せる1行（「和牛ミンチ 200g＋バラ焼肉 200g」）。display があればそれを使う。
+       display が無い品は「名前 variant」で組む＝古い書き方でも文章になる。 */
+    campaignText: function () {
+      return this.campaignItems().map(function (i) {
+        return (i.display || (i.title + ' ' + i.variant)) + (i.qty > 1 ? '×' + i.qty : '');
+      }).join('＋');
     },
 
     /* 配列 → Date。checkout.html と gift-notice.js で同じ解釈をさせるため。 */

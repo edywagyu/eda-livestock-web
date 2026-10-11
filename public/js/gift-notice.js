@@ -82,12 +82,14 @@
         : { on: false, text: 'あと ' + yen(R.REWARD_MIN_SUBTOTAL - sub) + ' で ' + r.title + ' が付いてきます', sub: r.label });
     }
 
-    /* ② 肉の日キャンペーン特典（期間内だけ） */
+    /* ② キャンペーン特典（期間内だけ）。2026-10-11 から複数品になりうるので
+       品名は campaignText() が組む1行を使う＝ここで名前を組み直さない。 */
     var C = R.CAMPAIGN, now = new Date();
     if (C && now >= R.at(C.from) && now <= R.at(C.until)) {
+      var cText = R.campaignText();
       rows.push(sub >= C.minSubtotal
-        ? { on: true,  text: C.title + ' ' + C.variant + ' が付いてきます', sub: C.label }
-        : { on: false, text: 'あと ' + yen(C.minSubtotal - sub) + ' で ' + C.title + ' が付いてきます', sub: C.label });
+        ? { on: true,  text: cText + ' が付いてきます', sub: C.label }
+        : { on: false, text: 'あと ' + yen(C.minSubtotal - sub) + ' で ' + cText + ' が付いてきます', sub: C.label });
     }
 
     if (!rows.length) return null;
@@ -138,9 +140,10 @@
     if (now < R.at(C.from) || now > R.at(C.until)) return null;   /* 期間外は何も出さない */
     var sub = cartSubtotal();
     if (sub <= 0) return null;                                    /* 空カートには出さない */
+    var cText = R.campaignText();
     return sub >= C.minSubtotal
-      ? { on: true,  html: '🎁 <strong>' + esc(C.title) + ' ' + esc(C.variant) + '</strong> をお付けします' }
-      : { on: false, html: 'あと<strong>' + esc(yen(C.minSubtotal - sub)) + '</strong>で ' + esc(C.title) + ' ' + esc(C.variant) + ' をプレゼント' };
+      ? { on: true,  html: '🎁 <strong>' + esc(cText) + '</strong> をお付けします' }
+      : { on: false, html: 'あと<strong>' + esc(yen(C.minSubtotal - sub)) + '</strong>で ' + esc(cText) + ' をプレゼント' };
   }
 
   /* 既存の「あと¥◯◯で送料無料」の真下と、決済画面のサマリー末尾に1行足す。
@@ -188,7 +191,7 @@
     var cond = (C && C.minSubtotal > 0)
       ? yen(C.minSubtotal) + '以上のご注文で'
       : 'ご注文の方全員に';
-    var item = C ? C.title + ' ' + C.variant + (C.qty > 1 ? '×' + C.qty : '') : '';
+    var item = C ? R.campaignText() : '';
     var html = C ? ('<div class="gcb-inner">'
       + '<span class="gcb-badge">🎁 プレゼント</span>'
       + '<span class="gcb-copy">'
