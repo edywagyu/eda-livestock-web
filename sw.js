@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-10-12-369-no-parens-no-sirloin';
+const CACHE_VERSION = 'eda-v2026-10-12-370-master-v-bump';
 const CORE_ASSETS = [
   './',
   'index.html',
