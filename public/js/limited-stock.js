@@ -286,13 +286,18 @@
   function labelFor(info, bare) {
     if (info.upcoming) return fmtDateShort(info.startAt) + '発売';  /* 発売前＝予告 */
     if (info.closed) return '完売しました';       /* 販売停止＝在庫が残っていても完売表示 */
-    if (info.available > 0) return (bare ? '' : '残り') + info.available + info.unit;
+    /* 🔴2026-10-11 田崎さん指示: 残数（個数）は決して表示しない。
+       在庫が残っているあいだはラベルを出さず、完売・確保中・発売前だけ出す。 */
+    if (info.available > 0) return '';
     /* 在庫はあるが全部が確保中 → 30分で解放されるので「完売」とは書かない */
     return info.stock > 0 ? 'ただいま他のお客様が確保中' : '完売しました';
   }
 
   function applyState(el, info, bare) {
-    el.textContent = labelFor(info, bare);
+    var txt = labelFor(info, bare);
+    el.textContent = txt;
+    /* 🔴ラベルが空（＝残数を出さないケース）のときは枠ごと隠す。空の赤バッジを残さない。 */
+    el.style.display = txt ? '' : 'none';
     el.classList.toggle('is-upcoming', !!info.upcoming);
     el.classList.toggle('is-soldout', !info.upcoming && info.available <= 0);
     el.classList.toggle('is-low', !info.upcoming && info.available > 0 && info.available <= LOW_AT);
