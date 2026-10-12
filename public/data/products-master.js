@@ -665,6 +665,113 @@
       description: 'ステーキ3種を食べ比べていただけるセットです。サーロイン200g（サシの入った定番）、赤身ステーキ200g（モモの赤身。肉の味がはっきり出ます）、ミスジ150g（肩甲骨の内側から数枚しか取れない部位）。計550g。単品で揃えると ¥10,500 のところ、セットで ¥8,980。35ヶ月以上かけて育てた、抗生物質・ホルモン剤不使用の江田和牛です。冷凍便でお届けします。',
       images: ['public/images/products/drive/steak3-set.jpg']
     },
+    /* =====================================================================
+       公式LINE配信用 セット4本（2026-10-12 ryotaro指示・P058〜P061）
+       ---------------------------------------------------------------------
+       10/14(水)18:30  P058 江田和牛 少量お試し3種セット     ¥4,480
+       10/15(木)18:30  P059 江田和牛 食卓ストック3種セット   ¥5,350
+       10/17(土)18:30  P060 江田和牛 焼肉食べ比べセット〈ミンチ付き〉 ¥4,980
+       10/18(日)18:30  P061 江田和牛 焼肉食べ比べセット     ¥3,980
+
+       🔴 ローンチ＝limitedStartAt。その時刻までカードは「10/14（水）発売」の
+          予告表示で購入不可、時刻を過ぎると自動で購入可になる（手動publish不要）。
+          limitedTotal はこの仕組みを有効にするためだけの値で、画面には出ない
+          （残数＝個数は出さない方針／2026-10-11 ryotaro確定）。
+          limitedSoldOutAt / limitedUntil は入れていない＝締切なしで売り続ける。
+       🔴 components あり＝stock は applyBomStock が構成品から
+          「あと何セット作れるか」に再計算する。ここの stock は取得失敗時の
+          フォールバックで、実在庫は products シートの構成品が正。
+          4本とも 赤身焼肉／バラ焼肉／切り落とし／ミンチ／サイコロステーキ を
+          単品・既存セット（P045 はじめて／P046 焼肉／P049 YAIBA）と共有する。
+       ⚠️ 画像は P061 以外、内容と一致した写真がまだ無い。暫定で主材の写真を
+          当てている（差し替え前提）。
+       ===================================================================== */
+
+    /* ===== P058 少量お試し3種（10/14 18:30 発売）=====
+       単品合計 ¥4,750（サイコロ1,800＋切り落とし1,600＋ミンチ1,350）→ ¥4,480。 */
+    {
+      productId: 'P058', variantId: 'TRIAL3-SET', sku: 'EDA-TRIAL3-SET',
+      stripePriceId: '',
+      name: '江田和牛 少量お試し3種セット', variant: 'サイコロステーキ200g＋切り落とし200g＋ミンチ200g 計600g',
+      price: 4480, listPrice: 4750, weight: 600, stock: 22, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Trial 3 Cuts Set',
+      components: [
+        { name: 'サイコロステーキ', qty: 1 },
+        { name: '切り落とし',       qty: 1 },
+        { name: 'ミンチ',           qty: 1 }
+      ],
+      limitedTotal: 20,                        /* 表示には出ない。発売日ゲートを有効にするだけ */
+      limitedStartAt: '2026/10/14 18:30',
+      limitedUnit: 'セット',
+      description: '江田和牛をはじめて試していただくための、少量3種セットです。サイコロステーキ200g（焼くだけ）、切り落とし200g（炒め物・牛丼）、ミンチ200g（そぼろ・ハンバーグ）。計600g。単品で揃えると ¥4,750 のところ、セットで ¥4,480。35ヶ月以上かけて育てた、抗生物質・ホルモン剤不使用の江田和牛です。冷凍便でお届けします。',
+      images: ['public/images/products/drive/cube-steak-2026.jpg']
+    },
+
+    /* ===== P059 食卓ストック3種（10/15 18:30 発売）=====
+       ⚠️ 単品合計 ¥5,350（赤身焼肉2,400＋切り落とし1,600＋ミンチ1,350）＝販売価格と同額。
+          割引が無いので listPrice は入れない（取り消し線を出すと有利誤認になる）。 */
+    {
+      productId: 'P059', variantId: 'STOCK3-SET', sku: 'EDA-STOCK3-SET',
+      stripePriceId: '',
+      name: '江田和牛 食卓ストック3種セット', variant: '赤身焼肉200g＋切り落とし200g＋ミンチ200g 計600g',
+      price: 5350, weight: 600, stock: 41, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Everyday Stock 3 Cuts Set',
+      components: [
+        { name: '赤身焼肉',   qty: 1 },
+        { name: '切り落とし', qty: 1 },
+        { name: 'ミンチ',     qty: 1 }
+      ],
+      limitedTotal: 20,
+      limitedStartAt: '2026/10/15 18:30',
+      limitedUnit: 'セット',
+      description: '冷凍庫に置いておく3種です。赤身焼肉200g（焼肉・ステーキ風に）、切り落とし200g（炒め物・牛丼）、ミンチ200g（そぼろ・ハンバーグ）。計600g。小分けの袋で届くので、使う分だけ解凍できます。35ヶ月以上かけて育てた、抗生物質・ホルモン剤不使用の江田和牛です。冷凍便でお届けします。',
+      images: ['public/images/products/drive/akami-yakiniku.jpg']
+    },
+
+    /* ===== P060 焼肉食べ比べ〈ミンチ付き〉（10/17 18:30 発売）=====
+       単品合計 ¥5,650（赤身焼肉2,400＋バラ焼肉1,900＋ミンチ1,350）→ ¥4,980（11.9%引き）。 */
+    {
+      productId: 'P060', variantId: 'YAKINIKU3-SET', sku: 'EDA-YAKINIKU3-SET',
+      stripePriceId: '',
+      name: '江田和牛 焼肉食べ比べセット〈ミンチ付き〉', variant: '赤身焼肉200g＋バラ焼肉200g＋ミンチ200g 計600g',
+      price: 4980, listPrice: 5650, weight: 600, stock: 28, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku Tasting Set with Minced',
+      components: [
+        { name: '赤身焼肉', qty: 1 },
+        { name: 'バラ焼肉', qty: 1 },
+        { name: 'ミンチ',   qty: 1 }
+      ],
+      limitedTotal: 20,
+      limitedStartAt: '2026/10/17 18:30',
+      limitedUnit: 'セット',
+      description: '赤身とバラを食べ比べていただく焼肉セットに、ミンチ200gを付けました。赤身焼肉200g（モモ。肉の味がはっきり出ます）、バラ焼肉200g（サシが多く、焼くと甘い脂が出ます）、ミンチ200g（そぼろ・ハンバーグ）。計600g。単品で揃えると ¥5,650 のところ、セットで ¥4,980。35ヶ月以上かけて育てた、抗生物質・ホルモン剤不使用の江田和牛です。冷凍便でお届けします。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
+    },
+
+    /* ===== P061 焼肉食べ比べ（10/18 18:30 発売）=====
+       単品合計 ¥4,300（赤身焼肉2,400＋バラ焼肉1,900）→ ¥3,980（7.4%引き）。
+       ⚠️ 中身は P033「LINE会員限定 焼肉2種セット」(¥3,800・published=FALSE) と同一。
+          あちらは非公開のままなので店頭では重複しない。 */
+    {
+      productId: 'P061', variantId: 'YAKINIKU2-SET', sku: 'EDA-YAKINIKU2-SET',
+      stripePriceId: '',
+      name: '江田和牛 焼肉食べ比べセット', variant: '赤身焼肉200g＋バラ焼肉200g 計400g',
+      price: 3980, listPrice: 4300, weight: 400, stock: 28, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku Tasting Set',
+      components: [
+        { name: '赤身焼肉', qty: 1 },
+        { name: 'バラ焼肉', qty: 1 }
+      ],
+      limitedTotal: 20,
+      limitedStartAt: '2026/10/18 18:30',
+      limitedUnit: 'セット',
+      description: '赤身とバラを食べ比べていただく焼肉セットです。赤身焼肉200g（モモ。肉の味がはっきり出ます）、バラ焼肉200g（サシが多く、焼くと甘い脂が出ます）。計400g、2人前ほど。単品で揃えると ¥4,300 のところ、セットで ¥3,980。35ヶ月以上かけて育てた、抗生物質・ホルモン剤不使用の江田和牛です。冷凍便でお届けします。',
+      images: ['public/images/products/drive/yakiniku-set-2.jpg']
+    },
     /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
