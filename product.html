@@ -1013,8 +1013,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      ENDED_PRODUCT_IDS はマスターに残したまま伏せたい商品を並べる欄。
      ・P029 無投薬 あったら便利3種セット … 2026-08-03 に店頭から撤去
        (本番DBは published=FALSE / stock=0。products-loader.js は非公開行も
-        含めて EDA_PRODUCTS_MASTER に載せるため、明示的に伏せておく) */
-  const ENDED_PRODUCT_IDS = ['P029'];
+        含めて EDA_PRODUCTS_MASTER に載せるため、明示的に伏せておく)
+     ・P043 不揃いセット / P051 ステーキ3種 食べ比べセット … 2026-10-12 に店頭から撤去
+       (本番DBは published=FALSE / stock=0。ただしこの2品はセット＝components を持ち、
+        products-loader.js の applyBomStock がセット自身の stock を構成品の最小値で
+        上書きするため、stock=0 にしても構成品に在庫がある限り買えてしまう。
+        過去のLINE配信に残る直リンクを塞ぐには、ここに並べるのが唯一の手。) */
+  const ENDED_PRODUCT_IDS = ['P029', 'P043', 'P051'];
   const product = all.find(p => p.productId === productId) || null;
   if (!product || ENDED_PRODUCT_IDS.indexOf(product.productId) >= 0) {
     document.title = 'お取り扱いを終了しました | 江田畜産';
