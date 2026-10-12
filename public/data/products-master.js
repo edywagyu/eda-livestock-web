@@ -725,7 +725,7 @@
       limitedTotal: 20,
       limitedStartAt: '2026/10/15 18:30',
       limitedUnit: 'セット',
-      description: '冷凍庫に置いておく3種です。赤身焼肉200g、切り落とし200g、ミンチ200g。計600g。小分けの袋で届くので、使う分だけ解凍できます。冷凍便でお届けします。',
+      description: '冷凍庫に置いておくと便利な3種をまとめました。赤身焼肉200g、切り落とし200g、ミンチ200g。計600g。小分けの袋で届くので、使う分だけ解凍できます。冷凍便でお届けします。',
       images: ['public/images/products/drive/stock3-set.jpg']
     },
 
@@ -746,7 +746,7 @@
       limitedTotal: 20,
       limitedStartAt: '2026/10/17 18:30',
       limitedUnit: 'セット',
-      description: '赤身とバラを食べ比べていただく焼肉セットに、ミンチ200gを付けました。赤身焼肉200g、バラ焼肉200g、ミンチ200g。計600g。冷凍便でお届けします。',
+      description: '赤身とバラを食べ比べていただく焼肉セットに、ミンチ200gを付けたお得なセットです。赤身焼肉200g、バラ焼肉200g、ミンチ200g。計600g。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku3-set.jpg']
     },
 
@@ -768,7 +768,7 @@
       limitedTotal: 20,
       limitedStartAt: '2026/10/18 18:30',
       limitedUnit: 'セット',
-      description: '赤身とバラを食べ比べていただく焼肉セットです。赤身焼肉200g、バラ焼肉200g。計400g、2人前ほど。冷凍便でお届けします。',
+      description: '赤身とバラが入ったバランスの良いセットです。赤身焼肉200g、バラ焼肉200g。計400g、2人前ほど。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku2-set.jpg']
     },
     /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
