@@ -21,6 +21,8 @@
                                      販促バナーを丸ごと囲えば終了後に自動で消える。
      [data-limited-left="商品名"]  … 中身を「残り◯セット」に置き換える。
                                      手書きのコピーの中に残数を埋め込みたいときに使う。
+     [data-limited-prestart="商品名"] … limitedStartAt が来るまで要素ごと非表示。
+                                     発売前の「◯/◯発売」予告すら出したくないときに使う。
 
    セット商品（components ＝ BOM を持つもの）だけは例外。GAS 側が構成品の在庫で
    在庫チェックと減算をするためセット行の stock が動かず、そのまま出すと
@@ -333,6 +335,26 @@
     });
   }
 
+  /* ①' 発売前は「予告」すら出さず、要素ごと隠す
+     ---------------------------------------------------------------
+     [data-limited-prestart="商品名"] を付けた要素は、limitedStartAt が
+     来るまで丸ごと消える。時刻を過ぎると自動で出てくる(1分ごとに再評価＋
+     GAS在庫更新のたびに再評価)。
+     data-limited-scope が「期間外に消す」のに対し、こちらは「発売前に消す」。
+     公式LINEの先出し告知のように、配信するまで店頭に気配を出したくない
+     商品に使う(2026-10-12 ryotaro指示・P058〜P061)。
+     ⚠️ 隠すのは一覧のカードだけ。product.html?id=… の直リンクは
+        limitedStartAt の発売前ゲート(closePdpSales)が購入を塞ぐ。 */
+  function applyPrestart(active) {
+    ensureEndedCss();
+    document.querySelectorAll('[data-limited-prestart]').forEach(function (el) {
+      var info = active[el.getAttribute('data-limited-prestart')];
+      /* info が無い＝限定設定が外れた/表示期間を過ぎた → 出さない(安全側) */
+      if (info && !info.upcoming) el.removeAttribute(ENDED_ATTR);
+      else el.setAttribute(ENDED_ATTR, '');
+    });
+  }
+
   /* ② 手書きコピーの中の残数プレースホルダ */
   function applyInline(active) {
     document.querySelectorAll('[data-limited-left]').forEach(function (el) {
@@ -503,6 +525,7 @@
     }
     var active = activeLimited();
     applyScopes(active);
+    applyPrestart(active);
     applyInline(active);
     applyCards(active);
     applyPdp(active, endedLimited(), upcomingLimited());

@@ -10086,8 +10086,10 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
       🔴 このカードに reveal を付けない（付けると表示されない）。
       🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 data-limited-prestart … 発売時刻まではカードごと消える（予告も出さない）。
+         18:30 を過ぎると自動で出てくる（limited-stock.js が1分ごとに見直す）。
       data-sub="set" なので部位サブタブには出ず、「すべて」にだけ並ぶ。 -->
- <div class="product-card" data-sub="set" data-variants='[{"id":51014044800581,"t":"1セット","p":4480}]'>
+ <div class="product-card" data-sub="set" data-limited-prestart="江田和牛 少量お試し3種セット" data-variants='[{"id":51014044800581,"t":"1セット","p":4480}]'>
  <div class="product-card-img" data-label="TRIAL3 SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Trial 3 Cuts</span><span class="product-price"><s>&yen;4,750</s> &yen;4,480</span></div>
  <p class="product-name"><a href="product.html?id=P058" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 少量お試し3種セット</a></p>
@@ -10100,7 +10102,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="set" data-variants='[{"id":51015053500591,"t":"1セット","p":5350}]'>
+ <div class="product-card" data-sub="set" data-limited-prestart="江田和牛 食卓ストック3種セット" data-variants='[{"id":51015053500591,"t":"1セット","p":5350}]'>
  <div class="product-card-img" data-label="STOCK3 SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Everyday Stock</span><span class="product-price">&yen;5,350</span></div>
  <p class="product-name"><a href="product.html?id=P059" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 食卓ストック3種セット</a></p>
@@ -10113,7 +10115,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="set" data-variants='[{"id":51017049800601,"t":"1セット","p":4980}]'>
+ <div class="product-card" data-sub="set" data-limited-prestart="江田和牛 焼肉食べ比べセット〈ミンチ付き〉" data-variants='[{"id":51017049800601,"t":"1セット","p":4980}]'>
  <div class="product-card-img" data-label="YAKINIKU3 SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku +Minced</span><span class="product-price"><s>&yen;5,650</s> &yen;4,980</span></div>
  <p class="product-name"><a href="product.html?id=P060" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 焼肉食べ比べセット〈ミンチ付き〉</a></p>
@@ -10126,7 +10128,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="set" data-variants='[{"id":51018039800611,"t":"1セット","p":3980}]'>
+ <div class="product-card" data-sub="set" data-limited-prestart="江田和牛 焼肉食べ比べセット" data-variants='[{"id":51018039800611,"t":"1セット","p":3980}]'>
  <div class="product-card-img" data-label="YAKINIKU2 SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku 2 Cuts</span><span class="product-price"><s>&yen;4,300</s> &yen;3,980</span></div>
  <p class="product-name"><a href="product.html?id=P061" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 焼肉食べ比べセット</a></p>
@@ -15015,7 +15017,7 @@ function copyPopCoupon() {
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
-<script src="public/js/limited-stock.js?v=015" defer></script>
+<script src="public/js/limited-stock.js?v=016" defer></script>
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/eda-bundle.js?v=011" defer></script>
 <!-- 売れ行きランキング（#popularBar のバナーを描く。products.html は並べ替えにも使う） -->
