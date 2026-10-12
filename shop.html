@@ -7004,6 +7004,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="HAJIMETE SET"] { background-image: url('public/images/products/drive/hajimete-set.jpg'); }
 .product-card-img[data-label="FUZOROI SET"] { background-image: image-set(url('public/images/products/drive/fuzoroi-set.webp') type('image/webp'), url('public/images/products/drive/fuzoroi-set.jpg')); }
 .product-card-img[data-label="STEAK3 SET"] { background-image: url('public/images/products/drive/steak3-set.jpg'); }
+.product-card-img[data-label="TRIAL3 SET"] { background-image: url('public/images/products/drive/trial3-set.jpg'); }
+.product-card-img[data-label="STOCK3 SET"] { background-image: url('public/images/products/drive/stock3-set.jpg'); }
+.product-card-img[data-label="YAKINIKU3 SET"] { background-image: url('public/images/products/drive/yakiniku3-set.jpg'); }
+.product-card-img[data-label="YAKINIKU2 SET"] { background-image: url('public/images/products/drive/yakiniku2-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
 .product-card-img[data-label="CUBE STEAK"] { background-image: url('public/images/products/drive/cube-steak-2026.jpg'); }
@@ -10074,6 +10078,66 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
+
+ <!-- ===== 公式LINE配信用セット4本（2026-10-12 ryotaro指示・P058〜P061）=====
+      10/14(水)18:30 P058 ／ 10/15(木)18:30 P059 ／ 10/17(土)18:30 P060 ／ 10/18(日)18:30 P061。
+      🔴 発売日時は products-master.js の limitedStartAt。その時刻まで「◯/◯（◯）発売」の
+         予告表示で購入不可になり、時刻を過ぎると自動で購入可になる（当日の手作業は不要）。
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      data-sub="set" なので部位サブタブには出ず、「すべて」にだけ並ぶ。 -->
+ <div class="product-card" data-sub="set" data-variants='[{"id":51014044800581,"t":"1セット","p":4480}]'>
+ <div class="product-card-img" data-label="TRIAL3 SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Trial 3 Cuts</span><span class="product-price"><s>&yen;4,750</s> &yen;4,480</span></div>
+ <p class="product-name"><a href="product.html?id=P058" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 少量お試し3種セット</a></p>
+ <p class="product-desc"><strong>サイコロステーキ</strong>・<strong>切り落とし</strong>・<strong>ミンチ</strong>を各200g。焼く、炒める、そぼろにする。江田和牛をはじめて試していただくための少量セットです。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">3種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;4,750</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="set" data-variants='[{"id":51015053500591,"t":"1セット","p":5350}]'>
+ <div class="product-card-img" data-label="STOCK3 SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Everyday Stock</span><span class="product-price">&yen;5,350</span></div>
+ <p class="product-name"><a href="product.html?id=P059" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 食卓ストック3種セット</a></p>
+ <p class="product-desc"><strong>赤身焼肉</strong>・<strong>切り落とし</strong>・<strong>ミンチ</strong>を各200g。小分けの袋で届くので、冷凍庫に置いて使う分だけ解凍できます。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">3種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">小分け <strong>3袋</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="set" data-variants='[{"id":51017049800601,"t":"1セット","p":4980}]'>
+ <div class="product-card-img" data-label="YAKINIKU3 SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku +Minced</span><span class="product-price"><s>&yen;5,650</s> &yen;4,980</span></div>
+ <p class="product-name"><a href="product.html?id=P060" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 焼肉食べ比べセット〈ミンチ付き〉</a></p>
+ <p class="product-desc">モモの<strong>赤身焼肉</strong>と、サシの<strong>バラ焼肉</strong>を食べ比べ。さらに<strong>ミンチ200g</strong>を付けました。計600g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">3種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;5,650</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="set" data-variants='[{"id":51018039800611,"t":"1セット","p":3980}]'>
+ <div class="product-card-img" data-label="YAKINIKU2 SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku 2 Cuts</span><span class="product-price"><s>&yen;4,300</s> &yen;3,980</span></div>
+ <p class="product-name"><a href="product.html?id=P061" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 焼肉食べ比べセット</a></p>
+ <p class="product-desc">モモの<strong>赤身焼肉</strong>と、サシの<strong>バラ焼肉</strong>を各200g。計400g、2人前ほど。赤身と脂、どちらが好みか食べ比べていただけます。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">2種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>400g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;4,300</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
 
  <!-- シルバーウィーク大皿セット（2026-09-17 公開・9/20 23:59 まで）
       🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
