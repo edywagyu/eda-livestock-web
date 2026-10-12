@@ -703,21 +703,26 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
   <div class="pdp-grid">
 
-    <!-- ===== GALLERY ===== -->
+    <!-- ===== GALLERY =====
+         🔴 2026-10-12 ryotaro指示: ここに商品の初期値を書かない。
+            以前は <source srcset="sirloin.webp"> と src="sirloin.jpg"、h1 に
+            「サーロインステーキ」などが直書きされていて、JSが中身を差し替えるまでの
+            あいだ（回線が遅いと体感できる長さ）全商品でサーロインが見えていた。
+            いまは無地の黒プレースホルダだけを置き、文字は空にしてある。 -->
     <section class="pdp-gallery" aria-label="商品画像">
       <div class="pdp-gallery-main">
-        <picture><source type="image/webp" srcset="public/images/products/drive/sirloin.webp"><img loading="lazy" decoding="async" id="galMain" src="public/images/products/drive/sirloin.jpg" alt=""></picture>
+        <picture><img decoding="async" id="galMain" src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%221240%22%20height%3D%221240%22%3E%3Crect%20width%3D%221240%22%20height%3D%221240%22%20fill%3D%22%230A0A0A%22/%3E%3C/svg%3E" alt=""></picture>
       </div>
       <div class="pdp-gallery-thumbs" id="galThumbs"></div>
     </section>
 
     <!-- ===== INFO ===== -->
     <section class="pdp-info">
-      <div class="pdp-category" id="pdpCategory">Beef</div>
-      <h1 class="pdp-title" id="pdpTitle">サーロインステーキ</h1>
-      <div class="pdp-variant-label" id="pdpVariant">1枚 200g</div>
+      <div class="pdp-category" id="pdpCategory"></div>
+      <h1 class="pdp-title" id="pdpTitle"></h1>
+      <div class="pdp-variant-label" id="pdpVariant"></div>
 
-      <div class="pdp-price" id="pdpPrice">¥3,400</div>
+      <div class="pdp-price" id="pdpPrice"></div>
       <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
            金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
       <p class="pdp-price-note">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
@@ -748,9 +753,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         @media(prefers-reduced-motion:reduce){.limited-banner .limited-left{animation:none!important;}}
       </style>
 
-      <p class="pdp-description" id="pdpDescription">
-        ロース芯から切り出した一枚。塩のみで、フライパンに 90 秒。日曜の昼食に。
-      </p>
+      <p class="pdp-description" id="pdpDescription"></p>
 
       <!-- バリアント選択 -->
       <div class="pdp-variant-section" id="variantSection" hidden>
@@ -981,8 +984,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 <!-- ============ MOBILE STICKY CTA ============ -->
 <div class="pdp-sticky-cta" id="stickyCta">
   <div class="pdp-sticky-cta-info">
-    <span class="pdp-sticky-cta-name" id="stickyName">サーロインステーキ</span>
-    <span class="pdp-sticky-cta-price" id="stickyPrice">¥3,400</span>
+    <span class="pdp-sticky-cta-name" id="stickyName"></span>
+    <span class="pdp-sticky-cta-price" id="stickyPrice"></span>
   </div>
   <button class="pdp-sticky-cta-btn" id="stickyCtaBtn" onclick="addToCart()">追加</button>
 </div>
