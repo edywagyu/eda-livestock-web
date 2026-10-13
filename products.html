@@ -11091,6 +11091,15 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  })();
 
+ /* --- 販売停止品の掃除: 既にカートに残っている有機系を落とす ---
+ 2026-10-13 田崎さん指示。販売停止前にカートへ入れた人がそのまま決済できてしまうため、
+ 読み込み時に取り除く。再開するときはこのブロックごと削除する。 --- */
+ (function purgeBlockedCart() {
+ const before = items.length;
+ items = items.filter(i => !/^(有機JAS|オーガニックチキン)/.test(String((i && i.title) || '').trim()));
+ if (items.length !== before) localStorage.setItem(CART_KEY, JSON.stringify(items));
+ })();
+
  /* --- DOM refs --- */
  const drawer = document.getElementById('cartDrawer');
  const overlay = document.getElementById('cartOverlay');
@@ -11316,7 +11325,17 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const r = qty >= 3 ? ((tiers && tiers.r3) || 0) : (qty === 2 ? ((tiers && tiers.r2) || 0) : 0);
  return Math.round(base * (1 - r));
  }
+ /* 🔴 有機系(有機JAS 和牛・オーガニックチキン)は販売停止中。カート投入そのものを止める。
+    2026-10-13 田崎さん指示。カードの購入ボタンは出していないが、古いキャッシュ・
+    別ページ・直リンクから addToCart が呼ばれても入らないようにここで最終的に弾く。 */
+ function isOrganicBlocked(title) {
+ return /^(有機JAS|オーガニックチキン)/.test(String(title || '').trim());
+ }
  function addToCart(variantId, price, title, variant, img, qtyToAdd, opts) {
+ if (isOrganicBlocked(title)) {
+ alert(`「${title}」はただいま販売しておりません。`);
+ return false;
+ }
  qtyToAdd = Math.max(1, parseInt(qtyToAdd, 10) || 1);
  /* ★ 在庫上限チェック */
  const stock = getStockForTitle(title);
@@ -11433,9 +11452,23 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* --- Initialize product cards --- */
  document.querySelectorAll('.product-card[data-variants]').forEach(card => {
- /* 🔴 オーガニックカード(非会員時): variants 有無に関わらず LINE 会員登録ボタンに置換 */
+ /* 🔴 販売停止中の商品は購入ボタンを作らない。
+    2026-10-13 田崎さん指示 — 有機JAS 和牛・オーガニックチキンは出荷の目処が立つまで販売停止。
+    有機JAS 和牛は会員(is-member)だけカートに入れられる作りだったが、価格未設定(¥0)のまま
+    注文が通る事故が起きたため、会員・非会員を問わず購入導線を出さない。
+    オーガニックチキンは --organic クラスを持たない普通のカードなので、商品名でも判定する。
+    再開するときは isOrganicBlocked のブロックごと外す。 */
+ const cardName = ((card.querySelector('.product-name') || {}).textContent || '').trim();
  const isOrganic = card.classList.contains('product-card--organic') || card.classList.contains('product-card--organic-wagyu');
  const isMember = document.body.classList.contains('is-member');
+ if (isOrganicBlocked(cardName)) {
+   const ctaEl = card.querySelector('.product-buy') || card.querySelector('.organic-wagyu-cta-wrap');
+   if (ctaEl) {
+     ctaEl.innerHTML = '<span class="btn-member-register" aria-disabled="true" style="display:block;text-align:center;cursor:default;opacity:.75;">ただいま販売しておりません</span>';
+     ctaEl.style.display = 'block';  /* 旧 display:none ルール上書き */
+   }
+   return;
+ }
  if (isOrganic && !isMember) {
    /* .product-buy (鶏オーガニック) / .organic-wagyu-cta-wrap (牛オーガニック) の両方に対応 */
    const ctaEl = card.querySelector('.product-buy') || card.querySelector('.organic-wagyu-cta-wrap');
