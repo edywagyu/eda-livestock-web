@@ -275,6 +275,14 @@ body{ background:var(--ink-deep); color:var(--cream); }
   content:''; position:absolute; left:50%; bottom:0; transform:translateX(-50%);
   width:min(560px,82%); height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent);
 }
+.hero-jp{
+  /* 「日本国内限定」(2026-10-14 田崎さん指示)。ページの一番上、ブランド名より前に置く */
+  display:inline-block; margin:0 0 16px; padding:5px 16px;
+  border:1px solid rgba(212,169,59,.55); border-radius:999px;
+  background:rgba(212,169,59,.10);
+  font-size:11.5px; font-weight:600; letter-spacing:.2em; color:var(--gold-light);
+}
+.hero-jp small{ display:block; font-size:9px; letter-spacing:.3em; font-weight:400; color:rgba(212,169,59,.8); margin-top:2px; }
 .hero-brand{ font-size:10.5px; letter-spacing:.42em; color:rgba(212,169,59,.85); margin:0 0 18px; }
 .hero-badge{
   border:0; background:none; padding:0; margin:0;
@@ -434,6 +442,7 @@ body{ background:var(--ink-deep); color:var(--cream); }
 <body>
 
 <div class="hero">
+  <p class="hero-jp">日本国内限定<small>JAPAN DOMESTIC ONLY</small></p>
   <p class="hero-brand">EDA LIVESTOCK</p>
   <div class="hero-badge">お歳暮 2026</div>
   <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">一年の感謝を、宮崎の自社牧場で育てた江田和牛で。<br>のし・エダチクBOX・送料まで、すべて込みの価格です。</p>
