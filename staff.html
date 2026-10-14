@@ -1695,6 +1695,7 @@ ul { list-style: none; padding: 0; margin: 0; }
       <div class="pills">
         <div class="pill active" data-sub="single" onclick="switchSub('orders','single')">単品</div>
         <div class="pill" data-sub="teiki" onclick="switchSub('orders','teiki')">📅 定期便</div>
+        <div class="pill" data-sub="oseibo" onclick="switchSub('orders','oseibo')">🎍 お歳暮 <span id="oseiboCount" class="count-pill">-</span></div>
       </div>
 
       <!-- 単品 -->
@@ -1719,6 +1720,17 @@ ul { list-style: none; padding: 0; margin: 0; }
           </div>
         </div>
         <div id="orderListTeiki"></div>
+      </div>
+
+      <!-- 🎍 お歳暮 2026（oseibo.html の7品。受注生産＝単品在庫は減らない） -->
+      <div class="subsection" id="sub-oseibo">
+        <div style="padding:12px 14px;background:#FFF8E7;border:1px solid #F0DCA8;border-radius:10px;font-size:12px;line-height:1.7;color:#6B5A2A;margin-bottom:14px">
+          お歳暮ページ（<a href="oseibo.html" target="_blank" style="color:#8A6D1A;font-weight:700">oseibo.html</a>）の7品が入ったご注文だけを集めています。<br>
+          🔴 受注生産のため<strong>単品の在庫は自動で減りません</strong>。加工・発注はこの一覧の数を見て手配してください。<br>
+          のし・お届け先（複数可）・お届け希望日は、注文をタップした発送処理の画面に出ます。
+        </div>
+        <div id="oseiboSummary"></div>
+        <div id="orderListOseibo"></div>
       </div>
     </section>
 
@@ -2968,7 +2980,7 @@ async function saveStock(variantId, btn) {
 /* ================ ORDERS ================ */
 /* 注文一覧は「単品」「定期便」の2タブに分かれる。読み込み中/失敗の表示は両方へ出す。 */
 function setOrderListsHtml(html) {
-  ['orderListSingle', 'orderListTeiki'].forEach(function (id) {
+  ['orderListSingle', 'orderListTeiki', 'orderListOseibo'].forEach(function (id) {
     var el = document.getElementById(id); if (el) el.innerHTML = html;
   });
 }
@@ -3149,6 +3161,50 @@ function normalizeStaffOrder(o) {
 /* mode が subscription* の注文＝定期便。単品タブ/定期便タブの振り分けはこの1箇所で判定する。 */
 function isSubOrder(o) { return String((o && o.mode) || '').indexOf('subscription') === 0; }
 
+/* ================ 🎍 お歳暮 2026 ================
+   お歳暮の7品(P051〜P057)は products シートに登録していない受注生産品なので、
+   注文の mode では判別できない。手がかりは商品名の頭の「お歳暮」だけ（oseibo.html の
+   ITEMS が name をそう作っている）。判定をここ1箇所に置き、タブ・バッジ・集計で共用する。 */
+function isOseiboItem(it) {
+  return /^\s*お歳暮/.test(String((it && (it.name || it.title)) || ''));
+}
+function isOseiboOrder(o) {
+  return !!(o && Array.isArray(o.itemsList) && o.itemsList.some(isOseiboItem));
+}
+/* お歳暮の品だけを「品名 → 個数」で足し上げる（加工・発注の手配用）。 */
+function oseiboTally(rows) {
+  var map = {};
+  (rows || []).forEach(function (o) {
+    (o.itemsList || []).filter(isOseiboItem).forEach(function (it) {
+      var n = it.name || it.title || '商品';
+      map[n] = (map[n] || 0) + (Number(it.qty) || 1);
+    });
+  });
+  return Object.keys(map).sort().map(function (n) { return { name: n, qty: map[n] }; });
+}
+/* 未発送（＝これから作る分）の合計も出す。発送済みは手配済みなので分けて見せる。 */
+function renderOseiboSummary(rows) {
+  var el = document.getElementById('oseiboSummary'); if (!el) return;
+  var pill = document.getElementById('oseiboCount');
+  if (pill) pill.textContent = rows.length;
+  if (!rows.length) { el.innerHTML = ''; return; }
+  var pend = rows.filter(function (o) { return !(o.shipStatus === '発送済' || o.shipStatus === '配達完了'); });
+  var lines = oseiboTally(rows).map(function (r) {
+    var p = oseiboTally(pend).find(function (x) { return x.name === r.name; });
+    return '<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #EFEAD9">' +
+      '<span style="font-size:12px;line-height:1.5">' + escapeHtml(r.name) + '</span>' +
+      '<span style="font-size:13px;font-weight:800;white-space:nowrap">' + r.qty + '個' +
+      '<span style="font-size:11px;font-weight:700;color:#B4463F;margin-left:6px">未発送 ' + (p ? p.qty : 0) + '</span></span></div>';
+  }).join('');
+  var sales = rows.reduce(function (a, o) { return a + (Number(o.total) || 0); }, 0);
+  el.innerHTML =
+    '<div style="background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:14px">' +
+      '<div style="font-size:12px;font-weight:800;color:var(--forest);margin-bottom:6px">🎍 お歳暮の受注まとめ' +
+        '<span style="font-weight:700;color:var(--muted);margin-left:8px">' + rows.length + '件 ・ ¥' + sales.toLocaleString() + '</span></div>' +
+      lines +
+    '</div>';
+}
+
 /* ================ 🎁 ご注文回数と「次回特典の用紙」 ================
    ここは3つのことだけをやる。
    ①この注文がそのお客様の何回目か（単品のみ・定期便は数えない）
@@ -3226,13 +3282,15 @@ function nextRewardOf(count) {
 function renderOrders() {
   [
     { id: 'orderListSingle', rows: ordersCache.filter(function (o) { return !isSubOrder(o); }), empty: '単品の注文がありません' },
-    { id: 'orderListTeiki',  rows: ordersCache.filter(function (o) { return  isSubOrder(o); }), empty: '定期便の注文がありません' }
+    { id: 'orderListTeiki',  rows: ordersCache.filter(function (o) { return  isSubOrder(o); }), empty: '定期便の注文がありません' },
+    { id: 'orderListOseibo', rows: ordersCache.filter(isOseiboOrder), empty: 'お歳暮の注文はまだありません' }
   ].forEach(function (g) {
     const el = document.getElementById(g.id); if (!el) return;
     el.innerHTML = g.rows.length
       ? g.rows.map(orderRowHtml).join('')
       : '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">' + g.empty + '</div></div>';
   });
+  renderOseiboSummary(ordersCache.filter(isOseiboOrder));
 }
 
 function orderRowHtml(o) {
@@ -3246,7 +3304,7 @@ function orderRowHtml(o) {
       <div class="order-row" onclick="selectOrder('${o.id}')">
         <div class="order-icon ${cls}">${icon}</div>
         <div class="order-body">
-          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}${o.birthdayMatch ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#B4508A;border-radius:4px;padding:1px 6px;margin-left:4px">🎂 誕生日</span>' : ''}${o.isSubscriber ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#2563EB;border-radius:4px;padding:1px 6px;margin-left:4px">🔁 定期便の方</span>' : ''}</div>
+          <div class="order-id">${escapeHtml(o.id || '')}${o.isGift ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:var(--gold-soft,#C79A3B);border-radius:4px;padding:1px 6px;margin-left:4px">🎁 ギフト</span>' : ''}${isOseiboOrder(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#8A2E2E;border-radius:4px;padding:1px 6px;margin-left:4px">🎍 お歳暮</span>' : ''}${o.awaitingPayment ? ' <span style="display:inline-block;font-size:10px;font-weight:700;color:#8A6D1A;background:#FFF1CC;border:1px solid #F0C36D;border-radius:4px;padding:1px 6px;margin-left:4px">未入金</span>' : ''}${_perkTodo(o) ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#E24B4A;border-radius:4px;padding:1px 6px;margin-left:4px">🐔 鶏ムネ特典</span>' : ''}${o.birthdayMatch ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#B4508A;border-radius:4px;padding:1px 6px;margin-left:4px">🎂 誕生日</span>' : ''}${o.isSubscriber ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#fff;background:#2563EB;border-radius:4px;padding:1px 6px;margin-left:4px">🔁 定期便の方</span>' : ''}</div>
           <div class="order-name">${escapeHtml(o.customerName || '')} · ¥${Number(o.total || 0).toLocaleString()}${o.purchaseCount ? ' <span style="display:inline-block;font-size:10px;font-weight:800;color:#1E5C3A;background:#E8F5EC;border-radius:4px;padding:1px 6px;margin-left:4px">' + o.purchaseCount + '回目</span>' : ''}</div>
           <div class="order-meta">${escapeHtml(cleanItemsText(o.items).slice(0, 32))}${cleanItemsText(o.items).length > 32 ? '...' : ''}</div>
         </div>
