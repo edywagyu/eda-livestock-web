@@ -512,6 +512,20 @@
       + '</span>';
     applyState(host.querySelector('.limited-left'), info, true);   /* bare＝「残り」を重ねない */
     setCountdownEl(host.querySelector('.lb-row-time'), deadlineAt);   /* 動く残り時間 */
+
+    /* 🔴 残数を出さない方針(2026-10-11)なので、在庫があるあいだ limited-left は空で
+       display:none になる。見出しの「残りセット数：」だけが取り残されると、値の無い
+       赤帯が出る（2026-10-19 P063 の本番で発生）。中身が空になった行は行ごと、
+       全行が空なら帯ごと隠す。 */
+    var leftEl = host.querySelector('.limited-left');
+    if (leftEl && !leftEl.textContent) {
+      var row = leftEl.closest('.lb-row');
+      if (row) row.style.display = 'none';
+    }
+    var hasText = Array.prototype.some.call(host.querySelectorAll('.lb-row'), function (r) {
+      return r.style.display !== 'none' && r.textContent.trim();
+    });
+    if (!hasText) host.style.display = 'none';
   }
 
   function apply() {
