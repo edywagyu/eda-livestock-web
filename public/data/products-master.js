@@ -702,6 +702,12 @@
       ],
       limitedTotal: 20,                        /* 表示には出ない。発売日ゲートを有効にするだけ */
       limitedStartAt: '2026/10/14 18:30',
+      /* 2026-10-19 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-prestart を
+         付けた shop/products のカードが自動で消える（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/19 00:00',
+      limitedUntil:     '2026/10/19 00:00',
       limitedUnit: 'セット',
       description: '江田和牛をはじめて試していただくための、少量3種セットです。サイコロステーキ200g、切り落とし200g、ミンチ200g。計600g。冷凍便でお届けします。',
       images: ['public/images/products/drive/trial3-set.jpg']
@@ -724,6 +730,12 @@
       ],
       limitedTotal: 20,
       limitedStartAt: '2026/10/15 18:30',
+      /* 2026-10-19 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-prestart を
+         付けた shop/products のカードが自動で消える（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/19 00:00',
+      limitedUntil:     '2026/10/19 00:00',
       limitedUnit: 'セット',
       description: '冷凍庫に置いておくと便利な3種をまとめました。赤身焼肉200g、切り落とし200g、ミンチ200g。計600g。小分けの袋で届くので、使う分だけ解凍できます。冷凍便でお届けします。',
       images: ['public/images/products/drive/stock3-set.jpg']
@@ -745,6 +757,12 @@
       ],
       limitedTotal: 20,
       limitedStartAt: '2026/10/17 18:30',
+      /* 2026-10-19 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-prestart を
+         付けた shop/products のカードが自動で消える（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/19 00:00',
+      limitedUntil:     '2026/10/19 00:00',
       limitedUnit: 'セット',
       description: '赤身とバラを食べ比べていただく焼肉セットに、ミンチ200gを付けたお得なセットです。赤身焼肉200g、バラ焼肉200g、ミンチ200g。計600g。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku3-set.jpg']
@@ -767,6 +785,12 @@
       ],
       limitedTotal: 20,
       limitedStartAt: '2026/10/18 18:30',
+      /* 2026-10-19 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-prestart を
+         付けた shop/products のカードが自動で消える（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/19 00:00',
+      limitedUntil:     '2026/10/19 00:00',
       limitedUnit: 'セット',
       description: '赤身とバラが入ったバランスの良いセットです。赤身焼肉200g、バラ焼肉200g。計400g、2人前ほど。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku2-set.jpg']
