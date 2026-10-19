@@ -840,7 +840,7 @@
       limitedTotal: 20,
       limitedStartAt: '2026/10/19 17:00',
       limitedUnit: 'セット',
-      description: '江田和牛のサイコロステーキ200gに、大分県・無投薬の平飼い鶏モモ200gとムネ200gを合わせた3袋セット。計600g。和牛は焼くだけ、鶏は唐揚げや照り焼き、サラダチキンまで。単品で揃えると ¥3,700 のところ、セットで ¥3,200。冷凍便でお届けします。',
+      description: '江田和牛のサイコロステーキ200gに、大分県・無投薬の平飼い鶏モモ200gとムネ200gを合わせた3袋セット。計600g。和牛は焼くだけ、鶏は唐揚げや照り焼き、サラダチキンまで。冷凍便でお届けします。',
       images: ['public/images/products/drive/saikoro-chicken-set.jpg']
     },
 
@@ -861,7 +861,7 @@
       limitedTotal: 20,
       limitedStartAt: '2026/10/22 17:00',
       limitedUnit: 'セット',
-      description: 'サシの霜降り焼肉200g、噛みごたえの赤身焼肉200g、脂の甘いバラ焼肉200g。計600g、3〜4人前ほど。1頭の中の違う部位を並べて焼き比べていただけます。単品で揃えると ¥6,900 のところ、セットで ¥5,900。冷凍便でお届けします。',
+      description: 'サシの霜降り焼肉200g、噛みごたえの赤身焼肉200g、脂の甘いバラ焼肉200g。計600g、3〜4人前ほど。1頭の中の違う部位を並べて焼き比べていただけます。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
     },
 
@@ -884,7 +884,7 @@
       limitedTotal: 10,
       limitedStartAt: '2026/10/25 17:00',
       limitedUnit: 'セット',
-      description: '形や厚みが規格から外れた不揃い品のステーキセットです。赤身ステーキ200gとミスジステーキ150g、計350g。切り分けのときに端が欠けたり、厚みが揃わなかったものを集めました。肉質・味は正規品とまったく同じものです。正規品で揃えると ¥6,900 のところ、不揃い品のため ¥5,500。冷凍便でお届けします。',
+      description: '形や厚みが規格から外れた不揃い品のステーキセットです。赤身ステーキ200gとミスジステーキ150g、計350g。切り分けのときに端が欠けたり、厚みが揃わなかったものを集めました。肉質・味は正規品とまったく同じものです。冷凍便でお届けします。',
       images: [
         'public/images/products/drive/fusoroi-steak-set.jpg',
         'public/images/products/drive/fusoroi-sample.jpg'
