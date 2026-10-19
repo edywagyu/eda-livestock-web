@@ -877,7 +877,11 @@
       price: 5500, listPrice: 6900, weight: 350, stock: 10, temp: '冷凍',
       published: true,
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Irregular Cut Steak Set',
-      limitedTotal: 20,
+      /* 🔴 P065 は components が無い＝isBom false なので、PDP に
+         「◯セット限定」の総数バッジが出る（セット商品では出ない）。
+         ここの数字がそのまま客に見えるので、必ず実在庫と同じ数にする。
+         在庫を動かすときはこの値も一緒に直すこと。 */
+      limitedTotal: 10,
       limitedStartAt: '2026/10/25 17:00',
       limitedUnit: 'セット',
       description: '形や厚みが規格から外れた不揃い品のステーキセットです。赤身ステーキ200gとミスジステーキ150g、計350g。切り分けのときに端が欠けたり、厚みが揃わなかったものを集めました。肉質・味は正規品とまったく同じものです。正規品で揃えると ¥6,900 のところ、不揃い品のため ¥5,500。冷凍便でお届けします。',
