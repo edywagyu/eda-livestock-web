@@ -804,6 +804,88 @@
       description: '赤身とバラが入ったバランスの良いセットです。赤身焼肉200g、バラ焼肉200g。計400g、2人前ほど。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku2-set.jpg']
     },
+    /* =====================================================================
+       公式LINE配信用 セット3本（2026-10-19 ryotaro指示・P063〜P065）
+       ---------------------------------------------------------------------
+       10/19(月)17:00  P063 サイコロステーキと鶏2種セット  ¥3,200
+       10/22(木)17:00  P064 焼肉3種食べ比べセット          ¥5,900
+       10/25(日)17:00  P065 不揃い品ステーキセット          ¥5,500
+
+       🔴 ローンチ＝limitedStartAt。その時刻まではカードが出ず（data-limited-prestart）、
+          時刻を過ぎると自動で購入可になる（当日の手作業は不要）。
+          limitedTotal は仕組みを有効にするためだけの値で画面には出ない。
+          limitedSoldOutAt / limitedUntil は入れない＝締切なしで売り続ける。
+       🔴 価格は 2026-10-19 田崎さん確定（肉原価ベースの利益率で逆算した値ではなく指値）。
+          肉原価(直近ロット・税抜) P063 ¥2,108 ／ P064 ¥4,226 ／ P065 ¥3,159。
+       🔴 P063/P064 は components あり＝stock は applyBomStock が構成品から再計算する。
+          P065 は不揃い品＝正規品の在庫とは別枠なので components を持たせない
+          （P041 訳あり切り落としと同じ扱い。stock は products シートが正）。
+       画像は3点とも実物のセット写真（2026-10-19 ryotaro提供「EC作用品サイズ」）。
+       ===================================================================== */
+
+    /* ===== P063 サイコロステーキと鶏2種（10/19 17:00 発売）=====
+       単品合計 ¥3,700（サイコロ1,800＋鶏モモ980＋鶏ムネ920）→ ¥3,200（13.5%引き）。 */
+    {
+      productId: 'P063', variantId: 'SAIKORO-CHK-SET', sku: 'EDA-SAIKORO-CHK-SET',
+      stripePriceId: '',
+      name: 'サイコロステーキと鶏2種セット', variant: 'サイコロステーキ200g＋鶏モモ200g＋鶏ムネ200g 計600g',
+      price: 3200, listPrice: 3700, weight: 600, stock: 27, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Dice & Chicken Set',
+      components: [
+        { name: 'サイコロステーキ', qty: 1 },
+        { name: '平飼い鶏 モモ',    qty: 1 },
+        { name: '平飼い鶏 ムネ',    qty: 1 }
+      ],
+      limitedTotal: 20,
+      limitedStartAt: '2026/10/19 17:00',
+      limitedUnit: 'セット',
+      description: '江田和牛のサイコロステーキ200gに、大分県・無投薬の平飼い鶏モモ200gとムネ200gを合わせた3袋セット。計600g。和牛は焼くだけ、鶏は唐揚げや照り焼き、サラダチキンまで。単品で揃えると ¥3,700 のところ、セットで ¥3,200。冷凍便でお届けします。',
+      images: ['public/images/products/drive/saikoro-chicken-set.jpg']
+    },
+
+    /* ===== P064 焼肉3種食べ比べ（10/22 17:00 発売）=====
+       単品合計 ¥6,900（霜降り焼肉2,600＋赤身焼肉2,400＋バラ焼肉1,900）→ ¥5,900（14.5%引き）。 */
+    {
+      productId: 'P064', variantId: 'YAKI3-KURABE-SET', sku: 'EDA-YAKI3-KURABE-SET',
+      stripePriceId: '',
+      name: '焼肉3種食べ比べセット', variant: '霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g',
+      price: 5900, listPrice: 6900, weight: 600, stock: 10, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku 3 Cuts Tasting Set',
+      components: [
+        { name: '霜降り焼肉', qty: 1 },
+        { name: '赤身焼肉',   qty: 1 },
+        { name: 'バラ焼肉',   qty: 1 }
+      ],
+      limitedTotal: 20,
+      limitedStartAt: '2026/10/22 17:00',
+      limitedUnit: 'セット',
+      description: 'サシの霜降り焼肉200g、噛みごたえの赤身焼肉200g、脂の甘いバラ焼肉200g。計600g、3〜4人前ほど。1頭の中の違う部位を並べて焼き比べていただけます。単品で揃えると ¥6,900 のところ、セットで ¥5,900。冷凍便でお届けします。',
+      images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
+    },
+
+    /* ===== P065 不揃い品ステーキセット（10/25 17:00 発売）=====
+       単品合計 ¥6,900（赤身ステーキ3,400＋ミスジ3,500）→ ¥5,500（20.3%引き）。
+       🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
+          説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
+       🔴 正規品（P002 赤身ステーキ／P023 ミスジ）とは別商品・別枠在庫。componentsは持たせない。 */
+    {
+      productId: 'P065', variantId: 'FUSOROI-STEAK-SET', sku: 'EDA-FUSOROI-STEAK-SET',
+      stripePriceId: '',
+      name: '不揃い品ステーキセット', variant: '赤身ステーキ200g＋ミスジステーキ150g 計350g',
+      price: 5500, listPrice: 6900, weight: 350, stock: 10, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Irregular Cut Steak Set',
+      limitedTotal: 20,
+      limitedStartAt: '2026/10/25 17:00',
+      limitedUnit: 'セット',
+      description: '形や厚みが規格から外れた不揃い品のステーキセットです。赤身ステーキ200gとミスジステーキ150g、計350g。切り分けのときに端が欠けたり、厚みが揃わなかったものを集めました。肉質・味は正規品とまったく同じものです。正規品で揃えると ¥6,900 のところ、不揃い品のため ¥5,500。冷凍便でお届けします。',
+      images: [
+        'public/images/products/drive/fusoroi-steak-set.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
     /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。

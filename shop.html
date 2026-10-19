@@ -7006,6 +7006,9 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="STOCK3 SET"] { background-image: url('public/images/products/drive/stock3-set.jpg'); }
 .product-card-img[data-label="YAKINIKU3 SET"] { background-image: url('public/images/products/drive/yakiniku3-set.jpg'); }
 .product-card-img[data-label="YAKINIKU2 SET"] { background-image: url('public/images/products/drive/yakiniku2-set.jpg'); }
+.product-card-img[data-label="SAIKORO CHK SET"] { background-image: url('public/images/products/drive/saikoro-chicken-set.jpg'); }
+.product-card-img[data-label="YAKI3 KURABE SET"] { background-image: url('public/images/products/drive/yakiniku3-kurabe-set.jpg'); }
+.product-card-img[data-label="FUSOROI STEAK SET"] { background-image: url('public/images/products/drive/fusoroi-steak-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
 .product-card-img[data-label="CUBE STEAK"] { background-image: url('public/images/products/drive/cube-steak-2026.jpg'); }
@@ -10077,6 +10080,57 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
+
+ <!-- ===== 公式LINE配信用セット3本（2026-10-19 ryotaro指示・P063〜P065）=====
+      10/19(月)17:00 P063 ¥3,200 ／ 10/22(木)17:00 P064 ¥5,900 ／ 10/25(日)17:00 P065 ¥5,500。
+      🔴 発売日時は products-master.js の limitedStartAt。その時刻まではカードごと消え、
+         時刻を過ぎると自動で出てくる（当日の手作業は不要）。
+      🔴 data-limited-scope と data-limited-prestart の両方を付ける。
+         prestart＝発売前に隠す／scope＝shop.html の productPreviewInit で
+         LIMIT=2 の枠外に出す（scope が無いと発売後にプレビューから溢れて見えない）。
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 P065 は不揃い品。説明文と実物写真はカードに出さず商品詳細ページに置く
+         （2026-09-02 ryotaro指示）。 -->
+ <div class="product-card" data-sub="set" data-limited-scope="サイコロステーキと鶏2種セット" data-limited-prestart="サイコロステーキと鶏2種セット" data-variants='[{"id":51019032000631,"t":"1セット","p":3200}]'>
+ <div class="product-card-img" data-label="SAIKORO CHK SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Wagyu &amp; Chicken</span><span class="product-price"><s>&yen;3,700</s> &yen;3,200</span></div>
+ <p class="product-name"><a href="product.html?id=P063" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">サイコロステーキと鶏2種セット</a></p>
+ <p class="product-desc">江田和牛の<strong>サイコロステーキ</strong>200gに、無投薬の<strong>平飼い鶏モモ・ムネ</strong>を各200g。和牛は焼くだけ、鶏は唐揚げから煮込みまで。計600g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">3種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;3,700</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="set" data-limited-scope="焼肉3種食べ比べセット" data-limited-prestart="焼肉3種食べ比べセット" data-variants='[{"id":51022059000641,"t":"1セット","p":5900}]'>
+ <div class="product-card-img" data-label="YAKI3 KURABE SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku 3 Cuts</span><span class="product-price"><s>&yen;6,900</s> &yen;5,900</span></div>
+ <p class="product-name"><a href="product.html?id=P064" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">焼肉3種食べ比べセット</a></p>
+ <p class="product-desc">サシの<strong>霜降り焼肉</strong>、噛みごたえの<strong>赤身焼肉</strong>、脂の甘い<strong>バラ焼肉</strong>を各200g。1頭の中の違いを並べて焼き比べ。計600g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">3種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;6,900</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="set" data-limited-scope="不揃い品ステーキセット" data-limited-prestart="不揃い品ステーキセット" data-variants='[{"id":51025055000651,"t":"1セット","p":5500}]'>
+ <div class="product-card-img" data-label="FUSOROI STEAK SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Irregular Steak</span><span class="product-price"><s>&yen;6,900</s> &yen;5,500</span></div>
+ <p class="product-name"><a href="product.html?id=P065" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">不揃い品ステーキセット</a></p>
+ <p class="product-desc"><strong>赤身ステーキ</strong>200gと<strong>ミスジステーキ</strong>150g。形や厚みが規格から外れた不揃い品です。肉質・味は正規品と同じ。計350g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">2種 <strong>350g</strong></div>
+ <div class="product-stat-item">ステーキ <strong>2枚</strong></div>
+ <div class="product-stat-item wide">正規品合計 <strong>&yen;6,900</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
 
  <!-- ===== 公式LINE配信用セット4本（2026-10-12 ryotaro指示・P058〜P061）=====
       10/14(水)18:30 P058 ／ 10/15(木)18:30 P059 ／ 10/17(土)18:30 P060 ／ 10/18(日)18:30 P061。
@@ -15032,7 +15086,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-10-19-bara-sets" defer></script>
+<script src="public/data/products-master.js?v=2026-10-19-sets3" defer></script>
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/products-loader.js?v=008" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
