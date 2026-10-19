@@ -838,7 +838,8 @@
         { name: '平飼い鶏 ムネ',    qty: 1 }
       ],
       limitedTotal: 20,
-      limitedStartAt: '2026/10/19 17:00',
+      /* 2026-10-19 田崎さん指示で17:00を待たずに先出し。発売ゲートを過去日時にして即解禁 */
+      limitedStartAt: '2026/10/19 16:00',
       limitedUnit: 'セット',
       description: '江田和牛のサイコロステーキ200gに、大分県・無投薬の平飼い鶏モモ200gとムネ200gを合わせた3袋セット。計600g。和牛は焼くだけ、鶏は唐揚げや照り焼き、サラダチキンまで。冷凍便でお届けします。',
       images: ['public/images/products/drive/saikoro-chicken-set.jpg']
