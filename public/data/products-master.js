@@ -277,6 +277,15 @@
       description: '霜降り部分を薄切りに。すき焼き・しゃぶしゃぶで脂の甘みがだしに溶ける。',
       images: ['public/images/products/drive/shimofuri-slice.jpg']
     },
+    {
+      productId: 'P062', variantId: 'SHIMOFURI-YAKINIKU', sku: 'EDA-SHIMOYAKI-200',
+      stripePriceId: '',
+      name: '霜降り焼肉', variant: '1袋 200g',
+      price: 2600, weight: 200, stock: 13, temp: '冷凍',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled Yakiniku',
+      description: 'リブロースのかぶりを焼肉用にカット。サシがよく入った霜降りで、焼くと脂が甘く溶けます。',
+      images: ['public/images/products/drive/shimofuri-yakiniku.jpg']
+    },
 
     /* ===== 鶏肉 平飼い（標準）— 200g パック ===== */
     {
