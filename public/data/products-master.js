@@ -283,7 +283,7 @@
       name: '霜降り焼肉', variant: '1袋 200g',
       price: 2600, weight: 200, stock: 13, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled Yakiniku',
-      description: 'リブロースのかぶりを焼肉用にカット。サシがよく入った霜降りで、焼くと脂が甘く溶けます。',
+      description: 'リブロースを焼肉用にカット。サシがよく入った霜降りで、焼くと脂が甘く溶けます。',
       images: ['public/images/products/drive/shimofuri-yakiniku.jpg']
     },
 
