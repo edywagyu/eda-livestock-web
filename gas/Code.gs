@@ -4552,14 +4552,62 @@ function sendCustomerReceiptEmail(session, orderNum, shipEta) {
   });
 }
 
+/* ============================================================
+   ✉️ 社内通知メールに入れる「いつ着で出すか」「いつまでに出せば間に合うか」
+   ------------------------------------------------------------
+   距離の地図は alertUnshippedOrders / shipEtaDayNum_ と同じ WEST_NEXTDAY_PREFS を共有する。
+     お届け日 T   = 宛先ごとの希望日 → 無ければ注文共通の希望日 → それも無ければ最短(起点+3)
+     発送期限      = T − 輸送日数(西1/東・不明2)   ← この日に出してギリギリ着
+     発送予定日    = 発送期限 − buffer(希望日あり1/最短0) ← お客様に伝えている日と同じ
+   希望日が過去日の注文（フロントの日付が残った等）はその場で気づけるよう⚙️を付ける。
+   ============================================================ */
+function staffDeliveryPlanLines_(meta, baseDayNum) {
+  var ds; try { ds = JSON.parse((meta && meta.destinations_json) || '[]'); } catch (e) { ds = []; }
+  var dests = (ds || []).filter(function (a) { return a && Array.isArray(a.items) && a.items.length > 0; });
+  if (!dests.length) return { lines: [], deadline: null };
+  var orderWish = _ymdDayNum(meta && meta.delivery_date);
+  var today = _jstDayNum(new Date());
+  var lines = [], earliest = null;
+  dests.forEach(function (a, i) {
+    var wish = _ymdDayNum((a.delivery || {}).date) || orderWish;
+    var T = wish || (baseDayNum != null ? baseDayNum + 3 : null);
+    if (T == null) return;
+    var transit = shipEtaTransitDays_(a.pref);
+    var deadline = T - transit;
+    var ship = deadline - (wish ? ETA_WISH_BUFFER_DAYS : 0);
+    if (ship < today) ship = today;
+    if (earliest === null || deadline < earliest) earliest = deadline;
+    var who = (a.name || '') + ' 様' + (a.pref ? '（' + a.pref + '）' : '');
+    var when = (a.delivery || {}).time ? ' ' + a.delivery.time : '';
+    var left = deadline - today;
+    var warn = !wish ? '（希望日指定なし＝最短）'
+             : (T < today ? ' ⚠️ 希望日が過去日です。お客様に要確認' : '');
+    lines.push(
+      (dests.length > 1 ? '【' + (i + 1) + '】' : '') + who + '\n' +
+      '  お届け: ' + (_dayNumLabel(T) + when + ' ' + warn).replace(/\s+$/, '') + '\n' +
+      '  発送期限: ' + _dayNumLabel(deadline) + ' までに発送'
+        + (left < 0 ? '（期限超過）' : left === 0 ? '（本日！）' : '（あと' + left + '日）') + '\n' +
+      '  発送予定: ' + _dayNumLabel(ship) + '（お客様に案内済みの日）'
+    );
+  });
+  return { lines: lines, deadline: earliest };
+}
+
 function sendStaffNotificationEmail(session, orderNum) {
   const to = staffNotificationRecipients();   /* 田崎＋backoffice 両方（Tom 2026-06-08）*/
   const meta = session.metadata || {};
   const total = '¥' + Number(session.amount_total || 0).toLocaleString();
 
+  /* いつ着で出すか／いつまでに出せば間に合うか（田崎さん 2026-10-21） */
+  const plan = staffDeliveryPlanLines_(meta, _jstDayNum(new Date()));
+  const deadlineTag = plan.deadline != null ? ' / 発送期限 ' + _dayNumLabel(plan.deadline) : '';
+  const planBlock = plan.lines.length
+    ? '▼ お届けと発送期限\n' + plan.lines.join('\n\n') + '\n\n'
+    : '';
+
   MailApp.sendEmail({
     to: to,
-    subject: '【新規注文】 ' + orderNum + ' ' + total,
+    subject: '【新規注文】 ' + orderNum + ' ' + total + deadlineTag,
     body:
       '【新規ご注文】\n\n' +
       '▼ 管理画面でこの注文を開く\n' +
@@ -4570,6 +4618,7 @@ function sendStaffNotificationEmail(session, orderNum) {
       'お客様: ' + (meta.customer_name || '') + '\n' +
       'メール: ' + (session.customer_details && session.customer_details.email) + '\n' +
       '電話: ' + (meta.customer_phone || '') + '\n\n' +
+      planBlock +
       '送付先:\n' + (meta.destinations_json || '[]') + '\n\n' +
       'Stripe Session: ' + session.id
   });
