@@ -148,7 +148,12 @@ var STAFF_PROTECTED = {
   line_insights_now: 1, line_insights_setup: 1, line_insights_dryrun: 1,
   diag_webhooks: 1, diag_recover_sub: 1, diag_subscriptions: 1, diag_cancel_subscription: 1,
   diag_update_webhook: 1, diag_find_session: 1, diag_dedupe_orders: 1,
-  merge_dup_customers: 1
+  merge_dup_customers: 1,
+  /* 2026-10-22: ここに無く「誰でも叩けた」もの。dashboard は売上/MRR/LINE友だち数、
+     check_config は SPREADSHEET_ID と各プロパティの頭50字、update_properties は
+     Stripe価格IDや成功URLの上書き。画面からは一切使っていないので閉めても影響なし。 */
+  dashboard: 1, check_config: 1, update_properties: 1,
+  staff_revoke_sessions: 1
 };
 
 /* ============================================================
@@ -168,7 +173,7 @@ var STAFF_PROTECTED = {
    ★ 画面側(mypage/subscription-*)が合言葉を送るようになってから 'on' にすること。
    ============================================================ */
 var AUTH_TAB = 'sessions';
-var AUTH_DEFAULT_DAYS = 30;
+var AUTH_DEFAULT_DAYS = 7;   /* 2026-10-22: 30日→7日。端末を失ったときに切れるのを待つ期間を短くする */
 
 /* 合言葉が要る窓口。ここに無いものは誰でも叩ける（商品一覧・在庫など） */
 var CUSTOMER_PROTECTED = {
@@ -238,6 +243,55 @@ function authGuard_(action, params, body) {
     error: 'ログインが必要です。お手数ですが、もう一度ログインしてください。' });
 }
 
+/* ============================================================
+   🔒 ログインの試行回数制限 — 2026-10-22 追加
+   ------------------------------------------------------------
+   直すまでの状態: STAFF の PIN(4桁) も マイページの6桁コードも、
+   何回まちがえても何も起きなかった。総当たりすれば必ず当たる＝
+   顧客の氏名・住所・電話・注文履歴が全部出る窓口が開いていた。
+
+   GAS からは接続元のIPが取れないので、CacheService に失敗回数を
+   置いて10分の窓で数える。
+     ・マイページ(メアド単位) … 5回まちがえたらそのメアドを10分断る
+     ・STAFF(全体で1本)       … 30回まちがえたら10分断る
+       現場が打ちまちがえて入れなくなるのが一番困るので threshold は高く取り、
+       代わりに「1回まちがえるたびに1.5秒待たせる」。総当たりは1万通りで
+       4時間以上かかるようになり、長いPINと合わせれば現実的に不可能になる。
+   窓は put のたびに延びる（＝叩き続けるかぎりロックは解けない）。
+   ============================================================ */
+var LOGIN_FAIL_WINDOW_SEC = 600;      /* 10分 */
+var LOGIN_FAIL_MAX_OTP    = 5;        /* マイページの6桁コード */
+var LOGIN_FAIL_MAX_STAFF  = 30;       /* STAFF の PIN */
+
+function loginFailCount_(key) {
+  try {
+    var v = CacheService.getScriptCache().get(key);
+    return v ? Number(v) || 0 : 0;
+  } catch (e) { return 0; }   /* キャッシュが読めないときは止めない */
+}
+function loginFailBump_(key) {
+  try {
+    var n = loginFailCount_(key) + 1;
+    CacheService.getScriptCache().put(key, String(n), LOGIN_FAIL_WINDOW_SEC);
+    return n;
+  } catch (e) { return 0; }
+}
+function loginFailClear_(key) {
+  try { CacheService.getScriptCache().remove(key); } catch (e) {}
+}
+
+/* 合言葉(sessions)を全部無効にする。端末の紛失・退職・PIN変更のときに使う。
+   Apps Script のエディタで この関数を実行するだけでよい（画面は要らない）。 */
+function authRevokeAll_() {
+  var sh = ss().getSheetByName(AUTH_TAB);
+  if (!sh) return { ok: true, removed: 0 };
+  var last = sh.getLastRow();
+  if (last < 2) return { ok: true, removed: 0 };
+  sh.deleteRows(2, last - 1);
+  log('auth_revoke_all', { removed: last - 1 });
+  return { ok: true, removed: last - 1 };
+}
+
 /* GET order_count { email } — 特典が何回目かを数えるためだけの窓口（2026-09-10）。
    レジ画面はログイン前なので customer_lookup を使えない。個人情報は一切返さず、
    「注文番号・種別・届け先があるかどうか」だけを返す。数え方は従来どおり
@@ -303,6 +357,8 @@ function doGet(e) {
       case 'diag_ship_reminders': return ContentService.createTextOutput(alertUnshippedOrders(true)); /* 発送リマインドのドライラン(送信せず本文表示) */
       /* ===== STAFF ===== */
       case 'staff_login':       return staffLogin(e.parameter);
+      /* 合言葉を全部無効化（端末紛失・退職・PIN変更のとき）。STAFF認証必須 */
+      case 'staff_revoke_sessions': return jsonResponse(authRevokeAll_());
       case 'staff_dashboard':   return staffDashboard();
       case 'staff_month_summary': return staffMonthSummary(e.parameter);  /* 📅 今月の売上/注文数/仕入れ額/粗利 (gas/MonthSummary.gs) */
       /* 🔁 定期便損益タブの当月行づくり (gas/SubscriptionMonthRows.gs)。?dry=1 で下見・?month=9 で月指定 */
@@ -3218,6 +3274,15 @@ function verifyOtp(body) {
   // フロントは "code" を送るが旧仕様 "otp" もサポート
   const code = body.code || body.otp;
   if (!body.email || !code) throw new Error('email and code required');
+  /* 2026-10-22: 6桁を何回でも試せたので、メアド単位で5回/10分に絞る。
+     発行側(requestOtp)の otpThrottled_ は「送る回数」だけを見ており、
+     検証側は数えていなかった＝狙ったお客様のコードは総当たりできた。 */
+  var _fk = 'login_fail_otp_' + String(body.email).trim().toLowerCase();
+  if (loginFailCount_(_fk) >= LOGIN_FAIL_MAX_OTP) {
+    log('otp_verify_locked', { email: String(body.email).trim().toLowerCase() });
+    return jsonResponse({ ok:false, success:false,
+      error: 'コードの入力をまちがえた回数が多いため、10分間おやすみしています。新しいコードを取り直してからお試しください。' });
+  }
   const sh = sheet('otps');
   const data = sh.getDataRange().getValues();
   for (let i = data.length - 1; i >= 1; i--) {
@@ -3227,10 +3292,13 @@ function verifyOtp(body) {
       const customer = getCustomerByEmail(body.email, orders);
       /* 2026-09-10: 発行しっぱなしだった合言葉を sessions タブに保管する */
       const token = authIssue_(body.email, 'otp', AUTH_DEFAULT_DAYS);
+      loginFailClear_(_fk);
       attachCardToCustomer(customer, orders);
       return jsonResponse({ ok:true, success: true, token: token, customer: customer, orders: orders });
     }
   }
+  loginFailBump_(_fk);
+  try { Utilities.sleep(1000); } catch (e) {}
   return jsonResponse({ ok:false, success: false, error: 'Invalid or expired OTP' });
 }
 
@@ -5741,9 +5809,19 @@ function staffLogin(params) {
     log('staff_login_no_pin', {});
     return jsonResponse({ ok:false, success:false, error: 'STAFF_PIN が未設定です。管理者にご連絡ください。' });
   }
+  /* 2026-10-22: 総当たり対策。まちがえるたびに待たせ、30回で10分断る */
+  var _fk = 'login_fail_staff';
+  if (loginFailCount_(_fk) >= LOGIN_FAIL_MAX_STAFF) {
+    log('staff_login_locked', {});
+    return jsonResponse({ ok:false, success:false,
+      error: 'ログインの失敗が続いたため、10分間おやすみしています。しばらくしてからもう一度お試しください。' });
+  }
   if (!pin || pin !== validPin) {
+    loginFailBump_(_fk);
+    try { Utilities.sleep(1500); } catch (e) {}
     return jsonResponse({ ok:false, success:false, error: 'Invalid PIN' });
   }
+  loginFailClear_(_fk);
   const token = makeStaffToken_(Date.now() + 12 * 3600 * 1000); // 12h 有効
   return jsonResponse({ ok:true, success:true, token: token, name: '江田畜産スタッフ', role: 'admin' });
 }
