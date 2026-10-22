@@ -507,6 +507,8 @@ ul { list-style: none; padding: 0; margin: 0; }
 .numpad-btn:active { background: rgba(255,255,255,.2); transform: scale(0.94); }
 .numpad-btn.del { background: transparent; }
 .login-hint { font-size: 11px; opacity: 0.5; }
+.pin-input::placeholder { color: rgba(255,255,255,.45); }
+.pin-input.error { border-color: var(--red); }
 
 /* ============ SETTINGS PANEL ============ */
 .settings-panel {
@@ -1197,28 +1199,20 @@ ul { list-style: none; padding: 0; margin: 0; }
   <div class="login-brand">EDA STAFF</div>
   <div class="login-sub">江田畜産 業務管理</div>
 
-  <div class="pin-display" id="pinDisplay">
-    <div class="pin-dot"></div>
-    <div class="pin-dot"></div>
-    <div class="pin-dot"></div>
-    <div class="pin-dot"></div>
-  </div>
-
-  <div class="numpad" id="numpad">
-    <button class="numpad-btn" data-key="1">1</button>
-    <button class="numpad-btn" data-key="2">2</button>
-    <button class="numpad-btn" data-key="3">3</button>
-    <button class="numpad-btn" data-key="4">4</button>
-    <button class="numpad-btn" data-key="5">5</button>
-    <button class="numpad-btn" data-key="6">6</button>
-    <button class="numpad-btn" data-key="7">7</button>
-    <button class="numpad-btn" data-key="8">8</button>
-    <button class="numpad-btn" data-key="9">9</button>
-    <button class="numpad-btn del" data-key="setup">⚙</button>
-    <button class="numpad-btn" data-key="0">0</button>
-    <button class="numpad-btn del" data-key="del">⌫</button>
-  </div>
-  <div class="login-hint" id="loginHint">4桁のPINを入力</div>
+  <!-- 2026-10-22: 4桁の数字パッドをやめ、長い合言葉を入れられる欄にした。
+       4桁＝1万通りしかなく、通ってしまえば注文・顧客CSV・送り状まで見えるため。 -->
+  <form id="pinForm" autocomplete="off"
+        style="display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;max-width:280px;margin:24px 0 4px">
+    <input type="password" id="pinInput" class="pin-input" name="staff-pass"
+           autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false"
+           placeholder="パスワード" aria-label="STAFFパスワード"
+           style="width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.10);color:#fff;font-size:16px;letter-spacing:.06em;text-align:center">
+    <button type="submit" id="pinSubmit"
+            style="width:100%;padding:13px;border-radius:12px;background:var(--gold);color:var(--forest-deep);font-weight:700;font-size:14px">ログイン</button>
+  </form>
+  <button type="button" id="gasSetupBtn"
+          style="font-size:11px;opacity:.5;background:transparent;color:#fff;padding:6px 10px">⚙ 接続先URLの設定</button>
+  <div class="login-hint" id="loginHint">パスワードを入力</div>
 
   <button id="demoQuickBtn" onclick="enterDemoQuick()"
           style="margin-top:24px;padding:12px 28px;background:var(--gold);color:var(--forest-deep);font-weight:700;border-radius:24px;font-size:13px;letter-spacing:0.04em">
@@ -1901,76 +1895,53 @@ function toast(msg, type) {
 }
 
 /* ================ LOGIN ================ */
-document.querySelectorAll('.numpad-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const key = btn.dataset.key;
-    if (key === 'del') {
-      pinBuffer = pinBuffer.slice(0, -1);
-    } else if (key === 'setup') {
-      // Open settings even before login
-      const url = prompt('GAS Web App URL を入力してください:', GAS_URL);
-      if (url) {
-        GAS_URL = url.trim();
-        localStorage.setItem(GAS_URL_KEY, GAS_URL);
-        toast('保存しました', 'success');
-      }
-      return;
-    } else {
-      if (pinBuffer.length < 4) pinBuffer += key;
+(function () {
+  const form = document.getElementById('pinForm');
+  if (form) form.addEventListener('submit', (ev) => { ev.preventDefault(); checkPin(); });
+  const setupBtn = document.getElementById('gasSetupBtn');
+  if (setupBtn) setupBtn.addEventListener('click', () => {
+    const url = prompt('GAS Web App URL を入力してください:', GAS_URL);
+    if (url) {
+      GAS_URL = url.trim();
+      localStorage.setItem(GAS_URL_KEY, GAS_URL);
+      toast('保存しました', 'success');
     }
-    renderPin();
-    if (pinBuffer.length === 4) checkPin();
   });
-});
+})();
 
+/* 入力欄を空に戻す（旧テンキーの表示更新と同じ呼び出し名を残してある） */
 function renderPin() {
-  document.querySelectorAll('.pin-dot').forEach((d, i) => {
-    d.classList.toggle('filled', i < pinBuffer.length);
-    d.classList.remove('error');
-  });
+  pinBuffer = '';
+  const el = document.getElementById('pinInput');
+  if (el) { el.value = ''; el.classList.remove('error'); }
 }
 
 async function checkPin() {
-  // ★ PIN 1234 は何があっても通す（GASがあれば本番、無ければデモ）
-  if (pinBuffer === '1234') {
-    if (GAS_URL) {
-      try {
-        const res = await fetch(GAS_URL + '?action=staff_login&pin=1234');
-        const data = await res.json();
-        if (data && data.success) {
-          setStaffToken(data.token);
-          sessionStorage.removeItem('eda-staff-demo');
-          localStorage.setItem(SESSION_KEY, '1');
-          enterApp();
-          return;
-        }
-      } catch (e) {}
-    }
-    // GAS未接続 or 認証失敗 → デモモード
-    sessionStorage.setItem('eda-staff-demo', '1');
-    localStorage.setItem(SESSION_KEY, '1');
-    enterApp();
-    return;
-  }
+  /* 2026-10-22: 「PIN 1234 は何があっても通す」という抜け道を削除した。
+     デモを見たいときは下の「🎭 デモを試す」から入る（本番データには触らない）。 */
+  const el  = document.getElementById('pinInput');
+  const pin = el ? String(el.value || '').trim() : '';
+  if (!pin) { showPinError('パスワードを入力してください'); return; }
+  if (!GAS_URL) { showPinError('接続先URLが未設定です（⚙から設定）'); return; }
 
-  // それ以外のPIN：GAS認証必須
-  if (!GAS_URL) {
-    showPinError('PINは 1234（デモ体験）');
-    return;
-  }
+  const btn = document.getElementById('pinSubmit');
+  if (btn) { btn.disabled = true; btn.textContent = '確認中…'; }
   try {
-    const res = await fetch(GAS_URL + '?action=staff_login&pin=' + pinBuffer);
+    const res  = await fetch(GAS_URL + '?action=staff_login&pin=' + encodeURIComponent(pin));
     const data = await res.json();
     if (data && data.success) {
       setStaffToken(data.token);
       sessionStorage.removeItem('eda-staff-demo');
       localStorage.setItem(SESSION_KEY, '1');
+      renderPin();
       enterApp();
     } else {
-      showPinError('PINが違います');
+      showPinError((data && data.error) || 'パスワードが違います');
     }
   } catch (e) {
-    showPinError('接続エラー — 1234でデモ');
+    showPinError('接続エラー — 通信状況をご確認ください');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'ログイン'; }
   }
 }
 
@@ -1979,13 +1950,13 @@ function isDemoMode() {
 }
 
 function showPinError(msg) {
-  document.querySelectorAll('.pin-dot').forEach(d => d.classList.add('error'));
+  const el = document.getElementById('pinInput');
+  if (el) el.classList.add('error');
   document.getElementById('loginHint').textContent = msg;
   setTimeout(() => {
-    pinBuffer = '';
     renderPin();
-    document.getElementById('loginHint').textContent = '4桁のPINを入力';
-  }, 1200);
+    document.getElementById('loginHint').textContent = 'パスワードを入力';
+  }, 2500);
 }
 
 function enterApp() {
