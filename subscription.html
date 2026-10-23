@@ -426,6 +426,31 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .sub-addons-more-btn:hover { background: var(--color-cream, #FAF7F0); }
 
+/* === 背景の並びを整える（2026-10-23 田崎さん指示）===
+   明るい地が4種類（#FFFAF0 / #FFFFFF / #FAF7F0 / #FBF8F2）に割れていて、
+   境目が「汚れ」に見えていた。明はクリーム1色に統一する。
+   暗い地（#0F3D2E→#0A2D21）はもともと1種類なのでそのまま。
+
+   並び: 暗(ヒーロー) → 明(プラン+注記) → 暗(内容例) → 明(追加商品)
+         → 暗(申込〜マイページ) → 明(FAQ) → 暗(お客様の声〜フッターCTA) → 明(規約)
+   暗が続くところは境目の線と地のリセットを外し、1つの塊として流す。 */
+.sub-plans-section,
+.sub-addons,
+.sub-faq,
+.sub-terms {
+ background: var(--color-cream) !important;
+ background-image: none !important;
+}
+
+/* 暗い地が隣り合う箇所は、継ぎ目を作らず1枚に見せる */
+.sub-checkout + .mypage-section,
+.sub-voice + .sub-foot-cta {
+ border-top: 0 !important;
+ margin-top: -1px;
+}
+.sub-checkout { border-bottom: 0 !important; }
+.sub-voice { border-bottom: 0 !important; }
+
 /* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
 .sub-line-tabs {
  display: flex;
@@ -2519,7 +2544,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 </section>
 
 <!-- ========= プラン下の補足注記 ========= -->
-<section style="background:#FFFAF0;padding:20px 0;border-top:1px solid #F0E5D0;">
+<section style="background:var(--color-cream);padding:20px 0;border-top:1px solid rgba(15,61,46,0.07);">
  <div class="container">
  <p style="text-align:center;font-size:11px;color:#999;line-height:1.7;font-style:italic;margin:0;max-width:760px;margin:0 auto;">
  ※ 年間お得額は目安です。お届け内容（部位の組み合わせ・容量・カスタマイズ）や時期によって変動します。初月50%OFF を含めた定期便1年継続時のおおよその差額。
