@@ -130,7 +130,11 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 /* ============ PDP GRID ============ */
 .pdp-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  /* 🔴 2026-10-23: `1.2fr 1fr` のままだと 1fr = minmax(auto,1fr) なので、
+     列の最小幅が中身の min-content まで広がり、375px の画面で列が 600px になって
+     ページが横にはみ出す（スマホで開くと拡大表示になり、ピンチで縮めないと全体が見えない）。
+     minmax(0, …) で最小幅を 0 に固定する。中身は何も切れない。 */
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: clamp(40px, 6vw, 80px);
   align-items: start;
 }
@@ -610,7 +614,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
-  .pdp-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pdp-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .pdp-gallery { position: static; }
   .pdp-related-grid { grid-template-columns: 1fr; gap: 24px; }
 }

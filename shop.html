@@ -9584,7 +9584,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
-<link rel="stylesheet" href="public/css/simple-ui.css?v=20261023a">
+<link rel="stylesheet" href="public/css/simple-ui.css?v=20261023b">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10510,7 +10510,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- ジャンル別プレビュー(2件)から商品一覧へ -->
  <div class="shop-viewall-wrap" data-cat="beef">
- <a href="products.html?cat=beef&amp;sub=all#products" class="btn-viewall">牛肉をすべて表示 →</a>
+ <a href="products.html?cat=beef&amp;sub=all#products" class="btn-viewall">和牛をすべて表示 →</a>
  </div>
 
  <!-- ===== 平飼い鶏 + オーガニック ===== -->
@@ -15171,7 +15171,7 @@ function copyPopCoupon() {
 (function productPreviewInit() {
  'use strict';
  var LIMIT = 2;
- var CAT_LABEL = { beef: '牛肉', chicken: '鶏肉' };
+ var CAT_LABEL = { beef: '和牛', chicken: '鶏肉' };
  /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
  var PREVIEW_PICKS = {
    beef: { all: ['はじめてセット', '赤身スライス'] }
@@ -15241,9 +15241,8 @@ function copyPopCoupon() {
      var a = wrap.querySelector('a');
      if (a) {
        a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(sub) + '#products';
-       a.textContent = (sub !== 'all' && active
-         ? active.textContent.trim()
-         : (CAT_LABEL[cat] || '')) + 'をすべて表示 →';
+       /* 2026-10-23 田崎さん指示。部位タブ名ではなく常にカテゴリ名で出す */
+       a.textContent = (CAT_LABEL[cat] || '') + 'をすべて表示 →';
      }
    });
  }

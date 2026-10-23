@@ -46,7 +46,8 @@
       price: 1800, weight: 200, stock: 22, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Cube Steak',
       description: 'ひと口大に切り分けたステーキ用の正肉。お弁当や、忙しい平日の夕食に。',
-      images: ['public/images/products/drive/cube-steak.jpg']
+      /* 2026-10-23 一覧(shop.html の CUBE STEAK カード)と写真が違っていたので合わせる */
+      images: ['public/images/products/drive/cube-steak-2026.jpg']
     },
 
     /* ===== 牛肉 スライス・切り落とし ===== */

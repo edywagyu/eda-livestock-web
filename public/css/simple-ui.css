@@ -202,3 +202,16 @@ details.fold:nth-of-type(6) { order: 73; } /* お届けの中身 */
 details.fold:nth-of-type(5) { order: 74; } /* 商品共通スペック */
 details.fold:nth-of-type(7) { order: 75; } /* スーパーのお肉との違い */
 details.fold:nth-of-type(3) { order: 76; } /* よくあるご質問 */
+
+/* ---------- 10. 「無投薬」バッジを小さく ----------
+ * 写真の上に大きく乗っていて主役の肉より目立っていたため、脇役の大きさに落とす。
+ */
+.product-card .badge-muton {
+  font-size: 10px !important;
+  padding: 4px 9px !important;
+  letter-spacing: 0.04em !important;
+  border-radius: 999px !important;
+}
+@media (max-width: 767px) {
+  .product-card .badge-muton { font-size: 9px !important; padding: 3px 7px !important; }
+}
