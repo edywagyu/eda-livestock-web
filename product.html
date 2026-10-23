@@ -579,6 +579,11 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-bd-imgwrap input:checked + .pdp-bd-box-mark { background: var(--color-forest); border-color: var(--color-forest); }
 .pdp-bd-imgwrap input:checked + .pdp-bd-box-mark::after { content: ''; position: absolute;
   left: 7px; top: 2px; width: 6px; height: 12px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
+.pdp-bd-howto { font-size: 13px; color: var(--color-ink-muted); margin: -6px 0 18px; }
+.pdp-bd-state { font-size: 11px; font-weight: 700; letter-spacing: .06em; margin-top: 8px; color: #9b9b9b; }
+.pdp-bd-state.is-on { color: var(--color-forest); }
+.pdp-bd-count { font-size: 14px; color: var(--color-ink); }
+.pdp-bd-count b { font-size: 18px; color: var(--color-forest); }
 .pdp-bd-tag { font-size: 10px; letter-spacing: .14em; color: var(--color-gold-soft); margin-top: 10px; min-height: 15px; }
 .pdp-bd-box { margin-top: 28px; background: #fff; border: 1px solid rgba(212,169,59,.32); padding: 26px 24px; }
 .pdp-bd-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 14px; }
@@ -942,7 +947,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   <!-- ============ BOUGHT TOGETHER ============ -->
   <section class="pdp-bundle" id="pdpBundle" hidden>
     <p class="pdp-related-title" id="pdpBdEyebrow">— Frequently Bought Together —</p>
-    <h2 class="pdp-bundle-lead" id="pdpBdLead">この商品を買った人は、こんなものも買っています。</h2>
+    <h2 class="pdp-bundle-lead" id="pdpBdLead">よく一緒に買われています。</h2>
+    <p class="pdp-bd-howto">写真をタップで、入れる／外すを切り替えられます。</p>
     <div class="pdp-bd-cards" id="pdpBdCards"></div>
     <div class="pdp-bd-box">
       <div class="pdp-bd-row" id="pdpBdRow"></div>
@@ -986,6 +992,97 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </main>
 
 <!-- ============ MOBILE STICKY CTA ============ -->
+<!-- 2026-10-23 田崎さん指示: 下の「追加」バーをやめ、右上に「いまカートに入っているもの」を出す。
+     下のバーは本文を隠すうえ、押せるものが画面内に2つ出て迷わせていた。 -->
+<style>
+.pdp-sticky-cta { display: none !important; }
+
+.pdp-cart-mini {
+  position: fixed;
+  top: 76px; right: 12px;
+  z-index: 86;
+  width: 232px;
+  max-height: 58vh;
+  overflow-y: auto;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(15,61,46,0.14);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(15,61,46,0.14);
+  padding: 12px 13px;
+  font-family: var(--font-jp);
+}
+.pdp-cart-mini[hidden] { display: none !important; }
+.pdp-cart-mini-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-size: 11px; letter-spacing: .1em; color: var(--color-ink-muted);
+  padding-bottom: 8px; border-bottom: 1px solid rgba(15,61,46,0.10);
+}
+.pdp-cart-mini-head b { font-size: 13px; color: var(--color-forest); letter-spacing: 0; }
+.pdp-cart-mini-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid rgba(15,61,46,0.07);
+}
+.pdp-cart-mini-item img { width: 34px; height: 34px; object-fit: cover; border-radius: 4px; background: var(--color-paper); flex: 0 0 34px; }
+.pdp-cart-mini-name { font-size: 12px; line-height: 1.4; color: var(--color-ink); }
+.pdp-cart-mini-sub { font-size: 11px; color: var(--color-ink-muted); }
+.pdp-cart-mini-more { font-size: 11px; color: var(--color-ink-muted); padding: 7px 0 0; }
+.pdp-cart-mini-total {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-top: 10px; font-size: 12px; color: var(--color-ink-muted);
+}
+.pdp-cart-mini-total b { font-size: 16px; color: var(--color-forest); }
+.pdp-cart-mini-btn {
+  display: block; width: 100%; margin-top: 10px; padding: 10px;
+  background: var(--color-forest); color: #fff; text-align: center;
+  border: 0; border-radius: 7px; font-family: inherit; font-size: 12px; font-weight: 700;
+  text-decoration: none; cursor: pointer;
+}
+@media (max-width: 767px) {
+  .pdp-cart-mini { top: 64px; right: 8px; width: 190px; padding: 10px; max-height: 46vh; }
+  .pdp-cart-mini-item img { width: 28px; height: 28px; flex-basis: 28px; }
+  .pdp-cart-mini-name { font-size: 11px; }
+}
+</style>
+<aside class="pdp-cart-mini" id="pdpCartMini" hidden aria-label="カートの中身"></aside>
+<script>
+(function () {
+  var MAX = 3;
+  function read() {
+    try { return JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch (e) { return []; }
+  }
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  function render() {
+    var box = document.getElementById('pdpCartMini');
+    if (!box) return;
+    var cart = read();
+    if (!cart.length) { box.hidden = true; return; }
+    var qty = cart.reduce(function (s, c) { return s + (c.qty || 1); }, 0);
+    var total = cart.reduce(function (s, c) { return s + (c.price || 0) * (c.qty || 1); }, 0);
+    var shown = cart.slice(0, MAX);
+    box.innerHTML =
+      '<div class="pdp-cart-mini-head"><b>カートの中身</b><span>' + qty + '点</span></div>' +
+      shown.map(function (c) {
+        return '<div class="pdp-cart-mini-item">' +
+          (c.img ? '<img src="' + esc(c.img) + '" alt="">' : '<img alt="">') +
+          '<div><div class="pdp-cart-mini-name">' + esc(c.title) + '</div>' +
+          '<div class="pdp-cart-mini-sub">¥' + Number((c.price || 0) * (c.qty || 1)).toLocaleString() +
+          (c.qty > 1 ? ' ・' + c.qty + '点' : '') + '</div></div></div>';
+      }).join('') +
+      (cart.length > MAX ? '<div class="pdp-cart-mini-more">ほか ' + (cart.length - MAX) + ' 商品</div>' : '') +
+      '<div class="pdp-cart-mini-total"><span>合計</span><b>¥' + total.toLocaleString() + '</b></div>' +
+      '<a class="pdp-cart-mini-btn" href="checkout.html">カートを見る →</a>';
+    box.hidden = false;
+  }
+  /* カートに積む経路が複数あるので、押されたら少し遅れて取り直す */
+  document.addEventListener('click', function () { setTimeout(render, 150); });
+  window.addEventListener('storage', render);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
+  else render();
+  setTimeout(render, 800);
+})();
+</script>
 <div class="pdp-sticky-cta" id="stickyCta">
   <div class="pdp-sticky-cta-info">
     <span class="pdp-sticky-cta-name" id="stickyName"></span>
@@ -1241,6 +1338,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
           <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="${esc(x.p.name)}">
         </label>
         <div class="pdp-bd-tag">${i === 0 ? 'この商品' : '&nbsp;'}</div>
+        <div class="pdp-bd-state" data-i="${i}"></div>
         <h3>${esc(x.p.name)}</h3>
         <div class="pdp-bd-price">¥${x.unit.toLocaleString()}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}</div>
       </article>`).join('');
@@ -1248,12 +1346,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       const on = [].slice.call(document.querySelectorAll('.pdp-bd-cb'))
         .map((cb, i) => cb.checked ? items[i] : null).filter(Boolean);
       const total = on.reduce((s, x) => s + x.unit * x.q, 0);
+      /* 2026-10-23 田崎さん指示: 上のカードと同じ商品をもう一度並べていて二重だった。
+         ここは「いま何点選んでいるか」だけにする。 */
       document.getElementById('pdpBdRow').innerHTML = on.length
-        ? on.map(x => `<div class="pdp-bd-item">
-            <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="">
-            <div><b>${esc(x.p.name)}</b>${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}<br>
-            <span>¥${(x.unit * x.q).toLocaleString()}</span></div></div>`).join('<div class="pdp-bd-plus">＋</div>')
-        : '<div class="pdp-bd-empty">商品を選んでください。</div>';
+        ? '<div class="pdp-bd-count">選んでいるのは <b>' + on.length + '</b> 点（' + items.length + '点中）</div>'
+        : '<div class="pdp-bd-empty">写真をタップして選んでください。</div>';
+      document.querySelectorAll('.pdp-bd-state').forEach(function (el) {
+        var cb = document.querySelector('.pdp-bd-cb[data-i="' + el.dataset.i + '"]');
+        var onNow = cb && cb.checked;
+        el.textContent = onNow ? '入れる' : '外している';
+        el.className = 'pdp-bd-state' + (onNow ? ' is-on' : '');
+      });
       document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
       document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
         : total >= FREE ? '<span class="pdp-bd-free">送料無料</span>'
