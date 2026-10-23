@@ -361,6 +361,71 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  color: var(--color-ink-muted); margin: 0 auto; max-width: 580px;
 }
 
+/* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
+.sub-line-tabs {
+ display: flex;
+ justify-content: center;
+ flex-wrap: wrap;
+ gap: 10px;
+ max-width: 1100px;
+ margin: 0 auto 28px;
+}
+.sub-line-tab {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 2px;
+ min-width: 170px;
+ padding: 14px 22px;
+ border: 1.5px solid rgba(15,61,46,0.22);
+ border-radius: 12px;
+ background: #fff;
+ color: var(--color-forest, #0F3D2E);
+ font-family: inherit;
+ cursor: pointer;
+ transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.sub-line-tab:hover { border-color: var(--color-forest, #0F3D2E); }
+.sub-line-tab[aria-selected="true"] {
+ background: var(--color-forest, #0F3D2E);
+ border-color: var(--color-forest, #0F3D2E);
+ color: #fff;
+ box-shadow: 0 6px 18px rgba(15,61,46,0.18);
+}
+.sub-line-tab-emoji { font-size: 20px; line-height: 1.2; }
+.sub-line-tab-name { font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+.sub-line-tab-lead { font-size: 11px; opacity: .72; }
+.sub-line-note {
+ text-align: center;
+ font-size: 12.5px;
+ color: var(--color-ink-muted, #5C5C5C);
+ margin: -14px auto 24px;
+ max-width: 680px;
+}
+/* 選ばれていない系統のカードは出さない */
+.sub-plans-grid .sub-plan-card[hidden] { display: none !important; }
+/* 詳細ボタン（内容例・カスタマイズへ） */
+.sub-plan-detail-btn {
+ display: block;
+ width: 100%;
+ margin-top: 10px;
+ padding: 11px 14px;
+ border: 1.5px solid rgba(15,61,46,0.3);
+ border-radius: 8px;
+ background: #fff;
+ color: var(--color-forest, #0F3D2E);
+ font-family: inherit;
+ font-size: 13px;
+ font-weight: 700;
+ cursor: pointer;
+}
+.sub-plan-detail-btn:hover { background: var(--color-cream, #FAF7F0); }
+@media (max-width: 767px) {
+ .sub-line-tabs { gap: 8px; }
+ .sub-line-tab { min-width: 0; flex: 1 1 30%; padding: 11px 8px; }
+ .sub-line-tab-name { font-size: 13px; }
+ .sub-line-tab-lead { display: none; }
+}
 .sub-plans-grid {
  display: grid;
  grid-template-columns: repeat(3, 1fr);
@@ -2378,6 +2443,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </p>
  </div>
 
+ <!-- 2026-10-23 田崎さん指示: 9プランを平らに並べず、まず系統(和牛＋鶏／和牛だけ／鶏だけ)を選ばせる。
+      中身は renderPlanCards() が EdaPlans.groupByLine() から作る（直書きしない）。 -->
+ <div class="sub-line-tabs" id="subLineTabs" role="tablist" aria-label="定期便の系統"></div>
+
  <div class="sub-plans-grid" id="subPlansGrid">
 <!-- カードは public/js/eda-plans.js がシートの内容から作る（直書きしない） -->
  </div>
@@ -3577,6 +3646,7 @@ let PLANS = {};
 function renderPlanCards(rows) {
  const grid = document.getElementById('subPlansGrid');
  if (!grid) return;
+ window.__EDA_PLAN_ROWS = rows;   /* 系統タブの切替で作り直すときに使う */
  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
  const yen = (n) => '¥' + Number(n || 0).toLocaleString('ja-JP');
 
@@ -3637,6 +3707,7 @@ function renderPlanCards(rows) {
  '<div class="sub-plan-items-note">※入荷状況により内容が変更になる場合があります。</div>';
  }
 
+ /* yearly / itemsHtml はカードでは使わない（詳細側に出す） */
  const yearly = p.yearlySavings
  ? '<div class="sub-plan-yearly"><span class="sub-plan-yearly-label">1年続けると</span>' +
    '<span class="sub-plan-yearly-amount">およそ' + yen(Math.floor(p.yearlySavings / 1000) * 1000) + '<small>お得</small></span></div>'
@@ -3648,26 +3719,102 @@ function renderPlanCards(rows) {
  : '<div class="sub-plan-price">' + yen(p.price) + '<small>/月</small></div>' +
    '<div class="sub-plan-savings">送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>';
 
- return '<article class="' + cls.join(' ') + '" data-plan="' + esc(p.planId) + '">' +
+ /* 2026-10-23 田崎さん指示: カードはグラム数と金額だけにする。
+    お届け例(itemsHtml)・1年の割安額(yearly)は「詳細」側に送る。 */
+ return '<article class="' + cls.join(' ') + '" data-plan="' + esc(p.planId) + '"' +
+   ' data-line="' + esc(EdaPlans.lineOf(p.planId).key) + '">' +
  '<div class="sub-plan-cycle">' + esc(p.cycleLabel) + ' · 毎月お届け' + tag + '</div>' +
  '<div class="sub-plan-name">' + esc(p.name) + '</div>' +
  '<div class="sub-plan-target">' + esc(p.target) + '向け</div>' +
  '<div class="sub-plan-summary"><div class="sub-plan-summary-total">' + esc(p.weight) +
    '<small>/ 全' + p.productCount + '品</small></div>' + splitHtml + '</div>' +
- '<div class="sub-plan-items">' + itemsHtml + '</div>' +
  '<div class="sub-plan-pricing">' +
    '<div class="sub-plan-old-price">通常 ' + yen(p.price) + '</div>' +
-   halfLine + yearly +
+   halfLine +
    '<div class="sub-plan-note">2ヶ月目以降 ' + yen(p.price) + '/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>' +
  '</div>' +
+ '<button type="button" class="sub-plan-detail-btn" data-detail="' + esc(p.planId) + '">詳細（内容例・カスタマイズ） →</button>' +
  '<div class="sub-plan-select-btn">このプランを選ぶ →</div>' +
  '</article>';
  }).join('');
+
+ renderLineTabs(rows);
+
 
  /* FAQ本文の「ミニ ¥9,280 / ライト ¥12,300 / …」もシートの値に合わせる */
  const listText = rows.map(p => p.name + ' ' + yen(p.price)).join(' / ');
  document.querySelectorAll('.js-plan-price-list').forEach(el => { el.textContent = listText; });
 }
+
+/* ============ 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ） ============
+   2026-10-23 田崎さん指示。9プランを平らに並べると選べないため、
+   まず系統を選び、その系統の3プランだけを出す。
+   系統の判定は EdaPlans.groupByLine()（planId の頭だけで見る）に任せる。 */
+let currentLine = null;
+
+function renderLineTabs(rows) {
+ const tabs = document.getElementById('subLineTabs');
+ if (!tabs || !window.EdaPlans || !EdaPlans.groupByLine) return;
+ const lines = EdaPlans.groupByLine(rows);
+ if (!lines.length) return;
+
+ /* URL に ?plan= があればその系統から開く。無ければ「和牛＋鶏」(先頭) */
+ const params = new URLSearchParams(location.search);
+ const wanted = (params.get('plan') || '').toLowerCase();
+ const fromUrl = wanted ? EdaPlans.lineOf(wanted).key : null;
+ if (!currentLine) currentLine = (fromUrl && lines.some(l => l.key === fromUrl)) ? fromUrl : lines[0].key;
+
+ tabs.innerHTML = lines.map(l =>
+  '<button type="button" class="sub-line-tab" role="tab" data-line="' + l.key + '"' +
+  ' aria-selected="' + (l.key === currentLine) + '">' +
+  '<span class="sub-line-tab-emoji">' + l.emoji + '</span>' +
+  '<span class="sub-line-tab-name">' + l.name + '</span>' +
+  '<span class="sub-line-tab-lead">' + l.lead + '</span>' +
+  '</button>'
+ ).join('');
+
+ /* 系統の一言は表の下ではなくタブの直下に1行だけ */
+ let note = document.getElementById('subLineNote');
+ if (!note) {
+  note = document.createElement('p');
+  note.id = 'subLineNote';
+  note.className = 'sub-line-note';
+  tabs.insertAdjacentElement('afterend', note);
+ }
+ const cur = lines.find(l => l.key === currentLine) || lines[0];
+ note.textContent = cur.note;
+
+ applyLine();
+}
+
+function applyLine() {
+ document.querySelectorAll('#subPlansGrid .sub-plan-card').forEach(c => {
+  c.hidden = (c.dataset.line !== currentLine);
+ });
+ document.querySelectorAll('#subLineTabs .sub-line-tab').forEach(b => {
+  b.setAttribute('aria-selected', String(b.dataset.line === currentLine));
+ });
+}
+
+document.addEventListener('click', (e) => {
+ /* 系統タブ */
+ const tab = e.target.closest('#subLineTabs .sub-line-tab');
+ if (tab) {
+  currentLine = tab.dataset.line;
+  const rows = (window.__EDA_PLAN_ROWS || []);
+  if (rows.length) renderLineTabs(rows); else applyLine();
+  return;
+ }
+ /* 「詳細」→ そのプランを選んで内容例・カスタマイズへ */
+ const det = e.target.closest('.sub-plan-detail-btn');
+ if (det) {
+  e.stopPropagation();
+  if (typeof selectPlan === 'function') selectPlan(det.dataset.detail, true);
+  const target = document.getElementById('detail');
+  if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 70, behavior: 'smooth' });
+ }
+});
+
 
 /* ============ URL ?plan= 取得 ============ */
 function getInitialPlan() {
