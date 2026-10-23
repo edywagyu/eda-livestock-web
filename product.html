@@ -1001,7 +1001,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 /* 右上の呼び出しボタン */
 .pdp-cart-fab {
   position: fixed;
-  top: 76px; right: 12px;
+  /* 🔴 ヘッダーは position:sticky / z-index:100 で常に上にいる。
+     固定値で置くと画面を上まで戻したときにヘッダーの裏に隠れるので、
+     ヘッダーの実寸から毎回計算した位置に置く（--pdp-cart-top）。 */
+  top: var(--pdp-cart-top, 100px); right: 12px;
   z-index: 87;
   display: inline-flex; align-items: center; gap: 7px;
   padding: 9px 14px;
@@ -1023,7 +1026,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 /* 中身のパネル。初期は右の外に逃がしておき、押されたら滑り込ませる */
 .pdp-cart-mini {
   position: fixed;
-  top: 122px; right: 12px;
+  top: calc(var(--pdp-cart-top, 100px) + 52px); right: 12px;
   z-index: 86;
   width: 260px;
   max-height: 56vh;
@@ -1072,8 +1075,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   text-decoration: none;
 }
 @media (max-width: 767px) {
-  .pdp-cart-fab { top: 64px; right: 8px; }
-  .pdp-cart-mini { top: 110px; right: 8px; width: min(248px, calc(100vw - 16px)); max-height: 48vh; }
+  .pdp-cart-fab { right: 8px; }
+  .pdp-cart-mini { right: 8px; width: min(248px, calc(100vw - 16px)); max-height: 48vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pdp-cart-mini { transition: opacity .2s ease, visibility .2s; }
@@ -1096,7 +1099,19 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
     return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
 
+  /* ヘッダーの高さを測って、その下に出す。画面幅や言語で高さが変わるので毎回測る。 */
+  function placeBelowHeader() {
+    var hd = document.querySelector('header');
+    var h = hd ? Math.round(hd.getBoundingClientRect().height) : 89;
+    document.documentElement.style.setProperty('--pdp-cart-top', (h + 11) + 'px');
+  }
+  window.addEventListener('resize', placeBelowHeader);
+  window.addEventListener('orientationchange', placeBelowHeader);
+  placeBelowHeader();
+  setTimeout(placeBelowHeader, 600);
+
   function render() {
+    placeBelowHeader();
     var box = document.getElementById('pdpCartMini');
     var fab = document.getElementById('pdpCartFab');
     if (!box || !fab) return;
