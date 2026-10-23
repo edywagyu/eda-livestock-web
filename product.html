@@ -992,91 +992,161 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </main>
 
 <!-- ============ MOBILE STICKY CTA ============ -->
-<!-- 2026-10-23 田崎さん指示: 下の「追加」バーをやめ、右上に「いまカートに入っているもの」を出す。
+<!-- 2026-10-23 田崎さん指示: 下の「追加」バーをやめ、右上のボタンから
+     「いまカートに入っているもの」を開く。押すと横からスルスル出る。
      下のバーは本文を隠すうえ、押せるものが画面内に2つ出て迷わせていた。 -->
 <style>
 .pdp-sticky-cta { display: none !important; }
 
-.pdp-cart-mini {
+/* 右上の呼び出しボタン */
+.pdp-cart-fab {
   position: fixed;
   top: 76px; right: 12px;
+  z-index: 87;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 14px;
+  background: var(--color-forest);
+  color: #fff;
+  border: 0; border-radius: 100px;
+  font-family: var(--font-jp); font-size: 12px; font-weight: 700;
+  box-shadow: 0 8px 22px rgba(15,61,46,0.26);
+  cursor: pointer;
+}
+.pdp-cart-fab[hidden] { display: none !important; }
+.pdp-cart-fab svg { width: 16px; height: 16px; }
+.pdp-cart-fab .fab-n {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  background: var(--color-gold); color: var(--color-forest-deep);
+  border-radius: 100px; font-size: 11px; line-height: 18px; text-align: center;
+}
+
+/* 中身のパネル。初期は右の外に逃がしておき、押されたら滑り込ませる */
+.pdp-cart-mini {
+  position: fixed;
+  top: 122px; right: 12px;
   z-index: 86;
-  width: 232px;
-  max-height: 58vh;
+  width: 260px;
+  max-height: 56vh;
   overflow-y: auto;
-  background: rgba(255,255,255,0.97);
+  background: rgba(255,255,255,0.98);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(15,61,46,0.14);
   border-radius: 10px;
-  box-shadow: 0 10px 28px rgba(15,61,46,0.14);
-  padding: 12px 13px;
+  box-shadow: 0 14px 34px rgba(15,61,46,0.18);
+  padding: 13px 14px;
   font-family: var(--font-jp);
+  transform: translateX(calc(100% + 24px));
+  opacity: 0;
+  visibility: hidden;
+  transition: transform .34s cubic-bezier(.32,.72,0,1), opacity .24s ease, visibility .34s;
 }
-.pdp-cart-mini[hidden] { display: none !important; }
+.pdp-cart-mini.is-open { transform: translateX(0); opacity: 1; visibility: visible; }
 .pdp-cart-mini-head {
   display: flex; align-items: baseline; justify-content: space-between;
-  font-size: 11px; letter-spacing: .1em; color: var(--color-ink-muted);
-  padding-bottom: 8px; border-bottom: 1px solid rgba(15,61,46,0.10);
+  font-size: 11px; letter-spacing: .08em; color: var(--color-ink-muted);
+  padding-bottom: 9px; border-bottom: 1px solid rgba(15,61,46,0.10);
 }
 .pdp-cart-mini-head b { font-size: 13px; color: var(--color-forest); letter-spacing: 0; }
-.pdp-cart-mini-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 0; border-bottom: 1px solid rgba(15,61,46,0.07);
+/* 商品名 ／ 数 ／ 金額 の3列 */
+.pdp-cart-mini-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  column-gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(15,61,46,0.07);
+  font-size: 12px;
 }
-.pdp-cart-mini-item img { width: 34px; height: 34px; object-fit: cover; border-radius: 4px; background: var(--color-paper); flex: 0 0 34px; }
-.pdp-cart-mini-name { font-size: 12px; line-height: 1.4; color: var(--color-ink); }
-.pdp-cart-mini-sub { font-size: 11px; color: var(--color-ink-muted); }
-.pdp-cart-mini-more { font-size: 11px; color: var(--color-ink-muted); padding: 7px 0 0; }
+.pdp-cart-mini-row .r-name { color: var(--color-ink); line-height: 1.45; }
+.pdp-cart-mini-row .r-qty { color: var(--color-ink-muted); white-space: nowrap; }
+.pdp-cart-mini-row .r-amt { color: var(--color-forest); font-weight: 700; white-space: nowrap; }
 .pdp-cart-mini-total {
   display: flex; align-items: baseline; justify-content: space-between;
-  padding-top: 10px; font-size: 12px; color: var(--color-ink-muted);
+  padding-top: 11px; font-size: 12px; color: var(--color-ink-muted);
 }
-.pdp-cart-mini-total b { font-size: 16px; color: var(--color-forest); }
+.pdp-cart-mini-total b { font-size: 17px; color: var(--color-forest); }
 .pdp-cart-mini-btn {
-  display: block; width: 100%; margin-top: 10px; padding: 10px;
+  display: block; width: 100%; margin-top: 11px; padding: 11px;
   background: var(--color-forest); color: #fff; text-align: center;
   border: 0; border-radius: 7px; font-family: inherit; font-size: 12px; font-weight: 700;
-  text-decoration: none; cursor: pointer;
+  text-decoration: none;
 }
 @media (max-width: 767px) {
-  .pdp-cart-mini { top: 64px; right: 8px; width: 190px; padding: 10px; max-height: 46vh; }
-  .pdp-cart-mini-item img { width: 28px; height: 28px; flex-basis: 28px; }
-  .pdp-cart-mini-name { font-size: 11px; }
+  .pdp-cart-fab { top: 64px; right: 8px; }
+  .pdp-cart-mini { top: 110px; right: 8px; width: min(248px, calc(100vw - 16px)); max-height: 48vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-cart-mini { transition: opacity .2s ease, visibility .2s; }
 }
 </style>
-<aside class="pdp-cart-mini" id="pdpCartMini" hidden aria-label="カートの中身"></aside>
+
+<button class="pdp-cart-fab" id="pdpCartFab" hidden type="button" aria-expanded="false" aria-controls="pdpCartMini">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h2l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1.3" fill="currentColor"/><circle cx="18" cy="20" r="1.3" fill="currentColor"/>
+  </svg>
+  <span>カート</span><span class="fab-n" id="pdpCartFabN">0</span>
+</button>
+<aside class="pdp-cart-mini" id="pdpCartMini" aria-label="カートの中身"></aside>
+
 <script>
 (function () {
-  var MAX = 3;
   function read() {
     try { return JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch (e) { return []; }
   }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
     return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+
   function render() {
     var box = document.getElementById('pdpCartMini');
-    if (!box) return;
+    var fab = document.getElementById('pdpCartFab');
+    if (!box || !fab) return;
     var cart = read();
-    if (!cart.length) { box.hidden = true; return; }
+    if (!cart.length) {
+      fab.hidden = true;
+      close();
+      return;
+    }
     var qty = cart.reduce(function (s, c) { return s + (c.qty || 1); }, 0);
     var total = cart.reduce(function (s, c) { return s + (c.price || 0) * (c.qty || 1); }, 0);
-    var shown = cart.slice(0, MAX);
+    document.getElementById('pdpCartFabN').textContent = qty;
+    fab.hidden = false;
     box.innerHTML =
       '<div class="pdp-cart-mini-head"><b>カートの中身</b><span>' + qty + '点</span></div>' +
-      shown.map(function (c) {
-        return '<div class="pdp-cart-mini-item">' +
-          (c.img ? '<img src="' + esc(c.img) + '" alt="">' : '<img alt="">') +
-          '<div><div class="pdp-cart-mini-name">' + esc(c.title) + '</div>' +
-          '<div class="pdp-cart-mini-sub">¥' + Number((c.price || 0) * (c.qty || 1)).toLocaleString() +
-          (c.qty > 1 ? ' ・' + c.qty + '点' : '') + '</div></div></div>';
+      cart.map(function (c) {
+        var n = c.qty || 1;
+        return '<div class="pdp-cart-mini-row">' +
+          '<span class="r-name">' + esc(c.title) + '</span>' +
+          '<span class="r-qty">' + n + '点</span>' +
+          '<span class="r-amt">¥' + Number((c.price || 0) * n).toLocaleString() + '</span>' +
+          '</div>';
       }).join('') +
-      (cart.length > MAX ? '<div class="pdp-cart-mini-more">ほか ' + (cart.length - MAX) + ' 商品</div>' : '') +
       '<div class="pdp-cart-mini-total"><span>合計</span><b>¥' + total.toLocaleString() + '</b></div>' +
       '<a class="pdp-cart-mini-btn" href="checkout.html">カートを見る →</a>';
-    box.hidden = false;
   }
-  /* カートに積む経路が複数あるので、押されたら少し遅れて取り直す */
-  document.addEventListener('click', function () { setTimeout(render, 150); });
+
+  function open() {
+    document.getElementById('pdpCartMini').classList.add('is-open');
+    document.getElementById('pdpCartFab').setAttribute('aria-expanded', 'true');
+  }
+  function close() {
+    var box = document.getElementById('pdpCartMini');
+    if (box) box.classList.remove('is-open');
+    var fab = document.getElementById('pdpCartFab');
+    if (fab) fab.setAttribute('aria-expanded', 'false');
+  }
+  function toggle() {
+    var box = document.getElementById('pdpCartMini');
+    if (box.classList.contains('is-open')) close(); else { render(); open(); }
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#pdpCartFab')) { e.preventDefault(); toggle(); return; }
+    /* パネルの外を触ったら閉じる */
+    if (!e.target.closest('#pdpCartMini')) close();
+    /* カートに積む経路が複数あるので、押されたら少し遅れて取り直す */
+    setTimeout(render, 150);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   window.addEventListener('storage', render);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
   else render();
