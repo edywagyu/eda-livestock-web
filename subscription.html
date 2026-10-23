@@ -428,13 +428,16 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 
 /* マイページ紹介のアイコン。絵文字をやめて、ナビと同じ細線のSVGに揃える
    （2026-10-23 田崎さん指示）。器は付けない＝押せるようには見せない。 */
-.mypage-feature-icon { width: 34px !important; height: 34px !important; }
+.mypage-feature-icon { width: 36px !important; height: 36px !important; }
 .mypage-feature-icon svg {
- width: 30px; height: 30px;
- color: var(--color-gold-soft, #856A20);
+ width: 32px; height: 32px;
+ /* くすんだ金(#856A20)だと灰色に見えたので、ブランドの金そのものに戻す。
+    線も 1.3 → 1.5 に太らせて色がのるようにした（2026-10-23 田崎さん指示） */
+ color: var(--color-gold, #D4A93B);
+ stroke-width: 1.5;
  display: block;
 }
-.mypage-feature { grid-template-columns: 34px 1fr !important; gap: 20px !important; align-items: start; }
+.mypage-feature { grid-template-columns: 36px 1fr !important; gap: 20px !important; align-items: start; }
 @media (max-width: 767px) {
  .mypage-feature { grid-template-columns: 28px 1fr !important; gap: 14px !important; }
  .mypage-feature-icon { width: 28px !important; height: 28px !important; }
