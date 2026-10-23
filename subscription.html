@@ -2467,7 +2467,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="container">
  <div class="sub-detail-head">
  <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
- <h2 class="sub-detail-title" id="detailPlanTitle">ライト定期便の内容</h2>
+ <h2 class="sub-detail-title" id="detailPlanTitle">ライト定期便の内容例</h2>
  <span class="sub-detail-plan-name" id="detailPlanLabel">1-2名向け · 月額 ¥12,300</span>
  </div>
 
@@ -3849,7 +3849,7 @@ function selectPlan(planKey, fromUser) {
  const plan = PLANS[planKey];
 
  // 詳細セクション
- document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容';
+ document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容例';
  document.getElementById('detailPlanLabel').innerHTML =
  plan.target + ' · 月額 <strong>¥' + plan.regular.toLocaleString() + '</strong>';
 
