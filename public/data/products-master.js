@@ -558,6 +558,10 @@
       price: 2700, weight: 200, stock: 8, temp: '冷凍',
       limitedTotal: 8,
       limitedStartAt: '2026/09/06 20:00',
+      /* 2026-10-23 田崎さん指示で店頭から非表示。limitedUntil が過去なので
+         data-limited-scope で囲ったカード・バナーが全部自動で消え、購入もできない。
+         再開するときはこの1行を消すか、日付を未来にするだけでよい。 */
+      limitedUntil: '2026/10/23 00:00',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Yakiniku',
       description: 'モモの中のシンタマを4つに分けたうちの一つ。きめが細かく脂は控えめ。焼肉用にカットしました。',
@@ -570,6 +574,10 @@
       price: 2700, weight: 200, stock: 6, temp: '冷凍',
       limitedTotal: 6,
       limitedStartAt: '2026/09/06 20:00',
+      /* 2026-10-23 田崎さん指示で店頭から非表示。limitedUntil が過去なので
+         data-limited-scope で囲ったカード・バナーが全部自動で消え、購入もできない。
+         再開するときはこの1行を消すか、日付を未来にするだけでよい。 */
+      limitedUntil: '2026/10/23 00:00',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Shinshin Yakiniku',
       description: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。',
@@ -605,6 +613,10 @@
       ],
       limitedTotal: 6,          /* 表示には出ない。限定品の仕組みを有効にするだけ */
       limitedStartAt: '2026/09/06 20:00',
+      /* 2026-10-23 田崎さん指示で店頭から非表示。limitedUntil が過去なので
+         data-limited-scope で囲ったカード・バナーが全部自動で消え、購入もできない。
+         再開するときはこの1行を消すか、日付を未来にするだけでよい。 */
+      limitedUntil: '2026/10/23 00:00',
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Kamenoko Shinshin Set',
       description: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。',

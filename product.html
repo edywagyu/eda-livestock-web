@@ -991,7 +991,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-10-19-p063open"></script>
+<script src="public/data/products-master.js?v=2026-10-23-hide-kameshin"></script>
 <script src="public/data/pdp-content.js?v=2026-10-19-bara"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
@@ -1021,8 +1021,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
        (本番DBは published=FALSE / stock=0。ただしこの2品はセット＝components を持ち、
         products-loader.js の applyBomStock がセット自身の stock を構成品の最小値で
         上書きするため、stock=0 にしても構成品に在庫がある限り買えてしまう。
-        過去のLINE配信に残る直リンクを塞ぐには、ここに並べるのが唯一の手。) */
-  const ENDED_PRODUCT_IDS = ['P029', 'P043', 'P051'];
+        過去のLINE配信に残る直リンクを塞ぐには、ここに並べるのが唯一の手。)
+     ・P007 ホルモン / P035 カメノコ焼肉 / P036 シンシン焼肉 /
+       P037 カメノコ・シンシン焼肉セット … 2026-10-23 に店頭から撤去
+       (本番DBは published=FALSE / stock=0。P037 は components を持つので
+        stock=0 では止まらず、P035/P036 も限定枠の limitedUntil で表示が消えるだけ。
+        直リンクを塞ぐにはここに並べるしかない。) */
+  const ENDED_PRODUCT_IDS = ['P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037'];
   const product = all.find(p => p.productId === productId) || null;
   if (!product || ENDED_PRODUCT_IDS.indexOf(product.productId) >= 0) {
     document.title = 'お取り扱いを終了しました | 江田畜産';
