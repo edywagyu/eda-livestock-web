@@ -9584,6 +9584,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
+<link rel="stylesheet" href="public/css/simple-ui.css?v=20261023a">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -9808,7 +9809,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <section class="first-time-banner reveal" style="background: linear-gradient(135deg, #FAF7F0 0%, rgba(212,169,59,0.10) 100%); border-bottom: 1px solid rgba(212,169,59,0.25); padding: 24px 0;">
  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
  <div style="flex:1;min-width:240px;">
- <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">🎁 初めてのお客様へ</p>
+ <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">初めてのお客様へ</p>
  <p style="margin:6px 0 0;font-size:14px;color:#1A1A1A;line-height:1.6;">
  まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「特大ハンバーグ 250g (¥1,800)」</strong> をお試しください。 送料は ¥1,100（北海道・沖縄 ¥2,200）です。
  </p>
@@ -9973,7 +9974,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- 商品検索バー -->
  <div class="shop-search reveal" style="max-width: 480px; margin: 24px auto 16px; position: relative;">
- <input type="search" id="productSearch" placeholder="🔍 部位・商品名で検索 (例: サーロイン)"
+ <input type="search" id="productSearch" placeholder="部位・商品名で検索（例: サーロイン）"
  aria-label="商品検索"
  style="width:100%;padding:14px 44px 14px 18px;border:1.5px solid rgba(15,61,46,0.18);border-radius:32px;font-size:14px;background:#fff;font-family:inherit;outline:none;transition:border-color 0.2s;"
  oninput="filterProductSearch(this.value)">
@@ -10651,6 +10652,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= ふるさと納税で江田和牛を ========= -->
+<details class="fold"><summary>和牛のこと ／ 江田畜産の育て方</summary>
 <section class="wagyu-guide section" id="about-wagyu">
  <div class="container">
  <div class="wagyu-guide-head reveal">
@@ -10733,6 +10735,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- 「はじめての方へ」セクションは削除 -->
 
@@ -10840,6 +10843,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= 保存・解凍・調理ガイド ========= -->
+<details class="fold"><summary>保存とおいしい食べ方</summary>
 <section class="shop-guide section" id="guide">
  <div class="container">
  <div class="shop-guide-head reveal" style="text-align: center; margin-bottom: 56px;">
@@ -10896,8 +10900,10 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= FAQ ========= -->
+<details class="fold"><summary>よくあるご質問</summary>
 <section class="shop-faq section-sm" id="faq">
  <div class="container">
  <div class="shop-faq-head reveal" style="text-align: center; margin-bottom: 56px;">
@@ -10950,6 +10956,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= SUBSCRIPTION ========= -->
 <section class="shop-sub-cta" id="subscription">
@@ -11087,6 +11094,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= HOW IT WORKS ========= -->
+<details class="fold"><summary>ご注文からお届けまで</summary>
 <section class="shop-how section-sm">
  <div class="container">
  <div class="shop-how-head reveal" style="text-align: center; margin-bottom: 48px;">
@@ -11118,6 +11126,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= 和牛オーガニック 解禁ティザー（ご購入の流れ後・神秘的） ========= -->
 <section class="organic-tease" id="organic-tease">
@@ -11403,6 +11412,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </style>
 
 <!-- ========= SPECS ========= -->
+<details class="fold"><summary>商品共通スペック（産地・保存・送料）</summary>
 <section class="article-body" style="padding: 64px 0;">
  <div class="container-narrow reveal">
  <h3>商品共通スペック</h3>
@@ -11428,8 +11438,10 @@ body.is-member .product-card--organic .org-chk-lock {
  </p>
  </div>
 </section>
+</details>
 
 <!-- ========= 開封動画セクション（ポラロイド＋4ステップ タイムライン） ========= -->
+<details class="fold"><summary>お届けの中身</summary>
 <section class="unboxing-section" id="unboxing">
  <div class="container">
  <div class="unboxing-head">
@@ -11462,6 +11474,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <script>
 function toggleUnboxingSound() {
@@ -11708,6 +11721,7 @@ function toggleUnboxingSound() {
 </section>
 
 <!-- ========= 比較表 ========= -->
+<details class="fold"><summary>スーパーのお肉との違い</summary>
 <section class="compare-section">
  <div class="container">
  <div class="compare-head">
@@ -11737,6 +11751,7 @@ function toggleUnboxingSound() {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= 江田畜産の利用者（3指標 / LINEは自動更新） ========= -->
 <section class="stats-band" id="stats-band">
@@ -15257,6 +15272,31 @@ function copyPopCoupon() {
    setTimeout(apply, 0);
  }
  window.addEventListener('load', function() { setTimeout(apply, 100); });
+})();
+</script>
+
+<!-- シンプル化プレビュー: スマホ用 固定カートバー -->
+<div class="simple-sticky-cart" id="simpleStickyCart" hidden>
+ <span class="ssc-label">カート <b id="sscCount">0</b>点</span>
+ <a href="#" class="ssc-btn" id="sscBtn">カートを見る</a>
+</div>
+<script>
+(function(){
+  var bar=document.getElementById('simpleStickyCart');
+  if(!bar) return;
+  var btn=document.getElementById('sscBtn'), cnt=document.getElementById('sscCount');
+  var badge=document.getElementById('cartBadge');
+  btn.addEventListener('click',function(e){e.preventDefault();var t=document.getElementById('cartToggle');if(t)t.click();});
+  function sync(){
+    var n=badge?parseInt(badge.textContent,10)||0:0;
+    cnt.textContent=n;
+    var show=n>0&&window.matchMedia('(max-width:767px)').matches;
+    bar.hidden=!show;
+    document.body.classList.toggle('has-sticky-cart',show);
+  }
+  sync();
+  if(badge) new MutationObserver(sync).observe(badge,{childList:true,characterData:true,subtree:true});
+  window.addEventListener('resize',sync);
 })();
 </script>
 </body>

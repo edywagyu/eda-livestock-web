@@ -1,0 +1,204 @@
+/* ================================================================
+ * simple-ui.css — ショップ画面のシンプル化レイヤー（プレビュー）
+ * 既存CSSの後ろに読み込んで上書きするだけ。元のHTML構造は壊さない。
+ *
+ * 方針（Baymard / 国内食品D2Cのリサーチより）
+ *   1. 一覧カードは「写真・商品名・価格・カートに追加」だけにする
+ *   2. 塗りつぶしボタンは「カートに追加」1種類だけにする
+ *   3. セクションを本編6つに絞り、読み物は折りたたむ
+ * ================================================================ */
+
+/* ---------- 1. ヘッダー：ナビ8本 → 4本、カートを目立たせる ---------- */
+.nav-list li:has(> a[href="global.html"]),
+.nav-list li:has(> a[href="restaurants.html"]),
+.nav-list li:has(> a[href="contact.html"]),
+.nav-list li:has(> a.nav-mypage-link) { display: none; }
+
+.nav-utils .nav-subscribe-cta,
+.nav-utils a[href*="instagram.com"] { display: none; }
+
+.nav-list a { font-size: 14px; letter-spacing: 0.04em; }
+.nav-utils { gap: 18px; }
+#cartToggle { margin-left: 8px; }
+#cartToggle .cart-badge { background: var(--color-gold); color: #1A1A1A; font-weight: 700; }
+
+/* ---------- 2. ヒーロー：CTA3本 → 1本 ---------- */
+.shop-hero-cta .hero-btn-ghost { display: none; }
+.shop-hero-cta .hero-btn-primary { padding: 16px 34px; font-size: 15px; }
+.shop-hero-sub em { display: block; margin-top: 4px; }
+
+/* ---------- 3. 商品カード：6行 → 3行 ---------- */
+/* 一覧では説明・スペック・英語タグ・残数を出さない（詳細ページで出す） */
+.product-grid .product-card .product-tag,
+.product-grid .product-card .product-desc,
+.product-grid .product-card .product-stats,
+.product-grid .product-card .nikunohi-urgency,
+.product-grid .product-card .limited-left { display: none !important; }
+
+/* 写真 → 商品名 → 価格 → カート の順に並べ替える */
+.product-grid .product-card { padding-bottom: 18px; }
+.product-grid .product-card .product-card-img { order: 1; }
+.product-grid .product-card .product-name    { order: 2; }
+.product-grid .product-card .product-tag-row { order: 3; }
+.product-grid .product-card .product-buy     { order: 4; margin-top: auto; }
+
+.product-grid .product-card .product-name {
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 600;
+  margin: 14px 0 6px;
+  min-height: 2.4em;
+}
+.product-grid .product-card .product-name,
+.product-grid .product-card .product-name * ,
+.product-grid .product-card .product-name a {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  border-bottom: 0 !important;
+  color: inherit;
+}
+.product-grid .product-card .product-tag-row {
+  display: block;
+  margin: 0 0 14px;
+  min-height: 0;
+}
+.product-grid .product-card .product-price {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-forest);
+}
+.product-grid .product-card .product-price s {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-ink-muted);
+  margin-right: 6px;
+}
+
+/* カード間の余白を広げる（情報を減らした分を余白に返す） */
+.product-grid.cols-4 { gap: 28px 24px; }
+
+
+/* 一覧では数量ステッパーを出さない（数量はカートで変えられる） */
+.product-grid .product-card .product-buy { border-top: 0 !important; padding-top: 0 !important; }
+.product-grid .product-card .product-buy .qty-row { display: none !important; }
+.product-grid .product-card .btn-add-cart { margin-top: 0 !important; }
+
+/* ---------- 4. 塗りボタンは「カートに追加」だけ ---------- */
+.btn-add-cart {
+  background: var(--color-forest) !important;
+  color: #fff !important;
+  border: 0 !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.btn-add-cart:hover { background: var(--color-forest-deep) !important; }
+
+/* 他のCTAは枠線だけに格下げ */
+.shop-sub-cta .btn-gold,
+.gift-highlight .btn-gold,
+.first-time-banner a[href="#products"] {
+  background: transparent !important;
+  color: var(--color-forest) !important;
+  border: 1.5px solid var(--color-forest) !important;
+}
+
+/* ---------- 5. セクションを本編6つに絞る ---------- */
+/* 本編: ヒーロー / 商品 / お客さまの声 / 定期便 / ギフト / フッター */
+.freezer-band,          /* ヒーローと同じ訴求の重複バンド */
+.stats-band,            /* 数字バンド */
+.weekly-menu,           /* 今週の献立（商品一覧と役割が重複） */
+.quiz-section,          /* 診断（定期便セクションから入れる） */
+.organic-tease,         /* オーガニック予告（ナビにリンクあり） */
+#furusato {             /* ふるさと納税（ナビにリンクあり） */
+  display: none !important;
+}
+
+/* 読み物は折りたたむ（消さずに畳む） */
+details.fold {
+  border-top: 1px solid rgba(15, 61, 46, 0.12);
+  background: #fff;
+}
+details.fold:last-of-type { border-bottom: 1px solid rgba(15, 61, 46, 0.12); }
+details.fold > summary {
+  list-style: none;
+  cursor: pointer;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--color-forest);
+}
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after {
+  content: "+";
+  font-size: 20px;
+  color: var(--color-ink-muted);
+  font-family: var(--font-body, inherit);
+}
+details.fold[open] > summary::after { content: "−"; }
+details.fold > summary:hover { background: var(--color-cream); }
+/* 畳んだ中の section は上下の余白を詰める */
+details.fold > section { padding-top: 8px !important; padding-bottom: 48px !important; }
+
+/* ---------- 6. 初回バナーを1行に落ち着かせる ---------- */
+.first-time-banner { padding: 16px 0 !important; background: var(--color-cream) !important; }
+.first-time-banner p:first-child { font-size: 12px !important; color: var(--color-ink-muted) !important; }
+
+/* ---------- 7. 検索・タブ ---------- */
+#productSearch { border-radius: 8px !important; }
+.tab-row { gap: 8px; }
+
+/* ---------- 8. スマホ：カートCTAを下部に固定 ---------- */
+@media (max-width: 767px) {
+  .product-grid.cols-4 { gap: 20px 14px; }
+  .product-grid .product-card .product-name { font-size: 14px; min-height: 2.8em; }
+  .product-grid .product-card .product-price { font-size: 17px; }
+  /* ボタン文言の折り返しは既存の2列グリッド用ルールに任せる（nowrapだと文字が切れる） */
+  .simple-sticky-cart[hidden] { display: none !important; }
+  .simple-sticky-cart {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 90;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid rgba(15, 61, 46, 0.12);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .simple-sticky-cart .ssc-label { font-size: 13px; color: var(--color-ink-muted); }
+  .simple-sticky-cart .ssc-btn {
+    flex: 1;
+    max-width: 240px;
+    text-align: center;
+    padding: 13px 18px;
+    border-radius: 8px;
+    background: var(--color-forest);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  body.has-sticky-cart { padding-bottom: 72px; }
+}
+
+/* ---------- 9. 折りたたみの並び順 ----------
+ * .shop-main-wrap は display:flex（縦）で、各 section が order で並んでいる。
+ * <details> は order 未指定だと 0 になり先頭へ飛ぶので、明示的に後ろへ置く。
+ * 既存: 商品 10 / 定期便 20 / ギフト 30 / お客様の声 60 / 初回バナー 99
+ */
+details.fold { order: 70; }
+details.fold:nth-of-type(1) { order: 70; } /* 和牛のこと */
+details.fold:nth-of-type(2) { order: 71; } /* 保存とおいしい食べ方 */
+details.fold:nth-of-type(4) { order: 72; } /* ご注文からお届けまで */
+details.fold:nth-of-type(6) { order: 73; } /* お届けの中身 */
+details.fold:nth-of-type(5) { order: 74; } /* 商品共通スペック */
+details.fold:nth-of-type(7) { order: 75; } /* スーパーのお肉との違い */
+details.fold:nth-of-type(3) { order: 76; } /* よくあるご質問 */
