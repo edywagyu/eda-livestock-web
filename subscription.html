@@ -426,6 +426,34 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .sub-addons-more-btn:hover { background: var(--color-cream, #FAF7F0); }
 
+/* === マイページ紹介を明るい面にする（2026-10-23 田崎さん指示）===
+   申込フォーム(暗)の直後がマイページ(暗)で、背景が2回続いていた。
+   暗が6面・明が4面あるため、1面を明に起こさないと交互にならない。
+   端末のモックアップは黒いままでよい（明るい紙の上に実機が載って見える）。 */
+.mypage-section {
+ background: var(--color-cream) !important;
+ background-image: none !important;
+ color: var(--color-ink) !important;
+ border-top: 1px solid rgba(15,61,46,0.10) !important;
+ border-bottom: 1px solid rgba(15,61,46,0.10) !important;
+}
+.mypage-eyebrow { color: var(--color-gold-soft, #856A20) !important; }
+.mypage-head h2 { color: var(--color-forest) !important; }
+.mypage-head h2 .accent {
+ background: none !important;
+ -webkit-background-clip: border-box !important;
+ background-clip: border-box !important;
+ -webkit-text-fill-color: var(--color-gold-soft, #856A20) !important;
+ color: var(--color-gold-soft, #856A20) !important;
+}
+.mypage-head p { color: var(--color-ink-muted) !important; }
+.mypage-feature,
+.mypage-features .mypage-feature:last-child,
+.mypage-feature:hover { border-color: rgba(15,61,46,0.12) !important; }
+.mypage-feature-body strong { color: var(--color-forest) !important; }
+.mypage-feature-body p { color: var(--color-ink-muted) !important; }
+.mypage-feature-body p strong { color: var(--color-forest) !important; }
+
 /* === 背景の並びを整える（2026-10-23 田崎さん指示）===
    明るい地が4種類（#FFFAF0 / #FFFFFF / #FAF7F0 / #FBF8F2）に割れていて、
    境目が「汚れ」に見えていた。明はクリーム1色に統一する。
@@ -442,14 +470,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  background-image: none !important;
 }
 
-/* 暗い地が隣り合う箇所は、継ぎ目を作らず1枚に見せる */
-.sub-checkout + .mypage-section,
-.sub-voice + .sub-foot-cta {
- border-top: 0 !important;
- margin-top: -1px;
-}
-.sub-checkout { border-bottom: 0 !important; }
-.sub-voice { border-bottom: 0 !important; }
+/* 並べ替え後は暗が隣り合わないので、継ぎ目を消す細工はもう要らない */
 
 /* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
 .sub-line-tabs {
@@ -3289,6 +3310,54 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 </section>
 
+<!-- ========= お客様の声 ========= -->
+<section class="sub-voice">
+ <div class="container">
+ <div class="sub-voice-head">
+ <h2>定期便ユーザーの声</h2>
+ <p>1人暮らしからご家族まで — 多くの方に選ばれています。</p>
+ </div>
+
+ <div class="sub-voice-grid">
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">毎月決まった日にお肉が届くから、平日の夕食に悩む時間がゼロに。子どもの食べ盛りでも安心して常備できます。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">田</div>
+ <div>
+ <div class="sub-voice-name">田中 様 / 東京都</div>
+ <div class="sub-voice-product">ライト定期便 6ヶ月目</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">スーパーで何を買うか悩む時間が消えて、夕食を作るストレスが激減。お肉の質も信頼できるので、子どもにも気兼ねなく出せます。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">佐</div>
+ <div>
+ <div class="sub-voice-name">佐藤 様 / 福岡</div>
+ <div class="sub-voice-product">ライト定期便 3ヶ月目</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">5人家族なのでファミリー。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">山</div>
+ <div>
+ <div class="sub-voice-name">山田 様 / 大阪</div>
+ <div class="sub-voice-product">ファミリー定期便 4ヶ月目</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+
 <!-- ========= FAQ ========= -->
 <section class="sub-faq" id="faq">
  <div class="container">
@@ -3365,54 +3434,6 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
  </details>
 
- </div>
- </div>
-</section>
-
-<!-- ========= お客様の声 ========= -->
-<section class="sub-voice">
- <div class="container">
- <div class="sub-voice-head">
- <h2>定期便ユーザーの声</h2>
- <p>1人暮らしからご家族まで — 多くの方に選ばれています。</p>
- </div>
-
- <div class="sub-voice-grid">
- <div class="sub-voice-card">
- <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">毎月決まった日にお肉が届くから、平日の夕食に悩む時間がゼロに。子どもの食べ盛りでも安心して常備できます。</p>
- <div class="sub-voice-author">
- <div class="sub-voice-avatar">田</div>
- <div>
- <div class="sub-voice-name">田中 様 / 東京都</div>
- <div class="sub-voice-product">ライト定期便 6ヶ月目</div>
- </div>
- </div>
- </div>
-
- <div class="sub-voice-card">
- <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">スーパーで何を買うか悩む時間が消えて、夕食を作るストレスが激減。お肉の質も信頼できるので、子どもにも気兼ねなく出せます。</p>
- <div class="sub-voice-author">
- <div class="sub-voice-avatar">佐</div>
- <div>
- <div class="sub-voice-name">佐藤 様 / 福岡</div>
- <div class="sub-voice-product">ライト定期便 3ヶ月目</div>
- </div>
- </div>
- </div>
-
- <div class="sub-voice-card">
- <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">5人家族なのでファミリー。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
- <div class="sub-voice-author">
- <div class="sub-voice-avatar">山</div>
- <div>
- <div class="sub-voice-name">山田 様 / 大阪</div>
- <div class="sub-voice-product">ファミリー定期便 4ヶ月目</div>
- </div>
- </div>
- </div>
  </div>
  </div>
 </section>
