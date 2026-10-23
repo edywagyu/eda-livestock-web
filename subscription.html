@@ -381,6 +381,32 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 }
 .sub-hero-badges { gap: 10px 20px; }
 
+/* マイページ紹介の4項目。角丸カード＋枠＋ホバーで動く＝押せる合図だったので、
+   罫線で区切った読み物に戻す（2026-10-23 田崎さん指示）。 */
+.mypage-features { gap: 0 !important; }
+.mypage-feature {
+ background: none !important;
+ border: 0 !important;
+ border-top: 1px solid rgba(212,169,59,0.18) !important;
+ border-radius: 0 !important;
+ backdrop-filter: none !important;
+ -webkit-backdrop-filter: none !important;
+ transition: none !important;
+ padding: 22px 4px !important;
+}
+.mypage-features .mypage-feature:last-child { border-bottom: 1px solid rgba(212,169,59,0.18) !important; }
+.mypage-feature:hover {
+ transform: none !important;
+ background: none !important;
+ border-color: rgba(212,169,59,0.18) !important;
+}
+.mypage-feature-icon {
+ background: none !important;
+ border: 0 !important;
+ border-radius: 0 !important;
+ justify-content: flex-start !important;
+}
+
 /* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
 .sub-line-tabs {
  display: flex;
