@@ -95,12 +95,21 @@
 .btn-add-cart:hover { background: var(--color-forest-deep) !important; }
 
 /* 他のCTAは枠線だけに格下げ */
-.shop-sub-cta .btn-gold,
-.gift-highlight .btn-gold,
 .first-time-banner a[href="#products"] {
   background: transparent !important;
   color: var(--color-forest) !important;
   border: 1.5px solid var(--color-forest) !important;
+}
+/* 🔴 暗緑のセクション（定期便・贈答）では濃緑に落とすと読めない。金で抜く。 */
+.shop-sub-cta .btn-gold,
+.gift-highlight .btn-gold {
+  background: transparent !important;
+  color: var(--color-gold-bright, #E5B547) !important;
+  border: 1.5px solid rgba(212,169,59,0.75) !important;
+}
+.shop-sub-cta .btn-gold:hover,
+.gift-highlight .btn-gold:hover {
+  background: rgba(212,169,59,0.12) !important;
 }
 
 /* ---------- 5. セクションを本編6つに絞る ---------- */
@@ -275,4 +284,39 @@ details.fold:nth-of-type(3) { order: 76; } /* よくあるご質問 */
   padding: 0 !important;
   color: var(--color-gold) !important;
   letter-spacing: 0.12em;
+}
+
+
+/* ---------- 12. 箇条書きは「枠で囲う」。ボタンではなく仕様パネルに見せる ----------
+ * 角丸は小さく、枠は細く、横幅はたっぷり。丸いピルとは別物として読ませる。
+ */
+.sub-head-bullets {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 28px;
+  border: 1px solid rgba(212,169,59,0.3);
+  border-radius: 6px;
+  padding: 14px 26px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gift-hi-features {
+  border: 1px solid rgba(212,169,59,0.28);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin-bottom: 14px !important;
+  gap: 8px 18px;
+}
+.gift-hi-occasions {
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 6px;
+  padding: 12px 18px;
+  gap: 10px 22px;
+}
+@media (max-width: 767px) {
+  .sub-head-bullets { gap: 8px 18px; padding: 12px 16px !important; }
+  .gift-hi-features,
+  .gift-hi-occasions { padding: 12px 14px; }
 }
