@@ -15311,7 +15311,7 @@ function copyPopCoupon() {
 <!-- シンプル化プレビュー: サブタブに「すべて」が無いので、読み込み時に先頭タブを適用する -->
 <script>
 (function(){
-  function applyFirstSubTab(){
+  function applySubFilter(){
     var row = document.querySelector('.sub-tab-row[data-parent-cat="beef"]');
     if (!row) return;
     var t = row.querySelector('.sub-tab.active') || row.querySelector('.sub-tab');
@@ -15320,14 +15320,31 @@ function copyPopCoupon() {
     var sub = t.dataset.sub;
     document.querySelectorAll('[data-cat="beef"] .product-card[data-sub]').forEach(function(c){
       if (c.closest('[data-no-subfilter]')) return;   // 特別セット品・期間限定は対象外
-      c.style.display = (sub === 'all' || c.dataset.sub === sub) ? '' : 'none';
+      if (c.dataset.sub === sub || sub === 'all') {
+        if (c.style.display === 'none') c.style.display = '';
+      } else {
+        c.style.display = 'none';
+      }
     });
     // 2件プレビューの再計算を走らせる（filterProductSearch は後段で apply をラップ済み）
     var box = document.getElementById('productSearch');
     if (typeof window.filterProductSearch === 'function') window.filterProductSearch(box ? box.value : '');
   }
-  // 商品カードの組み立て・GAS 反映のタイミングが読めないので複数回かける
-  function run(){ applyFirstSubTab(); setTimeout(applyFirstSubTab, 300); setTimeout(applyFirstSubTab, 1200); }
+
+  /* 🔴 refreshProductCards(=applyMaster) は published な全カードに style.display='' を打ち直すので、
+        GAS のマスターが届いた瞬間に部位タブの絞り込みが消え、セット商品が戻ってしまう。
+        同じ理由で __dynRenderNew(新商品の後追い描画)の後にもかけ直す。 */
+  ['refreshProductCards', '__dynRenderNew'].forEach(function(name){
+    var orig = window[name];
+    if (typeof orig !== 'function') return;
+    window[name] = function(){
+      var r = orig.apply(this, arguments);
+      setTimeout(applySubFilter, 0);
+      return r;
+    };
+  });
+
+  function run(){ applySubFilter(); setTimeout(applySubFilter, 300); setTimeout(applySubFilter, 1200); setTimeout(applySubFilter, 3000); }
   if (document.readyState === 'complete') run();
   else window.addEventListener('load', run);
 })();
