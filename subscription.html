@@ -2533,7 +2533,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-addons-eyebrow">＋ ADD TO THIS MONTH'S BOX</div>
  <h2 class="sub-addons-title">お得にカスタマイズも！</h2>
  <p class="sub-addons-lead">
- <strong style="color: #B91C1C;">サブスクと同梱で全品 10% OFF</strong><br/>
+ <strong style="color: #B91C1C;">定期便と同梱で全品 10% OFF</strong><br/>
  定期便と同じ箱に同梱、追加送料0円。今月だけの注文なので来月以降の定期便には影響しません。
  </p>
  </div>
@@ -3945,7 +3945,7 @@ const ADDONS = [
  { id: 'chicken-thigh', cat: 'chicken', name: '平飼い鶏 モモ', price: 980, weight: '200g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '万能部位' },
  { id: 'chicken-minced', cat: 'chicken', name: '平飼い鶏 ミンチ', price: 800, weight: '200g', img: 'public/images/products/drive/chicken-minced.jpg', desc: '離乳食にも' }
 ];
-const ADDON_DISCOUNT = 0.10; // サブスクと同時購入で 10% OFF
+const ADDON_DISCOUNT = 0.10; // 定期便と同時購入で 10% OFF
 let addedAddons = []; // {id, qty}
 let currentAddonCat = 'all';
 
@@ -4164,7 +4164,7 @@ async function handleSubmit(e) {
  }
 
  // 単純な → checkout.html 遷移ではなく、Stripe Subscription Checkout を直接呼ぶ
- // (申込フォーム = サブスク開始の意思 → Stripe へ即遷移)
+ // (申込フォーム = 定期便開始の意思 → Stripe へ即遷移)
  const btn = form.querySelector('button[type="submit"]');
  if (btn) { btn.disabled = true; const _t = btn.textContent; btn.textContent = '決済画面へ移動中…'; btn._t = _t; }
 
