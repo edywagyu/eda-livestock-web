@@ -10338,18 +10338,9 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830287143210,"t":"1つ","p":840},{"id":50830287175978,"t":"2つセット【5%オフ】","p":1596},{"id":50830287208746,"t":"3つセット【10%オフ】","p":2268}]'>
- <div class="product-card-img" data-label="OFFAL"></div>
- <div class="product-tag-row"><span class="product-tag">Offal</span><span class="product-price">¥1,120〜</span></div>
- <p class="product-name">ホルモン</p>
- <p class="product-desc">小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモン、ホルモン焼きうどんに。</p>
- <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥560</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- <div class="product-stat-item wide">冷蔵庫で <strong>約2時間</strong>で解凍</div>
- </div>
- <div class="product-buy"></div>
- </div>
+ <!-- ホルモン (P007) のカードは 2026-10-23 に田崎さん指示で店頭から外した。
+      products シートの行は published=FALSE / stock=0 で残してある。
+      再開するときはこのコメントを消して、git log から同じカードを戻す。 -->
 
  <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50831002400101,"t":"1つ","p":2400},{"id":50831002400102,"t":"2つセット【5%オフ】","p":4560},{"id":50831002400103,"t":"3つセット【10%オフ】","p":6480}]'>
  <div class="product-card-img" data-label="AKAMI YAKINIKU"></div>
@@ -13553,7 +13544,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-10-19-p063open" defer></script>
+<script src="public/data/products-master.js?v=2026-10-23-hide-kameshin" defer></script>
 <script src="public/js/products-loader.js?v=008" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
