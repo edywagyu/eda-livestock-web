@@ -407,6 +407,26 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  justify-content: flex-start !important;
 }
 
+/* 「すべての商品を見る」（アドオンを4点だけ出す） */
+.sub-addons-more { text-align: center; margin-top: 22px; }
+.sub-addons-more-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ padding: 13px 30px;
+ min-height: 44px;
+ border: 1.5px solid var(--color-forest, #0F3D2E);
+ border-radius: 8px;
+ background: #fff;
+ color: var(--color-forest, #0F3D2E);
+ font-family: inherit;
+ font-size: 14px;
+ font-weight: 700;
+ cursor: pointer;
+ transition: background .2s;
+}
+.sub-addons-more-btn:hover { background: var(--color-cream, #FAF7F0); }
+
 /* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
 .sub-line-tabs {
  display: flex;
@@ -3999,10 +4019,19 @@ function discountedPrice(p) {
  return Math.round(p * (1 - ADDON_DISCOUNT));
 }
 
+/* 2026-10-23 田崎さん指示: 一度に出すのは4点まで。残りは同じページで開く。
+   すでに箱に入れた商品は、4点の枠外でも必ず出す（消えると数量を直せない）。 */
+const ADDON_PREVIEW = 4;
+let addonsExpanded = false;
+
 function renderAddons() {
  const grid = document.getElementById('subAddonsGrid');
  const filtered = currentAddonCat === 'all' ? ADDONS : ADDONS.filter(a => a.cat === currentAddonCat);
- grid.innerHTML = filtered.map(a => {
+ const shown = addonsExpanded
+   ? filtered
+   : filtered.filter((a, i) => i < ADDON_PREVIEW || addedAddons.some(x => x.id === a.id));
+ const hiddenCount = filtered.length - shown.length;
+ grid.innerHTML = shown.map(a => {
  const added = addedAddons.find(x => x.id === a.id);
  const disc = discountedPrice(a.price);
  const qtyControl = added
@@ -4027,6 +4056,33 @@ function renderAddons() {
  </div>
  `;
  }).join('');
+
+ renderAddonsMore(hiddenCount);
+}
+
+/* 「すべての商品を見る」— ページは移さず、この場で開く */
+function renderAddonsMore(hiddenCount) {
+ const grid = document.getElementById('subAddonsGrid');
+ let wrap = document.getElementById('subAddonsMore');
+ if (!wrap) {
+  wrap = document.createElement('div');
+  wrap.id = 'subAddonsMore';
+  wrap.className = 'sub-addons-more';
+  grid.insertAdjacentElement('afterend', wrap);
+  wrap.addEventListener('click', (e) => {
+   if (!e.target.closest('button')) return;
+   addonsExpanded = !addonsExpanded;
+   renderAddons();
+   if (!addonsExpanded) {
+    const head = document.querySelector('.sub-addons-head');
+    if (head) window.scrollTo({ top: head.getBoundingClientRect().top + window.pageYOffset - 70, behavior: 'smooth' });
+   }
+  });
+ }
+ if (!addonsExpanded && hiddenCount <= 0) { wrap.innerHTML = ''; return; }
+ wrap.innerHTML = addonsExpanded
+  ? '<button type="button" class="sub-addons-more-btn">閉じる</button>'
+  : '<button type="button" class="sub-addons-more-btn">すべての商品を見る（他 ' + hiddenCount + ' 点）→</button>';
 }
 
 function changeAddonQty(id, delta) {
@@ -4169,6 +4225,7 @@ document.querySelectorAll('.sub-addon-tab').forEach(tab => {
  document.querySelectorAll('.sub-addon-tab').forEach(t => t.classList.remove('active'));
  tab.classList.add('active');
  currentAddonCat = tab.dataset.cat;
+ addonsExpanded = false;   /* カテゴリを変えたら4点に畳み直す */
  renderAddons();
  });
 });
