@@ -361,6 +361,26 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  color: var(--color-ink-muted); margin: 0 auto; max-width: 580px;
 }
 
+/* === 押せないのにボタンに見えるものを、ラベルに戻す（2026-10-23 田崎さん指示）===
+   丸い枠＋塗り＝「押せる」の合図。押せない飾りがそれを着ていると
+   本物のボタン（プランを選ぶ・申し込む）が埋もれる。 */
+.sub-hero-badge,
+.sub-hero-badge--solid,
+.sub-hero-badge--coming,
+.sub-plans-eyebrow,
+.sub-detail-eyebrow,
+.sub-addons-eyebrow,
+.unboxing-eyebrow,
+.mypage-eyebrow,
+.sub-detail-plan-name {
+ background: none !important;
+ border: 0 !important;
+ border-radius: 0 !important;
+ box-shadow: none !important;
+ padding: 0 !important;
+}
+.sub-hero-badges { gap: 10px 20px; }
+
 /* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
 .sub-line-tabs {
  display: flex;
@@ -3733,7 +3753,7 @@ function renderPlanCards(rows) {
    halfLine +
    '<div class="sub-plan-note">2ヶ月目以降 ' + yen(p.price) + '/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>' +
  '</div>' +
- '<button type="button" class="sub-plan-detail-btn" data-detail="' + esc(p.planId) + '">詳細（内容例・カスタマイズ） →</button>' +
+ '<button type="button" class="sub-plan-detail-btn" data-detail="' + esc(p.planId) + '">詳細 →</button>' +
  '<div class="sub-plan-select-btn">このプランを選ぶ →</div>' +
  '</article>';
  }).join('');

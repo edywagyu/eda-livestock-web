@@ -215,3 +215,64 @@ details.fold:nth-of-type(3) { order: 76; } /* よくあるご質問 */
 @media (max-width: 767px) {
   .product-card .badge-muton { font-size: 9px !important; padding: 3px 7px !important; }
 }
+
+/* ---------- 11. 押せないのにボタンに見えるものを、ラベルに戻す ----------
+ * 丸い枠＋塗り＝「押せる」の合図。押せない飾りがそれを着ていると、
+ * 本物のボタン（カートに追加）が埋もれる。枠と塗りを外して文字に戻す。
+ */
+
+/* 定期便ヘッドの「BEST VALUE · 最もお得」 */
+.sub-head-tag {
+  background: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  color: var(--color-gold) !important;
+}
+
+/* 定期便ヘッドの ✓初月半額 / ✓配送無料 / ✓スキップ可能 / ✓カスタム可能 */
+.sub-head-bullets { gap: 10px 22px; }
+.sub-head-bullets span {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+/* 初月特典カードの「残り◯日」 */
+.sub-promo-deadline {
+  background: none !important;
+  border: 0 !important;
+  border-left: 2px solid rgba(255,255,255,0.45) !important;
+  border-radius: 0 !important;
+  padding: 2px 0 2px 12px !important;
+}
+
+/* 贈答セクションの「出産・内祝い」「母の日・父の日」など */
+.gift-hi-occ,
+.gift-highlight .gift-hi-occ {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+.gift-hi-occasions { gap: 10px 22px; }
+
+/* 「UNBOXING · 開封のひととき」などの見出しラベル */
+.unboxing-eyebrow,
+.shop-cat-eyebrow {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+/* 写真の上の「のし対応 / 化粧箱」 */
+.gift-hi-photo-tag {
+  background: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  color: var(--color-gold) !important;
+  letter-spacing: 0.12em;
+}
