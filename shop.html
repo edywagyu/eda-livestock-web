@@ -9584,6 +9584,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
+<link rel="stylesheet" href="public/css/simple-ui.css?v=20261023e">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -9808,7 +9809,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <section class="first-time-banner reveal" style="background: linear-gradient(135deg, #FAF7F0 0%, rgba(212,169,59,0.10) 100%); border-bottom: 1px solid rgba(212,169,59,0.25); padding: 24px 0;">
  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
  <div style="flex:1;min-width:240px;">
- <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">🎁 初めてのお客様へ</p>
+ <p style="margin:0;font-size:13px;color:#0F3D2E;font-weight:700;letter-spacing:0.04em;">初めてのお客様へ</p>
  <p style="margin:6px 0 0;font-size:14px;color:#1A1A1A;line-height:1.6;">
  まずは <strong>「赤身スライス 200g (¥2,600)」</strong> か <strong>「特大ハンバーグ 250g (¥1,800)」</strong> をお試しください。 送料は ¥1,100（北海道・沖縄 ¥2,200）です。
  </p>
@@ -9973,7 +9974,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- 商品検索バー -->
  <div class="shop-search reveal" style="max-width: 480px; margin: 24px auto 16px; position: relative;">
- <input type="search" id="productSearch" placeholder="🔍 部位・商品名で検索 (例: サーロイン)"
+ <input type="search" id="productSearch" placeholder="部位・商品名で検索（例: サーロイン）"
  aria-label="商品検索"
  style="width:100%;padding:14px 44px 14px 18px;border:1.5px solid rgba(15,61,46,0.18);border-radius:32px;font-size:14px;background:#fff;font-family:inherit;outline:none;transition:border-color 0.2s;"
  oninput="filterProductSearch(this.value)">
@@ -9995,7 +9996,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="shop-cat-desc">8月29日は「焼肉の日」。<strong>8/30（日）23:59まで</strong>の30セット限定 ／ <b class="limited-left" data-limited-left="肉の日限定セット" style="display:none"></b>。赤身焼肉200g×1とバラ焼肉200g×2の3袋セット（合計600g）を特別価格でご用意しました。</p>
  </div>
 
- <div class="product-grid cols-4 reveal" data-cat="nikunohi" data-limited-scope="肉の日限定セット">
+ <div class="product-grid cols-4 reveal" data-cat="nikunohi" data-limited-scope="肉の日限定セット" data-no-subfilter>
  <div class="product-card product-card--nikunohi" data-sub="set" data-limited-scope="肉の日限定セット" data-variants='[{"id":50831005800901,"t":"1セット","p":5800}]'>
  <div class="product-card-img" data-label="NIKUNOHI SET"><span class="nikunohi-ribbon">肉の日限定</span></div>
  <div class="product-tag-row"><span class="product-tag">Set · Akami &amp; Bara</span><span class="product-price"><s>¥6,200</s> ¥5,800</span></div>
@@ -10020,7 +10021,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="shop-cat-desc">普段は市場に出回らない希少部位「イチボ」。今回だけ在庫が回りました。<strong>8/3（月）〜8/5（水）23:59</strong>の数量限定 ／ <b class="limited-left" data-limited-left="イチボステーキ" style="display:none"></b>。赤身のうまみに、ほどよい霜降り。塩でステーキに。</p>
  </div>
 
- <div class="product-grid cols-4 reveal" data-cat="beef" data-limited-scope="イチボステーキ">
+ <div class="product-grid cols-4 reveal" data-cat="beef" data-limited-scope="イチボステーキ" data-no-subfilter>
  <div class="product-card" data-sub="steak" data-limited-scope="イチボステーキ" data-variants='[{"id":50831003800201,"t":"1枚","p":3800}]'>
  <div class="product-card-img" data-label="ICHIBO STEAK"></div>
  <div class="product-tag-row"><span class="product-tag">Steak · Ichibo</span><span class="product-price">¥3,800</span></div>
@@ -10036,32 +10037,6 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
- <!-- ===== 刃（YAIBA）コラボ 特別セット品 — 2026-09-25 =====
-      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
-      🔴 このカードに reveal を付けない（付けると表示されない）。 -->
- <div class="shop-cat-head yaiba-head" id="yaiba" data-cat="beef">
- <h2 class="shop-cat-title">特別セット品 <span>/ YAIBA &times; 江田和牛</span></h2>
- <p class="shop-cat-desc">希少な果実と和三盆で甘みを組み立てたタレ「<span class="yaiba-mark">YAIBA -刃-</span>」。<br>六十年の家族の味を最高峰の素材で再構築した<strong>無添加</strong>のタレと、<strong>無投薬</strong>の江田和牛を組み合わせた特別セット商品です。</p>
- </div>
-
- <div class="product-grid cols-4" data-cat="beef">
- <div class="product-card" data-sub="set" data-variants='[{"id":50925010800011,"t":"1セット","p":10800}]'>
- <div class="product-card-img" data-label="YAIBA SET"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; YAIBA</span><span class="product-price">&yen;10,800</span></div>
- <p class="product-name"><a href="product.html?id=P049" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">YAIBA × 江田和牛 焼肉200g / ステーキ200g</a></p>
- <p class="product-desc">六十年の味と、希少な果実の個性が溶け合う瞬間を封じ込めた、無添加のタレ「<span class="yaiba-mark">YAIBA</span>」。江田和牛赤身焼肉・赤身ステーキとのセット商品です。</p>
- <div class="product-buy"></div>
- </div>
-
- <div class="product-card" data-sub="set" data-variants='[{"id":50925010800021,"t":"1セット","p":10800}]'>
- <div class="product-card-img" data-label="YAIBA ROAST"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; YAIBA</span><span class="product-price">&yen;10,800</span></div>
- <p class="product-name"><a href="product.html?id=P050" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">YAIBA × 江田和牛 プレミアム生ロースト400g</a></p>
- <p class="product-desc">六十年の味と、希少な果実の個性が溶け合う瞬間を封じ込めた、無添加のタレ「<span class="yaiba-mark">YAIBA</span>」。江田和牛プレミアム生ローストとのセット商品です。</p>
- <div class="product-buy"></div>
- </div>
- </div>
-
  <!-- ===== 牛肉（ステーキ・スライス・加工品すべて統合） ===== -->
  <div class="shop-cat-head reveal" data-cat="beef">
  <h2 class="shop-cat-title">牛肉 <span>/ Wagyu Beef</span></h2>
@@ -10070,13 +10045,15 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- 牛肉 サブタブ（部位・調理スタイル別） -->
  <div class="sub-tab-row reveal" data-parent-cat="beef">
- <button class="sub-tab active" data-sub="all">すべて</button>
+ <!-- 2026-10-23 田崎さん指示。「すべて」を外し、よく買われる部位から並べる。
+      セット商品は「すべて」に混ざると一覧が読めなくなるので独立タブへ。 -->
+ <button class="sub-tab active" data-sub="slice">スライス・切り落とし</button>
+ <button class="sub-tab" data-sub="yakiniku">焼肉</button>
+ <button class="sub-tab" data-sub="steak">ステーキ</button>
+ <button class="sub-tab" data-sub="processed">加工品</button>
  <!-- 2026-09-08 田崎さん指示で新設。初めての方に何を買えばいいか迷わせない入口。 -->
  <button class="sub-tab" data-sub="hajimete">はじめての方</button>
- <button class="sub-tab" data-sub="steak">ステーキ</button>
- <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
- <button class="sub-tab" data-sub="yakiniku">焼肉</button>
- <button class="sub-tab" data-sub="processed">加工品</button>
+ <button class="sub-tab" data-sub="set">セット商品</button>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
@@ -10474,7 +10451,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <!-- ===== 有機JAS 黒毛和牛（2026年夏解禁・牛肉タブの最右端） ===== -->
+ <!-- ===== 有機JAS 黒毛和牛（2026年 解禁予定・牛肉タブの最右端） ===== -->
  <!-- 🔴 オーガニックチキンと完全に同じUI: product-card--organic + org-chk-lock + product-stats -->
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-wagyu-sirloin","t":"1つ (200g)","p":6800},{"id":"organic-wagyu-sirloin-2","t":"2つセット (400g)【5%オフ】","p":12920},{"id":"organic-wagyu-sirloin-3","t":"3つセット (600g)【10%オフ】","p":18360}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>
@@ -10524,7 +10501,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- ジャンル別プレビュー(2件)から商品一覧へ -->
  <div class="shop-viewall-wrap" data-cat="beef">
- <a href="products.html?cat=beef&amp;sub=all#products" class="btn-viewall">牛肉をすべて表示 →</a>
+ <a href="products.html?cat=beef&amp;sub=all#products" class="btn-viewall">和牛をすべて表示 →</a>
  </div>
 
  <!-- ===== 平飼い鶏 + オーガニック ===== -->
@@ -10635,6 +10612,33 @@ body.is-member .product-card--organic .org-chk-lock {
  <a href="products.html?cat=chicken&amp;sub=all#products" class="btn-viewall">鶏肉をすべて表示 →</a>
  </div>
 
+ <!-- ===== 刃（YAIBA）コラボ 特別セット品 — 2026-09-25 =====
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。 -->
+ <div class="shop-cat-head yaiba-head" id="yaiba" data-cat="beef" style="margin-top: 80px;">
+ <h2 class="shop-cat-title">特別セット品 <span>/ YAIBA &times; 江田和牛</span></h2>
+ <p class="shop-cat-desc">希少な果実と和三盆で甘みを組み立てたタレ「<span class="yaiba-mark">YAIBA -刃-</span>」。<br>六十年の家族の味を最高峰の素材で再構築した<strong>無添加</strong>のタレと、<strong>無投薬</strong>の江田和牛を組み合わせた特別セット商品です。</p>
+ </div>
+
+ <div class="product-grid cols-4" data-cat="beef" data-no-subfilter>
+ <div class="product-card" data-sub="set" data-variants='[{"id":50925010800011,"t":"1セット","p":10800}]'>
+ <div class="product-card-img" data-label="YAIBA SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; YAIBA</span><span class="product-price">&yen;10,800</span></div>
+ <p class="product-name"><a href="product.html?id=P049" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">YAIBA × 江田和牛 焼肉200g / ステーキ200g</a></p>
+ <p class="product-desc">六十年の味と、希少な果実の個性が溶け合う瞬間を封じ込めた、無添加のタレ「<span class="yaiba-mark">YAIBA</span>」。江田和牛赤身焼肉・赤身ステーキとのセット商品です。</p>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="set" data-variants='[{"id":50925010800021,"t":"1セット","p":10800}]'>
+ <div class="product-card-img" data-label="YAIBA ROAST"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; YAIBA</span><span class="product-price">&yen;10,800</span></div>
+ <p class="product-name"><a href="product.html?id=P050" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">YAIBA × 江田和牛 プレミアム生ロースト400g</a></p>
+ <p class="product-desc">六十年の味と、希少な果実の個性が溶け合う瞬間を封じ込めた、無添加のタレ「<span class="yaiba-mark">YAIBA</span>」。江田和牛プレミアム生ローストとのセット商品です。</p>
+ <div class="product-buy"></div>
+ </div>
+ </div>
+
+
  <!-- 訳あり は会員限定 — 通常表示から削除（マイページからのみアクセス可） -->
  <!-- ギフトは「贈答用」セクション（gift-highlight）に集約 — 商品リストから削除 -->
 
@@ -10642,6 +10646,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= ふるさと納税で江田和牛を ========= -->
+<details class="fold"><summary>和牛のこと ／ 江田畜産の育て方</summary>
 <section class="wagyu-guide section" id="about-wagyu">
  <div class="container">
  <div class="wagyu-guide-head reveal">
@@ -10724,6 +10729,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- 「はじめての方へ」セクションは削除 -->
 
@@ -10831,6 +10837,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= 保存・解凍・調理ガイド ========= -->
+<details class="fold"><summary>保存とおいしい食べ方</summary>
 <section class="shop-guide section" id="guide">
  <div class="container">
  <div class="shop-guide-head reveal" style="text-align: center; margin-bottom: 56px;">
@@ -10887,8 +10894,10 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= FAQ ========= -->
+<details class="fold"><summary>よくあるご質問</summary>
 <section class="shop-faq section-sm" id="faq">
  <div class="container">
  <div class="shop-faq-head reveal" style="text-align: center; margin-bottom: 56px;">
@@ -10941,6 +10950,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= SUBSCRIPTION ========= -->
 <section class="shop-sub-cta" id="subscription">
@@ -11078,7 +11088,8 @@ body.is-member .product-card--organic .org-chk-lock {
 </section>
 
 <!-- ========= HOW IT WORKS ========= -->
-<section class="shop-how section-sm">
+<details class="fold"><summary>ご注文からお届けまで</summary>
+<section class="shop-how section-sm" id="how-to-order">
  <div class="container">
  <div class="shop-how-head reveal" style="text-align: center; margin-bottom: 48px;">
  <span class="eyebrow text-gold has-dash">How To Order</span>
@@ -11109,6 +11120,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= 和牛オーガニック 解禁ティザー（ご購入の流れ後・神秘的） ========= -->
 <section class="organic-tease" id="organic-tease">
@@ -11135,7 +11147,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <span class="organic-tease-title-accent">Premium EdaWagyu</span>
  </h2>
  <p class="organic-tease-lead">
- 日本初の有機 JAS 認証 黒毛和牛。<span class="organic-tease-lead-tail">2026 年夏、解禁予定。</span>
+ 日本初の有機 JAS 認証 黒毛和牛。<span class="organic-tease-lead-tail">2026 年、解禁予定。</span>
  </p>
  <ul class="organic-tease-points">
  <li><span class="organic-tease-point-icon">✓</span>無農薬・無投薬の有機飼料</li>
@@ -11394,6 +11406,7 @@ body.is-member .product-card--organic .org-chk-lock {
 </style>
 
 <!-- ========= SPECS ========= -->
+<details class="fold"><summary>商品共通スペック（産地・保存・送料）</summary>
 <section class="article-body" style="padding: 64px 0;">
  <div class="container-narrow reveal">
  <h3>商品共通スペック</h3>
@@ -11419,8 +11432,10 @@ body.is-member .product-card--organic .org-chk-lock {
  </p>
  </div>
 </section>
+</details>
 
 <!-- ========= 開封動画セクション（ポラロイド＋4ステップ タイムライン） ========= -->
+<details class="fold"><summary>お届けの中身</summary>
 <section class="unboxing-section" id="unboxing">
  <div class="container">
  <div class="unboxing-head">
@@ -11453,6 +11468,7 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 </section>
+</details>
 
 <script>
 function toggleUnboxingSound() {
@@ -11699,7 +11715,8 @@ function toggleUnboxingSound() {
 </section>
 
 <!-- ========= 比較表 ========= -->
-<section class="compare-section">
+<details class="fold"><summary>スーパーのお肉との違い</summary>
+<section class="compare-section" id="compare">
  <div class="container">
  <div class="compare-head">
  <p class="compare-eyebrow">WHY EDA LIVESTOCK</p>
@@ -11728,6 +11745,7 @@ function toggleUnboxingSound() {
  </div>
  </div>
 </section>
+</details>
 
 <!-- ========= 江田畜産の利用者（3指標 / LINEは自動更新） ========= -->
 <section class="stats-band" id="stats-band">
@@ -13070,6 +13088,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  btn.classList.add('active');
  // 親カテゴリの product-card のみ data-sub で絞り込み
  document.querySelectorAll(`[data-cat="${parentCat}"] .product-card[data-sub]`).forEach(card => {
+ // 特別セット品・期間限定の独立グリッドは部位サブタブで消さない（data-no-subfilter）
+ if (card.closest('[data-no-subfilter]')) return;
  if (sub === 'all') card.style.display = '';
  else card.style.display = card.dataset.sub === sub ? '' : 'none';
  });
@@ -15142,7 +15162,7 @@ function copyPopCoupon() {
 (function productPreviewInit() {
  'use strict';
  var LIMIT = 2;
- var CAT_LABEL = { beef: '牛肉', chicken: '鶏肉' };
+ var CAT_LABEL = { beef: '和牛', chicken: '鶏肉' };
  /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
  var PREVIEW_PICKS = {
    beef: { all: ['はじめてセット', '赤身スライス'] }
@@ -15160,6 +15180,10 @@ function copyPopCoupon() {
      var wrap = document.querySelector('.shop-viewall-wrap[data-cat="' + cat + '"]');
      var cards = Array.prototype.slice.call(grid.querySelectorAll('.product-card'));
      cards.forEach(function(c) { c.removeAttribute('data-preview-hidden'); });
+
+     /* 特別セット品・期間限定の独立グリッドは常に全点見せる。
+        ここを通すと同じ data-cat の「すべて表示」ボタンまで消してしまう */
+     if (grid.hasAttribute('data-no-subfilter')) return;
 
      /* 検索中は全件見せる（プレビュー制限もボタンも出さない） */
      if (searching) { if (wrap) wrap.style.display = 'none'; return; }
@@ -15208,9 +15232,8 @@ function copyPopCoupon() {
      var a = wrap.querySelector('a');
      if (a) {
        a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(sub) + '#products';
-       a.textContent = (sub !== 'all' && active
-         ? active.textContent.trim()
-         : (CAT_LABEL[cat] || '')) + 'をすべて表示 →';
+       /* 2026-10-23 田崎さん指示。部位タブ名ではなく常にカテゴリ名で出す */
+       a.textContent = (CAT_LABEL[cat] || '') + 'をすべて表示 →';
      }
    });
  }
@@ -15248,6 +15271,73 @@ function copyPopCoupon() {
    setTimeout(apply, 0);
  }
  window.addEventListener('load', function() { setTimeout(apply, 100); });
+})();
+</script>
+
+<!-- シンプル化プレビュー: スマホ用 固定カートバー -->
+<div class="simple-sticky-cart" id="simpleStickyCart" hidden>
+ <span class="ssc-label">カート <b id="sscCount">0</b>点</span>
+ <button type="button" class="ssc-btn" id="sscBtn">カートを見る</button>
+</div>
+<script>
+(function(){
+  var bar=document.getElementById('simpleStickyCart');
+  if(!bar) return;
+  var btn=document.getElementById('sscBtn'), cnt=document.getElementById('sscCount');
+  var badge=document.getElementById('cartBadge');
+  btn.addEventListener('click',function(e){e.preventDefault();var t=document.getElementById('cartToggle');if(t)t.click();});
+  function sync(){
+    var n=badge?parseInt(badge.textContent,10)||0:0;
+    cnt.textContent=n;
+    var show=n>0&&window.matchMedia('(max-width:767px)').matches;
+    bar.hidden=!show;
+    document.body.classList.toggle('has-sticky-cart',show);
+  }
+  sync();
+  if(badge) new MutationObserver(sync).observe(badge,{childList:true,characterData:true,subtree:true});
+  window.addEventListener('resize',sync);
+})();
+</script>
+
+<!-- シンプル化プレビュー: サブタブに「すべて」が無いので、読み込み時に先頭タブを適用する -->
+<script>
+(function(){
+  function applySubFilter(){
+    var row = document.querySelector('.sub-tab-row[data-parent-cat="beef"]');
+    if (!row) return;
+    var t = row.querySelector('.sub-tab.active') || row.querySelector('.sub-tab');
+    if (!t) return;
+    t.classList.add('active');
+    var sub = t.dataset.sub;
+    document.querySelectorAll('[data-cat="beef"] .product-card[data-sub]').forEach(function(c){
+      if (c.closest('[data-no-subfilter]')) return;   // 特別セット品・期間限定は対象外
+      if (c.dataset.sub === sub || sub === 'all') {
+        if (c.style.display === 'none') c.style.display = '';
+      } else {
+        c.style.display = 'none';
+      }
+    });
+    // 2件プレビューの再計算を走らせる（filterProductSearch は後段で apply をラップ済み）
+    var box = document.getElementById('productSearch');
+    if (typeof window.filterProductSearch === 'function') window.filterProductSearch(box ? box.value : '');
+  }
+
+  /* 🔴 refreshProductCards(=applyMaster) は published な全カードに style.display='' を打ち直すので、
+        GAS のマスターが届いた瞬間に部位タブの絞り込みが消え、セット商品が戻ってしまう。
+        同じ理由で __dynRenderNew(新商品の後追い描画)の後にもかけ直す。 */
+  ['refreshProductCards', '__dynRenderNew'].forEach(function(name){
+    var orig = window[name];
+    if (typeof orig !== 'function') return;
+    window[name] = function(){
+      var r = orig.apply(this, arguments);
+      setTimeout(applySubFilter, 0);
+      return r;
+    };
+  });
+
+  function run(){ applySubFilter(); setTimeout(applySubFilter, 300); setTimeout(applySubFilter, 1200); setTimeout(applySubFilter, 3000); }
+  if (document.readyState === 'complete') run();
+  else window.addEventListener('load', run);
 })();
 </script>
 </body>

@@ -9929,13 +9929,18 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <!-- 牛肉 サブタブ（部位・調理スタイル別） -->
  <div class="sub-tab-row reveal" data-parent-cat="beef">
+ <!-- 2026-10-23 田崎さん指示。ショップ画面と同じ並びに揃える。
+      よく買われる部位から並べ、セット商品を独立させた。
+      このページは全商品の一覧なので「すべて」は先頭に残す。
+      オーガニックはこのページ固有なので最後。 -->
  <button class="sub-tab active" data-sub="all">すべて</button>
- <!-- 2026-09-08 田崎さん指示で新設。初めての方に何を買えばいいか迷わせない入口。 -->
- <button class="sub-tab" data-sub="hajimete">はじめての方</button>
- <button class="sub-tab" data-sub="steak">ステーキ</button>
  <button class="sub-tab" data-sub="slice">スライス・切り落とし</button>
  <button class="sub-tab" data-sub="yakiniku">焼肉</button>
+ <button class="sub-tab" data-sub="steak">ステーキ</button>
  <button class="sub-tab" data-sub="processed">加工品</button>
+ <!-- 2026-09-08 田崎さん指示で新設。初めての方に何を買えばいいか迷わせない入口。 -->
+ <button class="sub-tab" data-sub="hajimete">はじめての方</button>
+ <button class="sub-tab" data-sub="set">セット商品</button>
  <button class="sub-tab sub-tab--organic" data-sub="organic" data-en="Organic">オーガニック</button>
  </div>
 
@@ -10421,7 +10426,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <!-- ===== 有機JAS 黒毛和牛（2026年夏解禁・牛肉タブの最右端） ===== -->
+ <!-- ===== 有機JAS 黒毛和牛（2026年 解禁予定・牛肉タブの最右端） ===== -->
  <!-- 🔴 オーガニックチキンと完全に同じUI: product-card--organic + org-chk-lock + product-stats -->
  <div class="product-card product-card--organic" data-sub="organic" data-variants='[{"id":"organic-wagyu-sirloin","t":"1つ (200g)","p":6800},{"id":"organic-wagyu-sirloin-2","t":"2つセット (400g)【5%オフ】","p":12920},{"id":"organic-wagyu-sirloin-3","t":"3つセット (600g)【10%オフ】","p":18360}]'>
  <a href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html" target="_blank" rel="noopener" class="org-chk-lock"><div class="org-chk-lock-icon">🔒</div><div class="org-chk-lock-title">会員様限定</div><div class="org-chk-lock-desc">LINE 友だち追加でお値段・購入できます</div></a>

@@ -130,7 +130,11 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 /* ============ PDP GRID ============ */
 .pdp-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  /* 🔴 2026-10-23: `1.2fr 1fr` のままだと 1fr = minmax(auto,1fr) なので、
+     列の最小幅が中身の min-content まで広がり、375px の画面で列が 600px になって
+     ページが横にはみ出す（スマホで開くと拡大表示になり、ピンチで縮めないと全体が見えない）。
+     minmax(0, …) で最小幅を 0 に固定する。中身は何も切れない。 */
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   gap: clamp(40px, 6vw, 80px);
   align-items: start;
 }
@@ -324,6 +328,25 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 
 /* ============ CTA ============ */
 .pdp-cta-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.pdp-cta-back {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px;
+  background: #fff;
+  color: var(--color-forest);
+  border: 1.5px solid rgba(15,61,46,.3);
+  border-radius: 4px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background .2s;
+}
+.pdp-cta-back:hover { background: var(--color-cream); }
 .pdp-cta-primary {
   display: block;
   width: 100%;
@@ -575,6 +598,29 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-bd-imgwrap input:checked + .pdp-bd-box-mark { background: var(--color-forest); border-color: var(--color-forest); }
 .pdp-bd-imgwrap input:checked + .pdp-bd-box-mark::after { content: ''; position: absolute;
   left: 7px; top: 2px; width: 6px; height: 12px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
+.pdp-bd-qty {
+  display: inline-flex; align-items: center; gap: 2px;
+  margin-top: 10px;
+  border: 1px solid rgba(15,61,46,.22);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.pdp-bd-qbtn {
+  width: 34px; height: 34px;
+  background: none; border: 0;
+  color: var(--color-forest);
+  font-size: 15px; line-height: 1; cursor: pointer;
+}
+.pdp-bd-qbtn:hover { background: var(--color-cream); }
+.pdp-bd-qnum {
+  min-width: 26px; text-align: center;
+  font-family: var(--font-display); font-size: 15px; color: var(--color-ink);
+}
+.pdp-bd-howto { font-size: 13px; color: var(--color-ink-muted); margin: -6px 0 18px; }
+.pdp-bd-state { font-size: 11px; font-weight: 700; letter-spacing: .06em; margin-top: 8px; color: #9b9b9b; }
+.pdp-bd-state.is-on { color: var(--color-forest); }
+.pdp-bd-count { font-size: 14px; color: var(--color-ink); }
+.pdp-bd-count b { font-size: 18px; color: var(--color-forest); }
 .pdp-bd-tag { font-size: 10px; letter-spacing: .14em; color: var(--color-gold-soft); margin-top: 10px; min-height: 15px; }
 .pdp-bd-box { margin-top: 28px; background: #fff; border: 1px solid rgba(212,169,59,.32); padding: 26px 24px; }
 .pdp-bd-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 14px; }
@@ -610,7 +656,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
-  .pdp-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pdp-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .pdp-gallery { position: static; }
   .pdp-related-grid { grid-template-columns: 1fr; gap: 24px; }
 }
@@ -791,6 +837,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <!-- CTA -->
       <div class="pdp-cta-section">
         <button class="pdp-cta-primary" id="addToCartBtn" onclick="addToCart()">追加する</button>
+        <!-- 2026-10-23 田崎さん指示: 追加したあと商品一覧に戻れる導線。
+             一覧から来た場合は履歴を戻す（選んでいたタブとスクロール位置が残る）。
+             直リンクやLINEから来た場合は商品一覧へ送る。 -->
+        <a class="pdp-cta-back" id="pdpBackToList" href="products.html#products">← 商品一覧に戻る</a>
       </div>
 
       <!-- 🎁 ギフト導線 (のし・化粧箱つきで贈る) -->
@@ -938,7 +988,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   <!-- ============ BOUGHT TOGETHER ============ -->
   <section class="pdp-bundle" id="pdpBundle" hidden>
     <p class="pdp-related-title" id="pdpBdEyebrow">— Frequently Bought Together —</p>
-    <h2 class="pdp-bundle-lead" id="pdpBdLead">この商品を買った人は、こんなものも買っています。</h2>
+    <h2 class="pdp-bundle-lead" id="pdpBdLead">よく一緒に買われています。</h2>
+    <p class="pdp-bd-howto">写真をタップで、入れる／外すを切り替えられます。</p>
     <div class="pdp-bd-cards" id="pdpBdCards"></div>
     <div class="pdp-bd-box">
       <div class="pdp-bd-row" id="pdpBdRow"></div>
@@ -982,6 +1033,182 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </main>
 
 <!-- ============ MOBILE STICKY CTA ============ -->
+<!-- 2026-10-23 田崎さん指示: 下の「追加」バーをやめ、右上のボタンから
+     「いまカートに入っているもの」を開く。押すと横からスルスル出る。
+     下のバーは本文を隠すうえ、押せるものが画面内に2つ出て迷わせていた。 -->
+<style>
+.pdp-sticky-cta { display: none !important; }
+
+/* 右上の呼び出しボタン */
+.pdp-cart-fab {
+  position: fixed;
+  /* 🔴 ヘッダーは position:sticky / z-index:100 で常に上にいる。
+     固定値で置くと画面を上まで戻したときにヘッダーの裏に隠れるので、
+     ヘッダーの実寸から毎回計算した位置に置く（--pdp-cart-top）。 */
+  top: var(--pdp-cart-top, 100px); right: 12px;
+  z-index: 87;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 14px;
+  background: var(--color-forest);
+  color: #fff;
+  border: 0; border-radius: 100px;
+  font-family: var(--font-jp); font-size: 12px; font-weight: 700;
+  box-shadow: 0 8px 22px rgba(15,61,46,0.26);
+  cursor: pointer;
+}
+.pdp-cart-fab[hidden] { display: none !important; }
+.pdp-cart-fab svg { width: 16px; height: 16px; }
+.pdp-cart-fab .fab-n {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  background: var(--color-gold); color: var(--color-forest-deep);
+  border-radius: 100px; font-size: 11px; line-height: 18px; text-align: center;
+}
+
+/* 中身のパネル。初期は右の外に逃がしておき、押されたら滑り込ませる */
+.pdp-cart-mini {
+  position: fixed;
+  top: calc(var(--pdp-cart-top, 100px) + 52px); right: 12px;
+  z-index: 86;
+  width: 260px;
+  max-height: 56vh;
+  overflow-y: auto;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(15,61,46,0.14);
+  border-radius: 10px;
+  box-shadow: 0 14px 34px rgba(15,61,46,0.18);
+  padding: 13px 14px;
+  font-family: var(--font-jp);
+  transform: translateX(calc(100% + 24px));
+  opacity: 0;
+  visibility: hidden;
+  transition: transform .34s cubic-bezier(.32,.72,0,1), opacity .24s ease, visibility .34s;
+}
+.pdp-cart-mini.is-open { transform: translateX(0); opacity: 1; visibility: visible; }
+.pdp-cart-mini-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-size: 11px; letter-spacing: .08em; color: var(--color-ink-muted);
+  padding-bottom: 9px; border-bottom: 1px solid rgba(15,61,46,0.10);
+}
+.pdp-cart-mini-head b { font-size: 13px; color: var(--color-forest); letter-spacing: 0; }
+/* 商品名 ／ 数 ／ 金額 の3列 */
+.pdp-cart-mini-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  column-gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(15,61,46,0.07);
+  font-size: 12px;
+}
+.pdp-cart-mini-row .r-name { color: var(--color-ink); line-height: 1.45; }
+.pdp-cart-mini-row .r-qty { color: var(--color-ink-muted); white-space: nowrap; }
+.pdp-cart-mini-row .r-amt { color: var(--color-forest); font-weight: 700; white-space: nowrap; }
+.pdp-cart-mini-total {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding-top: 11px; font-size: 12px; color: var(--color-ink-muted);
+}
+.pdp-cart-mini-total b { font-size: 17px; color: var(--color-forest); }
+.pdp-cart-mini-btn {
+  display: block; width: 100%; margin-top: 11px; padding: 11px;
+  background: var(--color-forest); color: #fff; text-align: center;
+  border: 0; border-radius: 7px; font-family: inherit; font-size: 12px; font-weight: 700;
+  text-decoration: none;
+}
+@media (max-width: 767px) {
+  .pdp-cart-fab { right: 8px; }
+  .pdp-cart-mini { right: 8px; width: min(248px, calc(100vw - 16px)); max-height: 48vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdp-cart-mini { transition: opacity .2s ease, visibility .2s; }
+}
+</style>
+
+<button class="pdp-cart-fab" id="pdpCartFab" hidden type="button" aria-expanded="false" aria-controls="pdpCartMini">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h2l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1.3" fill="currentColor"/><circle cx="18" cy="20" r="1.3" fill="currentColor"/>
+  </svg>
+  <span>カート</span><span class="fab-n" id="pdpCartFabN">0</span>
+</button>
+<aside class="pdp-cart-mini" id="pdpCartMini" aria-label="カートの中身"></aside>
+
+<script>
+(function () {
+  function read() {
+    try { return JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch (e) { return []; }
+  }
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+
+  /* ヘッダーの高さを測って、その下に出す。画面幅や言語で高さが変わるので毎回測る。 */
+  function placeBelowHeader() {
+    var hd = document.querySelector('header');
+    var h = hd ? Math.round(hd.getBoundingClientRect().height) : 89;
+    document.documentElement.style.setProperty('--pdp-cart-top', (h + 11) + 'px');
+  }
+  window.addEventListener('resize', placeBelowHeader);
+  window.addEventListener('orientationchange', placeBelowHeader);
+  placeBelowHeader();
+  setTimeout(placeBelowHeader, 600);
+
+  function render() {
+    placeBelowHeader();
+    var box = document.getElementById('pdpCartMini');
+    var fab = document.getElementById('pdpCartFab');
+    if (!box || !fab) return;
+    var cart = read();
+    if (!cart.length) {
+      fab.hidden = true;
+      close();
+      return;
+    }
+    var qty = cart.reduce(function (s, c) { return s + (c.qty || 1); }, 0);
+    var total = cart.reduce(function (s, c) { return s + (c.price || 0) * (c.qty || 1); }, 0);
+    document.getElementById('pdpCartFabN').textContent = qty;
+    fab.hidden = false;
+    box.innerHTML =
+      '<div class="pdp-cart-mini-head"><b>カートの中身</b><span>' + qty + '点</span></div>' +
+      cart.map(function (c) {
+        var n = c.qty || 1;
+        return '<div class="pdp-cart-mini-row">' +
+          '<span class="r-name">' + esc(c.title) + '</span>' +
+          '<span class="r-qty">' + n + '点</span>' +
+          '<span class="r-amt">¥' + Number((c.price || 0) * n).toLocaleString() + '</span>' +
+          '</div>';
+      }).join('') +
+      '<div class="pdp-cart-mini-total"><span>合計</span><b>¥' + total.toLocaleString() + '</b></div>' +
+      '<a class="pdp-cart-mini-btn" href="checkout.html">カートを見る →</a>';
+  }
+
+  function open() {
+    document.getElementById('pdpCartMini').classList.add('is-open');
+    document.getElementById('pdpCartFab').setAttribute('aria-expanded', 'true');
+  }
+  function close() {
+    var box = document.getElementById('pdpCartMini');
+    if (box) box.classList.remove('is-open');
+    var fab = document.getElementById('pdpCartFab');
+    if (fab) fab.setAttribute('aria-expanded', 'false');
+  }
+  function toggle() {
+    var box = document.getElementById('pdpCartMini');
+    if (box.classList.contains('is-open')) close(); else { render(); open(); }
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#pdpCartFab')) { e.preventDefault(); toggle(); return; }
+    /* パネルの外を触ったら閉じる */
+    if (!e.target.closest('#pdpCartMini')) close();
+    /* カートに積む経路が複数あるので、押されたら少し遅れて取り直す */
+    setTimeout(render, 150);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  window.addEventListener('storage', render);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render);
+  else render();
+  setTimeout(render, 800);
+})();
+</script>
 <div class="pdp-sticky-cta" id="stickyCta">
   <div class="pdp-sticky-cta-info">
     <span class="pdp-sticky-cta-name" id="stickyName"></span>
@@ -1242,19 +1469,31 @@ details[open] .pdp-detail-summary::after { content: '−'; }
           <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="${esc(x.p.name)}">
         </label>
         <div class="pdp-bd-tag">${i === 0 ? 'この商品' : '&nbsp;'}</div>
+        <div class="pdp-bd-state" data-i="${i}"></div>
         <h3>${esc(x.p.name)}</h3>
-        <div class="pdp-bd-price">¥${x.unit.toLocaleString()}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}</div>
+        <div class="pdp-bd-price">¥${x.unit.toLocaleString()}${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}</div>
+        <div class="pdp-bd-qty" role="group" aria-label="${esc(x.p.name)} の数量">
+          <button type="button" class="pdp-bd-qbtn" data-i="${i}" data-d="-1" aria-label="減らす">−</button>
+          <span class="pdp-bd-qnum" data-i="${i}">${x.q}</span>
+          <button type="button" class="pdp-bd-qbtn" data-i="${i}" data-d="1" aria-label="増やす">＋</button>
+        </div>
       </article>`).join('');
     function sync() {
       const on = [].slice.call(document.querySelectorAll('.pdp-bd-cb'))
         .map((cb, i) => cb.checked ? items[i] : null).filter(Boolean);
       const total = on.reduce((s, x) => s + x.unit * x.q, 0);
+      /* 2026-10-23 田崎さん指示: 上のカードと同じ商品をもう一度並べていて二重だった。
+         ここは「いま何点選んでいるか」だけにする。 */
       document.getElementById('pdpBdRow').innerHTML = on.length
-        ? on.map(x => `<div class="pdp-bd-item">
-            <img src="${bustImg((x.p.images && x.p.images[0]) || 'public/images/cuts/hero-0.jpeg')}" alt="">
-            <div><b>${esc(x.p.name)}</b>${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}<br>
-            <span>¥${(x.unit * x.q).toLocaleString()}</span></div></div>`).join('<div class="pdp-bd-plus">＋</div>')
-        : '<div class="pdp-bd-empty">商品を選んでください。</div>';
+        ? '<div class="pdp-bd-count">選んでいるのは <b>' + on.length + '</b> 商品（' + items.length + '商品中）・合計 <b>'
+            + on.reduce(function (s2, x) { return s2 + x.q; }, 0) + '</b> 点</div>'
+        : '<div class="pdp-bd-empty">写真をタップして選んでください。</div>';
+      document.querySelectorAll('.pdp-bd-state').forEach(function (el) {
+        var cb = document.querySelector('.pdp-bd-cb[data-i="' + el.dataset.i + '"]');
+        var onNow = cb && cb.checked;
+        el.textContent = onNow ? '入れる' : '外している';
+        el.className = 'pdp-bd-state' + (onNow ? ' is-on' : '');
+      });
       document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
       document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
         : total >= FREE ? '<span class="pdp-bd-free">送料無料</span>'
@@ -1268,6 +1507,25 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       btn.__items = on;
     }
     document.querySelectorAll('.pdp-bd-cb').forEach(cb => cb.addEventListener('change', sync));
+
+    /* 2026-10-23 田崎さん指示: 商品ごとに個数を決められるようにする。
+       items[i].q を直接書き換えるので、合計・ボタン文言・カート投入は
+       そのまま新しい個数で動く。 */
+    var QMAX = 10;
+    document.querySelectorAll('.pdp-bd-qbtn').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        var i = +b.dataset.i, d = +b.dataset.d;
+        var next = Math.min(QMAX, Math.max(1, (items[i].q || 1) + d));
+        items[i].q = next;
+        var num = document.querySelector('.pdp-bd-qnum[data-i="' + i + '"]');
+        if (num) num.textContent = next;
+        /* 数を触ったのに外れたままだと意図とズレるので、入れる状態に戻す */
+        var cb = document.querySelector('.pdp-bd-cb[data-i="' + i + '"]');
+        if (cb && !cb.checked) cb.checked = true;
+        sync();
+      });
+    });
     document.getElementById('pdpBdBtn').addEventListener('click', function () {
       const on = this.__items || [];
       if (!on.length) return;
@@ -1616,5 +1874,26 @@ window.addEventListener('load', () => {
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=007" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
+
+<script>
+/* 「商品一覧に戻る」の行き先。
+   一覧(products.html / shop.html)から来ていれば履歴を戻して、
+   選んでいたタブ・スクロール位置をそのまま見せる。
+   それ以外（直リンク・LINE・検索）は商品一覧ページへ。 */
+(function () {
+  var a = document.getElementById('pdpBackToList');
+  if (!a) return;
+  var ref = '';
+  try { ref = document.referrer || ''; } catch (e) {}
+  var sameSite = ref.indexOf(location.origin) === 0;
+  var fromList = sameSite && /\/(products|shop)\.html/.test(ref);
+  if (fromList) {
+    a.setAttribute('href', ref);
+    a.addEventListener('click', function (e) {
+      if (history.length > 1) { e.preventDefault(); history.back(); }
+    });
+  }
+})();
+</script>
 </body>
 </html>

@@ -13,7 +13,7 @@
      chicken      — 鶏肉（平飼い・標準）
      chicken-org  — 鶏肉（オーガニック）
      gift         — ギフトボックス
-     organic-wgy  — 有機JAS和牛（2026年夏 解禁・予約受付前）
+     organic-wgy  — 有機JAS和牛（2026年 解禁予定・予約受付前）
    ============================================================ */
 
 (function(global) {
@@ -46,7 +46,8 @@
       price: 1800, weight: 200, stock: 22, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Cube Steak',
       description: 'ひと口大に切り分けたステーキ用の正肉。お弁当や、忙しい平日の夕食に。',
-      images: ['public/images/products/drive/cube-steak.jpg']
+      /* 2026-10-23 一覧(shop.html の CUBE STEAK カード)と写真が違っていたので合わせる */
+      images: ['public/images/products/drive/cube-steak-2026.jpg']
     },
 
     /* ===== 牛肉 スライス・切り落とし ===== */
@@ -412,7 +413,7 @@
       images: ['public/images/products/drive/hamburg.jpg']
     },
 
-    /* ===== 有機JAS 黒毛和牛（2026年夏 解禁・予約受付前） ===== */
+    /* ===== 有機JAS 黒毛和牛（2026年 解禁予定・予約受付前） ===== */
     {
       productId: 'P020', variantId: 'ORG-WAGYU-SIRLOIN', sku: 'EDA-ORG-WGY-SIRLOIN',
       name: '有機JAS サーロイン', variant: '— —',
@@ -428,7 +429,7 @@
       price: 0, weight: 0, stock: 0, temp: '冷凍',
       category: 'organic-wgy', categoryLabel: '有機和牛', tagEn: 'Organic · Ribeye',
       isOrganic: true, comingSoon: true,
-      description: '2026年夏 解禁。霜降りと赤身の絶妙なバランス。希少な有機リブアイ。',
+      description: '2026年 解禁予定。霜降りと赤身の絶妙なバランス。希少な有機リブアイ。',
       images: []
     },
     {

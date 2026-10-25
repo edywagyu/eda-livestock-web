@@ -8,17 +8,17 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>無投薬和牛の専門定期便｜江田畜産 — 国産和牛＋平飼い鶏を月1回</title>
-<meta name="description" content="無投薬専門の定期便。抗生物質・ホルモン剤を一切使わない国産和牛＋平飼い鶏を月1回。2026年夏には日本初の有機JAS認証定期便を公開予定。初月50%OFF。">
+<meta name="description" content="無投薬専門の定期便。抗生物質・ホルモン剤を一切使わない国産和牛＋平飼い鶏を月1回。2026年に日本初の有機JAS認証定期便を公開予定。初月50%OFF。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="無投薬和牛の専門定期便｜江田畜産">
-<meta property="og:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。無投薬専門の定期便。2026夏 有機JAS解禁。">
+<meta property="og:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。無投薬専門の定期便。2026 有機JAS解禁予定。">
 <meta property="og:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
 <meta property="og:url" content="https://www.eda-livestock.com/subscription.html">
 <meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="無投薬和牛の専門定期便｜江田畜産">
-<meta name="twitter:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。無投薬専門の定期便。2026夏 有機JAS解禁。">
+<meta name="twitter:description" content="抗生物質・ホルモン剤フリーの国産和牛＋平飼い鶏を月1回。無投薬専門の定期便。2026 有機JAS解禁予定。">
 <meta name="twitter:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
 <link rel="canonical" href="https://www.eda-livestock.com/subscription.html">
 
@@ -361,6 +361,200 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  color: var(--color-ink-muted); margin: 0 auto; max-width: 580px;
 }
 
+/* === 押せないのにボタンに見えるものを、ラベルに戻す（2026-10-23 田崎さん指示）===
+   丸い枠＋塗り＝「押せる」の合図。押せない飾りがそれを着ていると
+   本物のボタン（プランを選ぶ・申し込む）が埋もれる。 */
+.sub-hero-badge,
+.sub-hero-badge--solid,
+.sub-hero-badge--coming,
+.sub-plans-eyebrow,
+.sub-detail-eyebrow,
+.sub-addons-eyebrow,
+.mypage-eyebrow,
+.sub-detail-plan-name {
+ background: none !important;
+ border: 0 !important;
+ border-radius: 0 !important;
+ box-shadow: none !important;
+ padding: 0 !important;
+}
+.sub-hero-badges { gap: 10px 20px; }
+
+/* マイページ紹介の4項目。角丸カード＋枠＋ホバーで動く＝押せる合図だったので、
+   罫線で区切った読み物に戻す（2026-10-23 田崎さん指示）。 */
+.mypage-features { gap: 0 !important; }
+.mypage-feature {
+ background: none !important;
+ border: 0 !important;
+ border-top: 1px solid rgba(212,169,59,0.18) !important;
+ border-radius: 0 !important;
+ backdrop-filter: none !important;
+ -webkit-backdrop-filter: none !important;
+ transition: none !important;
+ padding: 22px 4px !important;
+}
+.mypage-features .mypage-feature:last-child { border-bottom: 1px solid rgba(212,169,59,0.18) !important; }
+.mypage-feature:hover {
+ transform: none !important;
+ background: none !important;
+ border-color: rgba(212,169,59,0.18) !important;
+}
+.mypage-feature-icon {
+ background: none !important;
+ border: 0 !important;
+ border-radius: 0 !important;
+ justify-content: flex-start !important;
+}
+
+/* 「すべての商品を見る」（アドオンを4点だけ出す） */
+.sub-addons-more { text-align: center; margin-top: 22px; }
+.sub-addons-more-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ padding: 13px 30px;
+ min-height: 44px;
+ border: 1.5px solid var(--color-forest, #0F3D2E);
+ border-radius: 8px;
+ background: #fff;
+ color: var(--color-forest, #0F3D2E);
+ font-family: inherit;
+ font-size: 14px;
+ font-weight: 700;
+ cursor: pointer;
+ transition: background .2s;
+}
+.sub-addons-more-btn:hover { background: var(--color-cream, #FAF7F0); }
+
+/* マイページ紹介のアイコン。絵文字をやめて、ナビと同じ細線のSVGに揃える
+   （2026-10-23 田崎さん指示）。器は付けない＝押せるようには見せない。 */
+.mypage-feature-icon { width: 36px !important; height: 36px !important; }
+.mypage-feature-icon svg {
+ width: 32px; height: 32px;
+ /* くすんだ金(#856A20)だと灰色に見えたので、ブランドの金そのものに戻す。
+    線も 1.3 → 1.5 に太らせて色がのるようにした（2026-10-23 田崎さん指示） */
+ color: var(--color-gold, #D4A93B);
+ stroke-width: 1.5;
+ display: block;
+}
+.mypage-feature { grid-template-columns: 36px 1fr !important; gap: 20px !important; align-items: start; }
+@media (max-width: 767px) {
+ .mypage-feature { grid-template-columns: 28px 1fr !important; gap: 14px !important; }
+ .mypage-feature-icon { width: 28px !important; height: 28px !important; }
+ .mypage-feature-icon svg { width: 26px; height: 26px; }
+}
+
+/* === マイページ紹介を明るい面にする（2026-10-23 田崎さん指示）===
+   申込フォーム(暗)の直後がマイページ(暗)で、背景が2回続いていた。
+   暗が6面・明が4面あるため、1面を明に起こさないと交互にならない。
+   端末のモックアップは黒いままでよい（明るい紙の上に実機が載って見える）。 */
+.mypage-section {
+ background: var(--color-cream) !important;
+ background-image: none !important;
+ color: var(--color-ink) !important;
+ border-top: 1px solid rgba(15,61,46,0.10) !important;
+ border-bottom: 1px solid rgba(15,61,46,0.10) !important;
+}
+.mypage-eyebrow { color: var(--color-gold-soft, #856A20) !important; }
+.mypage-head h2 { color: var(--color-forest) !important; }
+.mypage-head h2 .accent {
+ background: none !important;
+ -webkit-background-clip: border-box !important;
+ background-clip: border-box !important;
+ -webkit-text-fill-color: var(--color-gold-soft, #856A20) !important;
+ color: var(--color-gold-soft, #856A20) !important;
+}
+.mypage-head p { color: var(--color-ink-muted) !important; }
+.mypage-feature,
+.mypage-features .mypage-feature:last-child,
+.mypage-feature:hover { border-color: rgba(15,61,46,0.12) !important; }
+.mypage-feature-body strong { color: var(--color-forest) !important; }
+.mypage-feature-body p { color: var(--color-ink-muted) !important; }
+.mypage-feature-body p strong { color: var(--color-forest) !important; }
+
+/* === 背景の並びを整える（2026-10-23 田崎さん指示）===
+   明るい地が4種類（#FFFAF0 / #FFFFFF / #FAF7F0 / #FBF8F2）に割れていて、
+   境目が「汚れ」に見えていた。明はクリーム1色に統一する。
+   暗い地（#0F3D2E→#0A2D21）はもともと1種類なのでそのまま。
+
+   並び: 暗(ヒーロー) → 明(プラン+注記) → 暗(内容例) → 明(追加商品)
+         → 暗(申込〜マイページ) → 明(FAQ) → 暗(お客様の声〜フッターCTA) → 明(規約)
+   暗が続くところは境目の線と地のリセットを外し、1つの塊として流す。 */
+.sub-plans-section,
+.sub-addons,
+.sub-faq,
+.sub-terms {
+ background: var(--color-cream) !important;
+ background-image: none !important;
+}
+
+/* 並べ替え後は暗が隣り合わないので、継ぎ目を消す細工はもう要らない */
+
+/* === 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ）=== */
+.sub-line-tabs {
+ display: flex;
+ justify-content: center;
+ flex-wrap: wrap;
+ gap: 10px;
+ max-width: 1100px;
+ margin: 0 auto 28px;
+}
+.sub-line-tab {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 2px;
+ min-width: 170px;
+ padding: 14px 22px;
+ border: 1.5px solid rgba(15,61,46,0.22);
+ border-radius: 12px;
+ background: #fff;
+ color: var(--color-forest, #0F3D2E);
+ font-family: inherit;
+ cursor: pointer;
+ transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.sub-line-tab:hover { border-color: var(--color-forest, #0F3D2E); }
+.sub-line-tab[aria-selected="true"] {
+ background: var(--color-forest, #0F3D2E);
+ border-color: var(--color-forest, #0F3D2E);
+ color: #fff;
+ box-shadow: 0 6px 18px rgba(15,61,46,0.18);
+}
+.sub-line-tab-emoji { font-size: 20px; line-height: 1.2; }
+.sub-line-tab-name { font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+.sub-line-tab-lead { font-size: 11px; opacity: .72; }
+.sub-line-note {
+ text-align: center;
+ font-size: 12.5px;
+ color: var(--color-ink-muted, #5C5C5C);
+ margin: -14px auto 24px;
+ max-width: 680px;
+}
+/* 選ばれていない系統のカードは出さない */
+.sub-plans-grid .sub-plan-card[hidden] { display: none !important; }
+/* 詳細ボタン（内容例・カスタマイズへ） */
+.sub-plan-detail-btn {
+ display: block;
+ width: 100%;
+ margin-top: 10px;
+ padding: 11px 14px;
+ border: 1.5px solid rgba(15,61,46,0.3);
+ border-radius: 8px;
+ background: #fff;
+ color: var(--color-forest, #0F3D2E);
+ font-family: inherit;
+ font-size: 13px;
+ font-weight: 700;
+ cursor: pointer;
+}
+.sub-plan-detail-btn:hover { background: var(--color-cream, #FAF7F0); }
+@media (max-width: 767px) {
+ .sub-line-tabs { gap: 8px; }
+ .sub-line-tab { min-width: 0; flex: 1 1 30%; padding: 11px 8px; }
+ .sub-line-tab-name { font-size: 13px; }
+ .sub-line-tab-lead { display: none; }
+}
 .sub-plans-grid {
  display: grid;
  grid-template-columns: repeat(3, 1fr);
@@ -2215,7 +2409,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-hero-badges">
   <span class="sub-hero-badge sub-hero-badge--solid">無投薬和牛の専門定期便</span>
   <span class="sub-hero-badge">国産100%</span>
-  <span class="sub-hero-badge sub-hero-badge--coming">2026 夏 有機JAS解禁</span>
+  <span class="sub-hero-badge sub-hero-badge--coming">2026 有機JAS解禁予定</span>
  </div>
 
  <h1 class="sub-hero-title">
@@ -2378,6 +2572,10 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </p>
  </div>
 
+ <!-- 2026-10-23 田崎さん指示: 9プランを平らに並べず、まず系統(和牛＋鶏／和牛だけ／鶏だけ)を選ばせる。
+      中身は renderPlanCards() が EdaPlans.groupByLine() から作る（直書きしない）。 -->
+ <div class="sub-line-tabs" id="subLineTabs" role="tablist" aria-label="定期便の系統"></div>
+
  <div class="sub-plans-grid" id="subPlansGrid">
 <!-- カードは public/js/eda-plans.js がシートの内容から作る（直書きしない） -->
  </div>
@@ -2385,7 +2583,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
 </section>
 
 <!-- ========= プラン下の補足注記 ========= -->
-<section style="background:#FFFAF0;padding:20px 0;border-top:1px solid #F0E5D0;">
+<section style="background:var(--color-cream);padding:20px 0;border-top:1px solid rgba(15,61,46,0.07);">
  <div class="container">
  <p style="text-align:center;font-size:11px;color:#999;line-height:1.7;font-style:italic;margin:0;max-width:760px;margin:0 auto;">
  ※ 年間お得額は目安です。お届け内容（部位の組み合わせ・容量・カスタマイズ）や時期によって変動します。初月50%OFF を含めた定期便1年継続時のおおよその差額。
@@ -2398,7 +2596,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="container">
  <div class="sub-detail-head">
  <div class="sub-detail-eyebrow">YOUR SELECTED PLAN</div>
- <h2 class="sub-detail-title" id="detailPlanTitle">ライト定期便の内容</h2>
+ <h2 class="sub-detail-title" id="detailPlanTitle">ライト定期便の内容例</h2>
  <span class="sub-detail-plan-name" id="detailPlanLabel">1-2名向け · 月額 ¥12,300</span>
  </div>
 
@@ -2464,7 +2662,7 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  <div class="sub-addons-eyebrow">＋ ADD TO THIS MONTH'S BOX</div>
  <h2 class="sub-addons-title">お得にカスタマイズも！</h2>
  <p class="sub-addons-lead">
- <strong style="color: #B91C1C;">サブスクと同梱で全品 10% OFF</strong><br/>
+ <strong style="color: #B91C1C;">定期便と同梱で全品 10% OFF</strong><br/>
  定期便と同じ箱に同梱、追加送料0円。今月だけの注文なので来月以降の定期便には影響しません。
  </p>
  </div>
@@ -2648,203 +2846,6 @@ h1, h2, h3, h4 { font-weight: 400; margin: 0; }
  </div>
 </section>
 
-<!-- ========= 開封動画セクション（イメージ） ========= -->
-<style>
-.unboxing-section {
- padding: 96px 0;
- background: linear-gradient(180deg, #FFFCF5 0%, #F7F1E2 100%);
- position: relative;
-}
-.unboxing-section::before {
- content: '';
- position: absolute;
- top: 0; left: 0; right: 0; height: 1px;
- background: linear-gradient(90deg, transparent, rgba(212,169,59,0.4), transparent);
-}
-.unboxing-head { text-align: center; margin: 0 auto 56px; max-width: 720px; }
-.unboxing-head .unboxing-eyebrow {
- display: inline-block;
- background: white;
- border: 1px solid rgba(212,169,59,0.35);
- padding: 6px 16px;
- border-radius: 18px;
- font-family: var(--font-display);
- font-size: 11px;
- letter-spacing: 0.18em;
- color: var(--color-gold);
- margin: 0 0 16px;
- font-weight: 600;
-}
-.unboxing-head h2 {
- font-family: var(--font-jp-serif);
- font-size: clamp(26px, 4vw, 40px);
- color: var(--color-forest);
- margin: 0 0 14px;
- line-height: 1.35;
- font-weight: 700;
-}
-.unboxing-head .unboxing-lead {
- color: var(--color-ink-muted);
- line-height: 1.9;
- font-size: 14px;
- margin: 0;
-}
-.unboxing-layout {
- display: flex;
- justify-content: center;
- max-width: 1180px;
- margin: 0 auto;
-}
-.unboxing-video {
- position: relative;
- aspect-ratio: 16 / 9;
- background: #000;
- border-radius: 14px;
- overflow: hidden;
- box-shadow: 0 18px 44px rgba(15,61,46,0.18);
- width: 100%;
- max-width: 960px;
- margin: 0 auto;
- transition: transform 0.4s var(--ease-out-expo);
-}
-.unboxing-video:hover { transform: scale(1.01); }
-.unboxing-video video {
- width: 100%; height: 100%;
- border: 0; display: block; object-fit: cover;
-}
-.unboxing-video::after {
- content: 'EDA · UNBOXING';
- position: absolute;
- bottom: 12px; right: 14px;
- font-family: var(--font-display);
- font-size: 12px;
- letter-spacing: 0.2em;
- color: var(--color-gold);
- background: rgba(15,61,46,0.85);
- padding: 4px 10px;
- border-radius: 12px;
- border: 1px solid rgba(212,169,59,0.35);
- font-weight: 700;
-}
-.unboxing-sound-btn {
- position: absolute;
- bottom: 14px; left: 14px;
- width: 38px; height: 38px;
- border-radius: 50%;
- background: rgba(15, 61, 46, 0.85);
- color: white;
- border: 1.5px solid rgba(212,169,59,0.45);
- display: flex; align-items: center; justify-content: center;
- cursor: pointer;
- transition: all 0.2s;
- z-index: 2;
-}
-.unboxing-sound-btn:hover { background: var(--color-forest); transform: scale(1.08); }
-.unboxing-disclaimer {
- max-width: 760px;
- margin: 24px auto 0;
- padding: 12px 18px;
- background: rgba(212,169,59,0.10);
- border: 1px solid rgba(212,169,59,0.30);
- border-radius: 8px;
- text-align: center;
- font-size: 12px;
- color: var(--color-ink-muted);
- line-height: 1.7;
- font-style: italic;
-}
-.unboxing-steps { display: grid; gap: 14px; position: relative; }
-.unboxing-step {
- display: grid;
- grid-template-columns: 56px 1fr;
- gap: 18px;
- align-items: center;
- padding: 18px 22px;
- background: white;
- border-radius: 14px;
- border: 1px solid rgba(212,169,59,0.18);
- box-shadow: 0 2px 8px rgba(15,61,46,0.06);
- position: relative;
- transition: all 0.3s var(--ease-out-expo);
-}
-.unboxing-step:hover { transform: translateX(4px); border-color: var(--color-gold); }
-.unboxing-step-icon {
- width: 56px; height: 56px;
- border-radius: 14px;
- background: linear-gradient(135deg, var(--color-forest), var(--color-forest-deep));
- color: var(--color-gold);
- display: flex; align-items: center; justify-content: center;
- font-size: 26px;
- position: relative;
-}
-.unboxing-step-num {
- position: absolute;
- top: -8px; right: -8px;
- width: 22px; height: 22px;
- border-radius: 50%;
- background: var(--color-gold);
- color: var(--color-forest-deep);
- display: flex; align-items: center; justify-content: center;
- font-family: var(--font-display);
- font-size: 11px;
- font-weight: 700;
-}
-.unboxing-step-body > strong {
- display: block;
- font-family: var(--font-jp);
- font-size: 14px;
- color: var(--color-forest);
- font-weight: 700;
- margin-bottom: 3px;
-}
-.unboxing-step-body p { font-size: 12.5px; color: var(--color-ink-muted); line-height: 1.6; margin: 0; }
-.unboxing-step-body p strong { display: inline; color: var(--color-gold); font-weight: 700; }
-@media (max-width: 880px) {
- .unboxing-section { padding: 56px 0; }
- .unboxing-head { margin-bottom: 32px; }
- .unboxing-layout { grid-template-columns: 1fr; gap: 24px; }
- .unboxing-video { max-width: 100%; }
-}
-</style>
-<section class="unboxing-section" id="unboxing">
- <div class="container">
- <div class="unboxing-head">
- <span class="unboxing-eyebrow">UNBOXING · 開封のひととき</span>
- <h2>開封動画</h2>
- <p class="unboxing-lead">江田畜産のお肉は<strong>小分け真空パック</strong>で冷凍便。受け取ったらそのまま冷凍庫へ。必要な分だけ、ストレスゼロで召し上がっていただけます。</p>
- </div>
-
- <div class="unboxing-layout">
- <div class="unboxing-video">
- <video
- src="public/video/unboxing.mp4"
- autoplay muted loop playsinline
- preload="auto"
- id="subUnboxingVideo">
- </video>
- <button class="unboxing-sound-btn" onclick="toggleSubUnboxingSound()" aria-label="音声 ON/OFF">
- <svg id="subMuteIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
- <svg id="subSoundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
- </button>
- </div>
- </div>
-
- <p class="unboxing-disclaimer">
- ※ 動画はイメージです。お届けする内容は選択されたプランによって異なり、特定のプラン・商品を示すものではありません。
- </p>
- </div>
-</section>
-<script>
-function toggleSubUnboxingSound() {
- const v = document.getElementById('subUnboxingVideo');
- const mute = document.getElementById('subMuteIcon');
- const sound = document.getElementById('subSoundIcon');
- if (!v) return;
- v.muted = !v.muted;
- mute.style.display = v.muted ? '' : 'none';
- sound.style.display = v.muted ? 'none' : '';
-}
-</script>
 
 <!-- ========= マイページでできること（モックアップ） ========= -->
 <style>
@@ -3270,7 +3271,7 @@ function toggleSubUnboxingSound() {
  .mypage-feature-body p { font-size: 12px; }
 }
 </style>
-<section class="mypage-section">
+<section class="mypage-section" id="mypage">
  <div class="container">
  <div class="mypage-head">
  <span class="mypage-eyebrow">YOUR DASHBOARD</span>
@@ -3292,7 +3293,7 @@ function toggleSubUnboxingSound() {
  <!-- サイド: 4機能 -->
  <div class="mypage-features">
  <article class="mypage-feature">
- <div class="mypage-feature-icon">📦</div>
+ <div class="mypage-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 3 7v10l9 4 9-4V7l-9-4Z"/><path d="M3 7l9 4 9-4"/><path d="M12 11v10"/></svg></div>
  <div class="mypage-feature-body">
  <strong>今月だけスキップ</strong>
  <p>「冷凍庫がいっぱい」「来月にして」を <strong>1タップ</strong>で。<br/>キャンセル不要、翌月から自動再開。</p>
@@ -3300,7 +3301,7 @@ function toggleSubUnboxingSound() {
  </article>
 
  <article class="mypage-feature">
- <div class="mypage-feature-icon">🍖</div>
+ <div class="mypage-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/><circle cx="9" cy="7" r="2.1"/><circle cx="15" cy="12" r="2.1"/><circle cx="8" cy="17" r="2.1"/></svg></div>
  <div class="mypage-feature-body">
  <strong>内容を自由にカスタマイズ</strong>
  <p>「鶏多めに」「ステーキ追加」「赤身中心で」など、<strong>毎月リクエスト可能</strong>。次回お届けから反映されます。</p>
@@ -3308,7 +3309,7 @@ function toggleSubUnboxingSound() {
  </article>
 
  <article class="mypage-feature">
- <div class="mypage-feature-icon">🔄</div>
+ <div class="mypage-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h13l-3.2-3.2"/><path d="M20 15H7l3.2 3.2"/></svg></div>
  <div class="mypage-feature-body">
  <strong>プランを切り替え</strong>
  <p>家族構成や消費ペースの変化に合わせて、<strong>翌月から</strong>ミニ ⇄ ライト ⇄ ファミリーに切替OK。</p>
@@ -3316,12 +3317,60 @@ function toggleSubUnboxingSound() {
  </article>
 
  <article class="mypage-feature">
- <div class="mypage-feature-icon">💳</div>
+ <div class="mypage-feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="5.4" width="18.8" height="13.2" rx="2.4"/><path d="M2.6 9.9h18.8"/><path d="M6.2 14.4h4"/></svg></div>
  <div class="mypage-feature-body">
  <strong>支払い・お届け先の管理</strong>
  <p>カード変更、住所変更、配送日時の変更、<strong>解約手続き</strong>まで。全部マイページから完結。</p>
  </div>
  </article>
+ </div>
+ </div>
+ </div>
+</section>
+
+<!-- ========= お客様の声 ========= -->
+<section class="sub-voice">
+ <div class="container">
+ <div class="sub-voice-head">
+ <h2>定期便ユーザーの声</h2>
+ <p>1人暮らしからご家族まで — 多くの方に選ばれています。</p>
+ </div>
+
+ <div class="sub-voice-grid">
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">毎月決まった日にお肉が届くから、平日の夕食に悩む時間がゼロに。子どもの食べ盛りでも安心して常備できます。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">田</div>
+ <div>
+ <div class="sub-voice-name">田中 様 / 東京都</div>
+ <div class="sub-voice-product">ライト定期便 6ヶ月目</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">スーパーで何を買うか悩む時間が消えて、夕食を作るストレスが激減。お肉の質も信頼できるので、子どもにも気兼ねなく出せます。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">佐</div>
+ <div>
+ <div class="sub-voice-name">佐藤 様 / 福岡</div>
+ <div class="sub-voice-product">ライト定期便 3ヶ月目</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="sub-voice-card">
+ <div class="sub-voice-stars">★★★★★</div>
+ <p class="sub-voice-text">5人家族なのでファミリー。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
+ <div class="sub-voice-author">
+ <div class="sub-voice-avatar">山</div>
+ <div>
+ <div class="sub-voice-name">山田 様 / 大阪</div>
+ <div class="sub-voice-product">ファミリー定期便 4ヶ月目</div>
+ </div>
+ </div>
  </div>
  </div>
  </div>
@@ -3403,54 +3452,6 @@ function toggleSubUnboxingSound() {
  </div>
  </details>
 
- </div>
- </div>
-</section>
-
-<!-- ========= お客様の声 ========= -->
-<section class="sub-voice">
- <div class="container">
- <div class="sub-voice-head">
- <h2>定期便ユーザーの声</h2>
- <p>1人暮らしからご家族まで — 多くの方に選ばれています。</p>
- </div>
-
- <div class="sub-voice-grid">
- <div class="sub-voice-card">
- <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">毎月決まった日にお肉が届くから、平日の夕食に悩む時間がゼロに。子どもの食べ盛りでも安心して常備できます。</p>
- <div class="sub-voice-author">
- <div class="sub-voice-avatar">田</div>
- <div>
- <div class="sub-voice-name">田中 様 / 東京都</div>
- <div class="sub-voice-product">ライト定期便 6ヶ月目</div>
- </div>
- </div>
- </div>
-
- <div class="sub-voice-card">
- <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">スーパーで何を買うか悩む時間が消えて、夕食を作るストレスが激減。お肉の質も信頼できるので、子どもにも気兼ねなく出せます。</p>
- <div class="sub-voice-author">
- <div class="sub-voice-avatar">佐</div>
- <div>
- <div class="sub-voice-name">佐藤 様 / 福岡</div>
- <div class="sub-voice-product">ライト定期便 3ヶ月目</div>
- </div>
- </div>
- </div>
-
- <div class="sub-voice-card">
- <div class="sub-voice-stars">★★★★★</div>
- <p class="sub-voice-text">5人家族なのでファミリー。焼肉・カレー・ハンバーグ、何にでも使えて家族みんな満足。スキップも自由なので気軽です。</p>
- <div class="sub-voice-author">
- <div class="sub-voice-avatar">山</div>
- <div>
- <div class="sub-voice-name">山田 様 / 大阪</div>
- <div class="sub-voice-product">ファミリー定期便 4ヶ月目</div>
- </div>
- </div>
- </div>
  </div>
  </div>
 </section>
@@ -3577,6 +3578,7 @@ let PLANS = {};
 function renderPlanCards(rows) {
  const grid = document.getElementById('subPlansGrid');
  if (!grid) return;
+ window.__EDA_PLAN_ROWS = rows;   /* 系統タブの切替で作り直すときに使う */
  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
  const yen = (n) => '¥' + Number(n || 0).toLocaleString('ja-JP');
 
@@ -3637,6 +3639,7 @@ function renderPlanCards(rows) {
  '<div class="sub-plan-items-note">※入荷状況により内容が変更になる場合があります。</div>';
  }
 
+ /* yearly / itemsHtml はカードでは使わない（詳細側に出す） */
  const yearly = p.yearlySavings
  ? '<div class="sub-plan-yearly"><span class="sub-plan-yearly-label">1年続けると</span>' +
    '<span class="sub-plan-yearly-amount">およそ' + yen(Math.floor(p.yearlySavings / 1000) * 1000) + '<small>お得</small></span></div>'
@@ -3648,26 +3651,102 @@ function renderPlanCards(rows) {
  : '<div class="sub-plan-price">' + yen(p.price) + '<small>/月</small></div>' +
    '<div class="sub-plan-savings">送料無料<span style="display:block;font-size:10px;font-weight:400;opacity:.75;margin-top:3px;">※北海道 +1,000円／沖縄 +700円</span></div>';
 
- return '<article class="' + cls.join(' ') + '" data-plan="' + esc(p.planId) + '">' +
+ /* 2026-10-23 田崎さん指示: カードはグラム数と金額だけにする。
+    お届け例(itemsHtml)・1年の割安額(yearly)は「詳細」側に送る。 */
+ return '<article class="' + cls.join(' ') + '" data-plan="' + esc(p.planId) + '"' +
+   ' data-line="' + esc(EdaPlans.lineOf(p.planId).key) + '">' +
  '<div class="sub-plan-cycle">' + esc(p.cycleLabel) + ' · 毎月お届け' + tag + '</div>' +
  '<div class="sub-plan-name">' + esc(p.name) + '</div>' +
  '<div class="sub-plan-target">' + esc(p.target) + '向け</div>' +
  '<div class="sub-plan-summary"><div class="sub-plan-summary-total">' + esc(p.weight) +
    '<small>/ 全' + p.productCount + '品</small></div>' + splitHtml + '</div>' +
- '<div class="sub-plan-items">' + itemsHtml + '</div>' +
  '<div class="sub-plan-pricing">' +
    '<div class="sub-plan-old-price">通常 ' + yen(p.price) + '</div>' +
-   halfLine + yearly +
+   halfLine +
    '<div class="sub-plan-note">2ヶ月目以降 ' + yen(p.price) + '/月 · 最低継続3ヶ月 · <a href="#terms">規約</a></div>' +
  '</div>' +
+ '<button type="button" class="sub-plan-detail-btn" data-detail="' + esc(p.planId) + '">詳細 →</button>' +
  '<div class="sub-plan-select-btn">このプランを選ぶ →</div>' +
  '</article>';
  }).join('');
+
+ renderLineTabs(rows);
+
 
  /* FAQ本文の「ミニ ¥9,280 / ライト ¥12,300 / …」もシートの値に合わせる */
  const listText = rows.map(p => p.name + ' ' + yen(p.price)).join(' / ');
  document.querySelectorAll('.js-plan-price-list').forEach(el => { el.textContent = listText; });
 }
+
+/* ============ 系統タブ（和牛＋鶏 / 和牛だけ / 鶏だけ） ============
+   2026-10-23 田崎さん指示。9プランを平らに並べると選べないため、
+   まず系統を選び、その系統の3プランだけを出す。
+   系統の判定は EdaPlans.groupByLine()（planId の頭だけで見る）に任せる。 */
+let currentLine = null;
+
+function renderLineTabs(rows) {
+ const tabs = document.getElementById('subLineTabs');
+ if (!tabs || !window.EdaPlans || !EdaPlans.groupByLine) return;
+ const lines = EdaPlans.groupByLine(rows);
+ if (!lines.length) return;
+
+ /* URL に ?plan= があればその系統から開く。無ければ「和牛＋鶏」(先頭) */
+ const params = new URLSearchParams(location.search);
+ const wanted = (params.get('plan') || '').toLowerCase();
+ const fromUrl = wanted ? EdaPlans.lineOf(wanted).key : null;
+ if (!currentLine) currentLine = (fromUrl && lines.some(l => l.key === fromUrl)) ? fromUrl : lines[0].key;
+
+ tabs.innerHTML = lines.map(l =>
+  '<button type="button" class="sub-line-tab" role="tab" data-line="' + l.key + '"' +
+  ' aria-selected="' + (l.key === currentLine) + '">' +
+  '<span class="sub-line-tab-emoji">' + l.emoji + '</span>' +
+  '<span class="sub-line-tab-name">' + l.name + '</span>' +
+  '<span class="sub-line-tab-lead">' + l.lead + '</span>' +
+  '</button>'
+ ).join('');
+
+ /* 系統の一言は表の下ではなくタブの直下に1行だけ */
+ let note = document.getElementById('subLineNote');
+ if (!note) {
+  note = document.createElement('p');
+  note.id = 'subLineNote';
+  note.className = 'sub-line-note';
+  tabs.insertAdjacentElement('afterend', note);
+ }
+ const cur = lines.find(l => l.key === currentLine) || lines[0];
+ note.textContent = cur.note;
+
+ applyLine();
+}
+
+function applyLine() {
+ document.querySelectorAll('#subPlansGrid .sub-plan-card').forEach(c => {
+  c.hidden = (c.dataset.line !== currentLine);
+ });
+ document.querySelectorAll('#subLineTabs .sub-line-tab').forEach(b => {
+  b.setAttribute('aria-selected', String(b.dataset.line === currentLine));
+ });
+}
+
+document.addEventListener('click', (e) => {
+ /* 系統タブ */
+ const tab = e.target.closest('#subLineTabs .sub-line-tab');
+ if (tab) {
+  currentLine = tab.dataset.line;
+  const rows = (window.__EDA_PLAN_ROWS || []);
+  if (rows.length) renderLineTabs(rows); else applyLine();
+  return;
+ }
+ /* 「詳細」→ そのプランを選んで内容例・カスタマイズへ */
+ const det = e.target.closest('.sub-plan-detail-btn');
+ if (det) {
+  e.stopPropagation();
+  if (typeof selectPlan === 'function') selectPlan(det.dataset.detail, true);
+  const target = document.getElementById('detail');
+  if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 70, behavior: 'smooth' });
+ }
+});
+
 
 /* ============ URL ?plan= 取得 ============ */
 function getInitialPlan() {
@@ -3702,7 +3781,7 @@ function selectPlan(planKey, fromUser) {
  const plan = PLANS[planKey];
 
  // 詳細セクション
- document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容';
+ document.getElementById('detailPlanTitle').textContent = plan.name + '定期便の内容例';
  document.getElementById('detailPlanLabel').innerHTML =
  plan.target + ' · 月額 <strong>¥' + plan.regular.toLocaleString() + '</strong>';
 
@@ -3798,7 +3877,7 @@ const ADDONS = [
  { id: 'chicken-thigh', cat: 'chicken', name: '平飼い鶏 モモ', price: 980, weight: '200g', img: 'public/images/products/drive/chicken-thigh.jpg', desc: '万能部位' },
  { id: 'chicken-minced', cat: 'chicken', name: '平飼い鶏 ミンチ', price: 800, weight: '200g', img: 'public/images/products/drive/chicken-minced.jpg', desc: '離乳食にも' }
 ];
-const ADDON_DISCOUNT = 0.10; // サブスクと同時購入で 10% OFF
+const ADDON_DISCOUNT = 0.10; // 定期便と同時購入で 10% OFF
 let addedAddons = []; // {id, qty}
 let currentAddonCat = 'all';
 
@@ -3806,10 +3885,19 @@ function discountedPrice(p) {
  return Math.round(p * (1 - ADDON_DISCOUNT));
 }
 
+/* 2026-10-23 田崎さん指示: 一度に出すのは4点まで。残りは同じページで開く。
+   すでに箱に入れた商品は、4点の枠外でも必ず出す（消えると数量を直せない）。 */
+const ADDON_PREVIEW = 4;
+let addonsExpanded = false;
+
 function renderAddons() {
  const grid = document.getElementById('subAddonsGrid');
  const filtered = currentAddonCat === 'all' ? ADDONS : ADDONS.filter(a => a.cat === currentAddonCat);
- grid.innerHTML = filtered.map(a => {
+ const shown = addonsExpanded
+   ? filtered
+   : filtered.filter((a, i) => i < ADDON_PREVIEW || addedAddons.some(x => x.id === a.id));
+ const hiddenCount = filtered.length - shown.length;
+ grid.innerHTML = shown.map(a => {
  const added = addedAddons.find(x => x.id === a.id);
  const disc = discountedPrice(a.price);
  const qtyControl = added
@@ -3834,6 +3922,33 @@ function renderAddons() {
  </div>
  `;
  }).join('');
+
+ renderAddonsMore(hiddenCount);
+}
+
+/* 「すべての商品を見る」— ページは移さず、この場で開く */
+function renderAddonsMore(hiddenCount) {
+ const grid = document.getElementById('subAddonsGrid');
+ let wrap = document.getElementById('subAddonsMore');
+ if (!wrap) {
+  wrap = document.createElement('div');
+  wrap.id = 'subAddonsMore';
+  wrap.className = 'sub-addons-more';
+  grid.insertAdjacentElement('afterend', wrap);
+  wrap.addEventListener('click', (e) => {
+   if (!e.target.closest('button')) return;
+   addonsExpanded = !addonsExpanded;
+   renderAddons();
+   if (!addonsExpanded) {
+    const head = document.querySelector('.sub-addons-head');
+    if (head) window.scrollTo({ top: head.getBoundingClientRect().top + window.pageYOffset - 70, behavior: 'smooth' });
+   }
+  });
+ }
+ if (!addonsExpanded && hiddenCount <= 0) { wrap.innerHTML = ''; return; }
+ wrap.innerHTML = addonsExpanded
+  ? '<button type="button" class="sub-addons-more-btn">閉じる</button>'
+  : '<button type="button" class="sub-addons-more-btn">すべての商品を見る（他 ' + hiddenCount + ' 点）→</button>';
 }
 
 function changeAddonQty(id, delta) {
@@ -3976,6 +4091,7 @@ document.querySelectorAll('.sub-addon-tab').forEach(tab => {
  document.querySelectorAll('.sub-addon-tab').forEach(t => t.classList.remove('active'));
  tab.classList.add('active');
  currentAddonCat = tab.dataset.cat;
+ addonsExpanded = false;   /* カテゴリを変えたら4点に畳み直す */
  renderAddons();
  });
 });
@@ -4017,7 +4133,7 @@ async function handleSubmit(e) {
  }
 
  // 単純な → checkout.html 遷移ではなく、Stripe Subscription Checkout を直接呼ぶ
- // (申込フォーム = サブスク開始の意思 → Stripe へ即遷移)
+ // (申込フォーム = 定期便開始の意思 → Stripe へ即遷移)
  const btn = form.querySelector('button[type="submit"]');
  if (btn) { btn.disabled = true; const _t = btn.textContent; btn.textContent = '決済画面へ移動中…'; btn._t = _t; }
 
