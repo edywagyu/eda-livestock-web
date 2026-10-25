@@ -328,6 +328,25 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
 
 /* ============ CTA ============ */
 .pdp-cta-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.pdp-cta-back {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px;
+  background: #fff;
+  color: var(--color-forest);
+  border: 1.5px solid rgba(15,61,46,.3);
+  border-radius: 4px;
+  font-family: var(--font-jp);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background .2s;
+}
+.pdp-cta-back:hover { background: var(--color-cream); }
 .pdp-cta-primary {
   display: block;
   width: 100%;
@@ -818,6 +837,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <!-- CTA -->
       <div class="pdp-cta-section">
         <button class="pdp-cta-primary" id="addToCartBtn" onclick="addToCart()">追加する</button>
+        <!-- 2026-10-23 田崎さん指示: 追加したあと商品一覧に戻れる導線。
+             一覧から来た場合は履歴を戻す（選んでいたタブとスクロール位置が残る）。
+             直リンクやLINEから来た場合は商品一覧へ送る。 -->
+        <a class="pdp-cta-back" id="pdpBackToList" href="products.html#products">← 商品一覧に戻る</a>
       </div>
 
       <!-- 🎁 ギフト導線 (のし・化粧箱つきで贈る) -->
@@ -1846,5 +1869,26 @@ window.addEventListener('load', () => {
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=007" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
+
+<script>
+/* 「商品一覧に戻る」の行き先。
+   一覧(products.html / shop.html)から来ていれば履歴を戻して、
+   選んでいたタブ・スクロール位置をそのまま見せる。
+   それ以外（直リンク・LINE・検索）は商品一覧ページへ。 */
+(function () {
+  var a = document.getElementById('pdpBackToList');
+  if (!a) return;
+  var ref = '';
+  try { ref = document.referrer || ''; } catch (e) {}
+  var sameSite = ref.indexOf(location.origin) === 0;
+  var fromList = sameSite && /\/(products|shop)\.html/.test(ref);
+  if (fromList) {
+    a.setAttribute('href', ref);
+    a.addEventListener('click', function (e) {
+      if (history.length > 1) { e.preventDefault(); history.back(); }
+    });
+  }
+})();
+</script>
 </body>
 </html>
