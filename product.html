@@ -579,6 +579,24 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-bd-imgwrap input:checked + .pdp-bd-box-mark { background: var(--color-forest); border-color: var(--color-forest); }
 .pdp-bd-imgwrap input:checked + .pdp-bd-box-mark::after { content: ''; position: absolute;
   left: 7px; top: 2px; width: 6px; height: 12px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(42deg); }
+.pdp-bd-qty {
+  display: inline-flex; align-items: center; gap: 2px;
+  margin-top: 10px;
+  border: 1px solid rgba(15,61,46,.22);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.pdp-bd-qbtn {
+  width: 34px; height: 34px;
+  background: none; border: 0;
+  color: var(--color-forest);
+  font-size: 15px; line-height: 1; cursor: pointer;
+}
+.pdp-bd-qbtn:hover { background: var(--color-cream); }
+.pdp-bd-qnum {
+  min-width: 26px; text-align: center;
+  font-family: var(--font-display); font-size: 15px; color: var(--color-ink);
+}
 .pdp-bd-howto { font-size: 13px; color: var(--color-ink-muted); margin: -6px 0 18px; }
 .pdp-bd-state { font-size: 11px; font-weight: 700; letter-spacing: .06em; margin-top: 8px; color: #9b9b9b; }
 .pdp-bd-state.is-on { color: var(--color-forest); }
@@ -1425,7 +1443,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         <div class="pdp-bd-tag">${i === 0 ? 'この商品' : '&nbsp;'}</div>
         <div class="pdp-bd-state" data-i="${i}"></div>
         <h3>${esc(x.p.name)}</h3>
-        <div class="pdp-bd-price">¥${x.unit.toLocaleString()}${x.q > 1 ? ' <span>× ' + x.q + '</span>' : ''}${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}</div>
+        <div class="pdp-bd-price">¥${x.unit.toLocaleString()}${x.vl ? ' <span>' + esc(x.vl) + '</span>' : ''}</div>
+        <div class="pdp-bd-qty" role="group" aria-label="${esc(x.p.name)} の数量">
+          <button type="button" class="pdp-bd-qbtn" data-i="${i}" data-d="-1" aria-label="減らす">−</button>
+          <span class="pdp-bd-qnum" data-i="${i}">${x.q}</span>
+          <button type="button" class="pdp-bd-qbtn" data-i="${i}" data-d="1" aria-label="増やす">＋</button>
+        </div>
       </article>`).join('');
     function sync() {
       const on = [].slice.call(document.querySelectorAll('.pdp-bd-cb'))
@@ -1434,7 +1457,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       /* 2026-10-23 田崎さん指示: 上のカードと同じ商品をもう一度並べていて二重だった。
          ここは「いま何点選んでいるか」だけにする。 */
       document.getElementById('pdpBdRow').innerHTML = on.length
-        ? '<div class="pdp-bd-count">選んでいるのは <b>' + on.length + '</b> 点（' + items.length + '点中）</div>'
+        ? '<div class="pdp-bd-count">選んでいるのは <b>' + on.length + '</b> 商品（' + items.length + '商品中）・合計 <b>'
+            + on.reduce(function (s2, x) { return s2 + x.q; }, 0) + '</b> 点</div>'
         : '<div class="pdp-bd-empty">写真をタップして選んでください。</div>';
       document.querySelectorAll('.pdp-bd-state').forEach(function (el) {
         var cb = document.querySelector('.pdp-bd-cb[data-i="' + el.dataset.i + '"]');
@@ -1455,6 +1479,25 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       btn.__items = on;
     }
     document.querySelectorAll('.pdp-bd-cb').forEach(cb => cb.addEventListener('change', sync));
+
+    /* 2026-10-23 田崎さん指示: 商品ごとに個数を決められるようにする。
+       items[i].q を直接書き換えるので、合計・ボタン文言・カート投入は
+       そのまま新しい個数で動く。 */
+    var QMAX = 10;
+    document.querySelectorAll('.pdp-bd-qbtn').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        var i = +b.dataset.i, d = +b.dataset.d;
+        var next = Math.min(QMAX, Math.max(1, (items[i].q || 1) + d));
+        items[i].q = next;
+        var num = document.querySelector('.pdp-bd-qnum[data-i="' + i + '"]');
+        if (num) num.textContent = next;
+        /* 数を触ったのに外れたままだと意図とズレるので、入れる状態に戻す */
+        var cb = document.querySelector('.pdp-bd-cb[data-i="' + i + '"]');
+        if (cb && !cb.checked) cb.checked = true;
+        sync();
+      });
+    });
     document.getElementById('pdpBdBtn').addEventListener('click', function () {
       const on = this.__items || [];
       if (!on.length) return;
