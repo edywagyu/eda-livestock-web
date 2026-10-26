@@ -63,7 +63,6 @@
 - 🔴 `data-variants` の `"p"` を新価格に（**ここを直さないとカートに旧価格が入る**）
 - `<span class="product-price">` の表示金額
 - `<div class="rice-card-notice">…</div>` のブロックを**8枚とも削除**
-- カテゴリ見出しの「表示の価格は 11月30日（月）まで…」の段落を削除
 
 `product.html`:
 

@@ -7545,8 +7545,11 @@ body.is-member .product-card--organic .org-chk-lock {
      .product-grid .product-card .product-desc / .product-stats
    を全カードで display:none にしているため、shop.html では既に満たされている。
    同じ内容をここに重ねても無意味なので置かない。
-   🔴 お米の送料(全国一律¥1,100・送料無料の対象外)は、カテゴリ見出しの説明文／
-      商品詳細ページ／レジの3箇所に残っている（2026-10-26 実物確認）。
+   🔴 お米の送料(全国一律¥1,100・送料無料の対象外)は、shop.html の棚には出ていない。
+      見出しの送料段落は 2026-10-26(3c1e47a) に田崎さん指示で削除済み。
+      残っているのは 商品詳細ページ／カートドロワー(.cart-shipping-note)／
+      tokushoho.html／terms.html の4箇所（2026-10-26 実物確認）。
+      棚に出すかは田崎さんの判断。ここを読んで「見出しにあるから不要」と判断しないこと。
    ※ simple-ui.css は shop.html だけが読み込む。products.html では説明文もスペックも出る。 */
 .product-grid[data-cat="rice"] .product-card .badge-muton { display: none !important; }
 .badge-muton {
