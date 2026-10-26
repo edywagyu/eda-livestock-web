@@ -7056,6 +7056,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="CHICKEN THIGH"] { background-image: image-set(url('public/images/products/drive/chicken-thigh.webp') type('image/webp'), url('public/images/products/drive/chicken-thigh.jpg')); }
 .product-card-img[data-label="CHICKEN SET"] { background-image: image-set(url('public/images/products/drive/chicken-set.webp') type('image/webp'), url('public/images/products/drive/chicken-set.jpg')); }
 .product-card-img[data-label="CHICKEN MINCED"] { background-image: image-set(url('public/images/products/drive/chicken-minced.webp') type('image/webp'), url('public/images/products/drive/chicken-minced.jpg')); }
+.product-card-img[data-label="RICE SEIMAI"] { background-image: url('public/images/products/drive/rice-seimai.jpg'); }
+.product-card-img[data-label="RICE GENMAI"] { background-image: url('public/images/products/drive/rice-genmai.jpg'); }
 .product-card-img[data-label="OUTLET SIRLOIN"] { background-image: image-set(url('public/images/products/drive/sirloin-2.webp') type('image/webp'), url('public/images/products/drive/sirloin-2.jpg')); }
 .product-card-img[data-label="OUTLET MISUJI"] { background-image: image-set(url('public/images/products/drive/misuji-2.webp') type('image/webp'), url('public/images/products/drive/misuji-2.jpg')); }
 .product-card-img[data-label="OUTLET BRISKET"] { background-image: image-set(url('public/images/products/drive/yakiniku-brisket.webp') type('image/webp'), url('public/images/products/drive/yakiniku-brisket.jpg')); }
@@ -9988,6 +9990,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="tab tab--nikunohi" data-filter="nikunohi" data-limited-scope="肉の日限定セット">肉の日</button>
  <button class="tab" data-filter="beef">牛肉</button>
  <button class="tab" data-filter="chicken">鶏肉</button>
+ <button class="tab" data-filter="rice">米</button>
  </div>
 
  <!-- ===== 肉の日限定（2026-08-27〜08-30 / 終了は limitedUntil で自動非表示） ===== -->
@@ -10638,6 +10641,125 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
+
+
+ <!-- ===== エダチク米（2026-10-26 新設・自社田／常温便） =====
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 米は常温便で送料 ¥1,100 固定。冷凍便の「¥11,000以上 送料無料」の対象外。
+         請求側の規則は checkout.html の renderSummary と gas/Code.gs の riceShipping_。 -->
+ <div class="shop-cat-head reveal" data-cat="rice" style="margin-top: 80px;">
+ <h2 class="shop-cat-title">エダチク米 <span>/ Edachiku Rice</span></h2>
+ <p class="shop-cat-desc">牛を育てているのと同じ宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>。農薬と化学肥料を減らして育てた<strong>特別栽培米</strong>、令和7年産の<strong>単一原料米</strong>です。<strong>ご注文をいただいてから精米</strong>して、常温便でお送りします。玄米のままもお選びいただけます。</p>
+ <p class="shop-cat-desc" style="margin-top:6px"><strong>お米の送料は全国一律 &yen;1,100（税込）</strong>です。常温便のため「&yen;11,000以上で送料無料」の対象外で、お肉と一緒にご注文いただくと送料は2件分かかります。</p>
+ </div>
+
+ <div class="product-grid cols-4" data-cat="rice" data-no-subfilter>
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510260356466,"t":"1セット","p":3564}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;3,564</span></div>
+ <p class="product-name"><a href="product.html?id=P066" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 5kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリ。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して1袋 5kgでお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>1袋 5kg</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510260712867,"t":"1セット","p":7128}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;7,128</span></div>
+ <p class="product-name"><a href="product.html?id=P067" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 10kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリ。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×2袋でお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>5kg&times;2袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510261069268,"t":"1セット","p":10692}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;10,692</span></div>
+ <p class="product-name"><a href="product.html?id=P068" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 15kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリ。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×3袋でお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>5kg&times;3袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510261425669,"t":"1セット","p":14256}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;14,256</span></div>
+ <p class="product-name"><a href="product.html?id=P069" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 20kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリ。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×4袋でお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>5kg&times;4袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510260356470,"t":"1セット","p":3564}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;3,564</span></div>
+ <p class="product-name"><a href="product.html?id=P070" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 5kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリを、<strong>玄米のまま</strong>1袋 5kgで。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>1袋 5kg</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510260712871,"t":"1セット","p":7128}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;7,128</span></div>
+ <p class="product-name"><a href="product.html?id=P071" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 10kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリを、<strong>玄米のまま</strong>5kg×2袋で。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>5kg&times;2袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510261069272,"t":"1セット","p":10692}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;10,692</span></div>
+ <p class="product-name"><a href="product.html?id=P072" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 15kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリを、<strong>玄米のまま</strong>5kg×3袋で。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>5kg&times;3袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="rice" data-variants='[{"id":510261425673,"t":"1セット","p":14256}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;14,256</span></div>
+ <p class="product-name"><a href="product.html?id=P073" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 20kg</a></p>
+ <p class="product-desc">宮崎県高原町の自社田で育てた<strong>特別栽培米</strong>のヒノヒカリを、<strong>玄米のまま</strong>5kg×4袋で。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">1kg <strong>&yen;713</strong></div>
+ <div class="product-stat-item">内容量 <strong>5kg&times;4袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（送料無料の対象外）</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+ </div>
 
  <!-- 訳あり は会員限定 — 通常表示から削除（マイページからのみアクセス可） -->
  <!-- ギフトは「贈答用」セクション（gift-highlight）に集約 — 商品リストから削除 -->
@@ -15097,7 +15219,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-10-26-hide-p063-p065" defer></script>
+<script src="public/data/products-master.js?v=2026-10-26-rice" defer></script>
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/products-loader.js?v=008" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->

@@ -2037,6 +2037,29 @@ var gStockBlocked = [];          // 買えない商品名の一覧（注文ボ�
 /* 🚚 これが入っていれば送料無料になる商品名（products シートの freeShip 列が TRUE）。
    GAS の hasFreeShipItem_ と同じ判定を画面側でもやって、表示と請求をそろえる。 */
 var gFreeShipTitles = {};
+/* ============================================================
+   🍚 エダチク米（常温便）の送料 — 2026-10-26 田崎さん決定
+   ------------------------------------------------------------
+   ・お米は常温便。送料は全国一律 ¥1,100(税込／税抜1,000円・送料は10%)
+   ・「¥11,000以上で送料無料」の対象外。20kg(¥14,256)を1点だけ買っても ¥1,100 かかる
+   ・お肉(冷凍便)と同時購入なら送料は2件分（冷凍便の既存ロジック + お米 ¥1,100）
+   ・お米の金額は冷凍便側の送料無料判定の小計に含めない
+   ・freeShip 商品（はじめてセット等）があってもお米の送料は無料にならない
+   🔴 同じ規則が gas/Code.gs の riceShipping_ にもある（表示と請求の二重実装）。
+      片方だけ直すと画面の金額と請求がズレるので、必ず両方そろえること。
+   ============================================================ */
+var RICE_SHIP_FEE = 1100;
+/* カタログが取れなかったときの取りこぼしを防ぐための名前表（products の name と完全一致）。
+   fail-safe は「送料を頂く」側に倒す＝ここに無い米があっても catalog 側で拾う。 */
+var RICE_TITLES = {
+ 'エダチク米 精米 5kg': true, 'エダチク米 精米 10kg': true,
+ 'エダチク米 精米 15kg': true, 'エダチク米 精米 20kg': true,
+ 'エダチク米 玄米 5kg': true, 'エダチク米 玄米 10kg': true,
+ 'エダチク米 玄米 15kg': true, 'エダチク米 玄米 20kg': true
+};
+function isRiceItem(it) {
+ return !!RICE_TITLES[String((it && it.title) || '').trim()];
+}
 /* 📅 予約注文（売り切れ商品）。public/js/preorder.js が出す
    { items:[{title,label,iso,date}], date, iso, label }。無ければ date:null。
    これが入っているとお届け希望日の下限が 予約日 まで上がり、注意書きが出る。 */
@@ -2066,6 +2089,12 @@ async function checkCartStock() {
   gFreeShipTitles = {};
   list.forEach(function (pr) {
    if (pr && pr.name && String(pr.freeShip).trim().toLowerCase() === 'true') gFreeShipTitles[pr.name] = true;
+  });
+  /* 🍚 常温便(お米)は products シート側からも拾う。上の RICE_TITLES に足す形なので、
+     シートに米が増えてもこのファイルを直さずに送料がかかる。消しはしない。 */
+  list.forEach(function (pr) {
+   if (!pr || !pr.name) return;
+   if (String(pr.category).trim() === 'rice' || String(pr.temp).trim() === '常温') RICE_TITLES[String(pr.name).trim()] = true;
   });
   const need = {};
   cartItems.forEach(function (it) {
@@ -3129,8 +3158,11 @@ function renderSummary() {
  const _selfPref = destinations[0] && destinations[0].pref;
  const _remoteArea = (_selfPref === '北海道' || _selfPref === '沖縄県');
  // 自宅(自分用)アイテムの小計のみで送料判定（GAS の calcShipping と一致）。ギフトは全部送料無料。
+ /* 🍚 お米(常温便)の金額は、冷凍便の「¥11,000以上 送料無料」判定の小計に含めない。 */
  const _selfSubtotal = ((destinations[0] && destinations[0].itemIds) || []).reduce(function (s, i) {
-   const it = cartItems[i]; return it ? s + discountedUnit(it.price || 0) * (it.qty || 1) : s;
+   const it = cartItems[i];
+   if (!it || isRiceItem(it)) return s;
+   return s + discountedUnit(it.price || 0) * (it.qty || 1);
  }, 0);
  const _shipBase = _remoteArea ? 2200 : 1100;
  // 🚚 リピート送料半額: 定期便は対象外（プランに送料込）。¥11,000以上は元から無料なので影響しない。
@@ -3140,21 +3172,26 @@ function renderSummary() {
  /* 🚚 freeShip 商品（はじめてセット等）が1点でもあれば自宅送料は 0 円。GAS 側と同じ規則。 */
  const _freeShipItem = cartItems.some(function (it) { return !!gFreeShipTitles[(it && it.title) || '']; });
  const shipping = (subscription || _selfSubtotal === 0 || _freeShipItem) ? 0 : (_selfSubtotal >= 11000 ? 0 : (_shipHalfApplied ? _shipRepeatAmount : _shipBase));
+ /* 🍚 お米の常温便。カートに1点でもお米があれば必ず ¥1,100。
+    ¥11,000以上の無料・freeShip 商品・リピート半額、どれも効かせない。
+    定期便(プランに送料込)のときだけ取らない。 */
+ const _hasRice = cartItems.some(isRiceItem);
+ const riceShipping = (!subscription && _hasRice) ? RICE_SHIP_FEE : 0;
  const _hasGift = destinations.some(d => d.type === 'gift' && (d.itemIds || []).length > 0);
- const giftShipping = 0; // ★ ギフトは全部送料無料
+ const giftShipping = 0; // ★ ギフトは全部送料無料（お米の常温便はこれに含めない）
  // 50% off if subscription only
  const subSavings = subscription && PLANS[subscription.plan]
  ? (PLANS[subscription.plan].regular - PLANS[subscription.plan].half) : 0;
 
  const discount = couponDiscountAmount();
- gShipping = shipping + giftShipping;
- const total = subTotal - discount + shipping + giftShipping;
+ gShipping = shipping + giftShipping + riceShipping;
+ const total = subTotal - discount + shipping + giftShipping + riceShipping;
 
  // 軽減税率 内消費税の計算 (税込価格→内税)
  // 食品 (subTotal): 軽減税率 8% → tax = subTotal × 8/108
  // 送料 (shipping + giftShipping): 標準税率 10% → tax = ship × 10/110
  const tax8 = Math.round((subTotal - discount) * 8 / 108);
- const tax10 = Math.round((shipping + giftShipping) * 10 / 110);
+ const tax10 = Math.round((shipping + giftShipping + riceShipping) * 10 / 110);
  const taxTotal = tax8 + tax10;
 
  let rowsHtml = '';
@@ -3177,6 +3214,10 @@ function renderSummary() {
  if (_shipHalfApplied && _shipBase > shipping) {
  const _repeatLabel = repeatShipRate === 'free' ? '送料無料' : '送料半額';
  rowsHtml += `<div class="summary-row discount"><span>前回から${repeatShipInfo && repeatShipInfo.limit ? repeatShipInfo.limit : 40}日以内 ${_repeatLabel}</span><strong>−¥${(_shipBase - shipping).toLocaleString()}</strong></div>`;
+ }
+ /* 🍚 お米は常温便。冷凍便とは別の便なので行を分けて出す（合算すると「なぜ2,200円？」になる） */
+ if (riceShipping > 0) {
+ rowsHtml += `<div class="summary-row shipping"><span>配送料 (お米・常温便)<small style="font-size:12px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span><strong>¥${riceShipping.toLocaleString()}</strong></div>`;
  }
  if (_hasGift) {
  rowsHtml += `<div class="summary-row shipping"><span>ギフト配送料</span><strong>無料</strong></div>`;
