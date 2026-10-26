@@ -7593,7 +7593,7 @@ body.is-member .product-card--organic .org-chk-lock {
 /* 🔴 お米には「無投薬」バッジを出さない（米に投薬の概念は無い。
    栽培方法の主張に読まれ、根拠が無いため）。JS側のセレクタでも除外しているが、
    別経路で付いても出ないようにCSSでも止める。 */
-.product-card[data-sub="rice"] .badge-muton { display: none !important; }
+.product-grid[data-cat="rice"] .product-card .badge-muton { display: none !important; }
 .badge-muton {
  background: rgba(15,61,46,0.82);
  color: var(--color-gold);
@@ -10629,8 +10629,18 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="shop-cat-desc" style="margin-top:6px"><strong>お米の送料は全国一律 &yen;1,100（税込）</strong>です。常温便のため「&yen;11,000以上で送料無料」の対象外で、お肉と一緒にご注文いただくと送料は2件分かかります。</p>
  </div>
 
- <div class="product-grid cols-4" data-cat="rice" data-no-subfilter>
- <div class="product-card" data-sub="rice" data-variants='[{"id":510260356466,"t":"1セット","p":3564}]'>
+ <!-- 精米／玄米の切替（2026-10-26 田崎さん指示）。
+      牛肉・鶏肉の部位タブとまったく同じ仕組み（.sub-tab-row[data-parent-cat] ＋ カードの data-sub）。
+      🔴 このページは全商品の一覧なので、beef/chicken と同じく「すべて」を先頭に残して初期選択にする
+         （＝既定では8点とも並ぶ。ショップ画面は「すべて」無しで精米が初期選択）。 -->
+ <div class="sub-tab-row reveal" data-parent-cat="rice">
+ <button class="sub-tab active" data-sub="all">すべて</button>
+ <button class="sub-tab" data-sub="seimai">精米</button>
+ <button class="sub-tab" data-sub="genmai">玄米</button>
+ </div>
+
+ <div class="product-grid cols-4" data-cat="rice">
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510260356466,"t":"1セット","p":3564}]'>
  <div class="product-card-img" data-label="RICE SEIMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;3,564</span></div>
  <p class="product-name"><a href="product.html?id=P066" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 5kg</a></p>
@@ -10643,7 +10653,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510260712867,"t":"1セット","p":7128}]'>
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510260712867,"t":"1セット","p":7128}]'>
  <div class="product-card-img" data-label="RICE SEIMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;7,128</span></div>
  <p class="product-name"><a href="product.html?id=P067" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 10kg</a></p>
@@ -10656,7 +10666,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510261069268,"t":"1セット","p":10692}]'>
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510261069268,"t":"1セット","p":10692}]'>
  <div class="product-card-img" data-label="RICE SEIMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;10,692</span></div>
  <p class="product-name"><a href="product.html?id=P068" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 15kg</a></p>
@@ -10669,7 +10679,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510261425669,"t":"1セット","p":14256}]'>
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510261425669,"t":"1セット","p":14256}]'>
  <div class="product-card-img" data-label="RICE SEIMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;14,256</span></div>
  <p class="product-name"><a href="product.html?id=P069" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 20kg</a></p>
@@ -10682,7 +10692,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510260356470,"t":"1セット","p":3564}]'>
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510260356470,"t":"1セット","p":3564}]'>
  <div class="product-card-img" data-label="RICE GENMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;3,564</span></div>
  <p class="product-name"><a href="product.html?id=P070" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 5kg</a></p>
@@ -10695,7 +10705,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510260712871,"t":"1セット","p":7128}]'>
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510260712871,"t":"1セット","p":7128}]'>
  <div class="product-card-img" data-label="RICE GENMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;7,128</span></div>
  <p class="product-name"><a href="product.html?id=P071" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 10kg</a></p>
@@ -10708,7 +10718,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510261069272,"t":"1セット","p":10692}]'>
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510261069272,"t":"1セット","p":10692}]'>
  <div class="product-card-img" data-label="RICE GENMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;10,692</span></div>
  <p class="product-name"><a href="product.html?id=P072" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 15kg</a></p>
@@ -10721,7 +10731,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="rice" data-variants='[{"id":510261425673,"t":"1セット","p":14256}]'>
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510261425673,"t":"1セット","p":14256}]'>
  <div class="product-card-img" data-label="RICE GENMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;14,256</span></div>
  <p class="product-name"><a href="product.html?id=P073" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 20kg</a></p>
@@ -13663,7 +13673,7 @@ function copyPopCoupon() {
      スプシ: 1tNbIvsTkqrJiWtgpKCHevs_qeVjfNny0FPEsqTtxruM の products タブ -->
 <script>
 /* 無投薬バッジ — オーガニック以外の全商品カードに自動挿入
-   🔴 お米(data-sub="rice")は必ず除外する。「投薬」は家畜に薬を与えることで、
+   🔴 お米(棚 data-cat="rice")は必ず除外する。「投薬」は家畜に薬を与えることで、
       米には投薬の概念が無く事実として意味を成さない。お客様からは栽培方法の主張
       （農薬を使っていない）に読めるが、その根拠は無い（2026-10-26 田崎さん決定で
       「特別栽培米」「農薬と化学肥料を減らして」を全部落としたのと同じ理由）。
@@ -13671,8 +13681,11 @@ function copyPopCoupon() {
 (function() {
   function addMutonBadges() {
     document.querySelectorAll(
-      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon):not([data-sub="organic"]):not([data-sub="rice"])'
+      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon):not([data-sub="organic"])'
     ).forEach(function(card) {
+      /* 🔴 お米は data-sub が seimai/genmai に分かれたので、棚(data-cat="rice")で除外する。
+         「投薬」は家畜に薬を与えることで、米には投薬の概念が無く事実として意味を成さない。 */
+      if (card.closest('[data-cat="rice"]')) return;
       var imgDiv = card.querySelector('.product-card-img');
       if (!imgDiv || imgDiv.querySelector('.badge-muton')) return;
       var badge = document.createElement('span');
