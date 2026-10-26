@@ -11566,7 +11566,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
       「在庫切れ」→「カートに追加 ¥5,400」に戻り、買えるように見えて押せない状態になる。
       在庫が戻るときは stockBadgeInit が disabled を外してから _edaRefreshLabel() を呼ぶので、
       そこでは通常どおり価格つきの文言が入る。 */
-   if (!addBtn.classList.contains('added') && !addBtn.disabled) addBtn.textContent = 'カートに追加 ¥' + total.toLocaleString();
+   /* 2026-10-26 田崎さん指示: ボタンの横に金額を出さない（価格はカード上の表示だけ）。 */
+   if (!addBtn.classList.contains('added') && !addBtn.disabled) addBtn.textContent = 'カートに追加';
  }
  /* ⭐️ 在庫が 0 から戻ったときに、在庫バッジ側からボタン文言（数量・価格込み）を作り直させるために公開 */
  addBtn._edaRefreshLabel = refresh;
