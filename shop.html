@@ -7539,6 +7539,15 @@ body.is-member .product-card--organic .org-chk-lock {
 /* 🔴 お米には「無投薬」バッジを出さない（米に投薬の概念は無い。
    栽培方法の主張に読まれ、根拠が無いため）。JS側のセレクタでも除外しているが、
    別経路で付いても出ないようにCSSでも止める。 */
+/* 🍚 shop.html のお米カードの中身について（2026-10-26 田崎さん指示の確認結果）。
+   「商品説明を出さない」「常温便 送料¥1,100 の行を出さない」は、
+   public/css/simple-ui.css(PR #387) が
+     .product-grid .product-card .product-desc / .product-stats
+   を全カードで display:none にしているため、shop.html では既に満たされている。
+   同じ内容をここに重ねても無意味なので置かない。
+   🔴 お米の送料(全国一律¥1,100・送料無料の対象外)は、カテゴリ見出しの説明文／
+      商品詳細ページ／レジの3箇所に残っている（2026-10-26 実物確認）。
+   ※ simple-ui.css は shop.html だけが読み込む。products.html では説明文もスペックも出る。 */
 .product-grid[data-cat="rice"] .product-card .badge-muton { display: none !important; }
 .badge-muton {
  background: rgba(15,61,46,0.82);
@@ -13229,7 +13238,13 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
       「在庫切れ」→「カートに追加 ¥5,400」に戻り、買えるように見えて押せない状態になる。
       在庫が戻るときは stockBadgeInit が disabled を外してから _edaRefreshLabel() を呼ぶので、
       そこでは通常どおり価格つきの文言が入る。 */
-   if (!addBtn.classList.contains('added') && !addBtn.disabled) addBtn.textContent = 'カートに追加 ¥' + total.toLocaleString();
+   /* 🍚 お米のカードはボタンに金額を出さない（2026-10-26 田崎さん指示）。
+      価格はカード上部の .product-price に出ているので二重にしない。
+      他カテゴリは従来どおり「カートに追加 ¥◯」のまま。 */
+   var _riceCard = !!(buyEl.closest && buyEl.closest('[data-cat="rice"]'));
+   if (!addBtn.classList.contains('added') && !addBtn.disabled) {
+     addBtn.textContent = _riceCard ? 'カートに追加' : ('カートに追加 ¥' + total.toLocaleString());
+   }
  }
  /* ⭐️ 在庫が 0 から戻ったときに、在庫バッジ側からボタン文言（数量・価格込み）を作り直させるために公開 */
  addBtn._edaRefreshLabel = refresh;
