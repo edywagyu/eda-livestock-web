@@ -1052,7 +1052,7 @@
       price: 3564, weight: 5000, stock: 60, temp: '常温',
       listPrice: 8640,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 5kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、1袋 5kgでお送りします。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、ご注文をいただいてから精米して、1袋 5kgでお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1062,7 +1062,7 @@
       price: 7128, weight: 10000, stock: 30, temp: '常温',
       listPrice: 17280,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 10kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×2袋でお送りします。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、ご注文をいただいてから精米して、5kg×2袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1072,7 +1072,7 @@
       price: 10692, weight: 15000, stock: 10, temp: '常温',
       listPrice: 25920,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 15kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×3袋でお送りします。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、ご注文をいただいてから精米して、5kg×3袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1082,7 +1082,7 @@
       price: 14256, weight: 20000, stock: 8, temp: '常温',
       listPrice: 34560,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 20kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×4袋でお送りします。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、ご注文をいただいてから精米して、5kg×4袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1092,7 +1092,7 @@
       price: 3564, weight: 5000, stock: 30, temp: '常温',
       listPrice: 8640,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 5kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま1袋 5kgで。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、玄米のまま1袋 5kgで。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     },
     {
@@ -1102,7 +1102,7 @@
       price: 7128, weight: 10000, stock: 15, temp: '常温',
       listPrice: 17280,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 10kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×2袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、玄米のまま5kg×2袋で。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     },
     {
@@ -1112,7 +1112,7 @@
       price: 10692, weight: 15000, stock: 6, temp: '常温',
       listPrice: 25920,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 15kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×3袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、玄米のまま5kg×3袋で。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     },
     {
@@ -1122,7 +1122,7 @@
       price: 14256, weight: 20000, stock: 6, temp: '常温',
       listPrice: 34560,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 20kg',
-      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×4袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、玄米のまま5kg×4袋で。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     }
   ];
