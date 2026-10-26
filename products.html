@@ -7566,6 +7566,10 @@ body.is-member .product-card--organic .org-chk-lock {
 /* 鶏肉 SOON カード: buy ボタンを非表示 */
 .product-card--chicken-soon .product-buy { display: none !important; }
 /* 無投薬バッジ */
+/* 🔴 お米には「無投薬」バッジを出さない（米に投薬の概念は無い。
+   栽培方法の主張に読まれ、根拠が無いため）。JS側のセレクタでも除外しているが、
+   別経路で付いても出ないようにCSSでも止める。 */
+.product-card[data-sub="rice"] .badge-muton { display: none !important; }
 .badge-muton {
  background: rgba(15,61,46,0.82);
  color: var(--color-gold);
@@ -13633,11 +13637,16 @@ function copyPopCoupon() {
 <!-- 商品マスター: GAS 経由でスプシから動的取得 (fallback: products-master.js)
      スプシ: 1tNbIvsTkqrJiWtgpKCHevs_qeVjfNny0FPEsqTtxruM の products タブ -->
 <script>
-/* 無投薬バッジ — オーガニック以外の全商品カードに自動挿入 */
+/* 無投薬バッジ — オーガニック以外の全商品カードに自動挿入
+   🔴 お米(data-sub="rice")は必ず除外する。「投薬」は家畜に薬を与えることで、
+      米には投薬の概念が無く事実として意味を成さない。お客様からは栽培方法の主張
+      （農薬を使っていない）に読めるが、その根拠は無い（2026-10-26 田崎さん決定で
+      「特別栽培米」「農薬と化学肥料を減らして」を全部落としたのと同じ理由）。
+      景品表示法の優良誤認になるので、米にこのバッジを付けないこと。 */
 (function() {
   function addMutonBadges() {
     document.querySelectorAll(
-      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon):not([data-sub="organic"])'
+      '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon):not([data-sub="organic"]):not([data-sub="rice"])'
     ).forEach(function(card) {
       var imgDiv = card.querySelector('.product-card-img');
       if (!imgDiv || imgDiv.querySelector('.badge-muton')) return;
