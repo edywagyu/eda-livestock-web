@@ -7111,7 +7111,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .rice-future-price b { font-weight: 700; color: var(--color-forest); }
 /* 🍚 お米の「12/1から ¥◯」。カードは文字数が入らないので短縮形。
    🔴 取り消し線・「通常価格」「定価」「○○%OFF」は使わない（販売実績ゼロ・8週間ルール未達）。
-   色は既存トークン(forest / gold / cream)のみ。A案=クリーム地＋金枠 / B案=フォレスト地＋金文字。 */
+   色は既存トークン(forest / gold / cream)のみ。
+   2026-10-26 田崎さん選定: クリーム地＋金枠（商品詳細ページと同じ方針）。 */
 .rice-card-notice { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
   margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; font-family: var(--font-jp);
   line-height: 1.4; background: var(--color-cream); border: 1.5px solid var(--color-gold); }
@@ -7119,10 +7120,6 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
   border-radius: 999px; background: var(--color-forest); color: var(--color-cream); white-space: nowrap; }
 .rice-cn-future { font-size: 12.5px; font-weight: 700; color: var(--color-forest); }
 .rice-cn-future b { font-size: 15px; }
-body[data-pricestyle="b"] .rice-card-notice { background: var(--color-forest); border-color: var(--color-forest); }
-body[data-pricestyle="b"] .rice-cn-badge { background: var(--color-gold); color: var(--color-forest); }
-body[data-pricestyle="b"] .rice-cn-future { color: #fff; }
-body[data-pricestyle="b"] .rice-cn-future b { color: var(--color-gold); }
 .product-card-img[data-label="RICE SEIMAI"] { background-image: url('public/images/products/drive/rice-seimai.jpg'); }
 .product-card-img[data-label="RICE GENMAI"] { background-image: url('public/images/products/drive/rice-genmai.jpg'); }
 .product-card-img[data-label="OUTLET SIRLOIN"] { background-image: image-set(url('public/images/products/drive/sirloin-2.webp') type('image/webp'), url('public/images/products/drive/sirloin-2.jpg')); }
@@ -13816,16 +13813,6 @@ function copyPopCoupon() {
    run();
  }
 })();
-</script>
-<script>
-/* 🍚 お米の価格案内 A案/B案 の切り替え（田崎さんの比較用）。
-   ?pricestyle=b で B案。既定は A案。選定後はこのスクリプトごと外す。 */
-(function(){try{
-  var v=(new URLSearchParams(location.search)).get('pricestyle');
-  if(v==='b'||v==='a')document.documentElement.setAttribute('data-ps',v);
-  function apply(){document.body.setAttribute('data-pricestyle',(v==='b')?'b':'a');}
-  if(document.body)apply();else document.addEventListener('DOMContentLoaded',apply);
-}catch(e){}})();
 </script>
 </body>
 </html>

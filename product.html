@@ -576,26 +576,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       販売実績ゼロで8週間ルールを満たさないため、過去価格としての二重価格表示は不当表示。
       将来価格（12月1日から ¥◯）の形だけが使える。
    色は既存トークン(forest / gold / cream)だけで組む。新しい色は作らない。
-   A案(既定) = クリーム地＋金枠 ／ B案 = フォレスト地＋金文字。
-   body[data-pricestyle] で切り替える（?pricestyle=b で B案）。 */
+   2026-10-26 田崎さん選定: クリーム地＋金枠。 */
 .rice-price-notice { display: block; margin: 14px 0 4px; padding: 14px 16px; border-radius: 10px;
-  font-family: var(--font-jp); line-height: 1.5; }
+  font-family: var(--font-jp); line-height: 1.5;
+  background: var(--color-cream); border: 2px solid var(--color-gold); }
 .rice-pn-badge { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .04em;
-  padding: 4px 11px; border-radius: 999px; }
-.rice-pn-main { display: block; margin-top: 9px; font-size: 14px; }
-.rice-pn-future { display: block; margin-top: 3px; font-size: 17px; font-weight: 700; }
+  padding: 4px 11px; border-radius: 999px;
+  background: var(--color-forest); color: var(--color-cream); }
+.rice-pn-main { display: block; margin-top: 9px; font-size: 14px; color: var(--color-ink-muted); }
+.rice-pn-future { display: block; margin-top: 3px; font-size: 17px; font-weight: 700;
+  color: var(--color-forest); }
 .rice-pn-future b { font-size: 22px; letter-spacing: .01em; }
-/* A案: クリーム地＋金枠（既定） */
-.rice-price-notice { background: var(--color-cream); border: 2px solid var(--color-gold); }
-.rice-pn-badge { background: var(--color-forest); color: var(--color-cream); }
-.rice-pn-main { color: var(--color-ink-muted); }
-.rice-pn-future { color: var(--color-forest); }
-/* B案: フォレスト地＋金文字 */
-body[data-pricestyle="b"] .rice-price-notice { background: var(--color-forest); border-color: var(--color-forest); }
-body[data-pricestyle="b"] .rice-pn-badge { background: var(--color-gold); color: var(--color-forest); }
-body[data-pricestyle="b"] .rice-pn-main { color: rgba(250,247,240,.82); }
-body[data-pricestyle="b"] .rice-pn-future { color: #fff; }
-body[data-pricestyle="b"] .rice-pn-future b { color: var(--color-gold); }
 @media (max-width: 480px) {
   .rice-price-notice { padding: 12px 13px; }
   .rice-pn-main { font-size: 13px; }
@@ -2047,16 +2038,6 @@ window.addEventListener('load', () => {
     });
   }
 })();
-</script>
-<script>
-/* 🍚 お米の価格案内 A案/B案 の切り替え（田崎さんの比較用）。
-   ?pricestyle=b で B案。既定は A案。選定後はこのスクリプトごと外す。 */
-(function(){try{
-  var v=(new URLSearchParams(location.search)).get('pricestyle');
-  if(v==='b'||v==='a')document.documentElement.setAttribute('data-ps',v);
-  function apply(){document.body.setAttribute('data-pricestyle',(v==='b')?'b':'a');}
-  if(document.body)apply();else document.addEventListener('DOMContentLoaded',apply);
-}catch(e){}})();
 </script>
 </body>
 </html>
