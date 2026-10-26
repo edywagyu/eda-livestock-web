@@ -1033,7 +1033,7 @@
       images: ['public/images/products/drive/yaiba-roast.jpg?v=5']
     },
 
-    /* ===== エダチク米（自社田・ヒノヒカリ・特別栽培米／常温便） =====
+    /* ===== エダチク米（自社田・ヒノヒカリ／常温便） =====
        🔴 米は常温便。送料は固定 ¥1,100(税込) で、冷凍便の「¥11,000以上 送料無料」の
           対象外。送料の規則は checkout.html の renderSummary と
           gas/Code.gs の riceShipping_ / calcShipping の2箇所に同じものが入っている。
@@ -1045,7 +1045,7 @@
       name: 'エダチク米 精米 5kg', variant: '1袋 5kg',
       price: 3564, weight: 5000, stock: 60, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 5kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリ。単一原料米、令和7年産。ご注文をいただいてから精米して、1袋 5kgでお送りします。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、1袋 5kgでお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1054,7 +1054,7 @@
       name: 'エダチク米 精米 10kg', variant: '5kg×2袋',
       price: 7128, weight: 10000, stock: 30, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 10kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリ。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×2袋でお送りします。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×2袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1063,7 +1063,7 @@
       name: 'エダチク米 精米 15kg', variant: '5kg×3袋',
       price: 10692, weight: 15000, stock: 10, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 15kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリ。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×3袋でお送りします。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×3袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1072,7 +1072,7 @@
       name: 'エダチク米 精米 20kg', variant: '5kg×4袋',
       price: 14256, weight: 20000, stock: 8, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 20kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリ。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×4袋でお送りします。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×4袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
     },
     {
@@ -1081,7 +1081,7 @@
       name: 'エダチク米 玄米 5kg', variant: '1袋 5kg',
       price: 3564, weight: 5000, stock: 30, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 5kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリを、玄米のまま1袋 5kgで。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま1袋 5kgで。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     },
     {
@@ -1090,7 +1090,7 @@
       name: 'エダチク米 玄米 10kg', variant: '5kg×2袋',
       price: 7128, weight: 10000, stock: 15, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 10kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリを、玄米のまま5kg×2袋で。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×2袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     },
     {
@@ -1099,7 +1099,7 @@
       name: 'エダチク米 玄米 15kg', variant: '5kg×3袋',
       price: 10692, weight: 15000, stock: 6, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 15kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリを、玄米のまま5kg×3袋で。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×3袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     },
     {
@@ -1108,7 +1108,7 @@
       name: 'エダチク米 玄米 20kg', variant: '5kg×4袋',
       price: 14256, weight: 20000, stock: 6, temp: '常温',
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 20kg',
-      description: '宮崎県高原町で育てた特別栽培米のヒノヒカリを、玄米のまま5kg×4袋で。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
+      description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×4袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
     }
   ];
