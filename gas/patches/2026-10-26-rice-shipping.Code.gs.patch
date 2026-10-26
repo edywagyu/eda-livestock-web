@@ -1,6 +1,8 @@
---- gas/Code.gs	2026-10-26 11:00:48
-+++ /tmp/Code.gs.new	2026-10-26 11:10:50
-@@ -538,9 +538,10 @@
+diff --git a/gas/Code.gs b/gas/Code.gs
+index 5fa0c56..9fd026d 100644
+--- a/gas/Code.gs
++++ b/gas/Code.gs
+@@ -538,9 +538,10 @@ function createCheckout(body) {
      if (d.type !== 'gift') (d.items || []).forEach(function (it) { _selfKeys[(it.title || '') + '|' + (it.variant || '')] = true; });
    });
    const _hasDestItems = (body.destinations || []).some(function (d) { return (d.items || []).length > 0; });
@@ -13,7 +15,7 @@
    const _halfShip = isRepeatShipHalf_(
      (body.customer && body.customer.email) || '',
      (body.customer && body.customer.line_uid) || ''
-@@ -549,8 +550,11 @@
+@@ -549,8 +550,11 @@ function createCheckout(body) {
    const _freeShipItem = hasFreeShipItem_(items);
    /* 🧾 請求リンク(invoice.html): 送料はスタッフが1件ずつ決める（込み=0 / 実額を指定）。
       mode==='invoice' のときだけ invoice_shipping をそのまま使う＝通常の注文の自動計算には触らない。 */
@@ -26,7 +28,7 @@
    if (shipping > 0) {
      lineItems.push({
        price_data: {
-@@ -729,9 +733,10 @@
+@@ -729,9 +733,10 @@ function createBankOrder(body) {
      if (d.type !== 'gift') (d.items || []).forEach(function (it) { _selfKeys[(it.title || '') + '|' + (it.variant || '')] = true; });
    });
    const _hasDestItems = (body.destinations || []).some(function (d) { return (d.items || []).length > 0; });
@@ -39,7 +41,7 @@
    const _halfShip = isRepeatShipHalf_(
      (body.customer && body.customer.email) || '',
      (body.customer && body.customer.line_uid) || ''
-@@ -740,8 +745,11 @@
+@@ -740,8 +745,11 @@ function createBankOrder(body) {
    const _freeShipItem = hasFreeShipItem_(items);
    /* 🧾 請求リンク(invoice.html): 送料はスタッフが1件ずつ決める（込み=0 / 実額を指定）。
       mode==='invoice' のときだけ invoice_shipping をそのまま使う＝通常の注文の自動計算には触らない。 */
@@ -52,13 +54,10 @@
  
    // 振込金額: クライアント計算済みの最終合計（クーポン適用後）を信頼。
    //   入金は Tom が実額照合（アナログ）するため、画面表示との一致を優先。無ければ subtotal+shipping。
-@@ -4123,9 +4131,81 @@
-   } catch (e) {
-     log('free_ship_check_warn', { error: e.message });
-     return false;
-+  }
-+}
-+
+@@ -4126,6 +4134,78 @@ function hasFreeShipItem_(items) {
+   }
+ }
+ 
 +/* ============================================================
 +   🍚 エダチク米（常温便）の送料 — 2026-10-26 田崎さん決定
 +   ------------------------------------------------------------
@@ -104,10 +103,10 @@
 +    }
 +  } catch (e) {
 +    log('rice_title_map_warn', { error: e.message });
-   }
++  }
 +  return map;
- }
- 
++}
++
 +/* カートにお米が1点でもあれば ¥1,100、無ければ 0 */
 +function riceShipping_(items) {
 +  try {

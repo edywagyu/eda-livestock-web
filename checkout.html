@@ -3204,11 +3204,18 @@ function renderSummary() {
  <strong>¥${subTotal.toLocaleString()}</strong>
  </div>
  ${discount > 0 ? `<div class="summary-row discount"><span>クーポン (${appliedCoupon.code})</span><strong>−¥${discount.toLocaleString()}</strong></div>` : ''}
+ `;
+ /* 🍚 冷凍便の対象（お肉）が1点も無いときは「配送料 (自宅)」の行自体を出さない。
+    お米だけの注文で「配送料 (自宅) 無料」と「配送料 (お米・常温便) ¥1,100」が
+    並ぶと、無料と書いてあるのに¥1,100を請求する画面になる（2026-10-26 実測）。 */
+ if (_selfSubtotal > 0 || !_hasRice) {
+ rowsHtml += `
  <div class="summary-row shipping">
  <span>配送料 (自宅)<small style="font-size: 12px;color:var(--color-ink-muted);margin-left:4px;">(10%)</small></span>
  <strong>${shipping === 0 ? '無料' : '¥' + shipping.toLocaleString()}</strong>
  </div>
  `;
+ }
  // 🚚 前回のお届けから期限内 → 送料が半額または無料。適用されたことが分かるように1行出す。
  //    無料のときは shipping が 0 になるので `shipping > 0` では出ない。差額が出ているかで見る。
  if (_shipHalfApplied && _shipBase > shipping) {

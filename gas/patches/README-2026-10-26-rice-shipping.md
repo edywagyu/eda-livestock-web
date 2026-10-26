@@ -30,11 +30,17 @@
 2. **その現物に `.patch` を当てる。**`.new` での丸ごと差し替えはしない
 
    ```
+   cd ~/eda-livestock-web
    git apply --3way gas/patches/2026-10-26-rice-shipping.Code.gs.patch
    ```
 
+   2026-10-26 にこのリポジトリで実行して、`Applied patch to 'gas/Code.gs' cleanly.`
+   と出ること、適用結果が `.new` と1バイトも違わないことを確認済みです。
+
    当たらなかったら、本番側が動いているということです。**force で通さず、
    当たらなかった場所を目で見てから手で入れてください。**
+   `git apply` が使えない場所なら `patch -p1 -i gas/patches/2026-10-26-rice-shipping.Code.gs.patch`
+   でも同じものが当たります。
 3. 当てたあとの `Code.gs` の差分を読む。**自分が足した行以外に削除行（-）が無いこと**を確認する
 4. `clasp push`
 5. もう一度 `clasp pull` して照合する
