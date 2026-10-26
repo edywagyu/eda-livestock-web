@@ -1037,6 +1037,12 @@
        🔴 米は常温便。送料は固定 ¥1,100(税込) で、冷凍便の「¥11,000以上 送料無料」の
           対象外。送料の規則は checkout.html の renderSummary と
           gas/Code.gs の riceShipping_ / calcShipping の2箇所に同じものが入っている。
+       🔴 listPrice は「12月1日からの価格」(1,600円/kg 税抜=税込1,728円/kg)。
+          price は11月30日までの価格(660円/kg 税抜)。
+          🔴 これは「通常価格」ではない。販売実績ゼロで消費者庁の8週間ルールを
+             満たさないため、過去価格としての二重価格表示は不当表示になる。
+             画面には必ず「12月1日から ¥◯」という将来価格の形で出すこと。
+             「通常価格」「定価」「○○%OFF」とは書かない。
        🔴 精米は受注後精米。一括表示（名称・原料玄米・内容量・精米年月日・販売者）は
           public/data/pdp-content.js の riceLabel から商品詳細ページに出る。 */
     {
@@ -1044,6 +1050,7 @@
       stripePriceId: '',
       name: 'エダチク米 精米 5kg', variant: '1袋 5kg',
       price: 3564, weight: 5000, stock: 60, temp: '常温',
+      listPrice: 8640,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 5kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、1袋 5kgでお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
@@ -1053,6 +1060,7 @@
       stripePriceId: '',
       name: 'エダチク米 精米 10kg', variant: '5kg×2袋',
       price: 7128, weight: 10000, stock: 30, temp: '常温',
+      listPrice: 17280,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 10kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×2袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
@@ -1062,6 +1070,7 @@
       stripePriceId: '',
       name: 'エダチク米 精米 15kg', variant: '5kg×3袋',
       price: 10692, weight: 15000, stock: 10, temp: '常温',
+      listPrice: 25920,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 15kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×3袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
@@ -1071,6 +1080,7 @@
       stripePriceId: '',
       name: 'エダチク米 精米 20kg', variant: '5kg×4袋',
       price: 14256, weight: 20000, stock: 8, temp: '常温',
+      listPrice: 34560,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Milled) 20kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリ。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご注文をいただいてから精米して、5kg×4袋でお送りします。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-seimai.jpg']
@@ -1080,6 +1090,7 @@
       stripePriceId: '',
       name: 'エダチク米 玄米 5kg', variant: '1袋 5kg',
       price: 3564, weight: 5000, stock: 30, temp: '常温',
+      listPrice: 8640,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 5kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま1袋 5kgで。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
@@ -1089,6 +1100,7 @@
       stripePriceId: '',
       name: 'エダチク米 玄米 10kg', variant: '5kg×2袋',
       price: 7128, weight: 10000, stock: 15, temp: '常温',
+      listPrice: 17280,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 10kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×2袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
@@ -1098,6 +1110,7 @@
       stripePriceId: '',
       name: 'エダチク米 玄米 15kg', variant: '5kg×3袋',
       price: 10692, weight: 15000, stock: 6, temp: '常温',
+      listPrice: 25920,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 15kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×3袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
@@ -1107,6 +1120,7 @@
       stripePriceId: '',
       name: 'エダチク米 玄米 20kg', variant: '5kg×4袋',
       price: 14256, weight: 20000, stock: 6, temp: '常温',
+      listPrice: 34560,
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 20kg',
       description: '霧島連山のふもと、宮崎県高原町で育てたヒノヒカリを、玄米のまま5kg×4袋で。和牛の敷き藁を取るために作りはじめた米で、田んぼには牛舎から出た堆肥を入れています。単一原料米、令和7年産。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']

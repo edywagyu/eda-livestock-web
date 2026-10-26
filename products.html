@@ -7103,6 +7103,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="CHICKEN THIGH"] { background-image: image-set(url('public/images/products/drive/chicken-thigh.webp') type('image/webp'), url('public/images/products/drive/chicken-thigh.jpg')); }
 .product-card-img[data-label="CHICKEN SET"] { background-image: image-set(url('public/images/products/drive/chicken-set.webp') type('image/webp'), url('public/images/products/drive/chicken-set.jpg')); }
 .product-card-img[data-label="CHICKEN MINCED"] { background-image: image-set(url('public/images/products/drive/chicken-minced.webp') type('image/webp'), url('public/images/products/drive/chicken-minced.jpg')); }
+/* 🍚 お米の「12月1日から ¥◯」。取り消し線は使わない。
+   listPrice は過去に売っていた通常価格ではなく将来の価格なので、
+   <s>通常価格</s> の形にすると不当表示になる（販売実績ゼロ・8週間ルール未達）。 */
+.rice-future-price { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5;
+  color: var(--color-ink-muted); font-weight: 400; }
+.rice-future-price b { font-weight: 700; color: var(--color-forest); }
 .product-card-img[data-label="RICE SEIMAI"] { background-image: url('public/images/products/drive/rice-seimai.jpg'); }
 .product-card-img[data-label="RICE GENMAI"] { background-image: url('public/images/products/drive/rice-genmai.jpg'); }
 .product-card-img[data-label="OUTLET SIRLOIN"] { background-image: image-set(url('public/images/products/drive/sirloin-2.webp') type('image/webp'), url('public/images/products/drive/sirloin-2.jpg')); }
@@ -10601,6 +10607,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="shop-cat-head reveal" data-cat="rice" style="margin-top: 80px;">
  <h2 class="shop-cat-title">エダチク米 <span>/ Edachiku Rice</span></h2>
  <p class="shop-cat-desc">牛を育てているのと同じ宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>。もとは<strong>和牛の敷き藁を取るため</strong>に作りはじめた米です。田んぼには<strong>牛舎から出た堆肥</strong>を入れ、刈り取った藁は牛の寝床に戻ります。<strong>和牛と米がつながった循環</strong>のなかで育てています。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文をいただいてから精米</strong>して常温便でお送りします。玄米のままもお選びいただけます。</p>
+ <p class="shop-cat-desc" style="margin-top:6px"><strong>表示の価格は 11月30日（月）まで</strong>です。12月1日から 5kg &yen;8,640 ／ 10kg &yen;17,280 ／ 15kg &yen;25,920 ／ 20kg &yen;34,560（いずれも税込）になります。お求めの回数に制限はありません。</p>
  <p class="shop-cat-desc" style="margin-top:6px"><strong>お米の送料は全国一律 &yen;1,100（税込）</strong>です。常温便のため「&yen;11,000以上で送料無料」の対象外で、お肉と一緒にご注文いただくと送料は2件分かかります。</p>
  </div>
 
@@ -10612,6 +10619,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して1袋 5kgでお送りします。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>1袋 5kg</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;8,640</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10624,6 +10632,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×2袋でお送りします。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>5kg&times;2袋</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;17,280</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10636,6 +10645,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×3袋でお送りします。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>5kg&times;3袋</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;25,920</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10648,6 +10658,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×4袋でお送りします。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>5kg&times;4袋</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;34,560</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10660,6 +10671,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>1袋 5kgで。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>1袋 5kg</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;8,640</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10672,6 +10684,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>5kg×2袋で。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>5kg&times;2袋</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;17,280</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10684,6 +10697,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>5kg×3袋で。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>5kg&times;3袋</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;25,920</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -10696,6 +10710,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <p class="product-desc">霧島連山のふもと、宮崎県高原町の自社田で育てた<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>5kg×4袋で。<strong>和牛の敷き藁を取るため</strong>に作りはじめた米で、田んぼには<strong>牛舎から出た堆肥</strong>を入れています。令和7年産の<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
  <div class="product-stats">
  <div class="product-stat-item">内容量 <strong>5kg&times;4袋</strong></div>
+ <div class="product-stat-item wide">この価格は <strong>11/30まで</strong>（<b>12月1日から &yen;34,560</b>）</div>
  <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
  </div>
  <div class="product-buy"></div>
@@ -13710,7 +13725,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-10-26-rice" defer></script>
+<script src="public/data/products-master.js?v=2026-10-26-rice-dec" defer></script>
 <script src="public/js/products-loader.js?v=008" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
