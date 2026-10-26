@@ -10686,7 +10686,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="sub-tab" data-sub="genmai">玄米</button>
  </div>
 
- <div class="product-grid cols-4" data-cat="rice" data-preview-all>
+ <div class="product-grid cols-4" data-cat="rice" data-preview-limit="1">
  <div class="product-card" data-sub="seimai" data-variants='[{"id":510260356466,"t":"1セット","p":3564}]'>
  <div class="product-card-img" data-label="RICE SEIMAI"></div>
  <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;3,564</span></div>
@@ -10790,6 +10790,13 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;34,560</b>（税込）</span></div>
  <div class="product-buy"></div>
  </div>
+ </div>
+
+ <!-- ジャンル別プレビュー(1件)から商品一覧へ。beef/chicken と同じ .shop-viewall-wrap/.btn-viewall。
+      文言と href は productPreviewInit が差し替える（CAT_LABEL.rice='お米'）。
+      data-sub="all" / data-anchor="rice" で、飛び先では8点とも見える状態でお米の棚に着地する。 -->
+ <div class="shop-viewall-wrap" data-cat="rice" data-sub="all" data-anchor="rice">
+ <a href="products.html?cat=rice&amp;sub=all#rice" class="btn-viewall">お米をすべて表示 →</a>
  </div>
 
  <!-- 訳あり は会員限定 — 通常表示から削除（マイページからのみアクセス可） -->
@@ -15374,10 +15381,13 @@ function copyPopCoupon() {
 (function productPreviewInit() {
  'use strict';
  var LIMIT = 2;
- var CAT_LABEL = { beef: '和牛', chicken: '鶏肉' };
+ var CAT_LABEL = { beef: '和牛', chicken: '鶏肉', rice: 'お米' };
  /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
  var PREVIEW_PICKS = {
-   beef: { all: ['はじめてセット', '赤身スライス'] }
+   beef: { all: ['はじめてセット', '赤身スライス'] },
+   /* 🍚 代表は 5kg。他カテゴリの代表の決め方（beef は「はじめてセット」＝入口の品）に合わせ、
+      いちばん手に取りやすい容量を出す。残りは「お米をすべて表示」から。 */
+   rice: { seimai: ['エダチク米 精米 5kg'], genmai: ['エダチク米 玄米 5kg'] }
  };
 
  function searchQuery() {
@@ -15396,10 +15406,6 @@ function copyPopCoupon() {
      /* 特別セット品・期間限定の独立グリッドは常に全点見せる。
         ここを通すと同じ data-cat の「すべて表示」ボタンまで消してしまう */
      if (grid.hasAttribute('data-no-subfilter')) return;
-     /* 🍚 data-preview-all: サブタブで絞った結果をそのまま全点見せる棚（エダチク米）。
-        米は精米4枚/玄米4枚が1グループなので、2件プレビューで切ると棚として成立しない。
-        data-no-subfilter と違い、サブタブの絞り込みは効かせたままにする。 */
-     if (grid.hasAttribute('data-preview-all')) return;
 
      /* 検索中は全件見せる（プレビュー制限もボタンも出さない） */
      if (searching) { if (wrap) wrap.style.display = 'none'; return; }
@@ -15416,7 +15422,11 @@ function copyPopCoupon() {
      /* 販売中の限定品(data-limited-scope)は LIMIT の枠外で必ず出す。
         終了すると limited-stock.js が非表示にするので visible から外れ、自動で元の件数に戻る */
      var limitedVisible = visible.filter(function(c) { return c.hasAttribute('data-limited-scope'); });
-     var limit = LIMIT + limitedVisible.length;
+     /* 🍚 棚ごとに表示枚数を変えられる（data-preview-limit）。
+        エダチク米は 1 枚だけ出して「お米をすべて表示」で全商品一覧へ送る（2026-10-26 田崎さん指示）。
+        指定が無ければ従来どおり LIMIT(2)。 */
+     var baseLimit = parseInt(grid.dataset.previewLimit, 10) || LIMIT;
+     var limit = baseLimit + limitedVisible.length;
 
      /* 優先表示商品を先に確保し、足りなければ先頭から補完 */
      var picks = (PREVIEW_PICKS[cat] || {})[sub] || [];
@@ -15442,12 +15452,16 @@ function copyPopCoupon() {
 
      if (!wrap) return;
      var gridHidden = getComputedStyle(grid).display === 'none';
-     wrap.style.display = (gridHidden || visible.length <= LIMIT) ? 'none' : '';
+     wrap.style.display = (gridHidden || visible.length <= baseLimit) ? 'none' : '';
 
      /* 選択中のサブタブを products.html へ引き継ぐ (?cat=beef&sub=steak) */
      var a = wrap.querySelector('a');
      if (a) {
-       a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(sub) + '#products';
+       /* 🍚 飛び先は棚ごとに変えられる。エダチク米は products.html のお米の棚(#rice)へ、
+          sub=all で8点とも見える状態で着地させる（全商品一覧は絞らない）。 */
+       var jumpSub = wrap.dataset.sub || sub;
+       var anchor = wrap.dataset.anchor || 'products';
+       a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(jumpSub) + '#' + anchor;
        /* 2026-10-23 田崎さん指示。部位タブ名ではなく常にカテゴリ名で出す */
        a.textContent = (CAT_LABEL[cat] || '') + 'をすべて表示 →';
      }
