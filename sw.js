@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-10-23-385-hide-kameshin-offal';
+const CACHE_VERSION = 'eda-v2026-10-26-388-hide-p063-p065';
 const CORE_ASSETS = [
   './',
   'index.html',
