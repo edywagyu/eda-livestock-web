@@ -2113,14 +2113,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P070",
-    "P044",
-    "P025"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P066", "q": 1, "price": 3564},
     {"id": "P070", "q": 1, "price": 3564},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P025", "q": 1, "price": 2400}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "精米",
@@ -2151,14 +2151,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P071",
-    "P044",
-    "P025"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P067", "q": 1, "price": 7128},
     {"id": "P071", "q": 1, "price": 7128},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P025", "q": 1, "price": 2400}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "精米",
@@ -2189,14 +2189,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P072",
-    "P044",
-    "P025"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P068", "q": 1, "price": 10692},
     {"id": "P072", "q": 1, "price": 10692},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P025", "q": 1, "price": 2400}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "精米",
@@ -2227,14 +2227,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P073",
-    "P044",
-    "P025"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P069", "q": 1, "price": 14256},
     {"id": "P073", "q": 1, "price": 14256},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P025", "q": 1, "price": 2400}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "精米",
@@ -2265,14 +2265,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P066",
-    "P044",
-    "P003"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P070", "q": 1, "price": 3564},
     {"id": "P066", "q": 1, "price": 3564},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P003", "q": 1, "price": 1800}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "玄米",
@@ -2303,14 +2303,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P067",
-    "P044",
-    "P003"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P071", "q": 1, "price": 7128},
     {"id": "P067", "q": 1, "price": 7128},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P003", "q": 1, "price": 1800}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "玄米",
@@ -2341,14 +2341,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P068",
-    "P044",
-    "P003"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P072", "q": 1, "price": 10692},
     {"id": "P068", "q": 1, "price": 10692},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P003", "q": 1, "price": 1800}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "玄米",
@@ -2379,14 +2379,14 @@ window.EDA_PDP_CONTENT = {
   "featured": false,
   "cross": [
     "P069",
-    "P044",
-    "P003"
+    "P025",
+    "P062"
   ],
   "combo": [
     {"id": "P073", "q": 1, "price": 14256},
     {"id": "P069", "q": 1, "price": 14256},
-    {"id": "P044", "q": 1, "price": 1800},
-    {"id": "P003", "q": 1, "price": 1800}
+    {"id": "P025", "q": 1, "price": 2400},
+    {"id": "P062", "q": 1, "price": 2600}
   ],
   "riceLabel": {
    "名称": "玄米",
