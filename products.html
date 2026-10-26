@@ -5337,8 +5337,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 
 /* ===== Tom 2026-06-20: 単品グリッドを縦並びに（横スクロール廃止・PC4列/タブ3列/モバイル1-2列） =====
-   既存の横スクロール(display:flex;overflow-x)を高詳細度(.cols-4[data-cat])で打ち消す。 */
+   既存の横スクロール(display:flex;overflow-x)を高詳細度(.cols-4[data-cat])で打ち消す。
+   🔴 カテゴリを足したら、このセレクタ列にも必ず足すこと。足し忘れると横スクロールのままで、
+      スマホで1商品しか画面に入らない＝その棚は売り場に無いのと同じになる。
+      （2026-10-26 エダチク米 rice を足し忘れて玄米4点が全部画面外だった） */
 .product-grid.cols-4[data-cat="beef"],
+.product-grid.cols-4[data-cat="rice"],
 .product-grid.cols-4[data-cat="chicken"] {
  display: grid !important;
  grid-template-columns: repeat(4, 1fr) !important;
@@ -5352,6 +5356,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
  padding-bottom: 0 !important;
 }
 .product-grid.cols-4[data-cat="beef"] .product-card,
+.product-grid.cols-4[data-cat="rice"] .product-card,
 .product-grid.cols-4[data-cat="chicken"] .product-card {
  flex: 0 1 auto !important;
  width: auto !important;
@@ -5360,10 +5365,12 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 }
 @media (max-width: 1024px) {
  .product-grid.cols-4[data-cat="beef"],
+ .product-grid.cols-4[data-cat="rice"],
  .product-grid.cols-4[data-cat="chicken"] { grid-template-columns: repeat(3, 1fr) !important; }
 }
 @media (max-width: 760px) {
  .product-grid.cols-4[data-cat="beef"],
+ .product-grid.cols-4[data-cat="rice"],
  .product-grid.cols-4[data-cat="chicken"] {
  grid-template-columns: repeat(2, 1fr) !important;
  gap: 14px !important;

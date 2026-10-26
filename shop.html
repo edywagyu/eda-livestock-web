@@ -12404,11 +12404,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
        牛肉18商品 × 280px ＝ 実測 4,556px を押し込んでいた。画面に出るのは約1.5商品で、
        残り16商品は右へ何度もスワイプしないと存在に気づけない（＝ほぼ売り場に無いのと同じ）。
     → 縦スクロールで全商品が見える2列グリッドへ（スマホECの標準形）。
+    🔴 カテゴリを足したら、このセレクタ列にも必ず足すこと。足し忘れると
+       @media(max-width:640px) の .product-grid（横レール）のままになり、
+       375pxで1商品しか画面に入らない＝その棚は売り場に無いのと同じになる。
+       （2026-10-26 エダチク米 rice を足し忘れて玄米4点が全部画面外だった）
        カード自体は上のルールで既に圧縮済みなので、ここは「並べ方」だけを変える。
     🔴 レールは左右に負マージンで画面端まではみ出させていた。折り返す時に残すと
        グリッドが container からズレるので必ず 0 に戻す。 */
  .product-grid[data-cat="beef"],
  .product-grid[data-cat="chicken"],
+ .product-grid[data-cat="rice"],
  .product-grid--merged {
    flex-wrap: wrap !important;
    overflow-x: visible !important;
@@ -12420,6 +12425,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  .product-grid[data-cat="beef"] .product-card,
  .product-grid[data-cat="chicken"] .product-card,
+ .product-grid[data-cat="rice"] .product-card,
  .product-grid--merged .product-card {
    flex: 1 1 calc(50% - 6px) !important;
    max-width: calc(50% - 6px) !important;
@@ -12431,10 +12437,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
     → 折り返しを許可して価格を必ずカード内に収める。 */
  .product-grid[data-cat="beef"] .product-tag-row,
  .product-grid[data-cat="chicken"] .product-tag-row,
+ .product-grid[data-cat="rice"] .product-tag-row,
  .product-grid--merged .product-tag-row { flex-wrap: wrap !important; row-gap: 2px !important; }
  /* nowrap のままだと「カートに追…」と切れるので、狭い時だけ折り返しを許可 */
  .product-grid[data-cat="beef"] .btn-add-cart,
  .product-grid[data-cat="chicken"] .btn-add-cart,
+ .product-grid[data-cat="rice"] .btn-add-cart,
  .product-grid--merged .btn-add-cart {
    white-space: normal !important;
    font-size: 11px !important;
@@ -12448,9 +12456,11 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
     まとめ買いの訴求は購入率に効くので消さない。 */
  .product-grid[data-cat="beef"] .product-buy,
  .product-grid[data-cat="chicken"] .product-buy,
+ .product-grid[data-cat="rice"] .product-buy,
  .product-grid--merged .product-buy { align-items: stretch !important; }
  .product-grid[data-cat="beef"] .qty-row,
  .product-grid[data-cat="chicken"] .qty-row,
+ .product-grid[data-cat="rice"] .qty-row,
  .product-grid--merged .qty-row {
    width: 100% !important; min-width: 0 !important;
    flex-wrap: nowrap !important; gap: 6px !important;
@@ -12458,10 +12468,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  .product-grid[data-cat="beef"] .qty-stepper .qty-val,
  .product-grid[data-cat="chicken"] .qty-stepper .qty-val,
+ .product-grid[data-cat="rice"] .qty-stepper .qty-val,
  .product-grid--merged .qty-stepper .qty-val { min-width: 22px !important; }
  /* 端数が出たら押し出さずに、この文字側が縮んで吸収する（flex-shrink:0 だと外へ出る） */
  .product-grid[data-cat="beef"] .qty-disc,
  .product-grid[data-cat="chicken"] .qty-disc,
+ .product-grid[data-cat="rice"] .qty-disc,
  .product-grid--merged .qty-disc {
    font-size: 10px !important; min-width: 0 !important;
    flex: 0 1 auto !important; overflow: hidden !important;
