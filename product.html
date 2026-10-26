@@ -771,7 +771,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <div class="pdp-price" id="pdpPrice"></div>
       <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
            金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
-      <p class="pdp-price-note">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
+      <p class="pdp-price-note" id="pdpPriceNote">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
 
       <!-- ========= 🎁 キャンペーン特典の帯（中身と表示期間は public/js/gift-rules.js の CAMPAIGN が正。
      期間外は gift-notice.js が hidden にするので、終わったあとの撤去作業は不要） ========= -->
@@ -1361,6 +1361,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   /* 🍚 エダチク米。肉向けの行（部位・解凍・賞味期限6ヶ月・冷凍保管・アレルゲン牛肉）は
      どれも当てはまらないので、米は米の行を組む。単価も 100g ではなく 1kg で出す。 */
   const isRice = product.category === 'rice';
+  /* 玄米か精米かは商品名で分ける（products の name と同じ文字列） */
+  const isGenmai = isRice && String(product.name || '').indexOf('玄米') >= 0;
   const perKg = (isRice && C && C.weight) ? '¥' + Math.round((product.price || 0) / (C.weight / 1000)).toLocaleString() : '';
   const riceRows = !isRice ? null : [
     C ? ['品種', C.cut] : null,
@@ -1371,7 +1373,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     ['産地', '宮崎県'],
     ['産年', '令和7年産'],
     ['栽培', '特別栽培米'],
-    ['精米年月日', 'ご注文後に精米'],
+    /* 🍚 玄米は精米しない。玄米に「精米年月日：ご注文後に精米」を出すと
+       同じページの「玄米のままお送りします」と矛盾する。玄米は調製年月日。 */
+    isGenmai ? ['調製年月日', '出荷時に調製'] : ['精米年月日', 'ご注文後に精米'],
     ['配送', '常温便'],
     C ? ['保存方法', C.storage] : null
   ].filter(Boolean);
@@ -1449,6 +1453,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      お肉と一緒に買うと冷凍便と常温便で送料が2件分かかる。
      （請求側の規則は checkout.html の renderSummary と gas/Code.gs の riceShipping_） */
   if (isRice) {
+    /* 🍚 お米は常温便で全国一律 ¥1,100。北海道・沖縄の加算は無い。 */
+    const noteEl2 = document.getElementById('pdpPriceNote');
+    if (noteEl2) noteEl2.textContent = '税込価格 / 別途 送料 ¥1,100（税込・全国一律）';
     const shipEl = document.getElementById('pdpShipInfo');
     if (shipEl) {
       shipEl.innerHTML = '<p>ヤマト運輸の常温便でお届けします。<br>' +
@@ -1512,6 +1519,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     if (items.length < 2) return;
     const sec = document.getElementById('pdpBundle');
     const FREE = 11000;
+    /* 🍚 お米は常温便で「¥11,000以上 送料無料」の対象外。
+       合計からお米を除いて判定し、お米だけの組み合わせでは送料無料の案内を出さない。 */
+    const isRiceP = (p) => !!p && p.category === 'rice';
     if (C.featured) {
       const eb = document.getElementById('pdpBdEyebrow');
       const ld = document.getElementById('pdpBdLead');
@@ -1552,9 +1562,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         el.className = 'pdp-bd-state' + (onNow ? ' is-on' : '');
       });
       document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
+      /* 🍚 送料無料の判定はお米を除いた合計で行う */
+      const nonRiceTotal = on.reduce((s2, x) => isRiceP(x.p) ? s2 : s2 + x.unit * x.q, 0);
+      const riceOn = on.some(x => isRiceP(x.p));
       document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
-        : total >= FREE ? '<span class="pdp-bd-free">送料無料</span>'
-        : '<span class="pdp-bd-short">送料無料まであと ¥' + (FREE - total).toLocaleString() + '</span>';
+        : nonRiceTotal <= 0 ? (riceOn ? '<span class="pdp-bd-short">お米は送料 ¥1,100（税込）</span>' : '')
+        : nonRiceTotal >= FREE ? '<span class="pdp-bd-free">送料無料</span>' + (riceOn ? '<span class="pdp-bd-short">＋お米 ¥1,100</span>' : '')
+        : '<span class="pdp-bd-short">送料無料まであと ¥' + (FREE - nonRiceTotal).toLocaleString() + (riceOn ? '／お米 ¥1,100 は別' : '') + '</span>';
       const btn = document.getElementById('pdpBdBtn');
       btn.disabled = !on.length;
       btn.textContent = on.length
