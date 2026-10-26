@@ -853,6 +853,13 @@
       limitedTotal: 20,
       /* 2026-10-19 田崎さん指示で17:00を待たずに先出し。発売ゲートを過去日時にして即解禁 */
       limitedStartAt: '2026/10/19 16:00',
+      /* 2026-10-26 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-scope /
+         data-limited-prestart を付けた shop/products のカードが自動で消え、
+         PDP直リンクも endedLimited が購入導線を閉じる（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/26 00:00',
+      limitedUntil:     '2026/10/26 00:00',
       limitedUnit: 'セット',
       description: '江田和牛のサイコロステーキ200gに、大分県・無投薬の平飼い鶏モモ200gとムネ200gを合わせた3袋セット。計600g。和牛は焼くだけ、鶏は唐揚げや照り焼き、サラダチキンまで。冷凍便でお届けします。',
       images: ['public/images/products/drive/saikoro-chicken-set.jpg']
@@ -874,6 +881,13 @@
       ],
       limitedTotal: 20,
       limitedStartAt: '2026/10/22 17:00',
+      /* 2026-10-26 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-scope /
+         data-limited-prestart を付けた shop/products のカードが自動で消え、
+         PDP直リンクも endedLimited が購入導線を閉じる（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/26 00:00',
+      limitedUntil:     '2026/10/26 00:00',
       limitedUnit: 'セット',
       description: 'サシの霜降り焼肉200g、噛みごたえの赤身焼肉200g、脂の甘いバラ焼肉200g。計600g、3〜4人前ほど。1頭の中の違う部位を並べて焼き比べていただけます。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
@@ -897,6 +911,13 @@
          在庫を動かすときはこの値も一緒に直すこと。 */
       limitedTotal: 10,
       limitedStartAt: '2026/10/25 17:00',
+      /* 2026-10-26 田崎さん指示で店頭から取り下げ。過去日時にすることで
+         limited-stock.js の activeLimited から外れ、data-limited-scope /
+         data-limited-prestart を付けた shop/products のカードが自動で消え、
+         PDP直リンクも endedLimited が購入導線を閉じる（HTML側は無改造）。
+         再開するときはこの2行の日時を未来に戻すだけでよい。 */
+      limitedSoldOutAt: '2026/10/26 00:00',
+      limitedUntil:     '2026/10/26 00:00',
       limitedUnit: 'セット',
       description: '形や厚みが規格から外れた不揃い品のステーキセットです。赤身ステーキ200gとミスジステーキ150g、計350g。切り分けのときに端が欠けたり、厚みが揃わなかったものを集めました。肉質・味は正規品とまったく同じものです。冷凍便でお届けします。',
       images: [
