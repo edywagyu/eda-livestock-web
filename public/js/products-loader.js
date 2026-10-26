@@ -178,6 +178,13 @@
       var old = prev[p.productId];
       return old ? old[key] : undefined;
     }
+    /* 数値列をそろえる。空・未定義は undefined のまま返す（0 にすると
+       listPrice > price の判定が壊れて併記が出なくなる）。 */
+    function numOrUndef(v) {
+      if (v === undefined || v === null || String(v) === '') return undefined;
+      var n = Number(v);
+      return isFinite(n) && n > 0 ? n : undefined;
+    }
 
     /* 型整形: スプシは文字列で返るので数値カラムを変換 */
     const normalized = products.map(p => ({
@@ -188,6 +195,13 @@
       name:          p.name || '',
       variant:       p.variant || '',
       price:         Number(p.price) || 0,
+      /* 🔴 listPrice をここに書き忘れると、カタログ取得後に
+         window.EDA_PRODUCTS_MASTER.products が丸ごと差し替わる時点で消える。
+         消えると お米の「12月1日から ¥◯」と、肉16点の価格併記が出なくなる。
+         products シートに listPrice 列は無い（2026-10-26 時点で22列）が、
+         keep() が同梱マスターにフォールバックするので列が無くても残る。
+         列を足せばシート側が正になる。 */
+      listPrice:     numOrUndef(keep(p, 'listPrice')),
       weight:        Number(p.weight) || 0,
       stock:         Number(p.stock) || 0,
       temp:          p.temp || '冷凍',
