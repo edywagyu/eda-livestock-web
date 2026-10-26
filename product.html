@@ -578,6 +578,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-cook-steps li::before { content: '0' counter(cs); font-family: var(--font-display);
   font-size: 15px; color: var(--color-gold-soft); }
 .pdp-cook-steps b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 3px; }
+/* 🔴 li は grid-template-columns: 38px 1fr。中の要素は ::before(番号) / b(見出し) / span(説明) の3つで、
+   自動配置だと span が次の行の1列目＝幅38px に落ちる。説明文が1〜2文字ずつ折り返されて読めない
+   （2026-10-26 実測: span の幅が38pxしかなかった。お米だけでなく肉の「焼き方」も同じ状態）。
+   span を2列目に固定して、見出しの真下で本文の幅いっぱいに流す。 */
+.pdp-cook-steps li > b { grid-column: 2; }
+.pdp-cook-steps li > span { grid-column: 2; display: block; }
 .pdp-raise { margin: 0 0 14px; }
 .pdp-raise b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 2px; }
 
@@ -866,16 +872,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
             <circle cx="5.5" cy="18.5" r="2.5"/>
             <circle cx="18.5" cy="18.5" r="2.5"/>
           </svg>
-          <span>冷凍便でお届け · 賞味期限 製造日より 6 ヶ月</span>
+          <span id="pdpMetaDeliv">冷凍便でお届け · 賞味期限 製造日より 6 ヶ月</span>
         </div>
         <div class="pdp-meta-row">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M22 4L12 13 2 4"/>
           </svg>
-          <span>送料 ¥1,100 (税込)／北海道・沖縄 ¥2,200</span>
+          <span id="pdpMetaShip">送料 ¥1,100 (税込)／北海道・沖縄 ¥2,200</span>
         </div>
-        <div class="pdp-meta-row">
+        <!-- 🔴 家畜向けの一文。お米では出さない（product.html の isRice で消す）。 -->
+        <div class="pdp-meta-row" id="pdpMetaPure">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>
           </svg>
@@ -932,13 +939,14 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <p class="pdp-raise-eyebrow">HOW WE RAISE</p>
       <h2 class="pdp-raise-lead">どう育てたか。</h2>
       <div class="pdp-raise-grid" id="pdpRaiseGrid"></div>
-      <p class="pdp-raise-stance"><span>A5・BMS・産地名ではなく、</span>その手前にある「どう育てたか」を価値基準に。</p>
+      <!-- 🔴 A5・BMS は牛の格付け。お米では出さない（2026-10-26 田崎さん指示）。 -->
+      <p class="pdp-raise-stance" id="pdpRaiseStance"><span>A5・BMS・産地名ではなく、</span>その手前にある「どう育てたか」を価値基準に。</p>
     </div>
   </section>
 
   <section class="pdp-details">
     <details class="pdp-detail-item" open id="pdpCutItem">
-      <summary class="pdp-detail-summary">どの部位ですか？</summary>
+      <summary class="pdp-detail-summary" id="pdpCutSummary">どの部位ですか？</summary>
       <div class="pdp-detail-body"><p id="pdpCutCopy"></p></div>
     </details>
     <details class="pdp-detail-item" open>
@@ -982,7 +990,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       </div>
     </details>
     <details class="pdp-detail-item">
-      <summary class="pdp-detail-summary">原産地・飼育について</summary>
+      <summary class="pdp-detail-summary" id="pdpOriginSummary">原産地・飼育について</summary>
       <div class="pdp-detail-body" id="pdpOriginInfo">
         <p>宮崎県・自社牧場にて、30 ヶ月以上飼育。<br>
         抗生物質・成長促進剤・ホルモン剤は一切使用しておりません。<br>
@@ -1363,12 +1371,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   const isRice = product.category === 'rice';
   /* 玄米か精米かは商品名で分ける（products の name と同じ文字列） */
   const isGenmai = isRice && String(product.name || '').indexOf('玄米') >= 0;
-  const perKg = (isRice && C && C.weight) ? '¥' + Math.round((product.price || 0) / (C.weight / 1000)).toLocaleString() : '';
   const riceRows = !isRice ? null : [
     C ? ['品種', C.cut] : null,
     ['内容量', (C && C.variant) || product.variant || ''],
-    C ? ['炊飯の目安', C.meals] : null,
-    perKg ? ['1kg あたり', perKg] : null,
     ['原料玄米', '単一原料米'],
     ['産地', '宮崎県'],
     ['産年', '令和7年産'],
@@ -1461,6 +1466,31 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     /* 🍚 お米は常温便で全国一律 ¥1,100。北海道・沖縄の加算は無い。 */
     const noteEl2 = document.getElementById('pdpPriceNote');
     if (noteEl2) noteEl2.textContent = '税込価格 / 別途 送料 ¥1,100（税込・全国一律）';
+    /* 🍚 価格の下のメタ3行は肉向け。お米の実態に合わせて差し替える。
+       ・冷凍便／賞味期限6ヶ月 → 常温便／受注後に精米
+       ・送料の北海道・沖縄加算 → お米は全国一律
+       ・「抗生物質・成長促進剤 不使用」は家畜の話なので、お米では行ごと消す
+         （米に投薬の概念は無く、栽培方法の主張に読まれる。無投薬バッジと同じ理由） */
+    const mDeliv = document.getElementById('pdpMetaDeliv');
+    if (mDeliv) mDeliv.textContent = isGenmai
+      ? '常温便でお届け · ご注文後に調製して出荷します'
+      : '常温便でお届け · ご注文後に精米して出荷します';
+    const mShip = document.getElementById('pdpMetaShip');
+    if (mShip) mShip.textContent = '送料 ¥1,100 (税込・全国一律)';
+    /* 🔴 hidden 属性は .pdp-meta-row{display:flex} に負けて消えない（実測）。
+       インラインの display:none で確実に消す。 */
+    const mPure = document.getElementById('pdpMetaPure');
+    if (mPure) { mPure.hidden = true; mPure.style.setProperty('display', 'none', 'important'); }
+    /* 🍚 A5・BMS は牛の格付けでお米には無関係（2026-10-26 田崎さん指示）。
+       この1行だけ消す。セクション自体はお米の中身が入っているので残す。 */
+    const stanceEl = document.getElementById('pdpRaiseStance');
+    if (stanceEl) { stanceEl.hidden = true; stanceEl.style.setProperty('display', 'none', 'important'); }
+    /* 🍚 お米に部位は無い。中身(cutCopy)はお米の文章が入っているので見出しだけ替える。 */
+    const cutSum = document.getElementById('pdpCutSummary');
+    if (cutSum) cutSum.textContent = 'どんなお米ですか？';
+    /* 🍚 「飼育」は家畜の言葉。中身は PROF.how（田んぼの話）なので見出しを替える。 */
+    const origSum = document.getElementById('pdpOriginSummary');
+    if (origSum) origSum.textContent = '産地・田んぼについて';
     const shipEl = document.getElementById('pdpShipInfo');
     if (shipEl) {
       shipEl.innerHTML = '<p>ヤマト運輸の常温便でお届けします。<br>' +
@@ -1494,7 +1524,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     /* 独立セクション（数字の帯 ＋ どう育てたか 4項目） */
     const bandIn = document.getElementById('pdpBandIn');
     if (bandIn && PROF.band) {
-      bandIn.innerHTML = PROF.band.map(b =>
+      /* 🍚 帯はカテゴリ共通。玄米は精米しないので「受注後／精米」を「出荷時／調製」に差し替える。 */
+      const bandRows = PROF.band.map(b => (isGenmai && b[1] === '精米') ? ['出荷時', '調製', '調 製 時 期'] : b);
+      bandIn.innerHTML = bandRows.map(b =>
         '<div class="pdp-band-i"><b>' + esc(b[0]) + '<em>' + esc(b[1]) + '</em></b><span>' + esc(b[2]) + '</span></div>').join('');
       document.getElementById('pdpBand').hidden = false;
     }
