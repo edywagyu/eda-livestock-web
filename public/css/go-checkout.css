@@ -1,0 +1,120 @@
+/* ============================================================
+   決済へ進む ボタン（レジへの近道）
+   2026-10-27 田崎さん指示:
+   「そもそも決済までの動線がない」「決済の導線わかりにくいから変えたい」
+   ------------------------------------------------------------
+   いまの流れは「カートに追加」→ ボタンの文字が変わるだけ → お客様が
+   自分で右上のカートを見つけて押す → ドロワー → レジに進む。
+   そこで、カートに1点でも入っていたら レジ(checkout.html) への
+   ボタンを画面に出しっぱなしにする。
+
+   置き場所
+     一覧ページ(shop.html / products.html) … 画面の右下
+     商品ページ(product.html)             … 右上のカートボタンの真下
+
+   大きさ（田崎さん指示）
+     スマホ … いまのカートボタンと同じくらい（実測 高さ49px・文字14px）
+     パソコン … それより明確に大きく（実測 高さ64px・文字18px）
+
+   ⚠️ 金額は出さない。小計と、レジで出る合計（お米の常温便 ¥1,100 など
+      送料を含む金額）が食い違って見えるため。点数だけ添える。
+   ⚠️ 色は forest / gold だけ。新しい色は作らない。
+   ============================================================ */
+
+.eda-gocheckout {
+  position: fixed;
+  z-index: 93; /* 下の固定バー(90)・PDPのカート(87)より上 */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  background: var(--color-forest, #0F3D2E);
+  color: #fff;
+  border: 1.5px solid var(--color-gold, #C9A227);
+  border-radius: 100px;
+  text-decoration: none;
+  font-family: var(--font-jp, sans-serif);
+  font-weight: 700;
+  line-height: 1.4;
+  box-shadow: 0 10px 28px rgba(15, 61, 46, 0.32);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  cursor: pointer;
+  white-space: nowrap; /* 狭い画面で「決済へ進む」が縦に割れないように */
+  /* ---- パソコン（既定）: はっきり大きく ---- */
+  font-size: 18px;
+  padding: 18px 32px;
+}
+
+/* 1点でも入ったら出す。空のときは出さない（JSが is-on を付け外しする） */
+.eda-gocheckout.is-on { display: inline-flex; }
+
+.eda-gocheckout:hover {
+  background: var(--color-forest-deep, #0A2D21);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(15, 61, 46, 0.42);
+}
+.eda-gocheckout:focus-visible {
+  outline: 3px solid var(--color-gold, #C9A227);
+  outline-offset: 3px;
+}
+.eda-gocheckout .gc-count {
+  flex-shrink: 0;
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: 100px;
+  background: var(--color-gold, #C9A227);
+  color: var(--color-forest-deep, #0A2D21);
+  font-size: 0.78em;
+  text-align: center;
+}
+.eda-gocheckout .gc-arrow { flex-shrink: 0; opacity: 0.9; }
+
+/* ---------- 一覧ページ: 画面の右下 ---------- */
+.eda-gocheckout--corner {
+  right: 24px;
+  bottom: 24px;
+}
+
+/* ---------- 商品ページ: 右上のカートボタンの真下 ----------
+   --pdp-cart-top は product.html が ヘッダーの実寸から毎回計算して入れている。 */
+.eda-gocheckout--under-cart {
+  /* カートボタン(高さ44px)の下に12px あけて置く */
+  top: calc(var(--pdp-cart-top, 100px) + 56px);
+  right: 12px;
+}
+
+/* ============ スマホ: 今のカートボタンと同じくらいの大きさ ============ */
+@media (max-width: 767px) {
+  .eda-gocheckout {
+    font-size: 14px;
+    padding: 13px 20px;
+    box-shadow: 0 8px 20px rgba(15, 61, 46, 0.3);
+  }
+  /* 下に固定バー（カートを見る）が出ているので、その上に逃がす */
+  .eda-gocheckout--corner {
+    right: 14px;
+    bottom: calc(86px + env(safe-area-inset-bottom));
+  }
+  .eda-gocheckout--under-cart { right: 8px; }
+}
+
+/* 下の固定バーが出ていないスマホでは、下まで降ろす */
+@media (max-width: 767px) {
+  body:not(.has-sticky-cart) .eda-gocheckout--corner {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eda-gocheckout { transition: none; }
+  .eda-gocheckout:hover { transform: none; }
+}
+
+/* ---------- 右下で鉢合わせするものを上に逃がす ----------
+   クーポンのポップ(.coupon-pop)は right:16px / bottom:88px(スマホ80px) で、
+   「決済へ進む」と同じ場所に出てくる。ボタンが出ている間だけ持ち上げる。 */
+body.has-gocheckout .coupon-pop { bottom: 104px; }
+@media (max-width: 767px) {
+  body.has-gocheckout .coupon-pop { bottom: 148px; }
+}

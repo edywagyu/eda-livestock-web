@@ -9621,6 +9621,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
+<link rel="stylesheet" href="public/css/go-checkout.css?v=20261027a">
 <link rel="stylesheet" href="public/css/simple-ui.css?v=20261023e">
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15590,5 +15591,15 @@ function copyPopCoupon() {
   else window.addEventListener('load', run);
 })();
 </script>
+<!-- ========= 決済へ進む（右下・レジへの近道） =========
+     2026-10-27 田崎さん指示。カートに1点でも入ったら出す。
+     既存のカートに追加・カートドロワー・レジの計算には触っていない。
+     金額は出さない（レジの合計＝送料込みと食い違うため）。点数だけ。 -->
+<a class="eda-gocheckout eda-gocheckout--corner" id="goCheckoutBtn" href="checkout.html" aria-hidden="true">
+ <span data-en="Proceed to checkout">決済へ進む</span>
+ <span class="gc-count" data-gc-count>0</span>
+ <svg class="gc-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+</a>
+<script src="public/js/go-checkout.js?v=20261027a"></script>
 </body>
 </html>
