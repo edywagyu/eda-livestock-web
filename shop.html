@@ -7056,6 +7056,25 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="CHICKEN THIGH"] { background-image: image-set(url('public/images/products/drive/chicken-thigh.webp') type('image/webp'), url('public/images/products/drive/chicken-thigh.jpg')); }
 .product-card-img[data-label="CHICKEN SET"] { background-image: image-set(url('public/images/products/drive/chicken-set.webp') type('image/webp'), url('public/images/products/drive/chicken-set.jpg')); }
 .product-card-img[data-label="CHICKEN MINCED"] { background-image: image-set(url('public/images/products/drive/chicken-minced.webp') type('image/webp'), url('public/images/products/drive/chicken-minced.jpg')); }
+/* 🍚 お米の「12月1日から ¥◯」。取り消し線は使わない。
+   listPrice は過去に売っていた通常価格ではなく将来の価格なので、
+   <s>通常価格</s> の形にすると不当表示になる（販売実績ゼロ・8週間ルール未達）。 */
+.rice-future-price { display: block; margin-top: 4px; font-size: 11px; line-height: 1.5;
+  color: var(--color-ink-muted); font-weight: 400; }
+.rice-future-price b { font-weight: 700; color: var(--color-forest); }
+/* 🍚 お米の「12/1から ¥◯」。カードは文字数が入らないので短縮形。
+   🔴 取り消し線・「通常価格」「定価」「○○%OFF」は使わない（販売実績ゼロ・8週間ルール未達）。
+   色は既存トークン(forest / gold / cream)のみ。
+   2026-10-26 田崎さん選定: クリーム地＋金枠（商品詳細ページと同じ方針）。 */
+.rice-card-notice { display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; font-family: var(--font-jp);
+  line-height: 1.4; background: var(--color-cream); border: 1.5px solid var(--color-gold); }
+.rice-cn-badge { font-size: 10.5px; font-weight: 700; letter-spacing: .03em; padding: 3px 8px;
+  border-radius: 999px; background: var(--color-forest); color: var(--color-cream); white-space: nowrap; }
+.rice-cn-future { font-size: 12.5px; font-weight: 700; color: var(--color-forest); }
+.rice-cn-future b { font-size: 15px; }
+.product-card-img[data-label="RICE SEIMAI"] { background-image: url('public/images/products/drive/rice-seimai.jpg'); }
+.product-card-img[data-label="RICE GENMAI"] { background-image: url('public/images/products/drive/rice-genmai.jpg'); }
 .product-card-img[data-label="OUTLET SIRLOIN"] { background-image: image-set(url('public/images/products/drive/sirloin-2.webp') type('image/webp'), url('public/images/products/drive/sirloin-2.jpg')); }
 .product-card-img[data-label="OUTLET MISUJI"] { background-image: image-set(url('public/images/products/drive/misuji-2.webp') type('image/webp'), url('public/images/products/drive/misuji-2.jpg')); }
 .product-card-img[data-label="OUTLET BRISKET"] { background-image: image-set(url('public/images/products/drive/yakiniku-brisket.webp') type('image/webp'), url('public/images/products/drive/yakiniku-brisket.jpg')); }
@@ -7517,6 +7536,24 @@ body.is-member .product-card--organic .org-chk-lock {
 /* 鶏肉 SOON カード: buy ボタンを非表示 */
 .product-card--chicken-soon .product-buy { display: none !important; }
 /* 無投薬バッジ */
+/* 🔴 お米には「無投薬」バッジを出さない（米に投薬の概念は無い。
+   栽培方法の主張に読まれ、根拠が無いため）。JS側のセレクタでも除外しているが、
+   別経路で付いても出ないようにCSSでも止める。 */
+/* 🍚 shop.html のお米カードの中身について（2026-10-26 田崎さん指示の確認結果）。
+   「商品説明を出さない」「常温便 送料¥1,100 の行を出さない」は、
+   public/css/simple-ui.css(PR #387) が
+     .product-grid .product-card .product-desc / .product-stats
+   を全カードで display:none にしているため、shop.html では既に満たされている。
+   同じ内容をここに重ねても無意味なので置かない。
+   🔴 お米の送料(全国一律¥1,100・送料無料の対象外)は、shop.html の棚には出ていない。
+      見出しの送料段落は 2026-10-26(3c1e47a) に田崎さん指示で削除済み。
+      残っているのは products.html の米カード8枚(.product-stat-item.wide)／
+      商品詳細ページ／カートドロワー(.cart-shipping-note)／
+      tokushoho.html／terms.html の5箇所（2026-10-26 実物確認）。
+      ※products.html は simple-ui.css を読まないので .product-stats が生きている。
+      棚に出すかは田崎さんの判断。ここを読んで「見出しにあるから不要」と判断しないこと。
+   ※ simple-ui.css は shop.html だけが読み込む。products.html では説明文もスペックも出る。 */
+.product-grid[data-cat="rice"] .product-card .badge-muton { display: none !important; }
 .badge-muton {
  background: rgba(15,61,46,0.82);
  color: var(--color-gold);
@@ -9988,6 +10025,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="tab tab--nikunohi" data-filter="nikunohi" data-limited-scope="肉の日限定セット">肉の日</button>
  <button class="tab" data-filter="beef">牛肉</button>
  <button class="tab" data-filter="chicken">鶏肉</button>
+ <button class="tab" data-filter="rice">米</button>
  </div>
 
  <!-- ===== 肉の日限定（2026-08-27〜08-30 / 終了は limitedUntil で自動非表示） ===== -->
@@ -10638,6 +10676,142 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
+
+
+ <!-- ===== エダチク米（2026-10-26 新設・自社田／常温便） =====
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 米は常温便で送料 ¥1,100 固定。冷凍便の「¥11,000以上 送料無料」の対象外。
+         請求側の規則は checkout.html の renderSummary と gas/Code.gs の riceShipping_。 -->
+ <div class="shop-cat-head reveal" data-cat="rice" style="margin-top: 80px;">
+ <h2 class="shop-cat-title">エダチク米 <span>/ Edachiku Rice</span></h2>
+ <p class="shop-cat-desc">宮崎県の大地で牛と米を育てています。</p>
+ <p class="shop-cat-desc" style="margin-top:6px">牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。</p>
+ <p class="shop-cat-desc" style="margin-top:6px">産地・品種・産年を混ぜない単一原料米を、ご注文をいただいてから精米して、常温便でお送りします。玄米のままもお選びいただけます。</p>
+ </div>
+
+ <!-- 精米／玄米の切替（2026-10-26 田崎さん指示）。
+      牛肉の部位タブとまったく同じ仕組み（.sub-tab-row[data-parent-cat] ＋ カードの data-sub）。
+      このページの既存行(beef)に合わせて「すべて」は置かず、先頭(精米)を初期選択にする。
+      初期選択は下部の applySubFilter が読み込み時に適用する。 -->
+ <div class="sub-tab-row reveal" data-parent-cat="rice">
+ <button class="sub-tab active" data-sub="seimai">精米</button>
+ <button class="sub-tab" data-sub="genmai">玄米</button>
+ </div>
+
+ <div class="product-grid cols-4" data-cat="rice" data-preview-limit="1">
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510260356466,"t":"1セット","p":3564}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;3,564</span></div>
+ <p class="product-name"><a href="product.html?id=P066" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 5kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>。<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して1袋 5kgでお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>1袋 5kg</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;8,640</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510260712867,"t":"1セット","p":7128}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;7,128</span></div>
+ <p class="product-name"><a href="product.html?id=P067" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 10kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>。<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×2袋でお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>5kg&times;2袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;17,280</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510261069268,"t":"1セット","p":10692}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;10,692</span></div>
+ <p class="product-name"><a href="product.html?id=P068" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 15kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>。<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×3袋でお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>5kg&times;3袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;25,920</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="seimai" data-variants='[{"id":510261425669,"t":"1セット","p":14256}]'>
+ <div class="product-card-img" data-label="RICE SEIMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Milled</span><span class="product-price">&yen;14,256</span></div>
+ <p class="product-name"><a href="product.html?id=P069" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 精米 20kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>。<strong>単一原料米</strong>を、<strong>ご注文後に精米</strong>して5kg×4袋でお送りします。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>5kg&times;4袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;34,560</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510260356470,"t":"1セット","p":3564}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;3,564</span></div>
+ <p class="product-name"><a href="product.html?id=P070" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 5kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>1袋 5kgで。<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>1袋 5kg</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;8,640</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510260712871,"t":"1セット","p":7128}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;7,128</span></div>
+ <p class="product-name"><a href="product.html?id=P071" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 10kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>5kg×2袋で。<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>5kg&times;2袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;17,280</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510261069272,"t":"1セット","p":10692}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;10,692</span></div>
+ <p class="product-name"><a href="product.html?id=P072" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 15kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>5kg×3袋で。<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>5kg&times;3袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;25,920</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+
+ <div class="product-card" data-sub="genmai" data-variants='[{"id":510261425673,"t":"1セット","p":14256}]'>
+ <div class="product-card-img" data-label="RICE GENMAI"></div>
+ <div class="product-tag-row"><span class="product-tag">Rice &middot; Brown</span><span class="product-price">&yen;14,256</span></div>
+ <p class="product-name"><a href="product.html?id=P073" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">エダチク米 玄米 20kg</a></p>
+ <p class="product-desc">宮崎県の大地で<strong>牛と米</strong>を育てています。<strong>牛舎から出た堆肥</strong>を田んぼに入れ、<strong>刈り取った藁は牛の飼料</strong>になります。霧島連山のふもとで循環させて育てた令和7年産の<strong>ヒノヒカリ</strong>を、<strong>玄米のまま</strong>5kg×4袋で。<strong>単一原料米</strong>。ご家庭の精米機でお好みの分づきに。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">内容量 <strong>5kg&times;4袋</strong></div>
+ <div class="product-stat-item wide">常温便 <strong>送料 &yen;1,100</strong>（税込・送料無料の対象外）</div>
+ </div>
+ <div class="rice-card-notice"><span class="rice-cn-badge">11/30まで</span><span class="rice-cn-future">12/1から <b>&yen;34,560</b>（税込）</span></div>
+ <div class="product-buy"></div>
+ </div>
+ </div>
+
+ <!-- ジャンル別プレビュー(1件)から商品一覧へ。beef/chicken と同じ .shop-viewall-wrap/.btn-viewall。
+      文言と href は productPreviewInit が差し替える（CAT_LABEL.rice='お米'）。
+      data-sub="all" / data-anchor="rice" で、飛び先では8点とも見える状態でお米の棚に着地する。 -->
+ <div class="shop-viewall-wrap" data-cat="rice" data-sub="all" data-anchor="rice">
+ <a href="products.html?cat=rice&amp;sub=all#rice" class="btn-viewall">お米をすべて表示 →</a>
+ </div>
 
  <!-- 訳あり は会員限定 — 通常表示から削除（マイページからのみアクセス可） -->
  <!-- ギフトは「贈答用」セクション（gift-highlight）に集約 — 商品リストから削除 -->
@@ -12260,11 +12434,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
        牛肉18商品 × 280px ＝ 実測 4,556px を押し込んでいた。画面に出るのは約1.5商品で、
        残り16商品は右へ何度もスワイプしないと存在に気づけない（＝ほぼ売り場に無いのと同じ）。
     → 縦スクロールで全商品が見える2列グリッドへ（スマホECの標準形）。
+    🔴 カテゴリを足したら、このセレクタ列にも必ず足すこと。足し忘れると
+       @media(max-width:640px) の .product-grid（横レール）のままになり、
+       375pxで1商品しか画面に入らない＝その棚は売り場に無いのと同じになる。
+       （2026-10-26 エダチク米 rice を足し忘れて玄米4点が全部画面外だった）
        カード自体は上のルールで既に圧縮済みなので、ここは「並べ方」だけを変える。
     🔴 レールは左右に負マージンで画面端まではみ出させていた。折り返す時に残すと
        グリッドが container からズレるので必ず 0 に戻す。 */
  .product-grid[data-cat="beef"],
  .product-grid[data-cat="chicken"],
+ .product-grid[data-cat="rice"],
  .product-grid--merged {
    flex-wrap: wrap !important;
    overflow-x: visible !important;
@@ -12276,6 +12455,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  .product-grid[data-cat="beef"] .product-card,
  .product-grid[data-cat="chicken"] .product-card,
+ .product-grid[data-cat="rice"] .product-card,
  .product-grid--merged .product-card {
    flex: 1 1 calc(50% - 6px) !important;
    max-width: calc(50% - 6px) !important;
@@ -12287,10 +12467,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
     → 折り返しを許可して価格を必ずカード内に収める。 */
  .product-grid[data-cat="beef"] .product-tag-row,
  .product-grid[data-cat="chicken"] .product-tag-row,
+ .product-grid[data-cat="rice"] .product-tag-row,
  .product-grid--merged .product-tag-row { flex-wrap: wrap !important; row-gap: 2px !important; }
  /* nowrap のままだと「カートに追…」と切れるので、狭い時だけ折り返しを許可 */
  .product-grid[data-cat="beef"] .btn-add-cart,
  .product-grid[data-cat="chicken"] .btn-add-cart,
+ .product-grid[data-cat="rice"] .btn-add-cart,
  .product-grid--merged .btn-add-cart {
    white-space: normal !important;
    font-size: 11px !important;
@@ -12304,9 +12486,11 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
     まとめ買いの訴求は購入率に効くので消さない。 */
  .product-grid[data-cat="beef"] .product-buy,
  .product-grid[data-cat="chicken"] .product-buy,
+ .product-grid[data-cat="rice"] .product-buy,
  .product-grid--merged .product-buy { align-items: stretch !important; }
  .product-grid[data-cat="beef"] .qty-row,
  .product-grid[data-cat="chicken"] .qty-row,
+ .product-grid[data-cat="rice"] .qty-row,
  .product-grid--merged .qty-row {
    width: 100% !important; min-width: 0 !important;
    flex-wrap: nowrap !important; gap: 6px !important;
@@ -12314,10 +12498,12 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  }
  .product-grid[data-cat="beef"] .qty-stepper .qty-val,
  .product-grid[data-cat="chicken"] .qty-stepper .qty-val,
+ .product-grid[data-cat="rice"] .qty-stepper .qty-val,
  .product-grid--merged .qty-stepper .qty-val { min-width: 22px !important; }
  /* 端数が出たら押し出さずに、この文字側が縮んで吸収する（flex-shrink:0 だと外へ出る） */
  .product-grid[data-cat="beef"] .qty-disc,
  .product-grid[data-cat="chicken"] .qty-disc,
+ .product-grid[data-cat="rice"] .qty-disc,
  .product-grid--merged .qty-disc {
    font-size: 10px !important; min-width: 0 !important;
    flex: 0 1 auto !important; overflow: hidden !important;
@@ -12520,6 +12706,35 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const CART_KEY = 'eda-cart';
  const FREE_SHIP = 11000;
 
+ /* ============================================================
+    🍚 エダチク米（常温便）は「¥11,000以上で送料無料」の対象外
+    ------------------------------------------------------------
+    お米の金額を足して「送料無料」と出すと、20kg(¥14,256)1点のお客様に
+    「送料無料」と言ってからレジで ¥1,100 を請求することになる。
+    送料無料の判定には、お米を除いた小計を使う。
+    🔴 同じ規則が checkout.html の renderSummary と gas/Code.gs の
+       riceShipping_ にもある。片方だけ直すと表示と請求がズレる。
+    ============================================================ */
+ const RICE_TITLES_CART = {
+  'エダチク米 精米 5kg': true, 'エダチク米 精米 10kg': true,
+  'エダチク米 精米 15kg': true, 'エダチク米 精米 20kg': true,
+  'エダチク米 玄米 5kg': true, 'エダチク米 玄米 10kg': true,
+  'エダチク米 玄米 15kg': true, 'エダチク米 玄米 20kg': true
+ };
+ function isRiceTitle_(t) { return !!RICE_TITLES_CART[String(t || '').trim()]; }
+ function hasRiceInCart_(list) {
+  return (list || []).some(function (i) { return i && isRiceTitle_(i.title); });
+ }
+ /* 送料無料の判定に使う小計（お米を除く） */
+ function nonRiceSubtotal_(list, fallback) {
+  if (!list || !list.length) return fallback || 0;
+  return list.reduce(function (s, i) {
+   if (!i || isRiceTitle_(i.title)) return s;
+   return s + (i.price || 0) * (i.qty || 1);
+  }, 0);
+ }
+ const RICE_SHIP_NOTE = 'お米は常温便のため、別途 送料 ¥1,100（税込）を頂戴します';
+
  /* --- State --- */
  let items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 
@@ -12661,11 +12876,16 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  /* shipping note */
  const noteEl = document.querySelector('.cart-shipping-note');
  if (noteEl) {
- const remaining = FREE_SHIP - subtotal;
- if (remaining > 0) {
- noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料`;
+ /* 🍚 送料無料の判定はお米を除いた小計で行う（お米は常温便で対象外） */
+ const _shipBase = nonRiceSubtotal_(items, subtotal);
+ const _riceInCart = hasRiceInCart_(items);
+ const remaining = FREE_SHIP - _shipBase;
+ if (_shipBase <= 0 && _riceInCart) {
+ noteEl.innerHTML = RICE_SHIP_NOTE;
+ } else if (remaining > 0) {
+ noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料` + (_riceInCart ? `<br><small>${RICE_SHIP_NOTE}</small>` : '');
  } else {
- noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！';
+ noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！' + (_riceInCart ? `<br><small>${RICE_SHIP_NOTE}</small>` : '');
  }
  }
 
@@ -12690,11 +12910,15 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  stickyTotal.textContent = '¥' + subtotal.toLocaleString();
  // 送料表示
  if (stickyShipNote) {
- if (subtotal >= FREE_SHIP) {
- stickyShipNote.textContent = '✓ 送料無料';
+ /* 🍚 お米は送料無料の対象外。判定からも表示からも外す。 */
+ const _sBase = nonRiceSubtotal_(items, subtotal);
+ if (hasRiceInCart_(items) && _sBase <= 0) {
+ stickyShipNote.textContent = '送料 ¥1,100（税込）';
+ } else if (_sBase >= FREE_SHIP) {
+ stickyShipNote.textContent = hasRiceInCart_(items) ? 'お肉は送料無料／お米 ¥1,100' : '✓ 送料無料';
  } else {
- const remaining = FREE_SHIP - subtotal;
- stickyShipNote.textContent = 'あと¥' + remaining.toLocaleString() + 'で送料無料';
+ const remaining = FREE_SHIP - _sBase;
+ stickyShipNote.textContent = 'あと¥' + remaining.toLocaleString() + 'で送料無料' + (hasRiceInCart_(items) ? '／お米 ¥1,100' : '');
  }
  }
  stickyBar.classList.add('visible');
@@ -15022,12 +15246,21 @@ function copyPopCoupon() {
 <!-- 商品マスター: GAS 経由でスプシから動的取得 (fallback: products-master.js)
      スプシ: 1tNbIvsTkqrJiWtgpKCHevs_qeVjfNny0FPEsqTtxruM の products タブ -->
 <script>
-/* 無投薬バッジ — オーガニック以外の全商品カードに自動挿入 */
+/* 無投薬バッジ — オーガニック以外の全商品カードに自動挿入
+   🔴 お米(棚 data-cat="rice")は必ず除外する。「投薬」は家畜に薬を与えることで、
+      米には投薬の概念が無く事実として意味を成さない。お客様からは栽培方法の主張
+      （農薬を使っていない）に読めるが、その根拠は無い（2026-10-26 田崎さん決定で
+      「特別栽培米」「農薬と化学肥料を減らして」を全部落としたのと同じ理由）。
+      景品表示法の優良誤認になるので、米にこのバッジを付けないこと。 */
 (function() {
   function addMutonBadges() {
     document.querySelectorAll(
       '.product-card:not(.product-card--organic):not(.product-card--organic-wagyu):not(.product-card--chicken-soon):not([data-sub="organic"])'
     ).forEach(function(card) {
+      /* 🔴 お米は data-sub が seimai/genmai に分かれたので、棚(data-cat="rice")で除外する。
+         「投薬」は家畜に薬を与えることで、米には投薬の概念が無く事実として意味を成さない。
+         栽培方法の主張に読まれるが根拠は無い（2026-10-26）。 */
+      if (card.closest('[data-cat="rice"]')) return;
       var imgDiv = card.querySelector('.product-card-img');
       if (!imgDiv || imgDiv.querySelector('.badge-muton')) return;
       var badge = document.createElement('span');
@@ -15098,9 +15331,9 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-10-26-hide-p063-p065" defer></script>
+<script src="public/data/products-master.js?v=2026-10-26-rice-dec2" defer></script>
 <script src="public/js/preorder.js?v=004"></script>
-<script src="public/js/products-loader.js?v=008" defer></script>
+<script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>
@@ -15163,10 +15396,13 @@ function copyPopCoupon() {
 (function productPreviewInit() {
  'use strict';
  var LIMIT = 2;
- var CAT_LABEL = { beef: '和牛', chicken: '鶏肉' };
+ var CAT_LABEL = { beef: '和牛', chicken: '鶏肉', rice: 'お米' };
  /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
  var PREVIEW_PICKS = {
-   beef: { all: ['はじめてセット', '赤身スライス'] }
+   beef: { all: ['はじめてセット', '赤身スライス'] },
+   /* 🍚 代表は 5kg。他カテゴリの代表の決め方（beef は「はじめてセット」＝入口の品）に合わせ、
+      いちばん手に取りやすい容量を出す。残りは「お米をすべて表示」から。 */
+   rice: { seimai: ['エダチク米 精米 5kg'], genmai: ['エダチク米 玄米 5kg'] }
  };
 
  function searchQuery() {
@@ -15201,7 +15437,11 @@ function copyPopCoupon() {
      /* 販売中の限定品(data-limited-scope)は LIMIT の枠外で必ず出す。
         終了すると limited-stock.js が非表示にするので visible から外れ、自動で元の件数に戻る */
      var limitedVisible = visible.filter(function(c) { return c.hasAttribute('data-limited-scope'); });
-     var limit = LIMIT + limitedVisible.length;
+     /* 🍚 棚ごとに表示枚数を変えられる（data-preview-limit）。
+        エダチク米は 1 枚だけ出して「お米をすべて表示」で全商品一覧へ送る（2026-10-26 田崎さん指示）。
+        指定が無ければ従来どおり LIMIT(2)。 */
+     var baseLimit = parseInt(grid.dataset.previewLimit, 10) || LIMIT;
+     var limit = baseLimit + limitedVisible.length;
 
      /* 優先表示商品を先に確保し、足りなければ先頭から補完 */
      var picks = (PREVIEW_PICKS[cat] || {})[sub] || [];
@@ -15227,12 +15467,16 @@ function copyPopCoupon() {
 
      if (!wrap) return;
      var gridHidden = getComputedStyle(grid).display === 'none';
-     wrap.style.display = (gridHidden || visible.length <= LIMIT) ? 'none' : '';
+     wrap.style.display = (gridHidden || visible.length <= baseLimit) ? 'none' : '';
 
      /* 選択中のサブタブを products.html へ引き継ぐ (?cat=beef&sub=steak) */
      var a = wrap.querySelector('a');
      if (a) {
-       a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(sub) + '#products';
+       /* 🍚 飛び先は棚ごとに変えられる。エダチク米は products.html のお米の棚(#rice)へ、
+          sub=all で8点とも見える状態で着地させる（全商品一覧は絞らない）。 */
+       var jumpSub = wrap.dataset.sub || sub;
+       var anchor = wrap.dataset.anchor || 'products';
+       a.href = 'products.html?cat=' + cat + '&sub=' + encodeURIComponent(jumpSub) + '#' + anchor;
        /* 2026-10-23 田崎さん指示。部位タブ名ではなく常にカテゴリ名で出す */
        a.textContent = (CAT_LABEL[cat] || '') + 'をすべて表示 →';
      }
@@ -15304,13 +15548,18 @@ function copyPopCoupon() {
 <script>
 (function(){
   function applySubFilter(){
-    var row = document.querySelector('.sub-tab-row[data-parent-cat="beef"]');
+    /* 2026-10-26 エダチク米(精米/玄米)の切替を足したので、beef 決め打ちをやめて
+       「すべて」を持たないサブタブ行すべてに先頭タブを適用する。 */
+    document.querySelectorAll('.sub-tab-row[data-parent-cat]').forEach(applyOneRow);
+  }
+  function applyOneRow(row){
     if (!row) return;
+    var cat = row.dataset.parentCat;
     var t = row.querySelector('.sub-tab.active') || row.querySelector('.sub-tab');
     if (!t) return;
     t.classList.add('active');
     var sub = t.dataset.sub;
-    document.querySelectorAll('[data-cat="beef"] .product-card[data-sub]').forEach(function(c){
+    document.querySelectorAll('[data-cat="' + cat + '"] .product-card[data-sub]').forEach(function(c){
       if (c.closest('[data-no-subfilter]')) return;   // 特別セット品・期間限定は対象外
       if (c.dataset.sub === sub || sub === 'all') {
         if (c.style.display === 'none') c.style.display = '';

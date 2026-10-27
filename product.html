@@ -571,6 +571,28 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-ing-src { margin: 0; font-size: 11.5px; color: var(--color-ink-muted); }
 
 /* ============ 部位・調理・併買（2026-09-02 追加） ============ */
+/* 🍚 お米の「12月1日から ¥◯」。価格の直下に独立したブロックで出す。
+   🔴 取り消し線は使わない。「通常価格」「定価」「○○%OFF」も使わない。
+      販売実績ゼロで8週間ルールを満たさないため、過去価格としての二重価格表示は不当表示。
+      将来価格（12月1日から ¥◯）の形だけが使える。
+   色は既存トークン(forest / gold / cream)だけで組む。新しい色は作らない。
+   2026-10-26 田崎さん選定: クリーム地＋金枠。 */
+.rice-price-notice { display: block; margin: 14px 0 4px; padding: 14px 16px; border-radius: 10px;
+  font-family: var(--font-jp); line-height: 1.5;
+  background: var(--color-cream); border: 2px solid var(--color-gold); }
+.rice-pn-badge { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .04em;
+  padding: 4px 11px; border-radius: 999px;
+  background: var(--color-forest); color: var(--color-cream); }
+.rice-pn-main { display: block; margin-top: 9px; font-size: 14px; color: var(--color-ink-muted); }
+.rice-pn-future { display: block; margin-top: 3px; font-size: 17px; font-weight: 700;
+  color: var(--color-forest); }
+.rice-pn-future b { font-size: 22px; letter-spacing: .01em; }
+@media (max-width: 480px) {
+  .rice-price-notice { padding: 12px 13px; }
+  .rice-pn-main { font-size: 13px; }
+  .rice-pn-future { font-size: 15px; }
+  .rice-pn-future b { font-size: 19px; }
+}
 .pdp-cook-steps { list-style: none; counter-reset: cs; margin: 0; padding: 0; }
 .pdp-cook-steps li { counter-increment: cs; display: grid; grid-template-columns: 38px 1fr;
   gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-line); }
@@ -578,6 +600,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 .pdp-cook-steps li::before { content: '0' counter(cs); font-family: var(--font-display);
   font-size: 15px; color: var(--color-gold-soft); }
 .pdp-cook-steps b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 3px; }
+/* 🔴 li は grid-template-columns: 38px 1fr。中の要素は ::before(番号) / b(見出し) / span(説明) の3つで、
+   自動配置だと span が次の行の1列目＝幅38px に落ちる。説明文が1〜2文字ずつ折り返されて読めない
+   （2026-10-26 実測: span の幅が38pxしかなかった。お米だけでなく肉の「焼き方」も同じ状態）。
+   span を2列目に固定して、見出しの真下で本文の幅いっぱいに流す。 */
+.pdp-cook-steps li > b { grid-column: 2; }
+.pdp-cook-steps li > span { grid-column: 2; display: block; }
 .pdp-raise { margin: 0 0 14px; }
 .pdp-raise b { display: block; color: var(--color-forest); font-weight: 500; margin-bottom: 2px; }
 
@@ -771,7 +799,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <div class="pdp-price" id="pdpPrice"></div>
       <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
            金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
-      <p class="pdp-price-note">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
+      <p class="pdp-price-note" id="pdpPriceNote">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
 
       <!-- ========= 🎁 キャンペーン特典の帯（中身と表示期間は public/js/gift-rules.js の CAMPAIGN が正。
      期間外は gift-notice.js が hidden にするので、終わったあとの撤去作業は不要） ========= -->
@@ -866,16 +894,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
             <circle cx="5.5" cy="18.5" r="2.5"/>
             <circle cx="18.5" cy="18.5" r="2.5"/>
           </svg>
-          <span>冷凍便でお届け · 賞味期限 製造日より 6 ヶ月</span>
+          <span id="pdpMetaDeliv">冷凍便でお届け · 賞味期限 製造日より 6 ヶ月</span>
         </div>
         <div class="pdp-meta-row">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M22 4L12 13 2 4"/>
           </svg>
-          <span>送料 ¥1,100 (税込)／北海道・沖縄 ¥2,200</span>
+          <span id="pdpMetaShip">送料 ¥1,100 (税込)／北海道・沖縄 ¥2,200</span>
         </div>
-        <div class="pdp-meta-row">
+        <!-- 🔴 家畜向けの一文。お米では出さない（product.html の isRice で消す）。 -->
+        <div class="pdp-meta-row" id="pdpMetaPure">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/>
           </svg>
@@ -932,13 +961,14 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <p class="pdp-raise-eyebrow">HOW WE RAISE</p>
       <h2 class="pdp-raise-lead">どう育てたか。</h2>
       <div class="pdp-raise-grid" id="pdpRaiseGrid"></div>
-      <p class="pdp-raise-stance"><span>A5・BMS・産地名ではなく、</span>その手前にある「どう育てたか」を価値基準に。</p>
+      <!-- 🔴 A5・BMS は牛の格付け。お米では出さない（2026-10-26 田崎さん指示）。 -->
+      <p class="pdp-raise-stance" id="pdpRaiseStance"><span>A5・BMS・産地名ではなく、</span>その手前にある「どう育てたか」を価値基準に。</p>
     </div>
   </section>
 
   <section class="pdp-details">
     <details class="pdp-detail-item" open id="pdpCutItem">
-      <summary class="pdp-detail-summary">どの部位ですか？</summary>
+      <summary class="pdp-detail-summary" id="pdpCutSummary">どの部位ですか？</summary>
       <div class="pdp-detail-body"><p id="pdpCutCopy"></p></div>
     </details>
     <details class="pdp-detail-item" open>
@@ -947,8 +977,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         <dl class="pdp-spec" id="pdpSpec"></dl>
       </div>
     </details>
-    <details class="pdp-detail-item">
-      <summary class="pdp-detail-summary">解凍方法</summary>
+    <details class="pdp-detail-item" id="pdpThawItem">
+      <summary class="pdp-detail-summary" id="pdpThawTitle">解凍方法</summary>
       <div class="pdp-detail-body" id="pdpThaw">
         <p>冷凍のまま冷蔵庫へ移し、1 日〜1 日半かけて解凍してください。<br>
         お急ぎの場合は、袋のまま流水で 15 分以上。<br>
@@ -966,9 +996,15 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <summary class="pdp-detail-summary">原材料名・栄養成分</summary>
       <div class="pdp-detail-body" id="pdpLabelBody"></div>
     </details>
+    <!-- 🍚 一括表示（食品表示法）。エダチク米(category="rice")のときだけ出る。
+         中身は public/data/pdp-content.js の riceLabel。 -->
+    <details class="pdp-detail-item" id="pdpRiceLabelItem" hidden>
+      <summary class="pdp-detail-summary">一括表示</summary>
+      <div class="pdp-detail-body" id="pdpRiceLabelBody"></div>
+    </details>
     <details class="pdp-detail-item">
       <summary class="pdp-detail-summary">配送について</summary>
-      <div class="pdp-detail-body">
+      <div class="pdp-detail-body" id="pdpShipInfo">
         <p>ヤマト運輸クール宅急便 (冷凍便) でお届けします。<br>
         最短 3 日でお届け（目安）。お届け日時のご指定も可能です。<br>
         送料は ¥1,100 (税込)、北海道・沖縄は ¥2,200 (税込) を頂戴します。<br>
@@ -976,7 +1012,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       </div>
     </details>
     <details class="pdp-detail-item">
-      <summary class="pdp-detail-summary">原産地・飼育について</summary>
+      <summary class="pdp-detail-summary" id="pdpOriginSummary">原産地・飼育について</summary>
       <div class="pdp-detail-body" id="pdpOriginInfo">
         <p>宮崎県・自社牧場にて、30 ヶ月以上飼育。<br>
         抗生物質・成長促進剤・ホルモン剤は一切使用しておりません。<br>
@@ -1218,8 +1254,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-10-26-hide-p063-p065"></script>
-<script src="public/data/pdp-content.js?v=2026-10-19-bara"></script>
+<script src="public/data/products-master.js?v=2026-10-26-rice-dec2"></script>
+<script src="public/data/pdp-content.js?v=2026-10-26-rice2"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
 /* ============================================================
@@ -1294,12 +1330,26 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const _note = document.querySelector('.pdp-price-note');
     if (_note) _note.textContent = '税込価格 / 送料無料でお届けします';
   }
-  /* 価格: listPrice (通常価格) が売価より高ければ、取り消し線つきで併記 */
+  /* 価格: listPrice が売価より高ければ併記する。
+     🔴 お米(category='rice')だけは取り消し線を使わない。
+        お米の listPrice は「12月1日からの価格」で、過去に売っていた通常価格ではない。
+        販売実績ゼロで消費者庁の8週間ルール（過去8週間の過半かつ通算2週間以上）を
+        満たさないため、取り消し線で「通常価格からの値引き」に見せると不当表示になる。
+        将来価格との比較として「12月1日から ¥◯」と書く。
+        「通常価格」「定価」「○○%OFF」は使わない。 */
   (function renderPrice() {
     const price = product.price || 0;
     const listPrice = Number(product.listPrice) || 0;
     const el = document.getElementById('pdpPrice');
-    if (listPrice > price) {
+    if (product.category === 'rice' && listPrice > price) {
+      el.innerHTML =
+        '<span style="color:var(--color-red)">¥' + price.toLocaleString() + '</span>' +
+        '<span class="rice-price-notice">' +
+          '<span class="rice-pn-badge">11月30日（月）まで</span>' +
+          '<span class="rice-pn-main">この価格でお求めいただけます</span>' +
+          '<span class="rice-pn-future">12月1日から <b>¥' + listPrice.toLocaleString() + '</b>（税込）</span>' +
+        '</span>';
+    } else if (listPrice > price) {
       el.innerHTML =
         '<span style="font-size:0.62em;color:var(--color-ink-muted);text-decoration:line-through;font-weight:400;margin-right:12px">¥' + listPrice.toLocaleString() + '</span>' +
         '<span style="color:var(--color-red)">¥' + price.toLocaleString() + '</span>';
@@ -1352,7 +1402,30 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   const PROF = (window.EDA_PDP_PROFILE || {})[product.category] || (window.EDA_PDP_PROFILE || {}).beef || null;
   const isChicken = product.category === 'chicken' || product.category === 'chicken-org';
   const per100 = (C && C.weight) ? '¥' + Math.round((product.price || 0) / C.weight * 100).toLocaleString() : '';
-  const rows = [
+  /* 🍚 エダチク米。肉向けの行（部位・解凍・賞味期限6ヶ月・冷凍保管・アレルゲン牛肉）は
+     どれも当てはまらないので、米は米の行を組む。単価も 100g ではなく 1kg で出す。 */
+  const isRice = product.category === 'rice';
+  /* 玄米か精米かは商品名で分ける（products の name と同じ文字列） */
+  const isGenmai = isRice && String(product.name || '').indexOf('玄米') >= 0;
+  const riceRows = !isRice ? null : [
+    C ? ['品種', C.cut] : null,
+    ['内容量', (C && C.variant) || product.variant || ''],
+    ['原料玄米', '単一原料米'],
+    ['産地', '宮崎県'],
+    ['産年', '令和7年産'],
+    /* 🍚 玄米は精米しない。玄米に「精米年月日：ご注文後に精米」を出すと
+       同じページの「玄米のままお送りします」と矛盾する。玄米は調製年月日。 */
+    /* 食品表示基準 別記様式4 の義務項目は 名称／原料玄米／内容量／精米時期／
+       食品関連事業者の氏名・住所・電話番号 の5つ。項目名は「精米年月日」ではなく「精米時期」、
+       玄米は「調製時期」。
+       🔴 値に固定の日付文字列を置かない。精米時期は年月日か年月旬で表示する決まりで、
+          受注後に精米する以上ここで日付は確定しない。実際の日付は出荷時に米袋へ記載する。 */
+    isGenmai ? ['調製時期', '出荷時に調製した日を商品に記載します']
+             : ['精米時期', '出荷時に精米した日を商品に記載します'],
+    ['配送', '常温便'],
+    C ? ['保存方法', C.storage] : null
+  ].filter(Boolean);
+  const rows = riceRows || [
     C ? ['部位', C.cut] : null,
     ['内容量', (C && C.variant) || product.variant || ''],
     C ? ['お召し上がり人数', C.meals] : null,
@@ -1381,7 +1454,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       window.EDA_CUT_MAP.render(cutEl.parentNode, productId);
     }
     const thawEl = document.getElementById('pdpThaw');
-    if (thawEl) thawEl.innerHTML = '<p>' + esc(C.thaw) + '。<br>解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>';
+    /* 🍚 米は冷凍品ではないので「解凍方法」ではなく「保存方法」を出す。
+       肉の「解凍後は当日中に／再冷凍は…」の一文は米に付けない。 */
+    if (isRice) {
+      const thawTitle = document.getElementById('pdpThawTitle');
+      if (thawTitle) thawTitle.textContent = '保存方法';
+      if (thawEl) thawEl.innerHTML = '<p>' + esc(C.storage || '') + '。</p>';
+      const thawItem = document.getElementById('pdpThawItem');
+      if (thawItem && !C.storage) thawItem.hidden = true;
+    } else if (thawEl) {
+      thawEl.innerHTML = '<p>' + esc(C.thaw) + '。<br>解凍後は当日中にお召し上がりください。再冷凍は品質劣化の原因となります。</p>';
+    }
     /* cook を持たない品は「焼き方／食べ方」の項目ごと隠す。
        中身が複数種のセットなど、ひとつの焼き方に書けない品のため
        （2026-09-03 ryotaro指示・不揃い品セット P043）。 */
@@ -1400,6 +1483,58 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   } else {
     const cutItem = document.getElementById('pdpCutItem');
     if (cutItem) cutItem.hidden = true;
+  }
+  /* 🍚 一括表示（エダチク米）。riceLabel の並び順のまま出す。 */
+  if (isRice && C && C.riceLabel) {
+    const rbody = document.getElementById('pdpRiceLabelBody');
+    if (rbody) {
+      rbody.innerHTML = '<dl class="pdp-spec">' + Object.keys(C.riceLabel).map(function (k) {
+        return '<div class="pdp-spec-row"><dt>' + esc(k) + '</dt><dd>' + esc(C.riceLabel[k]) + '</dd></div>';
+      }).join('') + '</dl>';
+      const ritem = document.getElementById('pdpRiceLabelItem');
+      if (ritem) ritem.hidden = false;
+    }
+  }
+  /* 🍚 米は常温便。送料は固定 ¥1,100(税込)で、¥11,000以上の送料無料の対象外。
+     お肉と一緒に買うと冷凍便と常温便で送料が2件分かかる。
+     （請求側の規則は checkout.html の renderSummary と gas/Code.gs の riceShipping_） */
+  if (isRice) {
+    /* 🍚 お米は常温便で全国一律 ¥1,100。北海道・沖縄の加算は無い。 */
+    const noteEl2 = document.getElementById('pdpPriceNote');
+    if (noteEl2) noteEl2.textContent = '税込価格 / 別途 送料 ¥1,100（税込・全国一律）';
+    /* 🍚 価格の下のメタ3行は肉向け。お米の実態に合わせて差し替える。
+       ・冷凍便／賞味期限6ヶ月 → 常温便／受注後に精米
+       ・送料の北海道・沖縄加算 → お米は全国一律
+       ・「抗生物質・成長促進剤 不使用」は家畜の話なので、お米では行ごと消す
+         （米に投薬の概念は無く、栽培方法の主張に読まれる。無投薬バッジと同じ理由） */
+    const mDeliv = document.getElementById('pdpMetaDeliv');
+    if (mDeliv) mDeliv.textContent = isGenmai
+      ? '常温便でお届け · ご注文後に調製して出荷します'
+      : '常温便でお届け · ご注文後に精米して出荷します';
+    const mShip = document.getElementById('pdpMetaShip');
+    if (mShip) mShip.textContent = '送料 ¥1,100 (税込・全国一律)';
+    /* 🔴 hidden 属性は .pdp-meta-row{display:flex} に負けて消えない（実測）。
+       インラインの display:none で確実に消す。 */
+    const mPure = document.getElementById('pdpMetaPure');
+    if (mPure) { mPure.hidden = true; mPure.style.setProperty('display', 'none', 'important'); }
+    /* 🍚 A5・BMS は牛の格付けでお米には無関係（2026-10-26 田崎さん指示）。
+       この1行だけ消す。セクション自体はお米の中身が入っているので残す。 */
+    const stanceEl = document.getElementById('pdpRaiseStance');
+    if (stanceEl) { stanceEl.hidden = true; stanceEl.style.setProperty('display', 'none', 'important'); }
+    /* 🍚 お米に部位は無い。中身(cutCopy)はお米の文章が入っているので見出しだけ替える。 */
+    const cutSum = document.getElementById('pdpCutSummary');
+    if (cutSum) cutSum.textContent = 'どんなお米ですか？';
+    /* 🍚 「飼育」は家畜の言葉。中身は PROF.how（田んぼの話）なので見出しを替える。 */
+    const origSum = document.getElementById('pdpOriginSummary');
+    if (origSum) origSum.textContent = '産地・田んぼについて';
+    const shipEl = document.getElementById('pdpShipInfo');
+    if (shipEl) {
+      shipEl.innerHTML = '<p>ヤマト運輸の常温便でお届けします。<br>' +
+        '最短 3 日でお届け（目安）。お届け日時のご指定も可能です。<br>' +
+        '送料は全国一律 ¥1,100 (税込) を頂戴します。<br>' +
+        'お米は「¥11,000 以上で送料無料」の対象外です。<br>' +
+        'お肉と一緒にご注文いただいた場合は、冷凍便とお米の常温便で送料を2件分頂戴します。</p>';
+    }
   }
   /* 原材料名・栄養成分（加工食品だけ。生鮮食品は表示義務がないので出さない） */
   if (C && C.label) {
@@ -1425,7 +1560,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     /* 独立セクション（数字の帯 ＋ どう育てたか 4項目） */
     const bandIn = document.getElementById('pdpBandIn');
     if (bandIn && PROF.band) {
-      bandIn.innerHTML = PROF.band.map(b =>
+      /* 🍚 帯はカテゴリ共通。玄米は精米しないので「受注後／精米」を「出荷時／調製」に差し替える。 */
+      const bandRows = PROF.band.map(b => (isGenmai && b[1] === '精米') ? ['出荷時', '調製', '調 製 時 期'] : b);
+      bandIn.innerHTML = bandRows.map(b =>
         '<div class="pdp-band-i"><b>' + esc(b[0]) + '<em>' + esc(b[1]) + '</em></b><span>' + esc(b[2]) + '</span></div>').join('');
       document.getElementById('pdpBand').hidden = false;
     }
@@ -1455,6 +1592,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     if (items.length < 2) return;
     const sec = document.getElementById('pdpBundle');
     const FREE = 11000;
+    /* 🍚 お米は常温便で「¥11,000以上 送料無料」の対象外。
+       合計からお米を除いて判定し、お米だけの組み合わせでは送料無料の案内を出さない。 */
+    const isRiceP = (p) => !!p && p.category === 'rice';
     if (C.featured) {
       const eb = document.getElementById('pdpBdEyebrow');
       const ld = document.getElementById('pdpBdLead');
@@ -1495,9 +1635,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         el.className = 'pdp-bd-state' + (onNow ? ' is-on' : '');
       });
       document.getElementById('pdpBdTotal').textContent = on.length ? '合計 ¥' + total.toLocaleString() : '';
+      /* 🍚 送料無料の判定はお米を除いた合計で行う */
+      const nonRiceTotal = on.reduce((s2, x) => isRiceP(x.p) ? s2 : s2 + x.unit * x.q, 0);
+      const riceOn = on.some(x => isRiceP(x.p));
       document.getElementById('pdpBdFree').innerHTML = !on.length ? ''
-        : total >= FREE ? '<span class="pdp-bd-free">送料無料</span>'
-        : '<span class="pdp-bd-short">送料無料まであと ¥' + (FREE - total).toLocaleString() + '</span>';
+        : nonRiceTotal <= 0 ? (riceOn ? '<span class="pdp-bd-short">お米は送料 ¥1,100（税込）</span>' : '')
+        : nonRiceTotal >= FREE ? '<span class="pdp-bd-free">送料無料</span>' + (riceOn ? '<span class="pdp-bd-short">＋お米 ¥1,100</span>' : '')
+        : '<span class="pdp-bd-short">送料無料まであと ¥' + (FREE - nonRiceTotal).toLocaleString() + (riceOn ? '／お米 ¥1,100 は別' : '') + '</span>';
       const btn = document.getElementById('pdpBdBtn');
       btn.disabled = !on.length;
       btn.textContent = on.length
@@ -1836,7 +1980,7 @@ function giftThisProduct() {
 }
 </script>
 <script src="public/js/preorder.js?v=004"></script>
-<script src="public/js/products-loader.js?v=008" defer></script>
+<script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
 <script src="public/js/cart-holds.js?v=001" defer></script>

@@ -4195,6 +4195,35 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
     const CART_KEY = 'eda-cart';
     const FREE_SHIP = 11000;
 
+ /* ============================================================
+    🍚 エダチク米（常温便）は「¥11,000以上で送料無料」の対象外
+    ------------------------------------------------------------
+    お米の金額を足して「送料無料」と出すと、20kg(¥14,256)1点のお客様に
+    「送料無料」と言ってからレジで ¥1,100 を請求することになる。
+    送料無料の判定には、お米を除いた小計を使う。
+    🔴 同じ規則が checkout.html の renderSummary と gas/Code.gs の
+       riceShipping_ にもある。片方だけ直すと表示と請求がズレる。
+    ============================================================ */
+ const RICE_TITLES_CART = {
+  'エダチク米 精米 5kg': true, 'エダチク米 精米 10kg': true,
+  'エダチク米 精米 15kg': true, 'エダチク米 精米 20kg': true,
+  'エダチク米 玄米 5kg': true, 'エダチク米 玄米 10kg': true,
+  'エダチク米 玄米 15kg': true, 'エダチク米 玄米 20kg': true
+ };
+ function isRiceTitle_(t) { return !!RICE_TITLES_CART[String(t || '').trim()]; }
+ function hasRiceInCart_(list) {
+  return (list || []).some(function (i) { return i && isRiceTitle_(i.title); });
+ }
+ /* 送料無料の判定に使う小計（お米を除く） */
+ function nonRiceSubtotal_(list, fallback) {
+  if (!list || !list.length) return fallback || 0;
+  return list.reduce(function (s, i) {
+   if (!i || isRiceTitle_(i.title)) return s;
+   return s + (i.price || 0) * (i.qty || 1);
+  }, 0);
+ }
+ const RICE_SHIP_NOTE = 'お米は常温便のため、別途 送料 ¥1,100（税込）を頂戴します';
+
     /* --- State --- */
     let items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 
@@ -4336,11 +4365,16 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
       /* shipping note */
       const noteEl = document.querySelector('.cart-shipping-note');
       if (noteEl) {
-        const remaining = FREE_SHIP - subtotal;
-        if (remaining > 0) {
-          noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料`;
+        /* 🍚 送料無料の判定はお米を除いた小計で行う（お米は常温便で対象外） */
+        const _shipBase = nonRiceSubtotal_(items, subtotal);
+        const _riceInCart = hasRiceInCart_(items);
+        const remaining = FREE_SHIP - _shipBase;
+        if (_shipBase <= 0 && _riceInCart) {
+          noteEl.innerHTML = RICE_SHIP_NOTE;
+        } else if (remaining > 0) {
+          noteEl.innerHTML = `あと<strong>¥${remaining.toLocaleString()}</strong>で送料無料` + (_riceInCart ? `<br><small>${RICE_SHIP_NOTE}</small>` : '');
         } else {
-          noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！';
+          noteEl.innerHTML = '<strong data-en="Free shipping">送料無料</strong>でお届けします！' + (_riceInCart ? `<br><small>${RICE_SHIP_NOTE}</small>` : '');
         }
       }
 
