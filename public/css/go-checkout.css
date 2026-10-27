@@ -2,25 +2,32 @@
    決済へ進む ボタン（レジへの近道）
    2026-10-27 田崎さん指示:
    「そもそも決済までの動線がない」「決済の導線わかりにくいから変えたい」
+   2026-10-27 追い指示（プレビューを見て）:
+   「色変えたいね。大きさ同じにしたい。四角にして。それぞれをボタンにしてほしい。」
    ------------------------------------------------------------
-   いまの流れは「カートに追加」→ ボタンの文字が変わるだけ → お客様が
-   自分で右上のカートを見つけて押す → ドロワー → レジに進む。
-   そこで、カートに1点でも入っていたら レジ(checkout.html) への
-   ボタンを画面に出しっぱなしにする。
+   カートに1点でも入っていたら レジ(checkout.html) へのボタンを出しっぱなしにする。
 
    置き場所
      一覧ページ(shop.html / products.html) … 画面の右下
      商品ページ(product.html)             … 右上のカートボタンの真下
 
-   大きさ（田崎さん指示）
-     スマホ … いまのカートボタンと同じくらい（実測 高さ49px・文字14px）
-     パソコン … それより明確に大きく（実測 高さ64px・文字18px）
+   色（田崎さん確定）
+     決済へ進む … 金(--color-gold)地
+     カート     … 緑(--color-forest)地 のまま
+     ⚠️ 金地に白文字は コントラスト 2.2:1 で読めないため、文字色は
+        レジの「お支払いへ進む」と同じ --color-forest-deep（6.76:1）にした。
+        新しい色は作っていない。
 
-   ⚠️ 金額は出さない。小計と、レジで出る合計（お米の常温便 ¥1,100 など
-      送料を含む金額）が食い違って見えるため。点数だけ添える。
-   ⚠️ 色は forest / gold だけ。新しい色は作らない。
+   形
+     角丸 6px の四角。レジの「お支払いへ進む」(12px)・カートの各ボタン(7〜8px)
+     より角を落として「四角いボタン」に寄せた。
+
+   大きさ
+     商品ページの2つ（カート／決済へ進む）は 幅・高さとも完全に同寸。
+     スマホ 160×49px ／ パソコン 196×64px。間隔は12px。
    ============================================================ */
 
+/* ---------- 共通の見た目 ---------- */
 .eda-gocheckout {
   position: fixed;
   z-index: 93; /* 下の固定バー(90)・PDPのカート(87)より上 */
@@ -29,19 +36,19 @@
   justify-content: center;
   gap: 8px;
   box-sizing: border-box;
-  background: var(--color-forest, #0F3D2E);
-  color: #fff;
-  border: 1.5px solid var(--color-gold, #C9A227);
-  border-radius: 100px;
+  background: var(--color-gold, #D4A93B);
+  color: var(--color-forest-deep, #0A2D21);
+  border: 1.5px solid var(--color-forest-deep, #0A2D21);
+  border-radius: 6px;
   text-decoration: none;
   font-family: var(--font-jp, sans-serif);
   font-weight: 700;
   line-height: 1.4;
+  white-space: nowrap; /* 狭い画面で「決済へ進む」が縦に割れないように */
   box-shadow: 0 10px 28px rgba(15, 61, 46, 0.32);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   cursor: pointer;
-  white-space: nowrap; /* 狭い画面で「決済へ進む」が縦に割れないように */
-  /* ---- パソコン（既定）: はっきり大きく ---- */
+  /* ---- パソコン（既定）---- */
   font-size: 18px;
   padding: 18px 32px;
 }
@@ -50,21 +57,21 @@
 .eda-gocheckout.is-on { display: inline-flex; }
 
 .eda-gocheckout:hover {
-  background: var(--color-forest-deep, #0A2D21);
+  background: #E5B547; /* レジの「お支払いへ進む」と同じ明るい金 */
   transform: translateY(-2px);
   box-shadow: 0 14px 34px rgba(15, 61, 46, 0.42);
 }
 .eda-gocheckout:focus-visible {
-  outline: 3px solid var(--color-gold, #C9A227);
+  outline: 3px solid var(--color-forest, #0F3D2E);
   outline-offset: 3px;
 }
 .eda-gocheckout .gc-count {
   flex-shrink: 0;
   min-width: 22px;
   padding: 0 6px;
-  border-radius: 100px;
-  background: var(--color-gold, #C9A227);
-  color: var(--color-forest-deep, #0A2D21);
+  border-radius: 4px;
+  background: var(--color-forest-deep, #0A2D21);
+  color: var(--color-gold, #D4A93B);
   font-size: 0.78em;
   text-align: center;
 }
@@ -77,11 +84,16 @@
 }
 
 /* ---------- 商品ページ: 右上のカートボタンの真下 ----------
-   --pdp-cart-top は product.html が ヘッダーの実寸から毎回計算して入れている。 */
+   --pdp-cart-top は product.html が ヘッダーの実寸から毎回計算して入れている。
+   カートボタン(高さ64px)の下に 12px あけて、同じ大きさで置く。
+   🔴 カート側の寸法は product.html の .pdp-cart-fab と対になっている。
+      片方だけ変えると同寸でなくなるので、必ず両方直すこと。 */
 .eda-gocheckout--under-cart {
-  /* カートボタン(高さ44px)の下に12px あけて置く */
-  top: calc(var(--pdp-cart-top, 100px) + 56px);
+  top: calc(var(--pdp-cart-top, 100px) + 76px);
   right: 12px;
+  width: 196px;
+  height: 64px;
+  padding: 0 16px;
 }
 
 /* ============ スマホ: 今のカートボタンと同じくらいの大きさ ============ */
@@ -96,7 +108,13 @@
     right: 14px;
     bottom: calc(86px + env(safe-area-inset-bottom));
   }
-  .eda-gocheckout--under-cart { right: 8px; }
+  .eda-gocheckout--under-cart {
+    top: calc(var(--pdp-cart-top, 100px) + 61px);
+    right: 8px;
+    width: 160px;
+    height: 49px;
+    padding: 0 12px;
+  }
 }
 
 /* 下の固定バーが出ていないスマホでは、下まで降ろす */
