@@ -10078,7 +10078,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- ===== 牛肉（ステーキ・スライス・加工品すべて統合） ===== -->
  <div class="shop-cat-head reveal" data-cat="beef">
  <h2 class="shop-cat-title">牛肉 <span>/ Wagyu Beef</span></h2>
- <p class="shop-cat-desc">すべて<strong data-en="No antibiotics or hormones">抗生物質・ホルモン剤 不使用</strong>、<strong>長期肥育で育てた</strong>江田和牛。ステーキ・スライス・ひき肉・加工品まで。冷凍庫に常備しておけば、平日の夕食が変わります。</p>
+ <p class="shop-cat-desc">アニマルウェルフェア・循環農業・無投薬</p>
  </div>
 
  <!-- 牛肉 サブタブ（部位・調理スタイル別） -->
@@ -10545,7 +10545,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- ===== 平飼い鶏 + オーガニック ===== -->
  <div class="shop-cat-head reveal" data-cat="chicken" style="margin-top: 80px;">
  <h2 class="shop-cat-title">鶏肉 <span>/ Free-Range &amp; Organic</span></h2>
- <p class="shop-cat-desc">平飼い鶏は <strong>大分県産・無投薬</strong>。地面の上を自由に歩き回る「平飼い」方式で運動量が多く、身が引き締まって旨みが濃い。<strong>有機JAS認証相当のオーガニックチキンは千葉県産</strong>もご用意しています。</p>
+ <p class="shop-cat-desc">平飼い鶏・大分県産・無投薬</p>
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="chicken">
@@ -13243,13 +13243,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
       「在庫切れ」→「カートに追加 ¥5,400」に戻り、買えるように見えて押せない状態になる。
       在庫が戻るときは stockBadgeInit が disabled を外してから _edaRefreshLabel() を呼ぶので、
       そこでは通常どおり価格つきの文言が入る。 */
-   /* 🍚 お米のカードはボタンに金額を出さない（2026-10-26 田崎さん指示）。
-      価格はカード上部の .product-price に出ているので二重にしない。
-      他カテゴリは従来どおり「カートに追加 ¥◯」のまま。 */
-   var _riceCard = !!(buyEl.closest && buyEl.closest('[data-cat="rice"]'));
-   if (!addBtn.classList.contains('added') && !addBtn.disabled) {
-     addBtn.textContent = _riceCard ? 'カートに追加' : ('カートに追加 ¥' + total.toLocaleString());
-   }
+   /* 2026-10-26 田崎さん指示: ボタンの横に金額を出さない（価格はカード上の表示だけ）。 */
+   if (!addBtn.classList.contains('added') && !addBtn.disabled) addBtn.textContent = 'カートに追加';
  }
  /* ⭐️ 在庫が 0 から戻ったときに、在庫バッジ側からボタン文言（数量・価格込み）を作り直させるために公開 */
  addBtn._edaRefreshLabel = refresh;
