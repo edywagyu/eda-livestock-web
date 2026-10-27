@@ -1,0 +1,153 @@
+/* ============================================================
+   決済へ進む ボタン（レジへの近道）
+   2026-10-27 田崎さん指示:
+   「そもそも決済までの動線がない」「決済の導線わかりにくいから変えたい」
+   2026-10-27 追い指示（プレビューを見て）:
+   「色変えたいね。大きさ同じにしたい。四角にして。それぞれをボタンにしてほしい。」
+   ------------------------------------------------------------
+   カートに1点でも入っていたら レジ(checkout.html) へのボタンを出しっぱなしにする。
+
+   置き場所
+     一覧ページ(shop.html / products.html) … 画面の右下
+     商品ページ(product.html)             … 右上のカートボタンの真下
+
+   色（田崎さん確定）
+     決済へ進む … 金(--color-gold)地
+     カート     … 緑(--color-forest)地 のまま
+     ⚠️ 金地に白文字は コントラスト 2.2:1 で読めないため、文字色は
+        レジの「お支払いへ進む」と同じ --color-forest-deep（6.76:1）にした。
+        新しい色は作っていない。
+
+   形
+     角丸 6px の四角。レジの「お支払いへ進む」(12px)・カートの各ボタン(7〜8px)
+     より角を落として「四角いボタン」に寄せた。
+
+   大きさ
+     商品ページの2つ（カート／決済へ進む）は 幅・高さとも完全に同寸。
+     スマホ 160×49px ／ パソコン 196×64px。間隔は12px。
+   ============================================================ */
+
+/* ---------- 共通の見た目 ---------- */
+.eda-gocheckout {
+  position: fixed;
+  z-index: 93; /* 下の固定バー(90)・PDPのカート(87)より上 */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  background: var(--color-gold, #D4A93B);
+  color: var(--color-forest-deep, #0A2D21);
+  border: 1.5px solid var(--color-forest-deep, #0A2D21);
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: var(--font-jp, sans-serif);
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap; /* 狭い画面で「決済へ進む」が縦に割れないように */
+  box-shadow: 0 10px 28px rgba(15, 61, 46, 0.32);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  cursor: pointer;
+  /* ---- パソコン（既定）---- */
+  font-size: 18px;
+  padding: 18px 32px;
+}
+
+/* 1点でも入ったら出す。空のときは出さない（JSが is-on を付け外しする） */
+.eda-gocheckout.is-on { display: inline-flex; }
+
+.eda-gocheckout:hover {
+  background: #E5B547; /* レジの「お支払いへ進む」と同じ明るい金 */
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(15, 61, 46, 0.42);
+}
+.eda-gocheckout:focus-visible {
+  outline: 3px solid var(--color-forest, #0F3D2E);
+  outline-offset: 3px;
+}
+.eda-gocheckout .gc-count {
+  flex-shrink: 0;
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--color-forest-deep, #0A2D21);
+  color: var(--color-gold, #D4A93B);
+  font-size: 0.78em;
+  text-align: center;
+}
+.eda-gocheckout .gc-arrow { flex-shrink: 0; opacity: 0.9; }
+
+/* ---------- 一覧ページ: 画面の右下 ---------- */
+.eda-gocheckout--corner {
+  right: 24px;
+  bottom: 24px;
+}
+
+/* ---------- 商品ページ: 右上のカートボタンの真下 ----------
+   --pdp-cart-top は product.html が ヘッダーの実寸から毎回計算して入れている。
+   カートボタン(高さ64px)の下に 12px あけて、同じ大きさで置く。
+   🔴 カート側の寸法は product.html の .pdp-cart-fab と対になっている。
+      片方だけ変えると同寸でなくなるので、必ず両方直すこと。 */
+.eda-gocheckout--under-cart {
+  top: calc(var(--pdp-cart-top, 100px) + 76px);
+  right: 12px;
+  width: 196px;
+  height: 64px;
+  padding: 0 16px;
+}
+
+/* ============ スマホ: 今のカートボタンと同じくらいの大きさ ============ */
+@media (max-width: 767px) {
+  .eda-gocheckout {
+    font-size: 14px;
+    padding: 13px 20px;
+    box-shadow: 0 8px 20px rgba(15, 61, 46, 0.3);
+  }
+  /* 下に固定バー（カートを見る）が出ているので、その上に逃がす */
+  .eda-gocheckout--corner {
+    right: 14px;
+    /* 🔴 下の固定バーの実高は products.html で89.1px ある。
+       86px では 3.1px 重なっていたので 96px まで上げる。 */
+    bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  .eda-gocheckout--under-cart {
+    top: calc(var(--pdp-cart-top, 100px) + 61px);
+    right: 8px;
+    width: 160px;
+    height: 49px;
+    padding: 0 12px;
+  }
+}
+
+/* 下の固定バーが出ていないスマホでは、下まで降ろす */
+@media (max-width: 767px) {
+  body:not(.has-sticky-cart) .eda-gocheckout--corner {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eda-gocheckout { transition: none; }
+  .eda-gocheckout:hover { transform: none; }
+}
+
+/* ---------- 右下で鉢合わせするものを上に逃がす ----------
+   クーポンのポップ(.coupon-pop)は right:16px / bottom:88px(スマホ80px) で、
+   「決済へ進む」と同じ場所に出てくる。
+
+   🔴 2026-10-27 事故の修正。
+   .coupon-pop は閉じている間 opacity:0 + translateY(150%) で画面の外に逃げているが、
+   pointer-events が効いたままで「見えないのに当たり判定だけある」状態だった（既存の作り）。
+   そこへ bottom を一律で持ち上げたため、逃げた先が下の固定バーに重なり、
+   スマホで「カートを見る」がタップできなくなっていた。
+
+   直し方は2つ:
+    (1) 隠れている間は当たり判定を消す ← 元からあったバグもここで閉じる
+    (2) 持ち上げるのは「実際に出ているとき(.show)」だけにする
+   両方入れる。 */
+.coupon-pop:not(.show) { pointer-events: none; }
+
+body.has-gocheckout .coupon-pop.show { bottom: 104px; }
+@media (max-width: 767px) {
+  body.has-gocheckout .coupon-pop.show { bottom: 160px; }
+}
