@@ -1124,11 +1124,55 @@
       category: 'rice', categoryLabel: '米', tagEn: 'Edachiku Rice (Brown) 20kg',
       description: '宮崎県の大地で牛と米を育てています。牛舎から出た堆肥を田んぼに入れ、刈り取った藁は牛の飼料になります。霧島連山のふもとで、循環させて育てた令和7年産のヒノヒカリです。単一原料米を、玄米のまま5kg×4袋で。ご家庭の精米機で、お好みの分づきに。常温便でのお届けです。',
       images: ['public/images/products/drive/rice-genmai.jpg']
+    },
+    {
+      /* ============================================================
+         肉の日セット 2本（2026-10-28 田崎さん指示・P074/P075）
+         10/29(木) 18:30 の肉の日配信で出す2品。PDP直リンクで販売する。
+
+         🔴 products シートに行を足すだけでは PDP に出ない。
+            product.html は window.EDA_PRODUCTS_MASTER を同期で読むが
+            （1284行 `const all = ...products`）、products-loader.js の
+            GAS fetch は非同期なので、このファイルに無い新商品は
+            `!product` に落ちて「お取り扱いを終了しました」が出る。
+            実測 2026-10-28: シート登録だけでは P074 が終了案内になった。
+            新商品を出すときは必ずここにも並べること。
+
+         🔴 在庫は構成品と食い合う。ヒレは単品に2枚残す指示のため
+            セットは8。霜降スライスは在庫10をセットで使い切る。
+         ============================================================ */
+      productId: 'P074', variantId: 'NIKUNOHI-STEAK3', sku: 'EDA-NIKUNOHI-STEAK3',
+      stripePriceId: '',
+      name: '肉の日 ステーキ3種セット', variant: 'ヒレ150g＋サーロイン200g＋赤身ステーキ200g 計550g',
+      price: 9800, listPrice: 11750, weight: 550, stock: 8, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Steak Trio',
+      components: [
+        { name: 'ヒレステーキ', qty: 1 },
+        { name: 'サーロインステーキ', qty: 1 },
+        { name: '赤身ステーキ', qty: 1 }
+      ],
+      description: 'ヒレ150g・サーロイン200g・赤身ステーキ200gの計550g。ヒレは一頭から約3%だけの、繊維が細かい中心部。サーロインはロース芯、赤身はモモの中心から。1枚ずつ単品で買うと11,750円です。塩だけで、フライパンに90秒。冷凍便でお届けします。',
+      images: ['public/images/products/drive/nikunohi-steak3.jpg']
+    },
+    {
+      productId: 'P075', variantId: 'NIKUNOHI-SLICE2', sku: 'EDA-NIKUNOHI-SLICE2',
+      stripePriceId: '',
+      name: '肉の日 スライス2種セット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
+      price: 5900, weight: 400, stock: 10, temp: '冷凍',
+      published: true,
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Slice Duo',
+      components: [
+        { name: '霜降スライス', qty: 1 },
+        { name: '赤身スライス', qty: 1 }
+      ],
+      description: '肩ロースの霜降りと、ソトモモの赤身を同量200gずつ。霜降りは薄く引くと脂の甘みがだしに溶け、赤身は繊維がしっかりしているぶん肉の味がまっすぐ出ます。同じ鍋に並べて、2種を食べ比べる400g。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
+      images: ['public/images/products/drive/nikunohi-slice2.jpg']
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.10.26-007-rice';
+  const PRODUCTS_VERSION = '2026.10.28-008-nikunohi';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
