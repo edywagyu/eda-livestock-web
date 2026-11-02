@@ -1145,7 +1145,7 @@
       stripePriceId: '',
       name: '肉の日 ステーキ3種セット', variant: 'ヒレ150g＋サーロイン200g＋赤身ステーキ200g 計550g',
       price: 9800, listPrice: 11750, weight: 550, stock: 8, temp: '冷凍',
-      published: true,
+      published: false,  /* 2026-11-02 店頭から下げる（肉の日企画終了）。行は残す */
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Steak Trio',
       components: [
         { name: 'ヒレステーキ', qty: 1 },
@@ -1160,7 +1160,7 @@
       stripePriceId: '',
       name: '肉の日 スライス2種セット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
       price: 5900, weight: 400, stock: 10, temp: '冷凍',
-      published: true,
+      published: false,  /* 2026-11-02 店頭から下げる（肉の日企画終了）。行は残す */
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Slice Duo',
       components: [
         { name: '霜降スライス', qty: 1 },
@@ -1172,7 +1172,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.10.28-008-nikunohi';
+  const PRODUCTS_VERSION = '2026.11.02-009-nikunohi-off';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
