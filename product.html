@@ -1268,7 +1268,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-10-26-rice-dec2"></script>
+<script src="public/data/products-master.js?v=2026-11-02-nikunohi-off"></script>
 <script src="public/data/pdp-content.js?v=2026-10-26-rice2"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
@@ -1303,8 +1303,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
        P037 カメノコ・シンシン焼肉セット … 2026-10-23 に店頭から撤去
        (本番DBは published=FALSE / stock=0。P037 は components を持つので
         stock=0 では止まらず、P035/P036 も限定枠の limitedUntil で表示が消えるだけ。
-        直リンクを塞ぐにはここに並べるしかない。) */
-  const ENDED_PRODUCT_IDS = ['P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037'];
+        直リンクを塞ぐにはここに並べるしかない。)
+     ・P074 肉の日 ステーキ3種セット / P075 肉の日 スライス2種セット
+       … 2026-11-02 に店頭から下げる（10/29 の肉の日企画が終了）。
+       この2品は shop/products にカードが無く PDP 直リンク専売のため、
+       published=FALSE では止まらない（product.html は published を見ない）。
+       さらに components を持つので applyBomStock が構成品の在庫で
+       stock を上書きし、stock=0 でも買えてしまう。10/29 の LINE 配信に
+       残る直リンクを塞ぐには、ここに並べるのが唯一の手。
+       🔁 再出荷するときはこの2つを外すだけで戻る（商品データ・在庫・
+          説明文はシートにもマスターにも残してある）。 */
+  const ENDED_PRODUCT_IDS = ['P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037', 'P074', 'P075'];
   const product = all.find(p => p.productId === productId) || null;
   if (!product || ENDED_PRODUCT_IDS.indexOf(product.productId) >= 0) {
     document.title = 'お取り扱いを終了しました | 江田畜産';
