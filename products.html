@@ -7071,6 +7071,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="FILLET"] { background-image: image-set(url('public/images/products/drive/fillet.webp') type('image/webp'), url('public/images/products/drive/fillet.jpg')); }
 .product-card-img[data-label="WAGYU SLICE"] { background-image: url('public/images/products/drive/wagyu-slice-2026.jpg'); }
 .product-card-img[data-label="KIRIOTOSHI"] { background-image: url('public/images/products/drive/kiriotoshi-2026.jpg'); }
+/* 訳あり切り落とし 期間限定(P076)。田崎さん指示で「和牛切り落とし 200g」(P005/P041 と同じ)の写真を使う */
+.product-card-img[data-label="WAKEARI KIRIOTOSHI GENTEI"] { background-image: url('public/images/products/drive/kiriotoshi-2026.jpg'); }
 .product-card-img[data-label="YAKINIKU BRISKET"]{ background-image: url('public/images/products/drive/yakiniku-brisket-2026.jpg'); }
 .product-card-img[data-label="SENBONSUJI"] { background-image: image-set(url('public/images/products/drive/yakiniku-brisket.webp') type('image/webp'), url('public/images/products/drive/yakiniku-brisket.jpg')); }
 .product-card-img[data-label="RAW HAM"] { background-image: url('public/images/products/drive/raw-ham-2026.jpg'); }
@@ -10029,6 +10031,33 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
+ <!-- ===== 訳あり切り落とし 期間限定（賞味期限 2026/12/15・P076）=====
+      2026-11-04 田崎さん指示。賞味期限が近い在庫を期間限定で値下げして売り切る。
+      🔴 発売・販売停止・表示終了は products-master.js の
+         limitedStartAt / limitedSoldOutAt / limitedUntil で自動制御（当日の手作業は不要）。
+      🔴 data-limited-scope と data-limited-prestart の両方を付ける。
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 1/3/5パックは別商品ではなく数量バリアント。ラベルの「3つセット」「5つセット」
+         そのものが在庫減算の入力（gas/Code.gs variantUnits）なので文字列を崩さない。
+      🔴 訳あり品の実物写真と詳しい説明はカードに出さず商品詳細ページに置く
+         （2026-09-02 ryotaro指示）。 -->
+ <div class="product-card" data-sub="slice" data-limited-scope="訳あり切り落とし 期間限定" data-limited-prestart="訳あり切り落とし 期間限定" data-variants='[{"id":51104009000761,"t":"1つ","p":900},{"id":51104009000762,"t":"3つセット","p":2500},{"id":51104009000763,"t":"5つセット","p":3980}]'>
+ <div class="product-card-img" data-label="WAKEARI KIRIOTOSHI GENTEI"></div>
+ <div class="product-tag-row"><span class="product-tag">Wagyu &middot; Slice</span><span class="product-price"><s>&yen;1,200</s> &yen;900&#12316;</span></div>
+ <p class="product-name"><a href="product.html?id=P076" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">訳あり切り落とし 期間限定</a></p>
+ <p class="product-desc">江田和牛の切り落とし200g。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。<strong>賞味期限 2026年12月15日</strong>の在庫を、期間限定でお安くしました。牛丼・カレー・肉じゃが・炒め物に。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">100g <strong>&yen;450</strong></div>
+ <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
+ <div class="product-stat-item">3袋 <strong>&yen;2,500</strong></div>
+ <div class="product-stat-item">5袋 <strong>&yen;3,980</strong></div>
+ <div class="product-stat-item wide">賞味期限 <strong>2026年12月15日</strong>／11/30（月）23:59まで</div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
  <!-- ===== 公式LINE配信用セット4本（2026-10-12 ryotaro指示・P058〜P061）=====
       10/14(水)18:30 P058 ／ 10/15(木)18:30 P059 ／ 10/17(土)18:30 P060 ／ 10/18(日)18:30 P061。
       🔴 発売日時は products-master.js の limitedStartAt。その時刻まで「◯/◯（◯）発売」の
@@ -11533,6 +11562,11 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
     title (例: サーロインステーキ) + variant (1つ / 2つセット / 3つセット) → 単位数 */
  function variantUnits(variant) {
  if (!variant) return 1;
+ /* 🔴 gas/Code.gs の variantUnits / checkout.html の _variantUnits と同じ規則にそろえる。
+    ここだけ「3つ/2つ」しか読まないままだと「5つセット」が ×1 と数えられ、
+    カート側の在庫上限チェックをすり抜ける（2026-11-04 P076 で 5つセットを出すため修正）。 */
+ var m = String(variant).match(/([2-9])\s*(?:つ|個)\s*セット/);
+ if (m) return Number(m[1]);
  if (variant.includes('3つ')) return 3;
  if (variant.includes('2つ')) return 2;
  return 1;
@@ -13758,7 +13792,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-02-nikunohi-off" defer></script>
+<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei" defer></script>
 <script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

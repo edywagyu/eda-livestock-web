@@ -978,6 +978,41 @@
         'public/images/products/drive/fusoroi-sample.jpg'
       ]
     },
+    /* ===== 訳あり切り落とし 期間限定（賞味期限 2026/12/15・P076）=====
+       2026-11-04 田崎さん指示。賞味期限が近い在庫を期間限定で値下げして売り切る。
+       🔴 通常の「切り落とし」(P005 ¥1,600) とも、通年の「訳あり切り落とし」(P041 ¥1,200)
+          とも **名前が別** であること。GAS の在庫減算・決済・在庫チェックは products の
+          name の完全一致でしか動かないので、同名にすると別商品の在庫から減る。
+       🔴 1/3/5パックは **別商品ではなく数量バリアント** にしてある。
+          gas/Code.gs の variantUnits が /([2-9])\s*(?:つ|個)\s*セット/ を読むので
+          「3つセット」=3口 /「5つセット」=5口 で stock が正しく減る。
+          3商品に分けると在庫が3つの別プールになり、同じ現物を三重に売る。
+       🔴 limitedTotal が 0 だと public/js/limited-stock.js の対象外になり、
+          期間制御（発売前・販売停止・表示終了）が一切効かない。必ず 1 以上にする。
+       ⚠️ 販売期間は 2026/11/04〜2026/11/30 で田崎さん確定（2026-11-04）。
+          最終注文 11/30 → 最短お届け3日で 12/3 着、賞味期限 12/15 まで12日残る。
+       ⚠️ limitedTotal / stock はパック数の実数を田崎さんに確認してから確定する。
+          ここは取得失敗時のフォールバックで、正は products シート。
+       ⚠️ 2枚目の fusoroi-sample.jpg はラベルの賞味期限が「27.2.6」と読める。
+          12/15 の訴求と食い違うので、公開前に写真を差し替えるか判断が要る。 */
+    {
+      productId: 'P076', variantId: 'WAKEARI-KIRI-GENTEI', sku: 'EDA-WAKEARI-KIRI-GENTEI-200',
+      stripePriceId: '',
+      name: '訳あり切り落とし 期間限定', variant: '1袋 200g',
+      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
+      price: 900, listPrice: 1200, weight: 200, stock: 30, temp: '冷凍',
+      limitedTotal: 30,
+      limitedStartAt:   '2026/11/04 00:00',   /* 2026-11-04 田崎さん確定: 11/4〜11/30 */
+      limitedSoldOutAt: '2026/11/30 23:59',
+      limitedUntil:     '2026/11/30 23:59',
+      limitedUnit: '袋',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Kiriotoshi Limited',
+      description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。賞味期限が2026年12月15日の在庫を、期間限定でお安くしました。煮込み、炒め、丼にそのまま使えます。お届け後はお早めにお召し上がりください。2枚目が実際の商品の一例です。',
+      images: [
+        'public/images/products/drive/kiriotoshi-2026.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
     {
       productId: 'P039', variantId: 'TABEKURABE-A', sku: 'EDA-TABEKURABE-A',
       stripePriceId: '',
