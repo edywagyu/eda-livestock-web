@@ -1018,7 +1018,10 @@
       stripePriceId: '',
       name: '訳あり切り落とし 期間限定', variant: '1袋 200g',
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
-      price: 900, listPrice: 1200, weight: 200, stock: 50, temp: '冷凍',
+      /* listPrice は取り消し線の定価。店頭の通常「切り落とし」(P005) 200g ¥1,600 が基準。
+         ¥1,200 の P041 は会員限定ページの価格で、一般のお客様が見られる売価ではないので
+         比較対照にしない（2026-11-04）。 */
+      price: 900, listPrice: 1600, weight: 200, stock: 50, temp: '冷凍',
       limitedTotal: 50,
       limitedStartAt:   '2026/11/04 00:00',   /* 2026-11-04 田崎さん確定: 11/4〜11/30 */
       limitedSoldOutAt: '2026/11/30 23:59',

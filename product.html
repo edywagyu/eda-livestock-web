@@ -1268,8 +1268,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-b"></script>
-<script src="public/data/pdp-content.js?v=2026-10-26-rice2"></script>
+<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-c"></script>
+<script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
 /* ============================================================
@@ -1458,7 +1458,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     ['加工地', '宮崎県'],
     ['保管', '冷凍 (-18°C 以下)'],
     C ? ['包装', C.pack] : null,
-    ['賞味期限', '製造日より 6 ヶ月'],
+    /* 🔴 P076「訳あり切り落とし 期間限定」は賞味期限が近いことが値引きの理由。
+          ここで全商品共通の「製造日より6ヶ月」を出すと嘘になるので実日付を出す
+          （2026-11-04）。期間限定が終わったらこの分岐ごと消してよい。 */
+    ['賞味期限', productId === 'P076' ? '2026年12月15日' : '製造日より 6 ヶ月'],
     /* 刃コラボはタレが同梱される。タレの保存期間は1年（ITADAKI提供情報） */
     (['P049', 'P050'].indexOf(productId) >= 0) ? ['タレの賞味期限', '製造日より 1 年'] : null,
     C ? ['解凍', C.thaw] : null,
