@@ -1280,7 +1280,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-f"></script>
+<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-g"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
@@ -1564,12 +1564,18 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       renderPrice(price, compare);
       const sp = document.getElementById('stickyPrice');
       if (sp) sp.textContent = '¥' + price.toLocaleString();
-      /* スペック表を選択に合わせる（価格と重量を必ず同じ基準にする） */
+      /* 内容量は商品名の下（#pdpVariant）とスペック表の2か所に出る。
+         🔴 文字列は必ずここで1回だけ組んで、両方に同じものを入れる。
+            別々に組むと、価格だけ ¥2,500 に変わって片方が「1袋 200g」のまま残る
+            （2026-11-04 本番で実際に起きた）。 */
       if (unitWeight > 0) {
         const total = unitWeight * u;
-        setSpec('内容量', u > 1
+        const volText = (u > 1)
           ? (u + packUnit + ' 計' + total.toLocaleString() + 'g')
-          : ((C && C.variant) || product.variant || ''));
+          : ((C && C.variant) || product.variant || '');
+        const vlabel = document.getElementById('pdpVariant');
+        if (vlabel) vlabel.textContent = volText;
+        setSpec('内容量', volText);
         setSpec('100g あたり', '¥' + Math.round(price / total * 100).toLocaleString());
       }
     }
