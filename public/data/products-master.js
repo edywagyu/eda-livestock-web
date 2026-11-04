@@ -973,20 +973,24 @@
       price: 1200, weight: 200, stock: 20, temp: '冷凍',
       /* ⛔ 2026/11/04〜11/30 は販売停止（2026-11-04 田崎さん指示）。
          期間限定の P076「訳あり切り落とし 期間限定」(50パック) は、この P041 と
-         同じ現物を売る。別商品として両方開けておくと同じ肉を二重に売るため、
-         期間中は P041 を止めて P076 だけで売る。
-         🔴 止め方は limitedSoldOutAt / limitedUntil（既存の限定品の仕組み）。
-            本番 products シートの price 1200 / stock 30 / published TRUE は
-            触っていない＝シートの操作なしで、12/1 にこの3行を消せば元に戻る。
-            stock を 0 にする手は使わない。在庫0は「予約」として決済が通る仕様で、
+         同じ現物を売る。両方開けておくと同じ肉を二重に売り、しかも同じものが
+         ¥900 と ¥1,200 で同時に買える状態がお客様に見える。だから期間中は
+         P041 を閉じて P076 だけで売る。
+         🔴 止め方は limitedStartAt（発売前ゲート）。12/01 00:00 まで
+            product.html?id=P041 の購入導線（数量・カート・ギフト・stickyCTA）が
+            閉じ、「12月1日 発売予定です」に差し替わる。**12/1 に自動で戻る。**
+         🔴 stock を 0 にする手は使わない。在庫0は「予約」として決済が通る仕様で、
             止めたことにならない（2026-10-13 に実害で判明）。
-         🔴 limitedUntil も同時刻にしてあるので product.html?id=P041 の直リンクは
-            「この商品の販売は終了しました」になり購入導線ごと閉じる。
-         ⏪ 期間終了後に戻す手順: 下の limited 3行を削除するだけ。
-            line-members.html と line-members-wakeari.html の endAt 行も削除する。 */
+         🔴 本番 products シートの P041（price 1200 / stock 30 / published TRUE）は
+            触っていない。products-loader.js の keep() がシートに列が無い限り
+            ここの値を引き継ぐので、シート操作なしで効く。
+         🔴 会員限定ページ 2枚（line-members.html / line-members-wakeari.html）は
+            limited-stock.js を読み込まないので別口。各カードの endAt で閉じてある。
+         ⏪ 12/1 以降の後片付け（売れ行きには影響しないが、やっておくと綺麗）:
+            下の limitedTotal / limitedStartAt の2行と、会員ページ2枚の endAt 行を削除。
+            2行を残したままだと P041 の商品詳細ページに限定品の残数バナーが出る。 */
       limitedTotal: 30,
-      limitedSoldOutAt: '2026/11/04 00:00',
-      limitedUntil:     '2026/11/04 00:00',
+      limitedStartAt: '2026/12/01 00:00',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Kiriotoshi',
       description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざるため、通常の切り落とし 200g ¥1,600 より1袋400円お安くしています。中身は同じ江田和牛です。煮込み、炒め、丼にそのまま使えます。2枚目が実際の商品の一例です。',
       images: [
