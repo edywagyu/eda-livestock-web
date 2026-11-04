@@ -490,8 +490,14 @@
 
        セット商品(BOM)だけは1行目の「◯セット限定」を出さない。構成品を単品とも
        共有しているので「全部で◯セット」という決まった数が無く、出すと在庫と
-       食い違う（2026-08-31 たろ指示）。締切もバッジも無いときは1行目ごと省く。 */
-    var showTotal = !info.isBom;
+       食い違う（2026-08-31 たろ指示）。締切もバッジも無いときは1行目ごと省く。
+
+       🔴 limitedUntil を持たない品にも総数バッジを出さない（2026-11-04）。
+          limitedUntil が無い品は activeLimited から永久に外れないので、
+          バッジが期限なしで出続けて「◯点限定」が嘘になる。終了日を持たず
+          limitedStartAt の停止ゲートだけに使っている品（P041 の販売一時停止）が
+          これに当たる。limitedUntil を持つ品（P076 ほか18点）は従来どおり出る。 */
+    var showTotal = !info.isBom && !!info.until;
     var headRow = (showTotal || deadline)
       ? '<span class="lb-row lb-row-head">'
         + (showTotal ? '<span class="limited-banner-badge">' + info.total + info.unit + '限定</span>' : '')

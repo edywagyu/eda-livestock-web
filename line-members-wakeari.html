@@ -289,7 +289,7 @@ body{
 
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/member-gate.js" defer></script>
-<script src="public/data/pdp-content.js?v=2026-10-26-rice2"></script>
+<script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/member-extras.js?v=003"></script>
 <script>
 (function () {
@@ -323,6 +323,11 @@ body{
       detailId: 'P041', detailLabel: '実物の写真を見る',
       name: '訳あり切り落とし',
       variant: '1袋 200g',
+      /* ⛔ 2026/11/04〜11/30 は販売停止（2026-11-04 田崎さん指示）。
+         期間限定の P076（50パック）と同じ現物なので、二重に売らないよう期間中は
+         こちらを閉じる。既存の endAt の仕組みで「販売終了」になりカートにも入らない。
+         ⏪ 12/1 に戻すときはこの endAt の1行を消すだけ。 */
+      endAt: '2026-11-04T00:00:00+09:00',
       price: 1200, listPrice: 0, stock: 20, limitedTotal: 0,
       img: 'public/images/products/drive/kiriotoshi-2026.jpg',
       /* 不揃いの説明と実物写真は商品詳細ページ(product.html?id=P041)に置く。

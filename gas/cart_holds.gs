@@ -153,9 +153,15 @@ function cartHoldErrors_(items, sessionId) {
   var stockIdx = headers.indexOf('stock');
   if (titleIdx === -1 || stockIdx === -1) return errors;
 
-  /* 既存の在庫チェックと同じ換算（1つ=1 / 2つ=2 / 3つ=3） */
+  /* 既存の在庫チェックと同じ換算（1つ=1 /「Nつ・N個セット」= N）。
+     🔴 gas/Code.gs の variantUnits / checkout.html の _variantUnits /
+        MonthSummary.gs と必ず同じ規則にそろえる。ここだけ「3つ/2つ」しか
+        読まないと、5つセットのカート確保が ×1 で数えられて確保が足りず、
+        表示の残数と実際の決済ブロックがズレる（2026-11-04 P076 で発覚）。 */
   function variantUnits(variant) {
     if (!variant) return 1;
+    var m = String(variant).match(/([2-9])\s*(?:つ|個)\s*セット/);
+    if (m) return Number(m[1]);
     if (String(variant).indexOf('3つ') >= 0) return 3;
     if (String(variant).indexOf('2つ') >= 0) return 2;
     return 1;
