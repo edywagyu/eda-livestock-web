@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-11-04-398-wakeari-kiri-pdp-variants';
+const CACHE_VERSION = 'eda-v2026-11-04-399-wakeari-kiri-card-variants';
 const CORE_ASSETS = [
   './',
   'index.html',
