@@ -1371,9 +1371,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         将来価格との比較として「12月1日から ¥◯」と書く。
         「通常価格」「定価」「○○%OFF」は使わない。 */
   /* 🛒 override を渡すと、その金額で描き直す（パック数の選択肢を切り替えたとき用）。
-     listPrice（取り消し線）は listPrice > price のときだけ出る従来どおりの規則なので、
-     3つ・5つセットを選んだときは比較価格を出さない（¥1,600 は200g1袋あたりの通常価格で、
-     セットの比較対照として売った実績が無い＝二重価格表示になる）。 */
+     compareNote を渡すと、価格の下に比較の1文を添える。
+     🔴 取り消し線（listPrice）と比較の1文は別物。取り消し線は listPrice > price の
+        ときだけ出る従来どおりの規則で、これは**同じ商品**の自社通常価格との比較。
+        1つ(¥900) には ¥1,600 の取り消し線が出るが、3つ・5つセットには出ない
+        （¥1,600 は1袋あたりの額で、セット価格の比較対照として売った実績が無い）。
+     🔴 セットに添える compareNote は**別商品との比較**で、取り消し線にはしない。
+        比べているのは P076（訳あり）ではなく、いま店頭で売っている通常の
+        「切り落とし」200g ¥1,600（P005）の実売価格 × 袋数。
+        どの商品と比べた額なのかが文面から分かるように、必ず商品名を書く
+        （「1袋ずつ単品で買うと」のような書き方は、同じページで1袋 ¥900 を
+         売っている以上お客様が読み違える — 2026-11-04 検査指摘）。 */
   function renderPrice(override, compareNote) {
     const price = (override != null ? override : (product.price || 0));
     const listPrice = Number(product.listPrice) || 0;
@@ -1393,11 +1401,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     } else {
       el.textContent = '¥' + price.toLocaleString();
     }
-    /* 🛒 セット（3つ・5つ）を選んだときは「単品で買ったときの合計」を併記する
-       （2026-11-04 田崎さん指示）。比較に使うのは実際に販売中の
-       「切り落とし」200g ¥1,600（P005）× 袋数で、値段どうしの比較。
-       書き方は P074 肉の日セット「1枚ずつ単品で買うと11,750円です」に合わせる。
-       🔴「通常価格」「定価」「◯%OFF」は使わない。 */
+    /* 🛒 セット（3つ・5つ）を選んだときに比較の1文を添える（2026-11-04 田崎さん指示）。
+       文面は initVariants 側で組む。比較対象の商品名を必ず含める。
+       🔴「通常価格」「定価」「◯%OFF」は使わない（P074 肉の日セットの書き方に合わせる）。 */
     if (compareNote) {
       el.insertAdjacentHTML('beforeend',
         '<span class="pdp-unit-compare">' + compareNote + '</span>');
@@ -1526,7 +1532,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       return 1;
     }
     const unitWeight = Number((C && C.weight) || product.weight) || 0;  /* 1袋のグラム数 */
-    const unitList   = Number(product.listPrice) || 0;                  /* 単品1袋の売価（P005 ¥1,600） */
+    const unitList   = Number(product.listPrice) || 0;                  /* 比較に使う1袋の売価（P005 切り落とし ¥1,600） */
+    const compareName = product.compareName || '';                      /* 比較した商品の名前（「通常の切り落とし」） */
     const packUnit   = product.limitedUnit || '個';                     /* 「袋」 */
     function setSpec(key, val) {
       const rows = document.querySelectorAll('#pdpSpec .pdp-spec-row');
@@ -1544,9 +1551,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       const price = Number(v.p) || 0;
       const u = unitsOf(v.t);
       window.__pdpVariant = v;            /* pdpPushToCart がこれを読んでカートに積む */
-      /* 単品で買ったときの合計。1つのときは従来どおり listPrice の取り消し線だけ出す。 */
-      const note = (u > 1 && unitList > 0)
-        ? ('1' + packUnit + 'ずつ単品で買うと' + (unitList * u).toLocaleString() + '円です。')
+      /* 比較の1文。1つのときは出さない（従来どおり listPrice の取り消し線だけ）。
+         🔴 compareName（比較した商品の名前）が無ければ1文ごと出さない。
+            どの商品の値段と比べた額なのかが書けないまま金額だけ出すと、
+            同じページで1袋 ¥900 を売っている以上お客様が読み違える。 */
+      const note = (u > 1 && unitList > 0 && compareName)
+        ? (compareName + 'を' + u + packUnit + '買うと' + (unitList * u).toLocaleString() + '円です。')
         : '';
       renderPrice(price, note);
       const sp = document.getElementById('stickyPrice');
