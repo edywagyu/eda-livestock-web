@@ -971,6 +971,22 @@
       stripePriceId: '',
       name: '訳あり切り落とし', variant: '1袋 200g',
       price: 1200, weight: 200, stock: 20, temp: '冷凍',
+      /* ⛔ 2026/11/04〜11/30 は販売停止（2026-11-04 田崎さん指示）。
+         期間限定の P076「訳あり切り落とし 期間限定」(50パック) は、この P041 と
+         同じ現物を売る。別商品として両方開けておくと同じ肉を二重に売るため、
+         期間中は P041 を止めて P076 だけで売る。
+         🔴 止め方は limitedSoldOutAt / limitedUntil（既存の限定品の仕組み）。
+            本番 products シートの price 1200 / stock 30 / published TRUE は
+            触っていない＝シートの操作なしで、12/1 にこの3行を消せば元に戻る。
+            stock を 0 にする手は使わない。在庫0は「予約」として決済が通る仕様で、
+            止めたことにならない（2026-10-13 に実害で判明）。
+         🔴 limitedUntil も同時刻にしてあるので product.html?id=P041 の直リンクは
+            「この商品の販売は終了しました」になり購入導線ごと閉じる。
+         ⏪ 期間終了後に戻す手順: 下の limited 3行を削除するだけ。
+            line-members.html と line-members-wakeari.html の endAt 行も削除する。 */
+      limitedTotal: 30,
+      limitedSoldOutAt: '2026/11/04 00:00',
+      limitedUntil:     '2026/11/04 00:00',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Kiriotoshi',
       description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざるため、通常の切り落とし 200g ¥1,600 より1袋400円お安くしています。中身は同じ江田和牛です。煮込み、炒め、丼にそのまま使えます。2枚目が実際の商品の一例です。',
       images: [
@@ -993,8 +1009,10 @@
           最終注文 11/30 → 最短お届け3日で 12/3 着、賞味期限 12/15 まで12日残る。
        ✅ 50パックで田崎さん確定（2026-11-04）。
           ここは取得失敗時のフォールバックで、正は products シート。
-       ⚠️ 2枚目の fusoroi-sample.jpg はラベルの賞味期限が「27.2.6」と読める。
-          12/15 の訴求と食い違うので、公開前に写真を差し替えるか判断が要る。 */
+       🔴 写真は kiriotoshi-2026.jpg の1枚だけ（2026-11-04 田崎さん指示）。
+          訳あり品は2枚目に fusoroi-sample.jpg を入れる決まりがあるが、ラベルの
+          賞味期限が「27.2.6」と読めて 12/15 の訴求と食い違うため今回は入れない。
+          賞味期限は商品説明の本文に明記してある。 */
     {
       productId: 'P076', variantId: 'WAKEARI-KIRI-GENTEI', sku: 'EDA-WAKEARI-KIRI-GENTEI-200',
       stripePriceId: '',
@@ -1007,10 +1025,9 @@
       limitedUntil:     '2026/11/30 23:59',
       limitedUnit: '袋',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Kiriotoshi Limited',
-      description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。賞味期限が2026年12月15日の在庫を、期間限定でお安くしました。煮込み、炒め、丼にそのまま使えます。お届け後はお早めにお召し上がりください。2枚目が実際の商品の一例です。',
+      description: '江田和牛の切り落としを200gずつ脱気包装にしました。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。賞味期限が2026年12月15日の在庫を、期間限定でお安くしました。煮込み、炒め、丼にそのまま使えます。お届け後はお早めにお召し上がりください。',
       images: [
-        'public/images/products/drive/kiriotoshi-2026.jpg',
-        'public/images/products/drive/fusoroi-sample.jpg'
+        'public/images/products/drive/kiriotoshi-2026.jpg'
       ]
     },
     {
