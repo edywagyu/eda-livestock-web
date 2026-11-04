@@ -1268,7 +1268,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-d"></script>
+<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-e"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
@@ -1360,8 +1360,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         満たさないため、取り消し線で「通常価格からの値引き」に見せると不当表示になる。
         将来価格との比較として「12月1日から ¥◯」と書く。
         「通常価格」「定価」「○○%OFF」は使わない。 */
-  (function renderPrice() {
-    const price = product.price || 0;
+  /* 🛒 override を渡すと、その金額で描き直す（パック数の選択肢を切り替えたとき用）。
+     listPrice（取り消し線）は listPrice > price のときだけ出る従来どおりの規則なので、
+     3つ・5つセットを選んだときは比較価格を出さない（¥1,600 は200g1袋あたりの通常価格で、
+     セットの比較対照として売った実績が無い＝二重価格表示になる）。 */
+  function renderPrice(override) {
+    const price = (override != null ? override : (product.price || 0));
     const listPrice = Number(product.listPrice) || 0;
     const el = document.getElementById('pdpPrice');
     if (product.category === 'rice' && listPrice > price) {
@@ -1379,7 +1383,8 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     } else {
       el.textContent = '¥' + price.toLocaleString();
     }
-  })();
+  }
+  renderPrice();
   /* 限定品バナーは public/js/limited-stock.js が products シートを見て自動で出す
      （商品ごとの分岐は不要。マスターの読み込み後に refreshLimitedStock が走る） */
   if (typeof window.refreshLimitedStock === 'function') window.refreshLimitedStock();
@@ -1393,6 +1398,41 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   }
   document.getElementById('stickyName').textContent = product.name;
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
+
+  /* === 🛒 パック数・セットの選択肢（products-master.js の variants）===
+     2026-11-04 田崎さん指示。P076「訳あり切り落とし 期間限定」の 1つ / 3つセット / 5つセット。
+     もともと #variantSection の <select> は空のまま hidden で置かれていた（中身を描く
+     コードがどこにも無く死んでいた）ので、その器をそのまま使う。
+     🔴 variants を持たない商品は従来どおり hidden のまま＝他の商品の挙動は変わらない。
+     🔴 ラベル(v.t)は products.html / shop.html のカードの data-variants と同一文字列。
+        GAS の variantUnits がこの文字列から口数を読む（3つセット=3口 / 5つセット=5口）。
+        表記を変えると ×1 でしか在庫が減らず売り越す。
+     🔴 カートに積む title は product.name（＝products シートの name）のまま変えない。
+        在庫減算・決済前の在庫チェックは title の完全一致で動く。 */
+  (function initVariants() {
+    const list = Array.isArray(product.variants)
+      ? product.variants.filter(v => v && v.t && Number(v.p) > 0) : [];
+    if (list.length < 2) return;          /* 選択肢が1つ以下なら出さない */
+    const sec = document.getElementById('variantSection');
+    const sel = document.getElementById('variantSelect');
+    const lab = document.querySelector('.pdp-variant-label-sm');
+    if (!sec || !sel) return;
+    if (lab && product.variantsLabel) lab.textContent = product.variantsLabel;
+    sel.innerHTML = list.map((v, i) =>
+      '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() + '</option>'
+    ).join('');
+    function apply(i) {
+      const v = list[i] || list[0];
+      window.__pdpVariant = v;            /* pdpPushToCart がこれを読んでカートに積む */
+      renderPrice(Number(v.p));
+      const sp = document.getElementById('stickyPrice');
+      if (sp) sp.textContent = '¥' + Number(v.p).toLocaleString();
+    }
+    sel.addEventListener('change', function () { apply(+sel.value || 0); });
+    sel.value = '0';
+    apply(0);
+    sec.hidden = false;
+  })();
 
   /* === ギャラリー === */
   const IMGV = '?v=20260608'; /* 画像キャッシュ強制更新 (Tom 2026-06-08: PDP写真が全部サーロインで固まる問題=旧products-master.jsキャッシュの根絶) */
@@ -1949,12 +1989,20 @@ function pdpPushToCart() {
   const _canPreorder = !!(window.EDA_PREORDER && window.EDA_PREORDER.dateFor(product));
   if (typeof product.stock === 'number' && product.stock <= 0 && !_canPreorder) { pdpApplyStock(); return false; }
   const qty = +document.getElementById('qty').value || 1;
+  /* 🛒 パック数の選択肢（#variantSelect）が出ている商品は、選ばれた1つを積む。
+     variant にラベル（「3つセット」「5つセット」）をそのまま入れることで、
+     GAS の variantUnits が 3口・5口として stock を減らす。
+     variantId は選択肢ごとに別の値（products-master.js の variants[].id ＝
+     一覧カードの data-variants と同じ数値）。カート内の行キーなので、
+     ここを共通にすると 1つ と 3つセット が同じ行にまとめられてしまう。 */
+  const sv = window.__pdpVariant || null;
+  const unitPrice = sv ? (Number(sv.p) || 0) : (product.price || 0);
   const item = {
-    variantId: product.variantId,
+    variantId: (sv && sv.id) ? sv.id : product.variantId,
     productId: product.productId,
     title: product.name,
-    variant: product.variant || '',
-    price: product.price || 0,
+    variant: sv ? sv.t : (product.variant || ''),
+    price: unitPrice,
     qty: qty,
     img: (product.images && product.images[0]) || '',
     stripePriceId: product.stripePriceId || ''
@@ -1975,8 +2023,8 @@ function pdpPushToCart() {
     try {
       if (window.edaAnalytics) {
         window.edaAnalytics.addToCart(product.productId || product.variantId || '',
-          (product.price || 0) * qty,
-          { title: product.name || '', variant: product.variant || '', source: 'pdp', qty: qty });
+          unitPrice * qty,
+          { title: product.name || '', variant: item.variant, source: 'pdp', qty: qty });
       }
     } catch (e) {}
     return true;
