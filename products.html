@@ -10043,7 +10043,7 @@ body.is-member .product-card--organic .org-chk-lock {
          そのものが在庫減算の入力（gas/Code.gs variantUnits）なので文字列を崩さない。
       🔴 訳あり品の実物写真と詳しい説明はカードに出さず商品詳細ページに置く
          （2026-09-02 ryotaro指示）。 -->
- <div class="product-card" data-sub="slice" data-limited-scope="訳あり切り落とし 期間限定" data-limited-prestart="訳あり切り落とし 期間限定" data-variants='[{"id":51104009000761,"t":"1つ","p":900},{"id":51104009000762,"t":"3つセット","p":2500},{"id":51104009000763,"t":"5つセット","p":3980}]'>
+ <div class="product-card" data-sub="slice" data-variant-select data-limited-scope="訳あり切り落とし 期間限定" data-limited-prestart="訳あり切り落とし 期間限定" data-variants='[{"id":51104009000761,"t":"1つ","p":900},{"id":51104009000762,"t":"3つセット","p":2500},{"id":51104009000763,"t":"5つセット","p":3980}]'>
  <div class="product-card-img" data-label="WAKEARI KIRIOTOSHI GENTEI"></div>
  <div class="product-tag-row"><span class="product-tag">Wagyu &middot; Slice</span><span class="product-price"><s>&yen;1,600</s> &yen;900&#12316;</span></div>
  <p class="product-name"><a href="product.html?id=P076" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">訳あり切り落とし 期間限定</a></p>
@@ -11769,10 +11769,29 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
 
  /* 2026-05-30: 注文UIを2段に。上段=数量ステッパー(1〜10)＋割引ラベル(定価/5%/10%)、下段=追加ボタン(横長・合計表示)。
     まとめ買い割引は商品データ(variants)から導出し自動適用。カート側でも数量に応じ再計算(renderCart)。 */
+ /* 🛒 パック数の選択肢を出すカード（data-variant-select が付いたカードだけ）
+    2026-11-04 田崎さん指示。P076「訳あり切り落とし 期間限定」の 1つ / 3つセット / 5つセット。
+    これまでは data-variants の先頭しかカートに入らず、カードに「3袋 ¥2,500」「5袋 ¥3,980」と
+    出ているのに ¥900 の1袋しか買えなかった（2026-05-30 の数量セレクト統合の名残）。
+    🔴 opt-in（属性が付いたカードだけ）にしている理由: 他のカードも data-variants を
+       3つ持っているが、2つ目・3つ目は 2026-07-31 に廃止した まとめ買い割引
+       （【5%オフ】【10%オフ】）の名残。全カードで選べるようにすると、廃止した割引が
+       そのまま店頭に復活してしまう。だから属性を付けたカードだけに効かせる。
+    🔴 ラベル(t)は商品ページ product.html / products-master.js と同一文字列。
+       GAS の variantUnits がこの文字列から口数を読む（3つセット=3口 / 5つセット=5口）。
+       表記を変えると ×1 でしか在庫が減らず売り越す。 */
+ const useVariantSelect = card.hasAttribute('data-variant-select') && variants.length > 1;
  const base = variants[0];
  /* 2026-07-31: まとめ買い割引(2個5%/3個10%)を廃止。数量にかかわらず定価。 */
  const tiers = { r2: 0, r3: 0 };
- buyEl.innerHTML = '<div class="qty-row">'
+ buyEl.innerHTML = (useVariantSelect
+   ? '<select class="variant-select" aria-label="パック数">'
+     + variants.map(function (v, i) {
+         return '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() + '</option>';
+       }).join('')
+     + '</select>'
+   : '')
+   + '<div class="qty-row">'
    + '<div class="qty-stepper" role="group" aria-label="数量">'
    +   '<button type="button" class="qty-btn qty-dec" aria-label="数量を減らす">−</button>'
    +   '<span class="qty-val" aria-live="polite">1</span>'
@@ -11788,6 +11807,15 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  const decBtn = buyEl.querySelector('.qty-dec');
  const incBtn = buyEl.querySelector('.qty-inc');
  const discEl = buyEl.querySelector('.qty-disc');
+ const vselEl = buyEl.querySelector('select.variant-select');
+ /* いま選ばれているパック数。ライブ価格の反映(applyMaster)が card.dataset.variants を
+    書き換えることがあるので、クリックのたびに読み直す（セレクトの表記と実際の価格がズレない）。 */
+ function curVariant() {
+   let list = variants;
+   try { const d = JSON.parse(card.dataset.variants || '[]'); if (d.length) list = d; } catch (e) {}
+   if (!vselEl) return list[0] || base;
+   return list[+vselEl.value] || list[0] || base;
+ }
  function getQ() { return Math.min(QMAX, Math.max(1, parseInt(qtyValEl.textContent, 10) || 1)); }
  function rateFor(q) { return q >= 3 ? tiers.r3 : (q === 2 ? tiers.r2 : 0); }
  function refresh() {
@@ -11811,8 +11839,11 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  setQ(1);
 
  addBtn.addEventListener('click', () => {
-   const q = getQ(), unit = Math.round(base.p * (1 - rateFor(q)));
-   const ok = addToCart(base.id, unit, title, base.t, img, q, { baseUnit: base.p, tiers: tiers });
+   /* 選ばれたパック数をカートへ。variant にラベル（「3つセット」「5つセット」）を
+      そのまま渡すので、addToCart の在庫上限チェックも GAS の在庫減算も 3口・5口で効く。 */
+   const v = curVariant();
+   const q = getQ(), unit = Math.round(v.p * (1 - rateFor(q)));
+   const ok = addToCart(v.id, unit, title, v.t, img, q, { baseUnit: v.p, tiers: tiers });
    if (ok === false) return;
 
    /* visual feedback */
