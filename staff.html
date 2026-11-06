@@ -357,6 +357,7 @@ ul { list-style: none; padding: 0; margin: 0; }
 .item-line { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .item-line .item-name { color: var(--ink); text-align: left; }
 .item-line .item-qty { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item-line .item-variant { display: block; margin-top: 2px; font-size: 11px; font-weight: 700; color: var(--muted); }
 .reward-badge {
   display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 4px;
   background: rgba(199,154,59,.14); color: #8A6A1F;
@@ -2533,7 +2534,7 @@ async function renderShipToday() {
   listEl.innerHTML = rows.map(function (r) {
     var o = r.o;
     var itemsSummary = (o.itemsList && o.itemsList.length)
-      ? o.itemsList.map(function (x) { return escapeHtml(x.name) + ' ×' + x.qty; }).join('、')
+      ? o.itemsList.map(function (x) { return escapeHtml(x.name) + ' ' + edaItemCountLabel(x); }).join('、')
       : escapeHtml(typeof cleanItemsText === 'function' ? cleanItemsText(o.items) : (o.items || ''));
     var regLabel = r.reg.unknown ? '要確認' : r.reg.region;
     var unpaid = o.awaitingPayment ? '<span class="ship-tag unpaid">未入金</span>' : '';
@@ -3028,6 +3029,40 @@ function edaVariantLabel(v) {
   t = t.replace(/^[（(]\s*/, '').replace(/\s*[）)]$/, '').trim(); // 残りの内側カッコを外す
   return t ? '（' + t + '）' : '';
 }
+/* バリアントの口数＝何パック入っているか。「3つセット」なら3パック。
+   🔴 gas/Code.gs の variantUnits（在庫減算）/ checkout.html の _variantUnits と
+   同じ規則にそろえる。片方だけ直すと、画面のパック数と実際に引かれる在庫がズレる。 */
+function edaVariantUnits(v) {
+  var t = String(v == null ? '' : v);
+  var m = t.match(/([2-9])\s*(?:つ|個)\s*セット/);
+  if (m) return Number(m[1]);
+  if (t.indexOf('3つ') >= 0) return 3;
+  if (t.indexOf('2つ') >= 0) return 2;
+  return 1;
+}
+/* 画面に出す短いラベル。「2つセット【5%オフ】」「200g×3袋（3つセット）」のような
+   表記から口数の部分だけを取り出す（＝必ず「3つセット」の形にそろう）。 */
+function edaVariantSetLabel(v) {
+  var t = String(v == null ? '' : v);
+  var mk = t.indexOf('🎁');
+  if (mk >= 0) t = t.slice(0, mk);
+  var m = t.match(/([2-9])\s*(?:つ|個)\s*セット/);
+  if (m) return m[1] + 'つセット';
+  m = t.match(/([23])\s*つ/);
+  if (m) return m[1] + 'つ';
+  return t.replace(/【[^】]*】/g, '').replace(/[／\/]\s*$/, '').trim();
+}
+/* 一覧・発送リストに出す個数表記。数量バリアント（3つセット/5つセット）は
+   「×1」とだけ出すと梱包で何パック入れるのか分からないので、パック数を前に出す。
+   例）訳あり切り落とし 期間限定 ×3パック（3つセット）
+       霜降スライス ×3            （口数1の商品は従来どおり） */
+function edaItemCountLabel(x) {
+  var qty = Number(x && x.qty) || 1;
+  var units = Number(x && x.units) || 1;
+  if (units <= 1) return '×' + qty;
+  var label = (x && x.variantLabel) || (units + 'つセット');
+  return '×' + (units * qty) + 'パック（' + label + (qty > 1 ? '×' + qty : '') + '）';
+}
 /* 表示直前の保険：どの経路（サーバー整形済み文字列・旧キャッシュ・GAS由来）で来た
    商品文字列でも「（1つ）」を確実に消す。「（1つ (200g)）」は「（200g）」に畳む。 */
 function cleanItemsText(s) {
@@ -3052,15 +3087,23 @@ function normalizeStaffOrder(o) {
   var itemsList = items.map(function (it) {
     var v = String(it.variant || '');
     var mk = v.indexOf('🎁');
+    var qty = (it.qty || it.quantity || 1);
+    /* 🔢 units=1口あたりのパック数（3つセット=3）。qty は注文数のまま変えない
+       （お歳暮の集計 oseiboTally が qty を「個数」として数えている）。
+       梱包で見たいパック数は packs。 */
+    var units = edaVariantUnits(v);
     return {
       name: (it.title || it.name || '商品'),
-      qty: (it.qty || it.quantity || 1),
+      qty: qty,
+      units: units,
+      variantLabel: units > 1 ? edaVariantSetLabel(v) : '',
+      packs: units * (Number(qty) || 1),
       isReward: mk >= 0,
       rewardLabel: mk >= 0 ? v.slice(mk + 2).trim() : ''
     };
   });
   // 一覧プレビュー用の短い文字列（スラッシュではなく読点区切り・括弧なし）
-  var itemsText = itemsList.map(function (x) { return (x.isReward ? '🎁' : '') + x.name + ' ×' + x.qty; }).join('、');
+  var itemsText = itemsList.map(function (x) { return (x.isReward ? '🎁' : '') + x.name + ' ' + edaItemCountLabel(x); }).join('、');
   var d0 = dests[0] || {};
   var addrFull = dests.length ? dests.map(function (d) {
     return (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') +
@@ -3535,8 +3578,19 @@ function renderShipDetail() {
         var badge = x.isReward
           ? '<span class="reward-badge">🎁 ' + escapeHtml(x.rewardLabel || '特典') + '・無料</span>'
           : '';
-        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) + badge +
-               '</span><span class="item-qty">' + (x.qty !== '' && x.qty != null ? '×' + x.qty : '') + '</span></div>';
+        /* 🔢 数量バリアント（3つセット等）は、入れるパック数を右の数字に出し、
+           注文の中身（3つセット×1）を商品名の下に小さく添える。 */
+        var units = Number(x.units) || 1;
+        var qtyNum = Number(x.qty) || 0;
+        var setNote = units > 1
+          ? '<span class="item-variant">' + escapeHtml(x.variantLabel || (units + 'つセット')) +
+            ' ×' + (qtyNum || 1) + '</span>'
+          : '';
+        var countText = (x.qty !== '' && x.qty != null)
+          ? (units > 1 ? '×' + (units * (qtyNum || 1)) + 'パック' : '×' + x.qty)
+          : '';
+        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) + badge + setNote +
+               '</span><span class="item-qty">' + countText + '</span></div>';
       }).join('') + '</div>'
     : '<span class="value-muted">商品情報なし</span>';
   // 🐔 鶏ムネ特典バナー（購入時アンケートに答えた方への次回同梱ぶん）
