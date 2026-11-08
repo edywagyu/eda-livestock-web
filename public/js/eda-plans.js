@@ -74,7 +74,7 @@
     '赤身スライス':       { img: 'public/images/products/drive/wagyu-slice.jpg',     desc: 'しゃぶしゃぶ・すき焼きに' },
     '霜降スライス':       { img: 'public/images/products/drive/shimofuri-slice.jpg', desc: 'とろける甘み・すき焼きに' },
     '赤身焼肉':           { img: 'public/images/products/drive/akami-yakiniku.jpg',  desc: 'ウデ・噛みごたえのある赤身' },
-    'バラ焼肉':           { img: 'public/images/products/drive/yakiniku-brisket.jpg', desc: 'バラ・脂の甘みで味を締める' },
+    'バラ焼肉':           { img: 'public/images/products/drive/yakiniku-brisket-2026-11.jpg', desc: 'バラ・脂の甘みで味を締める' },
     '切り落とし':         { img: 'public/images/products/drive/kiriotoshi-2026.jpg', desc: '牛丼・カレー・肉じゃがに' },
     '和牛ミンチ':         { img: 'public/images/products/drive/minced.jpg',          desc: 'ハンバーグ・そぼろに' },
     '鶏モモ':             { img: 'public/images/products/drive/chicken-thigh.jpg',   desc: '無投薬・平飼い・万能部位' },

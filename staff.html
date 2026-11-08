@@ -1170,14 +1170,14 @@ ul { list-style: none; padding: 0; margin: 0; }
 </style>
 
 <!-- ★ 商品マスター（shop.html と共有・単一データソース）— ?v= を更新するとキャッシュ突破 -->
-<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-g"></script>
+<script src="public/data/products-master.js?v=2026-11-08-bara-photo"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="public/css/eda-core.css?v=20260928a">
 <!-- 定期便プラン名の正本を読む部品（管理画面に直書きしないため） -->
-<script src="public/js/eda-plans.js?v=001"></script>
+<script src="public/js/eda-plans.js?v=002"></script>
 <script>
 (function () {
   if (!window.EdaPlans) return;
@@ -2035,7 +2035,7 @@ const DEMO_PRODUCTS_FALLBACK = [
   { productId: 'P004', variantId: 'WAGYU-SLICE',      name: '赤身スライス',                 variant: '1袋 200g',  price: 2600, stock: 12, temp: '冷凍', category: '牛肉', sku: 'EDA-WSLICE-200',  weight: 200, description: '薄切りにした赤身。しゃぶしゃぶ・すき焼き・冷しゃぶサラダに。', images: ['public/images/products/drive/wagyu-slice.jpg'] },
   { productId: 'P005', variantId: 'KIRIOTOSHI',       name: '和牛切り落とし',               variant: '1袋 200g',  price: 1600, stock: 30, temp: '冷凍', category: '牛肉', sku: 'EDA-KIRI-200',    weight: 200, description: 'ウデ・肩ロース・ソトモモから取れる切り落とし。牛丼・カレー・肉じゃが・炒め物に。', images: ['public/images/products/drive/kiriotoshi-2026.jpg'] },
   /* ===== 牛肉 焼肉系 ===== */
-  { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 200g',  price: 1500, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-200',    weight: 200, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket.jpg'] },
+  { productId: 'P006', variantId: 'YAKINIKU-BRISKET', name: 'バラ焼肉',                     variant: '1袋 200g',  price: 1500, stock: 11, temp: '冷凍', category: '牛肉', sku: 'EDA-YAKI-200',    weight: 200, description: 'バラ肉を焼肉用にカット。赤身と脂が交互の「三枚肉」構造。タレでも塩レモンでも。', images: ['public/images/products/drive/yakiniku-brisket-2026-11.jpg'] },
   { productId: 'P007', variantId: 'OFFAL',            name: '和牛ホルモン',                 variant: '1袋 150g',  price:  840, stock:  8, temp: '冷凍', category: '牛肉', sku: 'EDA-OFFAL-150',   weight: 150, description: '小腸・大腸ミックスホルモン。下処理済みでそのまま調理可能。もつ鍋、焼きホルモンに。', images: ['public/images/products/drive/offal.jpg'] },
   /* ===== 牛肉 加工品 ===== */
   { productId: 'P008', variantId: 'HAMBURG',          name: '江田和牛ハンバーグ',           variant: '1個 130g',  price:  760, stock: 40, temp: '冷凍', category: '牛肉', sku: 'EDA-HAMBURG-130', weight: 130, description: '和牛100%のシンプル配合。冷蔵庫で半日解凍してから、フライパンで両面を焼くだけ。', images: ['public/images/products/drive/hamburg.jpg'] },
@@ -2073,7 +2073,7 @@ const SUBSCRIPTION_PLANS = [
     name: 'ミニ 定期便', variant: '毎月お届け · 1-2人家族',
     price: 6980, stock: 999, temp: '冷凍', category: '定期便',
     description: '1kg / 全5品 (鶏600g+牛400g) / 初月50%OFF (¥3,490) / 2ヶ月目以降 ¥6,980/月',
-    images: ['public/images/products/drive/yakiniku-brisket.jpg']
+    images: ['public/images/products/drive/yakiniku-brisket-2026-11.jpg']
   },
   {
     productId: 'SUB-STARTER', variantId: 'SUB-STARTER', sku: 'EDA-SUB-STARTER',

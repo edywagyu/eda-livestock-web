@@ -62,7 +62,7 @@
         { title: 'ミンチ',   variant: '1袋 200g', qty: 1, display: '和牛ミンチ 200g',
           img: 'public/images/products/drive/minced.jpg' },
         { title: 'バラ焼肉', variant: '1袋 200g', qty: 1, display: 'バラ焼肉 200g',
-          img: 'public/images/products/drive/yakiniku-brisket-2026.jpg' }
+          img: 'public/images/products/drive/yakiniku-brisket-2026-11.jpg' }
       ]
     },
 

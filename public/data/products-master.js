@@ -80,8 +80,12 @@
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku · Brisket',
       description: 'トモバラの中でも「上バラ」を使用。焼肉用にカット。赤身とサシのバランスがよく、多くの方がイメージする「バラ」に近い一袋です。塩で、タレで。',
       /* 2026-08-15 写真差し替え。yakiniku-brisket.jpg は厚切りの霜降りで
-         バラ焼肉の実物と違うため、店頭カードが使っている -2026 に統一。 */
-      images: ['public/images/products/drive/yakiniku-brisket-2026.jpg']
+         バラ焼肉の実物と違うため、店頭カードが使っている -2026 に統一。
+         2026-11-08 再差し替え。黒皿に上バラ8枚の新撮りに統一し、
+         まだ旧 yakiniku-brisket.jpg を見ていた定期便・staff・焼肉プレートも
+         -2026-11 に寄せた（dead CSS の SENBONSUJI/OUTLET BRISKET/
+         YAKINIKU SET/YAKINIKU は別商品の placeholder なので触っていない）。 */
+      images: ['public/images/products/drive/yakiniku-brisket-2026-11.jpg']
     },
     {
       productId: 'P007', variantId: 'OFFAL', sku: 'EDA-OFFAL-200',
