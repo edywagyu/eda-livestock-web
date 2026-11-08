@@ -7073,7 +7073,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="KIRIOTOSHI"] { background-image: url('public/images/products/drive/kiriotoshi-2026.jpg'); }
 /* 訳あり切り落とし 期間限定(P076)。田崎さん指示で「和牛切り落とし 200g」(P005/P041 と同じ)の写真を使う */
 .product-card-img[data-label="WAKEARI KIRIOTOSHI GENTEI"] { background-image: url('public/images/products/drive/kiriotoshi-2026.jpg'); }
-.product-card-img[data-label="YAKINIKU BRISKET"]{ background-image: url('public/images/products/drive/yakiniku-brisket-2026.jpg'); }
+.product-card-img[data-label="YAKINIKU BRISKET"]{ background-image: url('public/images/products/drive/yakiniku-brisket-2026-11.jpg'); }
 .product-card-img[data-label="SENBONSUJI"] { background-image: image-set(url('public/images/products/drive/yakiniku-brisket.webp') type('image/webp'), url('public/images/products/drive/yakiniku-brisket.jpg')); }
 .product-card-img[data-label="RAW HAM"] { background-image: url('public/images/products/drive/raw-ham-2026.jpg'); }
 .product-card-img[data-label="HAMBURG"] { background-image: image-set(url('public/images/products/drive/hamburg.webp') type('image/webp'), url('public/images/products/drive/hamburg.jpg')); }
@@ -9740,7 +9740,7 @@ body.is-member .product-card--organic .org-chk-lock {
 }
 </style>
 <!-- 定期便プランの正本(subscription_plans シート)を読む部品 -->
-<script src="public/js/eda-plans.js?v=001"></script>
+<script src="public/js/eda-plans.js?v=002"></script>
 </head>
 <body data-popular-sort="on">
 <a href="#main" class="skip-link" data-en="Skip to main content">本文へスキップ</a>
@@ -12714,7 +12714,7 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  '無投薬チキンカレー': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '鶏むね蒸し鶏 サラダ': { id: 50830250475818, price: 920, title: '平飼い鶏 ムネ', img: 'public/images/products/drive/chicken-breast.jpg' },
  '和牛の肉じゃが': { id: 50830303822122, price: 1600, title: '切り落とし', img: 'public/images/products/drive/kiriotoshi-2026.jpg' },
- '焼肉プレート': { id: 50830137655594, price: 1900, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket.jpg' },
+ '焼肉プレート': { id: 50830137655594, price: 1900, title: 'バラ焼肉', img: 'public/images/products/drive/yakiniku-brisket-2026-11.jpg' },
  '鶏ミンチのそぼろ丼': { id: 50830210793770, price: 800, title: '平飼い鶏 ミンチ', img: 'public/images/products/drive/chicken-minced.jpg' },
  'ローストチキン': { id: 50830293172522, price: 980, title: '平飼い鶏 モモ', img: 'public/images/products/drive/chicken-thigh.jpg' },
  '和牛のサイコロステーキ': { id: 50830132314410, price: 1800, title: 'サイコロステーキ', img: 'public/images/products/drive/cube-steak.jpg' }
@@ -13823,7 +13823,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-04-wakeari-kiri-gentei-g" defer></script>
+<script src="public/data/products-master.js?v=2026-11-08-bara-photo" defer></script>
 <script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
@@ -13835,7 +13835,7 @@ function copyPopCoupon() {
 <!-- 売れ行き順（popular.json のランクを配る。並べ替え本体は上の sortProductCards） -->
 <script src="public/js/popular.js?v=5" defer></script>
 <script src="public/js/member-gate.js" defer></script>
-<script src="public/js/gift-rules.js?v=009"></script>
+<script src="public/js/gift-rules.js?v=010"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=007" defer></script>
 <script src="public/js/mobile-menu.js?v=2" defer></script>
