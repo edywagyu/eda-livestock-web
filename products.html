@@ -7063,6 +7063,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="YAKINIKU3 SET"] { background-image: url('public/images/products/drive/yakiniku3-set.jpg'); }
 .product-card-img[data-label="YAKINIKU2 SET"] { background-image: url('public/images/products/drive/yakiniku2-set.jpg'); }
 .product-card-img[data-label="SAIKORO CHK SET"] { background-image: url('public/images/products/drive/saikoro-chicken-set.jpg'); }
+.product-card-img[data-label="HAMBURG CHK SET"] { background-image: url('public/images/products/drive/hamburg-chicken-set.jpg'); }
 .product-card-img[data-label="YAKI3 KURABE SET"] { background-image: url('public/images/products/drive/yakiniku3-kurabe-set.jpg'); }
 .product-card-img[data-label="FUSOROI STEAK SET"] { background-image: url('public/images/products/drive/fusoroi-steak-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
@@ -9979,6 +9980,26 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
+
+ <!-- ===== 公式LINE配信用セット P077「江田和牛 ハンバーグと平飼い鶏の食卓セット」=====
+      2026-11-09 田崎さん確定。単品合計 ¥4,120 → ¥3,830（7%オフ）。
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 構成品は和牛ハンバーグ130g×3 と 平飼い鶏 ムネ200g×2。
+         components は products シート側（S列）に登録済み。 -->
+ <div class="product-card" data-sub="set" data-limited-scope="江田和牛 ハンバーグと平飼い鶏の食卓セット" data-limited-prestart="江田和牛 ハンバーグと平飼い鶏の食卓セット" data-variants='[{"id":51109038300771,"t":"1セット","p":3830}]'>
+ <div class="product-card-img" data-label="HAMBURG CHK SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Hamburg &amp; Chicken</span><span class="product-price"><s>&yen;4,120</s> &yen;3,830</span></div>
+ <p class="product-name"><a href="product.html?id=P077" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 ハンバーグと平飼い鶏の食卓セット</a></p>
+ <p class="product-desc">無添加の<strong>和牛ハンバーグ130g</strong>を3個と、無投薬の<strong>平飼い鶏ムネ200g</strong>を2袋。ハンバーグの日と、鶏を使う日。計790g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">ハンバーグ <strong>130g×3</strong></div>
+ <div class="product-stat-item">鶏ムネ <strong>200g×2</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;4,120</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
 
  <!-- ===== 公式LINE配信用セット3本（2026-10-19 ryotaro指示・P063〜P065）=====
       10/19(月)17:00 P063 ¥3,200 ／ 10/22(木)17:00 P064 ¥5,900 ／ 10/25(日)17:00 P065 ¥5,500。
@@ -13823,7 +13844,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-08-bara-photo" defer></script>
+<script src="public/data/products-master.js?v=2026-11-09-p077-hamburg-chicken-set" defer></script>
 <script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

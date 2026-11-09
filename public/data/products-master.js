@@ -1254,11 +1254,39 @@
       ],
       description: '肩ロースの霜降りと、ソトモモの赤身を同量200gずつ。霜降りは薄く引くと脂の甘みがだしに溶け、赤身は繊維がしっかりしているぶん肉の味がまっすぐ出ます。同じ鍋に並べて、2種を食べ比べる400g。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
       images: ['public/images/products/drive/nikunohi-slice2.jpg']
+    },
+    /* ===== 江田和牛 ハンバーグと平飼い鶏の食卓セット（P077）=====
+       2026-11-09 田崎さん確定。単品合計 ¥4,120（ハンバーグ130g ¥760×3 ＋
+       平飼い鶏 ムネ200g ¥920×2）→ ¥3,830（7%オフ）。
+       🔴 name は products シート(E列)と1文字も変えない。決済も在庫減算も名前で引く。
+       🔴 components は products シート(S列)が正。ここは取得失敗時のフォールバック。
+       🔴 limited* はカードの data-limited-scope / data-limited-prestart を効かせるために
+          入れてある。scope が無いと shop.html の LIMIT=2 プレビューから溢れて見えない。
+          prestart は limitedStartAt が無いとカードごと消える(安全側)ので必ず対で置く。 */
+    {
+      productId: 'P077', variantId: 'HAMBURG-CHK-SET', sku: 'EDA-HAMBURG-CHK-SET',
+      stripePriceId: '',
+      name: '江田和牛 ハンバーグと平飼い鶏の食卓セット',
+      variant: 'ハンバーグ130g×3＋平飼い鶏ムネ200g×2 計790g',
+      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
+      price: 3830, listPrice: 4120, weight: 790, stock: 50, temp: '冷凍',
+      limitedTotal: 50,
+      limitedStartAt:   '2026/11/09 00:00',
+      limitedSoldOutAt: '2027/03/31 23:59',
+      limitedUntil:     '2027/03/31 23:59',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Hamburg & Chicken Set',
+      components: [
+        { name: 'ハンバーグ', qty: 3 },
+        { name: '平飼い鶏 ムネ', qty: 2 }
+      ],
+      description: '無添加の和牛ハンバーグ130gを3個と、平飼い鶏ムネ200gを2袋。ハンバーグの日と、鶏を使う日。一週間の食卓をまとめて。計790g。冷凍便でお届けします。',
+      images: ['public/images/products/drive/hamburg-chicken-set.jpg']
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.02-009-nikunohi-off';
+  const PRODUCTS_VERSION = '2026.11.09-010-p077-hamburg-chicken-set';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
