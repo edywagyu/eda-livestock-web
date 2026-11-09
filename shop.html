@@ -7008,6 +7008,7 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="YAKINIKU2 SET"] { background-image: url('public/images/products/drive/yakiniku2-set.jpg'); }
 .product-card-img[data-label="SAIKORO CHK SET"] { background-image: url('public/images/products/drive/saikoro-chicken-set.jpg'); }
 .product-card-img[data-label="HAMBURG CHK SET"] { background-image: url('public/images/products/drive/hamburg-chicken-set.jpg'); }
+.product-card-img[data-label="NIKUNOHI SLICE2"] { background-image: url('public/images/products/drive/nikunohi-slice2.jpg'); }
 .product-card-img[data-label="YAKI3 KURABE SET"] { background-image: url('public/images/products/drive/yakiniku3-kurabe-set.jpg'); }
 .product-card-img[data-label="FUSOROI STEAK SET"] { background-image: url('public/images/products/drive/fusoroi-steak-set.jpg'); }
 .product-card-img[data-label="SW OOZARA SET"] { background-image: url('public/images/products/drive/sw-oozara-set.jpg'); }
@@ -10137,7 +10138,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="sub-tab" data-sub="set">セット商品</button>
  </div>
 
- <div class="product-grid cols-4 reveal" data-cat="beef">
+ <div class="product-grid cols-4 reveal" data-cat="beef" data-preview-limit="5">
 
  <!-- ===== 公式LINE配信用セット P077「江田和牛 ハンバーグと平飼い鶏の食卓セット」=====
       2026-11-09 田崎さん確定。単品合計 ¥4,120 → ¥3,830（7%オフ）。
@@ -10146,7 +10147,7 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 残数（個数）は出さない。data-limited-left は使わない。
       🔴 構成品は和牛ハンバーグ130g×3 と 平飼い鶏 ムネ200g×2。
          components は products シート側（S列）に登録済み。 -->
- <div class="product-card" data-sub="set" data-limited-scope="江田和牛 ハンバーグと平飼い鶏の食卓セット" data-limited-prestart="江田和牛 ハンバーグと平飼い鶏の食卓セット" data-variants='[{"id":51109038300771,"t":"1セット","p":3830}]'>
+ <div class="product-card" data-sub="set" data-variants='[{"id":51109038300771,"t":"1セット","p":3830}]'>
  <div class="product-card-img" data-label="HAMBURG CHK SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Hamburg &amp; Chicken</span><span class="product-price"><s>&yen;4,120</s> &yen;3,830</span></div>
  <p class="product-name"><a href="product.html?id=P077" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 ハンバーグと平飼い鶏の食卓セット</a></p>
@@ -10155,6 +10156,24 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">ハンバーグ <strong>130g×3</strong></div>
  <div class="product-stat-item">鶏ムネ <strong>200g×2</strong></div>
  <div class="product-stat-item wide">単品合計 <strong>&yen;4,120</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
+ <!-- ===== 肉の日 スライス2種セット（P075）=====
+      2026-11-09 田崎さん指示で再公開。単品合計 ¥6,300（霜降スライス3,700＋赤身スライス2,600）→ ¥5,900。
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 販売期限・残数は出さない（2026-11-09 田崎さん指示）。data-limited-* は使わない。 -->
+ <div class="product-card" data-sub="set" data-variants='[{"id":51109059000751,"t":"1セット","p":5900}]'>
+ <div class="product-card-img" data-label="NIKUNOHI SLICE2"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Slice Duo</span><span class="product-price"><s>&yen;6,300</s> &yen;5,900</span></div>
+ <p class="product-name"><a href="product.html?id=P075" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">肉の日 スライス2種セット</a></p>
+ <p class="product-desc">肩ロースの<strong>霜降スライス</strong>と、ソトモモの<strong>赤身スライス</strong>を各200g。同じ鍋に並べて、脂の甘みと肉の味を食べ比べ。すき焼き・しゃぶしゃぶに。計400g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">2種 <strong>各200g</strong></div>
+ <div class="product-stat-item">合計 <strong>400g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;6,300</strong></div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -10259,7 +10278,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="set" data-limited-prestart="江田和牛 焼肉食べ比べセット" data-variants='[{"id":51018039800611,"t":"1セット","p":3980}]'>
+ <div class="product-card" data-sub="set" data-variants='[{"id":51018039800611,"t":"1セット","p":3980}]'>
  <div class="product-card-img" data-label="YAKINIKU2 SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku 2 Cuts</span><span class="product-price"><s>&yen;4,300</s> &yen;3,980</span></div>
  <p class="product-name"><a href="product.html?id=P061" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 焼肉食べ比べセット</a></p>
@@ -15430,7 +15449,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-09-p077-hamburg-chicken-set" defer></script>
+<script src="public/data/products-master.js?v=2026-11-09-p075-p061-revive" defer></script>
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
@@ -15498,7 +15517,10 @@ function copyPopCoupon() {
  var CAT_LABEL = { beef: '和牛', chicken: '鶏肉', rice: 'お米' };
  /* サブタブごとの優先表示商品(商品名一致・記載順)。未指定/見つからない分は先頭から補完 */
  var PREVIEW_PICKS = {
-   beef: { all: ['はじめてセット', '赤身スライス'] },
+   /* 2026-11-09 田崎さん指示: 配信用の3本をトップのプレビューにも必ず出す。
+      data-preview-limit=5 と対。limited* を使わない方針になったため、
+      data-limited-scope による枠外表示は使えない。 */
+   beef: { all: ['はじめてセット', '江田和牛 ハンバーグと平飼い鶏の食卓セット', '肉の日 スライス2種セット', '江田和牛 焼肉食べ比べセット', '赤身スライス'] },
    /* 🍚 代表は 5kg。他カテゴリの代表の決め方（beef は「はじめてセット」＝入口の品）に合わせ、
       いちばん手に取りやすい容量を出す。残りは「お米をすべて表示」から。 */
    rice: { seimai: ['エダチク米 精米 5kg'], genmai: ['エダチク米 玄米 5kg'] }

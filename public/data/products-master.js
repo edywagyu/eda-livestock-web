@@ -810,15 +810,13 @@
         { name: '赤身焼肉', qty: 1 },
         { name: 'バラ焼肉', qty: 1 }
       ],
-      limitedTotal: 20,
-      limitedStartAt: '2026/10/18 18:30',
-      /* 2026-10-19 田崎さん指示で店頭から取り下げ。過去日時にすることで
-         limited-stock.js の activeLimited から外れ、data-limited-prestart を
-         付けた shop/products のカードが自動で消える（HTML側は無改造）。
-         再開するときはこの2行の日時を未来に戻すだけでよい。 */
-      limitedSoldOutAt: '2026/10/19 00:00',
-      limitedUntil:     '2026/10/19 00:00',
-      limitedUnit: 'セット',
+      /* 2026-10-19 に取り下げ → 2026-11-09 田崎さん指示で再開。
+         🔴 販売期限も残数も付けない（2026-11-09 田崎さん指示・全商品共通）。
+            limited* は一切入れない。止めるときは products シートの
+            published=FALSE で止める。
+         ⚠️ 原価は赤身焼肉1,851（歩留58%）＋バラ焼肉909＝2,760。
+            ¥3,980 だと利益は +105円（2.2%）しか残らない。価格を動かすときは
+            必ずロット台帳の最新原価で引き直すこと。 */
       description: '赤身とバラが入ったバランスの良いセットです。赤身焼肉200g、バラ焼肉200g。計400g、2人前ほど。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku2-set.jpg']
     },
@@ -1245,8 +1243,8 @@
       productId: 'P075', variantId: 'NIKUNOHI-SLICE2', sku: 'EDA-NIKUNOHI-SLICE2',
       stripePriceId: '',
       name: '肉の日 スライス2種セット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
-      price: 5900, weight: 400, stock: 10, temp: '冷凍',
-      published: false,  /* 2026-11-02 店頭から下げる（肉の日企画終了）。行は残す */
+      price: 5900, listPrice: 6300, weight: 400, stock: 50, temp: '冷凍',
+      published: true,   /* 2026-11-09 田崎さん指示で再公開（公式LINE配信用） */
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Slice Duo',
       components: [
         { name: '霜降スライス', qty: 1 },
@@ -1270,11 +1268,7 @@
       variant: 'ハンバーグ130g×3＋平飼い鶏ムネ200g×2 計790g',
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
       price: 3830, listPrice: 4120, weight: 790, stock: 50, temp: '冷凍',
-      limitedTotal: 50,
-      limitedStartAt:   '2026/11/09 00:00',
-      limitedSoldOutAt: '2027/03/31 23:59',
-      limitedUntil:     '2027/03/31 23:59',
-      limitedUnit: 'セット',
+      published: true,
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Hamburg & Chicken Set',
       components: [
         { name: 'ハンバーグ', qty: 3 },
@@ -1286,7 +1280,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.09-010-p077-hamburg-chicken-set';
+  const PRODUCTS_VERSION = '2026.11.09-011-p075-p061-revive';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
