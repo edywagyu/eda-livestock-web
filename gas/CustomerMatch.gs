@@ -107,12 +107,13 @@ function identityIndex_() {
       var cv = cs.getDataRange().getValues();
       var ch = (cv[0] || []).map(function (x) { return String(x).trim(); });
       var iE = ch.indexOf('email'), iP = ch.indexOf('phone'),
-          iN = ch.indexOf('name'), iU = ch.indexOf('line_uid');
+          iN = ch.indexOf('name'), iU = ch.indexOf('line_uid'), iLN = ch.indexOf('line_name');
       for (var r = 1; r < cv.length; r++) {
         add({
           src: 'customers', row: r + 1,
           email: iE >= 0 ? cv[r][iE] : '', phone: iP >= 0 ? cv[r][iP] : '',
           name:  iN >= 0 ? cv[r][iN] : '', line_uid: iU >= 0 ? String(cv[r][iU] || '').trim() : '',
+          line_name: iLN >= 0 ? cv[r][iLN] : '',
           state: ''
         });
       }
@@ -256,19 +257,28 @@ function linkMailNotifyPaused_(info) {
 
 /* 実際に送る出口。この仕組みからは、ここ以外で MailApp を呼ばない */
 function linkMailSend_(to, subject, body, kind) {
-  var a = linkMailAllowance_();
-  if (!a.ok) {
-    log('link_mail_blocked', { kind: kind, reason: a.reason, used: a.used, remaining: a.remaining });
-    linkMailNotifyPaused_(a);
-    return { sent: false, reason: a.reason };
-  }
+  /* 「数を読む→送る→数を書く」は読んで書く更新なので、同時に来ると数え落ちる。
+     短いロックで囲う（取れなくても送信は止めない。実効の歯止めは残り送信枠の方）。 */
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  try { locked = lock.tryLock(3000); } catch (e0) {}
   try {
-    MailApp.sendEmail({ to: to, subject: subject, body: body });
-    linkMailBump_(linkMailCount_() + 1);
-    return { sent: true };
-  } catch (e) {
-    log('link_mail_send_error', { kind: kind, error: e.message });
-    return { sent: false, reason: 'send_error' };
+    var a = linkMailAllowance_();
+    if (!a.ok) {
+      log('link_mail_blocked', { kind: kind, reason: a.reason, used: a.used, remaining: a.remaining });
+      linkMailNotifyPaused_(a);
+      return { sent: false, reason: a.reason };
+    }
+    try {
+      MailApp.sendEmail({ to: to, subject: subject, body: body });
+      linkMailBump_(linkMailCount_() + 1);
+      return { sent: true };
+    } catch (e) {
+      log('link_mail_send_error', { kind: kind, error: e.message });
+      return { sent: false, reason: 'send_error' };
+    }
+  } finally {
+    if (locked) { try { lock.releaseLock(); } catch (e1) {} }
   }
 }
 
@@ -279,12 +289,32 @@ function linkMailSend_(to, subject, body, kind) {
    「そのアドレスを受信できる＝その行のご本人」が成り立たない。
    確認番号をお送りする先を決めるとき、必ずここを通す。
    ------------------------------------------------------------ */
+/* お名前欄に入っている値が「こちらのシステムが作った値」かどうか。
+   true なら“お名前が入っていない”とみなして人数に数えない。
+   ・lineLinkAccount はお名前が取れないとき body.email.split('@')[0] を入れる
+     ＝メールアドレスの先頭がそのままお名前欄に入る。これは系統的に起きる。
+   ・LINE_NAME_NOT_A_PERSON が true のときは、LINEの表示名がそのまま
+     お名前欄に入っている行（name と line_name が同じ）も数えない。
+     こちらは既定オフ（田崎さんの判断待ち）。 */
+var LINK_NAME_FROM_LINE_IGNORED = false;   /* ← true にすると LINE表示名も数えない */
+
+function linkNameIsSystemGenerated_(rec) {
+  var n = custNameKey_(rec && rec.name);
+  if (!n) return true;
+  var em = String((rec && rec.email) || '');
+  var local = em.indexOf('@') > 0 ? em.slice(0, em.indexOf('@')) : '';
+  if (local && custNameKey_(local) === n) return true;
+  if (LINK_NAME_FROM_LINE_IGNORED && rec && rec.line_name && custNameKey_(rec.line_name) === n) return true;
+  return false;
+}
+
 function emailSharedByMultiplePeople_(idx, emailKey) {
   var ek = matchEmailKey_(emailKey);
   if (!ek) return false;
   var list = (idx && idx.byEmail && idx.byEmail[ek]) || [];
   var names = {};
   for (var i = 0; i < list.length; i++) {
+    if (linkNameIsSystemGenerated_(list[i])) continue;
     var n = custNameKey_(list[i].name);
     if (n) names[n] = true;
   }
@@ -428,7 +458,17 @@ function recordLinkCandidate_(probe, m, note, notify) {
     var h = (data[0] || []).map(function (x) { return String(x).trim(); });
     var iUid = h.indexOf('line_uid'), iName = h.indexOf('推定されたお名前');
     var uid = String((probe && probe.line_uid) || '').trim();
-    var nm  = String(m.name || (probe && probe.name) || '').trim();
+    /* 🔴 当たった先が複数あるときは、先頭1件のお名前だけを書かない（2026-11-13 指摘2）。
+       先頭が別の方だと「推定されたお名前: 中尾 賢一郎」と出て、担当が
+       そのまま手で統合してしまう。当たった全行のお名前を並べ、複数だと分かる形にする。 */
+    var hitNames = [];
+    (m.hits || []).forEach(function (r0) {
+      var n0 = String(r0.name || '').trim();
+      if (n0 && hitNames.indexOf(n0) === -1) hitNames.push(n0);
+    });
+    var nm = (hitNames.length > 1)
+      ? ('【候補が複数】' + hitNames.join(' / '))
+      : String(m.name || hitNames[0] || (probe && probe.name) || '').trim();
     for (var i = 1; i < data.length; i++) {
       if (iUid >= 0 && String(data[i][iUid] || '').trim() === uid &&
           custNameKey_(iName >= 0 ? data[i][iName] : '') === custNameKey_(nm)) {
@@ -704,10 +744,9 @@ function lineLinkRequestCode(body) {
     }
 
     var code = String(Math.floor(100000 + Math.random() * 900000));
-    ensureColumns_(sh, LINK_CODE_HEADERS.length);
-    sh.appendRow([new Date(), uid, sendTo, code,
-                  new Date(Date.now() + LINK_CODE_TTL_MIN * 60 * 1000), false, m.by]);
 
+    /* 🔴 控えを書くのは「送れたあと」。先に書くと、送信を止めているときに
+       誰も知らない番号の行が残り、1日の発行数の数まで押し上げる（2026-11-13 指摘）。 */
     var sent = linkMailSend_(
       sendTo,
       '【江田畜産】公式LINEとのおつなぎ用 確認番号',
@@ -722,6 +761,9 @@ function lineLinkRequestCode(body) {
     if (!sent.sent) {
       return jsonResponse({ ok: true, found: true, sent: false, candidate: false, reason: 'mail_paused' });
     }
+    ensureColumns_(sh, LINK_CODE_HEADERS.length);
+    sh.appendRow([new Date(), uid, sendTo, code,
+                  new Date(Date.now() + LINK_CODE_TTL_MIN * 60 * 1000), false, m.by]);
     log('line_link_code_sent', { uid: uid, by: m.by });
     return jsonResponse({ ok: true, found: true, sent: true });
   } catch (e) {
@@ -780,10 +822,11 @@ function lineLinkVerifyCode(body) {
     var vIdx = identityIndex_();
     if (emailSharedByMultiplePeople_(vIdx, email)) {
       var vHits = (vIdx.byEmail[matchEmailKey_(email)] || []);
-      var vName = '';
-      for (var vi = 0; vi < vHits.length; vi++) { if (vHits[vi].name) { vName = vHits[vi].name; break; } }
-      recordLinkCandidate_({ line_uid: uid, display_name: display, name: vName },
-                           { by: 'email', hits: vHits, email: email, name: vName,
+      /* 担当メールに「どちらの方か」を判断する材料を必ず載せる。
+         照合に使ったメールアドレスを probe に入れる（入れないと
+         「ご入力のメール: (なし)」になり、取り違えやすい件ほど情報が無くなる）。 */
+      recordLinkCandidate_({ line_uid: uid, display_name: display, email: email, name: '' },
+                           { by: 'email', hits: vHits, email: email,
                              ambiguous: true, reason: 'email_shared' },
                            '確認番号は合っていたが、このメールアドレスを複数の方が使われている', true);
       log('line_link_verify_shared_email', { uid: uid });
@@ -866,8 +909,10 @@ function resolveDuplicateUidRows_(uid, keepEmail) {
 }
 
 /* ============================================================
-   🔍 下見（1文字も書かない）: 今つながっていない行がどれだけ救えるか数える。
-   エディタから ▶ で実行して、ログで結果を見る。
+   🔍 下見: 今つながっていない行がどれだけ救えるか数える。
+   お客様のデータ（顧客・注文・定期便マスター）には1文字も書かない。
+   最後に処理の記録を「_logs」タブに1行だけ残す。
+   エディタから ▶ で実行して、戻り値かログで結果を見る。
    ============================================================ */
 function dryRunIdentityMatch() {
   var idx = identityIndex_();

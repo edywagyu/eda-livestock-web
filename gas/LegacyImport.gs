@@ -49,7 +49,7 @@ var LEGACY_LOG_TAB = '旧カート取込_ログ';
 var LEGACY_LOG_HEADERS = [
   '取込日時', 'ファイル名', '区分', '種類', '読んだ行数',
   '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ',
-  '注文キーが作れず', '連携候補',
+  '注文キーが作れず', '連絡先なしで作らず', '連携候補',
   '空行スキップ', '読めなかった列', 'ファイルID', 'ファイル更新日時', 'モード', '備考'
 ];
 
@@ -314,7 +314,7 @@ function importLegacyCarts_(mode, opts) {
       logSh.appendRow([
         new Date(), fname, source, kind, r.rows || 0,
         r.cust_new || 0, r.cust_updated || 0, r.order_new || 0, r.dup || 0,
-        r.no_key || 0, r.candidate || 0,
+        r.no_key || 0, r.no_contact || 0, r.candidate || 0,
         r.skipped_blank || 0,
         (r.missing || []).join(' / '), f.getId(), legacyDate_(f.getLastUpdated()), mode, r.note || ''
       ]);
@@ -329,7 +329,7 @@ function importLegacyCarts_(mode, opts) {
   }
 
   var out = { ok: true, mode: mode, folder: folder.getName(), files_seen: seen, results: results };
-  if (!live) out.note = '1文字も書いていません（dry）。live で実行すると上の件数だけ書き込みます';
+  if (!live) out.note = 'お客様のデータ（顧客・注文）には1文字も書いていません（dry）。処理の記録（_logs）だけ残ります。live で実行すると上の件数だけ書き込みます';
   log('legacy_import', { mode: mode, files: seen });
   return out;
 }
@@ -344,7 +344,7 @@ function legacyPut_(arr, headers, colName, val) {
 function legacyImportFile_(file, source, kind, live) {
   var res = { file: file.getName(), source: source, kind: kind, rows: 0,
               cust_new: 0, cust_updated: 0, order_new: 0, dup: 0,
-              no_key: 0, candidate: 0,
+              no_key: 0, no_contact: 0, candidate: 0,
               skipped_blank: 0, missing: [], note: '' };
 
   var rows;
@@ -516,6 +516,12 @@ function legacyUpsertCustomer_(probe, m, source, mode, res) {
        （同じCSVを入れ直したときに行が増えないようにするための最小限の照合） */
   var allowPhone = (mode === 'matched');
   var strictPair = (mode === 'new');
+  /* 🔴 2026-11-13: 前回の strictPair は「メール＋お名前」だけだったため、
+     メールが空の行では既存行が一生見つからず、取り込みを走らせるたびに
+     customers に新しい行が積まれていた（CSVを書き出し直せば毎回新しい
+     ファイルとして読み直されるので、運用上ふつうに起きる）。
+     → メールが無ければ「電話＋お名前」の両方一致で探す。
+       メールも電話も無い行は、そもそも連絡の取りようがないので行を作らない。 */
   var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
   var data = sh.getDataRange().getValues();
   var h = (data[0] || []).map(function (x) { return String(x).trim(); });
@@ -534,8 +540,12 @@ function legacyUpsertCustomer_(probe, m, source, mode, res) {
   var target = -1;
   for (var i = 1; i < data.length; i++) {
     if (strictPair) {
-      /* メールとお名前の両方が一致する行だけ。片方だけでは相乗りしない */
-      if (ek && nk && matchEmailKey_(data[i][iE]) === ek && custNameKey_(data[i][iN]) === nk) {
+      /* 相乗りしてよいのは「メール＋お名前」か「（メールが無ければ）電話＋お名前」が
+         そろって一致する行だけ。片方だけでは相乗りしない。 */
+      if (nk && ek && matchEmailKey_(data[i][iE]) === ek && custNameKey_(data[i][iN]) === nk) {
+        target = i + 1; break;
+      }
+      if (nk && !ek && pk && matchPhoneKey_(data[i][iP]) === pk && custNameKey_(data[i][iN]) === nk) {
         target = i + 1; break;
       }
       continue;
@@ -561,6 +571,13 @@ function legacyUpsertCustomer_(probe, m, source, mode, res) {
      🔴 定期便マスターにしか居なかったお客様を customers に迎え入れるのが
         この仕組みの目的（2026-11-13 指摘）。メール/電話で1人に絞れた方は
         台帳の情報で行を作る。 */
+  /* 連絡先がまったく無い行（メールも電話も無い）は作らない。
+     おつなぎにも使えず、取り込むたびに増えるだけなので数えるだけにする。 */
+  if (!ek && !pk) {
+    if (res) res.no_contact++;
+    return { row: -1, created: false };
+  }
+
   var row = new Array(h.length).fill('');
   row[iId] = Utilities.getUuid();
   row[iE] = known.email;
