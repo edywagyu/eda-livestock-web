@@ -72,12 +72,14 @@ function markSubscribers_(mode) {
       var ch = cv[0];
       var cCol = ms_colIndex_(cs, ch, MS_CUST_COL, live);
       var iMail = ch.indexOf('email'), iUid = ch.indexOf('line_uid'), iName = ch.indexOf('name');
+      var iTel = ch.indexOf('phone');   /* 🔗 2026-11-13: 電話番号でも照合する */
       var cw = [], cHit = 0;
       for (var r = 1; r < cv.length; r++) {
         var p = {
           email: iMail >= 0 ? String(cv[r][iMail] || '').trim().toLowerCase() : '',
           uid:   iUid  >= 0 ? String(cv[r][iUid]  || '').trim() : '',
-          name:  iName >= 0 ? String(cv[r][iName] || '').trim() : ''
+          name:  iName >= 0 ? String(cv[r][iName] || '').trim() : '',
+          phone: iTel  >= 0 ? String(cv[r][iTel]  || '').trim() : ''
         };
         var hit = isSubscriber_(idx, p);
         if (hit) cHit++;
@@ -99,12 +101,14 @@ function markSubscribers_(mode) {
       var oh = ov[0];
       var oCol = ms_colIndex_(os, oh, MS_ORDER_COL, live);
       var jMail = oh.indexOf('customer_email'), jUid = oh.indexOf('line_uid'), jName = oh.indexOf('customer_name');
+      var jTel = oh.indexOf('customer_phone');   /* 🔗 2026-11-13: 電話番号でも照合する */
       var ow = [], oHit = 0;
       for (var r2 = 1; r2 < ov.length; r2++) {
         var q = {
           email: jMail >= 0 ? String(ov[r2][jMail] || '').trim().toLowerCase() : '',
           uid:   jUid  >= 0 ? String(ov[r2][jUid]  || '').trim() : '',
-          name:  jName >= 0 ? String(ov[r2][jName] || '').trim() : ''
+          name:  jName >= 0 ? String(ov[r2][jName] || '').trim() : '',
+          phone: jTel  >= 0 ? String(ov[r2][jTel]  || '').trim() : ''
         };
         var hit2 = isSubscriber_(idx, q);
         if (hit2) oHit++;

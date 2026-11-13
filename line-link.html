@@ -334,6 +334,52 @@
     </div>
   </div>
 
+  <!-- ================================================================
+       STATE: Link by contact (MODE C) — ご購入歴のおつなぎ
+       2026-11-13 追加。
+       公式LINEの歓迎メッセージ「ご購入歴を連携する」からここに来る（?mode=link）。
+       それまでは ?e= が無いと購入時アンケートの画面に入ってしまい、
+       ご購入歴のおつなぎにならなかった。
+       ・まずご登録のメールアドレスをお伺いする
+       ・見つからなければ携帯番号でもう一度おさがしする
+       ================================================================ -->
+  <div class="state" id="stateLink">
+    <div class="step-title">ご購入歴をおつなぎします</div>
+    <div class="step-sub">
+      これまでのご注文・定期便のお届け内容を、この公式LINEでご確認いただけるようになります。
+    </div>
+
+    <div class="form-group" id="linkEmailGroup">
+      <label class="form-label" for="linkEmail">ご登録のメールアドレス</label>
+      <input type="email" class="form-input" id="linkEmail" placeholder="example@email.com"
+             inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false"/>
+      <p style="font-size:11.5px;color:#888;line-height:1.6;margin-top:8px;text-align:left">
+        ご注文のときにお使いになったメールアドレスをご入力ください。
+      </p>
+    </div>
+
+    <!-- 見つからなかったときだけ出る: 携帯番号でのおさがし -->
+    <div class="form-group" id="linkPhoneGroup" style="display:none">
+      <label class="form-label" for="linkPhone">携帯番号</label>
+      <input type="tel" class="form-input" id="linkPhone" placeholder="090-1234-5678"
+             inputmode="tel" autocomplete="tel"/>
+      <p style="font-size:11.5px;color:#888;line-height:1.6;margin-top:8px;text-align:left">
+        ハイフンはあってもなくてもかまいません。
+      </p>
+    </div>
+
+    <p id="linkMsg" style="display:none;font-size:13px;line-height:1.7;color:#b00020;background:#fff4f4;border:1px solid #f3d2d2;border-radius:10px;padding:12px 14px;margin:0 0 14px;text-align:left"></p>
+
+    <div class="step-nav">
+      <button class="btn-next final" id="linkSubmit" onclick="submitLinkByContact()">おつなぎする</button>
+    </div>
+
+    <p style="font-size:11.5px;color:#999;line-height:1.7;margin-top:14px">
+      うまくいかないときは、このままLINEでお知らせください。こちらでお調べいたします。
+    </p>
+    <button class="btn-primary" style="margin-top:10px;background:var(--line)" onclick="closeLiff()">LINEに戻る</button>
+  </div>
+
   <!-- STATE: Link Success (購入済の人の自動連携) -->
   <div class="state" id="stateSuccess">
     <div class="success-icon">
@@ -529,6 +575,91 @@ function submitRegistration() {
   });
 }
 
+/* ================================================================
+   MODE C: ご購入歴のおつなぎ（メール → 携帯番号）
+   2026-11-13 追加
+   ・1回目は入力されたメールアドレスで照合する
+   ・外れたら「見つかりませんでした」とお伝えし、携帯番号の欄を出す
+   ・サーバ側（line_link_contact）は メール → 電話番号 の順に
+     「顧客」「注文」「定期便マスター」の3つを見る。お名前だけの一致では
+     つながず、人が確かめる控えに回る
+   ================================================================ */
+var _linkStage = 'email';   /* 'email' → 'phone' */
+
+function _linkShowMsg(text) {
+  var el = document.getElementById('linkMsg');
+  if (!el) return;
+  if (!text) { el.style.display = 'none'; el.textContent = ''; return; }
+  el.textContent = text;
+  el.style.display = 'block';
+}
+
+function submitLinkByContact() {
+  var btn = document.getElementById('linkSubmit');
+  var email = (document.getElementById('linkEmail').value || '').trim();
+  var phone = (document.getElementById('linkPhone').value || '').trim();
+
+  var payload = { line_uid: _lineUid, display_name: _displayName };
+  if (_linkStage === 'phone' && phone) {
+    payload.phone = phone;
+    if (email) payload.email = email;
+  } else {
+    if (!email || email.indexOf('@') < 0) {
+      _linkShowMsg('メールアドレスをご入力ください。');
+      return;
+    }
+    payload.email = email;
+  }
+
+  _linkShowMsg('');
+  btn.disabled = true;
+  btn.textContent = 'おさがししています…';
+
+  window.EDA_API.post('line_link_contact', payload).then(function(res) {
+    btn.disabled = false;
+    btn.textContent = 'おつなぎする';
+
+    if (res && res.ok && res.matched) {
+      var nameEl = document.getElementById('successName');
+      if (nameEl) {
+        nameEl.textContent = (res.name ? res.name + ' 様の' : '') + 'ご注文情報をおつなぎしました';
+      }
+      window._showState('Success');
+      return;
+    }
+
+    if (res && res.candidate) {
+      _linkShowMsg('同じお名前のお客様が見つかりましたが、お取り違えを防ぐため、' +
+                   'こちらで確認させていただきます。確認が済みましたらLINEでご連絡いたします。');
+      return;
+    }
+
+    if (res && res.error === 'too_many_attempts') {
+      _linkShowMsg('お試しの回数が上限に達しました。恐れ入りますが、このままLINEでお知らせください。' +
+                   'こちらでお調べいたします。');
+      return;
+    }
+
+    if (_linkStage === 'email') {
+      /* 1回目が外れた → 携帯番号でもう一度 */
+      _linkStage = 'phone';
+      document.getElementById('linkPhoneGroup').style.display = 'block';
+      _linkShowMsg('見つかりませんでした。ご注文時のメールアドレスをご確認ください。' +
+                   'お心当たりがない場合は、携帯番号でもおさがしできます。');
+      try { document.getElementById('linkPhone').focus(); } catch (e) {}
+      return;
+    }
+
+    _linkShowMsg('メールアドレス・携帯番号のどちらでも見つかりませんでした。' +
+                 'お手数ですが、このままLINEでお知らせください。こちらでお調べいたします。');
+  }).catch(function(err) {
+    console.error('[lineLinkByContact]', err);
+    btn.disabled = false;
+    btn.textContent = 'おつなぎする';
+    _linkShowMsg('通信がうまくいきませんでした。少し時間をおいてもう一度お試しください。');
+  });
+}
+
 /* ---- LIFF Init ---- */
 (async function() {
   'use strict';
@@ -553,6 +684,9 @@ function submitRegistration() {
   window._showError = showError;
 
   var params = new URLSearchParams(window.location.search);
+  /* 🔗 2026-11-13: mode=link なら「ご購入歴のおつなぎ」画面（MODE C）に入る。
+     既存の MODE A（?e= 付きの自動連携）と MODE B（購入時アンケート）はそのまま。 */
+  var wantLink = (params.get('mode') || '') === 'link';
   var encodedEmail = params.get('e') || '';
   var customerEmail = '';
   try { customerEmail = encodedEmail ? atob(encodedEmail) : ''; } catch(e) { customerEmail = encodedEmail; }
@@ -637,6 +771,20 @@ function submitRegistration() {
       display_name: _displayName
     });
     if (loginCheck.ok && loginCheck.matched) {
+      /* 🔗 2026-11-13: 友だち追加の時点で customers に行ができるため、
+         ここは「連携したい方」にも matched:true を返す。メールが空＝まだ
+         ご購入歴とつながっていない行なので、おつなぎの画面に進める。
+         （これまでは全員ここで「登録済みです」で止まっていた） */
+      var _c = loginCheck.customer || {};
+      var _hasEmail = !!String(_c.email || '').trim();
+      if (wantLink && !_hasEmail) {
+        showState('Link');
+        return;
+      }
+      if (wantLink && _hasEmail) {
+        var _al = document.querySelector('#stateAlready .success-sub');
+        if (_al) _al.textContent = 'ご購入歴は、すでにおつなぎ済みです。マイページからご注文・配送状況をご確認いただけます。';
+      }
       showState('Already');
       return;
     }
@@ -667,6 +815,12 @@ function submitRegistration() {
       console.error('[lineLinkAccount]', e);
       showError('通信エラーが発生しました。');
     }
+    return;
+  }
+
+  /* MODE C: ご購入歴のおつなぎ（公式LINEの歓迎メッセージからの ?mode=link） */
+  if (wantLink) {
+    showState('Link');
     return;
   }
 

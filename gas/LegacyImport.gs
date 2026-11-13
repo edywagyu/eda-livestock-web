@@ -1,0 +1,435 @@
+/**
+ * ============================================================
+ *  📥 旧カート（WIX / Shopify）のお客様・ご注文をドライブのCSVから取り込む
+ *  2026-11-13 追加
+ * ------------------------------------------------------------
+ *  田崎さんの方針:
+ *    「WIXとShopifyの顧客データ（誰に何を送ったか）を定期的にCSVでドライブに
+ *      格納し、それを管理画面が読んで反映する」
+ *    ★ 正本はCSV。PDFは機械で読めないので正本にしない。
+ *      人が見るためのPDFが必要なら、取り込んだあとにCSVから起こす。
+ *
+ *  何をするか:
+ *    ① ドライブの所定フォルダ（下の LEGACY_FOLDER_* で指定）のCSVを読む
+ *    ② 列の名前を LEGACY_COLUMN_MAP で江田畜産の言葉に読み替える
+ *    ③ customers に「お客様」を足す／足りない欄だけ埋める
+ *       （突合は CustomerMatch.gs の メール→電話→お名前。お名前だけの一致では
+ *         つながず「連携候補」に控えを残す）
+ *    ④ orders に「ご注文」を足す（旧カートのご注文として mode=legacy_wix / legacy_shopify）
+ *    ⑤ 何件入ったかを「旧カート取込_ログ」タブに1行残す
+ *
+ *  🔴 冪等（同じCSVを2回入れても二重にならない）:
+ *    ・ご注文は orders の右端に作る legacy_key 列で重複を判定する。
+ *      キー = 区分 + ':' + 注文番号。注文番号が無いCSVは
+ *      区分 + ':' + メール + '|' + 日付(YYYY-MM-DD) + '|' + 金額 で作る。
+ *    ・ファイル単位でも「旧カート取込_ログ」に記録を残し、
+ *      同じファイル（ID＋最終更新日時）は既定で読み飛ばす。
+ *
+ *  🔴 まだ確定していないこと（田崎さんの確認が必要）:
+ *    ・取り込み元フォルダのID … LEGACY_FOLDER_ID（スクリプトプロパティ）が未設定。
+ *      設定が無ければフォルダ名 LEGACY_FOLDER_NAME で探す。
+ *    ・WIX / Shopify が実際に書き出す列名 … 下の候補表で複数を見ているが、
+ *      実物のCSVを1本もらえたら候補表に1行足すだけで直る形にしてある。
+ *      当たらなかった列は取り込みログの「読めなかった列」に出す。
+ *
+ *  使い方（どれも ▶ エディタから実行。まず dry で中身を見てから）:
+ *    importLegacyCartsDry()   … 1文字も書かずに、何件入るかだけ返す
+ *    importLegacyCarts()      … 実際に取り込む
+ * ============================================================ */
+
+/* 取り込み元フォルダ。スクリプトプロパティ LEGACY_FOLDER_ID があればそれを使う。
+   無ければ LEGACY_FOLDER_NAME の名前でドライブを探す。 */
+var LEGACY_FOLDER_NAME = '旧カート顧客CSV';
+
+/* 取り込み済みファイルの退避先（フォルダ名）。'' なら動かさない（既定）。
+   ファイルを動かさなくても legacy_key とファイル記録で二重取り込みは起きない。 */
+var LEGACY_DONE_FOLDER_NAME = '';
+
+var LEGACY_LOG_TAB = '旧カート取込_ログ';
+var LEGACY_LOG_HEADERS = [
+  '取込日時', 'ファイル名', '区分', '種類', '読んだ行数',
+  '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ', '突合できず', '連携候補',
+  '読めなかった列', 'ファイルID', 'ファイル更新日時', 'モード', '備考'
+];
+
+/* orders の右端に作る、二重取り込み防止のための列 */
+var LEGACY_KEY_COL = 'legacy_key';
+
+/* ------------------------------------------------------------
+   🔧 列の読み替え表
+   ------------------------------------------------------------
+   左が江田畜産の言葉、右がCSV側の列名の候補（上から順に探す）。
+   WIX / Shopify の実物の列名が違っても、ここに1語足すだけで直る。
+   比較は「小文字・前後の空白を落とす」でそろえてから行う。
+   ------------------------------------------------------------ */
+var LEGACY_COLUMN_MAP = {
+  shopify: {
+    /* お客様 */
+    email:      ['email', 'customer email', 'contact email', 'メール', 'メールアドレス'],
+    /* 🔴 Shopify の注文CSVは「Name」列が注文番号(#1539)。お名前ではない。
+       だから name の候補に裸の 'name' は入れない（入れるとお名前欄に #1539 が入る）。 */
+    name:       ['billing name', 'shipping name', 'customer name', '名前', 'お名前', '氏名'],
+    first_name: ['first name', 'billing first name', 'shipping first name', '名'],
+    last_name:  ['last name', 'billing last name', 'shipping last name', '姓'],
+    phone:      ['phone', 'billing phone', 'shipping phone', 'customer phone', '電話', '電話番号'],
+    zip:        ['billing zip', 'shipping zip', 'zip', '郵便番号'],
+    address:    ['billing address1', 'shipping address1', 'address1', '住所'],
+    /* ご注文 */
+    order_no:   ['name', 'order name', 'order number', '#', '注文番号'],
+    placed_at:  ['created at', 'paid at', 'processed at', 'date', '注文日'],
+    total:      ['total', 'subtotal', 'total price', '合計', '金額'],
+    items:      ['lineitem name', 'line item name', 'product title', '商品名'],
+    qty:        ['lineitem quantity', 'line item quantity', 'quantity', '数量'],
+    financial:  ['financial status', 'payment status', '支払状況']
+  },
+  wix: {
+    email:      ['email', 'buyer email', 'recipient email', 'メール', 'メールアドレス'],
+    name:       ['name', 'buyer name', 'recipient name', 'full name', '名前', 'お名前', '氏名'],
+    first_name: ['first name', 'buyer first name', '名'],
+    last_name:  ['last name', 'buyer last name', '姓'],
+    phone:      ['phone', 'buyer phone', 'recipient phone', '電話', '電話番号'],
+    zip:        ['zip', 'zip/postal code', 'postal code', '郵便番号'],
+    address:    ['address', 'address line 1', 'street address', '住所'],
+    order_no:   ['order number', 'order #', 'number', '注文番号'],
+    placed_at:  ['date created', 'order date', 'date', '注文日'],
+    total:      ['total', 'order total', '合計', '金額'],
+    items:      ['items', 'item name', 'product name', '商品名'],
+    qty:        ['quantity', 'qty', '数量'],
+    financial:  ['payment status', 'status', '支払状況']
+  }
+};
+
+/* ファイル名から区分（wix / shopify）を当てる。当たらなければ '' */
+function legacySourceOf_(fileName) {
+  var s = String(fileName || '').toLowerCase();
+  if (s.indexOf('shopify') >= 0) return 'shopify';
+  if (s.indexOf('wix') >= 0) return 'wix';
+  return '';
+}
+
+/* ファイル名から種類（customers / orders）を当てる。当たらなければ 'orders' 扱いにしない。 */
+function legacyKindOf_(fileName) {
+  var s = String(fileName || '').toLowerCase();
+  if (s.indexOf('order') >= 0 || s.indexOf('注文') >= 0) return 'orders';
+  if (s.indexOf('customer') >= 0 || s.indexOf('contact') >= 0 || s.indexOf('顧客') >= 0) return 'customers';
+  return '';
+}
+
+function legacyHeaderKey_(v) { return String(v == null ? '' : v).trim().toLowerCase(); }
+
+/* 見出し行から「江田畜産の言葉 → 列番号」の対応を作る。
+   戻り: { map:{field:idx}, missing:[field] } */
+function legacyResolveColumns_(header, source) {
+  var dict = LEGACY_COLUMN_MAP[source] || {};
+  var hk = (header || []).map(legacyHeaderKey_);
+  var map = {}, missing = [];
+  Object.keys(dict).forEach(function (field) {
+    var cands = dict[field];
+    for (var i = 0; i < cands.length; i++) {
+      var k = hk.indexOf(legacyHeaderKey_(cands[i]));
+      if (k >= 0) { map[field] = k; return; }
+    }
+    missing.push(field);
+  });
+  /* 同じ列が2つの役割に当たってしまった場合の安全弁。
+     注文番号とお名前が同じ列なら、お名前は「無い」ものとして扱う
+     （Shopify の「Name」= 注文番号 のような取り違えを防ぐ）。 */
+  if (map.order_no != null && map.name != null && map.order_no === map.name) {
+    delete map.name;
+    missing.push('name(注文番号の列と同じだったため外しました)');
+  }
+  return { map: map, missing: missing };
+}
+
+function legacyCell_(row, map, field) {
+  var i = map[field];
+  if (i == null || i < 0) return '';
+  var v = row[i];
+  return v == null ? '' : v;
+}
+
+/* 氏名: name が無ければ 姓+名 を組む */
+function legacyName_(row, map) {
+  var n = String(legacyCell_(row, map, 'name') || '').trim();
+  if (n) return n;
+  var l = String(legacyCell_(row, map, 'last_name') || '').trim();
+  var f = String(legacyCell_(row, map, 'first_name') || '').trim();
+  return (l + ' ' + f).trim();
+}
+
+/* 日付を 'yyyy/MM/dd HH:mm:ss' にそろえる。読めなければ元の文字列を返す */
+function legacyDate_(v) {
+  if (!v) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    return isNaN(v.getTime()) ? '' : Utilities.formatDate(v, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+  }
+  var s = String(v).trim();
+  var d = new Date(s.replace(/-/g, '/'));
+  if (!isNaN(d.getTime())) return Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+  return s;
+}
+
+function legacyDateKey_(v) {
+  var s = legacyDate_(v);
+  var m = String(s).match(/^(\d{4})[\/\-](\d{2})[\/\-](\d{2})/);
+  return m ? (m[1] + '-' + m[2] + '-' + m[3]) : String(s).slice(0, 10);
+}
+
+function legacyMoney_(v) {
+  var n = Number(String(v == null ? '' : v).replace(/[^0-9.\-]/g, ''));
+  return isNaN(n) ? 0 : n;
+}
+
+/* ご注文1件のキー。注文番号があればそれ、無ければ メール|日付|金額 */
+function legacyOrderKey_(source, row, map) {
+  var no = String(legacyCell_(row, map, 'order_no') || '').trim();
+  if (no) return source + ':' + no;
+  return source + ':' + matchEmailKey_(legacyCell_(row, map, 'email')) + '|' +
+         legacyDateKey_(legacyCell_(row, map, 'placed_at')) + '|' +
+         legacyMoney_(legacyCell_(row, map, 'total'));
+}
+
+/* ------------------------------------------------------------
+   取り込み元フォルダを取る。見つからなければ null。
+   ------------------------------------------------------------ */
+function legacyFolder_() {
+  var id = cfg('LEGACY_FOLDER_ID');
+  if (id) {
+    try { return DriveApp.getFolderById(id); }
+    catch (e) { log('legacy_folder_id_error', { id: id, error: e.message }); }
+  }
+  try {
+    var it = DriveApp.getFoldersByName(LEGACY_FOLDER_NAME);
+    if (it.hasNext()) return it.next();
+  } catch (e) { log('legacy_folder_name_error', { error: e.message }); }
+  return null;
+}
+
+/* ------------------------------------------------------------
+   本体
+   mode: 'dry'（1文字も書かない） / 'live'
+   opts: { force:true で既に取り込んだファイルも読み直す }
+   ------------------------------------------------------------ */
+function importLegacyCartsDry(opts) { return importLegacyCarts_('dry', opts); }
+function importLegacyCarts(opts)    { return importLegacyCarts_('live', opts); }
+
+function importLegacyCarts_(mode, opts) {
+  var live = (mode === 'live');
+  var force = !!(opts && opts.force);
+  var folder = legacyFolder_();
+  if (!folder) {
+    var msg = '取り込み元フォルダが見つかりません。スクリプトプロパティ LEGACY_FOLDER_ID を設定するか、' +
+              'ドライブに「' + LEGACY_FOLDER_NAME + '」フォルダを作ってください。';
+    log('legacy_import_no_folder', { mode: mode });
+    return { ok: false, error: msg };
+  }
+
+  var logSh = sheet(LEGACY_LOG_TAB, LEGACY_LOG_HEADERS);
+  var doneKeys = {};
+  try {
+    var lv = logSh.getDataRange().getValues();
+    var lh = (lv[0] || []).map(function (x) { return String(x).trim(); });
+    var iFid = lh.indexOf('ファイルID'), iUpd = lh.indexOf('ファイル更新日時'), iMode = lh.indexOf('モード');
+    for (var i = 1; i < lv.length; i++) {
+      if (iMode >= 0 && String(lv[i][iMode]) !== 'live') continue;   /* dry の記録は済み扱いにしない */
+      if (iFid >= 0) doneKeys[String(lv[i][iFid]) + '|' + legacyDate_(iUpd >= 0 ? lv[i][iUpd] : '')] = true;
+    }
+  } catch (e) {}
+
+  var results = [];
+  var files = folder.getFilesByType(MimeType.CSV);
+  var seen = 0;
+  while (files.hasNext()) {
+    var f = files.next();
+    seen++;
+    var fname = f.getName();
+    var fkey = f.getId() + '|' + legacyDate_(f.getLastUpdated());
+    if (!force && doneKeys[fkey]) {
+      results.push({ file: fname, skipped: '既に取り込み済み' });
+      continue;
+    }
+    var source = legacySourceOf_(fname);
+    var kind = legacyKindOf_(fname);
+    if (!source || !kind) {
+      results.push({ file: fname, skipped: 'ファイル名から区分（wix/shopify）か種類（customers/orders）が分かりません' });
+      continue;
+    }
+    var r = legacyImportFile_(f, source, kind, live);
+    results.push(r);
+    if (live) {
+      logSh.appendRow([
+        new Date(), fname, source, kind, r.rows || 0,
+        r.cust_new || 0, r.cust_updated || 0, r.order_new || 0, r.dup || 0, r.unmatched || 0, r.candidate || 0,
+        (r.missing || []).join(' / '), f.getId(), legacyDate_(f.getLastUpdated()), mode, r.note || ''
+      ]);
+      if (LEGACY_DONE_FOLDER_NAME) {
+        try {
+          var dit = folder.getFoldersByName(LEGACY_DONE_FOLDER_NAME);
+          var dst = dit.hasNext() ? dit.next() : folder.createFolder(LEGACY_DONE_FOLDER_NAME);
+          f.moveTo(dst);
+        } catch (e) { r.note = (r.note || '') + ' 退避に失敗: ' + e.message; }
+      }
+    }
+  }
+
+  var out = { ok: true, mode: mode, folder: folder.getName(), files_seen: seen, results: results };
+  if (!live) out.note = '1文字も書いていません（dry）。live で実行すると上の件数だけ書き込みます';
+  log('legacy_import', { mode: mode, files: seen });
+  return out;
+}
+
+/* 1行ぶんの配列に、列名を見て値を置く */
+function legacyPut_(arr, headers, colName, val) {
+  var i = headers.indexOf(colName);
+  if (i >= 0) arr[i] = val;
+}
+
+/* CSV 1本ぶん */
+function legacyImportFile_(file, source, kind, live) {
+  var res = { file: file.getName(), source: source, kind: kind, rows: 0,
+              cust_new: 0, cust_updated: 0, order_new: 0, dup: 0, unmatched: 0, candidate: 0,
+              missing: [], note: '' };
+
+  var rows;
+  try {
+    rows = Utilities.parseCsv(file.getBlob().getDataAsString('UTF-8'));
+  } catch (e) {
+    try { rows = Utilities.parseCsv(file.getBlob().getDataAsString('Shift_JIS')); }
+    catch (e2) { res.note = 'CSVが読めませんでした: ' + e.message; return res; }
+  }
+  if (!rows || rows.length < 2) { res.note = '中身が空です'; return res; }
+
+  var resolved = legacyResolveColumns_(rows[0], source);
+  var map = resolved.map;
+  res.missing = resolved.missing;
+  if (map.email == null && map.phone == null) {
+    res.note = 'メールも電話番号も見つかりません。LEGACY_COLUMN_MAP に実際の列名を足してください';
+    return res;
+  }
+
+  var idx = identityIndex_();
+
+  /* orders 側の準備（legacy_key 列と既存キー） */
+  var osh = null, oh = [], iKey = -1, haveKey = {};
+  if (kind === 'orders') {
+    osh = sheet('orders');
+    oh = osh.getDataRange().getValues()[0].map(function (x) { return String(x).trim(); });
+    iKey = oh.indexOf(LEGACY_KEY_COL);
+    if (iKey === -1) {
+      iKey = oh.length;
+      if (live) osh.getRange(1, iKey + 1).setValue(LEGACY_KEY_COL);
+      oh.push(LEGACY_KEY_COL);
+    } else {
+      var kv = osh.getRange(2, iKey + 1, Math.max(osh.getLastRow() - 1, 1), 1).getValues();
+      kv.forEach(function (x) { var k = String(x[0] || '').trim(); if (k) haveKey[k] = true; });
+    }
+  }
+
+  var pendingOrders = [];
+
+  for (var r = 1; r < rows.length; r++) {
+    var row = rows[r];
+    if (!row || !row.join('').trim()) continue;
+    res.rows++;
+
+    var email = String(legacyCell_(row, map, 'email') || '').trim();
+    var phone = String(legacyCell_(row, map, 'phone') || '').trim();
+    var name  = legacyName_(row, map);
+
+    /* ---- お客様 ---- */
+    var probe = { email: email, phone: phone, name: name, line_uid: '' };
+    var m = matchIdentity_(probe, idx);
+    if (m.by === 'email' || m.by === 'phone') {
+      if (live) legacyUpsertCustomer_(probe, m, source, false, res);
+      else res.cust_updated++;
+    } else if (m.by === 'name') {
+      /* お名前だけの一致 → つながない。控えだけ残す */
+      res.candidate++;
+      if (live) recordLinkCandidate_({ line_uid: '', display_name: '', name: name }, m, '旧カートCSVの取り込み（' + source + '）');
+      if (live) legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
+      else res.cust_new++;
+    } else {
+      if (live) legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
+      else res.cust_new++;
+    }
+
+    /* ---- ご注文 ---- */
+    if (kind === 'orders') {
+      var key = legacyOrderKey_(source, row, map);
+      if (haveKey[key]) { res.dup++; continue; }
+      haveKey[key] = true;
+      var item = String(legacyCell_(row, map, 'items') || '').trim();
+      var qty  = Number(legacyCell_(row, map, 'qty') || 0) || 0;
+      var o = new Array(oh.length).fill('');
+      legacyPut_(o, oh, 'order_number', String(legacyCell_(row, map, 'order_no') || '').trim() || ('LEGACY-' + source.toUpperCase() + '-' + key.slice(-8)));
+      legacyPut_(o, oh, 'placed_at', legacyDate_(legacyCell_(row, map, 'placed_at')));
+      legacyPut_(o, oh, 'customer_name', name);
+      legacyPut_(o, oh, 'customer_email', email);
+      legacyPut_(o, oh, 'customer_phone', phone);
+      legacyPut_(o, oh, 'mode', 'legacy_' + source);
+      legacyPut_(o, oh, 'total', legacyMoney_(legacyCell_(row, map, 'total')));
+      legacyPut_(o, oh, 'payment_status', String(legacyCell_(row, map, 'financial') || 'imported'));
+      legacyPut_(o, oh, 'payment_method', source);
+      legacyPut_(o, oh, 'items_json', item ? JSON.stringify([{ title: item, qty: qty || 1 }]) : '[]');
+      legacyPut_(o, oh, 'metadata_json', JSON.stringify({ imported_from: source, file: file.getName(), imported_at: new Date().toISOString() }));
+      o[iKey] = key;
+      pendingOrders.push(o);
+      res.order_new++;
+    }
+  }
+
+  if (live && pendingOrders.length) {
+    osh.getRange(osh.getLastRow() + 1, 1, pendingOrders.length, oh.length).setValues(pendingOrders);
+  }
+
+  return res;
+}
+
+/* customers への upsert。
+   ・既にある行（メール/電話一致）は空欄だけ埋める
+   ・無ければ1行足す（ご購入額は0・source に旧カートの区分を残す）
+   🔴 お名前だけの一致では新しい行を作る（勝手につながない）。
+      同じ人かどうかは「連携候補」で人が決める。 */
+function legacyUpsertCustomer_(probe, m, source, createNew, res) {
+  var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
+  var data = sh.getDataRange().getValues();
+  var h = (data[0] || []).map(function (x) { return String(x).trim(); });
+  function col(n) { var i = h.indexOf(n); if (i === -1) { i = h.length; sh.getRange(1, i + 1).setValue(n); h.push(n); } return i; }
+  var iE = col('email'), iN = col('name'), iP = col('phone'), iSrc = col('source'),
+      iZip = col('zip'), iAddr = col('address'), iId = col('customer_id');
+
+  var ek = matchEmailKey_(probe.email), pk = matchPhoneKey_(probe.phone);
+  var target = -1;
+  for (var i = 1; i < data.length; i++) {
+    if (ek && matchEmailKey_(data[i][iE]) === ek) { target = i + 1; break; }
+    if (pk && matchPhoneKey_(data[i][iP]) === pk) { target = i + 1; break; }
+  }
+
+  if (target > 0) {
+    var cur = sh.getRange(target, 1, 1, h.length).getValues()[0];
+    function fillIfEmpty(idx, val) {
+      if (idx < 0 || val === '' || val == null) return;
+      if (!String(cur[idx] == null ? '' : cur[idx]).trim()) sh.getRange(target, idx + 1).setValue(val);
+    }
+    fillIfEmpty(iE, probe.email);
+    fillIfEmpty(iN, probe.name);
+    fillIfEmpty(iP, probe.phone);
+    if (res) res.cust_updated++;
+    return { row: target, created: false };
+  }
+
+  if (!createNew) { if (res) res.unmatched++; return { row: -1, created: false }; }
+
+  var row = new Array(h.length).fill('');
+  row[iId] = Utilities.getUuid();
+  row[iE] = probe.email || '';
+  row[iN] = probe.name || '';
+  row[iP] = probe.phone || '';
+  row[iSrc] = '旧カート取込（' + source + '）';
+  var iTs = h.indexOf('total_spent'), iOc = h.indexOf('order_count');
+  if (iTs >= 0) row[iTs] = 0;
+  if (iOc >= 0) row[iOc] = 0;
+  sh.appendRow(row);
+  if (res) res.cust_new++;
+  return { row: sh.getLastRow(), created: true };
+}
