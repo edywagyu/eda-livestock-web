@@ -48,8 +48,8 @@ var LEGACY_DONE_FOLDER_NAME = '';
 var LEGACY_LOG_TAB = '旧カート取込_ログ';
 var LEGACY_LOG_HEADERS = [
   '取込日時', 'ファイル名', '区分', '種類', '読んだ行数',
-  '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ', '突合できず', '連携候補',
-  '読めなかった列', 'ファイルID', 'ファイル更新日時', 'モード', '備考'
+  '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ', '取り込めず', '連携候補',
+  '空行スキップ', '読めなかった列', 'ファイルID', 'ファイル更新日時', 'モード', '備考'
 ];
 
 /* orders の右端に作る、二重取り込み防止のための列 */
@@ -180,13 +180,48 @@ function legacyMoney_(v) {
   return isNaN(n) ? 0 : n;
 }
 
-/* ご注文1件のキー。注文番号があればそれ、無ければ メール|日付|金額 */
+/* ------------------------------------------------------------
+   ご注文1件のキー（二重取り込み防止）。
+   ① 注文番号があればそれを使う（いちばん確実）
+   ② 無ければ メール|日付|金額|商品名|数量 で作る
+   🔴 2026-11-13 の指摘で直したところ:
+     ・旧実装は メール|日付|金額 の3つだけだった。同じ方が同じ日に同じ金額で
+       2回ご注文されると2件目が「重複」として落ちていた（二重より落ちる方が怖い）。
+       → 商品名と数量を足し、さらに「同じキーがファイル内で何件目か」の
+         通し番号(#2, #3…)を付ける。通し番号はファイルの中身だけで決まるので、
+         同じCSVを入れ直しても同じキーになる＝二重にならない。
+         （CSVの行番号は使わない。別の月に書き出し直すと行がずれて
+           同じご注文が別物になってしまうため）
+     ・メールが空の行では wix:|2026-01-01|0 のように全員共通のキーになり、
+       別人のご注文同士がぶつかっていた。
+       → メール・日付・金額のどれかが空なら、キーを作らず '' を返す。
+         呼び側は「突合できず」に数えて取り込まない（混ざるより落ちる方を選ぶ）。
+   ------------------------------------------------------------ */
 function legacyOrderKey_(source, row, map) {
   var no = String(legacyCell_(row, map, 'order_no') || '').trim();
   if (no) return source + ':' + no;
-  return source + ':' + matchEmailKey_(legacyCell_(row, map, 'email')) + '|' +
-         legacyDateKey_(legacyCell_(row, map, 'placed_at')) + '|' +
-         legacyMoney_(legacyCell_(row, map, 'total'));
+
+  var mail = matchEmailKey_(legacyCell_(row, map, 'email'));
+  var date = legacyDateKey_(legacyCell_(row, map, 'placed_at'));
+  var total = legacyMoney_(legacyCell_(row, map, 'total'));
+  if (!mail || !date || !total) return '';   /* 代替キーを作れない */
+
+  var item = String(legacyCell_(row, map, 'items') || '').trim();
+  var qty  = String(legacyCell_(row, map, 'qty') || '').trim();
+  return source + ':' + mail + '|' + date + '|' + total + '|' + item + '|' + qty;
+}
+
+/* ファイルの中で同じキーが何件目かを数えて、2件目以降に #n を付ける。
+   同じ内容のCSVなら何度入れても同じ結果になる（冪等）。 */
+function legacyNumberDuplicateKeys_(keys) {
+  var seen = {}, out = [];
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    if (!k) { out.push(''); continue; }
+    seen[k] = (seen[k] || 0) + 1;
+    out.push(seen[k] === 1 ? k : (k + '#' + seen[k]));
+  }
+  return out;
 }
 
 /* ------------------------------------------------------------
@@ -257,9 +292,11 @@ function importLegacyCarts_(mode, opts) {
     var r = legacyImportFile_(f, source, kind, live);
     results.push(r);
     if (live) {
+      ensureColumns_(logSh, LEGACY_LOG_HEADERS.length);
       logSh.appendRow([
         new Date(), fname, source, kind, r.rows || 0,
         r.cust_new || 0, r.cust_updated || 0, r.order_new || 0, r.dup || 0, r.unmatched || 0, r.candidate || 0,
+        r.skipped_blank || 0,
         (r.missing || []).join(' / '), f.getId(), legacyDate_(f.getLastUpdated()), mode, r.note || ''
       ]);
       if (LEGACY_DONE_FOLDER_NAME) {
@@ -288,7 +325,7 @@ function legacyPut_(arr, headers, colName, val) {
 function legacyImportFile_(file, source, kind, live) {
   var res = { file: file.getName(), source: source, kind: kind, rows: 0,
               cust_new: 0, cust_updated: 0, order_new: 0, dup: 0, unmatched: 0, candidate: 0,
-              missing: [], note: '' };
+              skipped_blank: 0, missing: [], note: '' };
 
   var rows;
   try {
@@ -317,7 +354,10 @@ function legacyImportFile_(file, source, kind, live) {
     iKey = oh.indexOf(LEGACY_KEY_COL);
     if (iKey === -1) {
       iKey = oh.length;
-      if (live) osh.getRange(1, iKey + 1).setValue(LEGACY_KEY_COL);
+      /* 🔴 見出しを足す前に列を広げる。orders の現在の最大列数が見出し数と同じだと
+         getRange(1, iKey+1) が範囲外で落ちる（2026-11-13 指摘）。
+         実測: orders の見出しは27列。 */
+      if (live) { ensureColumns_(osh, iKey + 1); osh.getRange(1, iKey + 1).setValue(LEGACY_KEY_COL); }
       oh.push(LEGACY_KEY_COL);
     } else {
       var kv = osh.getRange(2, iKey + 1, Math.max(osh.getLastRow() - 1, 1), 1).getValues();
@@ -325,29 +365,55 @@ function legacyImportFile_(file, source, kind, live) {
     }
   }
 
+  /* ご注文のキーを先に全部作っておく（同じキーの2件目以降に #n を付けるため）。
+     行ごとにその場で決めると、同じCSVを入れ直したときに番号がずれる。 */
+  var rowKeys = [];
+  if (kind === 'orders') {
+    var rawKeys = [];
+    for (var k0 = 1; k0 < rows.length; k0++) {
+      var rr = rows[k0];
+      rawKeys.push((!rr || !rr.join('').trim()) ? '' : legacyOrderKey_(source, rr, map));
+    }
+    rowKeys = legacyNumberDuplicateKeys_(rawKeys);
+  }
+
   var pendingOrders = [];
 
   for (var r = 1; r < rows.length; r++) {
     var row = rows[r];
     if (!row || !row.join('').trim()) continue;
-    res.rows++;
 
     var email = String(legacyCell_(row, map, 'email') || '').trim();
     var phone = String(legacyCell_(row, map, 'phone') || '').trim();
     var name  = legacyName_(row, map);
 
+    /* 🔴 2026-11-13 の指摘3: ここで飛ばさないと customers に空の行が量産される。
+       Shopify の注文CSVは1件のご注文が商品ごとに複数行に分かれ、2行目以降は
+       メール・お名前・電話が空。空のまま下へ流すと「誰とも当たらない」→
+       UUIDだけの空行を appendRow していた。customers は在庫・特典・配信の土台なので
+       ここは必ず止める。 */
+    if (!email && !phone && !name) {
+      res.skipped_blank = (res.skipped_blank || 0) + 1;
+      continue;
+    }
+
+    res.rows++;
+
     /* ---- お客様 ---- */
     var probe = { email: email, phone: phone, name: name, line_uid: '' };
     var m = matchIdentity_(probe, idx);
-    if (m.by === 'email' || m.by === 'phone') {
+    if (m.auto) {
+      /* メール or 電話で、1人に絞れて当たった */
       if (live) legacyUpsertCustomer_(probe, m, source, false, res);
       else res.cust_updated++;
-    } else if (m.by === 'name') {
-      /* お名前だけの一致 → つながない。控えだけ残す */
+    } else if (m.by === 'name' || m.by === 'phone') {
+      /* お名前だけの一致／電話が複数の方に当たった → つながない。控えだけ残す */
       res.candidate++;
-      if (live) recordLinkCandidate_({ line_uid: '', display_name: '', name: name }, m, '旧カートCSVの取り込み（' + source + '）');
-      if (live) legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
-      else res.cust_new++;
+      if (live) {
+        recordLinkCandidate_({ line_uid: '', display_name: '', name: name }, m,
+                             '旧カートCSVの取り込み（' + source + '）', false);
+        legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
+      } else { res.cust_new++; }
     } else {
       if (live) legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
       else res.cust_new++;
@@ -355,13 +421,19 @@ function legacyImportFile_(file, source, kind, live) {
 
     /* ---- ご注文 ---- */
     if (kind === 'orders') {
-      var key = legacyOrderKey_(source, row, map);
+      var key = rowKeys[r - 1] || '';
+      if (!key) {
+        /* 注文番号も代替キーも作れない（メール・日付・金額のどれかが空）。
+           混ざると取り返しがつかないので取り込まない。 */
+        res.unmatched++;
+        continue;
+      }
       if (haveKey[key]) { res.dup++; continue; }
       haveKey[key] = true;
       var item = String(legacyCell_(row, map, 'items') || '').trim();
       var qty  = Number(legacyCell_(row, map, 'qty') || 0) || 0;
       var o = new Array(oh.length).fill('');
-      legacyPut_(o, oh, 'order_number', String(legacyCell_(row, map, 'order_no') || '').trim() || ('LEGACY-' + source.toUpperCase() + '-' + key.slice(-8)));
+      legacyPut_(o, oh, 'order_number', String(legacyCell_(row, map, 'order_no') || '').trim() || ('LEGACY-' + source.toUpperCase() + '-' + key.slice(-10)));
       legacyPut_(o, oh, 'placed_at', legacyDate_(legacyCell_(row, map, 'placed_at')));
       legacyPut_(o, oh, 'customer_name', name);
       legacyPut_(o, oh, 'customer_email', email);
@@ -379,6 +451,7 @@ function legacyImportFile_(file, source, kind, live) {
   }
 
   if (live && pendingOrders.length) {
+    ensureColumns_(osh, oh.length);
     osh.getRange(osh.getLastRow() + 1, 1, pendingOrders.length, oh.length).setValues(pendingOrders);
   }
 
@@ -394,7 +467,7 @@ function legacyUpsertCustomer_(probe, m, source, createNew, res) {
   var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
   var data = sh.getDataRange().getValues();
   var h = (data[0] || []).map(function (x) { return String(x).trim(); });
-  function col(n) { var i = h.indexOf(n); if (i === -1) { i = h.length; sh.getRange(1, i + 1).setValue(n); h.push(n); } return i; }
+  function col(n) { var i = h.indexOf(n); if (i === -1) { i = h.length; ensureColumns_(sh, i + 1); sh.getRange(1, i + 1).setValue(n); h.push(n); } return i; }
   var iE = col('email'), iN = col('name'), iP = col('phone'), iSrc = col('source'),
       iZip = col('zip'), iAddr = col('address'), iId = col('customer_id');
 

@@ -346,7 +346,8 @@
   <div class="state" id="stateLink">
     <div class="step-title">ご購入歴をおつなぎします</div>
     <div class="step-sub">
-      これまでのご注文・定期便のお届け内容を、この公式LINEでご確認いただけるようになります。
+      これまでのご注文・定期便のお届け内容を、この公式LINEでご確認いただけるようになります。<br/>
+      ご本人さまの確認のため、ご登録のメールアドレスに6桁の番号をお送りします。
     </div>
 
     <div class="form-group" id="linkEmailGroup">
@@ -368,11 +369,29 @@
       </p>
     </div>
 
+    <!-- 確認番号の入力（メールをお送りしたあとだけ出る）
+         2026-11-13: メールアドレスを打つだけでおつなぎしてしまうと、
+         アドレスを知っている人が他のお客様のご購入歴を見られてしまう。
+         ご登録のメールアドレスに6桁の番号をお送りし、それを確かめてからおつなぎする。 -->
+    <div class="form-group" id="linkCodeGroup" style="display:none">
+      <label class="form-label" for="linkCode">メールに届いた6桁の番号</label>
+      <input type="text" class="form-input" id="linkCode" placeholder="123456"
+             inputmode="numeric" autocomplete="one-time-code" maxlength="6"
+             style="letter-spacing:.3em;text-align:center;font-size:20px"/>
+      <p style="font-size:11.5px;color:#888;line-height:1.6;margin-top:8px;text-align:left">
+        ご登録のメールアドレスにお送りしました。10分間ご利用いただけます。
+        迷惑メールに入ることがありますのでご確認ください。
+      </p>
+    </div>
+
+    <p id="linkInfo" style="display:none;font-size:13px;line-height:1.7;color:#0F3D2E;background:#f2f7f4;border:1px solid #cfe0d6;border-radius:10px;padding:12px 14px;margin:0 0 14px;text-align:left"></p>
     <p id="linkMsg" style="display:none;font-size:13px;line-height:1.7;color:#b00020;background:#fff4f4;border:1px solid #f3d2d2;border-radius:10px;padding:12px 14px;margin:0 0 14px;text-align:left"></p>
 
     <div class="step-nav">
-      <button class="btn-next final" id="linkSubmit" onclick="submitLinkByContact()">おつなぎする</button>
+      <button class="btn-next final" id="linkSubmit" onclick="submitLinkByContact()">確認番号を受け取る</button>
     </div>
+    <button id="linkResend" style="display:none;background:none;border:none;color:#888;font-size:12px;text-decoration:underline;margin-top:10px;cursor:pointer"
+            onclick="restartLinkFlow()">番号が届かない／メールアドレスを入れ直す</button>
 
     <p style="font-size:11.5px;color:#999;line-height:1.7;margin-top:14px">
       うまくいかないときは、このままLINEでお知らせください。こちらでお調べいたします。
@@ -387,7 +406,7 @@
     </div>
     <h2 class="success-title">連携完了！</h2>
     <p class="success-sub" id="successName">LINEアカウントが連携されました</p>
-    <p class="success-sub" style="margin-top:-12px;font-size:13px;color:#888">📩 配送状況の確認リンクをLINEでお送りしました</p>
+    <p class="success-sub" id="successPushNote" style="margin-top:-12px;font-size:13px;color:#888">📩 配送状況の確認リンクをLINEでお送りしました</p>
     <ul class="success-benefits">
       <li>発送したらLINEで即通知</li>
       <li>追跡番号もLINEに届きます</li>
@@ -576,29 +595,96 @@ function submitRegistration() {
 }
 
 /* ================================================================
-   MODE C: ご購入歴のおつなぎ（メール → 携帯番号）
-   2026-11-13 追加
-   ・1回目は入力されたメールアドレスで照合する
-   ・外れたら「見つかりませんでした」とお伝えし、携帯番号の欄を出す
-   ・サーバ側（line_link_contact）は メール → 電話番号 の順に
-     「顧客」「注文」「定期便マスター」の3つを見る。お名前だけの一致では
-     つながず、人が確かめる控えに回る
+   MODE C: ご購入歴のおつなぎ（2段階）
+   2026-11-13 設計変更
+   ① ご登録のメールアドレス（または携帯番号）をお伺いする
+      → 台帳に載っているメールアドレス宛に6桁の番号をお送りする
+   ② 届いた番号をご入力いただいて、はじめておつなぎする
+   🔴 メールアドレスを打つだけでつないでしまうと、アドレスをご存じの方が
+      他のお客様のご購入歴をご覧になれてしまうため、番号の確認を必ず挟む。
+   ・メールで見つからなければ携帯番号でもう一度おさがしする
+   ・お名前だけ一致した場合はつながず、担当にメールで知らせて人が確認する
    ================================================================ */
-var _linkStage = 'email';   /* 'email' → 'phone' */
+var _linkStage = 'email';   /* 'email' → 'phone' → 'code' */
+
+function _linkEl(id) { return document.getElementById(id); }
 
 function _linkShowMsg(text) {
-  var el = document.getElementById('linkMsg');
+  var el = _linkEl('linkMsg');
+  if (!el) return;
+  if (!text) { el.style.display = 'none'; el.textContent = ''; return; }
+  el.textContent = text;
+  el.style.display = 'block';
+}
+function _linkShowInfo(text) {
+  var el = _linkEl('linkInfo');
   if (!el) return;
   if (!text) { el.style.display = 'none'; el.textContent = ''; return; }
   el.textContent = text;
   el.style.display = 'block';
 }
 
-function submitLinkByContact() {
-  var btn = document.getElementById('linkSubmit');
-  var email = (document.getElementById('linkEmail').value || '').trim();
-  var phone = (document.getElementById('linkPhone').value || '').trim();
+/* メールアドレスを入れ直す（番号が届かないとき） */
+function restartLinkFlow() {
+  _linkStage = 'email';
+  _linkEl('linkCodeGroup').style.display = 'none';
+  _linkEl('linkCode').value = '';
+  _linkEl('linkResend').style.display = 'none';
+  _linkEl('linkSubmit').textContent = '確認番号を受け取る';
+  _linkShowInfo('');
+  _linkShowMsg('');
+}
 
+function submitLinkByContact() {
+  var btn = _linkEl('linkSubmit');
+  var email = (_linkEl('linkEmail').value || '').trim();
+  var phone = (_linkEl('linkPhone').value || '').trim();
+  var code  = (_linkEl('linkCode').value || '').trim();
+
+  /* ---- ② 番号の確認 ---- */
+  if (_linkStage === 'code') {
+    if (!/^[0-9]{6}$/.test(code)) {
+      _linkShowMsg('メールに届いた6桁の番号をご入力ください。');
+      return;
+    }
+    _linkShowMsg('');
+    btn.disabled = true; btn.textContent = '確認しています…';
+    window.EDA_API.post('line_link_verify_code', {
+      line_uid: _lineUid, display_name: _displayName, code: code
+    }).then(function(res) {
+      btn.disabled = false; btn.textContent = 'おつなぎする';
+      if (res && res.ok && res.matched) {
+        var nameEl = _linkEl('successName');
+        if (nameEl) nameEl.textContent = 'ご注文情報をおつなぎしました';
+        /* 配送状況のリンクをLINEへお送りしたのは、おつなぎが済んだときだけ。
+           お送りしていないのに「お送りしました」と出すと嘘になる。 */
+        var pushEl = _linkEl('successPushNote');
+        if (pushEl) pushEl.style.display = res.pushed ? '' : 'none';
+        window._showState('Success');
+        return;
+      }
+      if (res && res.error === 'bad_code') {
+        _linkShowMsg('番号が違うか、有効期限が切れています。もう一度お確かめください。');
+        return;
+      }
+      if (res && res.error === 'too_many_attempts') {
+        _linkShowMsg('お試しの回数が上限に達しました。恐れ入りますが、このままLINEでお知らせください。こちらでお調べいたします。');
+        return;
+      }
+      if (res && res.error === 'uid_conflict') {
+        _linkShowMsg('このご注文には別のLINEアカウントが結びついています。お手数ですが、このままLINEでお知らせください。こちらで確認いたします。');
+        return;
+      }
+      _linkShowMsg('おつなぎできませんでした。恐れ入りますが、このままLINEでお知らせください。');
+    }).catch(function(err) {
+      console.error('[lineLinkVerifyCode]', err);
+      btn.disabled = false; btn.textContent = 'おつなぎする';
+      _linkShowMsg('通信がうまくいきませんでした。少し時間をおいてもう一度お試しください。');
+    });
+    return;
+  }
+
+  /* ---- ① おさがしして番号をお送りする ---- */
   var payload = { line_uid: _lineUid, display_name: _displayName };
   if (_linkStage === 'phone' && phone) {
     payload.phone = phone;
@@ -615,22 +701,27 @@ function submitLinkByContact() {
   btn.disabled = true;
   btn.textContent = 'おさがししています…';
 
-  window.EDA_API.post('line_link_contact', payload).then(function(res) {
+  window.EDA_API.post('line_link_request_code', payload).then(function(res) {
     btn.disabled = false;
-    btn.textContent = 'おつなぎする';
 
-    if (res && res.ok && res.matched) {
-      var nameEl = document.getElementById('successName');
-      if (nameEl) {
-        nameEl.textContent = (res.name ? res.name + ' 様の' : '') + 'ご注文情報をおつなぎしました';
-      }
-      window._showState('Success');
+    if (res && res.ok && res.found && res.sent) {
+      _linkStage = 'code';
+      _linkEl('linkCodeGroup').style.display = 'block';
+      _linkEl('linkResend').style.display = 'inline';
+      btn.textContent = 'おつなぎする';
+      _linkShowInfo('ご登録のメールアドレスに、6桁の確認番号をお送りしました。' +
+                    '届いた番号をご入力ください。');
+      try { _linkEl('linkCode').focus(); } catch (e) {}
       return;
     }
 
+    btn.textContent = (_linkStage === 'phone') ? 'もう一度おさがしする' : '確認番号を受け取る';
+
     if (res && res.candidate) {
-      _linkShowMsg('同じお名前のお客様が見つかりましたが、お取り違えを防ぐため、' +
-                   'こちらで確認させていただきます。確認が済みましたらLINEでご連絡いたします。');
+      /* 担当へメールで知らせている（CustomerMatch.gs の recordLinkCandidate_）。
+         だからここで「ご連絡いたします」とお約束してよい。 */
+      _linkShowMsg('お名前は確認できましたが、お取り違えを防ぐため、こちらで確認させていただきます。' +
+                   '確認が済みましたらLINEでご連絡いたします。');
       return;
     }
 
@@ -643,19 +734,20 @@ function submitLinkByContact() {
     if (_linkStage === 'email') {
       /* 1回目が外れた → 携帯番号でもう一度 */
       _linkStage = 'phone';
-      document.getElementById('linkPhoneGroup').style.display = 'block';
+      _linkEl('linkPhoneGroup').style.display = 'block';
+      btn.textContent = 'もう一度おさがしする';
       _linkShowMsg('見つかりませんでした。ご注文時のメールアドレスをご確認ください。' +
                    'お心当たりがない場合は、携帯番号でもおさがしできます。');
-      try { document.getElementById('linkPhone').focus(); } catch (e) {}
+      try { _linkEl('linkPhone').focus(); } catch (e) {}
       return;
     }
 
     _linkShowMsg('メールアドレス・携帯番号のどちらでも見つかりませんでした。' +
                  'お手数ですが、このままLINEでお知らせください。こちらでお調べいたします。');
   }).catch(function(err) {
-    console.error('[lineLinkByContact]', err);
+    console.error('[lineLinkRequestCode]', err);
     btn.disabled = false;
-    btn.textContent = 'おつなぎする';
+    btn.textContent = '確認番号を受け取る';
     _linkShowMsg('通信がうまくいきませんでした。少し時間をおいてもう一度お試しください。');
   });
 }
