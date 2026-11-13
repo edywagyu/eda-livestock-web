@@ -677,6 +677,14 @@ function submitLinkByContact() {
         _linkShowMsg('お試しの回数が上限に達しました。恐れ入りますが、このままLINEでお知らせください。こちらでお調べいたします。');
         return;
       }
+      if (res && res.error === 'email_shared') {
+        /* 同じメールアドレスを複数の方がお使いのご登録。担当へ通知済み。
+           確認番号は使い切っていないので、解決後に同じ番号で続けられる。 */
+        _linkShowMsg('同じメールアドレスを複数の方がお使いのご登録でした。' +
+                     'お取り違えを防ぐため、こちらで確認させていただきます。' +
+                     '確認が済みましたらLINEでご連絡いたします。');
+        return;
+      }
       if (res && res.error === 'uid_conflict') {
         _linkShowMsg('このご注文には別のLINEアカウントが結びついています。お手数ですが、このままLINEでお知らせください。こちらで確認いたします。');
         return;

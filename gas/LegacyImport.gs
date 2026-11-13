@@ -49,7 +49,7 @@ var LEGACY_LOG_TAB = '旧カート取込_ログ';
 var LEGACY_LOG_HEADERS = [
   '取込日時', 'ファイル名', '区分', '種類', '読んだ行数',
   '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ',
-  '注文キーが作れず', 'お客様の行なし', '連携候補',
+  '注文キーが作れず', '連携候補',
   '空行スキップ', '読めなかった列', 'ファイルID', 'ファイル更新日時', 'モード', '備考'
 ];
 
@@ -314,7 +314,7 @@ function importLegacyCarts_(mode, opts) {
       logSh.appendRow([
         new Date(), fname, source, kind, r.rows || 0,
         r.cust_new || 0, r.cust_updated || 0, r.order_new || 0, r.dup || 0,
-        r.no_key || 0, r.no_customer_row || 0, r.candidate || 0,
+        r.no_key || 0, r.candidate || 0,
         r.skipped_blank || 0,
         (r.missing || []).join(' / '), f.getId(), legacyDate_(f.getLastUpdated()), mode, r.note || ''
       ]);
@@ -344,7 +344,7 @@ function legacyPut_(arr, headers, colName, val) {
 function legacyImportFile_(file, source, kind, live) {
   var res = { file: file.getName(), source: source, kind: kind, rows: 0,
               cust_new: 0, cust_updated: 0, order_new: 0, dup: 0,
-              no_key: 0, no_customer_row: 0, candidate: 0,
+              no_key: 0, candidate: 0,
               skipped_blank: 0, missing: [], note: '' };
 
   var rows;
@@ -407,31 +407,21 @@ function legacyImportFile_(file, source, kind, live) {
     var phone = String(legacyCell_(row, map, 'phone') || '').trim();
     var name  = legacyName_(row, map);
 
-    /* 🔴 2026-11-13 の指摘3: ここで飛ばさないと customers に空の行が量産される。
-       Shopify の注文CSVは1件のご注文が商品ごとに複数行に分かれ、2行目以降は
-       お客様の欄が空（または配送先のお名前だけ残る）。
-       空のまま下へ流すと「誰とも当たらない」→ UUIDだけの行を作っていた。
-       customers は在庫・特典・配信の土台なので、ここは必ず止める。
-
-       判定は2段構え:
-        ① メール・電話・お名前がすべて空 → 飛ばす
-        ② 注文CSVで、メールも電話も無く、注文番号・日付・金額もすべて空
-           → ご注文の続きの行（お名前だけ残っていても飛ばす）
-       ②があるのは、お名前だけ残るCSVでお名前だけの新規行が増えるのを防ぐため。
-       お客様CSV(kind='customers')にはこの判定をかけない（お名前だけの名簿は正しい行）。 */
+    /* 🔴 注文CSVの「続きの行」から customers の行を作らない（2026-11-13 指摘3）。
+       Shopify の注文CSVは1件のご注文が商品ごとに複数行に分かれ、続きの行は
+       お客様の欄が空（配送先のお名前だけ残ることがある）。
+       前回は「注文番号・日付・金額がすべて空なら続き行」と判定したが、
+       Shopify は注文番号(Name列)を全商品行に繰り返すため判定が効かなかった。
+       → 素直に「注文CSVで、メールも電話も無い行からは customers の行を作らない」。
+         ご注文の側も、メールが無いと legacyOrderKey_ がキーを作れないので取り込まない。
+       ※ お客様CSV(kind='customers')にはこの判定をかけない（お名前だけの名簿は正しい）。 */
     if (!email && !phone && !name) {
       res.skipped_blank++;
       continue;
     }
     if (kind === 'orders' && !email && !phone) {
-      var hasOrderFields =
-        String(legacyCell_(row, map, 'order_no') || '').trim() ||
-        String(legacyCell_(row, map, 'placed_at') || '').trim() ||
-        String(legacyCell_(row, map, 'total') || '').trim();
-      if (!hasOrderFields) {
-        res.skipped_blank++;
-        continue;
-      }
+      res.skipped_blank++;
+      continue;
     }
 
     res.rows++;
@@ -447,7 +437,8 @@ function legacyImportFile_(file, source, kind, live) {
     } else if (m.by === 'name' || m.by === 'phone' || m.by === 'email') {
       /* 1人に絞れなかった（お名前だけの一致／電話が複数／メールが共有）
          → つながない。控えだけ残して、新しい行として入れる。
-         🔴 'new' を渡すので関数の中で電話照合はしない（他人の行に書かない）。 */
+         🔴 'new' を渡すので、既存行には相乗りしない（メールもお名前も一致する行だけ）。
+            これが無いと、共有メールの行で他の方の行にお名前・電話を書いてしまう。 */
       res.candidate++;
       if (live) {
         recordLinkCandidate_({ line_uid: '', display_name: '', name: name }, m,
@@ -509,15 +500,22 @@ function legacyImportFile_(file, source, kind, live) {
       同じ人かどうかは「連携候補」で人が決める。 */
 function legacyUpsertCustomer_(probe, m, source, mode, res) {
   /* mode:
-       'matched'  … メール/電話で1人に絞れた。行が無ければ台帳の情報で作る
-       'new'      … 誰とも当たらなかった／候補どまり。新しい行を作る。
-                    🔴 このときは電話での行探しをしない（2026-11-13 指摘2）。
-                    曖昧だと判定した相手を、関数の中で電話総当たりして
-                    拾い直してしまうと、ご家族共有の固定電話で
-                    別の方の行にメール・お名前を書き込む。
-       'lookup'   … 行が無くても作らない（数えるだけ）
+       'matched'  … メール/電話で1人に絞れた。メール・電話で既存行を探し、
+                    無ければ台帳の情報で新しい行を作る
+       'new'      … 誰とも当たらなかった／候補どまり（共有メール・電話が複数・
+                    お名前だけ一致）。既存行には相乗りせず、新しい行を作る。
+                    相乗りしてよいのは「メールもお名前も一致する行」だけ
+                    （同じCSVを入れ直したときに行が増えないようにするため）
   */
+  /* 🔴 'new' では「既存行を探す」こと自体をほぼ止める（2026-11-13 指摘1）。
+     前回は電話照合だけ止めたが、メール照合は無条件に走っていた。
+     そのため共有メールの行（中尾様ご兄弟）で、候補どまりにしたはずの方の
+     お名前・電話が、もう一方の既存行に書き込まれてしまっていた。
+     ＝指摘1で塞いだ事故が、CSV取り込みから入ってきていた。
+     → 'new' が既存行に相乗りしてよいのは「メールもお名前も一致する行」だけ。
+       （同じCSVを入れ直したときに行が増えないようにするための最小限の照合） */
   var allowPhone = (mode === 'matched');
+  var strictPair = (mode === 'new');
   var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
   var data = sh.getDataRange().getValues();
   var h = (data[0] || []).map(function (x) { return String(x).trim(); });
@@ -531,9 +529,17 @@ function legacyUpsertCustomer_(probe, m, source, mode, res) {
     phone: probe.phone || (m && m.phone) || ''
   };
 
-  var ek = matchEmailKey_(known.email), pk = matchPhoneKey_(known.phone);
+  var ek = matchEmailKey_(known.email), pk = matchPhoneKey_(known.phone),
+      nk = custNameKey_(known.name);
   var target = -1;
   for (var i = 1; i < data.length; i++) {
+    if (strictPair) {
+      /* メールとお名前の両方が一致する行だけ。片方だけでは相乗りしない */
+      if (ek && nk && matchEmailKey_(data[i][iE]) === ek && custNameKey_(data[i][iN]) === nk) {
+        target = i + 1; break;
+      }
+      continue;
+    }
     if (ek && matchEmailKey_(data[i][iE]) === ek) { target = i + 1; break; }
     if (allowPhone && pk && matchPhoneKey_(data[i][iP]) === pk) { target = i + 1; break; }
   }
@@ -550,8 +556,6 @@ function legacyUpsertCustomer_(probe, m, source, mode, res) {
     if (res) res.cust_updated++;
     return { row: target, created: false };
   }
-
-  if (mode === 'lookup') { if (res) res.no_customer_row++; return { row: -1, created: false }; }
 
   /* ここで作る行は、ご購入額0・line_uid 空の「名簿の行」。
      🔴 定期便マスターにしか居なかったお客様を customers に迎え入れるのが
