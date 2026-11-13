@@ -393,6 +393,11 @@ function doPost(e) {
       /* ===== LINE LIFF Auth ===== */
       case 'line_login':                   return lineLogin(body);
       case 'line_link_account':            return lineLinkAccount(body);
+      /* 🔗 ご購入歴のおつなぎ（2段階）。メール→電話で台帳を引き、
+         台帳に載っているメールアドレスへ6桁の確認番号を送って本人確認してからつなぐ。
+         実装は gas/CustomerMatch.gs */
+      case 'line_link_request_code':       return lineLinkRequestCode(body);
+      case 'line_link_verify_code':        return lineLinkVerifyCode(body);
       case 'line_register':                return lineRegister(body);
       case 'update_profile':               return updateProfile(body);
       /* ===== STAFF (POST) ===== */
@@ -1849,6 +1854,25 @@ function handleLineFollow_(ev) {
   sh.appendRow(row);
   log('line_follow_new', { uid: uid, name: displayName });
 
+  /* 🔗 2026-11-13 追加: 友だち追加の時点で分かるのは「LINEの表示名」だけ。
+     表示名が、ご購入歴・定期便マスターのお名前と一致するかだけ見て、
+     当たったら「連携候補」タブに控えを1行残す。
+     🔴 お名前の一致だけでは絶対に自動でつながない（同姓同名の事故を防ぐ）。
+        customers の行はこれまでどおり新規で作る。人が候補を見て決める。
+     ここが失敗しても歓迎メッセージは必ず送る（try で囲う）。 */
+  try {
+    if (displayName) {
+      var m = matchIdentity_({ line_uid: uid, name: displayName }, identityIndex_());
+      if (m.by === 'name' && (m.hits || []).length) {
+        /* 第4引数 false = 担当へのメールは送らない。友だち追加のたびに届いて埋もれるため、
+           ここはシート（連携候補タブ）に控えるだけにする。
+           お客様ご自身が連携を操作されたときだけメールが飛ぶ（CustomerMatch.gs）。 */
+        recordLinkCandidate_({ line_uid: uid, display_name: displayName, name: displayName },
+                             m, '友だち追加時の表示名が一致', false);
+      }
+    }
+  } catch (e) { log('line_follow_candidate_error', { uid: uid, error: e.message }); }
+
   sendLinePush(uid, [buildFollowWelcomeMessage(displayName)]);
 }
 
@@ -1921,8 +1945,13 @@ function buildFollowWelcomeMessage(customerName) {
         contents: [
           { type: 'button', style: 'primary', color: '#0F3D2E', height: 'sm',
             action: { type: 'uri', label: 'マイページを開く', uri: 'https://liff.line.me/' + liffId + '/mypage.html' } },
+          /* 🔗 2026-11-13: ?mode=link を付ける。
+             付けないと line-link.html が「購入時アンケート」の画面に入ってしまい、
+             ご購入歴のおつなぎにならなかった（友だち追加で customers に行ができているため、
+             画面の最初の確認で「登録済みです」で止まることもあった）。
+             mode=link で「ご登録のメールアドレスを入力しておつなぎする」画面に入る。 */
           { type: 'button', style: 'link', height: 'sm',
-            action: { type: 'uri', label: 'ご購入歴を連携する', uri: 'https://liff.line.me/' + liffId + '/line-link.html' } }
+            action: { type: 'uri', label: 'ご購入歴を連携する', uri: 'https://liff.line.me/' + liffId + '/line-link.html?mode=link' } }
         ]
       }
     }
@@ -2321,6 +2350,9 @@ var AUTOMATION_REGISTRY = [
   ['公式LINE', '自動配信の予告メール（社内向け）', '毎朝8時', '稼働中', '今日どの自動配信が誰に飛ぶかを、LINEの表示名とご注文の名前を並べた表にして担当（r.tasaki@）へ1通送る。判定は実際に送るのと同じ処理を通すので、予告と実際がずれない。カゴ落ちだけは当日その場で発生して朝には決まらないため、これまで送った全件と、その後どうなったか（売れた／カートから外した／カートに残っている）と配信リンクを開いたかを出す。LINEに既読・未読を取る仕組みは無いのでリンクのクリックで代用。2026-09-07追加'],
   ['EC', '売り切れ商品の予約受付と「次回最短お届け日」', '在庫が0になった時／お客様がページを開くたび', '稼働中', '売り切れても買えなくせず、予約でご注文を受ける。在庫が0になった日を自動で記録し、商品ページと商品一覧に「次回最短お届け日＝0になった日＋9日」を出す（加工7日＋出荷準備＋配送。全国どこでも同じ日付）。ボタンは通常商品と同じでそのままカートに入り、ご入金は注文時。ご注文手続きではその日より前の日付を選べなくし、日付を指定しない方には注意書きで日付を伝える。在庫が1以上に戻れば表示・日付制限・注意書きが全部自動で消える。記録が無い／過ぎている場合は「今日＋9日」に読み替えて過去日は出さない。2026-09-07追加'],
   ['社内シート', '毎晩21時「今日やったこと」レポート', '毎晩21時', '稼働中', 'その日1日に何が起きたかを1通にまとめて担当（r.tasaki@）へ送る。上段＝システムが記録している事実の自動集計（ご注文件数・売上・はじめての方かリピーターか・商品ページの閲覧・カートに入れた人・決済でつまずいた回数・お問い合わせ／公式LINEの自動送信の内訳・配信リンクのクリック・LINE連携した人数）。下段＝本番EC注文DBの「作業ログ」タブに書いた、その日のクロードの作業。売上は税込・単品とギフトのみで定期便と社内注文は除く。20時のダイジェスト（誰に何が飛んだかの名簿）とは役割が違う。2026-09-07追加'],
+  ['公式LINE', 'ご購入歴のおつなぎ（メール→電話番号で探し、確認番号で本人確認）', 'お客様が「ご購入歴を連携する」を押した時', '未反映（承認待ち）', '公式LINEの友だち追加のあと、お客様がご自身でご購入歴・定期便をおつなぎできるようにする。ご登録のメールアドレスを入れていただき、当たらなければ携帯番号でもう一度おさがしする。見る先は本番EC注文DBの「顧客」「注文」と「定期便マスター」の3つ（旧サイトWIX/Shopifyのお客様は定期便マスターにしか電話番号が無い）。見つかったら、台帳に載っているメールアドレス宛に6桁の確認番号をお送りし、それをご入力いただいてからおつなぎする（メールアドレスをご存じなだけの方が他のお客様のご購入歴をご覧になれないようにするため）。電話番号が2人以上に当たった場合、同じメールアドレスを複数の方が使われている場合（実在: 中尾 賢一郎様と中尾 創哉様が同じメール）、お名前だけの一致の場合、台帳にメールアドレスが無い場合は、つながずに「連携候補」タブへ控えて担当へメールで知らせる。番号は10分間有効で1回使い切り。試せる回数は6時間に5回まで。確認番号のメールは1日60通まで、かつ1日の送信枠の残りが300通を切ったら送らない（やることリストやご注文通知のメールを止めないため）。2026-11-13追加'],
+  ['社内シート', 'おつなぎ候補の控え（連携候補タブ）', '友だち追加した時／お客様が連携を試した時／旧カートCSVを取り込んだ時', '未反映（承認待ち）', 'LINEの表示名やお名前が一致した、電話番号が2人以上に当たった、台帳にメールアドレスが無い——自動ではつなげなかった組み合わせを本番EC注文DBの「連携候補」タブに1行残す（当たった先の行番号と定期便の状態つき）。ここに書くだけでは何も起きない（自動ではつながない）。人が見て「同じ方だ」と確かめたうえでおつなぎする。お客様ご自身が連携を操作されて候補になった場合だけ、その場で担当（r.tasaki@・backoffice@）へ1通メールが飛ぶ（お客様には「確認のうえLINEでご連絡します」とお伝えしているため）。友だち追加のときに自動で見つけた候補はメールを送らずシートに溜める。同じ方は二度書かない。2026-11-13追加'],
+  ['EC', '旧カート（WIX/Shopify）のお客様・ご注文をCSVから取り込む', '人が実行した時（ドライブにCSVを置いたあと）', '未反映（承認待ち）', 'ドライブの所定フォルダに置いたWIX・ShopifyのCSVを読んで、本番EC注文DBの「顧客」「注文」に反映する。正本はCSV（PDFは機械で読めないので正本にしない）。列の名前は読み替え表で持っているので、書き出される列名が違っても設定を直すだけで使える。同じCSVを2回入れても二重にならない（注文番号、または メール＋日付＋金額＋商品名＋数量＋同一キーの通し番号）。キーが作れない行は取り込まず「注文キーが作れず」に、お名前と連絡先がそろわず照合できない行は「照合できず作らず」に、それぞれ分けて件数を残す。定期便マスターにしか居なかったお客様は、メールか電話で1人に絞れたときに customers へ新しく迎え入れる（ご購入額0・LINE未連携の名簿の行として）。⚠️取り込んだご注文は「ご購入回数」に数えられるため、特典階段の段位とリピート案内の判定が動く（取り込み前に下見の件数で影響を確かめること）。何件入ったかは「旧カート取込_ログ」タブに1行ずつ残る。まず下見で中身を確認してから実行する（下見はお客様のデータに1文字も書かない。処理の記録だけ残る）。2026-11-13追加'],
   ['EC', '入荷した肉を在庫に反映', 'ロット台帳のメニューを押した時', '稼働中', 'ロット台帳で「入荷済」にチェックを入れた行を、メニュー「📦 入荷 → 在庫に反映する」を押した時だけ、その歩留（パック数）を商品の在庫に足す。何度押しても二重に足さず、足した商品と、飛ばした行＋その理由（歩留が未記入／商品名が一致しない／もう反映済み）が一覧で出る。反映の記録は「反映日時」「反映数」の2列に残り、チェックを外して「反映を取り消す」を押すと足した分だけ戻る。2026-09-10にこの形へ作り直した（それまではチェックした瞬間に足す方式で、セルのコピペや一括操作で二重加算や無反応が起きていた）'],
 ];
 
@@ -4292,20 +4324,36 @@ function normBirthdayFull_(v) {
 function subNormName_(v) { return String(v || '').replace(/[\s　]/g, ''); }
 
 function subscriberIndex_() {
-  var out = { byEmail: {}, byUid: {}, byName: {} };
+  var out = { byEmail: {}, byUid: {}, byName: {}, byPhone: {} };
 
-  /* ① 定期便マスター（手管理・状態=有効） */
+  /* ① 定期便マスター（手管理・状態=有効）
+     🔗 2026-11-13: ここは長らく「名前」だけを拾っていた。
+        LINEの表示名が「みさ」のような方は永久に当たらないため、
+        同じ行に入っている「メール」「電話」も索引に入れる。
+        （旧カート WIX/Shopify の方の電話番号はこのマスターにしか無い）
+        見出しが変わっても拾えるよう候補名で探す。 */
   try {
     var ms = ss().getSheetByName('定期便マスター');
     if (ms) {
       var mv = ms.getDataRange().getValues();
       var MH = {};
       (mv[0] || []).forEach(function (h, i) { MH[String(h).trim()] = i; });
+      var msPick = function (cands) {
+        for (var i = 0; i < cands.length; i++) if (MH[cands[i]] != null) return MH[cands[i]];
+        return -1;
+      };
+      var msMail  = msPick(['メール', 'メールアドレス', 'email']);
+      var msPhone = msPick(['電話', '電話番号', 'TEL', 'tel', '携帯', '携帯番号']);
       if (MH['状態'] != null && MH['名前'] != null) {
         for (var r = 1; r < mv.length; r++) {
           if (String(mv[r][MH['状態']] || '').trim() !== '有効') continue;
           var nm = subNormName_(mv[r][MH['名前']]);
           if (nm) out.byName[nm] = true;
+          if (msMail >= 0 && mv[r][msMail]) out.byEmail[custEmailKey_(mv[r][msMail])] = true;
+          if (msPhone >= 0 && mv[r][msPhone]) {
+            var pk = custPhoneKey_(mv[r][msPhone]);
+            if (pk) out.byPhone[pk] = true;
+          }
         }
       }
     }
@@ -4319,10 +4367,15 @@ function subscriberIndex_() {
       var h = ov[0];
       var iMode = h.indexOf('mode'), iMail = h.indexOf('customer_email'), iUid = h.indexOf('line_uid');
       if (iMode >= 0) {
+        var iTel = h.indexOf('customer_phone');
         for (var r2 = 1; r2 < ov.length; r2++) {
           if (String(ov[r2][iMode] || '').indexOf('subscription') !== 0) continue;
           if (iMail >= 0 && ov[r2][iMail]) out.byEmail[custEmailKey_(ov[r2][iMail])] = true;
           if (iUid  >= 0 && ov[r2][iUid])  out.byUid[String(ov[r2][iUid]).trim()] = true;
+          if (iTel  >= 0 && ov[r2][iTel]) {
+            var pk2 = custPhoneKey_(ov[r2][iTel]);
+            if (pk2) out.byPhone[pk2] = true;
+          }
         }
       }
     }
@@ -4334,6 +4387,12 @@ function subscriberIndex_() {
 function isSubscriber_(idx, p) {
   if (p.uid   && idx.byUid[p.uid]) return true;
   if (p.email && idx.byEmail[p.email]) return true;
+  /* 🔗 2026-11-13: 電話番号も見る。表記ゆれ（090-1675-0388 / 9016750388）は
+     custPhoneKey_ でそろえてから比べる。idx.byPhone が無い古い呼び出しでも落ちない。 */
+  if (p.phone && idx.byPhone) {
+    var pk = custPhoneKey_(p.phone);
+    if (pk && idx.byPhone[pk]) return true;
+  }
   var nm = subNormName_(p.name);
   return !!(nm && idx.byName[nm]);
 }
@@ -4831,8 +4890,19 @@ function lineLinkAccount(body) {
     const total_spent = orders.reduce((s, o) => s + (Number(o.total) || 0), 0);
 
     if (foundRow > 0) {
+      /* 🔴 2026-11-13: 既に別の line_uid が入っている行には絶対に書かない。
+         旧実装は無条件に setValue していたため、メールアドレスを知っているだけで
+         他人の行の連携を奪える形になっていた（本来のお客様は連携を失い、
+         その後 lineLogin がその方の顧客情報と全注文を別人に返す）。
+         ここは最後の防波堤。入口（line_link_request_code）では確認番号で
+         本人確認しているが、窓口が増えても事故が起きないようにここで止める。 */
+      var curUid = String(data[foundRow - 1][lineIdx] || '').trim();
+      if (curUid && curUid !== String(body.line_uid)) {
+        log('line_link_uid_conflict', { row: foundRow, email: body.email });
+        return jsonResponse({ ok:false, error: 'uid_conflict' });
+      }
       // 既存 row の line_uid を更新
-      sh.getRange(foundRow, lineIdx + 1).setValue(body.line_uid);
+      if (!curUid) sh.getRange(foundRow, lineIdx + 1).setValue(body.line_uid);
       // line_uid で拾った行は email が空のことがある → 空のときだけ埋める (既存の別メールは潰さない)
       if (!String(data[foundRow - 1][emailIdx] || '').trim()) sh.getRange(foundRow, emailIdx + 1).setValue(body.email);
       if (body.display_name) sh.getRange(foundRow, nameIdx + 1).setValue(body.display_name);
@@ -4863,10 +4933,12 @@ function lineLinkAccount(body) {
     };
 
     // LINE プッシュ通知: 連携完了 + 配送状況リンク
-    sendLinePush(body.line_uid, [buildLinkSuccessMessage(customer_name)]);
+    /* 2026-11-13: 送れたかどうかを返り値に出す。画面で「LINEでお送りしました」と
+       出す/出さないを分けるため（送れていないのに出すと嘘になる）。 */
+    var pushed = sendLinePush(body.line_uid, [buildLinkSuccessMessage(customer_name)]);
 
     attachCardToCustomer(customer, orders);
-    return jsonResponse({ ok:true, customer, orders });
+    return jsonResponse({ ok:true, customer, orders, pushed: !!pushed });
   } catch (e) {
     return jsonResponse({ ok:false, error: e.message });
   }
