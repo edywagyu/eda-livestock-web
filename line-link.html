@@ -624,15 +624,21 @@ function _linkShowInfo(text) {
   el.style.display = 'block';
 }
 
-/* メールアドレスを入れ直す（番号が届かないとき） */
+/* 番号が届かないとき: 入力をやり直す。
+   🔴 戻す先は「直前の段」。携帯番号でおさがしした方を email 段に戻すと、
+      メールをお持ちでない方は以後「メールアドレスをご入力ください」しか
+      出ず行き止まりになる（2026-11-13 指摘6）。 */
 function restartLinkFlow() {
-  _linkStage = 'email';
+  var phoneVisible = _linkEl('linkPhoneGroup').style.display !== 'none';
+  _linkStage = phoneVisible ? 'phone' : 'email';
   _linkEl('linkCodeGroup').style.display = 'none';
   _linkEl('linkCode').value = '';
   _linkEl('linkResend').style.display = 'none';
-  _linkEl('linkSubmit').textContent = '確認番号を受け取る';
+  _linkEl('linkSubmit').textContent = phoneVisible ? 'もう一度番号を受け取る' : '確認番号を受け取る';
   _linkShowInfo('');
-  _linkShowMsg('');
+  _linkShowMsg(phoneVisible
+    ? '携帯番号をお確かめのうえ、もう一度お試しください。メールアドレスでおさがしすることもできます。'
+    : '');
 }
 
 function submitLinkByContact() {
@@ -717,11 +723,30 @@ function submitLinkByContact() {
 
     btn.textContent = (_linkStage === 'phone') ? 'もう一度おさがしする' : '確認番号を受け取る';
 
+    /* メールの送信を止めている間（1日の上限・送信枠の残りが少ない）。
+       候補ではないので担当には飛んでいない。 */
+    if (res && res.reason === 'mail_paused') {
+      _linkShowMsg('ただいま確認番号をお送りできません。恐れ入りますが、' +
+                   'このままLINEでお知らせください。こちらでお調べいたします。');
+      return;
+    }
+
     if (res && res.candidate) {
       /* 担当へメールで知らせている（CustomerMatch.gs の recordLinkCandidate_）。
-         だからここで「ご連絡いたします」とお約束してよい。 */
-      _linkShowMsg('お名前は確認できましたが、お取り違えを防ぐため、こちらで確認させていただきます。' +
-                   '確認が済みましたらLINEでご連絡いたします。');
+         だからここで「ご連絡いたします」とお約束してよい。
+         🔴 理由ごとに文言を分ける。どれも「お名前は確認できました」と出すと
+            事実と違う（2026-11-13 指摘5）。 */
+      var tail = 'お取り違えを防ぐため、こちらで確認させていただきます。確認が済みましたらLINEでご連絡いたします。';
+      if (res.reason === 'no_email_on_file') {
+        _linkShowMsg('お客様の情報は見つかりましたが、確認番号をお送りするメールアドレスの' +
+                     'ご登録がありませんでした。' + tail);
+      } else if (res.reason === 'email_shared') {
+        _linkShowMsg('同じメールアドレスを複数の方がお使いのご登録でした。' + tail);
+      } else if (res.reason === 'phone_multi') {
+        _linkShowMsg('この携帯番号で複数の方のご登録が見つかりました。' + tail);
+      } else {
+        _linkShowMsg('お名前は確認できましたが、' + tail);
+      }
       return;
     }
 

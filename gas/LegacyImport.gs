@@ -48,7 +48,8 @@ var LEGACY_DONE_FOLDER_NAME = '';
 var LEGACY_LOG_TAB = '旧カート取込_ログ';
 var LEGACY_LOG_HEADERS = [
   '取込日時', 'ファイル名', '区分', '種類', '読んだ行数',
-  '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ', '取り込めず', '連携候補',
+  '新規お客様', '更新したお客様', '新規ご注文', '重複スキップ',
+  '注文キーが作れず', 'お客様の行なし', '連携候補',
   '空行スキップ', '読めなかった列', 'ファイルID', 'ファイル更新日時', 'モード', '備考'
 ];
 
@@ -203,12 +204,29 @@ function legacyOrderKey_(source, row, map) {
 
   var mail = matchEmailKey_(legacyCell_(row, map, 'email'));
   var date = legacyDateKey_(legacyCell_(row, map, 'placed_at'));
+  var totalRaw = String(legacyCell_(row, map, 'total') == null ? '' : legacyCell_(row, map, 'total')).trim();
   var total = legacyMoney_(legacyCell_(row, map, 'total'));
-  if (!mail || !date || !total) return '';   /* 代替キーを作れない */
+  /* 🔴 金額は「空かどうか」で見る。0 を falsy で弾くと、無償交換や
+     全額クーポンの0円のご注文が取り込まれない（2026-11-13 指摘）。 */
+  if (!mail || !date || !totalRaw) return '';   /* 代替キーを作れない */
 
   var item = String(legacyCell_(row, map, 'items') || '').trim();
   var qty  = String(legacyCell_(row, map, 'qty') || '').trim();
   return source + ':' + mail + '|' + date + '|' + total + '|' + item + '|' + qty;
+}
+
+/* キーから短い符号を作る（注文番号が無いCSVの order_number 用） */
+function legacyHash_(key) {
+  try {
+    var b = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, String(key), Utilities.Charset.UTF_8);
+    var hex = '';
+    for (var i = 0; i < b.length && hex.length < 12; i++) {
+      hex += ('0' + (b[i] & 0xFF).toString(16)).slice(-2);
+    }
+    return hex.toUpperCase().slice(0, 12);
+  } catch (e) {
+    return String(key).replace(/[^A-Za-z0-9]/g, '').slice(-12).toUpperCase();
+  }
 }
 
 /* ファイルの中で同じキーが何件目かを数えて、2件目以降に #n を付ける。
@@ -295,7 +313,8 @@ function importLegacyCarts_(mode, opts) {
       ensureColumns_(logSh, LEGACY_LOG_HEADERS.length);
       logSh.appendRow([
         new Date(), fname, source, kind, r.rows || 0,
-        r.cust_new || 0, r.cust_updated || 0, r.order_new || 0, r.dup || 0, r.unmatched || 0, r.candidate || 0,
+        r.cust_new || 0, r.cust_updated || 0, r.order_new || 0, r.dup || 0,
+        r.no_key || 0, r.no_customer_row || 0, r.candidate || 0,
         r.skipped_blank || 0,
         (r.missing || []).join(' / '), f.getId(), legacyDate_(f.getLastUpdated()), mode, r.note || ''
       ]);
@@ -324,7 +343,8 @@ function legacyPut_(arr, headers, colName, val) {
 /* CSV 1本ぶん */
 function legacyImportFile_(file, source, kind, live) {
   var res = { file: file.getName(), source: source, kind: kind, rows: 0,
-              cust_new: 0, cust_updated: 0, order_new: 0, dup: 0, unmatched: 0, candidate: 0,
+              cust_new: 0, cust_updated: 0, order_new: 0, dup: 0,
+              no_key: 0, no_customer_row: 0, candidate: 0,
               skipped_blank: 0, missing: [], note: '' };
 
   var rows;
@@ -389,12 +409,29 @@ function legacyImportFile_(file, source, kind, live) {
 
     /* 🔴 2026-11-13 の指摘3: ここで飛ばさないと customers に空の行が量産される。
        Shopify の注文CSVは1件のご注文が商品ごとに複数行に分かれ、2行目以降は
-       メール・お名前・電話が空。空のまま下へ流すと「誰とも当たらない」→
-       UUIDだけの空行を appendRow していた。customers は在庫・特典・配信の土台なので
-       ここは必ず止める。 */
+       お客様の欄が空（または配送先のお名前だけ残る）。
+       空のまま下へ流すと「誰とも当たらない」→ UUIDだけの行を作っていた。
+       customers は在庫・特典・配信の土台なので、ここは必ず止める。
+
+       判定は2段構え:
+        ① メール・電話・お名前がすべて空 → 飛ばす
+        ② 注文CSVで、メールも電話も無く、注文番号・日付・金額もすべて空
+           → ご注文の続きの行（お名前だけ残っていても飛ばす）
+       ②があるのは、お名前だけ残るCSVでお名前だけの新規行が増えるのを防ぐため。
+       お客様CSV(kind='customers')にはこの判定をかけない（お名前だけの名簿は正しい行）。 */
     if (!email && !phone && !name) {
-      res.skipped_blank = (res.skipped_blank || 0) + 1;
+      res.skipped_blank++;
       continue;
+    }
+    if (kind === 'orders' && !email && !phone) {
+      var hasOrderFields =
+        String(legacyCell_(row, map, 'order_no') || '').trim() ||
+        String(legacyCell_(row, map, 'placed_at') || '').trim() ||
+        String(legacyCell_(row, map, 'total') || '').trim();
+      if (!hasOrderFields) {
+        res.skipped_blank++;
+        continue;
+      }
     }
 
     res.rows++;
@@ -403,19 +440,22 @@ function legacyImportFile_(file, source, kind, live) {
     var probe = { email: email, phone: phone, name: name, line_uid: '' };
     var m = matchIdentity_(probe, idx);
     if (m.auto) {
-      /* メール or 電話で、1人に絞れて当たった */
-      if (live) legacyUpsertCustomer_(probe, m, source, false, res);
+      /* メール or 電話で1人に絞れた。customers に行が無ければ台帳の情報で作る
+         （定期便マスターにしか居なかったお客様を迎え入れるのがこの仕組みの目的） */
+      if (live) legacyUpsertCustomer_(probe, m, source, 'matched', res);
       else res.cust_updated++;
-    } else if (m.by === 'name' || m.by === 'phone') {
-      /* お名前だけの一致／電話が複数の方に当たった → つながない。控えだけ残す */
+    } else if (m.by === 'name' || m.by === 'phone' || m.by === 'email') {
+      /* 1人に絞れなかった（お名前だけの一致／電話が複数／メールが共有）
+         → つながない。控えだけ残して、新しい行として入れる。
+         🔴 'new' を渡すので関数の中で電話照合はしない（他人の行に書かない）。 */
       res.candidate++;
       if (live) {
         recordLinkCandidate_({ line_uid: '', display_name: '', name: name }, m,
                              '旧カートCSVの取り込み（' + source + '）', false);
-        legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
+        legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, 'new', res);
       } else { res.cust_new++; }
     } else {
-      if (live) legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, true, res);
+      if (live) legacyUpsertCustomer_(probe, { by: '', hits: [] }, source, 'new', res);
       else res.cust_new++;
     }
 
@@ -425,7 +465,7 @@ function legacyImportFile_(file, source, kind, live) {
       if (!key) {
         /* 注文番号も代替キーも作れない（メール・日付・金額のどれかが空）。
            混ざると取り返しがつかないので取り込まない。 */
-        res.unmatched++;
+        res.no_key++;
         continue;
       }
       if (haveKey[key]) { res.dup++; continue; }
@@ -433,7 +473,11 @@ function legacyImportFile_(file, source, kind, live) {
       var item = String(legacyCell_(row, map, 'items') || '').trim();
       var qty  = Number(legacyCell_(row, map, 'qty') || 0) || 0;
       var o = new Array(oh.length).fill('');
-      legacyPut_(o, oh, 'order_number', String(legacyCell_(row, map, 'order_no') || '').trim() || ('LEGACY-' + source.toUpperCase() + '-' + key.slice(-10)));
+      /* 🔴 注文番号が無いCSVの代替値は、キー全体から作った短い符号にする（2026-11-13 指摘3）。
+         key の末尾10文字だけだと「同じお客様・同じ商品・同じ数量・同じ金額で日付だけ違う」
+         ご注文が同じ番号になり、RepeatShipReminder が order_number で畳むので
+         2件が1件に見える（ご購入回数が減る）。納品書・請求書の突合も order_number 前提。 */
+      legacyPut_(o, oh, 'order_number', String(legacyCell_(row, map, 'order_no') || '').trim() || ('LEGACY-' + source.toUpperCase() + '-' + legacyHash_(key)));
       legacyPut_(o, oh, 'placed_at', legacyDate_(legacyCell_(row, map, 'placed_at')));
       legacyPut_(o, oh, 'customer_name', name);
       legacyPut_(o, oh, 'customer_email', email);
@@ -463,19 +507,35 @@ function legacyImportFile_(file, source, kind, live) {
    ・無ければ1行足す（ご購入額は0・source に旧カートの区分を残す）
    🔴 お名前だけの一致では新しい行を作る（勝手につながない）。
       同じ人かどうかは「連携候補」で人が決める。 */
-function legacyUpsertCustomer_(probe, m, source, createNew, res) {
+function legacyUpsertCustomer_(probe, m, source, mode, res) {
+  /* mode:
+       'matched'  … メール/電話で1人に絞れた。行が無ければ台帳の情報で作る
+       'new'      … 誰とも当たらなかった／候補どまり。新しい行を作る。
+                    🔴 このときは電話での行探しをしない（2026-11-13 指摘2）。
+                    曖昧だと判定した相手を、関数の中で電話総当たりして
+                    拾い直してしまうと、ご家族共有の固定電話で
+                    別の方の行にメール・お名前を書き込む。
+       'lookup'   … 行が無くても作らない（数えるだけ）
+  */
+  var allowPhone = (mode === 'matched');
   var sh = sheet('customers', ['customer_id','email','name','phone','first_order','last_order','total_spent','order_count','line_uid','line_name','linked_at']);
   var data = sh.getDataRange().getValues();
   var h = (data[0] || []).map(function (x) { return String(x).trim(); });
   function col(n) { var i = h.indexOf(n); if (i === -1) { i = h.length; ensureColumns_(sh, i + 1); sh.getRange(1, i + 1).setValue(n); h.push(n); } return i; }
-  var iE = col('email'), iN = col('name'), iP = col('phone'), iSrc = col('source'),
-      iZip = col('zip'), iAddr = col('address'), iId = col('customer_id');
+  var iE = col('email'), iN = col('name'), iP = col('phone'), iSrc = col('source'), iId = col('customer_id');
 
-  var ek = matchEmailKey_(probe.email), pk = matchPhoneKey_(probe.phone);
+  /* 台帳（定期便マスター等）で分かっている情報。CSV側が空でもこちらで埋められる */
+  var known = {
+    email: probe.email || (m && m.email) || '',
+    name:  probe.name  || (m && m.name)  || '',
+    phone: probe.phone || (m && m.phone) || ''
+  };
+
+  var ek = matchEmailKey_(known.email), pk = matchPhoneKey_(known.phone);
   var target = -1;
   for (var i = 1; i < data.length; i++) {
     if (ek && matchEmailKey_(data[i][iE]) === ek) { target = i + 1; break; }
-    if (pk && matchPhoneKey_(data[i][iP]) === pk) { target = i + 1; break; }
+    if (allowPhone && pk && matchPhoneKey_(data[i][iP]) === pk) { target = i + 1; break; }
   }
 
   if (target > 0) {
@@ -484,21 +544,27 @@ function legacyUpsertCustomer_(probe, m, source, createNew, res) {
       if (idx < 0 || val === '' || val == null) return;
       if (!String(cur[idx] == null ? '' : cur[idx]).trim()) sh.getRange(target, idx + 1).setValue(val);
     }
-    fillIfEmpty(iE, probe.email);
-    fillIfEmpty(iN, probe.name);
-    fillIfEmpty(iP, probe.phone);
+    fillIfEmpty(iE, known.email);
+    fillIfEmpty(iN, known.name);
+    fillIfEmpty(iP, known.phone);
     if (res) res.cust_updated++;
     return { row: target, created: false };
   }
 
-  if (!createNew) { if (res) res.unmatched++; return { row: -1, created: false }; }
+  if (mode === 'lookup') { if (res) res.no_customer_row++; return { row: -1, created: false }; }
 
+  /* ここで作る行は、ご購入額0・line_uid 空の「名簿の行」。
+     🔴 定期便マスターにしか居なかったお客様を customers に迎え入れるのが
+        この仕組みの目的（2026-11-13 指摘）。メール/電話で1人に絞れた方は
+        台帳の情報で行を作る。 */
   var row = new Array(h.length).fill('');
   row[iId] = Utilities.getUuid();
-  row[iE] = probe.email || '';
-  row[iN] = probe.name || '';
-  row[iP] = probe.phone || '';
-  row[iSrc] = '旧カート取込（' + source + '）';
+  row[iE] = known.email;
+  row[iN] = known.name;
+  row[iP] = known.phone;
+  row[iSrc] = (mode === 'matched')
+    ? '旧カート取込（' + source + '・台帳と一致）'
+    : '旧カート取込（' + source + '）';
   var iTs = h.indexOf('total_spent'), iOc = h.indexOf('order_count');
   if (iTs >= 0) row[iTs] = 0;
   if (iOc >= 0) row[iOc] = 0;

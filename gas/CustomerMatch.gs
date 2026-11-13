@@ -183,6 +183,25 @@ function identityIndex_() {
 }
 
 /* ------------------------------------------------------------
+   そのメールアドレスが「2人以上のお名前」で使われているか。
+   ------------------------------------------------------------
+   メールアドレスは人ではなく受信箱を指すので、共有されていると
+   「そのアドレスを受信できる＝その行のご本人」が成り立たない。
+   確認番号をお送りする先を決めるとき、必ずここを通す。
+   ------------------------------------------------------------ */
+function emailSharedByMultiplePeople_(idx, emailKey) {
+  var ek = matchEmailKey_(emailKey);
+  if (!ek) return false;
+  var list = (idx && idx.byEmail && idx.byEmail[ek]) || [];
+  var names = {};
+  for (var i = 0; i < list.length; i++) {
+    var n = custNameKey_(list[i].name);
+    if (n) names[n] = true;
+  }
+  return Object.keys(names).length > 1;
+}
+
+/* ------------------------------------------------------------
    突合そのもの。メール → 電話 → お名前 の順に見る。
    probe = { email?, phone?, name?, line_uid? }
    戻り: { by:'email'|'phone'|'name'|'', auto:true/false, hits:[rec], email, phone, name }
@@ -193,7 +212,7 @@ function identityIndex_() {
    ------------------------------------------------------------ */
 function matchIdentity_(probe, idx) {
   idx = idx || identityIndex_();
-  var res = { by: '', auto: false, hits: [], email: '', phone: '', name: '', ambiguous: false };
+  var res = { by: '', auto: false, hits: [], email: '', phone: '', name: '', ambiguous: false, shared_email: false };
 
   function collect(map, key) {
     var list = (key && map[key]) || [];
@@ -214,7 +233,20 @@ function matchIdentity_(probe, idx) {
   var ek = matchEmailKey_(probe && probe.email);
   if (ek) {
     var h1 = collect(idx.byEmail, ek);
-    if (h1.length) { res.by = 'email'; res.auto = true; res.hits = h1; fill(h1); return res; }
+    if (h1.length) {
+      /* 🔴 メールにも同一性の検算を入れる（2026-11-13 指摘1）。
+         メールアドレスは「人」ではなく「受信箱」を指す。1つのアドレスを
+         ご家族・ご法人で共有されている場合、先頭1件を本人とみなすと
+         別の方のご購入歴につないでしまう。
+         本番の定期便マスターで実在: 中尾 賢一郎様と中尾 創哉様が
+         k.nakao@gvn.co.jp を共有（電話は別）。
+         → お名前が2種類以上に跨るアドレスは自動ではつながず候補どまりにする。 */
+      if (emailSharedByMultiplePeople_(idx, ek)) {
+        res.by = 'email'; res.auto = false; res.ambiguous = true; res.hits = h1;
+        return res;
+      }
+      res.by = 'email'; res.auto = true; res.hits = h1; fill(h1); return res;
+    }
   }
 
   var pk = matchPhoneKey_(probe && probe.phone);
@@ -233,6 +265,19 @@ function matchIdentity_(probe, idx) {
       });
       if (Object.keys(pMails).length > 1 || Object.keys(pNames).length > 1) {
         res.by = 'phone'; res.auto = false; res.ambiguous = true; res.hits = h2;
+        return res;
+      }
+      /* 🔴 電話で1人に絞れても、その方の台帳メールが他の方と共有されていたら
+         自動ではつながない（2026-11-13 指摘1）。確認番号の宛先がその共有メールに
+         なり、「番号を受け取れた＝ご本人」が成り立たなくなるため。
+         実在: 中尾 創哉様はご自身の携帯で1人に絞れるが、台帳メールは
+         賢一郎様と共有の k.nakao@gvn.co.jp。 */
+      var pMail = '';
+      for (var pi = 0; pi < h2.length; pi++) {
+        if (h2[pi].email) { pMail = h2[pi].email; break; }
+      }
+      if (pMail && emailSharedByMultiplePeople_(idx, pMail)) {
+        res.by = 'phone'; res.auto = false; res.ambiguous = true; res.shared_email = true; res.hits = h2;
         return res;
       }
       res.by = 'phone'; res.auto = true; res.hits = h2; fill(h2); return res;
@@ -370,6 +415,28 @@ var LINK_CODE_HEADERS = ['発行日時', 'line_uid', '送信先メール', '確�
 var LINK_CODE_TTL_MIN = 10;          /* 確認番号の有効時間（分） */
 var LINK_TRY_WINDOW_SEC = 21600;     /* 回数を数える窓（秒）= 6時間。CacheService の上限 */
 var LINK_TRY_MAX = 5;                /* 窓の中で試せる回数 */
+var LINK_CODE_DAILY_MAX = 60;        /* 確認番号メールを1日に出す上限（全体） */
+var LINK_MAIL_QUOTA_FLOOR = 300;     /* 残り送信枠がこれを下回ったら送らない（他の自動メールを守る） */
+
+/* 今日すでに何通の確認番号を出したか */
+function linkCodesIssuedToday_(sh) {
+  try {
+    var data = sh.getDataRange().getValues();
+    var h = (data[0] || []).map(function (x) { return String(x).trim(); });
+    var iAt = h.indexOf('発行日時');
+    if (iAt < 0) return 0;
+    var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');
+    var n = 0;
+    for (var i = data.length - 1; i >= 1; i--) {
+      var t = new Date(data[i][iAt]);
+      if (isNaN(t.getTime())) continue;
+      var d = Utilities.formatDate(t, 'Asia/Tokyo', 'yyyy-MM-dd');
+      if (d !== today) break;   /* 新しい順に見ているので、今日でなくなったら終わり */
+      n++;
+    }
+    return n;
+  } catch (e) { return 0; }
+}
 
 /* 回数制限。戻り true なら止める */
 function linkTryThrottled_(uid, bucket) {
@@ -431,20 +498,33 @@ function lineLinkRequestCode(body) {
 
     /* メール・電話のどちらでも当たらなかった → 表示名でお名前の当たりだけ見る。
        当たっても自動ではつながない（候補として人が確認する） */
+    /* メールが複数の方で共有されていた（例: ご家族・ご法人で1つの受信箱）。
+       「番号を受け取れた＝ご本人」が成り立たないので自動ではつながない。 */
+    if (m.by === 'email' && !m.auto) {
+      recordLinkCandidate_(probe, m, 'お客様ご自身の連携操作から（このメールアドレスを複数の方が使われている）', true);
+      return jsonResponse({ ok: true, found: true, sent: false, candidate: true, reason: 'email_shared' });
+    }
+
     if (!m.auto && m.by !== 'phone') {
       var byName = matchIdentity_({ line_uid: uid, name: probe.display_name }, idx);
       if (byName.by === 'name' && (byName.hits || []).length) {
         recordLinkCandidate_(probe, byName, 'お客様ご自身の連携操作から（メール・電話では確認できず）', true);
-        return jsonResponse({ ok: true, found: false, candidate: true });
+        return jsonResponse({ ok: true, found: false, candidate: true, reason: 'name_only' });
       }
       log('line_link_request_nomatch', { uid: uid, has_email: !!email, has_phone: !!phone });
-      return jsonResponse({ ok: true, found: false, candidate: false });
+      return jsonResponse({ ok: true, found: false, candidate: false, reason: 'not_found' });
     }
 
-    /* 電話が2人以上に当たった → 自動ではつながない（レビュー指摘2） */
+    /* 電話が2人以上に当たった、または台帳メールが共有されていた（レビュー指摘1・2） */
     if (m.by === 'phone' && !m.auto) {
-      recordLinkCandidate_(probe, m, 'お客様ご自身の連携操作から（電話番号が複数の方に一致）', true);
-      return jsonResponse({ ok: true, found: false, candidate: true });
+      var why = m.shared_email
+        ? 'お客様ご自身の連携操作から（電話では1人に絞れたが、台帳のメールアドレスを複数の方が使われている）'
+        : 'お客様ご自身の連携操作から（電話番号が複数の方に一致）';
+      recordLinkCandidate_(probe, m, why, true);
+      return jsonResponse({
+        ok: true, found: true, sent: false, candidate: true,
+        reason: m.shared_email ? 'email_shared' : 'phone_multi'
+      });
     }
 
     /* 送り先は「台帳に載っているメールアドレス」。お客様が打った文字列ではない。
@@ -462,10 +542,37 @@ function lineLinkRequestCode(body) {
       return jsonResponse({ ok: true, found: true, sent: false, candidate: true, reason: 'no_email_on_file' });
     }
 
+    /* 念のためもう一度: この宛先が共有されていないか（matchIdentity_ で見ているが、
+       窓口が増えても事故が起きないように送信直前でも確かめる） */
+    if (emailSharedByMultiplePeople_(idx, sendTo)) {
+      recordLinkCandidate_(probe, m, '確認番号の送り先メールアドレスを複数の方が使われている', true);
+      log('line_link_request_shared_email', { uid: uid, by: m.by });
+      return jsonResponse({ ok: true, found: true, sent: false, candidate: true, reason: 'email_shared' });
+    }
+
     var sh = sheet(LINK_CODE_TAB, LINK_CODE_HEADERS);
     if (linkMailThrottled_(sh, sendTo)) {
       /* 送りすぎ。画面には「お送りしました」と同じ返事をする（送信の有無を外から判別させない） */
       return jsonResponse({ ok: true, found: true, sent: true });
+    }
+
+    /* 🔴 メール送信の総量の歯止め（2026-11-13 指摘4）。
+       宛先ごとの制限（60秒に1回・24時間に10回）だけでは全体が守れない。
+       line_uid は画面から送られてくる文字列で、こちらで検証できないため、
+       uid を変えれば uid あたりの回数制限は回避できる。
+       Workspace の1日の送信上限を使い切ると、毎朝8時のやることリスト・
+       ご注文通知・請求書のメールまで止まる。
+       → ①1日の発行数に上限を置く ②残り送信枠が少なければ送らない。 */
+    var issuedToday = linkCodesIssuedToday_(sh);
+    if (issuedToday >= LINK_CODE_DAILY_MAX) {
+      log('line_link_daily_cap', { issued: issuedToday });
+      return jsonResponse({ ok: true, found: true, sent: false, candidate: false, reason: 'mail_paused' });
+    }
+    var remaining = 99999;
+    try { remaining = MailApp.getRemainingDailyQuota(); } catch (e0) {}
+    if (remaining < LINK_MAIL_QUOTA_FLOOR) {
+      log('line_link_quota_floor', { remaining: remaining });
+      return jsonResponse({ ok: true, found: true, sent: false, candidate: false, reason: 'mail_paused' });
     }
 
     var code = String(Math.floor(100000 + Math.random() * 900000));
@@ -533,6 +640,19 @@ function lineLinkVerifyCode(body) {
        おつなぎは既存の lineLinkAccount に通す（連携完了のLINE通知・
        クーポン付与などの流れをそのまま使うため）。 */
     var display = String((body && body.display_name) || '');
+
+    /* 🔴 最後にもう一度: このメールアドレスが複数の方で共有されていないか。
+       共有されていると lineLinkAccount が「そのメールを持つ先頭の行」に
+       つないでしまい、別の方のご購入歴が出る（2026-11-13 指摘1）。
+       番号を発行したあとに台帳が変わることもあるので、つなぐ直前に見る。 */
+    if (emailSharedByMultiplePeople_(identityIndex_(), email)) {
+      recordLinkCandidate_({ line_uid: uid, display_name: display, name: '' },
+                           { by: 'email', hits: [], email: email, ambiguous: true },
+                           '確認番号は合っていたが、このメールアドレスを複数の方が使われている', true);
+      log('line_link_verify_shared_email', { uid: uid });
+      return jsonResponse({ ok: false, error: 'email_shared' });
+    }
+
     var r = lineLinkAccount({ line_uid: uid, display_name: display, email: email });
     var payload = {};
     try { payload = JSON.parse(r.getContent()); } catch (e2) {}
@@ -548,7 +668,7 @@ function lineLinkVerifyCode(body) {
     log('line_link_verified', { uid: uid, dup_cleared: dup.cleared });
     /* 🔒 お名前は返さない。LINE通知は lineLinkAccount が送っている（pushed:true） */
     return jsonResponse({
-      ok: true, matched: true, pushed: true,
+      ok: true, matched: true, pushed: !!payload.pushed,
       orders: (payload.orders && payload.orders.length) || 0
     });
   } catch (e) {
@@ -581,6 +701,12 @@ function resolveDuplicateUidRows_(uid, keepEmail) {
     for (var i = 1; i < data.length; i++) {
       if (keep && matchEmailKey_(data[i][iE]) === keep) { keepRow = i + 1; break; }
     }
+    /* 🔴 残す行が分からないのに uid を外すと、その方は連携そのものを失う。
+       見つからなければ何もしない（2026-11-13 指摘）。 */
+    if (keepRow < 0) { log('resolve_dup_uid_no_keep_row', { uid: uid }); return out; }
+    /* 🔴 ご購入回数の列が無いシートでは「ご購入0」を判定できない。
+       判定できないまま消すのは危ないので、その場合も何もしない。 */
+    if (iOC < 0) { log('resolve_dup_uid_no_order_count', { uid: uid }); return out; }
     for (var j = 1; j < data.length; j++) {
       var row = j + 1;
       if (row === keepRow) continue;
