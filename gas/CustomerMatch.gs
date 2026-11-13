@@ -293,7 +293,7 @@ function linkMailSend_(to, subject, body, kind) {
    true なら“お名前が入っていない”とみなして人数に数えない。
    ・lineLinkAccount はお名前が取れないとき body.email.split('@')[0] を入れる
      ＝メールアドレスの先頭がそのままお名前欄に入る。これは系統的に起きる。
-   ・LINE_NAME_NOT_A_PERSON が true のときは、LINEの表示名がそのまま
+   ・LINK_NAME_FROM_LINE_IGNORED が true のときは、LINEの表示名がそのまま
      お名前欄に入っている行（name と line_name が同じ）も数えない。
      こちらは既定オフ（田崎さんの判断待ち）。 */
 var LINK_NAME_FROM_LINE_IGNORED = false;   /* ← true にすると LINE表示名も数えない */
@@ -461,10 +461,16 @@ function recordLinkCandidate_(probe, m, note, notify) {
     /* 🔴 当たった先が複数あるときは、先頭1件のお名前だけを書かない（2026-11-13 指摘2）。
        先頭が別の方だと「推定されたお名前: 中尾 賢一郎」と出て、担当が
        そのまま手で統合してしまう。当たった全行のお名前を並べ、複数だと分かる形にする。 */
-    var hitNames = [];
+    /* 重複の判定は custNameKey_ でそろえる。生の文字列で比べると
+       「中尾 賢一郎」と「中尾　賢一郎」（全角空白）が別物になり、
+       同じ方なのに【候補が複数】が付いて余計に警戒させる（2026-11-13 指摘）。 */
+    var hitNames = [], hitSeen = {};
     (m.hits || []).forEach(function (r0) {
       var n0 = String(r0.name || '').trim();
-      if (n0 && hitNames.indexOf(n0) === -1) hitNames.push(n0);
+      var k0 = custNameKey_(n0);
+      if (!k0 || hitSeen[k0]) return;
+      hitSeen[k0] = true;
+      hitNames.push(n0);
     });
     var nm = (hitNames.length > 1)
       ? ('【候補が複数】' + hitNames.join(' / '))
