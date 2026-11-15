@@ -1246,21 +1246,21 @@
       name: '霜降り・赤身スライス食べ比べセット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
       price: 5900, listPrice: 6300, weight: 400, stock: 50, temp: '冷凍',
       published: true,   /* 2026-11-09 田崎さん指示で再公開 ／ 2026-11-15 改名して継続（公式LINE配信用） */
-      /* 🔴 販売期限 2026-11-22(日) 23:59（2026-11-15 田崎さん指示）。
-         公式LINEの配信文で「11/22(日)23:59まで」と締切を約束しているので、
+      /* 🔴 販売期限 2026-11-15(日) 23:59（2026-11-15 田崎さん指示で 11/22 から前倒し）。
+         公式LINEの配信文で「11/15(日)23:59まで」と締切を約束しているので、
          商品側にも必ず入れておく。limitedTotal が入っていないと
          limited-stock.js が作動せず締切の帯も自動停止も出ないため、
          分母として 50 を置く（products シートの stock と同じ数）。
          🔴 この品は components を持つセット＝isBom なので applyPdp の
             showTotal が false になり「50セット限定」の総数バッジは出ない。
-            出るのは「11/22（日）23:59まで」と残り時間だけ。
+            出るのは「11/15（日）23:59まで」と残り時間だけ。
             残りセット数の行は labelFor が空文字を返すので行ごと消える
             （残数を出さない方針＝2026-10-11／2026-11-09 田崎さん指示）。
          🔴 limitedSoldOutAt を過ぎると closeSales() が stock を 0 に落とし、
-            PDPの購入導線も closePdpSales で閉じる＝11/23 以降は手作業不要。 */
+            PDPの購入導線も closePdpSales で閉じる＝11/16 以降は手作業不要。 */
       limitedTotal: 50,
-      limitedSoldOutAt: '2026/11/22 23:59',
-      limitedUntil: '2026/11/22 23:59',
+      limitedSoldOutAt: '2026/11/15 23:59',
+      limitedUntil: '2026/11/15 23:59',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled & Lean Slice Duo',
       components: [
         { name: '霜降スライス', qty: 1 },
@@ -1285,6 +1285,25 @@
       /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
       price: 3830, listPrice: 4120, weight: 790, stock: 50, temp: '冷凍',
       published: true,
+      /* 🔴 販売期限 2026-11-15(日) 23:59（2026-11-15 田崎さん指示）。
+         それまで締切が一切入っておらず、翌日以降も買えてしまう状態だった。
+         P075・P076・P078 と同じ方式でそろえる。
+         limitedTotal が入っていないと limited-stock.js の対象外になり、
+         締切の帯も自動停止も一切効かない。分母として 50 を置く
+         （products シートの stock と同じ数）。
+         🔴 この品は components を持つセット＝isBom なので applyPdp の
+            showTotal が false になり「50セット限定」の総数バッジは出ない。
+            出るのは「11/15（日）23:59まで」と残り時間だけ。
+            残りセット数の行は labelFor が空文字を返すので行ごと消える
+            （残数を出さない方針＝2026-10-11／2026-11-09 田崎さん指示）。
+         🔴 limitedStartAt は置かない。すでに発売中なので開始ゲートを付けると
+            カードが消える。カード側に data-limited-prestart も付けない。
+         🔴 limitedSoldOutAt を過ぎると closeSales() が stock を 0 に落とし、
+            PDPの購入導線も closePdpSales で閉じる＝11/16 以降は手作業不要。 */
+      limitedTotal: 50,
+      limitedSoldOutAt: '2026/11/15 23:59',
+      limitedUntil:     '2026/11/15 23:59',
+      limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Hamburg & Chicken Set',
       components: [
         { name: 'ハンバーグ', qty: 3 },
