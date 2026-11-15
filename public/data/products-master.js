@@ -251,8 +251,8 @@
       variantsLabel: '枚数',
       variants: [
         { t: '1つ',                 p: 3500 },
-        { t: '2つセット【5%オフ】',  p: 6650, save:  350, id: 50831003500202 },
-        { t: '3つセット【10%オフ】', p: 9450, save: 1050, id: 50831003500203 }
+        { t: '2つセット【5%オフ】',  p: 6650, id: 50831003500202 },
+        { t: '3つセット【10%オフ】', p: 9450, id: 50831003500203 }
       ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Misuji Steak',
       description: '肩甲骨の内側の希少部位。細かなサシと赤身の旨みが同居。厚めのレア焼きで。',
@@ -990,8 +990,8 @@
       listPrice: 1350, compareName: '通常のミンチ', limitedUnit: '袋',
       variantsLabel: '袋数',
       variants: [
-        { t: '2つセット', p: 2400, save:  300, id: 50903002400202 },
-        { t: '3つセット', p: 3050, save: 1000, id: 50903002400203 }
+        { t: '2つセット', p: 2400, id: 50903002400202 },
+        { t: '3つセット', p: 3050, id: 50903002400203 }
       ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Gentei Wagyu Minced',
       description: '和牛のミンチ。ハンバーグ、そぼろ、ミートソースに。2袋からのお届けです。',
