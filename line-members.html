@@ -1117,7 +1117,14 @@ body{
   function sendViewItems() {
     if (viewItemsSent) return;
     viewItemsSent = true;
+    /* 🔴 二重送信を止めるフラグは「予約した時点」ではなく「実際に送った時点」で立てること
+       （2026-11-15 レビュー指摘）。requestIdleCallback に積んだだけで立ててしまうと、
+       実行されるまでの最大2秒のあいだに離脱した人の分が弾かれ、ログが1件も飛ばない。
+       いちばん多い「在庫を見てすぐ閉じる」がちょうどこの窓に入る。 */
+    var fired = false;
     var fire = function () {
+      if (fired) return;
+      fired = true;
       try {
         ITEMS.forEach(function (it) {
           if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
@@ -1125,14 +1132,18 @@ body{
       } catch (e) {}
     };
     /* 在庫が確定したら送る。保険として最大15秒で必ず送る（取得が固まってもログは残す）。
-       🔴 それより早くページを離れた人のぶんも落とさない（2026-11-15 レビュー指摘）。
-          後ろ倒しのままだと直帰した人の view_item が1件も残らず、eventsタブの
-          ファネルの分母だけが減って転換率が高く見える＝分析が狂う。
-          離脱時はその場で送る（sendBeacon なのでタブを閉じる直前でも届く）。 */
-    var done = false;
-    var go = function () { if (done) return; done = true;
-      if (window.requestIdleCallback) requestIdleCallback(fire, { timeout: 2000 }); else setTimeout(fire, 0); };
-    var goNow = function () { if (done) return; done = true; fire(); };
+       🔴 それより早くページを離れた人のぶんも落とさない。後ろ倒しのままだと直帰した人の
+          view_item が1件も残らず、eventsタブのファネルの分母だけが減って
+          転換率が高く見える＝分析が狂う。
+          離脱時はその場で送る（sendBeacon なのでタブを閉じる直前でも届く）。
+       🔴 goNow は fired しか見ない。scheduled では弾かないこと。 */
+    var scheduled = false;
+    var go = function () {
+      if (scheduled) return;
+      scheduled = true;
+      if (window.requestIdleCallback) requestIdleCallback(fire, { timeout: 2000 }); else setTimeout(fire, 0);
+    };
+    var goNow = function () { fire(); };
     window.addEventListener('pagehide', goNow);
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') goNow();

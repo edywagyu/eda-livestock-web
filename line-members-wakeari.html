@@ -111,15 +111,17 @@ body{
    価格(27px/スマホ20px)より小さく保って、価格より目立たせない。 */
 .card-bulk{font-size:12.5px;color:#C8102E;font-weight:700;margin:0 0 8px;}
 .tax-note{font-size:11.5px;color:var(--muted);margin:0 0 12px;line-height:1.7;}
-/* 訳あり品の「通常品と比べていくら安いか」。取り消し線は通常品の価格にだけ引き、
-   「通常品」ラベルと2行目(.wk-note)を必ずセットで出す（別商品なので、欠けると
-   二重価格表示になる）。中身は public/js/wakeari-compare.js がライブ値から組み立てる。 */
+/* 訳あり品の「通常の◯◯（内容量） ¥◯」（小さく1行・金額に取り消し線）。
+   🔴 比較相手の商品名と内容量を消さないこと（別商品との比較なので、どの商品の
+      価格かを書かないと二重価格表示になる）。
+   中身は public/js/wakeari-compare.js がライブ値から組み立てる。 */
 .card-compare{font-size:12px;line-height:1.4;color:var(--muted);margin:0 0 2px;}
 /* 比較を出している品の売価は赤字（2026-11-15 田崎さん指示）。#C8102E はサイト共通の --color-red。 */
 .price-now-sale{color:#C8102E !important;}
-/* 「通常 ¥4,750」を小さく・取り消し線で、売価のすぐ上に出す。
-   🔴 「通常」の一語は消さないこと。これが無いと「この商品が値下げされた」と
-      読め、別商品との比較なので二重価格表示（有利誤認）になる。 */
+/* 「通常のヒレステーキ（1枚 150g） ¥4,750」を小さく1行で、売価のすぐ上に出す。
+   取り消し線は金額(.wk-was)にだけ引く。
+   🔴 比較相手の商品名と内容量(.wk-lbl)を消さないこと。消すと「この商品が
+      値下げされた」と読め、別商品との比較なので二重価格表示（有利誤認）になる。 */
 .card-compare .wk-lbl{color:var(--muted);margin-right:5px;}
 .card-compare .wk-was{color:var(--muted);text-decoration:line-through;}
     .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
@@ -861,11 +863,12 @@ body{
     }
     /* 締切・完売の行も、無いときは空き枠にして価格と数量の間隔を固定する。 */
     if (!stockLine) stockLine = '<p class="stock-line card-ph">&nbsp;</p>';
-    /* 訳あり品の「通常品 ¥◯（取り消し線）／訳あり ¥◯／¥◯ お得」。
-       🔴 取り消し線は通常品の価格にだけ。必ず「通常品」ラベルと、何と比べたのかの
-          2行目をセットで出すこと（別商品なので、それが無いと二重価格表示になる）。
+    /* 訳あり品の「通常の◯◯（内容量） ¥◯」（金額に取り消し線）。売価の上に1行だけ出す。
+       🔴 比較相手の商品名と内容量を消さないこと（別商品との比較なので、どの商品の
+          価格かを書かないと二重価格表示になる）。
        🔴 出す／出さないの条件は public/js/wakeari-compare.js が持っている
-          （相手が在庫0・非公開・内容量ちがい・安くない ＝ 出さない）。
+          （相手が在庫0・非公開・comingSoon・限定枠の期間外・内容量ちがい・
+            安くない・ライブ値未取得 ＝ 出さない）。
        🔴 無いときも空き枠を出す。出さないと隣のカードと行がずれる。 */
     var cmpHtml = '';
     /* 🔴 販売終了・発売前の品には出さない（2026-11-15 レビュー指摘）。
@@ -902,8 +905,9 @@ body{
             ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
               + (it.detailLabel || '商品の詳細へ進む') + ' →</a>'
             : '<span class="card-detail card-ph">&nbsp;</span>') +
-          /* 🔴 「通常 ¥4,750（取り消し線）」は売価の“上”に出す（2026-11-15 田崎さん指示）。
-             並び順を変えるときは subgrid の行数(11)も合わせること。 */
+          /* 🔴 「通常の◯◯（内容量） ¥◯」（金額に取り消し線）は売価の“上”に出す
+             （2026-11-15 田崎さん指示）。並び順を変えるときは subgrid の行数(11)も
+             合わせること。 */
           cmpHtml +
           '<div class="price-row">' + was +
             '<span class="price-now' + (cmpOn ? ' price-now-sale' : '') + '">' + yen(showPrice) + '</span>' + off +
@@ -1195,7 +1199,14 @@ body{
   function sendViewItems() {
     if (viewItemsSent) return;
     viewItemsSent = true;
+    /* 🔴 二重送信を止めるフラグは「予約した時点」ではなく「実際に送った時点」で立てること
+       （2026-11-15 レビュー指摘）。requestIdleCallback に積んだだけで立ててしまうと、
+       実行されるまでの最大2秒のあいだに離脱した人の分が弾かれ、ログが1件も飛ばない。
+       いちばん多い「在庫を見てすぐ閉じる」がちょうどこの窓に入る。 */
+    var fired = false;
     var fire = function () {
+      if (fired) return;
+      fired = true;
       try {
         ITEMS.forEach(function (it) {
           if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
@@ -1203,14 +1214,18 @@ body{
       } catch (e) {}
     };
     /* 在庫が確定したら送る。保険として最大15秒で必ず送る（取得が固まってもログは残す）。
-       🔴 それより早くページを離れた人のぶんも落とさない（2026-11-15 レビュー指摘）。
-          後ろ倒しのままだと直帰した人の view_item が1件も残らず、eventsタブの
-          ファネルの分母だけが減って転換率が高く見える＝分析が狂う。
-          離脱時はその場で送る（sendBeacon なのでタブを閉じる直前でも届く）。 */
-    var done = false;
-    var go = function () { if (done) return; done = true;
-      if (window.requestIdleCallback) requestIdleCallback(fire, { timeout: 2000 }); else setTimeout(fire, 0); };
-    var goNow = function () { if (done) return; done = true; fire(); };
+       🔴 それより早くページを離れた人のぶんも落とさない。後ろ倒しのままだと直帰した人の
+          view_item が1件も残らず、eventsタブのファネルの分母だけが減って
+          転換率が高く見える＝分析が狂う。
+          離脱時はその場で送る（sendBeacon なのでタブを閉じる直前でも届く）。
+       🔴 goNow は fired しか見ない。scheduled では弾かないこと。 */
+    var scheduled = false;
+    var go = function () {
+      if (scheduled) return;
+      scheduled = true;
+      if (window.requestIdleCallback) requestIdleCallback(fire, { timeout: 2000 }); else setTimeout(fire, 0);
+    };
+    var goNow = function () { fire(); };
     window.addEventListener('pagehide', goNow);
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') goNow();
