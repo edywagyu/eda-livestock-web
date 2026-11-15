@@ -8,6 +8,22 @@
 <!-- 在庫API(GAS)の接続を先に張っておく。応答自体が3〜5秒かかるので、握手ぶんだけでも先に済ませる -->
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<!-- 🔴 在庫API(GAS)をページで一番先に投げる（2026-11-15 田崎さん指示の高速化）。
+     これより下のスクリプト(pdp-content.js / member-extras.js など)を待つと、
+     本番実測で約0.82秒ぶん開始が遅れていた。結果は Promise で持っておき、
+     下のレンダラーが startCatalogFetch() で受け取る。
+     ⚠️ 12秒で諦める（応答が返らないときに画面が固まらないように）。
+        諦めたあとの扱い（リトライ→「在庫を確認できませんでした」）は下のコードが持つ。 -->
+<script>
+window.__EDA_CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
+window.__EDA_CATALOG_START = (window.performance && performance.now) ? Math.round(performance.now()) : 0;
+try {
+  window.__EDA_CATALOG = Promise.race([
+    fetch(window.__EDA_CATALOG_URL).then(function (r) { return r.json(); }),
+    new Promise(function (res) { setTimeout(function () { res(null); }, 12000); })
+  ]).catch(function () { return null; });
+} catch (e) { window.__EDA_CATALOG = null; }
+</script>
 <link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,17 +114,14 @@ body{
 /* 訳あり品の「通常品と比べていくら安いか」。取り消し線は通常品の価格にだけ引き、
    「通常品」ラベルと2行目(.wk-note)を必ずセットで出す（別商品なので、欠けると
    二重価格表示になる）。中身は public/js/wakeari-compare.js がライブ値から組み立てる。 */
-.card-compare{font-size:12px;line-height:1.6;color:var(--forest);margin:0 0 8px;}
-/* 1行目＝通常品の価格に取り消し線／2行目＝何と比べたのか。
-   🔴 2行目を消さないこと。取り消し線だけにすると二重価格表示になる。
-   🔴 2行目を1行目より目立たなくしすぎないこと（2026-11-15 レビュー指摘）。 */
-.card-compare .wk-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px;}
-.card-compare .wk-lbl{font-size:.84em;color:var(--muted);}
+.card-compare{font-size:12px;line-height:1.4;color:var(--muted);margin:0 0 2px;}
+/* 比較を出している品の売価は赤字（2026-11-15 田崎さん指示）。#C8102E はサイト共通の --color-red。 */
+.price-now-sale{color:#C8102E !important;}
+/* 「通常 ¥4,750」を小さく・取り消し線で、売価のすぐ上に出す。
+   🔴 「通常」の一語は消さないこと。これが無いと「この商品が値下げされた」と
+      読め、別商品との比較なので二重価格表示（有利誤認）になる。 */
+.card-compare .wk-lbl{color:var(--muted);margin-right:5px;}
 .card-compare .wk-was{color:var(--muted);text-decoration:line-through;}
-.card-compare .wk-sep{color:var(--muted);}
-.card-compare .wk-now{font-weight:700;}
-.card-compare .wk-save{color:#C8102E;font-weight:700;}
-.card-compare .wk-note{display:block;font-size:.94em;color:#5a6b5e;line-height:1.55;margin-top:3px;}
     .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
@@ -200,7 +213,7 @@ body{
 #cards .card-variant{font-size:11px;margin:0 0 8px;}
 #cards .card-desc{font-size:11.5px;line-height:1.6;margin:0 0 8px;}
 #cards .card-bulk{font-size:11px;margin:0 0 6px;}
-#cards .card-compare{font-size:10.5px;line-height:1.5;margin:0 0 8px;}
+#cards .card-compare{font-size:11px;line-height:1.4;margin:0 0 2px;}
 #cards .card-detail{font-size:11.5px;margin:0 0 10px;}
 #cards .price-row{gap:6px;}
 #cards .price-was{font-size:11.5px;}
@@ -399,7 +412,7 @@ body{
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/member-extras.js?v=005"></script>
-<script src="public/js/wakeari-compare.js?v=002"></script>
+<script src="public/js/wakeari-compare.js?v=004"></script>
 <script>
 (function () {
   'use strict';
@@ -862,6 +875,8 @@ body{
     if (it.compareTo && window.edaWakeariCompare && !ended && !upcoming && baseN === 1) {
       cmpHtml = window.edaWakeariCompare.html(LIVE_BY_PID[it.compareTo], showPrice, it.variant);
     }
+    /* 比較が出る品は売価を赤字にする（2026-11-15 田崎さん指示）。 */
+    var cmpOn = !!cmpHtml;
     cmpHtml = cmpHtml
       ? '<p class="card-compare">' + cmpHtml + '</p>'
       : '<p class="card-compare card-ph">&nbsp;</p>';
@@ -887,10 +902,12 @@ body{
             ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
               + (it.detailLabel || '商品の詳細へ進む') + ' →</a>'
             : '<span class="card-detail card-ph">&nbsp;</span>') +
-          '<div class="price-row">' + was +
-            '<span class="price-now">' + yen(showPrice) + '</span>' + off +
-          '</div>' +
+          /* 🔴 「通常 ¥4,750（取り消し線）」は売価の“上”に出す（2026-11-15 田崎さん指示）。
+             並び順を変えるときは subgrid の行数(11)も合わせること。 */
           cmpHtml +
+          '<div class="price-row">' + was +
+            '<span class="price-now' + (cmpOn ? ' price-now-sale' : '') + '">' + yen(showPrice) + '</span>' + off +
+          '</div>' +
           stockLine +
           varHtml +
           '<div class="qty-row">' +
@@ -1077,6 +1094,15 @@ body{
   /* ---------- ライブ在庫・価格 ---------- */
   /* スクリプトが読まれた時点で取りに行く（init を待たない）。 */
   function startCatalogFetch() {
+    /* 🔴 <head> のインラインで先に投げてある取得を受け取る（2026-11-15）。
+       ここまで降りてくるのに本番実測で約0.82秒かかっていた（先に読む
+       pdp-content.js / member-extras.js / wakeari-compare.js の待ち時間）。
+       取り直し(リトライ)のときは catalogPromise を null にしてから呼ぶので、
+       そのときは下の通常の fetch が走る。 */
+    if (!catalogPromise && window.__EDA_CATALOG && !startCatalogFetch._usedHead) {
+      startCatalogFetch._usedHead = true;
+      catalogPromise = window.__EDA_CATALOG;
+    }
     if (!catalogPromise) {
       /* 🔴 時間切れを付ける（2026-11-15 レビュー指摘）。応答が返ってこないと
          「在庫を確認しています」のまま固まり、全商品が買えなくなるため。 */
@@ -1163,6 +1189,36 @@ body{
 
   startCatalogFetch();
 
+  /* 閲覧ログ(view_item)の送信。在庫取得が終わってから1回だけ送る。
+     在庫が取れなかったときも送る（ログは落とさない）。 */
+  var viewItemsSent = false;
+  function sendViewItems() {
+    if (viewItemsSent) return;
+    viewItemsSent = true;
+    var fire = function () {
+      try {
+        ITEMS.forEach(function (it) {
+          if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
+        });
+      } catch (e) {}
+    };
+    /* 在庫が確定したら送る。保険として最大15秒で必ず送る（取得が固まってもログは残す）。
+       🔴 それより早くページを離れた人のぶんも落とさない（2026-11-15 レビュー指摘）。
+          後ろ倒しのままだと直帰した人の view_item が1件も残らず、eventsタブの
+          ファネルの分母だけが減って転換率が高く見える＝分析が狂う。
+          離脱時はその場で送る（sendBeacon なのでタブを閉じる直前でも届く）。 */
+    var done = false;
+    var go = function () { if (done) return; done = true;
+      if (window.requestIdleCallback) requestIdleCallback(fire, { timeout: 2000 }); else setTimeout(fire, 0); };
+    var goNow = function () { if (done) return; done = true; fire(); };
+    window.addEventListener('pagehide', goNow);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') goNow();
+    });
+    try { startCatalogFetch().then(go, go); } catch (e) { go(); }
+    setTimeout(go, 15000);
+  }
+
   /* ---------- 起動 ---------- */
   function init() {
     var on = memberOn();
@@ -1171,11 +1227,14 @@ body{
     if (on) {
       render();
       syncCatalog();
-      try {
-        ITEMS.forEach(function (it) {
-          if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
-        });
-      } catch (e) {}
+      /* 🔴 閲覧ログ(view_item)は在庫が届いてから送ること（2026-11-15 実測）。
+         ここで商品の数ぶん sendBeacon を撃つと、同じGASに log_event の書き込みが
+         並び、在庫取得(public_catalog)がその後ろで待たされる。
+         本番実測: 在庫取得は単独 3.1〜3.8秒／ビーコン10本と同時 11.4秒。
+         送る件数は変えていない。順番を後ろにしたぶん、value に入る価格が
+         同梱マスターの控え値ではなくライブ値になる（そこだけ中身が変わる）。
+         🔴 すぐ閉じた人のぶんを落とさないよう、pagehide / visibilitychange でも送る。 */
+      sendViewItems();
     }
     paintCartBar();
     paintShipNote();

@@ -224,30 +224,23 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
   color: var(--color-ink-muted);
   margin-bottom: 36px;
 }
-/* 訳あり品の「通常品と比べていくら安いか」（2026-11-15 田崎さん指示）。
-   🔴 取り消し線は通常品の価格にだけ引く。訳あり品と通常品は別商品なので、
-      「通常品」ラベルと、何と比べたのかの2行目(.wk-note)を必ずセットで出すこと。
-      どちらかが欠けると二重価格表示（有利誤認）になる。
+/* 訳あり品の「通常 ¥4,750」（小さく・取り消し線）。売価のすぐ上に出す。
+   🔴 取り消し線を引いた価格の直前の「通常」の一語を消さないこと。訳あり品と
+      通常品は別の商品なので、これが無いと「この商品が値下げされた」と読め、
+      二重価格表示（有利誤認）になる。2026-11-15 田崎さん指示で「お得」
+      「◯◯との比較です」の説明文は外したが、外してよいのは説明文だけ。
    🔴「通常価格」「定価」「◯%OFF」は使わない。矢印「→」も使わない（値下げに見える）。
    中身を組み立てるのは public/js/wakeari-compare.js。 */
 .pdp-wakeari-compare {
-  font-size: 13.5px;
-  line-height: 1.7;
-  color: var(--color-forest);
-  background: rgba(15, 57, 22, 0.05);
-  border-left: 3px solid var(--color-gold);
-  padding: 10px 12px;
-  border-radius: 4px;
-  margin: -28px 0 32px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+  margin: 0 0 2px;
 }
-.pdp-wakeari-compare .wk-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
-.pdp-wakeari-compare .wk-lbl { font-size: 0.85em; color: var(--color-ink-muted); }
+.pdp-wakeari-compare .wk-lbl { color: var(--color-ink-muted); margin-right: 6px; }
 .pdp-wakeari-compare .wk-was { color: var(--color-ink-muted); text-decoration: line-through; }
-.pdp-wakeari-compare .wk-sep { color: var(--color-ink-muted); }
-.pdp-wakeari-compare .wk-now { font-weight: 700; font-size: 1.15em; }
-.pdp-wakeari-compare .wk-save { color: var(--color-red); font-weight: 700; }
-/* 🔴 何と比べたのかを出す行。消すと二重価格表示になる。 */
-.pdp-wakeari-compare .wk-note { display: block; font-size: 0.95em; color: var(--color-ink); opacity: 0.8; margin-top: 5px; }
+/* 比較を出している訳あり品は売価を赤字にする（2026-11-15 田崎さん指示）。 */
+.pdp-price.pdp-price-sale { color: var(--color-red); }
 
 .pdp-description {
   font-size: 15px;
@@ -833,13 +826,16 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <h1 class="pdp-title" id="pdpTitle"></h1>
       <div class="pdp-variant-label" id="pdpVariant"></div>
 
+      <!-- 訳あり品だけ出る「通常 ¥4,750」（小さく・取り消し線）。売価の“上”に出す。
+           中身は pdpApplyWakeariCompare() が products のライブ値から毎回計算する。
+           🔴「通常」の一語を消さないこと（別商品との比較なので、無いと二重価格表示になる）。 -->
+      <p class="pdp-wakeari-compare" id="pdpWakeariCompare" hidden></p>
       <div class="pdp-price" id="pdpPrice"></div>
       <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
            金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
-      <p class="pdp-price-note" id="pdpPriceNote">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
-      <!-- 訳あり品だけ出る「通常の◯◯（内容量）¥◯ と比べて ¥◯ おトク」。
-           中身は pdpApplyWakeariCompare() が products のライブ値から毎回計算する。 -->
-      <p class="pdp-wakeari-compare" id="pdpWakeariCompare" hidden></p>
+      <!-- 🔴「表示価格はすべて税込」を先に書くこと（2026-11-15 レビュー指摘）。
+           上の「通常の◯◯ ¥4,750」（取り消し線）も税込だと分かるようにするため。 -->
+      <p class="pdp-price-note" id="pdpPriceNote">表示価格はすべて税込 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
 
       <!-- ========= 🎁 キャンペーン特典の帯（中身と表示期間は public/js/gift-rules.js の CAMPAIGN が正。
      期間外は gift-notice.js が hidden にするので、終わったあとの撤去作業は不要） ========= -->
@@ -1321,7 +1317,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 <script src="public/data/products-master.js?v=2026-11-15-418-wakeari-compare"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
-<script src="public/js/wakeari-compare.js?v=002"></script>
+<script src="public/js/wakeari-compare.js?v=004"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -1420,7 +1416,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      決済(GAS hasFreeShipItem_)・レジ画面と同じ規則なので、ここの文言だけ差し替える。 */
   if (String(product.freeShip).trim().toLowerCase() === 'true') {
     const _note = document.querySelector('.pdp-price-note');
-    if (_note) _note.textContent = '税込価格 / 送料無料でお届けします';
+    if (_note) _note.textContent = '表示価格はすべて税込 / 送料無料でお届けします';
   }
   /* 価格: listPrice が売価より高ければ併記する。
      🔴 お米(category='rice')だけは取り消し線を使わない。
@@ -1648,6 +1644,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       const price = Number(v.p) || 0;
       const u = unitsOf(v.t);
       window.__pdpVariant = v;            /* pdpPushToCart がこれを読んでカートに積む */
+      /* 🔴 訳あり品の「通常の◯◯ ¥◯」（取り消し線）は1口のときだけ出す
+         （2026-11-15 レビュー指摘）。まとめ買いを選ぶと、1枚ぶんの通常価格と
+         セット価格を並べることになり、さらに下の renderPrice 側の取り消し線と
+         二重に線が出る。いまの訳あり9品に口数は無いが、足した瞬間に壊れるので先に塞ぐ。 */
+      (function () {
+        var _wk = document.getElementById('pdpWakeariCompare');
+        var _pr = document.getElementById('pdpPrice');
+        if (!_wk) return;
+        if (u > 1) { _wk.hidden = true; if (_pr) _pr.classList.remove('pdp-price-sale'); }
+        else if (typeof window.pdpApplyWakeariCompare === 'function') window.pdpApplyWakeariCompare();
+      })();
       /* 比較（取り消し線の旧価格＋添え書き）。1つのときは渡さない
          ＝従来どおり listPrice ¥1,600 の取り消し線だけが出る。
          🔴 compareName（比較した商品の名前）が無ければ比較ごと出さない。
@@ -1738,7 +1745,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   if (isRice) {
     /* 🍚 お米は常温便で全国一律 ¥1,100。北海道・沖縄の加算は無い。 */
     const noteEl2 = document.getElementById('pdpPriceNote');
-    if (noteEl2) noteEl2.textContent = '税込価格 / 別途 送料 ¥1,100（税込・全国一律）';
+    if (noteEl2) noteEl2.textContent = '表示価格はすべて税込 / 別途 送料 ¥1,100（全国一律）';
     /* 🍚 価格の下のメタ3行は肉向け。お米の実態に合わせて差し替える。
        ・冷凍便／賞味期限6ヶ月 → 常温便／受注後に精米
        ・送料の北海道・沖縄加算 → お米は全国一律
@@ -2089,8 +2096,11 @@ function pdpApplyWakeariCompare() {
   const el = document.getElementById('pdpWakeariCompare');
   const cur = window.__pdpProduct;
   if (!el) return;
+  const priceEl = document.getElementById('pdpPrice');
+  const paint = (on) => { if (priceEl) priceEl.classList.toggle('pdp-price-sale', !!on); };
   el.hidden = true;
   el.innerHTML = '';
+  paint(false);
   if (!cur || !cur.compareToId || !window.edaWakeariCompare) return;
   /* 🔴 ライブ値が来るまでは出さない（2026-11-15 レビュー指摘）。同梱マスターの
      通常品は価格も在庫も古く、在庫0の品を「通常 ¥◯」と書いてしまうため。
@@ -2104,6 +2114,7 @@ function pdpApplyWakeariCompare() {
   if (!html) return;
   el.innerHTML = html;
   el.hidden = false;
+  paint(true);   /* 売価を赤字に */
 }
 window.pdpApplyWakeariCompare = pdpApplyWakeariCompare;
 
@@ -2121,7 +2132,7 @@ function pdpApplyStock() {
      同梱マスターに freeShip が無く、旧文言のままになるため。 */
   if (String(live.freeShip).trim().toLowerCase() === 'true') {
     const _note2 = document.querySelector('.pdp-price-note');
-    if (_note2) _note2.textContent = '税込価格 / 送料無料でお届けします';
+    if (_note2) _note2.textContent = '表示価格はすべて税込 / 送料無料でお届けします';
   }
   const note = document.getElementById('pdpStockNote');
   const btn = document.getElementById('addToCartBtn');
