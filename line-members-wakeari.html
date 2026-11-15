@@ -94,6 +94,12 @@ body{
     /* まとめ買い案内は赤（2026-11-15 田崎さん指示）。サイト共通の --color-red と同じ #C8102E。
    価格(27px/スマホ20px)より小さく保って、価格より目立たせない。 */
 .card-bulk{font-size:12.5px;color:#C8102E;font-weight:700;margin:0 0 8px;}
+.tax-note{font-size:11.5px;color:var(--muted);margin:0 0 12px;line-height:1.7;}
+/* 訳あり品の「通常品と比べていくら安いか」。取り消し線は使わない（二重価格表示になるため）。
+   中身は public/js/wakeari-compare.js が products のライブ値から組み立てる。 */
+.card-compare{font-size:12px;line-height:1.55;color:var(--forest);margin:0 0 8px;}
+.card-compare b{font-weight:700;}
+.card-compare .wk-save{color:#C8102E;}
     .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
@@ -164,12 +170,14 @@ body{
 /* 空き枠。場所だけ取って中身は見せない（読み上げにも乗らない）。 */
 #cards .card-ph{visibility:hidden;}
 @supports (grid-template-rows: subgrid){
-  /* 1(写真) + 9(本文の行) = 10 行を #cards の行トラックに直接乗せる。
+  /* 1(写真) + 10(本文の行) = 11 行を #cards の行トラックに直接乗せる。
+     本文の行＝タグ／商品名／内容量／お得案内／詳細リンク／価格／
+     「通常品と比べて」／締切・完売／数量／カートボタン。
      行の高さが全カードで共有されるので、商品名が2行の品に合わせて1行の品にも
      同じ高さが入り、価格・数量・ボタンのY座標が必ずそろう。 */
   #cards{grid-auto-rows:auto;row-gap:0;}
-  #cards .card{display:grid;grid-template-rows:subgrid;grid-row:span 10;row-gap:0;height:auto;margin-bottom:14px;}
-  #cards .card-body{display:grid;grid-template-rows:subgrid;grid-row:span 9;row-gap:0;}
+  #cards .card{display:grid;grid-template-rows:subgrid;grid-row:span 11;row-gap:0;height:auto;margin-bottom:14px;}
+  #cards .card-body{display:grid;grid-template-rows:subgrid;grid-row:span 10;row-gap:0;}
   #cards .card h3{min-height:0;}
   #cards .btn-add{margin-top:0;align-self:end;}
 }
@@ -180,6 +188,7 @@ body{
 #cards .card-variant{font-size:11px;margin:0 0 8px;}
 #cards .card-desc{font-size:11.5px;line-height:1.6;margin:0 0 8px;}
 #cards .card-bulk{font-size:11px;margin:0 0 6px;}
+#cards .card-compare{font-size:10.5px;line-height:1.5;margin:0 0 8px;}
 #cards .card-detail{font-size:11.5px;margin:0 0 10px;}
 #cards .price-row{gap:6px;}
 #cards .price-was{font-size:11.5px;}
@@ -322,7 +331,7 @@ body{
 
 </style>
 </head>
-<body data-lm-detail="link-only">
+<body data-lm-detail="link-only" data-lm-detail-label="商品の詳細へ進む">
 
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
@@ -353,6 +362,10 @@ body{
 
   <!-- 連携済み: 商品 -->
   <div id="members" hidden>
+    <!-- 🔴 税込表記（2026-11-15 レビュー指摘）。比較行だけ「¥3,700（税込）」と書くと、
+         カード本体の価格が税抜と読まれかねないので、一覧の冒頭で揃えておく。
+         #cards の外に置くこと＝中に入れるとカードの行揃え（subgrid）が狂う。 -->
+    <p class="tax-note">表示価格はすべて税込です。</p>
     <div id="cards"></div>
   </div>
 
@@ -373,7 +386,8 @@ body{
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
-<script src="public/js/member-extras.js?v=004"></script>
+<script src="public/js/member-extras.js?v=005"></script>
+<script src="public/js/wakeari-compare.js?v=001"></script>
 <script>
 (function () {
   'use strict';
@@ -388,7 +402,7 @@ body{
        products の published は TRUE のまま・stock も動かしていない（PDPを開くため）。
        戻すときは下のカードを書き戻す:
          productId 'P043' / variantId 'FUZOROI-SET' / detailId 'P043'
-         detailLabel '実物の写真を見る' / name '不揃い品セット'
+         detailLabel は書かない（既定の「商品の詳細へ進む」）/ name '不揃い品セット'
          variant '和牛5種 各200g 計1kg' / price 7980 / listPrice 10850
          img 'public/images/products/drive/fuzoroi-set.jpg'
        🔴 components なし＝別枠在庫。セットが売れても構成品(ミンチ/赤身ステーキ/
@@ -406,7 +420,7 @@ body{
        公式LINEで「今月いっぱいまで」と案内しているのは P076 の方なので、そちらを出す。
        ⏪ 12/1 以降に戻すときは下のカードを書き戻し、P076 のカードを外すこと:
          productId 'P041' / variantId 'WAKEARI-KIRI' / detailId 'P041'
-         detailLabel '実物の写真を見る' / name '訳あり切り落とし' / variant '1袋 200g'
+         detailLabel は書かない（既定の「商品の詳細へ進む」）/ name '訳あり切り落とし' / variant '1袋 200g'
          price 1200 / listPrice 0 / stock 20 / limitedTotal 0
          img 'public/images/products/drive/kiriotoshi-2026.jpg'
          desc 'ウデ・肩ロース・ソトモモから取れる切り落とし。煮込み、炒め、丼に。'
@@ -420,7 +434,7 @@ body{
             商品ページ側は products-master.js の limitedSoldOutAt が同じ時刻で止める。
          price / stock は public_catalog のライブ値で上書きされる（ここはフォールバック）。 */
       productId: 'P076', variantId: 'WAKEARI-KIRI-GENTEI',
-      detailId: 'P076', detailLabel: '実物の写真を見る',
+      detailId: 'P076',
       name: '訳あり切り落とし 期間限定',
       variant: '1袋 200g',
       /* 11/30 23:59 で販売終了＝翌 12/1 00:00 を境にする。 */
@@ -453,8 +467,12 @@ body{
        🔴 正規品とは別商品・別枠在庫。売れても通常品の在庫は減らない。
        🔴 掲載はこのページだけ。shop / products / index には出さない。 */
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P024',
       productId: 'P079', variantId: 'WAKEARI-HIRE',
-      detailId: 'P079', detailLabel: '実物の写真を見る',
+      detailId: 'P079',
       name: '訳ありヒレステーキ',
       variant: '1枚 150g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -468,9 +486,17 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P026',
       productId: 'P080', variantId: 'WAKEARI-SHIMOFURI-SLICE',
-      detailId: 'P080', detailLabel: '実物の写真を見る',
-      name: '訳あり霜降りスライス',
+      detailId: 'P080',
+      /* 🔴 name は products シートと1文字一致させること（GASの在庫減算・決済が name 一致）。
+         2026-11-15 田崎さん指示で「訳あり霜降りスライス」→「訳あり霜降スライス」に改名。
+         通常品が「霜降スライス」(P026) なので「り」を外して揃えた。
+         シート products の75行目も同時に直してある。片方だけ直すと売れても在庫が減らない。 */
+      name: '訳あり霜降スライス',
       variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
          カートに入らない＝これが意図した状態。数が決まったら
@@ -483,8 +509,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P002',
       productId: 'P081', variantId: 'WAKEARI-AKAMI-STEAK',
-      detailId: 'P081', detailLabel: '実物の写真を見る',
+      detailId: 'P081',
       name: '訳あり赤身ステーキ',
       variant: '1枚 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -498,8 +528,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P001',
       productId: 'P082', variantId: 'WAKEARI-SIRLOIN',
-      detailId: 'P082', detailLabel: '実物の写真を見る',
+      detailId: 'P082',
       name: '訳ありサーロインステーキ',
       variant: '1枚 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -513,8 +547,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P023',
       productId: 'P083', variantId: 'WAKEARI-MISUJI',
-      detailId: 'P083', detailLabel: '実物の写真を見る',
+      detailId: 'P083',
       name: '訳ありミスジステーキ',
       variant: '1枚 150g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -528,8 +566,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P004',
       productId: 'P084', variantId: 'WAKEARI-AKAMI-SLICE',
-      detailId: 'P084', detailLabel: '実物の写真を見る',
+      detailId: 'P084',
       name: '訳あり赤身スライス',
       variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -543,8 +585,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P003',
       productId: 'P085', variantId: 'WAKEARI-CUBE',
-      detailId: 'P085', detailLabel: '実物の写真を見る',
+      detailId: 'P085',
       name: '訳ありサイコロステーキ',
       variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -558,8 +604,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P006',
       productId: 'P086', variantId: 'WAKEARI-BARA-YAKINIKU',
-      detailId: 'P086', detailLabel: '実物の写真を見る',
+      detailId: 'P086',
       name: '訳ありバラ焼肉',
       variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -573,8 +623,12 @@ body{
       desc: ''
     },
     {
+      /* 通常品と比べていくら安いかを出す。相手は productId で指すだけで、
+         金額・差額は products のライブ値から毎回計算する（手書きの数字は置かない）。
+         相手が在庫0・非公開・内容量ちがいのときは比較ごと出ない。 */
+      compareTo: 'P025',
       productId: 'P087', variantId: 'WAKEARI-AKAMI-YAKINIKU',
-      detailId: 'P087', detailLabel: '実物の写真を見る',
+      detailId: 'P087',
       name: '訳あり赤身焼肉',
       variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
@@ -595,6 +649,8 @@ body{
      ＝ 見た目のロスをゼロにしつつ、完売品はカートに入らない（2026-09-02 ryotaro指示）。 */
   var stockReady = false;
   var catalogPromise = null;
+  /* productId → public_catalog のライブ行。通常品との比較表示に使う。 */
+  var LIVE_BY_PID = {};
 
   var CART_KEY = 'eda-cart';
   var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
@@ -754,6 +810,22 @@ body{
     }
     /* 締切・完売の行も、無いときは空き枠にして価格と数量の間隔を固定する。 */
     if (!stockLine) stockLine = '<p class="stock-line card-ph">&nbsp;</p>';
+    /* 訳あり品の「通常の◯◯（内容量）¥◯ と比べて ¥◯ おトク」。
+       🔴 取り消し線にしない。訳あり品と通常品は別商品で、二重価格表示になるため。
+       🔴 出す／出さないの条件は public/js/wakeari-compare.js が持っている
+          （相手が在庫0・非公開・内容量ちがい・安くない ＝ 出さない）。
+       🔴 無いときも空き枠を出す。出さないと隣のカードと行がずれる。 */
+    var cmpHtml = '';
+    /* 🔴 販売終了・発売前の品には出さない（2026-11-15 レビュー指摘）。
+       🔴 基準が1口でない品（P042 のような2袋基準）にも出さない。showPrice は
+          基準の口数ぶんの金額なので、1口の内容量と並べると比較が食い違う。 */
+    var baseN = baseVar ? (Number(baseVar.n) || 1) : 1;
+    if (it.compareTo && window.edaWakeariCompare && !ended && !upcoming && baseN === 1) {
+      cmpHtml = window.edaWakeariCompare.html(LIVE_BY_PID[it.compareTo], showPrice, it.variant);
+    }
+    cmpHtml = cmpHtml
+      ? '<p class="card-compare">' + cmpHtml + '</p>'
+      : '<p class="card-compare card-ph">&nbsp;</p>';
     return '' +
       '<div class="card" data-i="' + i + '"' + (it.anchor ? ' id="' + it.anchor + '"' : '') + '>' +
         '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
@@ -779,6 +851,7 @@ body{
           '<div class="price-row">' + was +
             '<span class="price-now">' + yen(showPrice) + '</span>' + off +
           '</div>' +
+          cmpHtml +
           stockLine +
           varHtml +
           '<div class="qty-row">' +
@@ -984,6 +1057,11 @@ body{
         }
         return (min === Infinity) ? null : Math.max(0, min);
       }
+
+      /* 訳あり品の「通常品と比べていくら安いか」用に、通常品のライブ行を引けるようにする。
+         価格・在庫・公開状態・内容量をそのまま使う＝手書きの数字を持たない。 */
+      LIVE_BY_PID = {};
+      list.forEach(function (p) { if (p && p.productId) LIVE_BY_PID[p.productId] = p; });
 
       var changed = false;
       ITEMS.forEach(function (it) {

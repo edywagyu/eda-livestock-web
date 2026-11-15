@@ -974,11 +974,18 @@
        🔴 内容量と重量は、それぞれの通常品の products の実値に合わせてある。
        🔴 listPrice（取り消し線の旧価格）は置いていない。通常品の値段を取り消し線で
           並べると「この商品が以前その値段だった」と読まれる二重価格表示になるため。
-          お得さをどう見せるかは田崎さんの判断待ち。
+          2026-11-15 田崎さん指示で、代わりに compareToId を置き、商品ページに
+          「通常の◯◯（内容量）¥◯ と比べて ¥◯ おトク」と文章で出すことにした。
        🔴 本番 products シートには、まだ9行とも登録していない。登録しないと
           決済後の在庫減算（name 完全一致）も決済前の在庫チェックも効かない。
           在庫を入れるときに必ず9行を足すこと。 */
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P024',
       productId: 'P079', variantId: 'WAKEARI-HIRE', sku: 'EDA-WAKEARI-HIRE-150',
       stripePriceId: '',
       name: '訳ありヒレステーキ', variant: '1枚 150g',
@@ -1004,9 +1011,18 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P026',
       productId: 'P080', variantId: 'WAKEARI-SHIMOFURI-SLICE', sku: 'EDA-WAKEARI-SHIMOFURI-200',
       stripePriceId: '',
-      name: '訳あり霜降りスライス', variant: '1袋 200g',
+      /* 🔴 name は products シートと1文字一致させること（GASの在庫減算・決済が name 一致）。
+         2026-11-15 田崎さん指示で「訳あり霜降りスライス」→「訳あり霜降スライス」に改名。
+         通常品が「霜降スライス」(P026) なので「り」を外して揃えた。 */
+      name: '訳あり霜降スライス', variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
          「完売しました」になり買えない＝これが意図した状態。
          noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
@@ -1029,6 +1045,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P002',
       productId: 'P081', variantId: 'WAKEARI-AKAMI-STEAK', sku: 'EDA-WAKEARI-AKAMI-STEAK-200',
       stripePriceId: '',
       name: '訳あり赤身ステーキ', variant: '1枚 200g',
@@ -1054,6 +1076,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P001',
       productId: 'P082', variantId: 'WAKEARI-SIRLOIN', sku: 'EDA-WAKEARI-SIRLOIN-200',
       stripePriceId: '',
       name: '訳ありサーロインステーキ', variant: '1枚 200g',
@@ -1079,6 +1107,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P023',
       productId: 'P083', variantId: 'WAKEARI-MISUJI', sku: 'EDA-WAKEARI-MISUJI-150',
       stripePriceId: '',
       name: '訳ありミスジステーキ', variant: '1枚 150g',
@@ -1104,6 +1138,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P004',
       productId: 'P084', variantId: 'WAKEARI-AKAMI-SLICE', sku: 'EDA-WAKEARI-AKAMI-SLICE-200',
       stripePriceId: '',
       name: '訳あり赤身スライス', variant: '1袋 200g',
@@ -1129,6 +1169,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P003',
       productId: 'P085', variantId: 'WAKEARI-CUBE', sku: 'EDA-WAKEARI-CUBE-200',
       stripePriceId: '',
       name: '訳ありサイコロステーキ', variant: '1袋 200g',
@@ -1154,6 +1200,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P006',
       productId: 'P086', variantId: 'WAKEARI-BARA-YAKINIKU', sku: 'EDA-WAKEARI-BARA-200',
       stripePriceId: '',
       name: '訳ありバラ焼肉', variant: '1袋 200g',
@@ -1179,6 +1231,12 @@
       ]
     },
     {
+      /* 通常品と比べていくら安いかを商品ページに出す（2026-11-15 田崎さん指示）。
+         相手は productId で指すだけ＝金額・差額は products のライブ値から毎回計算する。
+         🔴 取り消し線にしない（別商品なので二重価格表示になる）。出す／出さないの
+            条件は public/js/wakeari-compare.js。相手が在庫0・非公開・内容量ちがい
+            ・安くない のときは比較ごと出ない。 */
+      compareToId: 'P025',
       productId: 'P087', variantId: 'WAKEARI-AKAMI-YAKINIKU', sku: 'EDA-WAKEARI-AKAMI-YAKI-200',
       stripePriceId: '',
       name: '訳あり赤身焼肉', variant: '1袋 200g',

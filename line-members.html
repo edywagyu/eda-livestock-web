@@ -325,7 +325,7 @@ body{
 <!-- data-lm-detail="link-only"：一覧カードに「商品の詳細」の中身（部位・仕様・解凍・焼き方）を
      出さず、商品詳細ページへのリンクだけにする（2026-11-15 田崎さん指示）。
      判定は public/js/member-extras.js 側。このページだけの設定。 -->
-<body data-lm-detail="link-only">
+<body data-lm-detail="link-only" data-lm-detail-label="商品の詳細へ進む">
 
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
@@ -376,7 +376,7 @@ body{
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
-<script src="public/js/member-extras.js?v=004"></script>
+<script src="public/js/member-extras.js?v=005"></script>
 <script>
 (function () {
   'use strict';
@@ -384,21 +384,20 @@ body{
   /* 会員限定に並べる品。price / stock は public_catalog のライブ値で上書きされる
      （ここはフォールバック）。listPrice は単品合計＝定価対比の表示用。 */
   var ITEMS = [
-    /* ===== 特大ハンバーグ (P044) 2026-09-07 =====
-       田崎さん指示（2026-09-07）。9/4に一般公開した新商品を、公式LINE会員限定
-       ページにも転載する。値引きはしない（通常の商品一覧と同じ ¥1,800）。
-       10%OFF は既存の LINE10 クーポンで決済時に効く＝products の price は触らない。
-       アレルギー: 小麦を使用。 */
-    {
-      productId: 'P044', variantId: 'HAMBURG-XL',
-      detailId: 'P044',
-      memberOnly: false,
-      name: '特大ハンバーグ',
-      variant: '1個 250g',
-      price: 1800, listPrice: 0, stock: 20, limitedTotal: 20,
-      img: 'public/images/products/drive/hamburg.jpg',
-      desc: '和牛100%、1個250g。味つけは有機調味料のみ。冷蔵庫で解凍して、フライパンで両面を焼くだけ。※小麦を使用しています。小麦アレルギーの方はご遠慮ください。'
-    },
+    /* ===== 特大ハンバーグ (P044) は 2026-11-15 からこのページに並べない =====
+       田崎さん指示（2026-11-15）「限定商品一覧にある特大ハンバーグ。これは消してください。」
+       🔴 消したのは”このページへの掲載”だけ。商品そのものは下げていない:
+         ・products の published は TRUE のまま／price・stock も触っていない
+         ・通常の商品一覧（shop.html / products.html）と商品詳細ページ
+           (product.html?id=P044) では引き続き販売中
+       P043 を外したときと同じ扱い（一覧から外すだけ）。
+       ⏪ 戻すときは下のカードを書き戻す:
+         productId 'P044' / variantId 'HAMBURG-XL' / detailId 'P044'
+         memberOnly false / name '特大ハンバーグ' / variant '1個 250g'
+         price 1800 / listPrice 0 / stock 20 / limitedTotal 20
+         img 'public/images/products/drive/hamburg.jpg'
+         desc '和牛100%、1個250g。味つけは有機調味料のみ。冷蔵庫で解凍して、フライパンで両面を焼くだけ。※小麦を使用しています。小麦アレルギーの方はご遠慮ください。'
+       （値引きなし＝通常の商品一覧と同じ ¥1,800。10%OFF は LINE10 クーポンで決済時に効く） */
     /* ===== 不揃い品セット (P043) は 2026-09-07 から「リンクを知っている方だけ」に =====
        田崎さん指示（2026-09-07）。会員限定ページのカードを外し、商品詳細ページ
        (product.html?id=P043) の直リンクだけで購入できる状態にする。
@@ -406,7 +405,7 @@ body{
        products の published は TRUE のまま・stock も動かしていない（PDPを開くため）。
        戻すときは下のカードを書き戻す:
          productId 'P043' / variantId 'FUZOROI-SET' / detailId 'P043'
-         detailLabel '実物の写真を見る' / name '不揃い品セット'
+         detailLabel は書かない（既定の「商品の詳細へ進む」）/ name '不揃い品セット'
          variant '和牛5種 各200g 計1kg' / price 7980 / listPrice 10850
          img 'public/images/products/drive/fuzoroi-set.jpg'
        🔴 components なし＝別枠在庫。セットが売れても構成品(ミンチ/赤身ステーキ/
@@ -553,7 +552,7 @@ body{
       /* 不揃いページの商品。通常の「切り落とし」(P005 ¥1,600) とは別商品で、
          在庫も別枠（components なし＝P005の76袋は減らない）。 */
       productId: 'P041', variantId: 'WAKEARI-KIRI',
-      detailId: 'P041', detailLabel: '実物の写真を見る',
+      detailId: 'P041',
       name: '訳あり切り落とし',
       variant: '1袋 200g',
       /* ⛔ 2026/11/04〜11/30 は販売停止（2026-11-04 田崎さん指示）。

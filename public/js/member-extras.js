@@ -33,7 +33,8 @@
     if (!LM || !LM.ITEMS) return;
     /* 一覧には「商品の詳細」の中身を出さず、商品詳細ページへのリンクだけにするページ。
        <body data-lm-detail="link-only"> を書いたページだけこの扱いになる（2026-11-15 田崎さん指示）。
-       対象は line-members.html のみ。osusume / wakeari / oseibo / vip-preorder は従来どおり。 */
+       対象は line-members.html / line-members-wakeari.html / line-members-osusume.html。
+       oseibo / vip-preorder は従来どおり。 */
     if (document.body && document.body.getAttribute('data-lm-detail') === 'link-only') {
       linkCards();
       return;
@@ -94,7 +95,11 @@
         var a = document.createElement('a');
         a.className = 'card-detail';
         a.href = href;
-        a.textContent = '商品の詳細を見る →';
+        /* 文言はページ側で指定できる（2026-11-15 田崎さん指示「商品の詳細へ進む」に統一）。
+           <body data-lm-detail-label="..."> を書いたページはその文言になる。
+           書いていないページ（oseibo / vip-preorder）は従来どおり。 */
+        a.textContent = ((document.body && document.body.getAttribute('data-lm-detail-label'))
+                         || '商品の詳細を見る') + ' →';
         var d = card.querySelector('.lm-detail') || card.querySelector('.card-desc');
         if (d && d.parentNode) d.parentNode.insertBefore(a, d.nextSibling);
       }
