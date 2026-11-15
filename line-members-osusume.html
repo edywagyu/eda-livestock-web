@@ -527,10 +527,20 @@ body{
     /* 基準が2口の品（P042）は在庫1では1セット作れないので完売扱いにする。
        以前は選択肢側の opacity+pointer-events:none で止めていた分の肩代わり。 */
     if (baseVar && it.stock < Number(baseVar.n)) { soldOut = true; closed = true; }
-    var hasBulk = !!(it.variants && it.variants.length > 1);
-    /* 出す＝約束。商品詳細ページで実際にセットが買える品だけに出す。 */
-    var bulkHint = (hasBulk && it.bulkOnPdp)
-      ? '<p class="card-bulk">' + (it.bulkHintText || '2つ以上買うとさらにお得') + '</p>'
+    /* 出す＝約束。商品詳細ページで実際にセットが買える品(bulkOnPdp)だけに出す。
+       🔴 「◯つ以上」の数字は variants から毎回計算する（2026-11-15 田崎さん指示）。
+          使うのは「いちばん小さいセットの口数」＝ n が2以上のうちの最小。
+          ミスジ 1/2/3 → 2つ ／ ミンチ 2/3 → 2つ ／ ハンバーグ 1/3/6 → 3つ ／
+          訳あり切り落とし期間限定 1/3/5 → 3つ。手で書かないのでズレない。 */
+    var bulkMin = 0;
+    if (it.variants) {
+      it.variants.forEach(function (v) {
+        var n = Number(v.n) || 1;
+        if (n >= 2 && (!bulkMin || n < bulkMin)) bulkMin = n;
+      });
+    }
+    var bulkHint = (bulkMin && it.bulkOnPdp)
+      ? '<p class="card-bulk">' + bulkMin + 'つ以上買うとさらにお得</p>'
       : '<p class="card-bulk card-ph">&nbsp;</p>';
     /* 一覧に出す価格は基準の口数の価格。it.price と食い違わないようここから引く。 */
     var showPrice = baseVar ? Number(baseVar.p) : Number(it.price);
