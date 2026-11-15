@@ -938,7 +938,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     </section>
   </div>
 
-  <!-- ============ 刃（YAIBA）の紹介 — P045/P046 のときだけ出す ============ -->
+  <!-- ============ 刃（YAIBA）の紹介 — P049/P050 のときだけ出す ============ -->
   <section class="pdp-yaiba" id="pdpYaiba" hidden>
     <div class="pdp-yaiba-in">
       <div class="pdp-yaiba-mark"><span>刃</span></div>
@@ -1337,6 +1337,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
        残る直リンクを塞ぐには、ここに並べるのが唯一の手。
        🔁 再出荷するときはこの2つを外すだけで戻る（商品データ・在庫・
           説明文はシートにもマスターにも残してある）。
+     ・P046 焼肉セット … 2026-11-15 田崎さん指示で撤去。店頭にカードは無く
+       PDP直リンク専売だった。components(赤身焼肉×2＋バラ焼肉×1)を持つので
+       stock=0 にしても applyBomStock が構成品の在庫で上書きして買えてしまう。
      ・P027 肉の日限定セット / P028 イチボステーキ / P030 訳あり 焼肉2種セット /
        P031 訳あり スライス2種セット / P039 Aセット / P040 Bセット /
        P045 はじめてセット / P058 少量お試し3種セット / P059 食卓ストック3種セット /
@@ -1349,7 +1352,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
            shop.html / products.html のカードを git history から復元する。） */
   const ENDED_PRODUCT_IDS = [
     'P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037', 'P074',
-    'P027', 'P028', 'P030', 'P031', 'P039', 'P040', 'P045',
+    'P027', 'P028', 'P030', 'P031', 'P039', 'P040', 'P045', 'P046',
     'P058', 'P059', 'P060', 'P063', 'P064', 'P065'
   ];
   const product = all.find(p => p.productId === productId) || null;
