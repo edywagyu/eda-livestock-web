@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-11-15-426-stock-fast-simple-price';
+const CACHE_VERSION = 'eda-v2026-11-15-427-stock-snapshot';
 const CORE_ASSETS = [
   './',
   'index.html',
@@ -54,6 +54,10 @@ self.addEventListener('fetch', (event) => {
     }
     return;
   }
+
+  /* 🔴 在庫スナップショットは Service Worker に触らせない（2026-11-15）。
+     CDN から直に取りたい＝古い在庫を SW のキャッシュから返されると意味がない。 */
+  if (url.pathname.endsWith('/public/data/stock-snapshot.json')) return;
 
   /* HTML: network-first (更新が1回の読み込みで反映される。キャッシュはオフライン時の予備)
      旧: stale-while-revalidate → 更新後1回目は必ず古い画面が出ていたため変更 (2026-07-28) */

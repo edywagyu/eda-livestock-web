@@ -158,9 +158,33 @@
     quizComplete: function(meta) { send('quiz_complete', { meta: meta }); }
   };
 
+  /* 🔴 在庫の取得と同じGASを同時に叩かない（2026-11-15 本番実測）。
+     ------------------------------------------------------------
+     会員限定ページを実ブラウザで測ると、GASへのリクエストは2本出ていた。
+       1本目 ?action=public_catalog … 1.7〜4.2秒
+       2本目 ?action=log_event      … 2.7〜3.5秒（これがこの page_view）
+     2本目は在庫の表示には要らないのに同じGASを同時に叩くので、
+     在庫の応答がその後ろで待たされていた（単独 3.1〜3.8秒／同時 11.4秒 の実測あり）。
+     なので在庫の取得（window.__EDA_CATALOG）が片付いてから送る。
+     🔴 送る件数は減らさない。すぐ閉じた人のぶんを落とさないよう
+        pagehide / visibilitychange でもその場で送る（sendBeacon なので間に合う）。
+     🔴 在庫を取らないページ（__EDA_CATALOG が無い）は、これまでどおり即送信。 */
+  function sendPageViewWhenQuiet() {
+    var sent = false;
+    var fire = function () { if (sent) return; sent = true; try { window.edaAnalytics.pageView(); } catch (e) {} };
+    var p = window.__EDA_CATALOG;
+    if (!p || typeof p.then !== 'function') { fire(); return; }
+    window.addEventListener('pagehide', fire);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') fire();
+    });
+    p.then(fire, fire);
+    setTimeout(fire, 15000);   /* 在庫が固まってもログは必ず残す */
+  }
+
   /* 自動: ページロード時に page_view 送信 */
   function autoFire() {
-    window.edaAnalytics.pageView();
+    sendPageViewWhenQuiet();
 
     /* src 付き流入の計測 (2026-07-27)
        リッチメニュー等のリンクに ?src=richmenu&l=A を付けると、遷移先の
