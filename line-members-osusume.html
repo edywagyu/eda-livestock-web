@@ -5,24 +5,70 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>公式LINE会員限定 イマおすすめ｜江田畜産</title>
-<!-- 在庫API(GAS)の接続を先に張っておく。応答自体が3〜5秒かかるので、握手ぶんだけでも先に済ませる -->
+<!-- 在庫の接続を先に張っておく。GASは応答自体が3〜5秒かかる。 -->
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
-<!-- 🔴 在庫API(GAS)をページで一番先に投げる（2026-11-15 田崎さん指示の高速化）。
-     これより下のスクリプト(pdp-content.js / member-extras.js など)を待つと、
-     本番実測で約0.82秒ぶん開始が遅れていた。結果は Promise で持っておき、
-     下のレンダラーが startCatalogFetch() で受け取る。
-     ⚠️ 12秒で諦める（応答が返らないときに画面が固まらないように）。
-        諦めたあとの扱い（リトライ→「在庫を確認できませんでした」）は下のコードが持つ。 -->
+<!-- 🔴 在庫の取得はページで一番先に始める（2026-11-15 田崎さん指示の高速化・第2弾）。
+     在庫の出どころは速い順に3つ。下のレンダラーがこの3つを受け取る。
+       ① localStorage … 前回この端末で確定した在庫。0ms で描ける。
+          🔴 これで「完売しました」は出さない（古い控えで完売を出すと誤表示になるため）。
+       ② 同一ドメインのスナップショット public/data/stock-snapshot.json … CDN から0.1秒以下。
+          .github/workflows/stock-snapshot.yml が10分おきに GAS から作り直してコミットする。
+          generatedAt が古すぎる（45分超）ときは使わない＝古い在庫は出さない。
+       ③ GAS（正本） … Google のリダイレクトを必ず1回通るので1.8〜5秒かかる。
+          届いたら必ず①②を上書きする。12秒で諦める（画面が固まらないように）。 -->
 <script>
-window.__EDA_CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
-window.__EDA_CATALOG_START = (window.performance && performance.now) ? Math.round(performance.now()) : 0;
-try {
-  window.__EDA_CATALOG = Promise.race([
-    fetch(window.__EDA_CATALOG_URL).then(function (r) { return r.json(); }),
-    new Promise(function (res) { setTimeout(function () { res(null); }, 12000); })
-  ]).catch(function () { return null; });
-} catch (e) { window.__EDA_CATALOG = null; }
+(function () {
+  var GAS  = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
+  var SNAP = 'public/data/stock-snapshot.json';
+  var SNAP_MAX_AGE_MS = 45 * 60 * 1000;
+  var LOCAL_KEY = 'eda-catalog-local-v1';
+  var LOCAL_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+  window.__EDA_CATALOG_URL = GAS;
+  window.__EDA_CATALOG_START = (window.performance && performance.now) ? Math.round(performance.now()) : 0;
+
+  /* ① 前回この端末で確定した在庫（表示を0msで出すためだけに使う） */
+  window.__EDA_CATALOG_LOCAL = (function () {
+    try {
+      var r = JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null');
+      if (r && r.savedAt && (Date.now() - r.savedAt) < LOCAL_MAX_AGE_MS
+          && r.data && r.data.products && r.data.products.length) return r.data;
+    } catch (e) {}
+    return null;
+  })();
+  window.__EDA_CATALOG_SAVE = function (products) {
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify({ savedAt: Date.now(), data: { products: products } }));
+    } catch (e) {}
+  };
+
+  /* ② 同一ドメインのスナップショット（CDN） */
+  try {
+    window.__EDA_SNAPSHOT = fetch(SNAP)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !Array.isArray(j.products) || !j.products.length || !j.generatedAt) {
+          window.__EDA_SNAPSHOT_STALE = -1; return null;
+        }
+        var age = Date.now() - Date.parse(j.generatedAt);
+        /* 端末の時計がずれている場合にそなえて前後どちらにも上限を置く */
+        if (!(age > -SNAP_MAX_AGE_MS && age < SNAP_MAX_AGE_MS)) {
+          window.__EDA_SNAPSHOT_STALE = Math.round(age / 60000); return null;
+        }
+        return j;
+      })
+      .catch(function () { window.__EDA_SNAPSHOT_STALE = -1; return null; });
+  } catch (e) { window.__EDA_SNAPSHOT = null; }
+
+  /* ③ GAS（正本） */
+  try {
+    window.__EDA_CATALOG = Promise.race([
+      fetch(GAS).then(function (r) { return r.json(); }),
+      new Promise(function (res) { setTimeout(function () { res(null); }, 12000); })
+    ]).catch(function () { return null; });
+  } catch (e) { window.__EDA_CATALOG = null; }
+})();
 </script>
 <link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -389,7 +435,7 @@ body{
   <a href="shop.html">通常のオンラインショップはこちら</a>
 </p>
 
-<script src="public/js/analytics.js?v=005" defer></script>
+<script src="public/js/analytics.js?v=006" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/member-extras.js?v=005"></script>
@@ -441,7 +487,11 @@ body{
      取得に失敗したときも true になる。カートに入れてよいかはこちらで見ること
      （2026-11-15 レビュー指摘。控えの数字で売らないため）。 */
   var stockConfirmed = false;
+  /* 在庫の出どころ。'' → 'local' → 'snapshot' → 'live' の順に上書きされる。 */
+  var stockSource = '';
   var catalogPromise = null;
+  /* productId → 在庫の行。通常品との比較表示に使う。 */
+  var LIVE_BY_PID = {};
 
   var CART_KEY = 'eda-cart';
   var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
@@ -519,7 +569,7 @@ body{
     /* 🔴 ライブ在庫が来るまでは在庫で並べ替えない（2026-11-15 田崎さん指示）。
        並べ替えると、あとで在庫が届いたときにカードが飛び跳ねる。
        時刻で決まる「発売前」「販売終了」だけは最初から確定しているので見る。 */
-    if (!stockReady || stockFailed) return isUpcoming(it) ? 1 : (isEnded(it) ? 2 : 0);
+    if (!stockConfirmed || stockFailed) return isUpcoming(it) ? 1 : (isEnded(it) ? 2 : 0);
     if (isUpcoming(it)) return 1;
     if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
     return (isEnded(it) || it.stock <= 0) ? 2 : 0;
@@ -537,7 +587,11 @@ body{
        あとから販売中に変わっていた（本番実測 2026-11-15: 0.6秒で完売表示 →
        10.8秒で販売中に変化）。逆に「販売中」を先に出すのも同じく誤りなので、
        確定するまではどちらにも倒さず「確認しています」を出す。 */
-    var pending = !stockReady;
+    /* 🔴 端末の控え(local)の在庫で「完売しました」は出さない。古い控えで完売を出すと
+       誤表示になる。0に見える品だけ「在庫を確認しています」のまま置き、
+       スナップショット／GAS が届いてから確定させる（2026-11-15）。 */
+    var pending = !stockReady
+      || (stockSource === 'local' && !stockFailed && (it.srcSeen !== 'local' || it.stock <= 0));
     var soldOut = !pending && it.stock <= 0;
     var closed = soldOut || ended || upcoming;
     var off = (it.listPrice && it.listPrice > it.price)
@@ -770,7 +824,9 @@ body{
        （2026-11-15 レビュー指摘）。stockReady は取得失敗時も true になるので、
        ここで見るのは stockConfirmed のほう。 */
     if (!stockConfirmed && stockFailed) { return; }
-    if (!stockReady && catalogPromise) {
+    /* 🔴 実在庫が確定していないあいだは待つ。stockReady は端末の控えでも true に
+       なるので、ここで見るのは stockConfirmed のほう（2026-11-15）。 */
+    if (!stockConfirmed && catalogPromise) {
       btn.disabled = true;
       btn.textContent = '在庫を確認中…';
       catalogPromise.then(function () {
@@ -832,8 +888,7 @@ body{
   /* スクリプトが読まれた時点で取りに行く（init を待たない）。 */
   function startCatalogFetch() {
     /* 🔴 <head> のインラインで先に投げてある取得を受け取る（2026-11-15）。
-       ここまで降りてくるのに本番実測で約0.82秒かかっていた（先に読む
-       pdp-content.js / member-extras.js / wakeari-compare.js の待ち時間）。
+       ここまで降りてくるのに本番実測で約0.82秒かかっていた。
        取り直し(リトライ)のときは catalogPromise を null にしてから呼ぶので、
        そのときは下の通常の fetch が走る。 */
     if (!catalogPromise && window.__EDA_CATALOG && !startCatalogFetch._usedHead) {
@@ -851,62 +906,129 @@ body{
     return catalogPromise;
   }
 
+  /* ---------- 在庫を画面に入れる（3つの出どころ共通） ----------
+     source は 'local'（端末の控え） / 'snapshot'（同一ドメイン） / 'live'（GAS）。
+     速い順に来るので、遅いものが来たら必ず上書きする。逆向きには上書きしない。
+     🔴 カートに入れてよいのは snapshot か live が入ってから（stockConfirmed）。
+        local の数字だけで売ると、1日前の在庫で売ることになる。
+     🔴 snapshot は最大45分古くなりうるが、レジで validateStockBeforeCheckout が
+        シートの実在庫を見るので、売り越しはそこで止まる。 */
+  var SOURCE_RANK = { local: 1, snapshot: 2, live: 3 };
+  function applyCatalog(list, source) {
+    if (!Array.isArray(list) || !list.length) return false;
+    if ((SOURCE_RANK[source] || 0) < (SOURCE_RANK[stockSource] || 0)) return false;
+
+    /* 🧩 セット商品(components ＝ BOM)は、GAS が構成品の在庫で売買するため
+       セット行の stock が売れても動かない。そのまま使うと肉が無くなっても
+       「完売しました」に切り替わらず、決済の最後で弾かれる。
+       なので構成品から min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
+       構成品が1つでも見つからないときは判定不能として触らない(fail-open)。
+       ※入れ子セットは想定していない(このページの商品は1段のみ)。
+       同じ計算を通常サイト側は public/js/products-loader.js が持っている。 */
+    var stockByName = {};
+    list.forEach(function (p) { if (p && p.name) stockByName[p.name] = Number(p.stock) || 0; });
+    function bomStock(raw) {
+      var comps;
+      try { comps = JSON.parse(raw || ''); } catch (e) { return null; }
+      if (!Array.isArray(comps) || !comps.length) return null;
+      var min = Infinity;
+      for (var i = 0; i < comps.length; i++) {
+        var c = comps[i] || {}, n = c.name || c.title;
+        if (!n) continue;
+        if (!(n in stockByName)) return null;
+        min = Math.min(min, Math.floor(stockByName[n] / (Number(c.qty) || 1)));
+      }
+      return (min === Infinity) ? null : Math.max(0, min);
+    }
+
+    /* 訳あり品の「通常品と比べていくら安いか」用に、通常品の行を引けるようにする。
+       価格・在庫・公開状態・内容量をそのまま使う＝手書きの数字を持たない。 */
+    LIVE_BY_PID = {};
+    list.forEach(function (p) { if (p && p.productId) LIVE_BY_PID[p.productId] = p; });
+
+    ITEMS.forEach(function (it) {
+      var live = list.filter(function (p) { return p.variantId === it.variantId; })[0];
+      if (!live) return;
+      /* その出どころに実際に載っていた品だけ印を付ける。載っていない品の数字は
+         同梱の控え（ITEMS の手書き）のままなので、確定扱いにしてはいけない。 */
+      it.srcSeen = source;
+      if (typeof live.price === 'number' && live.price > 0) it.price = live.price;
+      var bom = bomStock(live.components);
+      if (bom !== null) it.stock = bom;                          /* セット＝構成品から算出 */
+      else if (typeof live.stock === 'number') it.stock = live.stock;
+    });
+
+    stockSource = source;
+    stockReady = true;
+    stockFailed = false;
+    if (source !== 'local') stockConfirmed = true;   /* 実在庫とみなす。ここから先はカートに入れてよい */
+    /* 計測用（本番でも残す）。「在庫を確認しています」が消えた時刻と、その出どころ。
+       田崎さんの体感＝__EDA_STOCK_SETTLED_AT。開発者ツールのコンソールで
+       window.__EDA_STOCK_SETTLED_AT と打てばミリ秒で出る。 */
+    try {
+      var at = Math.round(performance.now());
+      window.__EDA_STOCK = { source: source, at: at, confirmed: stockConfirmed };
+      (window.__EDA_STOCK_LOG = window.__EDA_STOCK_LOG || []).push({ source: source, at: at });
+      if (stockConfirmed && !window.__EDA_STOCK_SETTLED_AT) window.__EDA_STOCK_SETTLED_AT = at;
+    } catch (e) {}
+    render();
+    return true;
+  }
+
+  /* 速い2つ（端末の控え／同一ドメインのスナップショット）を画面に入れる。
+     GAS の取得は syncCatalog がこれと並行して走っていて、届いたら上書きする。 */
+  function startFastSources() {
+    try {
+      var loc = window.__EDA_CATALOG_LOCAL;
+      if (loc && loc.products) applyCatalog(loc.products, 'local');
+    } catch (e) {}
+    var snapP = window.__EDA_SNAPSHOT;
+    if (!snapP || typeof snapP.then !== 'function') { reportSnapshotStale(); return; }
+    snapP.then(function (snap) {
+      if (!snap || !Array.isArray(snap.products)) { reportSnapshotStale(); return; }
+      applyCatalog(snap.products, 'snapshot');
+    }).catch(function () { reportSnapshotStale(); });
+  }
+
+  /* スナップショットの更新が止まった／配信できていないときに気づくための記録。
+     本番EC DB の events タブに stock_snapshot_stale として1回だけ残る。
+     画面はGASの実在庫を待つだけなので、お客様側の見え方は従来どおり。 */
+  function reportSnapshotStale() {
+    if (reportSnapshotStale._done) return;
+    reportSnapshotStale._done = true;
+    try {
+      var age = window.__EDA_SNAPSHOT_STALE;
+      if (age === undefined) return;
+      if (window.edaAnalytics && window.edaAnalytics.track) {
+        window.edaAnalytics.track('stock_snapshot_stale', { meta: { ageMin: age, page: location.pathname } });
+      }
+    } catch (e) {}
+  }
+
   function syncCatalog() {
     startCatalogFetch().then(function (res) {
       /* public_catalog は {ok:true, products:[...]} を返す。素の配列で来る場合にも備える。 */
       var list = res && (Array.isArray(res) ? res : res.products);
       /* 🔴 中身が配列でないとき（GASが {ok:false,error:…} を返す／デプロイ差し替え中）も
-         「取得できなかった」と同じ扱いにすること（2026-11-15 レビュー指摘）。
-         ここで黙って return すると stockReady が false のまま固まり、
-         全商品のボタンが押せなくなる＝売上が止まる。 */
+         「取得できなかった」と同じ扱いにすること（2026-11-15 レビュー指摘）。 */
       if (!Array.isArray(list)) {
-        /* 1回だけ取り直す。それでもだめなら「確認できませんでした」を出す。
-           ここで控えの数字を使って「完売」「販売中」を出してはいけない。 */
+        /* 1回だけ取り直す。それでもだめなら下の判断に進む。 */
         if (!syncCatalog._retried) {
           syncCatalog._retried = true;
           catalogPromise = null;
           setTimeout(syncCatalog, 2000);
           return;
         }
+        /* 🔴 GAS がだめでも、同一ドメインのスナップショットが届いていればそちらで確定させる。
+           ここで「確認できませんでした」に落とすと、GASが落ちた瞬間に全商品が
+           買えなくなる（2026-11-15 に1度作って潰した穴）。 */
+        if (stockSource === 'snapshot' || stockSource === 'live') return;
+        /* どちらも無い＝控えの数字しかない。完売とも販売中とも言わない。 */
         stockFailed = true; stockReady = true; render(); return;
       }
-
-      /* 🧩 セット商品(components ＝ BOM)は、GAS が構成品の在庫で売買するため
-         セット行の stock が売れても動かない。そのまま使うと肉が無くなっても
-         「完売しました」に切り替わらず、決済の最後で弾かれる。
-         なので構成品から min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
-         構成品が1つでも見つからないときは判定不能として触らない(fail-open)。
-         ※入れ子セットは想定していない(このページの商品は1段のみ)。
-         同じ計算を通常サイト側は public/js/products-loader.js が持っている。 */
-      var stockByName = {};
-      list.forEach(function (p) { if (p && p.name) stockByName[p.name] = Number(p.stock) || 0; });
-      function bomStock(raw) {
-        var comps;
-        try { comps = JSON.parse(raw || ''); } catch (e) { return null; }
-        if (!Array.isArray(comps) || !comps.length) return null;
-        var min = Infinity;
-        for (var i = 0; i < comps.length; i++) {
-          var c = comps[i] || {}, n = c.name || c.title;
-          if (!n) continue;
-          if (!(n in stockByName)) return null;
-          min = Math.min(min, Math.floor(stockByName[n] / (Number(c.qty) || 1)));
-        }
-        return (min === Infinity) ? null : Math.max(0, min);
-      }
-
-      var changed = false;
-      ITEMS.forEach(function (it) {
-        var live = list.filter(function (p) { return p.variantId === it.variantId; })[0];
-        if (!live) return;
-        if (typeof live.price === 'number' && live.price > 0) it.price = live.price;
-        var bom = bomStock(live.components);
-        if (bom !== null) it.stock = bom;                          /* セット＝構成品から算出 */
-        else if (typeof live.stock === 'number') it.stock = live.stock;
-        changed = true;
-      });
-      stockReady = true;
-      stockConfirmed = true;          /* 実在庫が確定した。ここから先はカートに入れてよい */
-      render();
+      applyCatalog(list, 'live');
+      /* 次回の訪問を0msで描くために、確定した在庫を端末に控えておく。 */
+      try { if (window.__EDA_CATALOG_SAVE) window.__EDA_CATALOG_SAVE(list); } catch (e) {}
     });
   }
 
@@ -969,7 +1091,8 @@ body{
     document.getElementById('members').hidden = !on;
     if (on) {
       render();
-      syncCatalog();
+      startFastSources();   /* 端末の控え(0ms)と同一ドメインのスナップショット(0.1秒) */
+      syncCatalog();        /* GAS の正本。届いたら必ず上書きする */
       /* 🔴 閲覧ログ(view_item)は在庫が届いてから送ること（2026-11-15 実測）。
          ここで商品の数ぶん sendBeacon を撃つと、同じGASに log_event の書き込みが
          並び、在庫取得(public_catalog)がその後ろで待たされる。

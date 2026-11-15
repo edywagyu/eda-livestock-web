@@ -1,0 +1,96 @@
+# ============================================================
+# 在庫スナップショット（public/data/stock-snapshot.json）の自動更新
+# ------------------------------------------------------------
+# なぜ要るか:
+#   GASウェブアプリは必ず Google のリダイレクトを1回通るので、どれだけ
+#   GAS側を速くしても 1.8〜4秒かかる。会員限定ページが「在庫を確認しています」
+#   を出したまま固まるのはこれが原因。
+#   同じ在庫の中身を eda-livestock.com（GitHub Pages / CDN）から配ると
+#   0.1秒以下で届くので、画面はそちらで先に確定させる。
+#
+# 🔴 10分おきにしてある理由:
+#   GitHub Pages の「ブランチから公開」は1時間あたり10ビルドのソフト上限がある。
+#   1〜2分おきにすると上限に当たってビルドが止まり、かえって古くなる。
+#   中身が変わっていないときはコミットしないので、実際のビルドはもっと少ない。
+#   表示が最大20分古くなりうるが、
+#     ・ページは裏で必ずGASの実在庫を取りに行って上書きする（数秒で揃う）
+#     ・レジは validateStockBeforeCheckout がシートの実在庫を見る
+#   ので、売り越しの最後の砦はこれまでどおり。
+#
+# 🔴 止まったときに気づく仕掛け（3つ）:
+#   1. このワークフローが失敗すると GitHub からリポジトリの管理者へメールが飛ぶ
+#   2. JSON に generatedAt が入っている。フロントは古すぎる（既定45分）と
+#      スナップショットを捨てて従来どおりGASを待つ＝古い在庫は出ない
+#   3. そのとき stock_snapshot_stale を1回だけ log_event する
+#      （本番EC DB の events タブに残る）
+# ============================================================
+name: stock snapshot
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stock-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: GASから在庫を取得してJSONを書き出す
+        run: |
+          set -euo pipefail
+          URL='https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog'
+          # 失敗したら古いファイルを残したまま異常終了する（壊れたJSONで上書きしない）
+          for i in 1 2 3; do
+            if curl -sSL --max-time 60 "$URL" -o /tmp/catalog.json; then break; fi
+            echo "retry $i"; sleep 10
+          done
+          python3 - <<'PY'
+          import json, datetime, sys, pathlib
+          raw = json.load(open('/tmp/catalog.json'))
+          if not isinstance(raw, dict) or raw.get('ok') is not True:
+              sys.exit('public_catalog が ok:true を返していない。更新せず終了する。')
+          products = raw.get('products') or []
+          if not isinstance(products, list) or len(products) < 10:
+              sys.exit('products が %s 件しかない。壊れた応答とみなして更新しない。' % len(products))
+          out = {
+              'generatedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds').replace('+00:00','Z'),
+              'source': 'public_catalog',
+              'ok': True,
+              'products': products,
+              'gifts': raw.get('gifts') or [],
+              'plans': raw.get('plans') or [],
+          }
+          p = pathlib.Path('public/data/stock-snapshot.json')
+          p.parent.mkdir(parents=True, exist_ok=True)
+          p.write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+          print('products:', len(products))
+          PY
+
+      - name: 中身が変わっていたらコミット
+        run: |
+          set -euo pipefail
+          # generatedAt だけの差分では commit しない（Pages のビルド回数を使い切らないため）
+          if git diff --quiet -- public/data/stock-snapshot.json; then
+            echo 'no change'; exit 0
+          fi
+          OLD=$(git show HEAD:public/data/stock-snapshot.json 2>/dev/null | python3 -c "import sys,json;d=json.load(sys.stdin);d.pop('generatedAt',None);print(json.dumps(d,ensure_ascii=False,sort_keys=True))" 2>/dev/null || echo '')
+          NEW=$(python3 -c "import json;d=json.load(open('public/data/stock-snapshot.json'));d.pop('generatedAt',None);print(json.dumps(d,ensure_ascii=False,sort_keys=True))")
+          if [ "$OLD" = "$NEW" ]; then
+            echo '在庫・価格に変化なし。コミットしない。'
+            git checkout -- public/data/stock-snapshot.json
+            exit 0
+          fi
+          git config user.name  'eda-stock-bot'
+          git config user.email 'actions@github.com'
+          git add public/data/stock-snapshot.json
+          git commit -m "在庫スナップショットを更新"
+          git push

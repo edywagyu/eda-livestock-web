@@ -282,7 +282,29 @@
       return;
     }
 
-    /* GAS から fetch (public_catalog で全部一括取得) */
+    /* 🔴 同一ドメインのスナップショットを先に当てる（2026-11-15 高速化）。
+       GASウェブアプリは Google のリダイレクトを必ず1回通るので、どれだけ
+       GAS側を速くしても1.8〜5秒かかる。同じ中身を eda-livestock.com（CDN）から
+       配っているので、価格と在庫はまずそちらで埋め、GASが届いたら上書きする。
+       中身は .github/workflows/stock-snapshot.yml が10分おきに作り直している。
+       generatedAt が古すぎる（45分超）ときは使わない＝古い在庫は出さない。 */
+    let liveApplied = false;
+    const SNAPSHOT_URL = 'public/data/stock-snapshot.json';
+    const SNAPSHOT_MAX_AGE_MS = 45 * 60 * 1000;
+    fetch(SNAPSHOT_URL)
+      .then(r => (r.ok ? r.json() : null))
+      .then(snap => {
+        if (liveApplied) return;                       /* GAS の方が先に届いていた */
+        if (!snap || !Array.isArray(snap.products) || !snap.products.length || !snap.generatedAt) return;
+        const age = Date.now() - Date.parse(snap.generatedAt);
+        if (!(age > -SNAPSHOT_MAX_AGE_MS && age < SNAPSHOT_MAX_AGE_MS)) return;
+        applyProducts(snap.products);
+        if (snap.gifts) applyGifts(snap.gifts);
+        if (snap.plans) applyPlans(snap.plans);
+      })
+      .catch(() => {});
+
+    /* GAS から fetch (public_catalog で全部一括取得)。これが正本。 */
     fetch(GAS_URL + '?action=public_catalog', { cache: 'no-store' })
       .then(r => r.json())
       .then(data => {
@@ -290,6 +312,7 @@
           const products = data.products || [];
           const gifts = data.gifts || [];
           const plans = data.plans || [];
+          liveApplied = true;
           setCached({ products, gifts, plans });
           if (products.length > 0) applyProducts(products);
           applyGifts(gifts);
