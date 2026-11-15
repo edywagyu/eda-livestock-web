@@ -10020,16 +10020,52 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
 
- <!-- ===== 訳あり切り落とし 期間限定（賞味期限 2026/12/15・P076）=====
-      shop.html は各カテゴリ2件しか出さないプレビューなので、牛肉グリッドに足すと
-      埋もれる。イチボステーキと同じく独立セクションとして置く。
-      data-limited-scope が付いた要素は期間外（発売前・終了後）に自動で非表示。 -->
- <div class="shop-cat-head reveal" data-cat="beef" data-limited-scope="訳あり切り落とし 期間限定">
- <h2 class="shop-cat-title">期間限定 &yen;900 <span>/ Outlet Kiriotoshi</span></h2>
- <p class="shop-cat-desc">江田和牛の切り落とし200g。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。<strong>賞味期限 2026年12月15日</strong>の在庫を、通常の切り落とし 200g &yen;1,600 のところ <strong>1袋 &yen;900</strong>・<strong>3袋 &yen;2,500</strong>・<strong>5袋 &yen;3,980</strong>でお分けします。<strong>11/30（月）23:59まで</strong>。</p>
+ <!-- ===== 期間限定商品（2026-11-15 田崎さん指示）=====
+      期間限定のものはここにまとめる。牛肉グリッドに置くと部位タブ（初期値は
+      「スライス・切り落とし」）に隠れて、トップを開いただけでは見えないため。
+      data-no-subfilter なので部位タブの絞り込みを受けず、プレビューの2件制限も通らない。
+
+      🔴 見出しと枠には data-limited-scope を付けない。1商品にひもづけると、
+         その商品が終わった瞬間に枠ごと消えて、中の他の商品まで道連れになる。
+         出す/引っ込めるの判定は「カード1枚ごと」に持たせ、
+         中身が全部消えたら枠も消す（下の genteiSectionInit）。
+      🔴 商品ごとの説明文はここに書かない（2026-11-15 田崎さん指示）。
+         中身・価格・期限はカード側と商品ページに出す。
+
+      ここに足すときは、カードに data-limited-scope と data-limited-prestart を
+      両方付けて、日付は products-master.js の limitedStartAt /
+      limitedSoldOutAt / limitedUntil で持たせる（当日の手作業は不要）。 -->
+ <div class="shop-cat-head reveal" data-cat="beef" data-gentei-head>
+ <h2 class="shop-cat-title">期間限定商品 <span>/ Limited Time</span></h2>
  </div>
 
- <div class="product-grid cols-4 reveal" data-cat="beef" data-limited-scope="訳あり切り落とし 期間限定" data-no-subfilter>
+ <div class="product-grid cols-4 reveal" data-cat="beef" data-gentei-grid data-no-subfilter>
+ <!-- ===== 期間限定セット P078「無投薬の焼肉セット 800g」=====
+      2026-11-15 田崎さん承認。11/16(月)00:00 〜 11/22(日)23:59 の7日間・11セット限定。
+      単品合計 ¥6,200 → ¥5,980。中身＝赤身焼肉200g／バラ焼肉200g／平飼い鶏モモ200g／平飼い鶏ムネ200g。
+      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
+      🔴 既存の P046「焼肉セット」と絶対に同名にしない。別商品。
+      🔴 このカードに reveal を付けない（付けると表示されない）。
+      🔴 残数（個数）は出さない。data-limited-left は使わない。
+      🔴 発売・締切は products-master.js の limitedStartAt / limitedSoldOutAt / limitedUntil。
+         scope（期間外にカードごと消す）と prestart（発売前のCOMING SOON）は必ず対で置く。
+      🔴 構成品は赤身焼肉／バラ焼肉／平飼い鶏 モモ／平飼い鶏 ムネ 各1。
+         components は products シート側（S列）に登録する。 -->
+ <div class="product-card" data-sub="set" data-limited-scope="無投薬の焼肉セット 800g" data-limited-prestart="無投薬の焼肉セット 800g" data-variants='[{"id":51116059800781,"t":"1セット","p":5980}]'>
+ <div class="product-card-img" data-label="MUTOYAKU YAKINIKU SET"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Antibiotic-Free</span><span class="product-price"><s>&yen;6,200</s> &yen;5,980</span></div>
+ <p class="product-name"><a href="product.html?id=P078" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">無投薬の焼肉セット 800g</a></p>
+ <p class="product-desc">抗生物質・ホルモン剤を使わずに育てた<strong>江田和牛の赤身焼肉・バラ焼肉</strong>と、<strong>平飼い鶏のモモ・ムネ</strong>を各200g。牛2種と鶏2種、計800g。</p>
+ <div class="product-stats">
+ <div class="product-stat-item">赤身焼肉 <strong>200g</strong></div>
+ <div class="product-stat-item">バラ焼肉 <strong>200g</strong></div>
+ <div class="product-stat-item">鶏モモ <strong>200g</strong></div>
+ <div class="product-stat-item">鶏ムネ <strong>200g</strong></div>
+ <div class="product-stat-item wide">単品合計 <strong>&yen;6,200</strong></div>
+ </div>
+ <div class="product-buy"></div>
+ </div>
+
  <!-- ===== 訳あり切り落とし 期間限定（賞味期限 2026/12/15・P076）=====
       2026-11-04 田崎さん指示。賞味期限が近い在庫を期間限定で値下げして売り切る。
       🔴 発売・販売停止・表示終了は products-master.js の
@@ -10080,32 +10116,6 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
 
  <div class="product-grid cols-4 reveal" data-cat="beef" data-preview-limit="5">
-
- <!-- ===== 期間限定セット P078「無投薬の焼肉セット 800g」=====
-      2026-11-15 田崎さん承認。11/16(月)00:00 〜 11/22(日)23:59 の7日間・11セット限定。
-      単品合計 ¥6,200 → ¥5,980。中身＝赤身焼肉200g／バラ焼肉200g／平飼い鶏モモ200g／平飼い鶏ムネ200g。
-      🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
-      🔴 既存の P046「焼肉セット」と絶対に同名にしない。別商品。
-      🔴 このカードに reveal を付けない（付けると表示されない）。
-      🔴 残数（個数）は出さない。data-limited-left は使わない。
-      🔴 発売・締切は products-master.js の limitedStartAt / limitedSoldOutAt / limitedUntil。
-         scope（期間外にカードごと消す）と prestart（発売前のCOMING SOON）は必ず対で置く。
-      🔴 構成品は赤身焼肉／バラ焼肉／平飼い鶏 モモ／平飼い鶏 ムネ 各1。
-         components は products シート側（S列）に登録する。 -->
- <div class="product-card" data-sub="set" data-limited-scope="無投薬の焼肉セット 800g" data-limited-prestart="無投薬の焼肉セット 800g" data-variants='[{"id":51116059800781,"t":"1セット","p":5980}]'>
- <div class="product-card-img" data-label="MUTOYAKU YAKINIKU SET"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Antibiotic-Free</span><span class="product-price"><s>&yen;6,200</s> &yen;5,980</span></div>
- <p class="product-name"><a href="product.html?id=P078" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">無投薬の焼肉セット 800g</a></p>
- <p class="product-desc">抗生物質・ホルモン剤を使わずに育てた<strong>江田和牛の赤身焼肉・バラ焼肉</strong>と、<strong>平飼い鶏のモモ・ムネ</strong>を各200g。牛2種と鶏2種、計800g。</p>
- <div class="product-stats">
- <div class="product-stat-item">赤身焼肉 <strong>200g</strong></div>
- <div class="product-stat-item">バラ焼肉 <strong>200g</strong></div>
- <div class="product-stat-item">鶏モモ <strong>200g</strong></div>
- <div class="product-stat-item">鶏ムネ <strong>200g</strong></div>
- <div class="product-stat-item wide">単品合計 <strong>&yen;6,200</strong></div>
- </div>
- <div class="product-buy"></div>
- </div>
 
  <!-- ===== 公式LINE配信用セット P077「江田和牛 ハンバーグと平飼い鶏の食卓セット」=====
       2026-11-09 田崎さん確定。単品合計 ¥4,120 → ¥3,830（7%オフ）。
@@ -15383,6 +15393,55 @@ function copyPopCoupon() {
 .btn-viewall:hover { background: var(--color-forest); color: #fff; }
 </style>
 <script>
+/* ============================================================
+   期間限定商品セクションの出し入れ
+   ------------------------------------------------------------
+   見出しと枠は1商品にひもづけない（ひもづけると、その商品が終わった
+   瞬間に枠ごと消えて中の他の商品まで道連れになる）。
+   かわりに「中のカードが1枚も出ていなければ枠ごと消す」で判定する。
+
+   limited-stock.js は発売前/終了後のカードを1分ごとに出し入れするので、
+   こちらも定期的に見直す。カードが1枚も無いときも消す。
+   ============================================================ */
+(function genteiSectionInit() {
+  'use strict';
+  var ATTR = 'data-gentei-hidden';
+
+  /* 🔴 枠は inline style では消せない。
+     `.product-grid[data-cat="beef"] { display:flex !important }` があるので
+     grid.style.display='none' が負ける（実測。見出しだけ消えて枠が残った）。
+     limited-stock.js と同じく、属性を3回重ねた高詳細度の !important で消す。 */
+  var css = document.createElement('style');
+  var sel = '[' + ATTR + ']';
+  css.textContent = sel + sel + sel + '{display:none!important}';
+  (document.head || document.documentElement).appendChild(css);
+
+  function apply() {
+    var grid = document.querySelector('[data-gentei-grid]');
+    var head = document.querySelector('[data-gentei-head]');
+    if (!grid) return;
+    /* 先に枠を出してから中を見る。枠が消えていると中のカードも
+       offsetParent が null になり、永久に戻らなくなる。 */
+    grid.removeAttribute(ATTR);
+    if (head) head.removeAttribute(ATTR);
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.product-card'));
+    /* offsetParent は「実際に画面に出ているか」。limited-stock.js の非表示CSSも
+       部位タブの display:none も、どちらもこれ1つで拾える。 */
+    var live = cards.some(function (c) { return c.offsetParent !== null; });
+    if (!live) {
+      grid.setAttribute(ATTR, '');
+      if (head) head.setAttribute(ATTR, '');
+    }
+  }
+
+  function boot() {
+    apply();
+    /* limited-stock.js が1分ごとにカードを出し入れするので、こちらも見直す */
+    setInterval(apply, 3000);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
 (function productPreviewInit() {
  'use strict';
  var LIMIT = 2;
