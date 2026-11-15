@@ -4532,6 +4532,40 @@ function brandEmailHtml_(o) {
     '</table></td></tr></table></div>';
 }
 
+/* 注文の明細（title/variant/qty）。正は items_json、空ならお届け先の items から拾う。 */
+function orderItemsFlat_(meta) {
+  var items = [];
+  try { items = JSON.parse((meta && meta.items_json) || '[]') || []; } catch (e) { items = []; }
+  if (!Array.isArray(items)) items = [];
+  if (!items.length) {
+    var ds = [];
+    try { ds = JSON.parse((meta && meta.destinations_json) || '[]') || []; } catch (e) { ds = []; }
+    (ds || []).forEach(function (d) {
+      (d && Array.isArray(d.items) ? d.items : []).forEach(function (it) { items.push(it); });
+    });
+  }
+  return items;
+}
+
+/* お客様向けメールの「ご注文内容」。1行＝1品で、セットは実数（計10袋）まで書き切る。
+   ¥0 の同梱特典（variant に 🎁）は「無料」と添えて、課金されたと誤解されないようにする。 */
+function customerOrderItemLines_(meta, asHtml) {
+  var items = orderItemsFlat_(meta);
+  if (!items.length) return '';
+  var lines = items.map(function (it) {
+    var v = String(it.variant || '');
+    var mk = v.indexOf('🎁');
+    var setLabel = (mk >= 0 ? v.slice(0, mk).replace(/[／\/]\s*$/, '') : v).trim();
+    var name = (it.title || it.name || '');
+    var body = name
+      + (setLabel && setLabel !== '1つ' ? '（' + setLabel + '）' : '')
+      + ' ×' + (it.qty || 1) + packCountSuffix_(it)
+      + (mk >= 0 ? '  ※' + v.slice(mk + 2).trim() + '・無料' : '');
+    return body;
+  });
+  return asHtml ? lines.join('<br>') : lines.map(function (l) { return '・' + l; }).join('\n');
+}
+
 /* shipEta = 「9月5日（金）」形式の発送予定日。空文字なら出さない。 */
 function sendCustomerReceiptEmail(session, orderNum, shipEta) {
   const email = session.customer_details && session.customer_details.email;
@@ -4548,6 +4582,13 @@ function sendCustomerReceiptEmail(session, orderNum, shipEta) {
     + '?e=' + encodeURIComponent(Utilities.base64Encode(email, Utilities.Charset.UTF_8))
     + '&order=' + encodeURIComponent(orderNum);
 
+  /* ご注文内容。「5つセット ×2」が何袋なのかお客様にも分かるように実数まで出す */
+  const _itemsPlain = customerOrderItemLines_(meta, false);
+  const _itemsHtml  = customerOrderItemLines_(meta, true);
+  const _rows = [['ご注文番号', orderNum], ['お支払い金額', total]];
+  if (shipEta) _rows.push(['発送予定日', shipEta]);
+  if (_itemsHtml) _rows.push(['ご注文内容', _itemsHtml]);
+
   MailApp.sendEmail({
     to: email,
     name: BRAND_MAIL.sender,
@@ -4557,7 +4598,8 @@ function sendCustomerReceiptEmail(session, orderNum, shipEta) {
       'この度はご注文いただき誠にありがとうございます。\n\n' +
       'ご注文番号: ' + orderNum + '\n' +
       'お支払い額: ' + total + '\n' +
-      (shipEta ? '発送予定日: ' + shipEta + '\n' : '') + '\n' +
+      (shipEta ? '発送予定日: ' + shipEta + '\n' : '') +
+      (_itemsPlain ? '\nご注文内容:\n' + _itemsPlain + '\n' : '') + '\n' +
       'LINEで配送状況を受け取る（タップで連携完了）:\n' + lineLinkUrl + '\n\n' +
       'マイページ: https://www.eda-livestock.com/mypage.html\n\n' +
       '江田畜産株式会社 / backoffice@eda-livestock.com\n' +
@@ -4566,8 +4608,7 @@ function sendCustomerReceiptEmail(session, orderNum, shipEta) {
       heroUrl: BRAND_MAIL.heroOrder,
       title: 'ご注文ありがとうございます',
       intro: greeting + '、この度は江田和牛をお選びいただき誠にありがとうございます。<br>宮崎の牧場より、心を込めて発送の準備をいたします。',
-      rows: shipEta ? [['ご注文番号', orderNum], ['お支払い金額', total], ['発送予定日', shipEta]]
-                    : [['ご注文番号', orderNum], ['お支払い金額', total]],
+      rows: _rows,
       ctaLabel: 'LINEで配送状況を受け取る',
       ctaUrl: lineLinkUrl,
       cta2Label: 'マイページで注文を確認',
