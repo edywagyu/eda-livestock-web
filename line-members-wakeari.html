@@ -94,6 +94,7 @@ body{
     /* まとめ買い案内は赤（2026-11-15 田崎さん指示）。サイト共通の --color-red と同じ #C8102E。
    価格(27px/スマホ20px)より小さく保って、価格より目立たせない。 */
 .card-bulk{font-size:12.5px;color:#C8102E;font-weight:700;margin:0 0 8px;}
+.tax-note{font-size:11.5px;color:var(--muted);margin:0 0 12px;line-height:1.7;}
 /* 訳あり品の「通常品と比べていくら安いか」。取り消し線は使わない（二重価格表示になるため）。
    中身は public/js/wakeari-compare.js が products のライブ値から組み立てる。 */
 .card-compare{font-size:12px;line-height:1.55;color:var(--forest);margin:0 0 8px;}
@@ -361,6 +362,10 @@ body{
 
   <!-- 連携済み: 商品 -->
   <div id="members" hidden>
+    <!-- 🔴 税込表記（2026-11-15 レビュー指摘）。比較行だけ「¥3,700（税込）」と書くと、
+         カード本体の価格が税抜と読まれかねないので、一覧の冒頭で揃えておく。
+         #cards の外に置くこと＝中に入れるとカードの行揃え（subgrid）が狂う。 -->
+    <p class="tax-note">表示価格はすべて税込です。</p>
     <div id="cards"></div>
   </div>
 
