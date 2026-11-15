@@ -365,6 +365,11 @@ ul { list-style: none; padding: 0; margin: 0; }
 .detail-row--items .value-muted { color: var(--muted); font-weight: 400; }
 /* 📦 本日発送する顧客 */
 .count-pill { display:inline-block; min-width:18px; padding:1px 7px; margin-left:4px; border-radius:10px; background:var(--forest); color:#fff; font-size:12px; font-weight:700; vertical-align:middle; }
+/* 在庫一覧の種類フィルタ。選んでいないピルの件数バッジは地の色に落とす
+   （緑のままだと全部が選択中に見える）。 */
+.inv-kind-pills { margin-bottom: 10px; }
+.inv-kind-pills .pill .count-pill { background: var(--bone); color: var(--muted); font-size: 11px; }
+.inv-kind-pills .pill.active .count-pill { background: rgba(255,255,255,0.22); color: #fff; }
 .ship-today-card { padding: 10px 12px; }
 .month-summary { padding: 14px 16px; }
 .ms-table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
@@ -1482,6 +1487,15 @@ ul { list-style: none; padding: 0; margin: 0; }
         <div class="search-bar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="invSearch" placeholder="商品名で検索...">
+        </div>
+        <!-- 商品の種類で絞る（2026-11-15 田崎さん指示）。
+             判定は invKind() が商品名と components（BOM）から自動で行う＝
+             スプシに列を足さなくてよい。数字はいま表示できる件数。 -->
+        <div class="pills inv-kind-pills">
+          <div class="pill active" data-kind="all"   onclick="setInvKind('all')">すべて <span class="count-pill" id="invCount-all">-</span></div>
+          <div class="pill"        data-kind="tanpin" onclick="setInvKind('tanpin')">単品 <span class="count-pill" id="invCount-tanpin">-</span></div>
+          <div class="pill"        data-kind="wakeari" onclick="setInvKind('wakeari')">訳あり <span class="count-pill" id="invCount-wakeari">-</span></div>
+          <div class="pill"        data-kind="set"    onclick="setInvKind('set')">セット <span class="count-pill" id="invCount-set">-</span></div>
         </div>
         <!-- 販売を終えた商品（products の published=FALSE）はこの一覧から隠す。
              スプレッドシートの行は消さない＝過去の注文・売上の突合が壊れない。
@@ -2888,6 +2902,34 @@ async function loadInventory() {
   }
 }
 
+/* 商品の種類。スプシに種類の列が無いので、商品名と components(BOM) から判定する。
+   ・訳あり … 名前に「訳あり」「訳アリ」「不揃い」が入るもの（規格外品）
+   ・セット … components(BOM) を持つ、または名前が「セット」「食べ比べ」「まとめ買い」
+              ＝ギフト箱も中身が複数なのでここに入る
+   ・単品   … 上のどちらでもないもの（米・鶏もここ）
+   🔴 「訳あり◯◯セット」は訳ありを優先する。規格外かどうかが先に知りたい軸のため
+      （2026-11-15 田崎さん指示）。
+   判定を変えるときはここだけ直せば、ボタンの件数も中身も一緒に変わる。 */
+function invKind(p) {
+  const n = String((p && p.name) || '');
+  if (/訳あり|訳アリ|わけあり|不揃い|ふぞろい/.test(n)) return 'wakeari';
+  const comp = (p && p.components);
+  const hasBom = !!(comp && String(comp).trim() && String(comp).trim() !== '[]' &&
+                    !(Array.isArray(comp) && comp.length === 0));
+  if (hasBom || /セット|食べ比べ|まとめ買い|詰め合わせ/.test(n)) return 'set';
+  return 'tanpin';
+}
+
+let invKindFilter = 'all';
+
+function setInvKind(kind) {
+  invKindFilter = kind;
+  document.querySelectorAll('.inv-kind-pills .pill').forEach(el => {
+    el.classList.toggle('active', el.dataset.kind === kind);
+  });
+  renderInventory();
+}
+
 /* published が「はっきり FALSE」のときだけ販売終了とみなす。
    未設定(undefined)や空欄は公開扱い＝GASが読めなかったときに全部消えるより出す方がまし
    （ローダー側の判定 '' !== 'FALSE' と揃えてある）。 */
@@ -2902,10 +2944,24 @@ function renderInventory(filter) {
   const list = document.getElementById('invList');
   const q = (filter || document.getElementById('invSearch').value || '').toLowerCase();
   const showRetired = !!(document.getElementById('invShowUnpublished') || {}).checked;
-  const filtered = inventoryCache.filter(p =>
+  /* 販売終了・検索語まで絞った集合でボタンの件数を数える＝
+     ボタンの数字と、押したあとに出る件数が必ず一致する。 */
+  const base = inventoryCache.filter(p =>
     (showRetired || !invIsRetired(p)) &&
     (!q || (p.name || '').toLowerCase().includes(q) || (p.variant || '').toLowerCase().includes(q))
   );
+  const counts = { all: base.length, tanpin: 0, wakeari: 0, set: 0 };
+  base.forEach(p => { counts[invKind(p)]++; });
+  Object.keys(counts).forEach(k => {
+    const el = document.getElementById('invCount-' + k);
+    if (el) el.textContent = counts[k];
+  });
+  const filtered = invKindFilter === 'all' ? base : base.filter(p => invKind(p) === invKindFilter);
+
+  if (base.length > 0 && filtered.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">この種類の商品はありません</div></div>';
+    return;
+  }
 
   if (filtered.length === 0) {
     list.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">商品がありません</div></div>';
