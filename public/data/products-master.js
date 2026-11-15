@@ -1212,6 +1212,7 @@
     {
       /* ============================================================
          肉の日セット 2本（2026-10-28 田崎さん指示・P074/P075）
+         ※P075 は 2026-11-15 に「霜降り赤身スライス食べ比べセット」へ改名して継続中
          10/29(木) 18:30 の肉の日配信で出す2品。PDP直リンクで販売する。
 
          🔴 products シートに行を足すだけでは PDP に出ない。
@@ -1242,10 +1243,17 @@
     {
       productId: 'P075', variantId: 'NIKUNOHI-SLICE2', sku: 'EDA-NIKUNOHI-SLICE2',
       stripePriceId: '',
-      name: '肉の日 スライス2種セット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
+      name: '霜降り赤身スライス食べ比べセット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
       price: 5900, listPrice: 6300, weight: 400, stock: 50, temp: '冷凍',
-      published: true,   /* 2026-11-09 田崎さん指示で再公開（公式LINE配信用） */
-      category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Slice Duo',
+      published: true,   /* 2026-11-09 田崎さん指示で再公開 ／ 2026-11-15 改名して継続（公式LINE配信用） */
+      /* 🔴 販売期限 2026-11-22(日) 23:59（2026-11-15 田崎さん指示）。
+         limitedTotal を入れていないので limited-stock.js は作動しない
+         ＝ PDPに「残り◯セット」の赤帯は出ないかわりに、この時刻での
+         自動停止もしない。11/22 を過ぎたら手で下げること。
+         （残数表示をしない方針は 2026-11-09 田崎さん指示） */
+      limitedSoldOutAt: '2026/11/22 23:59',
+      limitedUntil: '2026/11/22 23:59',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled & Lean Slice Duo',
       components: [
         { name: '霜降スライス', qty: 1 },
         { name: '赤身スライス', qty: 1 }
