@@ -61,6 +61,30 @@ jobs:
           products = raw.get('products') or []
           if not isinstance(products, list) or len(products) < 10:
               sys.exit('products が %s 件しかない。壊れた応答とみなして更新しない。' % len(products))
+
+          # 🔴 壊れた応答（列ズレで stock が欠ける／全部0）をCDNに載せないための歯止め。
+          #    ここを通さないと、間違った「完売」が最大45分 全ページに配られる。
+          def stock_of(p):
+              try: return float(p.get('stock') or 0)
+              except Exception: return 0.0
+          total = sum(stock_of(p) for p in products)
+          if total <= 0:
+              sys.exit('在庫の合計が0。列ズレか取得失敗とみなして更新しない。')
+
+          zero_now = sum(1 for p in products if stock_of(p) <= 0)
+          old_path = pathlib.Path('public/data/stock-snapshot.json')
+          if old_path.exists():
+              try:
+                  prev = json.loads(old_path.read_text(encoding='utf-8')).get('products') or []
+                  zero_prev = sum(1 for p in prev if stock_of(p) <= 0)
+                  if zero_now - zero_prev > 20:
+                      sys.exit('在庫0の点数が %d → %d と急に増えた。異常とみなして更新しない。' % (zero_prev, zero_now))
+              except SystemExit:
+                  raise
+              except Exception as e:
+                  print('前回ぶんの比較に失敗（続行）:', e)
+          print('在庫合計:', total, '／在庫0の点数:', zero_now, '/', len(products))
+
           out = {
               'generatedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='seconds').replace('+00:00','Z'),
               'source': 'public_catalog',
@@ -69,7 +93,7 @@ jobs:
               'gifts': raw.get('gifts') or [],
               'plans': raw.get('plans') or [],
           }
-          p = pathlib.Path('public/data/stock-snapshot.json')
+          p = old_path
           p.parent.mkdir(parents=True, exist_ok=True)
           p.write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
           print('products:', len(products))

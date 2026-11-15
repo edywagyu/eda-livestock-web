@@ -755,7 +755,9 @@ body{
     /* 🔴 ライブ在庫が来るまでは在庫で並べ替えない（2026-11-15 田崎さん指示）。
        並べ替えると、あとで在庫が届いたときにカードが飛び跳ねる。
        時刻で決まる「発売前」「販売終了」だけは最初から確定しているので見る。 */
-    if (!stockConfirmed || stockFailed) return isUpcoming(it) ? 1 : (isEnded(it) ? 2 : 0);
+    /* 🔴 並べ替えに在庫を使うのも GAS の正本(live)が届いてから（2026-11-15 レビュー指摘）。
+       スナップショットの0で末尾へ送ると、GAS到着でまた並べ替わってカードが2回跳ねる。 */
+    if (stockSource !== 'live' || stockFailed) return isUpcoming(it) ? 1 : (isEnded(it) ? 2 : 0);
     if (isUpcoming(it)) return 1;
     if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
     return (isEnded(it) || it.stock <= 0) ? 2 : 0;
@@ -776,8 +778,14 @@ body{
     /* 🔴 端末の控え(local)の在庫で「完売しました」は出さない。古い控えで完売を出すと
        誤表示になる。0に見える品だけ「在庫を確認しています」のまま置き、
        スナップショット／GAS が届いてから確定させる（2026-11-15）。 */
+    /* 🔴 GAS の正本(live)が届くまで「完売しました」は出さない（2026-11-15 レビュー指摘）。
+       端末の控え(local)も同一ドメインのスナップショット(snapshot)も、最大24時間／45分
+       古くなりうる。その0で完売を出すと、在庫を積んだ直後の数秒だけ全員に
+       「完売しました」が出る（今日まさに直した誤表示の再発）。
+       在庫が1以上ある品は従来どおり0.1秒で「販売中」になるので速さは落ちない。
+       その出どころに載っていなかった品（同梱の控えの数字しかない品）も確定扱いにしない。 */
     var pending = !stockReady
-      || (stockSource === 'local' && !stockFailed && (it.srcSeen !== 'local' || it.stock <= 0));
+      || (!stockFailed && stockSource !== 'live' && (it.srcSeen !== stockSource || it.stock <= 0));
     var soldOut = !pending && it.stock <= 0;
     var closed = soldOut || ended || upcoming;
     /* 🔴 まとめ買いの「お得」案内は一覧から出さない（2026-11-15 田崎さん指示）。
@@ -805,7 +813,13 @@ body{
     var baseVar = (baseIdx >= 0) ? it.variants[baseIdx] : null;
     /* 基準が2口の品（P042）は在庫1では1セット作れないので完売扱いにする。
        以前は選択肢側の opacity+pointer-events:none で止めていた分の肩代わり。 */
-    if (baseVar && it.stock < Number(baseVar.n)) { soldOut = true; closed = true; }
+    /* 🔴 ここも live が届くまでは「完売」にしない（2026-11-15 レビュー指摘と同じ理由）。
+       基準が2口の品（P042 限定　和牛ミンチ）は、控え／スナップショットの在庫が1だと
+       「1セット作れない＝完売」になってしまう。確定するまでは確認中のまま置く。 */
+    if (baseVar && it.stock < Number(baseVar.n)) {
+      if (!stockFailed && stockSource !== 'live') { pending = true; soldOut = false; closed = true; }
+      else { soldOut = true; closed = true; }
+    }
     /* 出す＝約束。商品詳細ページで実際にセットが買える品(bulkOnPdp)だけに出す。
        🔴 「◯つ以上」の数字は variants から毎回計算する（2026-11-15 田崎さん指示）。
           使うのは「いちばん小さいセットの口数」＝ n が2以上のうちの最小。
