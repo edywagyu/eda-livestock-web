@@ -292,7 +292,10 @@ body{
 
 </style>
 </head>
-<body>
+<!-- data-lm-detail="link-only"：一覧カードに「商品の詳細」の中身（部位・仕様・解凍・焼き方）を
+     出さず、商品詳細ページへのリンクだけにする（2026-11-15 田崎さん指示）。
+     判定は public/js/member-extras.js 側。このページだけの設定。 -->
+<body data-lm-detail="link-only">
 
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
@@ -343,7 +346,7 @@ body{
 <script src="public/js/analytics.js?v=005" defer></script>
 <script src="public/js/member-gate.js" defer></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
-<script src="public/js/member-extras.js?v=003"></script>
+<script src="public/js/member-extras.js?v=004"></script>
 <script>
 (function () {
   'use strict';
@@ -439,7 +442,7 @@ body{
       variant: '200g×2袋 ／ 200g×3袋',
       price: 6280, listPrice: 7400, stock: 43, limitedTotal: 43,
       img: 'public/images/products/drive/shimofuri-slice.jpg',
-      desc: '肩ロースの霜降りを薄切りに。夏は冷しゃぶで、たれを変えるだけで最後まで飽きません。1袋ずつ買うより2袋で1,120円、3袋で2,720円お得です。',
+      desc: '肩ロースの霜降りを薄切りに。夏は冷しゃぶで、たれを変えるだけで最後まで飽きません。',
       /* 会員限定のまとめ買い割引。shop.html / products.html の通常カード
          (1つ¥3,700 / 2つセット【5%オフ】 / 3つセット【10%オフ】) は据え置き＝触らない。
          ラベルの「2つ」「3つ」は GAS の在庫減算(variantUnits)が読む文字列なので変更禁止。
@@ -532,6 +535,10 @@ body{
            2袋 ¥2,700 → ¥2,400（¥300お得）／ 3袋 ¥4,050 → ¥3,050（¥1,000お得）
          listPrice は2袋のときの単品合計。3つを選ぶと variants 側の off が出る。 */
       productId: 'P042', variantId: 'GENTEI-MINCE',
+      /* detailId が無いと「商品の詳細を見る」リンクが出ない（このページは
+         products-master.js を読み込まないので member-extras.js の自動リンクが効かない）。
+         P042 は products-master.js にあるので product.html?id=P042 で正しく開く。 */
+      detailId: 'P042',
       name: '限定　和牛ミンチ',
       variant: '1袋 200g',
       price: 2400, listPrice: 2700, stock: 10, limitedTotal: 0,
@@ -637,20 +644,25 @@ body{
     var upcoming = isUpcoming(it);
     var soldOut = it.stock <= 0;
     var closed = soldOut || ended || upcoming;
-    var off = (it.listPrice && it.listPrice > it.price)
-      ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
-    var was = (it.listPrice && it.listPrice > it.price)
-      ? '<span class="price-was">' + yen(it.listPrice) + '</span>' : '';
+    /* 🔴 まとめ買いの「お得」案内は一覧から出さない（2026-11-15 田崎さん指示）。
+       定価の取り消し線（price-was）・「¥◯◯ お得」のバッジ（price-off）・
+       バリアントの「¥◯◯お得」（save）・ラベル末尾の【◯%オフ】は、
+       ここでは描かず商品詳細ページ側で案内する。
+       選べる選択肢そのもの（1つ／2つセット／3つセット）と価格は今までどおり出す。 */
+    var off = '';
+    var was = '';
     var varHtml = '';
     if (it.variants && it.variants.length) {
       varHtml = '<div class="var-row">' + it.variants.map(function (v, vi) {
         var can = !closed && it.stock >= v.n;
+        /* 🔴 v.t は変えない。カートに入る文字列で、GAS の在庫減算が
+           「2つ」「3つ」を読んで ×2 / ×3 する。画面に出す文字だけ【◯%オフ】を落とす。 */
+        var label = String(v.t).replace(/【[^】]*】/g, '').trim();
         return '<div class="var-opt' + (vi === (it.sel || 0) ? ' sel' : '') + '"' +
                ' data-v="' + vi + '"' + (can ? '' : ' style="opacity:.45;pointer-events:none"') + '>' +
                  '<span class="dot"></span>' +
-                 '<span class="t">' + v.t +
+                 '<span class="t">' + label +
                    (v.mem ? '<span class="mem">会員価格</span>' : '') + '</span>' +
-                 (v.off ? '<span class="save">' + yen(v.off) + 'お得</span>' : '') +
                  '<span class="p">' + yen(v.p) + '</span>' +
                '</div>';
       }).join('') + '</div>';
