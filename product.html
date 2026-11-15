@@ -1280,7 +1280,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-15-p075-p077-deadline-1115"></script>
+<script src="public/data/products-master.js?v=2026-11-15-412-pdp-bulk-variants"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
@@ -1546,8 +1546,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       }
       return false;
     }
+    /* 🔴 option に出す文字列は「見せる文字」。カートに積むのは v.t のまま（下の apply()）。
+       save（単品で買うより安くなる額）があれば「（¥◯◯お得）」を添えて、
+       まとめ買いが得だと選ぶ前に分かるようにする（2026-11-15 田崎さん指示）。 */
     sel.innerHTML = list.map((v, i) =>
-      '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() + '</option>'
+      '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() +
+      (Number(v.save) > 0 ? '（¥' + Number(v.save).toLocaleString() + 'お得）' : '') +
+      '</option>'
     ).join('');
     function apply(i) {
       const v = list[i] || list[0];
