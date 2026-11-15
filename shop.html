@@ -15416,29 +15416,122 @@ function copyPopCoupon() {
   css.textContent = sel + sel + sel + '{display:none!important}';
   (document.head || document.documentElement).appendChild(css);
 
+  function grid() { return document.querySelector('[data-gentei-grid]'); }
+  function head() { return document.querySelector('[data-gentei-head]'); }
+
+  /* ============================================================
+     ① 期間限定の商品をこの棚に集める（2026-11-15 田崎さん指示）
+     ------------------------------------------------------------
+     「いつまで」「いつから」が決まっている商品は、どのグリッドに
+     手書きしてあっても、ここへ移す。手で並べ替える必要はない。
+
+     期間限定の定義 = products-master.js に limitedTotal があり、かつ
+     limitedStartAt / limitedSoldOutAt / limitedUntil のどれかを持つもの。
+     （limitedTotal は limited-stock.js が商品を見る条件そのもの。
+       これが無い商品は期間の管理対象外なので、ここでも拾わない）
+
+     🔴 コピーではなく「移動」。同じ商品が2か所に出ると、在庫表示も
+        カート投入も二重になって事故る。
+     🔴 棚は data-cat="beef" なので、牛肉以外の期間限定品を入れると
+        牛肉の「すべて表示」の件数に混ざる。いまは全部牛肉。
+        鶏・米で期間限定をやるときはここを見直すこと。
+     ============================================================ */
+  function limitedNames() {
+    var out = {};
+    var M = window.EDA_PRODUCTS_MASTER;
+    var list = (M && M.products) || [];
+    list.forEach(function (p) {
+      if (!p || !p.name) return;
+      var total = Number(p.limitedTotal);
+      if (!isFinite(total) || total <= 0) return;
+      if (!p.limitedStartAt && !p.limitedSoldOutAt && !p.limitedUntil) return;
+      out[String(p.name).trim()] = true;
+    });
+    return out;
+  }
+
+  /* 棚に入れたカードには、期間で出し入れするための印を自動で付ける。
+     🔴 これが無いと「棚には並ぶが期限が来ても消えない」カードができる。
+        実際 P075「霜降り・赤身スライス食べ比べセット」と P077 は
+        data-limited-scope が無く、締切を過ぎても出たままだった（実測）。
+     ・data-limited-scope … 期間外（終了後）にカードごと消す
+     ・data-limited-prestart … 発売前にカードごと消す。
+       limitedStartAt を持つ商品にだけ付ける。持たない商品に付けると
+       「発売前」と判定されて出なくなる（安全側に倒れる作り）。 */
+  function markCard(card, p) {
+    var name = String(p.name).trim();
+    if (!card.hasAttribute('data-limited-scope')) {
+      card.setAttribute('data-limited-scope', name);
+    }
+    if (p.limitedStartAt && !card.hasAttribute('data-limited-prestart')) {
+      card.setAttribute('data-limited-prestart', name);
+    }
+  }
+
+  function collect() {
+    var g = grid();
+    if (!g) return;
+    var M = window.EDA_PRODUCTS_MASTER;
+    var byName = {};
+    ((M && M.products) || []).forEach(function (p) {
+      if (p && p.name) byName[String(p.name).trim()] = p;
+    });
+    var want = limitedNames();
+    document.querySelectorAll('.product-card').forEach(function (card) {
+      var el = card.querySelector('.product-name');
+      if (!el) return;
+      var name = el.textContent.trim();
+      if (!want[name]) return;
+      var p = byName[name];
+      if (p) markCard(card, p);
+      if (card.parentElement !== g) g.appendChild(card);   /* もう棚にあるなら動かさない */
+    });
+  }
+
+  /* ② 中のカードが1枚も出ていなければ、見出しごと消す */
   function apply() {
-    var grid = document.querySelector('[data-gentei-grid]');
-    var head = document.querySelector('[data-gentei-head]');
-    if (!grid) return;
+    var g = grid(), h = head();
+    if (!g) return;
     /* 先に枠を出してから中を見る。枠が消えていると中のカードも
        offsetParent が null になり、永久に戻らなくなる。 */
-    grid.removeAttribute(ATTR);
-    if (head) head.removeAttribute(ATTR);
-    var cards = Array.prototype.slice.call(grid.querySelectorAll('.product-card'));
+    g.removeAttribute(ATTR);
+    if (h) h.removeAttribute(ATTR);
+    var cards = Array.prototype.slice.call(g.querySelectorAll('.product-card'));
     /* offsetParent は「実際に画面に出ているか」。limited-stock.js の非表示CSSも
        部位タブの display:none も、どちらもこれ1つで拾える。 */
     var live = cards.some(function (c) { return c.offsetParent !== null; });
     if (!live) {
-      grid.setAttribute(ATTR, '');
-      if (head) head.setAttribute(ATTR, '');
+      g.setAttribute(ATTR, '');
+      if (h) h.setAttribute(ATTR, '');
     }
   }
 
-  function boot() {
-    apply();
-    /* limited-stock.js が1分ごとにカードを出し入れするので、こちらも見直す */
-    setInterval(apply, 3000);
+  /* 棚に移したカードは data-sub の絞り込みを受けてはいけない。
+     棚は data-no-subfilter だが、部位タブの処理は
+     「[data-cat=beef] の .product-card[data-sub]」を名指しで拾い、
+     閉じた data-no-subfilter の中かどうかは closest() で見ている。
+     移動後も closest() で棚に当たるので対象外になる＝そのままでよい。
+     ただし移動前に一度 display:none を打たれている場合があるので、
+     棚の中のカードは毎回 inline display を外しておく。 */
+  function unlockSubfilter() {
+    var g = grid();
+    if (!g) return;
+    g.querySelectorAll('.product-card').forEach(function (c) {
+      if (c.style.display === 'none') c.style.display = '';
+    });
   }
+
+  function tick() { collect(); unlockSubfilter(); apply(); }
+
+  function boot() {
+    tick();
+    /* limited-stock.js が1分ごとにカードを出し入れし、GASのマスターが
+       届いたタイミングでも並びが変わるので、こちらも見直し続ける */
+    setInterval(tick, 3000);
+  }
+  /* このスクリプトは商品カードより後ろにあるので、DOMはもう出来ている。
+     待たずに1回走らせて、トップ表示の瞬間から棚が正しい状態で出るようにする。 */
+  tick();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
