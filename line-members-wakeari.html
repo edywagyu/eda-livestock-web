@@ -146,14 +146,33 @@ body{
    同じ形式に揃える指示（2026-11-15 田崎さん）。oseibo / vip-preorder は別ファイルで影響しない。
    カード幅が半分になるぶん、文字・余白・数量ボックスも合わせて縮める。
    縮めないと商品名・バリアント行・数量行がカードからはみ出す。 */
-/* 🔴 カードの高さを全部そろえる（2026-11-15 田崎さん指示）。
-   grid-auto-rows:1fr ＝ どの行も「いちばん背の高いカード」に合わせる。
-   カード内は縦フレックスにして、カートボタンを下端にそろえる（margin-top:auto）。
-   ＝ 余白が空いてもいいので段差を作らない、という指示どおりの形。 */
+/* 🔴 カードの高さと、カード内の各行の位置を全部そろえる（2026-11-15 田崎さん指示）。
+   ① 横に並ぶカードで「価格」「数量」「カートに追加」のY座標をそろえる
+   ② そのために、カードごとに有無が変わる行（会員限定タグ／内容量／お得案内／
+      詳細リンク／締切・完売の行）を、無いときも同じ高さの空き枠として必ず出す
+      ＝ cardHtml 側で .card-ph（visibility:hidden）を描く
+   ③ 商品名が1行か2行かの差は subgrid でそろえる。subgrid が使えるブラウザでは
+      カード自身が #cards の行トラックに乗るので、全カードの同じ行が同じ高さになる
+   ④ subgrid が無いブラウザ向けの保険として、商品名に2行ぶんの最低高さを持たせ、
+      カートボタンを下端ぞろえ（margin-top:auto）にしておく
+   余白が空いても段差を作らない、という指示どおりの形。 */
 #cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;align-items:stretch;grid-auto-rows:1fr;}
 #cards .card{display:flex;flex-direction:column;height:100%;}
 #cards .card-body{flex:1 1 auto;display:flex;flex-direction:column;}
 #cards .btn-add{margin-top:auto;}
+#cards .card h3{min-height:2.9em;}            /* 15px × line-height1.45 × 2行 */
+/* 空き枠。場所だけ取って中身は見せない（読み上げにも乗らない）。 */
+#cards .card-ph{visibility:hidden;}
+@supports (grid-template-rows: subgrid){
+  /* 1(写真) + 9(本文の行) = 10 行を #cards の行トラックに直接乗せる。
+     行の高さが全カードで共有されるので、商品名が2行の品に合わせて1行の品にも
+     同じ高さが入り、価格・数量・ボタンのY座標が必ずそろう。 */
+  #cards{grid-auto-rows:auto;row-gap:0;}
+  #cards .card{display:grid;grid-template-rows:subgrid;grid-row:span 10;row-gap:0;height:auto;margin-bottom:14px;}
+  #cards .card-body{display:grid;grid-template-rows:subgrid;grid-row:span 9;row-gap:0;}
+  #cards .card h3{min-height:0;}
+  #cards .btn-add{margin-top:0;align-self:end;}
+}
 #cards .card{margin-bottom:0;}
 #cards .card-body{padding:12px 12px 14px;}
 #cards .card-tag{font-size:9.5px;letter-spacing:.06em;padding:3px 7px;margin-bottom:8px;}
@@ -533,10 +552,13 @@ body{
     var hasBulk = !!(it.variants && it.variants.length > 1);
     /* 出す＝約束。商品詳細ページで実際にセットが買える品だけに出す。 */
     var bulkHint = (hasBulk && it.bulkOnPdp)
-      ? '<p class="card-bulk">2つ以上買うとさらにお得</p>' : '';
+      ? '<p class="card-bulk">' + (it.bulkHintText || '2つ以上買うとさらにお得') + '</p>'
+      : '<p class="card-bulk card-ph">&nbsp;</p>';
     /* 一覧に出す価格は基準の口数の価格。it.price と食い違わないようここから引く。 */
     var showPrice = baseVar ? Number(baseVar.p) : Number(it.price);
-    var baseNote = it.baseNote ? '<p class="card-variant">' + it.baseNote + '</p>' : '';
+    var baseNote = it.baseNote
+      ? '<p class="card-variant">' + it.baseNote + '</p>'
+      : '<p class="card-variant card-ph">&nbsp;</p>';
     /* 残数（残り◯セット／袋／枚／個）は出さない（2026-08-22 ryotaro指示）。
        出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
@@ -563,11 +585,17 @@ body{
       /* P034 は締切のある数量限定。締切は日時で書く（LINE本文の確定ルールと同じ）。 */
       stockLine = '<p class="stock-line">8月23日（日）23:59まで ／ 数量限定</p>';
     }
+    /* 締切・完売の行も、無いときは空き枠にして価格と数量の間隔を固定する。 */
+    if (!stockLine) stockLine = '<p class="stock-line card-ph">&nbsp;</p>';
     return '' +
       '<div class="card" data-i="' + i + '"' + (it.anchor ? ' id="' + it.anchor + '"' : '') + '>' +
         '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
         '<div class="card-body">' +
-          (it.memberOnly === false ? '' : '<span class="card-tag">会員限定</span>') +
+          /* 🔴 以下、有無が変わる行は「無いときも空き枠を出す」。
+             出さないと隣のカードと価格・数量の高さがずれる（2026-11-15 田崎さん指示）。 */
+          (it.memberOnly === false
+            ? '<span class="card-tag card-ph">&nbsp;</span>'
+            : '<span class="card-tag">会員限定</span>') +
           '<h3>' + it.name + '</h3>' +
           baseNote +
           /* 🔴 内容量の行（it.variant）と短い説明文（it.desc）は一覧に出さない
@@ -580,7 +608,7 @@ body{
           (it.detailId
             ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
               + (it.detailLabel || '商品の詳細へ進む') + ' →</a>'
-            : '') +
+            : '<span class="card-detail card-ph">&nbsp;</span>') +
           '<div class="price-row">' + was +
             '<span class="price-now">' + yen(showPrice) + '</span>' + off +
           '</div>' +

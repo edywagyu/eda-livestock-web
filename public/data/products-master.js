@@ -103,6 +103,26 @@
       stripePriceId: 'price_1TW74qGSkhU1UEciphBYGBDO',
       name: 'ハンバーグ', variant: '1個 130g',
       price: 760, weight: 130, stock: 40, temp: '冷凍',
+      /* 🛒 まとめ買いの選択肢（商品ページ product.html 用）— 2026-11-15 田崎さん決裁。
+         3個入り=5%オフ ¥2,166 ／ 6個入り=10%オフ ¥4,104 の2本立て。
+         ⚠️ 旧「2つセット【5%オフ】¥1,444」と「3つセット【10%オフ】¥2,052」は廃止。
+            3個が ¥2,052 → ¥2,166 の値上げになる点は田崎さんに説明のうえで指示どおり。
+            index.html / shop.html / products.html のカードの data-variants も
+            同じ3つに差し替え済み（旧価格が1箇所でも残ると価格が2本立てになる）。
+         🔴 t（ラベル）は変えない。GAS の variantUnits が /([2-9])\s*(?:つ|個)\s*セット/ で
+            読むので「3つセット」=3口 /「6つセット」=6口 として stock が減る。
+         🔴 '1つ' に id を付けない＝カートには product.variantId('HAMBURG') で入り、
+            会員限定ページから入れた単品と同じ行にまとまる。
+         🔴 お得額（¥114 / ¥456）は product.html が 1つ ¥760 から毎回計算する。
+            ここに数字を書かない（実価格とズレた割引を出さないため）。
+         🔴 stripePriceId は1個 ¥760 の固定額なので、セットを選ぶと
+            createCheckout の ad-hoc price_data 側に乗る。price は触っていない。 */
+      variantsLabel: '個数', limitedUnit: '個',
+      variants: [
+        { t: '1つ',                 p:  760 },
+        { t: '3つセット【5%オフ】',  p: 2166, id: 50830191493418 },
+        { t: '6つセット【10%オフ】', p: 4104, id: 50830191526186 }
+      ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Wagyu Hamburg',
       description: '和牛 100%。冷凍庫で 6 ヶ月、フライパンで蒸し焼き 8 分。',
       images: ['public/images/products/drive/hamburg.jpg']
