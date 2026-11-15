@@ -9667,6 +9667,7 @@ body.is-member .product-card--organic .org-chk-lock {
 <link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
 <link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
 <link rel="stylesheet" href="public/css/go-checkout.css?v=20261027c">
+<script src="public/js/sale-close.js?v=001"></script>
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/geo-restrict.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9985,8 +9986,11 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 締切 11/15(日)23:59（2026-11-15 田崎さん指示）。設定は products-master.js の
          limitedTotal/limitedSoldOutAt/limitedUntil。PDPの帯に「11/15（日）23:59まで」と
          残り時間が出て、過ぎたら closeSales / closePdpSales で自動的に閉じる。
-         カードには data-limited-* を付けない（すでに発売中なので prestart を付けると消える）。 -->
- <div class="product-card" data-sub="set" data-variants='[{"id":51109038300771,"t":"1セット","p":3830}]'>
+         🔴 data-limited-scope を付けた（2026-11-15 田崎さん指示）。
+            これが無いと limitedUntil を過ぎてもカードが消えず、店頭に残り続ける。
+            scope は「期間外に消す」だけなので、発売中のいまは何も変わらない。
+            prestart は付けない（limitedStartAt が無い＝付けるとカードごと消える）。 -->
+ <div class="product-card" data-sub="set" data-limited-scope="江田和牛 ハンバーグと平飼い鶏の食卓セット" data-variants='[{"id":51109038300771,"t":"1セット","p":3830}]'>
  <div class="product-card-img" data-label="HAMBURG CHK SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Hamburg &amp; Chicken</span><span class="product-price"><s>&yen;4,120</s> &yen;3,830</span></div>
  <p class="product-name"><a href="product.html?id=P077" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 ハンバーグと平飼い鶏の食卓セット</a></p>
@@ -11453,9 +11457,19 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  function isOrganicBlocked(title) {
  return /^(有機JAS|オーガニックチキン)/.test(String(title || '').trim());
  }
+ /* 🔴 販売終了時刻（public/js/sale-close.js）を過ぎた商品はカートに入れない。
+    limitedSoldOutAt は「新しく入れる」のを止めるが、古いタブや直リンクからは
+    まだ addToCart が呼べる。最後の栓をここに置く。 */
+ function isSaleClosed(title) {
+ return !!(window.EDA_SALE_CLOSE && window.EDA_SALE_CLOSE.isClosed(title));
+ }
  function addToCart(variantId, price, title, variant, img, qtyToAdd, opts) {
  if (isOrganicBlocked(title)) {
  alert(`「${title}」はただいま販売しておりません。`);
+ return false;
+ }
+ if (isSaleClosed(title)) {
+ alert(`「${title}」は販売を終了しました。`);
  return false;
  }
  qtyToAdd = Math.max(1, parseInt(qtyToAdd, 10) || 1);
@@ -11588,6 +11602,17 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
    if (ctaEl) {
      ctaEl.innerHTML = '<span class="btn-member-register" aria-disabled="true" style="display:block;text-align:center;cursor:default;opacity:.75;">ただいま販売しておりません</span>';
      ctaEl.style.display = 'block';  /* 旧 display:none ルール上書き */
+   }
+   return;
+ }
+ /* 販売終了時刻を過ぎた商品は購入ボタンそのものを作らない。
+    通常はカードごと消えている（limitedUntil）が、消し忘れ・キャッシュ・
+    別ページ経由でカードが残った場合の保険。 */
+ if (isSaleClosed(cardName)) {
+   const ctaEl = card.querySelector('.product-buy');
+   if (ctaEl) {
+     ctaEl.innerHTML = '<span class="btn-member-register" aria-disabled="true" style="display:block;text-align:center;cursor:default;opacity:.75;">販売を終了しました</span>';
+     ctaEl.style.display = 'block';
    }
    return;
  }

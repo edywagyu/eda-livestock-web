@@ -2075,6 +2075,11 @@ function _variantUnits(variant) {
  return 1;
 }
 async function checkCartStock() {
+ /* 🔴 販売終了時刻（public/js/sale-close.js）を過ぎた商品は、カートに
+    入っていても決済させない。カタログ取得の成否に左右されないよう、
+    在庫チェックより先に・必ず計算する。 */
+ var _closed = (window.EDA_SALE_CLOSE ? window.EDA_SALE_CLOSE.closedTitlesIn(cartItems) : [])
+   .map(function (t) { return { title: t, closed: true, need: 0, stock: 0 }; });
  if (!cartItems.length) { gStockBlocked = []; renderStockAlert(); return; }
  if (!window.EDA_API) {                       // eda-bundle.js の読み込み待ち（最大5秒）
   if (_stockCheckTries++ < 25) setTimeout(checkCartStock, 200);
@@ -2083,7 +2088,7 @@ async function checkCartStock() {
  try {
   const cat = await window.EDA_API.get('public_catalog', {});
   const list = (cat && (cat.products || cat.data)) || [];
-  if (!list.length) return;                   // 取れなかったときは黙って従来どおり（買えなくしない）
+  if (!list.length) { gStockBlocked = _closed; renderStockAlert(); renderSummary(); return; }  // 取れなかったときは在庫判定だけ見送る（販売終了は必ず効かせる）
   const stock = {};
   list.forEach(function (pr) { if (pr && pr.name) stock[pr.name] = Number(pr.stock); });
   gFreeShipTitles = {};
@@ -2112,8 +2117,11 @@ async function checkCartStock() {
    if (preTitles[t]) return false;                                  // 予約で受けるので止めない
    return (t in stock) && !isNaN(stock[t]) && stock[t] < need[t];   // 台帳に無い商品は判定しない
   }).map(function (t) { return { title: t, need: need[t], stock: stock[t] }; });
+  var _closedTitles = {};
+  _closed.forEach(function (c) { _closedTitles[c.title] = true; });
+  gStockBlocked = _closed.concat(gStockBlocked.filter(function (b) { return !_closedTitles[b.title]; }));
   renderDestinations();                                             // お届け日の下限と注意書きを描き直す
- } catch (e) { gStockBlocked = []; gPreorder = { items: [], date: null, iso: '', label: '' }; }
+ } catch (e) { gStockBlocked = _closed; gPreorder = { items: [], date: null, iso: '', label: '' }; }
  renderStockAlert();
  renderSummary();                              // 注文ボタンの止め／解除を反映
  if (gStockBlocked.length) {
@@ -2125,7 +2133,8 @@ function renderStockAlert() {
  if (!area) return;
  if (!gStockBlocked.length) { area.innerHTML = ''; return; }
  const rows = gStockBlocked.map(function (b) {
-  const label = b.stock > 0 ? ('残り ' + b.stock + ' 点（ご注文 ' + b.need + ' 点）') : '売り切れ';
+  const label = b.closed ? '販売を終了しました'
+    : (b.stock > 0 ? ('残り ' + b.stock + ' 点（ご注文 ' + b.need + ' 点）') : '売り切れ');
   return '<li style="margin:2px 0"><strong>' + b.title + '</strong> — ' + label + '</li>';
  }).join('');
  area.innerHTML =
@@ -2133,7 +2142,12 @@ function renderStockAlert() {
   + '<strong style="display:block;margin-bottom:6px;color:#C8102E">⚠ 現在ご購入いただけない商品がカートに入っています</strong>'
   + '<ul style="margin:0 0 10px;padding-left:18px">' + rows + '</ul>'
   + '<button type="button" onclick="removeUnavailableItems()" style="padding:10px 16px;border:none;border-radius:8px;background:var(--color-forest);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">この商品をカートから外して進む</button>'
-  + '<p style="margin:8px 0 0;font-size:11px;color:var(--color-ink-muted)">在庫が戻り次第あらためて販売します。数量を減らしてご注文いただくこともできます。</p>'
+  /* 販売終了は「在庫が戻れば買える」ではないので、締めの一文を分ける。
+     在庫切れと販売終了が混ざっているときは両方出す。 */
+  + (gStockBlocked.some(function (b) { return b.closed; })
+      ? '<p style="margin:8px 0 0;font-size:11px;color:var(--color-ink-muted)">販売期間の終了した商品です。あらためての販売が決まりましたら公式LINEでお知らせします。</p>' : '')
+  + (gStockBlocked.some(function (b) { return !b.closed; })
+      ? '<p style="margin:8px 0 0;font-size:11px;color:var(--color-ink-muted)">在庫が戻り次第あらためて販売します。数量を減らしてご注文いただくこともできます。</p>' : '')
   + '</div>';
 }
 function removeUnavailableItems() {
@@ -3424,6 +3438,14 @@ document.querySelectorAll('.payment-option input').forEach(input => {
 
 /* ---- 注文確定 (Stripe Checkout 連携) ---- */
 async function placeOrder() {
+ /* 🔴 締切をまたいで画面を開きっぱなしにしていた場合、ここで初めて引っかかる。
+    checkCartStock は読み込み時にしか走らないので、押した瞬間にもう一度見る。 */
+ var _closedNow = window.EDA_SALE_CLOSE ? window.EDA_SALE_CLOSE.closedTitlesIn(cartItems) : [];
+ if (_closedNow.length) {
+  await checkCartStock();
+  alert('「' + _closedNow.join('」「') + '」は販売を終了しました。\nカートから外してお進みください。');
+  return;
+ }
  /* バリデーション
     🔴 空欄は「警告文を1つ出す」だけでなく、その欄自体を赤くする（2026-08-26 田崎さん指示）。
        文言だけだと、どこが空かが分からない。1件目で return せず全部の空欄を
@@ -3726,6 +3748,7 @@ initCouponFromStorage();
 try { scheduleRepeatShipCheck(); } catch (e) {}
 </script>
 
+<script src="public/js/sale-close.js?v=001"></script>
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/reward-count.js?v=001" defer></script>
 <script src="public/js/gift-notice.js?v=007" defer></script>

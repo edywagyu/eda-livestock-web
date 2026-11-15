@@ -2177,6 +2177,13 @@ window.refreshStockBadges = pdpApplyStock;
 function pdpPushToCart() {
   const product = window.__pdpProduct;
   if (!product) return false;
+  /* 🔴 販売終了時刻（public/js/sale-close.js）を過ぎた商品は積ませない。
+     limitedSoldOutAt の closePdpSales は購入UIを閉じるが、
+     ギフト導線や古いキャッシュからここが直接呼ばれうるので最後の栓を置く。 */
+  if (window.EDA_SALE_CLOSE && window.EDA_SALE_CLOSE.isClosed(product.name)) {
+    alert('「' + product.name + '」は販売を終了しました。');
+    return false;
+  }
   /* 📅 在庫0でも「次回最短お届け日」が出せる品は予約として通す（2026-09-07 田崎さん決定）。
      日付が出せないとき（preorder.js 未読込など）だけ従来どおり止める。 */
   const _canPreorder = !!(window.EDA_PREORDER && window.EDA_PREORDER.dateFor(product));
@@ -2246,6 +2253,7 @@ function giftThisProduct() {
   location.href = 'checkout.html?mode=gift';
 }
 </script>
+<script src="public/js/sale-close.js?v=001"></script>
 <script src="public/js/preorder.js?v=004"></script>
 <script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
