@@ -1276,11 +1276,47 @@
       ],
       description: '無添加の和牛ハンバーグ130gを3個と、平飼い鶏ムネ200gを2袋。ハンバーグの日と、鶏を使う日。一週間の食卓をまとめて。計790g。冷凍便でお届けします。',
       images: ['public/images/products/drive/hamburg-chicken-set.jpg']
+    },
+    /* ===== 無投薬の焼肉セット 800g（P078）=====
+       2026-11-15 田崎さん承認。11/16(月)00:00 〜 11/22(日)23:59 の7日間・11セット限定。
+       中身＝赤身焼肉200g ＋ バラ焼肉200g ＋ 平飼い鶏モモ200g ＋ 平飼い鶏ムネ200g（計800g）。
+       単品合計 ¥6,200（¥2,400＋¥1,900＋¥980＋¥920）→ ¥5,980。
+       🔴 name は products シート(E列)と1文字も変えない。決済も在庫減算も名前で引く。
+       🔴 既存の P046「焼肉セット」とは別商品。名前を絶対に揃えない（同名にすると
+          在庫減算が両方に当たる／当たらない事故になる）。
+       🔴 limitedTotal=11 は表示の分母。実売上限は products シートの stock(=11)。
+          律速は赤身焼肉の在庫11。
+       🔴 残数（個数）は出さない。
+       🔴 components は products シート(S列)が正。ここは取得失敗時のフォールバック。
+       🔴 limitedStartAt が来るまではカードごと非表示＝当日の手動publishは不要。
+          limitedSoldOutAt / limitedUntil で 11/22 23:59 に自動で締まる。 */
+    {
+      productId: 'P078', variantId: 'MUTOYAKU-YAKINIKU-800', sku: 'EDA-MUTOYAKU-YAKINIKU-800',
+      stripePriceId: '',
+      name: '無投薬の焼肉セット 800g',
+      variant: '4品 各200g・計800g',
+      /* price / stock は GAS(products シート)のライブ値で上書きされる。ここはフォールバック */
+      price: 5980, listPrice: 6200, weight: 800, stock: 11, temp: '冷凍',
+      published: true,
+      limitedTotal: 11,
+      limitedStartAt:   '2026/11/16 00:00',
+      limitedSoldOutAt: '2026/11/22 23:59',
+      limitedUntil:     '2026/11/22 23:59',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Antibiotic-Free Yakiniku Set',
+      components: [
+        { name: '赤身焼肉', qty: 1 },
+        { name: 'バラ焼肉', qty: 1 },
+        { name: '平飼い鶏 モモ', qty: 1 },
+        { name: '平飼い鶏 ムネ', qty: 1 }
+      ],
+      description: '抗生物質・ホルモン剤を使わずに育てた江田和牛の赤身焼肉200gとバラ焼肉200g、同じ考え方で育てた平飼い鶏のモモ200g・ムネ200g。牛2種と鶏2種を一度に焼ける計800gです。冷凍便でお届けします。',
+      images: ['public/images/products/drive/mutoyaku-yakiniku-set.jpg']
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.09-011-p075-p061-revive';
+  const PRODUCTS_VERSION = '2026.11.15-012-p078-mutoyaku-yakiniku-set';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
