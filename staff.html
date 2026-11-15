@@ -2554,7 +2554,7 @@ async function renderShipToday() {
   listEl.innerHTML = rows.map(function (r) {
     var o = r.o;
     var itemsSummary = (o.itemsList && o.itemsList.length)
-      ? o.itemsList.map(function (x) { return escapeHtml(x.name) + ' ×' + x.qty; }).join('、')
+      ? o.itemsList.map(function (x) { return escapeHtml(x.name) + ' ×' + x.qty + packCountSuffix(x); }).join('、')
       : escapeHtml(typeof cleanItemsText === 'function' ? cleanItemsText(o.items) : (o.items || ''));
     var regLabel = r.reg.unknown ? '要確認' : r.reg.region;
     var unpaid = o.awaitingPayment ? '<span class="ship-tag unpaid">未入金</span>' : '';
@@ -3111,6 +3111,33 @@ function cleanItemsText(s) {
     .replace(/（\s*1つ\s*[（(]\s*([^（）()]*?)\s*[）)]\s*）/g, '（$1）') // （1つ (200g)）→（200g）
     .replace(/（\s*1つ\s*）/g, '');                                  // （1つ）→ 除去
 }
+/* 口数（1注文行が何口ぶんか）。GAS の variantUnits_ と同一規則。
+   ここを変えると画面の「計◯袋」と実際に減る在庫がズレる。 */
+function variantUnits(variant) {
+  if (!variant) return 1;
+  var m = String(variant).match(/([2-9])\s*(?:つ|個)\s*セット/);
+  if (m) return Number(m[1]);
+  if (String(variant).indexOf('3つ') >= 0) return 3;
+  if (String(variant).indexOf('2つ') >= 0) return 2;
+  return 1;
+}
+/* 商品の数え方（袋／枚／個）。商品マスターの variant「1袋 200g」から読む。無ければ「個」。 */
+function unitWordOf(title) {
+  var t = String(title || '');
+  var list = (typeof DEMO_PRODUCTS !== 'undefined' && DEMO_PRODUCTS) ? DEMO_PRODUCTS : [];
+  for (var i = 0; i < list.length; i++) {
+    if (list[i] && list[i].name === t) {
+      var m = String(list[i].variant || '').match(/^\s*1\s*(袋|枚|個|本|箱|パック)/);
+      return m ? m[1] : '個';
+    }
+  }
+  return '個';
+}
+/* 「×2（計10袋）」の尻尾。セットでない（1口）商品には何も足さない。 */
+function packCountSuffix(x) {
+  var q = Number(x && x.qty) || 1;
+  return (x && x.units && x.units !== q) ? '（計' + x.units + (x.unitWord || '個') + '）' : '';
+}
 function normalizeStaffOrder(o) {
   if (!o || o._normalized) return o;
   var dests = [];
@@ -3128,15 +3155,23 @@ function normalizeStaffOrder(o) {
   var itemsList = items.map(function (it) {
     var v = String(it.variant || '');
     var mk = v.indexOf('🎁');
+    var nm = (it.title || it.name || '商品');
+    var q  = (it.qty || it.quantity || 1);
+    /* 「5つセット ×2」が何袋なのか画面だけで分かるように、口数の実数を持たせる */
     return {
-      name: (it.title || it.name || '商品'),
-      qty: (it.qty || it.quantity || 1),
+      name: nm,
+      qty: q,
+      setLabel: mk >= 0 ? v.slice(0, mk).replace(/[／\/]\s*$/, '').trim() : v.trim(),
+      units: variantUnits(v) * q,
+      unitWord: unitWordOf(nm),
       isReward: mk >= 0,
       rewardLabel: mk >= 0 ? v.slice(mk + 2).trim() : ''
     };
   });
   // 一覧プレビュー用の短い文字列（スラッシュではなく読点区切り・括弧なし）
-  var itemsText = itemsList.map(function (x) { return (x.isReward ? '🎁' : '') + x.name + ' ×' + x.qty; }).join('、');
+  var itemsText = itemsList.map(function (x) {
+    return (x.isReward ? '🎁' : '') + x.name + ' ×' + x.qty + packCountSuffix(x);
+  }).join('、');
   var d0 = dests[0] || {};
   var addrFull = dests.length ? dests.map(function (d) {
     return (d.zip ? '〒' + d.zip + ' ' : '') + (d.pref || '') + (d.address || '') +
@@ -3611,8 +3646,15 @@ function renderShipDetail() {
         var badge = x.isReward
           ? '<span class="reward-badge">🎁 ' + escapeHtml(x.rewardLabel || '特典') + '・無料</span>'
           : '';
-        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) + badge +
-               '</span><span class="item-qty">' + (x.qty !== '' && x.qty != null ? '×' + x.qty : '') + '</span></div>';
+        /* セット商品は「5つセット」と「計10袋」の両方を出す。梱包する人が数えずに済むように */
+        var setTag = x.setLabel && x.units && x.units !== x.qty
+          ? '<span style="font-size:11px;font-weight:600;color:var(--muted);margin-left:6px">' + escapeHtml(x.setLabel) + '</span>'
+          : '';
+        var packs = packCountSuffix(x)
+          ? '<strong style="color:var(--forest);margin-left:6px">計' + x.units + escapeHtml(x.unitWord || '個') + '</strong>'
+          : '';
+        return '<div class="item-line"><span class="item-name">' + escapeHtml(x.name) + setTag + badge +
+               '</span><span class="item-qty">' + (x.qty !== '' && x.qty != null ? '×' + x.qty : '') + packs + '</span></div>';
       }).join('') + '</div>'
     : '<span class="value-muted">商品情報なし</span>';
   // 🐔 鶏ムネ特典バナー（購入時アンケートに答えた方への次回同梱ぶん）
