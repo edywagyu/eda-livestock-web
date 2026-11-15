@@ -1212,6 +1212,7 @@
     {
       /* ============================================================
          肉の日セット 2本（2026-10-28 田崎さん指示・P074/P075）
+         ※P075 は 2026-11-15 に「霜降り・赤身スライス食べ比べセット」へ改名して継続中
          10/29(木) 18:30 の肉の日配信で出す2品。PDP直リンクで販売する。
 
          🔴 products シートに行を足すだけでは PDP に出ない。
@@ -1242,16 +1243,31 @@
     {
       productId: 'P075', variantId: 'NIKUNOHI-SLICE2', sku: 'EDA-NIKUNOHI-SLICE2',
       stripePriceId: '',
-      name: '肉の日 スライス2種セット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
+      name: '霜降り・赤身スライス食べ比べセット', variant: '霜降スライス200g＋赤身スライス200g 計400g',
       price: 5900, listPrice: 6300, weight: 400, stock: 50, temp: '冷凍',
-      published: true,   /* 2026-11-09 田崎さん指示で再公開（公式LINE配信用） */
-      category: 'beef', categoryLabel: '牛肉', tagEn: 'Niku-no-Hi Slice Duo',
+      published: true,   /* 2026-11-09 田崎さん指示で再公開 ／ 2026-11-15 改名して継続（公式LINE配信用） */
+      /* 🔴 販売期限 2026-11-22(日) 23:59（2026-11-15 田崎さん指示）。
+         公式LINEの配信文で「11/22(日)23:59まで」と締切を約束しているので、
+         商品側にも必ず入れておく。limitedTotal が入っていないと
+         limited-stock.js が作動せず締切の帯も自動停止も出ないため、
+         分母として 50 を置く（products シートの stock と同じ数）。
+         🔴 この品は components を持つセット＝isBom なので applyPdp の
+            showTotal が false になり「50セット限定」の総数バッジは出ない。
+            出るのは「11/22（日）23:59まで」と残り時間だけ。
+            残りセット数の行は labelFor が空文字を返すので行ごと消える
+            （残数を出さない方針＝2026-10-11／2026-11-09 田崎さん指示）。
+         🔴 limitedSoldOutAt を過ぎると closeSales() が stock を 0 に落とし、
+            PDPの購入導線も closePdpSales で閉じる＝11/23 以降は手作業不要。 */
+      limitedTotal: 50,
+      limitedSoldOutAt: '2026/11/22 23:59',
+      limitedUntil: '2026/11/22 23:59',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled & Lean Slice Duo',
       components: [
         { name: '霜降スライス', qty: 1 },
         { name: '赤身スライス', qty: 1 }
       ],
       description: '肩ロースの霜降りと、ソトモモの赤身を同量200gずつ。霜降りは薄く引くと脂の甘みがだしに溶け、赤身は繊維がしっかりしているぶん肉の味がまっすぐ出ます。同じ鍋に並べて、2種を食べ比べる400g。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
-      images: ['public/images/products/drive/nikunohi-slice2.jpg']
+      images: ['public/images/products/drive/shimofuri-akami-kurabe-set.jpg']  /* 2026-11-15 新しい商品写真に差し替え */
     },
     /* ===== 江田和牛 ハンバーグと平飼い鶏の食卓セット（P077）=====
        2026-11-09 田崎さん確定。単品合計 ¥4,120（ハンバーグ130g ¥760×3 ＋
