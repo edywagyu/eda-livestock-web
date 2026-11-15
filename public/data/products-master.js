@@ -237,6 +237,23 @@
       stripePriceId: '',
       name: 'ミスジステーキ', variant: '1枚 150g',
       price: 3500, weight: 150, stock: 7, temp: '冷凍',
+      /* 🛒 まとめ買いの選択肢（商品ページ product.html 用）— 2026-11-15 田崎さん指示。
+         会員限定ページ(line-members.html)の一覧からセットを外した代わりに、
+         ここで買えるようにする。価格・セット構成は会員限定ページと同じ値をそのまま使う。
+         🔴 t（ラベル）は会員限定ページの variants[].t と1文字も変えない。
+            GAS の variantUnits が「2つセット」「3つセット」を読んで ×2 / ×3 で
+            在庫を減らす。表記を変えると ×1 でしか減らず売り越す。
+         🔴 '1つ' に id を持たせない＝カートには product.variantId('MISUJI-STEAK')で入る。
+            会員限定ページから入れた単品と同じ行にまとまる。
+         🔴 listPrice は取り消し線の比較に使う単品価格。price(3500) と同額なので
+            1つを選んだときは取り消し線が出ない（listPrice > price が成立しない）。 */
+      listPrice: 3500, compareName: 'ミスジステーキ', limitedUnit: '枚',
+      variantsLabel: '枚数',
+      variants: [
+        { t: '1つ',                 p: 3500 },
+        { t: '2つセット【5%オフ】',  p: 6650, save:  350, id: 50831003500202 },
+        { t: '3つセット【10%オフ】', p: 9450, save: 1050, id: 50831003500203 }
+      ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Misuji Steak',
       description: '肩甲骨の内側の希少部位。細かなサシと赤身の旨みが同居。厚めのレア焼きで。',
       images: ['public/images/products/drive/misuji-steak.jpg']
@@ -962,6 +979,20 @@
       stripePriceId: '',
       name: '限定　和牛ミンチ', variant: '1袋 200g',
       price: 2400, weight: 200, stock: 10, temp: '冷凍',
+      /* 🛒 まとめ買いの選択肢（商品ページ product.html 用）— 2026-11-15 田崎さん指示。
+         この品は1袋売りを作らない＝2袋／3袋の2択（最低2袋から）。会員限定ページ
+         (line-members.html / line-members-osusume.html)と同じ値をそのまま使う。
+         🔴 t（ラベル）は会員限定ページと1文字も変えない（GASの在庫減算が読む）。
+         🔴 listPrice は比較用の「通常のミンチ」(P010B) 200g ¥1,350。
+            price(2400) より小さいので単体では取り消し線にならず、
+            2つ/3つを選んだときだけ ¥2,700 / ¥4,050 との比較が出る。
+         🔴 price(2400) は2袋の価格。選択肢を描くと内容量が「2袋 計400g」に直る。 */
+      listPrice: 1350, compareName: '通常のミンチ', limitedUnit: '袋',
+      variantsLabel: '袋数',
+      variants: [
+        { t: '2つセット', p: 2400, save:  300, id: 50903002400202 },
+        { t: '3つセット', p: 3050, save: 1000, id: 50903002400203 }
+      ],
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Gentei Wagyu Minced',
       description: '和牛のミンチ。ハンバーグ、そぼろ、ミートソースに。2袋からのお届けです。',
       images: [

@@ -91,6 +91,7 @@ body{
 }
 .card-variant{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
 .card-desc{font-size:13.5px;color:#4A4A4A;margin:0 0 10px;}
+    .card-bulk{font-size:12.5px;color:#6B6B6B;margin:0 0 8px;}
     .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
@@ -150,6 +151,7 @@ body{
 #cards .card h3{font-size:15px;line-height:1.45;margin:0 0 4px;overflow-wrap:anywhere;}
 #cards .card-variant{font-size:11px;margin:0 0 8px;}
 #cards .card-desc{font-size:11.5px;line-height:1.6;margin:0 0 8px;}
+#cards .card-bulk{font-size:11px;margin:0 0 6px;}
 #cards .card-detail{font-size:11.5px;margin:0 0 10px;}
 #cards .price-row{gap:6px;}
 #cards .price-was{font-size:11.5px;}
@@ -386,6 +388,8 @@ body{
     {
       productId: 'P023', variantId: 'MISUJI-STEAK',
       detailId: 'P023',
+      /* 商品詳細ページ(product.html?id=P023)に 2つ/3つセットを載せてある（2026-11-15）。 */
+      bulkOnPdp: true,
       name: 'ミスジステーキ',
       variant: '1枚 150g',
       price: 3500, listPrice: 0, stock: 7, limitedTotal: 0,
@@ -652,7 +656,27 @@ body{
     var off = '';
     var was = '';
     var varHtml = '';
+    /* 🔴 まとめ買い（2つセット／3つセット）の選択肢は一覧に出さない（2026-11-15 田崎さん指示）。
+       単品（n===1）が用意されている品は単品の価格だけを出し、代わりに
+       「2つ以上買うとさらにお得」の一行で商品詳細ページへ送る。
+       ⚠ 単品の設定が無い品（最低2袋からの P042「限定　和牛ミンチ」など）は
+          選択肢を消すと出せる価格が無くなり、カード表記（1袋 200g）と
+          実際に入るセット価格が食い違うので、従来どおり選択肢を残す。 */
+    var singleIdx = -1;
     if (it.variants && it.variants.length) {
+      for (var si = 0; si < it.variants.length; si++) {
+        if (it.variants[si].n === 1) { singleIdx = si; break; }
+      }
+    }
+    var hideVariants = singleIdx >= 0;
+    /* カートに入るのは単品。v.t（'1つ'）はそのまま＝GASの在庫減算は×1。 */
+    if (hideVariants) it.sel = singleIdx;
+    /* 🔴 この一行は「商品詳細ページで実際にセットが買える品」にだけ出す。
+       出す＝約束なので、product.html 側に 2つ/3つセットの選択肢が無い品には出さない
+       （P008 ハンバーグは会員価格を一般公開してよいかの確認待ちで保留）。 */
+    var bulkHint = (hideVariants && it.bulkOnPdp)
+      ? '<p class="card-bulk">2つ以上買うとさらにお得</p>' : '';
+    if (!hideVariants && it.variants && it.variants.length) {
       varHtml = '<div class="var-row">' + it.variants.map(function (v, vi) {
         var can = !closed && it.stock >= v.n;
         /* 🔴 v.t は変えない。カートに入る文字列で、GAS の在庫減算が
@@ -699,15 +723,18 @@ body{
         '<div class="card-body">' +
           (it.memberOnly === false ? '' : '<span class="card-tag">会員限定</span>') +
           '<h3>' + it.name + '</h3>' +
-          '<p class="card-variant">' + it.variant + '</p>' +
-          '<p class="card-desc">' + it.desc + '</p>' +
+          /* 🔴 内容量の行（it.variant）も一覧に出さない（2026-11-15 田崎さん指示）。
+             商品名・価格・数量・カートボタンだけを残す。データは残してある。 */
+          bulkHint +
+          /* 🔴 短い説明文（it.desc）は一覧に出さない（2026-11-15 田崎さん指示）。
+             説明は商品詳細ページ(product.html)側で読ませる。データは残してある。 */
           /* 商品詳細ページへのリンク。detailId を持つ品だけに出す（2026-09-02 ryotaro指示）。
              🔴 全部に出してはいけない。product.html は products-master.js から引くので、
                 そこに無い品(P033/P034/P042 など)へ飛ばすとサーロイン(売り切れ)に化ける。
                 詳細ページを足したら detailId を書く、が対応関係。 */
           (it.detailId
             ? '<a class="card-detail" href="product.html?id=' + it.detailId + '">'
-              + (it.detailLabel || '商品の詳細を見る') + ' →</a>'
+              + (it.detailLabel || '商品の詳細へ進む') + ' →</a>'
             : '') +
           '<div class="price-row">' + was +
             '<span class="price-now">' + yen(it.price) + '</span>' + off +
