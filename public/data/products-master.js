@@ -1646,10 +1646,16 @@
          🔴 limitedStartAt は置かない。すでに発売中なので開始ゲートを付けると
             カードが消える。カード側に data-limited-prestart も付けない。
          🔴 limitedSoldOutAt を過ぎると closeSales() が stock を 0 に落とし、
-            PDPの購入導線も closePdpSales で閉じる＝11/16 以降は手作業不要。 */
+            PDPの購入導線も closePdpSales で閉じる＝手作業不要。
+         🔴 締切を 2026-11-16(月)00:00 に変更（2026-11-15 田崎さん指示）。
+            00:00 でカードが消えて新しくカートに入れられなくなる。
+            そこから丸1日、すでにカートに入れている方の決済だけは受ける
+            ＝在庫0は「予約」として通る既存の仕様をそのまま猶予に使う。
+            その猶予の終わり（11/16 23:59）は public/js/sale-close.js が締める。
+            🔴 この2つは対。日付を動かすときは sale-close.js も一緒に直す。 */
       limitedTotal: 50,
-      limitedSoldOutAt: '2026/11/15 23:59',
-      limitedUntil:     '2026/11/15 23:59',
+      limitedSoldOutAt: '2026/11/16 00:00',
+      limitedUntil:     '2026/11/16 00:00',
       limitedUnit: 'セット',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Hamburg & Chicken Set',
       components: [
@@ -1698,7 +1704,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.15-012-p078-mutoyaku-yakiniku-set';
+  const PRODUCTS_VERSION = '2026.11.15-013-p077-close-1116';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
