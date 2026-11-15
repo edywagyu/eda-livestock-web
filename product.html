@@ -224,6 +224,23 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
   color: var(--color-ink-muted);
   margin-bottom: 36px;
 }
+/* 訳あり品の「通常品と比べていくら安いか」（2026-11-15 田崎さん指示）。
+   🔴 取り消し線は使わない。訳あり品と通常品は別商品なので、通常品の価格に
+      取り消し線を引くと二重価格表示（有利誤認）になる。比較相手の商品名・
+      内容量・価格を文章で明記する形だけにしてある。
+   中身を組み立てるのは public/js/wakeari-compare.js。 */
+.pdp-wakeari-compare {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--color-forest);
+  background: rgba(15, 57, 22, 0.05);
+  border-left: 3px solid var(--color-gold);
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin: -28px 0 32px;
+}
+.pdp-wakeari-compare b { font-weight: 700; }
+.pdp-wakeari-compare .wk-save { color: var(--color-red); }
 
 .pdp-description {
   font-size: 15px;
@@ -813,6 +830,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       <!-- 2026-09-08 田崎さん指示: 「¥11,000以上で送料無料」は消し、実際にかかる送料を書く。
            金額は GAS の calcShipping と同じ（本州ほか ¥1,100 / 北海道・沖縄 ¥2,200）。 -->
       <p class="pdp-price-note" id="pdpPriceNote">税込価格 / 別途 送料 ¥1,100（北海道・沖縄は ¥2,200）</p>
+      <!-- 訳あり品だけ出る「通常の◯◯（内容量）¥◯ と比べて ¥◯ おトク」。
+           中身は pdpApplyWakeariCompare() が products のライブ値から毎回計算する。 -->
+      <p class="pdp-wakeari-compare" id="pdpWakeariCompare" hidden></p>
 
       <!-- ========= 🎁 キャンペーン特典の帯（中身と表示期間は public/js/gift-rules.js の CAMPAIGN が正。
      期間外は gift-notice.js が hidden にするので、終わったあとの撤去作業は不要） ========= -->
@@ -1291,9 +1311,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-15-416-wakeari-9items"></script>
+<script src="public/data/products-master.js?v=2026-11-15-418-wakeari-compare"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
+<script src="public/js/wakeari-compare.js?v=001"></script>
 <script>
 /* ============================================================
    Product Detail Page — 動的レンダリング
@@ -1438,6 +1459,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     }
   }
   renderPrice();
+  /* 訳あり品の「通常品と比べていくら安いか」。ライブ値が来たあとに
+     products-loader.js → pdpApplyStock() からもう一度呼ばれる。 */
+  if (typeof window.pdpApplyWakeariCompare === 'function') window.pdpApplyWakeariCompare();
   /* 限定品バナーは public/js/limited-stock.js が products シートを見て自動で出す
      （商品ごとの分岐は不要。マスターの読み込み後に refreshLimitedStock が走る） */
   if (typeof window.refreshLimitedStock === 'function') window.refreshLimitedStock();
@@ -2046,11 +2070,40 @@ function changeQty(delta) {
   input.value = v;
 }
 
+/* === 訳あり品「通常品と比べていくら安いか」 ===
+   compareToId で指した通常品のライブ行を EDA_PRODUCTS_MASTER から引き、
+   金額・差額をその場で計算して出す（手書きの数字は持たない）。
+   🔴 出す／出さないの条件は public/js/wakeari-compare.js。相手が在庫0・
+      非公開・内容量ちがい・安くない のときは比較ごと出さない。 */
+function pdpApplyWakeariCompare() {
+  const el = document.getElementById('pdpWakeariCompare');
+  const cur = window.__pdpProduct;
+  if (!el) return;
+  el.hidden = true;
+  el.innerHTML = '';
+  if (!cur || !cur.compareToId || !window.edaWakeariCompare) return;
+  /* 🔴 ライブ値が来るまでは出さない（2026-11-15 レビュー指摘）。同梱マスターの
+     通常品は価格も在庫も古く、在庫0の品を「通常 ¥◯」と書いてしまうため。
+     products-loader.js が値を入れたあと pdpApplyStock() から呼び直される。 */
+  if (!window.edaWakeariCompare.liveReady()) return;
+  const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+  const reg = all.find(p => p.productId === cur.compareToId);
+  /* 訳あり品側の売価・内容量もライブ値を優先する（同梱マスターはフォールバック）。 */
+  const self = all.find(p => p.productId === cur.productId) || cur;
+  const html = window.edaWakeariCompare.html(reg, self.price || cur.price, self.variant || cur.variant);
+  if (!html) return;
+  el.innerHTML = html;
+  el.hidden = false;
+}
+window.pdpApplyWakeariCompare = pdpApplyWakeariCompare;
+
 /* === ライブ在庫の適用 (products-loader.js が GAS 取得後に呼ぶ) === */
 function pdpApplyStock() {
   const cur = window.__pdpProduct;
   if (!cur) return;
   const all = (window.EDA_PRODUCTS_MASTER && window.EDA_PRODUCTS_MASTER.products) || [];
+  /* 通常品のライブ値が届いたので、訳あり品の比較表示をここで作り直す。 */
+  pdpApplyWakeariCompare();
   const live = all.find(p => p.productId === cur.productId);
   if (!live || typeof live.stock !== 'number') return;
   cur.stock = live.stock;
