@@ -244,7 +244,7 @@ body{
 <div class="hero">
   <p class="hero-brand">EDA LIVESTOCK</p>
   <div class="hero-badge">VIP会員様 先行販売</div>
-  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">一般発売の前に、いつもご利用いただいている方だけにご案内しています。<br><b style="color:#FFE594;">9月6日（日）18:00まで</b></p>
+  <p style="margin:14px 0 0;font-size:13.5px;color:rgba(255,255,255,.85);">この先行販売は終了しました。<br><b style="color:#FFE594;">商品は「通常商品一覧」からご覧いただけます。</b></p>
 </div>
 
 <div class="wrap">
@@ -306,48 +306,13 @@ body{
     });
   } catch (e) {}
 
+  /* 2026-11-15 田崎さん指示で販売終了。
+     カメノコ焼肉(P035) / シンシン焼肉(P036) / カメノコ・シンシン焼肉セット(P037) の
+     3品をこのページから撤去した。このページは shop/products と違い products シートの
+     在庫チェックを通らない（validateStockBeforeCheckout はシート未登録名を素通しする）ので、
+     カードを消すこと自体が購入を止める唯一の手になる。
+     戻すときは git history から復元する（PR: chore/retire-18-products）。 */
   var ITEMS = [
-    /* ===== VIP先行販売（2026-09-05 ryotaro指示）=====
-       一般発売は shop.html / products.html で 2026-09-06(日) 20:00（products-master.js の
-       limitedStartAt）。このページはその前に買えるVIP向けの先行枠で、締切は 9/6(日) 18:00。
-       🔴 値引きはしない。単品は通常価格 ¥2,700、セットは通常どおり単品合計より540円お得。
-       🔴 name は在庫減算と決済の突合キー。products シート／shop.html と完全一致させること。
-          画面に出す「先行販売」はカードのバッジであって name ではない。
-       🔴 detailId は付けない。product.html は products-master.js を読むので、
-          limitedStartAt を過ぎるまで「発売予定」で購入不可の画面に飛んでしまう。
-       🔴 セット(P037)は本番DBの components(BOM) で カメノコ1 + シンシン1 に展開される。
-          セットが売れると単品の在庫が自動で減る＝二重販売しない。残数は syncCatalog が
-          構成品から min(カメノコ, シンシン) で作り直す。 */
-    {
-      productId: 'P037', variantId: 'KAMENOKO-SHINSHIN-SET',
-      name: 'カメノコ・シンシン焼肉セット',
-      variant: 'カメノコ200g ＋ シンシン200g',
-      price: 4860, listPrice: 5400, stock: 4, limitedTotal: 0,
-      endAt: '2026-09-06T18:00:00+09:00',
-      endLabel: '9月6日（日）18:00',
-      img: 'public/images/products/drive/kamenoko-shinshin-set.jpg',
-      desc: 'モモの中の「シンタマ」から取れる希少部位を2種類。きめが細かく脂は控えめなカメノコと、シンタマの芯にあたるやわらかいシンシン。1袋ずつ買うより540円お得です。'
-    },
-    {
-      productId: 'P035', variantId: 'KAMENOKO-YAKINIKU',
-      name: 'カメノコ焼肉',
-      variant: '1袋 200g',
-      price: 2700, listPrice: 0, stock: 8, limitedTotal: 0,
-      endAt: '2026-09-06T18:00:00+09:00',
-      endLabel: '9月6日（日）18:00',
-      img: 'public/images/products/drive/kamenoko-yakiniku.jpg',
-      desc: 'モモの中の「シンタマ」を4つに分けたうちの一つ。きめが細かく、脂は控えめ。焼肉用にカットしました。'
-    },
-    {
-      productId: 'P036', variantId: 'SHINSHIN-YAKINIKU',
-      name: 'シンシン焼肉',
-      variant: '1袋 200g',
-      price: 2700, listPrice: 0, stock: 6, limitedTotal: 0,
-      endAt: '2026-09-06T18:00:00+09:00',
-      endLabel: '9月6日（日）18:00',
-      img: 'public/images/products/drive/shinshin-yakiniku.jpg',
-      desc: 'シンタマの芯にあたる部位。1頭からわずかしか取れず、赤身のきめが細かくやわらかい。焼肉用にカットしました。'
-    }
   ];
 
   /* 在庫API(GAS)は応答に3〜5秒かかる。待っている間ページを止めないため、

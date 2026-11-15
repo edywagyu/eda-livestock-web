@@ -1483,6 +1483,13 @@ ul { list-style: none; padding: 0; margin: 0; }
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="text" id="invSearch" placeholder="商品名で検索...">
         </div>
+        <!-- 販売を終えた商品（products の published=FALSE）はこの一覧から隠す。
+             スプレッドシートの行は消さない＝過去の注文・売上の突合が壊れない。
+             戻したいときはこのチェックを入れると全件出る（2026-11-15 田崎さん指示）。 -->
+        <label style="display:flex;align-items:center;gap:6px;margin:0 0 10px;font-size:12px;color:var(--muted);cursor:pointer">
+          <input type="checkbox" id="invShowUnpublished" style="width:14px;height:14px;margin:0">
+          販売終了した商品も表示する
+        </label>
         <div class="refresh-btn" onclick="loadInventory()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           更新する
@@ -2881,11 +2888,23 @@ async function loadInventory() {
   }
 }
 
+/* published が「はっきり FALSE」のときだけ販売終了とみなす。
+   未設定(undefined)や空欄は公開扱い＝GASが読めなかったときに全部消えるより出す方がまし
+   （ローダー側の判定 '' !== 'FALSE' と揃えてある）。 */
+function invIsRetired(p) {
+  const v = p && p.published;
+  if (v === false) return true;
+  if (typeof v === 'string' && v.trim().toUpperCase() === 'FALSE') return true;
+  return false;
+}
+
 function renderInventory(filter) {
   const list = document.getElementById('invList');
   const q = (filter || document.getElementById('invSearch').value || '').toLowerCase();
+  const showRetired = !!(document.getElementById('invShowUnpublished') || {}).checked;
   const filtered = inventoryCache.filter(p =>
-    !q || (p.name || '').toLowerCase().includes(q) || (p.variant || '').toLowerCase().includes(q)
+    (showRetired || !invIsRetired(p)) &&
+    (!q || (p.name || '').toLowerCase().includes(q) || (p.variant || '').toLowerCase().includes(q))
   );
 
   if (filtered.length === 0) {
@@ -2926,6 +2945,7 @@ function renderInventory(filter) {
 }
 
 document.getElementById('invSearch').addEventListener('input', e => renderInventory(e.target.value));
+document.getElementById('invShowUnpublished').addEventListener('change', () => renderInventory());
 
 function adjustStock(variantId, delta) {
   const input = document.getElementById('stk-' + variantId);
