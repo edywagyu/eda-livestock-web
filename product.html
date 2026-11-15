@@ -844,9 +844,20 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 
       <!-- バリアント選択 -->
       <div class="pdp-variant-section" id="variantSection" hidden>
+        <!-- まとめ買いのお得さ（赤字・2026-11-15 田崎さん指示）。
+             中身は initVariants が variants の実価格から計算して入れる＝手書きの数字は置かない。 -->
+        <p class="pdp-bulk-save" id="pdpBulkSave" hidden></p>
         <label class="pdp-variant-label-sm" for="variantSelect">セット</label>
         <select class="pdp-variant-select" id="variantSelect"></select>
       </div>
+      <style>
+        /* 赤はサイト共通の --color-red (#C8102E)。価格(#pdpPrice)より小さくして目立たせすぎない。 */
+        .pdp-bulk-save{
+          color:var(--color-red,#C8102E); font-weight:700; font-size:13.5px;
+          line-height:1.7; margin:0 0 8px;
+        }
+        @media (max-width:430px){ .pdp-bulk-save{font-size:12.5px;} }
+      </style>
 
       <!-- 📅 予約注文：売り切れ中の「次回最短お届け日」。中身は public/js/preorder.js が組み立てる。
            在庫が1以上に戻れば pdpApplyStock がここを空にして display:none に戻す。 -->
@@ -1280,7 +1291,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-15-412-pdp-bulk-variants"></script>
+<script src="public/data/products-master.js?v=2026-11-15-413-bulk-save"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script>
@@ -1546,14 +1557,44 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       }
       return false;
     }
-    /* 🔴 option に出す文字列は「見せる文字」。カートに積むのは v.t のまま（下の apply()）。
-       save（単品で買うより安くなる額）があれば「（¥◯◯お得）」を添えて、
-       まとめ買いが得だと選ぶ前に分かるようにする（2026-11-15 田崎さん指示）。 */
-    sel.innerHTML = list.map((v, i) =>
-      '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() +
-      (Number(v.save) > 0 ? '（¥' + Number(v.save).toLocaleString() + 'お得）' : '') +
-      '</option>'
-    ).join('');
+    /* 🔴 お得額は「この商品のいちばん小さい口数の単価」から毎回計算する。
+       手で書いた数字（save 列など）は使わない＝実価格とズレた割引を出さないため
+       （2026-11-15 田崎さん指示：実際と合わない数字は絶対に書かない）。
+       例) ミスジ 1つ¥3,500 → 2つセット¥6,650 は ¥7,000−¥6,650＝¥350お得（5%）。
+           ミンチは1袋売りが無いので基準は2袋¥2,400（@¥1,200）→ 3袋¥3,050 は ¥550お得（15%）。 */
+    let baseI = 0;
+    for (let i = 1; i < list.length; i++) {
+      if (unitsOf(list[i].t) < unitsOf(list[baseI].t)) baseI = i;
+    }
+    const baseUnits = unitsOf(list[baseI].t) || 1;
+    const perUnit   = Number(list[baseI].p) / baseUnits;      /* 1個あたりの基準額 */
+    function savingOf(v) {
+      const u = unitsOf(v.t);
+      if (u <= baseUnits) return null;
+      const full = perUnit * u;
+      const yen  = Math.round(full - Number(v.p));
+      if (yen <= 0) return null;
+      return { yen: yen, pct: Math.round(yen / full * 100) };
+    }
+    /* 🔴 option に出す文字列は「見せる文字」。カートに積むのは v.t のまま（下の apply()）。 */
+    sel.innerHTML = list.map((v, i) => {
+      const sv = savingOf(v);
+      return '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() +
+        (sv ? '（¥' + sv.yen.toLocaleString() + 'お得）' : '') + '</option>';
+    }).join('');
+    /* 選択肢のすぐ上に、赤字でまとめ買いのお得さを出す。 */
+    (function () {
+      const box = document.getElementById('pdpBulkSave');
+      if (!box) return;
+      const lines = list.map(function (v) {
+        const sv = savingOf(v);
+        return sv ? (v.t.replace(/【[^】]*】/g, '').trim() +
+                     'なら ¥' + sv.yen.toLocaleString() + 'お得（' + sv.pct + '%オフ）') : null;
+      }).filter(Boolean);
+      if (!lines.length) return;
+      box.textContent = 'まとめ買いがお得： ' + lines.join(' ／ ');
+      box.hidden = false;
+    })();
     function apply(i) {
       const v = list[i] || list[0];
       const price = Number(v.p) || 0;
