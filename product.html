@@ -1336,8 +1336,22 @@ details[open] .pdp-detail-summary::after { content: '−'; }
        stock を上書きし、stock=0 でも買えてしまう。10/29 の LINE 配信に
        残る直リンクを塞ぐには、ここに並べるのが唯一の手。
        🔁 再出荷するときはこの2つを外すだけで戻る（商品データ・在庫・
-          説明文はシートにもマスターにも残してある）。 */
-  const ENDED_PRODUCT_IDS = ['P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037', 'P074'];
+          説明文はシートにもマスターにも残してある）。
+     ・P027 肉の日限定セット / P028 イチボステーキ / P030 訳あり 焼肉2種セット /
+       P031 訳あり スライス2種セット / P039 Aセット / P040 Bセット /
+       P045 はじめてセット / P058 少量お試し3種セット / P059 食卓ストック3種セット /
+       P060 焼肉食べ比べセット〈ミンチ付き〉 / P063 サイコロステーキと鶏2種セット /
+       P064 焼肉3種食べ比べセット / P065 不揃い品ステーキセット
+       … 2026-11-15 田崎さん指示で店頭・管理画面の在庫一覧から撤去。
+       （本番DB products の行は残す＝published=FALSE / stock=0 で凍結。
+        過去の公式LINE配信に残る直リンクを塞ぐためここにも並べる。
+        🔁 戻すときはこのリストから外し、published を TRUE に戻し、
+           shop.html / products.html のカードを git history から復元する。） */
+  const ENDED_PRODUCT_IDS = [
+    'P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037', 'P074',
+    'P027', 'P028', 'P030', 'P031', 'P039', 'P040', 'P045',
+    'P058', 'P059', 'P060', 'P063', 'P064', 'P065'
+  ];
   const product = all.find(p => p.productId === productId) || null;
   if (!product || ENDED_PRODUCT_IDS.indexOf(product.productId) >= 0) {
     document.title = 'お取り扱いを終了しました | 江田畜産';
