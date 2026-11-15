@@ -31,6 +31,13 @@
   function applyDetails() {
     var LM = window.__LM;
     if (!LM || !LM.ITEMS) return;
+    /* 一覧には「商品の詳細」の中身を出さず、商品詳細ページへのリンクだけにするページ。
+       <body data-lm-detail="link-only"> を書いたページだけこの扱いになる（2026-11-15 田崎さん指示）。
+       対象は line-members.html のみ。osusume / wakeari / oseibo / vip-preorder は従来どおり。 */
+    if (document.body && document.body.getAttribute('data-lm-detail') === 'link-only') {
+      linkCards();
+      return;
+    }
     document.querySelectorAll('.card').forEach(function (card) {
       if (card.querySelector('.lm-detail')) return;              /* 二重挿入を防ぐ */
       var it = LM.ITEMS[Number(card.getAttribute('data-i'))];
