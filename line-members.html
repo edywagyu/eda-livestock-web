@@ -103,6 +103,9 @@ body{
   padding:3px 9px;border-radius:4px;
 }
 .stock-line{font-size:12.5px;color:#C0392B;font-weight:600;margin:0 0 14px;}
+/* 在庫が確定するまでの行。完売とも販売中とも言わない（2026-11-15 田崎さん指示）。
+   赤ではなく控えめな灰色で出し、「売り切れ」と見間違えないようにする。 */
+.stock-pending{color:var(--muted)!important;font-weight:400!important;}
 .stock-line.plain{color:var(--muted);font-weight:500;}
 .var-row{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;}
 .var-opt{
@@ -601,6 +604,13 @@ body{
      ③「カートに追加」が押された時だけ、まだ届いていなければそこで待つ。
      ＝ 見た目のロスをゼロにしつつ、完売品はカートに入らない（2026-09-02 ryotaro指示）。 */
   var stockReady = false;
+  /* 🔴 在庫のライブ値が取れなかった（GASが落ちている／回線が切れた）とき。
+     このときは「完売」も「販売中」も出さない。どちらに倒しても嘘になるため。 */
+  var stockFailed = false;
+  /* 🔴 「実在庫が確定した」かどうか。stockReady は描画を進めてよいかの合図で、
+     取得に失敗したときも true になる。カートに入れてよいかはこちらで見ること
+     （2026-11-15 レビュー指摘。控えの数字で売らないため）。 */
+  var stockConfirmed = false;
   var catalogPromise = null;
 
   var CART_KEY = 'eda-cart';
@@ -676,6 +686,10 @@ body{
        0 = 販売中／1 = これから発売（startAt の予告）／2 = 買えない（完売・販売終了）
      発売前の判定を先に見る。カードの表示も upcoming が優先される（発売予告 > 完売）ため。 */
   function sortRank(it) {
+    /* 🔴 ライブ在庫が来るまでは在庫で並べ替えない（2026-11-15 田崎さん指示）。
+       並べ替えると、あとで在庫が届いたときにカードが飛び跳ねる。
+       時刻で決まる「発売前」「販売終了」だけは最初から確定しているので見る。 */
+    if (!stockReady || stockFailed) return isUpcoming(it) ? 1 : (isEnded(it) ? 2 : 0);
     if (isUpcoming(it)) return 1;
     if (it.productId === 'P034' && p034Phase() === 'ended') return 2;
     return (isEnded(it) || it.stock <= 0) ? 2 : 0;
@@ -687,7 +701,14 @@ body{
     if (phase === 'hidden') return '';
     var ended = phase === 'ended' || isEnded(it);
     var upcoming = isUpcoming(it);
-    var soldOut = it.stock <= 0;
+    /* 🔴 在庫のライブ値が来るまでは「完売」と断定しない（2026-11-15 田崎さん指示）。
+       同梱の ITEMS は取得失敗時の控えで、実在庫とは限らない。これを使って
+       先に「完売しました」を出していたため、開いた直後に売り切れが数秒出て、
+       あとから販売中に変わっていた（本番実測 2026-11-15: 0.6秒で完売表示 →
+       10.8秒で販売中に変化）。逆に「販売中」を先に出すのも同じく誤りなので、
+       確定するまではどちらにも倒さず「確認しています」を出す。 */
+    var pending = !stockReady;
+    var soldOut = !pending && it.stock <= 0;
     var closed = soldOut || ended || upcoming;
     /* 🔴 まとめ買いの「お得」案内は一覧から出さない（2026-11-15 田崎さん指示）。
        定価の取り消し線（price-was）・「¥◯◯ お得」のバッジ（price-off）・
@@ -739,11 +760,19 @@ body{
        出すのは「完売しました」と、締切のある品の締切だけ。在庫が尽きれば
        完売表示に切り替わり、数量の上限は数量セレクタ側で従来どおり効く。 */
     var stockLine = '';
-    if (upcoming) {
+    /* 🔴 分岐の順番を変えないこと（2026-11-15 レビュー指摘）。
+       「発売前」「販売終了」は時刻だけで決まっていて在庫と関係ないので、
+       在庫が取れなかったときでも上書きしてはいけない。 */
+    if (pending) {
+      /* 在庫が確定するまでの表示。完売とも販売中とも言わない。 */
+      stockLine = '<p class="stock-line stock-pending">在庫を確認しています</p>';
+    } else if (upcoming) {
       stockLine = '<p class="stock-line">' + it.startLabel + ' 発売'
                 + (it.endLabel ? ' ／ ' + it.endLabel + 'まで' : '') + ' ／ 数量限定</p>';
     } else if (ended) {
       stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
+    } else if (stockFailed) {
+      stockLine = '<p class="stock-line stock-pending">在庫を確認できませんでした</p>';
     } else if (soldOut) {
       stockLine = '<p class="stock-line">完売しました</p>';
     } else if (it.showLeft) {
@@ -800,9 +829,17 @@ body{
               '<button type="button" data-act="plus">＋</button>' +
             '</div>' +
           '</div>' +
-          '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
-            (upcoming ? it.startLabel + ' 発売'
-                      : (ended ? '販売終了' : (soldOut ? '完売しました' : 'カートに追加'))) +
+          /* 🔴 順番は stockLine と同じ: pending → 発売前 → 販売終了 → 取得失敗 → 完売 → 販売中。
+             「再読み込みする」は押せないと意味がないので、そのときだけ有効にする
+             （押してもカートには入らない。data-act="reload" ＝ 再読み込みだけ）。 */
+          '<button class="btn-add" type="button" data-act="'
+            + ((!pending && !upcoming && !ended && stockFailed) ? 'reload' : 'add') + '"'
+            + (((!pending && !upcoming && !ended && stockFailed) ? false : (closed || pending)) ? ' disabled' : '') + '>' +
+            (pending ? '在庫を確認しています'
+              : (upcoming ? it.startLabel + ' 発売'
+                : (ended ? '販売終了'
+                  : (stockFailed ? '再読み込みする'
+                    : (soldOut ? '完売しました' : 'カートに追加'))))) +
           '</button>' +
         '</div>' +
       '</div>';
@@ -876,6 +913,8 @@ body{
         if (act === 'minus') { qtyEl.textContent = Math.max(1, q - 1); }
         else if (act === 'plus') { qtyEl.textContent = Math.min(maxQty, q + 1); }
         else if (act === 'add') { addToCart(it, q, b); }
+        /* 在庫が取れなかったときの「再読み込みする」。控えの数字で売らない。 */
+        else if (act === 'reload') { location.reload(); }
       });
       /* バリエーション選択 */
       card.addEventListener('click', function (e) {
@@ -901,6 +940,10 @@ body{
   function addToCart(it, qty, btn) {
     /* 在庫がまだ届いていなければ、ここで初めて待つ（たいていは既に届いていて待たない）。
        待っている間に完売が分かったらカートに入れずに描き直す。 */
+    /* 🔴 実在庫が確定していないあいだは、どの導線から来てもカートに入れない
+       （2026-11-15 レビュー指摘）。stockReady は取得失敗時も true になるので、
+       ここで見るのは stockConfirmed のほう。 */
+    if (!stockConfirmed && stockFailed) { return; }
     if (!stockReady && catalogPromise) {
       btn.disabled = true;
       btn.textContent = '在庫を確認中…';
@@ -908,6 +951,9 @@ body{
         render();
         var card = document.querySelector('.card[data-i="' + ITEMS.indexOf(it) + '"]');
         var b2 = card ? card.querySelector('.btn-add') : btn;
+        /* 🔴 実在庫が確定していなければ入れない。取得に失敗したときは控えの数字しか
+           無いので、そこで売ると在庫以上に売れる（2026-11-15 レビュー指摘）。 */
+        if (!stockConfirmed) return;
         if (it.stock <= 0 || isEnded(it) || isUpcoming(it)) return;   /* 完売・終了なら入れない */
         doAddToCart(it, qty, b2);
       });
@@ -960,18 +1006,35 @@ body{
   /* スクリプトが読まれた時点で取りに行く（init を待たない）。 */
   function startCatalogFetch() {
     if (!catalogPromise) {
-      catalogPromise = fetch(CATALOG_URL).then(function (r) { return r.json(); })
-                            .catch(function () { return null; });
+      /* 🔴 時間切れを付ける（2026-11-15 レビュー指摘）。応答が返ってこないと
+         「在庫を確認しています」のまま固まり、全商品が買えなくなるため。 */
+      catalogPromise = Promise.race([
+        fetch(CATALOG_URL).then(function (r) { return r.json(); }),
+        new Promise(function (res) { setTimeout(function () { res(null); }, 12000); })
+      ]).catch(function () { return null; });
     }
     return catalogPromise;
   }
 
   function syncCatalog() {
     startCatalogFetch().then(function (res) {
-      if (!res) { stockReady = true; render(); return; }
       /* public_catalog は {ok:true, products:[...]} を返す。素の配列で来る場合にも備える。 */
-      var list = Array.isArray(res) ? res : (res && res.products);
-      if (!Array.isArray(list)) return;
+      var list = res && (Array.isArray(res) ? res : res.products);
+      /* 🔴 中身が配列でないとき（GASが {ok:false,error:…} を返す／デプロイ差し替え中）も
+         「取得できなかった」と同じ扱いにすること（2026-11-15 レビュー指摘）。
+         ここで黙って return すると stockReady が false のまま固まり、
+         全商品のボタンが押せなくなる＝売上が止まる。 */
+      if (!Array.isArray(list)) {
+        /* 1回だけ取り直す。それでもだめなら「確認できませんでした」を出す。
+           ここで控えの数字を使って「完売」「販売中」を出してはいけない。 */
+        if (!syncCatalog._retried) {
+          syncCatalog._retried = true;
+          catalogPromise = null;
+          setTimeout(syncCatalog, 2000);
+          return;
+        }
+        stockFailed = true; stockReady = true; render(); return;
+      }
 
       /* 🧩 セット商品(components ＝ BOM)は、GAS が構成品の在庫で売買するため
          セット行の stock が売れても動かない。そのまま使うと肉が無くなっても
@@ -1007,6 +1070,7 @@ body{
         changed = true;
       });
       stockReady = true;
+      stockConfirmed = true;          /* 実在庫が確定した。ここから先はカートに入れてよい */
       render();
     });
   }
