@@ -1019,7 +1019,10 @@
       compareToId: 'P026',
       productId: 'P080', variantId: 'WAKEARI-SHIMOFURI-SLICE', sku: 'EDA-WAKEARI-SHIMOFURI-200',
       stripePriceId: '',
-      name: '訳あり霜降りスライス', variant: '1袋 200g',
+      /* 🔴 name は products シートと1文字一致させること（GASの在庫減算・決済が name 一致）。
+         2026-11-15 田崎さん指示で「訳あり霜降りスライス」→「訳あり霜降スライス」に改名。
+         通常品が「霜降スライス」(P026) なので「り」を外して揃えた。 */
+      name: '訳あり霜降スライス', variant: '1袋 200g',
       /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
          「完売しました」になり買えない＝これが意図した状態。
          noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
