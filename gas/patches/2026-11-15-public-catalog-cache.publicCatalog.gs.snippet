@@ -1,0 +1,85 @@
+/* ============================================================
+   publicCatalog — 商品・ギフト・定期便プランをまとめて返す公開API
+   ------------------------------------------------------------
+   2026-11-15: 45秒のキャッシュを入れた。
+   会員限定ページの「在庫を確認しています」が長いという田崎さんの指摘を
+   本番で測ったところ、GASの応答そのものが毎回 3.4〜4.1秒かかっていた
+   （3シートを丸ごと読み直しているため）。45秒だけ結果を持ち回す。
+
+   🔴 在庫表示が最大45秒古くなる。売り越しにはならない:
+      レジは validateStockBeforeCheckout がシートの実在庫を見る。
+   🔴 decrementStockAfterOrder() と staffUpdateStock() の最後で下のキーを消すこと。
+      これは任意ではなく必須。やらないと、売れた直後・在庫を手で直した直後に
+      最大45秒ぶん古い数字が出る（2026-11-15 レビュー指摘）。
+        try { CacheService.getScriptCache().remove(PUBLIC_CATALOG_CACHE_KEY); } catch (e) {}
+   🔴 CacheService の1件あたり上限は100KB（バイト）。日本語はUTF-8で1文字3バイトに
+      なるので、文字数ではなく**バイト数**で見ること（2026-11-15 レビュー指摘）。
+      超えたときはキャッシュせず素通しする（遅くなるだけで壊れない）。
+   ============================================================ */
+var PUBLIC_CATALOG_CACHE_KEY = 'public_catalog_v1';
+var PUBLIC_CATALOG_CACHE_SEC = 45;
+
+function publicCatalog() {
+  /* 1) キャッシュがあればそれを返す（ここが速い経路） */
+  var cache = null;
+  try { cache = CacheService.getScriptCache(); } catch (e) { cache = null; }
+  if (cache) {
+    try {
+      var hit = cache.get(PUBLIC_CATALOG_CACHE_KEY);
+      if (hit) {
+        return ContentService.createTextOutput(hit)
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    } catch (e) {}
+  }
+
+  /* 2) 無ければ従来どおり組み立てる（中身は変えていない） */
+  const out = { ok: true, products: [], gifts: [], plans: [] };
+  try {
+    const sh = ss().getSheetByName('products');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      const headers = data[0];
+      out.products = data.slice(1).map(row => {
+        const p = {}; headers.forEach((h, i) => p[h] = row[i]);
+        return p;
+      });
+    }
+  } catch (e) {}
+  try {
+    const sh = ss().getSheetByName('gifts');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      const headers = data[0];
+      out.gifts = data.slice(1).map(row => {
+        const g = {}; headers.forEach((h, i) => g[h] = row[i]);
+        return g;
+      }).filter(g => g.published === true || g.published === 'TRUE' || g.published === 'true');
+    }
+  } catch (e) {}
+  try {
+    const sh = ss().getSheetByName('subscription_plans');
+    if (sh) {
+      const data = sh.getDataRange().getValues();
+      const headers = data[0];
+      out.plans = data.slice(1).map(row => {
+        const p = {}; headers.forEach((h, i) => p[h] = row[i]);
+        return p;
+      }).filter(p => p.published === true || p.published === 'TRUE' || p.published === 'true');
+    }
+  } catch (e) {}
+
+  /* 3) 45秒だけ置いておく。
+     🔴 上限はバイト数で見る。body.length は文字数で、日本語が入ると
+        実バイトは3倍近くなる（2026-11-15 レビュー指摘）。 */
+  var body = JSON.stringify(out);
+  if (cache) {
+    var bytes = 0;
+    try { bytes = Utilities.newBlob(body).getBytes().length; } catch (e) { bytes = body.length * 3; }
+    if (bytes < 95000) {
+      try { cache.put(PUBLIC_CATALOG_CACHE_KEY, body, PUBLIC_CATALOG_CACHE_SEC); } catch (e) {}
+    }
+  }
+  return ContentService.createTextOutput(body)
+    .setMimeType(ContentService.MimeType.JSON);
+}
