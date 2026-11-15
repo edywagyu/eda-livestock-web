@@ -10015,7 +10015,11 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 このカードに reveal を付けない（付けると表示されない）。
       🔴 残数（個数）は出さない。data-limited-left は使わない。
       🔴 構成品は和牛ハンバーグ130g×3 と 平飼い鶏 ムネ200g×2。
-         components は products シート側（S列）に登録済み。 -->
+         components は products シート側（S列）に登録済み。
+      🔴 締切 11/15(日)23:59（2026-11-15 田崎さん指示）。設定は products-master.js の
+         limitedTotal/limitedSoldOutAt/limitedUntil。PDPの帯に「11/15（日）23:59まで」と
+         残り時間が出て、過ぎたら closeSales / closePdpSales で自動的に閉じる。
+         カードには data-limited-* を付けない（すでに発売中なので prestart を付けると消える）。 -->
  <div class="product-card" data-sub="set" data-variants='[{"id":51109038300771,"t":"1セット","p":3830}]'>
  <div class="product-card-img" data-label="HAMBURG CHK SET"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Hamburg &amp; Chicken</span><span class="product-price"><s>&yen;4,120</s> &yen;3,830</span></div>
@@ -10035,8 +10039,9 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 このカードに reveal を付けない（付けると表示されない）。
       🔴 残数（個数）は出さない（2026-10-11／2026-11-09 田崎さん指示）。
          labelFor が在庫のあるあいだ空文字を返すので、リボンも残りセット数の行も自動で消える。
-      🔴 締切 11/22(日)23:59 は products-master.js の limitedTotal/limitedSoldOutAt/limitedUntil。
-         PDPの帯に「11/22（日）23:59まで」と残り時間が出る。カードには data-limited-* を付けない
+      🔴 締切 11/15(日)23:59 は products-master.js の limitedTotal/limitedSoldOutAt/limitedUntil。
+         （2026-11-15 田崎さん指示で 11/22 から前倒し）
+         PDPの帯に「11/15（日）23:59まで」と残り時間が出る。カードには data-limited-* を付けない
          （scope を付けなくても PREVIEW_PICKS に名前を入れてあるのでプレビューに出る）。 -->
  <div class="product-card" data-sub="set" data-variants='[{"id":51109059000751,"t":"1セット","p":5900}]'>
  <div class="product-card-img" data-label="SHIMOFURI AKAMI KURABE"></div>
@@ -13894,7 +13899,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-15-p075-shimofuri-akami-3" defer></script>
+<script src="public/data/products-master.js?v=2026-11-15-p075-p077-deadline-1115" defer></script>
 <script src="public/js/products-loader.js?v=009" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
