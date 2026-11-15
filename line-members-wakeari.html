@@ -444,6 +444,148 @@ body{
       ],
       /* 商品詳細ページに 3つ/5つセットがある＝一覧に「3つ以上買うとさらにお得」を出せる。 */
       bulkOnPdp: true
+    },
+    /* ===== 訳あり9商品（P079〜P087）2026-11-15 田崎さん決裁 =====
+       価格は田崎さん確定。内容量は元になる通常品と同じ値をそのまま使っている。
+       🔴 在庫は未指示なので9品とも stock 0 ＝「完売しました」でカートに入らない。
+          数が決まったら products シートに9行足して stock を入れること。
+          シートに行が無いあいだは、決済後の在庫減算も決済前の在庫チェックも効かない。
+       🔴 正規品とは別商品・別枠在庫。売れても通常品の在庫は減らない。
+       🔴 掲載はこのページだけ。shop / products / index には出さない。 */
+    {
+      productId: 'P079', variantId: 'WAKEARI-HIRE',
+      detailId: 'P079', detailLabel: '実物の写真を見る',
+      name: '訳ありヒレステーキ',
+      variant: '1枚 150g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 3700, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/hire-steak.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P079)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P080', variantId: 'WAKEARI-SHIMOFURI-SLICE',
+      detailId: 'P080', detailLabel: '実物の写真を見る',
+      name: '訳あり霜降りスライス',
+      variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 3000, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/shimofuri-slice.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P080)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P081', variantId: 'WAKEARI-AKAMI-STEAK',
+      detailId: 'P081', detailLabel: '実物の写真を見る',
+      name: '訳あり赤身ステーキ',
+      variant: '1枚 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 2980, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/red-meat.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P081)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P082', variantId: 'WAKEARI-SIRLOIN',
+      detailId: 'P082', detailLabel: '実物の写真を見る',
+      name: '訳ありサーロインステーキ',
+      variant: '1枚 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 3000, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/sirloin.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P082)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P083', variantId: 'WAKEARI-MISUJI',
+      detailId: 'P083', detailLabel: '実物の写真を見る',
+      name: '訳ありミスジステーキ',
+      variant: '1枚 150g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 3000, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/misuji-steak.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P083)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P084', variantId: 'WAKEARI-AKAMI-SLICE',
+      detailId: 'P084', detailLabel: '実物の写真を見る',
+      name: '訳あり赤身スライス',
+      variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 2200, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/wagyu-slice.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P084)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P085', variantId: 'WAKEARI-CUBE',
+      detailId: 'P085', detailLabel: '実物の写真を見る',
+      name: '訳ありサイコロステーキ',
+      variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 1680, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/cube-steak.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P085)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P086', variantId: 'WAKEARI-BARA-YAKINIKU',
+      detailId: 'P086', detailLabel: '実物の写真を見る',
+      name: '訳ありバラ焼肉',
+      variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 1650, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/yakiniku-brisket-2026.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P086)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
+    },
+    {
+      productId: 'P087', variantId: 'WAKEARI-AKAMI-YAKINIKU',
+      detailId: 'P087', detailLabel: '実物の写真を見る',
+      name: '訳あり赤身焼肉',
+      variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0 のまま。カードは「完売しました」になり
+         カートに入らない＝これが意図した状態。数が決まったら
+         products シートに行を足して stock を入れること（ここは取得失敗時の控え）。
+         🔴 まとめ買いの設定は無い＝赤字の「◯つ以上買うとさらにお得」は出ない。 */
+      price: 2180, listPrice: 0, stock: 0, limitedTotal: 0,
+      img: 'public/images/products/drive/akami-yakiniku.jpg',
+      /* 訳ありの説明と実物写真は商品詳細ページ(product.html?id=P087)に置く。
+         カードには出さない（2026-09-02 ryotaro指示）。 */
+      desc: ''
     }
   ];
 

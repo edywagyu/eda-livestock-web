@@ -965,6 +965,244 @@
         'public/images/products/drive/fusoroi-sample.jpg'
       ]
     },
+
+    /* ===== 訳あり9商品（P079〜P087）2026-11-15 田崎さん決裁 =====
+       掲載先は会員限定ページ line-members-wakeari.html の1枚だけ。
+       shop.html / products.html / index.html には出さない。
+       🔴 正規品とは別商品・別枠在庫。components は持たせない＝訳ありが売れても
+          通常品(P001/P002/P003/P004/P006/P023/P024/P025/P026)の在庫は減らない。
+       🔴 内容量と重量は、それぞれの通常品の products の実値に合わせてある。
+       🔴 listPrice（取り消し線の旧価格）は置いていない。通常品の値段を取り消し線で
+          並べると「この商品が以前その値段だった」と読まれる二重価格表示になるため。
+          お得さをどう見せるかは田崎さんの判断待ち。
+       🔴 本番 products シートには、まだ9行とも登録していない。登録しないと
+          決済後の在庫減算（name 完全一致）も決済前の在庫チェックも効かない。
+          在庫を入れるときに必ず9行を足すこと。 */
+    {
+      productId: 'P079', variantId: 'WAKEARI-HIRE', sku: 'EDA-WAKEARI-HIRE-150',
+      stripePriceId: '',
+      name: '訳ありヒレステーキ', variant: '1枚 150g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 3700, weight: 150, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Fillet Steak',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: '一頭からごくわずかしか取れない、やわらかさで知られる部位です。1枚150g。切り分けのときに形や厚みがそろわなかったもの、冷凍する過程で表面の色が濃く変わった部分があるものを集めた訳あり品です。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/hire-steak.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P080', variantId: 'WAKEARI-SHIMOFURI-SLICE', sku: 'EDA-WAKEARI-SHIMOFURI-200',
+      stripePriceId: '',
+      name: '訳あり霜降りスライス', variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 3000, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Marbled Slice',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: '肩ロースの霜降りを薄切りにしました。しゃぶしゃぶ、すき焼きに。1袋200g。冷凍する過程で表面の色が濃く変わった部分が混ざります。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/shimofuri-slice.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P081', variantId: 'WAKEARI-AKAMI-STEAK', sku: 'EDA-WAKEARI-AKAMI-STEAK-200',
+      stripePriceId: '',
+      name: '訳あり赤身ステーキ', variant: '1枚 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 2980, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Lean Steak',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: 'ウチモモ・ランプから取った赤身のステーキです。1枚200g。切り分けのときに形や厚みがそろわなかったもの、冷凍する過程で表面の色が濃く変わった部分があるものを集めた訳あり品です。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/red-meat.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P082', variantId: 'WAKEARI-SIRLOIN', sku: 'EDA-WAKEARI-SIRLOIN-200',
+      stripePriceId: '',
+      name: '訳ありサーロインステーキ', variant: '1枚 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 3000, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Sirloin Steak',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: '背中の芯の部分から取った、サシの入ったステーキです。1枚200g。切り分けのときに形や厚みがそろわなかったもの、冷凍する過程で表面の色が濃く変わった部分があるものを集めた訳あり品です。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/sirloin.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P083', variantId: 'WAKEARI-MISUJI', sku: 'EDA-WAKEARI-MISUJI-150',
+      stripePriceId: '',
+      name: '訳ありミスジステーキ', variant: '1枚 150g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 3000, weight: 150, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Misuji Steak',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: '肩甲骨の内側にある、一頭からわずかしか取れない希少部位です。1枚150g。切り分けのときに形や厚みがそろわなかったもの、冷凍する過程で表面の色が濃く変わった部分があるものを集めた訳あり品です。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/misuji-steak.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P084', variantId: 'WAKEARI-AKAMI-SLICE', sku: 'EDA-WAKEARI-AKAMI-SLICE-200',
+      stripePriceId: '',
+      name: '訳あり赤身スライス', variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 2200, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Lean Slice',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: 'ソトモモの赤身を薄切りにしました。1袋200g。冷凍する過程で表面の色が濃く変わった部分が混ざります。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/wagyu-slice.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P085', variantId: 'WAKEARI-CUBE', sku: 'EDA-WAKEARI-CUBE-200',
+      stripePriceId: '',
+      name: '訳ありサイコロステーキ', variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 1680, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Steak Cubes',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: 'ウチモモ・ランプを切り分けるときに出た部分を、サイコロカットにしました。1袋200g。冷凍する過程で表面の色が濃く変わった部分が混ざります。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/cube-steak.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P086', variantId: 'WAKEARI-BARA-YAKINIKU', sku: 'EDA-WAKEARI-BARA-200',
+      stripePriceId: '',
+      name: '訳ありバラ焼肉', variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 1650, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Brisket Yakiniku',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: 'トモバラの焼肉用です。赤身と脂のバランスがとれた部位です。1袋200g。冷凍する過程で表面の色が濃く変わった部分が混ざります。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/yakiniku-brisket-2026.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
+    {
+      productId: 'P087', variantId: 'WAKEARI-AKAMI-YAKINIKU', sku: 'EDA-WAKEARI-AKAMI-YAKI-200',
+      stripePriceId: '',
+      name: '訳あり赤身焼肉', variant: '1袋 200g',
+      /* 🔴 在庫は田崎さんの指示待ちで 0。0 のままなら会員限定ページのカードが
+         「完売しました」になり買えない＝これが意図した状態。
+         noPreorder で商品ページの予約注文も閉じてある（在庫0は予約として
+         決済が通る仕様なので、これが無いと止まらない）。
+         在庫が決まったら products シートに行を足し、stock を入れ、
+         ここの noPreorder を外すこと。 */
+      price: 2180, weight: 200, stock: 0, temp: '冷凍',
+      noPreorder: 'TRUE',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Wakeari Lean Yakiniku',
+      /* 説明文は 2026-11-15 にレビュー担当の指摘を反映した版。
+         「一頭から約3%」「最もやわらかい」など出所不明・最上級の表現は外し、
+         2枚目の写真が商品そのものではないことを本文で明示してある。 */
+      description: 'ウデの赤身を焼肉用にしました。噛みごたえのある赤身です。1袋200g。冷凍する過程で表面の色が濃く変わった部分が混ざります。中身は通常の江田和牛と同じものです。2枚目の写真は、色が変わった状態の見本です。写っているのは切り落としのパックで、この商品そのものではありません。冷凍便でお届けします。',
+      /* 1枚目＝通常品の写真を流用。2枚目＝色が変わった状態の見本。
+         🔴 訳あり・不揃い品は images の2枚目に fusoroi-sample.jpg を入れる
+            （P065 / P043 と同じ運用）。 */
+      images: [
+        'public/images/products/drive/akami-yakiniku.jpg',
+        'public/images/products/drive/fusoroi-sample.jpg'
+      ]
+    },
     /* ===== 訳あり切り落とし（会員限定ページ line-members-wakeari.html の商品）=====
        🔴 訳あり・不揃い品は images の2枚目に必ず fusoroi-sample.jpg（実物の一例）を入れる。
           説明文と実物写真はカードではなく【この商品詳細ページ】に置く（2026-09-02 ryotaro指示）。
