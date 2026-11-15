@@ -428,7 +428,22 @@ body{
       endLabel: '11月30日（月）23:59',
       price: 900, listPrice: 0, stock: 26, limitedTotal: 0,
       img: 'public/images/products/drive/kiriotoshi-2026.jpg',
-      desc: '江田和牛の切り落としを200gずつ脱気包装に。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。'
+      desc: '江田和牛の切り落としを200gずつ脱気包装に。冷凍する過程で表面の色が濃くなった部分が混ざります。中身は通常の切り落としと同じ江田和牛です。',
+      /* まとめ買い（2026-11-15 田崎さん指示で一覧にも赤字の誘導を出す）。
+         🔴 ラベルは products-master.js の P076 と1文字も同じにすること。
+            GAS の在庫減算が「3つセット」=3口 /「5つセット」=5口 として読む。
+         🔴 一覧には選択肢を描かない（基準の「1つ」¥900 だけを出す）。
+            選ぶのは商品詳細ページ product.html?id=P076 側。
+         ⚠️ 基準を '1つ' にしたので、カートに入る文字列が従来の
+            「1袋 200g」から「1つ」に変わる。口数はどちらも1で在庫減算は同じ。
+            商品ページから入れた1袋と同じ行にまとまるようになる。 */
+      variants: [
+        { t: '1つ',      p:  900, n: 1 },
+        { t: '3つセット', p: 2500, n: 3 },
+        { t: '5つセット', p: 3980, n: 5 }
+      ],
+      /* 商品詳細ページに 3つ/5つセットがある＝一覧に「3つ以上買うとさらにお得」を出せる。 */
+      bulkOnPdp: true
     }
   ];
 
@@ -549,10 +564,20 @@ body{
     /* 基準が2口の品（P042）は在庫1では1セット作れないので完売扱いにする。
        以前は選択肢側の opacity+pointer-events:none で止めていた分の肩代わり。 */
     if (baseVar && it.stock < Number(baseVar.n)) { soldOut = true; closed = true; }
-    var hasBulk = !!(it.variants && it.variants.length > 1);
-    /* 出す＝約束。商品詳細ページで実際にセットが買える品だけに出す。 */
-    var bulkHint = (hasBulk && it.bulkOnPdp)
-      ? '<p class="card-bulk">' + (it.bulkHintText || '2つ以上買うとさらにお得') + '</p>'
+    /* 出す＝約束。商品詳細ページで実際にセットが買える品(bulkOnPdp)だけに出す。
+       🔴 「◯つ以上」の数字は variants から毎回計算する（2026-11-15 田崎さん指示）。
+          使うのは「いちばん小さいセットの口数」＝ n が2以上のうちの最小。
+          ミスジ 1/2/3 → 2つ ／ ミンチ 2/3 → 2つ ／ ハンバーグ 1/3/6 → 3つ ／
+          訳あり切り落とし期間限定 1/3/5 → 3つ。手で書かないのでズレない。 */
+    var bulkMin = 0;
+    if (it.variants) {
+      it.variants.forEach(function (v) {
+        var n = Number(v.n) || 1;
+        if (n >= 2 && (!bulkMin || n < bulkMin)) bulkMin = n;
+      });
+    }
+    var bulkHint = (bulkMin && it.bulkOnPdp)
+      ? '<p class="card-bulk">' + bulkMin + 'つ以上買うとさらにお得</p>'
       : '<p class="card-bulk card-ph">&nbsp;</p>';
     /* 一覧に出す価格は基準の口数の価格。it.price と食い違わないようここから引く。 */
     var showPrice = baseVar ? Number(baseVar.p) : Number(it.price);
