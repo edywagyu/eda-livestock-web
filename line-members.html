@@ -138,6 +138,59 @@ body{
 .btn-add:disabled{background:#B5B5B5;cursor:not-allowed;}
 .btn-add.added{background:var(--gold);color:var(--forest);}
 
+/* ---------- 商品カードを2列に（2026-11-15 田崎さん指示：もう少し小さく） ----------
+   対象は #cards（このページの「公式LINE会員様限定商品」）だけ。
+   line-members-wakeari.html / line-members-osusume.html は別ファイルなので影響しない。
+   カード幅が半分になるぶん、文字・余白・数量ボックスも合わせて縮める。
+   縮めないと商品名・バリアント行・数量行がカードからはみ出す。 */
+#cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;align-items:start;}
+#cards .card{margin-bottom:0;}
+#cards .card-body{padding:12px 12px 14px;}
+#cards .card-tag{font-size:9.5px;letter-spacing:.06em;padding:3px 7px;margin-bottom:8px;}
+#cards .card h3{font-size:15px;line-height:1.45;margin:0 0 4px;overflow-wrap:anywhere;}
+#cards .card-variant{font-size:11px;margin:0 0 8px;}
+#cards .card-desc{font-size:11.5px;line-height:1.6;margin:0 0 8px;}
+#cards .card-detail{font-size:11.5px;margin:0 0 10px;}
+#cards .price-row{gap:6px;}
+#cards .price-was{font-size:11.5px;}
+#cards .price-now{font-size:20px;}
+#cards .price-off{font-size:10px;padding:2px 6px;}
+#cards .stock-line{font-size:11px;margin:0 0 10px;}
+#cards .var-row{gap:6px;margin:0 0 10px;}
+#cards .var-opt{flex-wrap:wrap;gap:6px;padding:8px 9px;}
+#cards .var-opt .dot{width:13px;height:13px;}
+#cards .var-opt .t{flex:1 1 auto;min-width:0;font-size:11.5px;overflow-wrap:anywhere;}
+#cards .var-opt .mem{font-size:9px;padding:1px 4px;margin-left:4px;}
+#cards .var-opt .p{font-size:12px;}
+#cards .var-opt .save{font-size:9.5px;padding:1px 5px;}
+#cards .qty-row{gap:8px;margin-bottom:10px;}
+#cards .qty-label{font-size:11px;}
+#cards .qty-box button{width:30px;height:32px;font-size:16px;}
+#cards .qty-box span{width:28px;font-size:13px;}
+#cards .btn-add{font-size:13px;padding:12px 8px;}
+/* 「商品の詳細」アコーディオン（member-extras.js）も半分の幅に収める。
+   lm-spec は 96px+1fr の2列のままだとカードからはみ出すので縦積みにする。 */
+#cards .lm-detail{margin:8px 0 12px;}
+#cards .lm-detail>summary{padding:10px 0;font-size:12px;}
+#cards .lm-detail-body{padding:0 0 12px;}
+#cards .lm-cut{font-size:11.5px;line-height:1.8;margin:0 0 10px;}
+#cards .lm-spec>div{grid-template-columns:1fr;gap:2px;padding:7px 0;font-size:11.5px;}
+#cards .lm-spec dt,#cards .lm-spec dd{min-width:0;overflow-wrap:anywhere;}
+#cards .lm-cook-t{font-size:11px;}
+#cards .lm-cook li{grid-template-columns:24px 1fr;gap:6px;font-size:11.5px;padding:7px 0;}
+#cards .lm-cook li>*{min-width:0;overflow-wrap:anywhere;}
+#cards .lm-bd-cards{gap:8px;}
+#cards .lm-bd-sum{gap:8px;}
+/* iPhone SE など極小幅。数量行が入りきらなくなるのでもう一段詰める。 */
+@media (max-width:360px){
+  .wrap{padding-left:12px;padding-right:12px;}
+  #cards{gap:10px;}
+  #cards .card-body{padding:10px 10px 12px;}
+  #cards .qty-row{gap:6px;}
+  #cards .qty-box button{width:28px;}
+  #cards .qty-box span{width:24px;}
+}
+
 /* ---------- 締切 ---------- */
 .deadline{
   background:var(--forest); color:#fff; border-radius:12px;
