@@ -108,10 +108,28 @@ jobs:
           fi
           OLD=$(git show HEAD:public/data/stock-snapshot.json 2>/dev/null | python3 -c "import sys,json;d=json.load(sys.stdin);d.pop('generatedAt',None);print(json.dumps(d,ensure_ascii=False,sort_keys=True))" 2>/dev/null || echo '')
           NEW=$(python3 -c "import json;d=json.load(open('public/data/stock-snapshot.json'));d.pop('generatedAt',None);print(json.dumps(d,ensure_ascii=False,sort_keys=True))")
-          if [ "$OLD" = "$NEW" ]; then
-            echo '在庫・価格に変化なし。コミットしない。'
+          # 🔴 中身が同じでも、置いてある控えが20分より古くなったら時刻だけ打ち直す（2026-11-15 本番で判明）。
+          #    サイト側は generatedAt が45分より古い控えを「止まっている」とみなして使わない。
+          #    在庫が動かない時間帯（夜間・平日の昼）は中身が変わらないので、中身の差分だけで
+          #    コミットを判断すると45分で勝手に期限切れになり、せっかくの高速化が効かなくなる。
+          #    20分ごとなら Pages のビルドは最大でも毎時3回（在庫が動く時間帯と合わせて6回）。
+          AGE_MIN=$(git show HEAD:public/data/stock-snapshot.json 2>/dev/null | python3 -c "
+          import sys,json,datetime
+          try:
+              g=json.load(sys.stdin).get('generatedAt','')
+              d=datetime.datetime.strptime(g,'%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=datetime.timezone.utc)
+              print(int((datetime.datetime.now(datetime.timezone.utc)-d).total_seconds()//60))
+          except Exception:
+              print(9999)
+          " 2>/dev/null || echo 9999)
+          echo "置いてある控えの古さ: ${AGE_MIN}分"
+          if [ "$OLD" = "$NEW" ] && [ "$AGE_MIN" -lt 20 ]; then
+            echo '在庫・価格に変化なし、控えもまだ新しい。コミットしない。'
             git checkout -- public/data/stock-snapshot.json
             exit 0
+          fi
+          if [ "$OLD" = "$NEW" ]; then
+            echo '在庫・価格に変化なしだが控えが古いので、時刻だけ打ち直す。'
           fi
           git config user.name  'eda-stock-bot'
           git config user.email 'actions@github.com'
