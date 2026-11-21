@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 🔴 公式LINE限定ページ。検索にも通常ナビにも出さない（既存の line-members*.html と同じ扱い）。
+     ・noindex,nofollow をここで宣言する
+     ・sitemap.xml には載せない（既存4枚も載っていない）
+     ・ヘッダー/フッターの通常ナビからは一切リンクしない。導線はLINEのリッチメッセージ直リンクだけ
+
+     ===== いい肉の日セット（2026-11-21 田崎さん決裁）=====
+     会期 2026/11/25(水) 00:00 〜 2026/11/29(日) 23:59。
+     11/25(水)18:30 の配信で「今日から」と案内する。発売ゲートは 00:00 なので
+     配信時刻には必ず買える状態になっている（当日の手作業は不要）。
+     🔴 P076 訳あり切り落とし期間限定・お米の締切（11/30 23:59）とは別。混ぜない。
+     🔴 残数（残り◯セット）は出さない。出すのは「完売しました」と締切だけ。
+     🔴 作りは line-members-rice.html / line-members-wakeari.html と同じ
+        （hero → pagenav → 締切の帯 → カード → カートバー。ITEMS 配列に手書き）。 -->
+<meta name="robots" content="noindex,nofollow">
+<title>公式LINE会員限定 いい肉の日セット｜江田畜産</title>
+<!-- 在庫API(GAS)の接続を先に張っておく。応答自体が3〜5秒かかるので、握手ぶんだけでも先に済ませる -->
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#0F3D2E; --forest-deep:#061410; --gold:#D4A93B; --gold-light:#FFE594;
+  --cream:#FAF7F0; --ink:#1A1A1A; --muted:#6B6B6B; --line-green:#06C755;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--cream); color:var(--ink);
+  font-family:'Inter','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+  line-height:1.7; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 18px 80px;}
+
+/* ---------- ヘッダー ---------- */
+.hero{
+  background:linear-gradient(180deg,var(--forest) 0%,var(--forest-deep) 100%);
+  color:#fff; padding:38px 18px 34px; text-align:center;
+}
+.hero-brand{
+  font-size:11px; letter-spacing:.22em; color:var(--gold);
+  text-transform:uppercase; margin:0 0 14px;
+}
+.hero-badge{
+  display:inline-block; border:1px solid rgba(212,169,59,.6);
+  background:rgba(212,169,59,.12); color:var(--gold-light);
+  font-size:15px; font-weight:600; letter-spacing:.12em;
+  padding:9px 22px; border-radius:999px; margin-bottom:0;
+}
+.hero h1{
+  font-family:'Shippori Mincho','Noto Serif JP',serif; font-weight:600;
+  font-size:clamp(22px,6vw,30px); margin:0 0 10px; line-height:1.45;
+}
+.hero p{margin:0;font-size:13.5px;color:rgba(255,255,255,.8);}
+
+/* ---------- 連携ゲート ---------- */
+.gate{
+  margin:28px 0 0; padding:30px 22px; text-align:center;
+  background:#fff; border:1px dashed rgba(212,169,59,.65); border-radius:14px;
+}
+.gate-icon{font-size:38px;line-height:1;margin-bottom:12px;}
+.gate h2{
+  font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 10px; color:var(--forest);
+}
+.gate p{font-size:13.5px;color:var(--muted);margin:0 0 20px;}
+.gate-cta{
+  display:block; background:var(--line-green); color:#fff !important;
+  text-decoration:none; font-weight:700; font-size:16px;
+  padding:15px 20px; border-radius:10px;
+  box-shadow:0 6px 16px rgba(6,199,85,.35);
+}
+.gate-note{font-size:11.5px;color:var(--muted);margin:16px 0 0;line-height:1.6;}
+
+/* ---------- リード ---------- */
+.lead{
+  background:#fff; border:1px solid rgba(15,61,46,.1); border-radius:14px;
+  padding:22px 18px; margin:26px 0 0; box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+.lead h2{
+  font-family:'Shippori Mincho',serif; font-size:19px; color:var(--forest); margin:0 0 10px;
+}
+.lead p{margin:0 0 10px;font-size:13.5px;color:#4A4A4A;}
+.lead p:last-child{margin-bottom:0;}
+.lead strong{color:var(--forest);}
+
+/* ---------- 締切の帯（line-members-wakeari.html の .deadline と同じ作り）---------- */
+.deadline{
+  background:var(--forest); color:#fff; border-radius:12px;
+  padding:16px 18px; text-align:center; margin:18px 0 0;
+}
+.deadline strong{color:var(--gold-light);font-size:16px;}
+.deadline span{display:block;font-size:12.5px;color:rgba(255,255,255,.78);margin-top:4px;}
+
+/* ---------- 商品 ---------- */
+.card{
+  background:#fff; border:1px solid rgba(15,61,46,.1); border-radius:14px;
+  overflow:hidden; margin-bottom:22px; box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+/* 写真が未支給の品は background-image が空振りするだけで、枠の高さは
+   aspect-ratio で確保されるのでレイアウトは崩れない。 */
+.card-img{
+  width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
+  display:block;
+}
+.card-body{padding:18px 18px 20px;}
+.card-tag{
+  display:inline-block; background:var(--forest); color:var(--gold-light);
+  font-size:10.5px; letter-spacing:.1em; padding:4px 10px; border-radius:4px; margin-bottom:10px;
+}
+.card h3{
+  font-family:'Shippori Mincho',serif; font-size:19px; margin:0 0 6px; color:var(--ink);
+}
+.card-variant{font-size:12.5px;color:var(--muted);margin:0 0 10px;}
+/* 構成（何が何g×何パック）。1行1品で出す。 */
+.card-compose{margin:0 0 12px;padding:0;list-style:none;}
+.card-compose li{
+  font-size:13px;color:#4A4A4A;padding:4px 0;border-bottom:1px dotted rgba(15,61,46,.14);
+}
+.card-compose li:last-child{border-bottom:0;}
+.card-compose b{color:var(--forest);}
+.card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
+.price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+/* 元の販売価格＝単品で買ったときの合計。取り消し線で出す。
+   🔴 これは「この商品が以前その値段だった」ではなく「単品で買うと合計いくらか」。
+      見出しの「単品で買うと」を必ず一緒に出す（省くと二重価格表示になる）。 */
+.price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
+.price-was-note{font-size:11.5px;color:var(--muted);display:block;margin:0 0 2px;}
+.price-now{font-family:'Shippori Mincho',serif;font-size:27px;font-weight:700;color:var(--forest);}
+.price-tax{font-size:12px;color:var(--muted);}
+.price-off{
+  font-size:12px;font-weight:700;color:#fff;background:#C0392B;
+  padding:3px 9px;border-radius:999px;white-space:nowrap;
+}
+/* 締切・完売の1行。残数（残り◯セット）は絶対に出さない。 */
+.stock-line{font-size:12.5px;color:#C0392B;font-weight:600;margin:0 0 14px;}
+.stock-pending{color:var(--muted);}
+.card-ship{font-size:11.5px;color:var(--muted);margin:0 0 14px;line-height:1.7;}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.qty-label{font-size:12.5px;color:var(--muted);}
+.qty-box{display:flex;align-items:center;border:1px solid rgba(15,61,46,.2);border-radius:8px;overflow:hidden;}
+.qty-box button{
+  width:38px;height:38px;border:0;background:#fff;font-size:18px;color:var(--forest);cursor:pointer;
+}
+.qty-box span{width:40px;text-align:center;font-size:15px;font-weight:600;}
+.btn-add{
+  display:block;width:100%;border:0;border-radius:10px;cursor:pointer;
+  background:var(--forest);color:#fff;font-size:15.5px;font-weight:700;
+  padding:15px 16px;font-family:inherit;
+}
+.btn-add:disabled{background:#B5B5B5;cursor:not-allowed;}
+.btn-add.added{background:var(--gold);color:var(--forest);}
+
+/* ---------- カートバー ---------- */
+.cartbar{
+  position:fixed;left:0;right:0;bottom:0;background:#fff;
+  border-top:1px solid rgba(15,61,46,.12); padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  display:none; box-shadow:0 -4px 18px rgba(0,0,0,.08); z-index:50;
+}
+.cartbar.on{display:block;}
+.cartbar-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:14px;}
+.cartbar-sum{flex:1;font-size:13px;color:var(--muted);}
+.cartbar-sum b{display:block;font-size:17px;color:var(--ink);}
+.cartbar a{
+  background:var(--gold);color:var(--forest);text-decoration:none;font-weight:700;
+  font-size:15px;padding:14px 22px;border-radius:10px;white-space:nowrap;
+}
+
+/* ---------- 上部の切替ボタン（既存4枚と同じ作り）---------- */
+.pagenav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px;}
+.pagenav a{
+  flex:1 1 calc(50% - 10px);text-align:center;text-decoration:none;
+  font-family:'Shippori Mincho','Noto Serif JP',serif;
+  font-weight:600;font-size:14.5px;letter-spacing:.05em;
+  color:var(--forest);background:#fff;padding:15px 4px;line-height:1.3;
+  border:1px solid rgba(15,61,46,.16);border-radius:3px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.pagenav a.on{
+  background:linear-gradient(180deg,var(--forest) 0%,#0A2C21 100%);
+  color:var(--gold-light);border-color:var(--forest);
+  box-shadow:inset 0 0 0 1px rgba(212,169,59,.5);
+}
+.pagenav a.out{color:var(--muted);border-style:dashed;background:transparent;box-shadow:none;}
+@media(min-width:560px){.pagenav a{flex:1 1 calc(33.333% - 10px);}}
+@media(max-width:400px){.pagenav a{font-size:13px;padding:14px 2px;letter-spacing:.02em;}}
+.foot{text-align:center;font-size:11.5px;color:var(--muted);padding:24px 0 0;line-height:1.8;}
+.foot a{color:var(--forest);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <p class="hero-brand">EDA LIVESTOCK</p>
+  <div class="hero-badge">公式LINE会員様 限定 いい肉の日</div>
+</div>
+
+<div class="wrap">
+
+  <!-- 上部ボタン。現在地は on クラス／通常ショップへ出る導線は out クラス（既存4枚と同じ）。
+       🔴 既存の line-members*.html 側にこのページへのリンクは足していない。
+          このページの導線はLINEのリッチメッセージ直リンクだけ、という前提
+          （line-members-rice.html を足したときと同じ扱い）。 -->
+  <nav class="pagenav">
+    <a href="line-members.html">限定商品一覧</a>
+    <a href="line-members-wakeari.html">限定不揃い品</a>
+    <a href="line-members-osusume.html">イマおすすめ</a>
+    <a href="line-members-rice.html">エダチク米</a>
+    <a class="on" href="line-members-nikunohi.html">いい肉の日</a>
+    <a class="out" href="products.html">通常商品一覧</a>
+  </nav>
+
+  <!-- 未連携: 鍵 -->
+  <div class="gate" id="gate" hidden>
+    <div class="gate-icon">🔒</div>
+    <h2>ここから先は会員様限定です</h2>
+    <p>公式LINEとの連携が済んでいる方のみ、商品と価格をご覧いただけます。<br>連携は数秒で完了します。</p>
+    <a class="gate-cta" id="gateCta" href="https://liff.line.me/1657458587-mz1dR9e6/line-link.html">LINEで連携して商品を見る →</a>
+    <p class="gate-note">
+      ※すでに連携がお済みの方は、<a href="#" id="reloadLink">こちらを押して再読み込み</a>してください。<br>
+      ※LINEアプリ内のブラウザで開くと、そのまま連携できます。
+    </p>
+  </div>
+
+  <!-- 連携済み: 商品 -->
+  <div id="members" hidden>
+
+    <section class="lead">
+      <h2>いい肉の日の4セット</h2>
+      <p>11月29日の<strong>いい肉の日</strong>に合わせて、スライス・ステーキ・焼肉から4つのセットをご用意しました。どれも<strong>単品で買うより安い</strong>組み合わせです。</p>
+      <p>宮崎県高原町で、抗生物質・ホルモン剤を使わずに育てた<strong>江田和牛</strong>です。冷凍便でお届けします。</p>
+    </section>
+
+    <div class="deadline">
+      <strong>11月29日（日）23:59まで</strong>
+      <span>数量限定です。期間を過ぎるとご注文いただけません。</span>
+    </div>
+
+    <div id="cards"></div>
+  </div>
+
+</div>
+
+<div class="cartbar" id="cartbar">
+  <div class="cartbar-inner">
+    <div class="cartbar-sum"><span id="cartCount">0点</span><b id="cartTotal">¥0</b></div>
+    <a href="checkout.html" id="toCheckout">レジに進む →</a>
+  </div>
+</div>
+
+<p class="foot">
+  江田畜産（宮崎県西諸県郡高原町）<br>
+  このページは公式LINEにご登録のお客様にだけお送りしています。
+</p>
+
+<script src="public/js/analytics.js?v=006" defer></script>
+<script src="public/js/member-gate.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     いい肉の日セット 会員限定ページ（2026-11-21 田崎さん決裁）
+     ------------------------------------------------------------
+     price / stock は public_catalog のライブ値で上書きされる（下の数字はフォールバック）。
+     🔴 name は products シートの name と1文字も変えない。決済も在庫減算も名前で引く。
+     🔴 listPrice は「単品で買ったときの合計」。カードには必ず
+        「単品で買うと」という見出しと一緒に出す（省くと二重価格表示になる）。
+        金額は products の実価格から計算した確定値:
+          霜降スライス ¥3,700 ／ 赤身スライス ¥2,600 ／ 赤身ステーキ ¥3,400
+          霜降り焼肉 ¥2,600 ／ 赤身焼肉 ¥2,400 ／ バラ焼肉 ¥1,900
+     🔴 並び順は売りたい順＝② 霜降り多め → ③ 赤身ステーキ2枚 → ① 赤身多め → ⑤ 焼肉3種。
+        ITEMS の並びがそのまま画面の並び（買えないものだけ後ろに回す）。
+     🔴 残数（残り◯セット）は出さない。出すのは「完売しました」と締切だけ。
+     🔴 4品とも components を持つセット＝products シートのセット行の stock は
+        売れても動かない。構成品から「あと何セット作れるか」を計算して使う（bomStock）。
+     ============================================================ */
+
+  /* 会期。products-master.js の limitedStartAt / limitedSoldOutAt と同じ日時にすること。
+     🔴 ここと products-master.js はセット。片方だけ直さない。 */
+  var START_AT = new Date('2026-11-25T00:00:00+09:00');
+  var END_AT   = new Date('2026-11-29T23:59:59+09:00');
+  var START_LABEL = '11月25日（水）0:00';
+  var END_LABEL   = '11月29日（日）23:59';
+
+  var ITEMS = [
+    /* ② 霜降り多め */
+    { productId:'P089', variantId:'NIKUNOHI-SLICE-SHIMO', detailId:'P089',
+      name:'いい肉の日 スライスセット 霜降り多め',
+      variant:'計600g ／ 冷凍便',
+      price:7800, listPrice:10000, stock:20,
+      components:[{name:'霜降スライス',qty:2},{name:'赤身スライス',qty:1}],
+      compose:['霜降スライス 200g × 2パック','赤身スライス 200g × 1パック'],
+      img:'public/images/products/drive/nikunohi-slice-shimofuri.jpg',
+      desc:'肩ロースの霜降りを主役に、赤身を1パック添えた配分です。すき焼き・しゃぶしゃぶに。' },
+
+    /* ③ 赤身ステーキ2枚
+       🔴 写真は 2026-11-21 時点で未支給。
+          public/images/products/drive/nikunohi-akami-steak2.jpg を置けば差し替わる。
+          置くまで写真枠は無地（#EDE8DC）になるだけで、カードの高さは変わらない。 */
+    { productId:'P090', variantId:'NIKUNOHI-STEAK2', detailId:'P090',
+      name:'いい肉の日 赤身ステーキ2枚セット',
+      variant:'計400g ／ 冷凍便',
+      price:5000, listPrice:6800, stock:20,
+      components:[{name:'赤身ステーキ',qty:2}],
+      compose:['赤身ステーキ 200g × 2パック'],
+      img:'public/images/products/drive/nikunohi-akami-steak2.jpg',
+      desc:'モモの中心から取った赤身ステーキを2枚。塩だけで焼いてください。' },
+
+    /* ① 赤身多め */
+    { productId:'P088', variantId:'NIKUNOHI-SLICE-AKAMI', detailId:'P088',
+      name:'いい肉の日 スライスセット 赤身多め',
+      variant:'計600g ／ 冷凍便',
+      price:7400, listPrice:8900, stock:20,
+      components:[{name:'赤身スライス',qty:2},{name:'霜降スライス',qty:1}],
+      compose:['赤身スライス 200g × 2パック','霜降スライス 200g × 1パック'],
+      img:'public/images/products/drive/nikunohi-slice-akami.jpg',
+      desc:'ソトモモの赤身を主役に、霜降りを1パック添えた配分です。すき焼き・しゃぶしゃぶに。' },
+
+    /* ⑤ 焼肉3種（P064 の再開。10/22 に出していた商品と同じもの） */
+    { productId:'P064', variantId:'YAKI3-KURABE-SET', detailId:'P064',
+      name:'焼肉3種食べ比べセット',
+      variant:'計600g ／ 冷凍便',
+      price:5900, listPrice:6900, stock:20,
+      components:[{name:'霜降り焼肉',qty:1},{name:'赤身焼肉',qty:1},{name:'バラ焼肉',qty:1}],
+      compose:['霜降り焼肉 200g × 1パック','赤身焼肉 200g × 1パック','バラ焼肉 200g × 1パック'],
+      img:'public/images/products/drive/yakiniku3-kurabe-set.jpg',
+      desc:'1頭の中の違う部位を並べて焼き比べていただけます。3〜4人前ほど。' }
+  ];
+
+  var stockReady = false;
+  var catalogPromise = null;
+
+  var CART_KEY = 'eda-cart';
+  var CATALOG_URL = 'https://script.google.com/macros/s/AKfycbx7u3D5mMFGW4FMTLy5eeH6BjOtnSuzIzEmjtHu5hy7O8YcPpeou3DJyyesuffDHTFFyQ/exec?action=public_catalog';
+
+  function yen(n) { return '¥' + Number(n || 0).toLocaleString('ja-JP'); }
+  function now()  { return new Date(); }
+  function upcoming() { return now() < START_AT; }
+  function ended()    { return now() > END_AT; }
+
+  function readCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function writeCart(c) {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch (e) {}
+    paintCartBar();
+  }
+
+  /* ---------- 会員判定 ----------
+     既存の会員限定4枚と同じ。REQUIRE_MEMBER を true にすれば鍵が戻る。 */
+  var REQUIRE_MEMBER = false;
+
+  function memberOn() {
+    if (!REQUIRE_MEMBER) return true;
+    if (typeof window.isMember === 'function') return window.isMember();
+    try {
+      if (localStorage.getItem('eda-member-line-uid')) return true;
+      if (localStorage.getItem('eda-member-email')) return true;
+      var s = JSON.parse(localStorage.getItem('eda-mypage-session') || '{}');
+      return !!(s.line_uid || s.email);
+    } catch (e) { return false; }
+  }
+
+  /* ---------- 描画 ---------- */
+  function cardHtml(it, i) {
+    /* 🔴 分岐の順番を変えない。「発売前」「販売終了」は時刻だけで決まり在庫と関係ない。
+       在庫が取れていないあいだは「完売」とも「販売中」とも言わない
+       （line-members-wakeari.html と同じ扱い）。 */
+    var up = upcoming(), en = ended();
+    var pending = !stockReady && !up && !en;
+    var soldOut = !pending && !up && !en && it.stock <= 0;
+    var closed  = up || en || soldOut || pending;
+
+    var off = (it.listPrice && it.listPrice > it.price)
+      ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
+    var was = (it.listPrice && it.listPrice > it.price)
+      ? '<span class="price-was-note">単品で買うと <span class="price-was">' + yen(it.listPrice) + '</span>（税込）</span>' : '';
+
+    var stockLine;
+    if (up)           stockLine = '<p class="stock-line">' + START_LABEL + ' 発売 ／ ' + END_LABEL + 'まで</p>';
+    else if (en)      stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
+    else if (pending) stockLine = '<p class="stock-line stock-pending">在庫を確認しています</p>';
+    else if (soldOut) stockLine = '<p class="stock-line">完売しました</p>';
+    else              stockLine = '<p class="stock-line">' + END_LABEL + 'まで ／ 数量限定</p>';
+
+    var btnText = up ? (START_LABEL + ' 発売')
+                : (en ? '販売終了'
+                : (pending ? '在庫を確認しています'
+                : (soldOut ? '完売しました' : 'カートに追加')));
+
+    return '' +
+      '<div class="card" data-i="' + i + '">' +
+        '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
+        '<div class="card-body">' +
+          '<span class="card-tag">公式LINE限定</span>' +
+          '<h3>' + it.name + '</h3>' +
+          '<p class="card-variant">' + it.variant + '</p>' +
+          '<ul class="card-compose">' +
+            it.compose.map(function (c) { return '<li><b>' + c + '</b></li>'; }).join('') +
+          '</ul>' +
+          '<p class="card-variant">' + it.desc + '</p>' +
+          '<a class="card-detail" href="product.html?id=' + it.detailId + '">商品の詳細へ進む →</a>' +
+          was +
+          '<div class="price-row">' +
+            '<span class="price-now">' + yen(it.price) + '</span>' +
+            '<span class="price-tax">（税込）</span>' + off +
+          '</div>' +
+          stockLine +
+          '<div class="qty-row">' +
+            '<span class="qty-label">数量</span>' +
+            '<div class="qty-box">' +
+              '<button type="button" data-act="minus">−</button>' +
+              '<span data-qty>1</span>' +
+              '<button type="button" data-act="plus">＋</button>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn-add" type="button" data-act="add"' + (closed ? ' disabled' : '') + '>' +
+            btnText +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* 並び順は ITEMS の順（② → ③ → ① → ⑤）。買えないものだけ後ろに回す。
+     🔴 data-i は ITEMS の元の位置を渡すこと（bind が ITEMS[data-i] を引く）。 */
+  function render() {
+    var order = ITEMS.map(function (it, i) { return { it: it, i: i }; })
+                     .sort(function (a, b) {
+                        return (a.it.stock <= 0 ? 1 : 0) - (b.it.stock <= 0 ? 1 : 0);
+                     });
+    document.getElementById('cards').innerHTML =
+      order.map(function (o) { return cardHtml(o.it, o.i); }).join('');
+    bind();
+  }
+
+  function bind() {
+    document.querySelectorAll('.card').forEach(function (card) {
+      var i = Number(card.getAttribute('data-i'));
+      var it = ITEMS[i];
+      var qtyEl = card.querySelector('[data-qty]');
+      card.addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        var act = b.getAttribute('data-act');
+        var q = Number(qtyEl.textContent) || 1;
+        var maxQty = Math.max(1, it.stock);
+        if (act === 'minus') { qtyEl.textContent = Math.max(1, q - 1); }
+        else if (act === 'plus') { qtyEl.textContent = Math.min(maxQty, q + 1); }
+        else if (act === 'add') { addToCart(it, q, b); }
+      });
+    });
+  }
+
+  function addToCart(it, qty, btn) {
+    if (upcoming() || ended()) return;
+    /* 在庫がまだ届いていなければ、ここで初めて待つ。 */
+    if (!stockReady && catalogPromise) {
+      btn.disabled = true;
+      btn.textContent = '在庫を確認中…';
+      catalogPromise.then(function () {
+        render();
+        var card = document.querySelector('.card[data-i="' + ITEMS.indexOf(it) + '"]');
+        var b2 = card ? card.querySelector('.btn-add') : btn;
+        if (it.stock <= 0) return;
+        doAddToCart(it, qty, b2);
+      });
+      return;
+    }
+    doAddToCart(it, qty, btn);
+  }
+
+  function doAddToCart(it, qty, btn) {
+    var cart = readCart();
+    var maxQty = Math.max(1, it.stock);
+    var hit = cart.filter(function (c) {
+      return c.variantId === it.variantId && c.variant === it.variant;
+    })[0];
+    if (hit) { hit.qty = Math.min(maxQty, (hit.qty || 0) + qty); }
+    else {
+      cart.push({
+        variantId: it.variantId, productId: it.productId,
+        /* 🔴 title は products の name と完全一致。GAS の在庫減算が名前で引く。 */
+        title: it.name, variant: it.variant,
+        price: it.price, qty: qty, img: it.img, stripePriceId: ''
+      });
+    }
+    writeCart(cart);
+    try {
+      if (window.edaAnalytics) {
+        window.edaAnalytics.addToCart(it.productId, it.price * qty, { source: 'line-members-nikunohi', variant: it.variant });
+      }
+    } catch (e) {}
+    btn.textContent = 'カートに入れました ✓';
+    btn.classList.add('added');
+    setTimeout(function () {
+      btn.textContent = 'カートに追加';
+      btn.classList.remove('added');
+    }, 1800);
+  }
+
+  function paintCartBar() {
+    var cart = readCart();
+    var n = cart.reduce(function (a, c) { return a + (c.qty || 0); }, 0);
+    var sum = cart.reduce(function (a, c) { return a + (c.price || 0) * (c.qty || 0); }, 0);
+    var bar = document.getElementById('cartbar');
+    document.getElementById('cartCount').textContent = n + '点';
+    document.getElementById('cartTotal').textContent = yen(sum);
+    bar.classList.toggle('on', n > 0);
+  }
+
+  /* ---------- ライブ在庫・価格 ---------- */
+  function startCatalogFetch() {
+    if (!catalogPromise) {
+      catalogPromise = fetch(CATALOG_URL).then(function (r) { return r.json(); })
+                            .catch(function () { return null; });
+    }
+    return catalogPromise;
+  }
+
+  /* 🧩 4品ともセット（components ＝ BOM）。GAS は構成品の在庫で売買するので、
+     セット行の stock は売れても動かない。そのまま使うと肉が無くなっても
+     「完売しました」に切り替わらず、レジの最後で弾かれる。
+     構成品から min(構成品の在庫 ÷ 必要数) ＝ あと何セット作れるか を出す。
+     構成品が1つでも見つからないときは判定不能として触らない（fail-open）。
+     同じ計算を line-members-wakeari.html と public/js/products-loader.js が持っている。 */
+  function syncCatalog() {
+    startCatalogFetch().then(function (res) {
+      if (!res) { stockReady = true; render(); return; }
+      var list = Array.isArray(res) ? res : (res && res.products);
+      if (!Array.isArray(list)) { stockReady = true; render(); return; }
+
+      var stockByName = {};
+      list.forEach(function (p) { if (p && p.name) stockByName[p.name] = Number(p.stock) || 0; });
+      function bomStock(comps) {
+        if (!Array.isArray(comps) || !comps.length) return null;
+        var min = Infinity;
+        for (var i = 0; i < comps.length; i++) {
+          var c = comps[i] || {}, n = c.name;
+          if (!n) continue;
+          if (!(n in stockByName)) return null;
+          min = Math.min(min, Math.floor(stockByName[n] / (Number(c.qty) || 1)));
+        }
+        return (min === Infinity) ? null : Math.max(0, min);
+      }
+
+      ITEMS.forEach(function (it) {
+        var live = list.filter(function (p) { return p.variantId === it.variantId; })[0];
+        if (live && typeof live.price === 'number' && live.price > 0) it.price = live.price;
+        /* 構成品はこのページが持っている定義を使う（シート側の components 文字列に
+           依存しない＝シートへの登録前でも在庫判定が正しく働く）。 */
+        var bom = bomStock(it.components);
+        if (bom !== null) it.stock = bom;
+        else if (live && typeof live.stock === 'number') it.stock = live.stock;
+      });
+      stockReady = true;
+      render();
+    });
+  }
+
+  startCatalogFetch();
+
+  /* 会期の境目でページを開きっぱなしにしていても切り替わるように、1分ごとに描き直す。 */
+  setInterval(function () { render(); }, 60 * 1000);
+
+  /* ---------- 起動 ---------- */
+  function init() {
+    var on = memberOn();
+    document.getElementById('gate').hidden = on;
+    document.getElementById('members').hidden = !on;
+    if (on) {
+      render();
+      syncCatalog();
+      try {
+        ITEMS.forEach(function (it) {
+          if (window.edaAnalytics) window.edaAnalytics.viewItem(it.productId, it.price, { title: it.name, variant: it.variant || '' });
+        });
+      } catch (e) {}
+    }
+    paintCartBar();
+    var rl = document.getElementById('reloadLink');
+    if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); location.reload(); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 60); });
+  } else {
+    setTimeout(init, 60);
+  }
+})();
+</script>
+</body>
+</html>

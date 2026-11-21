@@ -1318,7 +1318,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-21-438-wakeari-1123"></script>
+<script src="public/data/products-master.js?v=2026-11-21-439-iinikunohi"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script src="public/js/wakeari-compare.js?v=004"></script>
@@ -1381,7 +1381,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   const ENDED_PRODUCT_IDS = [
     'P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037', 'P074',
     'P027', 'P028', 'P030', 'P031', 'P039', 'P040', 'P045', 'P046',
-    'P058', 'P059', 'P060', 'P063', 'P064', 'P065',
+    /* 🔁 2026-11-21「いい肉の日」企画で P064 焼肉3種食べ比べセット を再開したため
+       このリストから外した（外さないと PDP が「お取り扱いを終了しました」のまま）。
+       会期 11/25 00:00 〜 11/29 23:59 は products-master.js の limited* が制御する。
+       会期後は limitedUntil でカードも PDP の購入導線も自動で閉じるので、
+       ここに戻す作業は要らない。恒久的に下げるときだけ 'P064' を書き戻すこと。 */
+    'P058', 'P059', 'P060', 'P063', 'P065',
     /* 2026-11-21 田崎さん指示で非表示。shop/products のカードも撤去済み。 */
     'P075'
   ];
