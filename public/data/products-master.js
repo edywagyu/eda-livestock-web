@@ -943,7 +943,7 @@
          🔴 霜降り焼肉の原料は台帳では「リブかぶり／ロースカブリ」だが、田崎さんが
             台帳との差を承知のうえで「リブロース」で出すと判断（2026-11-21）。触らない。
          🔴 上バラも同様。直近ロット(11/02)の台帳表記は「バラ」だが指示どおり「上バラ」。 */
-      description: '・霜降り焼肉：リブロースを使用しています\n・赤身焼肉：ウデを使用しています\n・バラ焼肉：上バラ（赤身の多い部位）を使用しています',
+      description: '・霜降り焼肉：リブロースを使用\n・赤身焼肉：ウデを使用\n・バラ焼肉：上バラ（赤身の多い部位）を使用',
       images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
     },
 
@@ -1778,7 +1778,7 @@
       ],
       /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
          並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
-      description: '・赤身スライス：ソトモモを使用しています\n・霜降スライス：肩ロースを使用しています',
+      description: '・赤身スライス：ソトモモを使用\n・霜降スライス：肩ロースを使用',
       images: ['public/images/products/drive/nikunohi-slice-akami.jpg']
     },
 
@@ -1804,7 +1804,7 @@
       ],
       /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
          並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
-      description: '・霜降スライス：肩ロースを使用しています\n・赤身スライス：ソトモモを使用しています',
+      description: '・霜降スライス：肩ロースを使用\n・赤身スライス：ソトモモを使用',
       images: ['public/images/products/drive/nikunohi-slice-shimofuri.jpg']
     },
 
@@ -1831,13 +1831,13 @@
       ],
       /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
          並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
-      description: '・赤身ステーキ：ウチモモを使用しています',
+      description: '・赤身ステーキ：ウチモモを使用',
       images: ['public/images/products/drive/nikunohi-akami-steak2.jpg']
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.21-018-nikunohi-pdp-bullets';
+  const PRODUCTS_VERSION = '2026.11.21-019-nikunohi-shiyo';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
