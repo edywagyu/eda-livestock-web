@@ -935,7 +935,15 @@
       limitedSoldOutAt: '2026/11/29 23:59',
       limitedUntil:     '2026/11/29 23:59',
       limitedUnit: 'セット',
-      description: 'サシの霜降り焼肉200g、噛みごたえの赤身焼肉200g、脂の甘いバラ焼肉200g。計600g、3〜4人前ほど。1頭の中の違う部位を並べて焼き比べていただけます。冷凍便でお届けします。',
+      /* 📝 2026-11-21 田崎さん指示。PDPの説明文は「どの部位を使っているか」の箇条書きだけ。
+         改行区切り＝product.html が <ul> にして出す。1行＝1構成品。
+         🔴 グラム数・用途（すき焼き／しゃぶしゃぶ／焼き方）・味の説明・配送は書かない
+            （「冷凍便でお届け」は #pdpMetaDeliv と「配送について」に既に出ている＝重複）。
+         🔴 並び順は products.html の内訳表と同じ（霜降り焼肉→赤身焼肉→バラ焼肉）。
+         🔴 霜降り焼肉の原料は台帳では「リブかぶり／ロースカブリ」だが、田崎さんが
+            台帳との差を承知のうえで「リブロース」で出すと判断（2026-11-21）。触らない。
+         🔴 上バラも同様。直近ロット(11/02)の台帳表記は「バラ」だが指示どおり「上バラ」。 */
+      description: '・霜降り焼肉：リブロースを使用しています\n・赤身焼肉：ウデを使用しています\n・バラ焼肉：上バラ（赤身の多い部位）を使用しています',
       images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
     },
 
@@ -1768,7 +1776,9 @@
         { name: '赤身スライス', qty: 2 },
         { name: '霜降スライス', qty: 1 }
       ],
-      description: 'ソトモモの赤身スライス200gを2袋と、肩ロースの霜降スライス200gを1袋。計600g。赤身を主役にして、霜降りを一袋だけ合わせた配分です。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
+      /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
+         並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
+      description: '・赤身スライス：ソトモモを使用しています\n・霜降スライス：肩ロースを使用しています',
       images: ['public/images/products/drive/nikunohi-slice-akami.jpg']
     },
 
@@ -1792,7 +1802,9 @@
         { name: '霜降スライス', qty: 2 },
         { name: '赤身スライス', qty: 1 }
       ],
-      description: '肩ロースの霜降スライス200gを2袋と、ソトモモの赤身スライス200gを1袋。計600g。霜降りを主役にした配分です。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
+      /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
+         並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
+      description: '・霜降スライス：肩ロースを使用しています\n・赤身スライス：ソトモモを使用しています',
       images: ['public/images/products/drive/nikunohi-slice-shimofuri.jpg']
     },
 
@@ -1817,13 +1829,15 @@
       components: [
         { name: '赤身ステーキ', qty: 2 }
       ],
-      description: 'モモの中心から取った赤身ステーキ200gを2枚。計400g。2人で1枚ずつ、または1人で2回ぶん。塩だけで焼いてください。冷凍便でお届けします。',
+      /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
+         並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
+      description: '・赤身ステーキ：ウチモモを使用しています',
       images: ['public/images/products/drive/nikunohi-akami-steak2.jpg']
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.21-016-eda-wagyu-names';
+  const PRODUCTS_VERSION = '2026.11.21-018-nikunohi-pdp-bullets';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {

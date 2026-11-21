@@ -252,6 +252,23 @@ h1, h2, h3, h4 { font-weight: 500; margin: 0; }
   padding-bottom: 36px;
   border-bottom: 1px solid var(--color-bone);
 }
+/* 📝 説明文を箇条書きで出す場合（2026-11-21 田崎さん指示）。
+   products-master.js の description に改行が入っていると <ul> で描画される。
+   改行が無い商品は今までどおり1段落のままなので、既存商品の見た目は変わらない。 */
+.pdp-description.is-list {
+  list-style: none;
+  padding-left: 0;
+}
+.pdp-description.is-list li {
+  position: relative;
+  padding-left: 1.1em;
+}
+.pdp-description.is-list li::before {
+  content: '・';
+  position: absolute;
+  left: 0;
+  color: var(--color-ink-muted);
+}
 
 /* ============ SPEC ============ */
 .pdp-spec {
@@ -1318,7 +1335,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-21-443-set-stats"></script>
+<script src="public/data/products-master.js?v=2026-11-21-449-nikunohi-bullets"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script src="public/js/wakeari-compare.js?v=004"></script>
@@ -1413,7 +1430,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   /* === タイトル・SEO === */
   document.title = product.name + ' | 江田畜産';
   document.getElementById('metaTitle').textContent = product.name + ' | 江田畜産';
-  document.getElementById('metaDesc').setAttribute('content', product.description);
+  /* 📝 箇条書きの description は改行を含むので、meta タグには1行に畳んで入れる。 */
+  document.getElementById('metaDesc').setAttribute('content',
+    String(product.description || '').replace(/\n+/g, ' ').replace(/^・|\s・/g, ' ').trim());
   document.getElementById('canonicalLink').setAttribute('href',
     'https://www.eda-livestock.com/product.html?id=' + productId);
 
@@ -1490,7 +1509,26 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   /* 限定品バナーは public/js/limited-stock.js が products シートを見て自動で出す
      （商品ごとの分岐は不要。マスターの読み込み後に refreshLimitedStock が走る） */
   if (typeof window.refreshLimitedStock === 'function') window.refreshLimitedStock();
-  document.getElementById('pdpDescription').textContent = product.description;
+  /* 📝 説明文（2026-11-21 田崎さん指示で箇条書きに対応）。
+     description に改行があれば行ごとの箇条書き（<ul>）にして出す。行頭の「・」は印なので外す。
+     HTML は書かせない（textContent で入れる）ので、文面側でタグを書く余地は無い。
+     改行が無い商品はこれまでどおり1段落＝既存商品の表示は変わらない。 */
+  (function renderDescription() {
+    const host = document.getElementById('pdpDescription');
+    if (!host) return;
+    const raw   = String(product.description || '');
+    /* 箇条書きの合図は「改行がある」か「行頭が・で始まる」。
+       どちらも無い既存商品は、これまでどおり1段落のまま出す（1行だけの箇条書きもあるので
+       行数では判定しない。P090 は構成品が1種類＝1行）。 */
+    const isList = /\n/.test(raw) || /^[・\u2022]/.test(raw.trim());
+    const lines = raw.split('\n').map(s => s.replace(/^[・\u2022]\s*/, '').trim()).filter(Boolean);
+    if (!isList || !lines.length) { host.textContent = raw; return; }
+    const ul = document.createElement('ul');
+    ul.className = host.className + ' is-list';
+    ul.id = host.id;
+    lines.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+    host.replaceWith(ul);
+  })();
   /* 刃（YAIBA）コラボ商品のときだけ、刃の紹介ブロックを出す — 2026-09-25 */
   if (['P049', 'P050'].indexOf(productId) >= 0) {
     const _y = document.getElementById('pdpYaiba');
