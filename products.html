@@ -9746,19 +9746,29 @@ body.is-member .product-card--organic .org-chk-lock {
 <!-- 定期便プランの正本(subscription_plans シート)を読む部品 -->
 <script src="public/js/eda-plans.js?v=002"></script>
 <style>
-/* 「今だけ超お得」— 商品画像の左上「無投薬」バッジの真下に置く赤字（2026-11-21 田崎さん指示）。
+/* 「今だけ超お得」— 商品画像の右上に置く赤字（2026-11-21 田崎さん指示。左上の無投薬の下から変更）。
    ボタンにはしない。.badge を付けていないのは、.product-card-img .badge が
-   top:14px/left:14px を全バッジに効かせていて、付けると無投薬と重なるため。 */
+   top:14px/left:14px を全バッジに効かせていて、付けると左上の無投薬と重なるため。 */
 .product-card .product-card-img { position: relative; }
 .product-card .product-card-img .product-flash {
-  position: absolute; top: 48px; left: 14px; z-index: 2; margin: 0;
+  position: absolute; top: 14px; right: 14px; z-index: 2; margin: 0;
   background: #fff; color: var(--color-red, #C8102E);
   font-family: var(--font-jp); font-size: 12px; font-weight: 700;
   letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-/* 在庫切れの帯が出ると無投薬バッジが 52px に下がるので、こちらも一緒に下げる */
-.product-card:has(.stock-badge-overlay.stock-out) .product-card-img .product-flash { top: 86px; }
+/* 右上には「残り1つ」「先週1位」等のバッジが入ることがある（.status-badge-injected は
+   right:14px/top:14px）。出ているときは、その下へ回して重ならないようにする。 */
+.product-card .product-card-img:has(.status-badge-injected) .product-flash { top: 52px; }
+/* 在庫切れの帯が出ると上のバッジ類が 52px に下がるので、こちらも一緒に下げる */
+.product-card:has(.stock-badge-overlay.stock-out) .product-card-img .product-flash { top: 52px; }
+.product-card:has(.stock-badge-overlay.stock-out) .product-card-img:has(.status-badge-injected) .product-flash { top: 90px; }
+/* スマホは画像が小さく(144px)、右上に置くと左上の「無投薬」と重なる（実測）。
+   右寄せのまま1段下げる。 */
+@media (max-width: 767px) {
+  .product-card .product-card-img .product-flash { top: 46px; right: 8px; font-size: 11px; padding: 2px 6px; }
+  .product-card .product-card-img:has(.status-badge-injected) .product-flash { top: 46px; }
+}
 </style>
 </head>
 <body data-popular-sort="on">
