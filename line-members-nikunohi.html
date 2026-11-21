@@ -118,7 +118,7 @@ body{
 }
 .card-variant{font-size:12.5px;color:var(--muted);margin:0 0 10px;}
 /* 構成（何が何g×何パック）。1行1品で出す。 */
-.card-compose{margin:0 0 12px;padding:0;list-style:none;}
+.card-compose{margin:2px 0 10px;padding:0;list-style:none;}
 .card-compose li{
   font-size:13px;color:#4A4A4A;padding:4px 0;border-bottom:1px dotted rgba(15,61,46,.14);
 }
@@ -291,8 +291,8 @@ body{
   var ITEMS = [
     /* ② 霜降り多め */
     { productId:'P089', variantId:'NIKUNOHI-SLICE-SHIMO', detailId:'P089',
-      name:'いい肉の日 スライスセット 霜降り多め',
-      variant:'計600g ／ 冷凍便',
+      name:'和牛スライス 霜降り仕立て',
+      variant:'霜降スライス200g×2＋赤身スライス200g×1 計600g', meta:'計600g ／ 冷凍便',
       price:7800, listPrice:10000, stock:20,
       components:[{name:'霜降スライス',qty:2},{name:'赤身スライス',qty:1}],
       compose:['霜降スライス 200g × 2パック','赤身スライス 200g × 1パック'],
@@ -304,8 +304,8 @@ body{
           public/images/products/drive/nikunohi-akami-steak2.jpg を置けば差し替わる。
           置くまで写真枠は無地（#EDE8DC）になるだけで、カードの高さは変わらない。 */
     { productId:'P090', variantId:'NIKUNOHI-STEAK2', detailId:'P090',
-      name:'いい肉の日 赤身ステーキ2枚セット',
-      variant:'計400g ／ 冷凍便',
+      name:'和牛 赤身ステーキ 2枚セット',
+      variant:'赤身ステーキ200g×2 計400g', meta:'計400g ／ 冷凍便',
       price:5000, listPrice:6800, stock:20,
       components:[{name:'赤身ステーキ',qty:2}],
       compose:['赤身ステーキ 200g × 2パック'],
@@ -314,8 +314,8 @@ body{
 
     /* ① 赤身多め */
     { productId:'P088', variantId:'NIKUNOHI-SLICE-AKAMI', detailId:'P088',
-      name:'いい肉の日 スライスセット 赤身多め',
-      variant:'計600g ／ 冷凍便',
+      name:'和牛スライス 赤身仕立て',
+      variant:'赤身スライス200g×2＋霜降スライス200g×1 計600g', meta:'計600g ／ 冷凍便',
       price:7400, listPrice:8900, stock:20,
       components:[{name:'赤身スライス',qty:2},{name:'霜降スライス',qty:1}],
       compose:['赤身スライス 200g × 2パック','霜降スライス 200g × 1パック'],
@@ -325,7 +325,7 @@ body{
     /* ⑤ 焼肉3種（P064 の再開。10/22 に出していた商品と同じもの） */
     { productId:'P064', variantId:'YAKI3-KURABE-SET', detailId:'P064',
       name:'焼肉3種食べ比べセット',
-      variant:'計600g ／ 冷凍便',
+      variant:'霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g', meta:'計600g ／ 冷凍便',
       price:5900, listPrice:6900, stock:20,
       components:[{name:'霜降り焼肉',qty:1},{name:'赤身焼肉',qty:1},{name:'バラ焼肉',qty:1}],
       compose:['霜降り焼肉 200g × 1パック','赤身焼肉 200g × 1パック','バラ焼肉 200g × 1パック'],
@@ -400,10 +400,12 @@ body{
         '<div class="card-body">' +
           '<span class="card-tag">公式LINE限定</span>' +
           '<h3>' + it.name + '</h3>' +
-          '<p class="card-variant">' + it.variant + '</p>' +
+          /* 🔴 構成（何が何g×何パック）は商品名のすぐ下に必ず出す（2026-11-21 田崎さん指示）。
+             「仕立て」は名前だけでは中身が分からないため、ここを省かない。 */
           '<ul class="card-compose">' +
             it.compose.map(function (c) { return '<li><b>' + c + '</b></li>'; }).join('') +
           '</ul>' +
+          '<p class="card-variant">' + it.meta + '</p>' +
           '<p class="card-variant">' + it.desc + '</p>' +
           '<a class="card-detail" href="product.html?id=' + it.detailId + '">商品の詳細へ進む →</a>' +
           was +

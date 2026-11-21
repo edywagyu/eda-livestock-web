@@ -1752,7 +1752,7 @@
     {
       productId: 'P088', variantId: 'NIKUNOHI-SLICE-AKAMI', sku: 'EDA-NIKUNOHI-SLICE-AKAMI',
       stripePriceId: '',
-      name: 'いい肉の日 スライスセット 赤身多め',
+      name: '和牛スライス 赤身仕立て',
       variant: '赤身スライス200g×2＋霜降スライス200g×1 計600g',
       /* price / stock は products シートのライブ値で上書きされる。ここはフォールバック */
       price: 7400, listPrice: 8900, weight: 600, stock: 20, temp: '冷凍',
@@ -1778,7 +1778,7 @@
     {
       productId: 'P089', variantId: 'NIKUNOHI-SLICE-SHIMO', sku: 'EDA-NIKUNOHI-SLICE-SHIMO',
       stripePriceId: '',
-      name: 'いい肉の日 スライスセット 霜降り多め',
+      name: '和牛スライス 霜降り仕立て',
       variant: '霜降スライス200g×2＋赤身スライス200g×1 計600g',
       price: 7800, listPrice: 10000, weight: 600, stock: 20, temp: '冷凍',
       published: true,
@@ -1804,7 +1804,7 @@
     {
       productId: 'P090', variantId: 'NIKUNOHI-STEAK2', sku: 'EDA-NIKUNOHI-STEAK2',
       stripePriceId: '',
-      name: 'いい肉の日 赤身ステーキ2枚セット',
+      name: '和牛 赤身ステーキ 2枚セット',
       variant: '赤身ステーキ200g×2 計400g',
       price: 5000, listPrice: 6800, weight: 400, stock: 20, temp: '冷凍',
       published: true,
@@ -1823,7 +1823,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.21-014-iinikunohi-4sets';
+  const PRODUCTS_VERSION = '2026.11.21-015-iinikunohi-rename';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
