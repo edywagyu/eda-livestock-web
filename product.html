@@ -1381,7 +1381,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   const ENDED_PRODUCT_IDS = [
     'P029', 'P043', 'P051', 'P007', 'P035', 'P036', 'P037', 'P074',
     'P027', 'P028', 'P030', 'P031', 'P039', 'P040', 'P045', 'P046',
-    'P058', 'P059', 'P060', 'P063', 'P064', 'P065'
+    'P058', 'P059', 'P060', 'P063', 'P064', 'P065',
+    /* 2026-11-21 田崎さん指示で非表示。shop/products のカードも撤去済み。 */
+    'P075'
   ];
   const product = all.find(p => p.productId === productId) || null;
   if (!product || ENDED_PRODUCT_IDS.indexOf(product.productId) >= 0) {
@@ -1553,7 +1555,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     /* 🔴 P076「訳あり切り落とし 期間限定」は賞味期限が近いことが値引きの理由。
           ここで全商品共通の「製造日より6ヶ月」を出すと嘘になるので実日付を出す
           （2026-11-04）。期間限定が終わったらこの分岐ごと消してよい。 */
-    ['賞味期限', productId === 'P076' ? '2026年12月15日' : '製造日より 6 ヶ月'],
+    ['賞味期限', productId === 'P076' ? '2027年1月5日' : '製造日より 6 ヶ月'],
     /* 刃コラボはタレが同梱される。タレの保存期間は1年（ITADAKI提供情報） */
     (['P049', 'P050'].indexOf(productId) >= 0) ? ['タレの賞味期限', '製造日より 1 年'] : null,
     C ? ['解凍', C.thaw] : null,
@@ -2287,7 +2289,7 @@ function giftThisProduct() {
 <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script src="public/js/liff-uid.js?v=001" defer></script>
 <script src="public/js/analytics.js?v=006" defer></script>
-<script src="public/js/eda-bundle.js?v=011" defer></script>
+<script src="public/js/eda-bundle.js?v=012" defer></script>
 <script src="public/js/eda-i18n.js?v=20260812k" defer></script>
 <script>
 /* PDP: view_item イベント送信
