@@ -694,3 +694,67 @@
     initReveal(); initOffscreenPause();
   }
 })();
+
+/* ============================================================
+   カートの引き出しをコンパクトにする（2026-11-21 田崎さん指示）
+   ------------------------------------------------------------
+   ・「CART」の行と「SUBTOTAL」の行が上下に分かれて2段になっていたので、
+     金額を見出しの行へ移して1段にする（DOMを動かすだけ。#cartSubtotal の
+     id はそのままなので、各ページの renderCart の書き換えはそのまま効く）。
+   ・全体をひと回り小さくする。CSSはここから流し込む
+     （同じ引き出しが14ページに手書きで入っていて、各ページのCSSを
+     直すと必ず直し漏れが出るため）。
+   ============================================================ */
+(function cartDrawerCompact() {
+  'use strict';
+  var CSS = [
+    '.cart-drawer { width: min(360px, 92vw); }',
+    '.cart-drawer-head { padding: 14px 18px; gap: 10px; }',
+    '.cart-drawer-head h3 { font-size: 16px; letter-spacing: 0.12em; }',
+    '.cart-drawer-head .cart-subtotal { margin: 0 0 0 auto; }',
+    '.cart-drawer-head .cart-subtotal-label { display: none; }',
+    '.cart-drawer-head .cart-subtotal-price { font-size: 19px; }',
+    '.cart-close { font-size: 22px; min-width: 32px; min-height: 32px; padding: 0; }',
+    '.cart-drawer-head .cart-subtotal { margin-bottom: 0; }',
+    '.cart-drawer-items { padding: 12px 18px; }',
+    '.cart-item { grid-template-columns: 56px 1fr; gap: 12px; padding: 10px 0; }',
+    '.cart-item-img { width: 56px; height: 56px; }',
+    '.cart-item-title { font-size: 12px; }',
+    '.cart-item-price { font-size: 14px; }',
+    '.cart-item-qty button { width: 22px; height: 22px; font-size: 13px; }',
+    '.cart-empty { padding: 40px 0; font-size: 13px; }',
+    '.cart-empty-icon { font-size: 36px; margin-bottom: 10px; }',
+    '.cart-drawer-foot { padding: 12px 18px; max-height: 52vh; }',
+    '.cart-shipping-note, .cart-delivery-note { font-size: 11px; }',
+    '.delivery-picker { padding: 9px 11px; margin: 9px 0 10px; border-radius: 8px; }',
+    '.delivery-picker-head { font-size: 11px; margin-bottom: 6px; }',
+    '.delivery-picker-row { margin-top: 5px; }',
+    '.delivery-picker-row label, .delivery-picker-note { font-size: 11px; }',
+    '.delivery-picker-row select { padding: 6px 8px; font-size: 12px; }',
+    '.btn-checkout { padding: 12px 16px; font-size: 13px; }',
+    '.cart-continue { padding: 8px; font-size: 12px; }',
+    '@media (max-width: 767px) { .cart-drawer { width: 100vw; }',
+    '  .cart-drawer-head { padding: 12px 16px; } .cart-drawer-items { padding: 10px 16px; }',
+    '  .cart-drawer-foot { padding: 12px 16px; } }'
+  ].join('\n');
+
+  function boot() {
+    var drawer = document.getElementById('cartDrawer');
+    if (!drawer) return;
+    var head = drawer.querySelector('.cart-drawer-head');
+    var sub = drawer.querySelector('.cart-drawer-foot .cart-subtotal');
+    var close = drawer.querySelector('.cart-close');
+    /* 金額を見出しの行へ。閉じる(×)の手前に入れる */
+    if (head && sub) {
+      if (close) head.insertBefore(sub, close);
+      else head.appendChild(sub);
+    }
+    var st = document.createElement('style');
+    st.setAttribute('data-eda', 'cart-compact');
+    st.textContent = CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
