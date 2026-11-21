@@ -10110,8 +10110,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <button class="sub-tab" data-sub="yakiniku">焼肉</button>
  <button class="sub-tab" data-sub="steak">ステーキ</button>
  <button class="sub-tab" data-sub="processed">加工品</button>
- <!-- 2026-09-08 田崎さん指示で新設。初めての方に何を買えばいいか迷わせない入口。 -->
- <button class="sub-tab" data-sub="hajimete">はじめての方</button>
+ <!-- 2026-11-21 田崎さん指示で「はじめての方」タブを削除（中の商品が0点で、押すと空の棚になっていた）。 -->
  <button class="sub-tab" data-sub="set">セット商品</button>
  </div>
 
@@ -10479,8 +10478,13 @@ body.is-member .product-card--organic .org-chk-lock {
  </div>
  </div>
 
- <!-- ジャンル別プレビュー(2件)から商品一覧へ -->
- <div class="shop-viewall-wrap" data-cat="beef">
+ <!-- ジャンル別プレビュー(2件)から商品一覧へ
+      2026-11-21 田崎さん指示。data-always="1" を付けた。
+      これが無いと「いま開いている部位タブの件数が data-preview-limit(5) 以下」のときに
+      ボタンごと消え、スライス(3点)で開く初期表示では和牛の一覧へ行く入口が1つも無かった（実測）。
+      data-sub="all" は飛び先の固定。付けないと productPreviewInit が開いている部位タブ
+      (slice など)を引き継いでしまい、「すべて表示」を押したのに絞られた一覧に着地する。 -->
+ <div class="shop-viewall-wrap" data-cat="beef" data-sub="all" data-always="1">
  <a href="products.html?cat=beef&amp;sub=all#products" class="btn-viewall">和牛をすべて表示 →</a>
  </div>
 
@@ -15419,6 +15423,22 @@ function copyPopCoupon() {
   function grid() { return document.querySelector('[data-gentei-grid]'); }
   function head() { return document.querySelector('[data-gentei-head]'); }
 
+  /* 牛肉の棚（期間限定の棚と YAIBA の棚は data-cat="beef" でも別物なので外す） */
+  function beefGrid() {
+    var all = document.querySelectorAll('.product-grid[data-cat="beef"]');
+    for (var i = 0; i < all.length; i++) {
+      if (!all[i].hasAttribute('data-no-subfilter') && !all[i].hasAttribute('data-gentei-grid')) return all[i];
+    }
+    return null;
+  }
+
+  /* いま開いている牛肉の部位タブ */
+  function beefSub() {
+    var row = document.querySelector('.sub-tab-row[data-parent-cat="beef"]');
+    var a = row ? row.querySelector('.sub-tab.active') : null;
+    return (a && a.dataset.sub) ? a.dataset.sub : '';
+  }
+
   /* ============================================================
      ① 期間限定の商品をこの棚に集める（2026-11-15 田崎さん指示）
      ------------------------------------------------------------
@@ -15468,6 +15488,27 @@ function copyPopCoupon() {
     }
   }
 
+  /* 棚の並び順を元に戻すための番号。
+     セット商品タブから戻ってきたカードを後ろに足すだけだと、
+     タブを往復するたびに棚の並びが変わる。初回に見た順番を覚えておく。 */
+  /* このスクリプトはカードより後ろにあるので、ここでHTMLの元の並びがそのまま読める。
+     あとから足されたカード(GAS由来)は末尾あつかい。 */
+  Array.prototype.slice.call(document.querySelectorAll('.product-card'))
+    .forEach(function (c, i) { c.dataset.genteiOrder = String(i + 1); });
+  function orderOf(card) {
+    if (!card.dataset.genteiOrder) card.dataset.genteiOrder = '9999';
+    return parseInt(card.dataset.genteiOrder, 10);
+  }
+  function resort(g) {
+    var cards = Array.prototype.slice.call(g.children).filter(function (el) {
+      return el.classList && el.classList.contains('product-card');
+    });
+    var sorted = cards.slice().sort(function (a, b) { return orderOf(a) - orderOf(b); });
+    var same = cards.every(function (c, i) { return c === sorted[i]; });
+    if (same) return;   /* 毎回並べ替えると3秒ごとに画像が読み直される */
+    sorted.forEach(function (c) { g.appendChild(c); });
+  }
+
   function collect() {
     var g = grid();
     if (!g) return;
@@ -15484,8 +15525,24 @@ function copyPopCoupon() {
       if (!want[name]) return;
       var p = byName[name];
       if (p) markCard(card, p);
-      if (card.parentElement !== g) g.appendChild(card);   /* もう棚にあるなら動かさない */
+
+      /* 🔴 2026-11-21 田崎さん指示。「セット商品」タブに期間限定のセットも載せる。
+         同じカードを2か所に出すとカート投入も在庫表示も二重になるので、コピーではなく
+         「いま置く場所を決める」。セット商品タブを開いている間だけ牛肉の棚へ下ろし、
+         他のタブに戻ったら期間限定の棚へ戻す。
+         対象は data-sub="set" のカードだけ。訳あり切り落としのような
+         セット以外の期間限定品は、期間限定の棚に残す。 */
+      var toBeef = card.dataset.sub === 'set' && beefSub() === 'set';
+      var target = toBeef ? (beefGrid() || g) : g;
+      if (card.parentElement !== target) {
+        /* 先頭に入れる。期間限定は売り切れる前に見てもらう必要があるので後ろに回さない */
+        if (toBeef && target.firstChild) target.insertBefore(card, target.firstChild);
+        else target.appendChild(card);
+      }
+      /* 棚を移る前に部位タブの絞り込みで display:none を打たれている場合がある */
+      if (toBeef && card.style.display === 'none') card.style.display = '';
     });
+    resort(g);
   }
 
   /* ② 中のカードが1枚も出ていなければ、見出しごと消す */
@@ -15525,6 +15582,11 @@ function copyPopCoupon() {
 
   function boot() {
     tick();
+    /* 部位タブを押した瞬間に置き場所を決め直す（3秒待たせない）。
+       タブ側の絞り込みハンドラのあとに走らせる。 */
+    document.querySelectorAll('.sub-tab-row[data-parent-cat="beef"] .sub-tab').forEach(function (b) {
+      b.addEventListener('click', function () { setTimeout(tick, 0); });
+    });
     /* limited-stock.js が1分ごとにカードを出し入れし、GASのマスターが
        届いたタイミングでも並びが変わるので、こちらも見直し続ける */
     setInterval(tick, 3000);
@@ -15612,7 +15674,11 @@ function copyPopCoupon() {
 
      if (!wrap) return;
      var gridHidden = getComputedStyle(grid).display === 'none';
-     wrap.style.display = (gridHidden || visible.length <= baseLimit) ? 'none' : '';
+     /* data-always="1" の棚は、いまのタブの件数が少なくてもボタンを残す。
+        これはカテゴリの全商品一覧への入口で、「もっと見る」ではない（2026-11-21 田崎さん指示）。
+        棚そのものが閉じているとき(gridHidden)だけは消す。 */
+     var always = wrap.dataset.always === '1';
+     wrap.style.display = (gridHidden || (!always && visible.length <= baseLimit)) ? 'none' : '';
 
      /* 選択中のサブタブを products.html へ引き継ぐ (?cat=beef&sub=steak) */
      var a = wrap.querySelector('a');
