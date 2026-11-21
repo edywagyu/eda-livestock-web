@@ -9746,12 +9746,19 @@ body.is-member .product-card--organic .org-chk-lock {
 <!-- 定期便プランの正本(subscription_plans シート)を読む部品 -->
 <script src="public/js/eda-plans.js?v=002"></script>
 <style>
-/* 「今だけ超お得」— 商品名の直下に出す赤字。ボタンにはしない（2026-11-21 田崎さん指示） */
-.product-card .product-flash {
-  margin: 6px 0 0;
-  font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
-  color: var(--color-red, #C8102E);
+/* 「今だけ超お得」— 商品画像の左上「無投薬」バッジの真下に置く赤字（2026-11-21 田崎さん指示）。
+   ボタンにはしない。.badge を付けていないのは、.product-card-img .badge が
+   top:14px/left:14px を全バッジに効かせていて、付けると無投薬と重なるため。 */
+.product-card .product-card-img { position: relative; }
+.product-card .product-card-img .product-flash {
+  position: absolute; top: 48px; left: 14px; z-index: 2; margin: 0;
+  background: #fff; color: var(--color-red, #C8102E);
+  font-family: var(--font-jp); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; padding: 3px 8px; border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+/* 在庫切れの帯が出ると無投薬バッジが 52px に下がるので、こちらも一緒に下げる */
+.product-card:has(.stock-badge-overlay.stock-out) .product-card-img .product-flash { top: 86px; }
 </style>
 </head>
 <body data-popular-sort="on">
@@ -10023,10 +10030,9 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 訳あり品の実物写真と詳しい説明はカードに出さず商品詳細ページに置く
          （2026-09-02 ryotaro指示）。 -->
  <div class="product-card" data-sub="slice" data-variant-select data-limited-scope="訳あり切り落とし 期間限定" data-limited-prestart="訳あり切り落とし 期間限定" data-variants='[{"id":51104009000761,"t":"1つ","p":900},{"id":51104009000762,"t":"3つセット","p":2500},{"id":51104009000763,"t":"5つセット","p":3980}]'>
- <div class="product-card-img" data-label="WAKEARI KIRIOTOSHI GENTEI"></div>
- <div class="product-tag-row"><span class="product-tag">Wagyu &middot; Slice</span><span class="product-price"><s>&yen;1,600</s> &yen;900&#12316;</span></div>
+ <div class="product-card-img" data-label="WAKEARI KIRIOTOSHI GENTEI"><span class="product-flash">今だけ超お得</span></div>
+ <div class="product-tag-row"><span class="product-tag">Wagyu &middot; Slice</span><span class="product-price"><s>&yen;1,600</s> &yen;900</span></div>
  <p class="product-name"><a href="product.html?id=P076" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">訳あり切り落とし 期間限定</a></p>
- <p class="product-flash">今だけ超お得</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>&yen;450</strong></div>
  <div class="product-stat-item">脱気 <strong>1袋 200g</strong></div>
@@ -10104,7 +10110,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- ステーキ系 -->
  <div class="product-card" data-sub="steak" data-variants='[{"id":50830136082730,"t":"1つ","p":3600},{"id":50830136115498,"t":"2つセット【5%オフ】","p":6840},{"id":50830136148266,"t":"3つセット【10%オフ】","p":9720}]'>
  <div class="product-card-img" data-label="SIRLOIN"></div>
- <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,600〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Steak · Sirloin</span><span class="product-price">¥3,600</span></div>
  <p class="product-name" data-en="Sirloin steak">サーロインステーキ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,800</strong></div>
@@ -10115,7 +10121,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="steak" data-variants='[{"id":50830190379306,"t":"1つ","p":3400},{"id":50830190412074,"t":"2つセット【5%オフ】","p":6460},{"id":50830190444842,"t":"3つセット【10%オフ】","p":9180}]'>
  <div class="product-card-img" data-label="RED MEAT"></div>
- <div class="product-tag-row"><span class="product-tag">Steak · Red Meat</span><span class="product-price">¥3,400〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Steak · Red Meat</span><span class="product-price">¥3,400</span></div>
  <p class="product-name" data-en="Lean steak">赤身ステーキ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,700</strong></div>
@@ -10126,7 +10132,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="steak" data-variants='[{"id":50830132314410,"t":"1つ","p":1800},{"id":50830132347178,"t":"2つセット【5%オフ】","p":3420},{"id":50830132379946,"t":"3つセット【10%オフ】","p":4860}]'>
  <div class="product-card-img" data-label="CUBE STEAK"></div>
- <div class="product-tag-row"><span class="product-tag">Steak · Cube</span><span class="product-price">¥1,000〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Steak · Cube</span><span class="product-price">¥1,000</span></div>
  <p class="product-name">サイコロステーキ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,000</strong></div>
@@ -10139,7 +10145,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="steak" data-variants='[{"id":50831004750301,"t":"1つ","p":4750},{"id":50831004750302,"t":"2つセット【5%オフ】","p":9025},{"id":50831004750303,"t":"3つセット【10%オフ】","p":12825}]'>
  <div class="product-card-img" data-label="HIRE STEAK"></div>
- <div class="product-tag-row"><span class="product-tag">Steak · Fillet</span><span class="product-price">¥4,750〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Steak · Fillet</span><span class="product-price">¥4,750</span></div>
  <p class="product-name">ヒレステーキ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥3,167</strong></div>
@@ -10173,7 +10179,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="slice" data-variants='[{"id":50830303822122,"t":"1つ","p":1600},{"id":50830303854890,"t":"2つセット","p":3040},{"id":50830303887658,"t":"3つセット","p":4320}]'>
  <div class="product-card-img" data-label="KIRIOTOSHI"></div>
- <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥1,600〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥1,600</span></div>
  <p class="product-name">切り落とし</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥800</strong></div>
@@ -10184,7 +10190,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="slice" data-variants='[{"id":50831003700401,"t":"1つ","p":3700},{"id":50831003700402,"t":"2つセット【5%オフ】","p":7030},{"id":50831003700403,"t":"3つセット【10%オフ】","p":9990}]'>
  <div class="product-card-img" data-label="SHIMOFURI SLICE"></div>
- <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥3,700〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Wagyu · Slice</span><span class="product-price">¥3,700</span></div>
  <p class="product-name">霜降スライス</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,850</strong></div>
@@ -10196,7 +10202,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- ミンチ（加工品カテゴリ） -->
  <div class="product-card" data-sub="processed" data-variants='[{"id":50831001234567,"t":"1つ","p":1350},{"id":50831001234568,"t":"2つセット【5%オフ】","p":2565},{"id":50831001234569,"t":"3つセット【10%オフ】","p":3645}]'>
  <div class="product-card-img" data-label="WAGYU MINCED"></div>
- <div class="product-tag-row"><span class="product-tag">Wagyu · Minced</span><span class="product-price">¥1,350〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Wagyu · Minced</span><span class="product-price">¥1,350</span></div>
  <p class="product-name">ミンチ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥675</strong></div>
@@ -10208,7 +10214,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- 焼肉系 -->
  <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50830137655594,"t":"1つ","p":1900},{"id":50830137688362,"t":"2つセット【5%オフ】","p":3610},{"id":50830137721130,"t":"3つセット【10%オフ】","p":5130}]'>
  <div class="product-card-img" data-label="YAKINIKU BRISKET"></div>
- <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,900〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Yakiniku · Brisket</span><span class="product-price">¥1,900</span></div>
  <p class="product-name">バラ焼肉</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥950</strong></div>
@@ -10223,7 +10229,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="yakiniku" data-variants='[{"id":50831002400101,"t":"1つ","p":2400},{"id":50831002400102,"t":"2つセット【5%オフ】","p":4560},{"id":50831002400103,"t":"3つセット【10%オフ】","p":6480}]'>
  <div class="product-card-img" data-label="AKAMI YAKINIKU"></div>
- <div class="product-tag-row"><span class="product-tag">Yakiniku · Red Meat</span><span class="product-price">¥2,400〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Yakiniku · Red Meat</span><span class="product-price">¥2,400</span></div>
  <p class="product-name">赤身焼肉</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,200</strong></div>
@@ -10234,7 +10240,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="yakiniku" data-variants='[{"id":51019002600101,"t":"1つ","p":2600},{"id":51019002600102,"t":"2つセット【5%オフ】","p":4940},{"id":51019002600103,"t":"3つセット【10%オフ】","p":7020}]'>
  <div class="product-card-img" data-label="SHIMOFURI YAKINIKU"></div>
- <div class="product-tag-row"><span class="product-tag">Yakiniku · Marbled</span><span class="product-price">¥2,600〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Yakiniku · Marbled</span><span class="product-price">¥2,600</span></div>
  <p class="product-name">霜降り焼肉</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥1,300</strong></div>
@@ -10246,7 +10252,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- 加工品系 -->
  <div class="product-card" data-sub="processed" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191493418,"t":"3つセット【5%オフ】","p":2166},{"id":50830191526186,"t":"6つセット【10%オフ】","p":4104}]'>
  <div class="product-card-img" data-label="HAMBURG"></div>
- <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760</span></div>
  <p class="product-name" data-en="Hamburg steak">ハンバーグ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g換算 <strong>¥585</strong></div>
@@ -10268,7 +10274,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="processed" data-variants='[{"id":50982670532906,"t":"1つ (300g)","p":7400},{"id":50982670565674,"t":"2つセット【5%オフ】","p":14060},{"id":50982670598442,"t":"3つセット【10%オフ】","p":19980}]'>
  <div class="product-card-img" data-label="ROAST BEEF"></div>
- <div class="product-tag-row"><span class="product-tag">Roast Beef</span><span class="product-price">¥7,400〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Roast Beef</span><span class="product-price">¥7,400</span></div>
  <p class="product-name">ローストビーフ (300g)</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥2,467</strong></div>
@@ -10279,7 +10285,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="processed" data-variants='[{"id":50877844750634,"t":"1つ","p":1250},{"id":50877844783402,"t":"2つセット【5%オフ】","p":2300},{"id":50877844816170,"t":"3つセット【10%オフ】","p":3300}]'>
  <div class="product-card-img" data-label="RAW HAM"></div>
- <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Raw Ham</span><span class="product-price">¥1,250</span></div>
  <p class="product-name">生ハム</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥2,500</strong></div>
@@ -10309,7 +10315,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- 平飼い鶏肉セット（2026-09-20 新設・鶏の入荷までは products の published=FALSE で伏せる） -->
  <div class="product-card" data-sub="standard" data-variants='[{"id":50830990000001,"t":"1つ (400g)","p":1780},{"id":50830990000002,"t":"2つセット (800g)【5%オフ】","p":3382},{"id":50830990000003,"t":"3つセット (1.2kg)【10%オフ】","p":4806}]'>
  <div class="product-card-img" data-label="CHICKEN SET"></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Set</span><span class="product-price">¥1,780〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Set</span><span class="product-price">¥1,780</span></div>
  <p class="product-name">平飼い鶏肉セット</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥445</strong></div>
@@ -10321,7 +10327,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- 平飼い鶏 標準ライン（3品）— 200g パック -->
  <div class="product-card" data-sub="standard" data-variants='[{"id":50830250475818,"t":"1つ (200g)","p":920},{"id":50830250508586,"t":"2つセット (400g)【5%オフ】","p":1748},{"id":50830250541354,"t":"3つセット (600g)【10%オフ】","p":2484}]'>
  <div class="product-card-img" data-label="CHICKEN BREAST"></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Breast</span><span class="product-price">¥920〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Breast</span><span class="product-price">¥920</span></div>
  <p class="product-name">平飼い鶏 ムネ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥460</strong></div>
@@ -10332,7 +10338,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="standard" data-variants='[{"id":50830293172522,"t":"1つ (200g)","p":980},{"id":50830293205290,"t":"2つセット (400g)【5%オフ】","p":1862},{"id":50830293238058,"t":"3つセット (600g)【10%オフ】","p":2646}]'>
  <div class="product-card-img" data-label="CHICKEN THIGH"></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥980〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Thigh</span><span class="product-price">¥980</span></div>
  <p class="product-name">平飼い鶏 モモ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥490</strong></div>
@@ -10343,7 +10349,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="standard" data-variants='[{"id":50830210793770,"t":"1つ (200g)","p":800},{"id":50830210826538,"t":"2つセット (400g)【5%オフ】","p":1520},{"id":50830210859306,"t":"3つセット (600g)【10%オフ】","p":2160}]'>
  <div class="product-card-img" data-label="CHICKEN MINCED"></div>
- <div class="product-tag-row"><span class="product-tag">Chicken · Minced</span><span class="product-price">¥800〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Chicken · Minced</span><span class="product-price">¥800</span></div>
  <p class="product-name">平飼い鶏 ミンチ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥400</strong></div>
@@ -10355,7 +10361,7 @@ body.is-member .product-card--organic .org-chk-lock {
  <!-- オーガニックライン（プレミアム）— 200g パック -->
  <div class="product-card" data-sub="organic" data-variants='[{"id":"organic-chicken-breast","t":"1つ (200g)","p":2760},{"id":"organic-chicken-breast-2","t":"2つセット (400g)【5%オフ】","p":5244},{"id":"organic-chicken-breast-3","t":"3つセット (600g)【10%オフ】","p":7452}]'>
  <div class="product-card-img" data-label="CHICKEN BREAST"><span class="badge badge-organic">有機JAS</span></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥2,760〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Breast</span><span class="product-price">¥2,760</span></div>
  <p class="product-name">オーガニックチキン ムネ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥770</strong></div>
@@ -10366,7 +10372,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="organic" data-variants='[{"id":"organic-chicken-thigh","t":"1つ (200g)","p":2940},{"id":"organic-chicken-thigh-2","t":"2つセット (400g)【5%オフ】","p":5586},{"id":"organic-chicken-thigh-3","t":"3つセット (600g)【10%オフ】","p":7938}]'>
  <div class="product-card-img" data-label="CHICKEN THIGH"><span class="badge badge-organic">有機JAS</span></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥2,940〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Thigh</span><span class="product-price">¥2,940</span></div>
  <p class="product-name">オーガニックチキン モモ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥770</strong></div>
@@ -10377,7 +10383,7 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-card" data-sub="organic" data-variants='[{"id":"organic-chicken-minced","t":"1つ (200g)","p":2400},{"id":"organic-chicken-minced-2","t":"2つセット (400g)【5%オフ】","p":4560},{"id":"organic-chicken-minced-3","t":"3つセット (600g)【10%オフ】","p":6480}]'>
  <div class="product-card-img" data-label="CHICKEN MINCED"><span class="badge badge-organic">有機JAS</span></div>
- <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥2,400〜</span></div>
+ <div class="product-tag-row"><span class="product-tag">Organic · Minced</span><span class="product-price">¥2,400</span></div>
  <p class="product-name">オーガニックチキン ミンチ</p>
  <div class="product-stats">
  <div class="product-stat-item">100g <strong>¥600</strong></div>
@@ -12221,8 +12227,8 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
      if (p.price && p.price > 0) {
        const priceEl = card.querySelector('.product-tag-row .product-price');
        if (priceEl) {
-         const hasTilde = priceEl.textContent.includes('〜');
-         priceEl.textContent = '¥' + Number(p.price).toLocaleString() + (hasTilde ? '〜' : '');
+         /* 2026-11-21 田崎さん指示で価格の「〜」は出さない */
+         priceEl.textContent = '¥' + Number(p.price).toLocaleString();
        }
 
        /* 3. data-variants の比例更新 (multi-pack の割引率維持) + ドロップダウン同期 */
