@@ -10231,16 +10231,6 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-buy"></div>
  </div>
 
- <div class="product-card" data-sub="steak" data-variants='[{"id":50832002500301,"t":"1つ","p":2500}]'>
- <div class="product-card-img" data-label="HIRE CUBE"></div>
- <div class="product-tag-row"><span class="product-tag">Steak · Fillet Cube</span><span class="product-price">¥2,500</span></div>
- <p class="product-name">ヒレサイコロステーキ</p>
- <div class="product-stats">
- <div class="product-stat-item">100g <strong>¥1,250</strong></div>
- <div class="product-stat-item">真空 <strong>1袋 200g</strong></div>
- </div>
- <div class="product-buy"></div>
- </div>
 
  <!-- スライス・切り落とし系 -->
  <div class="product-card" data-sub="slice" data-variants='[{"id":50830187200810,"t":"1つ","p":2600},{"id":50830187233578,"t":"2つセット【5%オフ】","p":4940},{"id":50830187266346,"t":"3つセット【10%オフ】","p":7020}]'>
@@ -10330,7 +10320,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card" data-sub="processed" data-variants='[{"id":50830191427882,"t":"1つ","p":760},{"id":50830191493418,"t":"3つセット【5%オフ】","p":2166},{"id":50830191526186,"t":"6つセット【10%オフ】","p":4104}]'>
  <div class="product-card-img" data-label="HAMBURG"></div>
  <div class="product-tag-row"><span class="product-tag">Hamburg</span><span class="product-price">¥760</span></div>
- <p class="product-name" data-en="Hamburg steak">ハンバーグ</p>
+ <p class="product-name" data-en="Hamburg steak" data-name-suffix="（130g）">ハンバーグ</p>
+ <p class="product-note">有機調味料のみ使用しています<br><span class="product-note-warn">※小麦使用</span></p>
  <div class="product-stats">
  <div class="product-stat-item">100g換算 <strong>¥585</strong></div>
  <div class="product-stat-item">個包装 <strong>1個 130g</strong></div>
@@ -10341,7 +10332,8 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-card" data-sub="processed" data-variants='[{"id":51044025000001,"t":"1つ","p":1800}]'>
  <div class="product-card-img" data-label="HAMBURG XL"></div>
  <div class="product-tag-row"><span class="product-tag">Hamburg XL</span><span class="product-price">¥1,800</span></div>
- <p class="product-name" data-en="Hamburg steak XL">特大ハンバーグ</p>
+ <p class="product-name" data-en="Hamburg steak XL" data-name-suffix="（250g）">特大ハンバーグ</p>
+ <p class="product-note">有機調味料のみ使用しています<br><span class="product-note-warn">※小麦使用</span></p>
  <div class="product-stats">
  <div class="product-stat-item">100g換算 <strong>¥720</strong></div>
  <div class="product-stat-item">個包装 <strong>1個 250g</strong></div>
@@ -15269,6 +15261,18 @@ function copyPopCoupon() {
   text-decoration: none; transition: background 0.2s, color 0.2s;
 }
 .btn-viewall:hover { background: var(--color-forest); color: #fff; }
+/* ハンバーグの注記（2026-11-21 田崎さん指示）。説明文を消して空いた場所に置く。 */
+.product-card .product-note {
+  margin: 8px 0 0; font-size: 12px; line-height: 1.6;
+  color: var(--color-ink-muted, #6b6b6b);
+}
+.product-card .product-note-warn { font-weight: 700; color: var(--color-ink, #1a1a1a); }
+/* 商品名の後ろに内容量を出す。::after なので .product-name の textContent は変わらない
+   （決済も在庫減算も商品名の文字列で引いているため、名前そのものは1文字も変えない）。 */
+.product-card .product-name[data-name-suffix]::after {
+  content: attr(data-name-suffix);
+  font-weight: inherit; opacity: 0.85;
+}
 /* 「今だけ超お得」— 商品画像の右上に置く赤字（2026-11-21 田崎さん指示。左上の無投薬の下から変更）。
    ボタンにはしない。.badge を付けていないのは、.product-card-img .badge が
    top:14px/left:14px を全バッジに効かせていて、付けると左上の無投薬と重なるため。 */
