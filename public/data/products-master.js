@@ -861,7 +861,7 @@
        公式LINE配信用 セット3本（2026-10-19 ryotaro指示・P063〜P065）
        ---------------------------------------------------------------------
        10/19(月)17:00  P063 サイコロステーキと鶏2種セット  ¥3,200
-       10/22(木)17:00  P064 焼肉3種食べ比べセット          ¥5,900
+       10/22(木)17:00  P064 江田和牛焼肉3種セット          ¥5,900
        10/25(日)17:00  P065 不揃い品ステーキセット          ¥5,500
 
        🔴 ローンチ＝limitedStartAt。その時刻まではカードが出ず（data-limited-prestart）、
@@ -905,13 +905,13 @@
       images: ['public/images/products/drive/saikoro-chicken-set.jpg']
     },
 
-    /* ===== P064 焼肉3種食べ比べ（10/22 17:00 発売）=====
+    /* ===== P064 焼肉3種食べ比べ（10/22 発売 → 2026-11-21「いい肉の日」で再開）=====
        単品合計 ¥6,900（霜降り焼肉2,600＋赤身焼肉2,400＋バラ焼肉1,900）→ ¥5,900（14.5%引き）。 */
     {
       productId: 'P064', variantId: 'YAKI3-KURABE-SET', sku: 'EDA-YAKI3-KURABE-SET',
       stripePriceId: '',
-      name: '焼肉3種食べ比べセット', variant: '霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g',
-      price: 5900, listPrice: 6900, weight: 600, stock: 10, temp: '冷凍',
+      name: '江田和牛焼肉3種セット', variant: '霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g',
+      price: 5900, listPrice: 6900, weight: 600, stock: 20, temp: '冷凍',
       published: true,
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku 3 Cuts Tasting Set',
       components: [
@@ -919,15 +919,21 @@
         { name: '赤身焼肉',   qty: 1 },
         { name: 'バラ焼肉',   qty: 1 }
       ],
+      /* 🔁 2026-11-21 再開（「いい肉の日」企画・田崎さん決裁）。
+         商品そのもの（名前・価格・構成・画像）は 10/22 発売時のまま。
+         止めるために過去日時にしてあった3つの日時を、会期の日時に戻すだけ。
+         🔴 会期 11/25(水)00:00 〜 11/29(日)23:59。
+            11/25 18:30 の配信で「今日から」と案内するので、開始は 00:00。
+         🔴 P076 訳あり切り落とし・お米の締切(11/30 23:59)とは別。混ぜない。
+         🔴 product.html の ENDED_PRODUCT_IDS から 'P064' を外さないと
+            PDP が「お取り扱いを終了しました」のままになる（今回あわせて外した）。
+         🔴 components あり＝isBom。applyBomStock が構成品(霜降り焼肉／赤身焼肉／
+            バラ焼肉)の最小値で stock を上書きするので、ここの 20 はフォールバック。
+            limitedTotal 20 も表示の分母だけ。実売上限は構成品の在庫。 */
       limitedTotal: 20,
-      limitedStartAt: '2026/10/22 17:00',
-      /* 2026-10-26 田崎さん指示で店頭から取り下げ。過去日時にすることで
-         limited-stock.js の activeLimited から外れ、data-limited-scope /
-         data-limited-prestart を付けた shop/products のカードが自動で消え、
-         PDP直リンクも endedLimited が購入導線を閉じる（HTML側は無改造）。
-         再開するときはこの2行の日時を未来に戻すだけでよい。 */
-      limitedSoldOutAt: '2026/10/26 00:00',
-      limitedUntil:     '2026/10/26 00:00',
+      limitedStartAt:   '2026/11/25 00:00',
+      limitedSoldOutAt: '2026/11/29 23:59',
+      limitedUntil:     '2026/11/29 23:59',
       limitedUnit: 'セット',
       description: 'サシの霜降り焼肉200g、噛みごたえの赤身焼肉200g、脂の甘いバラ焼肉200g。計600g、3〜4人前ほど。1頭の中の違う部位を並べて焼き比べていただけます。冷凍便でお届けします。',
       images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
@@ -1721,11 +1727,103 @@
       ],
       description: '抗生物質・ホルモン剤を使わずに育てた江田和牛の赤身焼肉200gとバラ焼肉200g、同じ考え方で育てた平飼い鶏のモモ200g・ムネ200g。牛2種と鶏2種を一度に焼ける計800gです。冷凍便でお届けします。',
       images: ['public/images/products/drive/mutoyaku-yakiniku-set.jpg']
+    },
+    /* =====================================================================
+       いい肉の日 セット4本（P088 / P089 / P090 ＋ 再開の P064）
+       2026-11-21 田崎さん決裁。価格・構成は決裁どおりで動かさない。
+       ---------------------------------------------------------------------
+       会期 2026/11/25(水) 00:00 〜 2026/11/29(日) 23:59
+         limitedStartAt   2026/11/25 00:00  … これ以前はカードが出ない（COMING SOON）
+         limitedSoldOutAt 2026/11/29 23:59  … 販売停止（stock を0扱いにして完売表示）
+         limitedUntil     2026/11/29 23:59  … 表示終了（カード・帯が自動で消える）
+       🔴 11/25(水)18:30 の配信で「今日から」と案内する。開始を 00:00 にしてあるので
+          配信時刻には必ず売れる状態になっている＝当日の手作業は不要。
+       🔴 P076 訳あり切り落とし期間限定・お米の締切（11/30 23:59）とは別。混ぜない。
+       🔴 name は products シート(E列)と1文字も変えない。決済も在庫減算も名前で引く。
+       🔴 limitedTotal 20 は表示の分母だけ。実売上限は構成品の在庫
+          （3本とも components あり＝applyBomStock が構成品の最小値で stock を上書きする）。
+       🔴 残数（残り◯セット）は出さない。
+       🔴 listPrice は単品合計（P026 ¥3,700 / P004 ¥2,600 / P002 ¥3,400 の実価格から計算）。
+       ===================================================================== */
+
+    /* ===== ① 赤身多め（P088）=====
+       赤身スライス200g×2 ＋ 霜降スライス200g×1 ＝ 600g。
+       単品合計 ¥8,900（2,600×2＋3,700）→ ¥7,400。 */
+    {
+      productId: 'P088', variantId: 'NIKUNOHI-SLICE-AKAMI', sku: 'EDA-NIKUNOHI-SLICE-AKAMI',
+      stripePriceId: '',
+      name: '江田和牛スライス 赤身仕立て',
+      variant: '赤身スライス200g×2＋霜降スライス200g×1 計600g',
+      /* price / stock は products シートのライブ値で上書きされる。ここはフォールバック */
+      price: 7400, listPrice: 8900, weight: 600, stock: 20, temp: '冷凍',
+      published: true,
+      limitedTotal: 20,
+      limitedStartAt:   '2026/11/25 00:00',
+      limitedSoldOutAt: '2026/11/29 23:59',
+      limitedUntil:     '2026/11/29 23:59',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Lean-Heavy Slice Set',
+      /* 🔴 構成品名は products の name と完全一致。「霜降スライス」に「り」は入れない。 */
+      components: [
+        { name: '赤身スライス', qty: 2 },
+        { name: '霜降スライス', qty: 1 }
+      ],
+      description: 'ソトモモの赤身スライス200gを2袋と、肩ロースの霜降スライス200gを1袋。計600g。赤身を主役にして、霜降りを一袋だけ合わせた配分です。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
+      images: ['public/images/products/drive/nikunohi-slice-akami.jpg']
+    },
+
+    /* ===== ② 霜降り多め（P089）=====
+       霜降スライス200g×2 ＋ 赤身スライス200g×1 ＝ 600g。
+       単品合計 ¥10,000（3,700×2＋2,600）→ ¥7,800。 */
+    {
+      productId: 'P089', variantId: 'NIKUNOHI-SLICE-SHIMO', sku: 'EDA-NIKUNOHI-SLICE-SHIMO',
+      stripePriceId: '',
+      name: '江田和牛スライス 霜降り仕立て',
+      variant: '霜降スライス200g×2＋赤身スライス200g×1 計600g',
+      price: 7800, listPrice: 10000, weight: 600, stock: 20, temp: '冷凍',
+      published: true,
+      limitedTotal: 20,
+      limitedStartAt:   '2026/11/25 00:00',
+      limitedSoldOutAt: '2026/11/29 23:59',
+      limitedUntil:     '2026/11/29 23:59',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled-Heavy Slice Set',
+      components: [
+        { name: '霜降スライス', qty: 2 },
+        { name: '赤身スライス', qty: 1 }
+      ],
+      description: '肩ロースの霜降スライス200gを2袋と、ソトモモの赤身スライス200gを1袋。計600g。霜降りを主役にした配分です。すき焼き・しゃぶしゃぶに。冷凍便でお届けします。',
+      images: ['public/images/products/drive/nikunohi-slice-shimofuri.jpg']
+    },
+
+    /* ===== ③ 赤身ステーキ2枚（P090）=====
+       赤身ステーキ200g×2 ＝ 400g。単品合計 ¥6,800（3,400×2）→ ¥5,000。
+       🔴 画像は 2026-11-21 時点で未支給。
+          public/images/products/drive/nikunohi-akami-steak2.jpg を置けば差し替わる。
+          置くまでカードの写真枠は無地になるが、レイアウトは崩れない。 */
+    {
+      productId: 'P090', variantId: 'NIKUNOHI-STEAK2', sku: 'EDA-NIKUNOHI-STEAK2',
+      stripePriceId: '',
+      name: '江田和牛 赤身ステーキ 2枚セット',
+      variant: '赤身ステーキ200g×2 計400g',
+      price: 5000, listPrice: 6800, weight: 400, stock: 20, temp: '冷凍',
+      published: true,
+      limitedTotal: 20,
+      limitedStartAt:   '2026/11/25 00:00',
+      limitedSoldOutAt: '2026/11/29 23:59',
+      limitedUntil:     '2026/11/29 23:59',
+      limitedUnit: 'セット',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Lean Steak Duo',
+      components: [
+        { name: '赤身ステーキ', qty: 2 }
+      ],
+      description: 'モモの中心から取った赤身ステーキ200gを2枚。計400g。2人で1枚ずつ、または1人で2回ぶん。塩だけで焼いてください。冷凍便でお届けします。',
+      images: ['public/images/products/drive/nikunohi-akami-steak2.jpg']
     }
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.15-013-p077-close-1116';
+  const PRODUCTS_VERSION = '2026.11.21-016-eda-wagyu-names';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
