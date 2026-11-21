@@ -106,7 +106,16 @@ body{
    aspect-ratio で確保されるのでレイアウトは崩れない。 */
 .card-img{
   width:100%; aspect-ratio:4/3; background:#EDE8DC center/cover no-repeat;
-  display:block;
+  display:block; position:relative;
+}
+/* 締切のリボン。shop/products で limited-stock.js が写真の上に出している
+   .limited-countdown-eda と同じ見え方（左下・白地に赤字のピル）にそろえてある。 */
+.card-deadline{
+  position:absolute; left:8px; bottom:8px; z-index:3;
+  padding:2px 9px; border-radius:999px; font-size:11px; font-weight:800;
+  letter-spacing:.02em; white-space:nowrap;
+  background:rgba(255,255,255,.95); color:#C8102E;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
 }
 .card-body{padding:18px 18px 20px;}
 .card-tag{
@@ -322,7 +331,7 @@ body{
       price:7800, listPrice:10000, stock:20,
       components:[{name:'霜降スライス',qty:2},{name:'赤身スライス',qty:1}],
       /* 🔴 内訳の文字列は shop.html / products.html のカードと1文字も変えない */
-      stats:[['霜降スライス','200g×2'],['赤身スライス','200g']], total:'600g',
+      stats:['霜降スライス','霜降スライス','赤身スライス'], total:'600g',
       img:'public/images/products/drive/nikunohi-slice-shimofuri.jpg',
       desc:'肩ロースの霜降りを主役に、赤身を1パック添えた配分です。すき焼き・しゃぶしゃぶに。' },
 
@@ -335,7 +344,7 @@ body{
       variant:'赤身ステーキ200g×2 計400g',
       price:5000, listPrice:6800, stock:20,
       components:[{name:'赤身ステーキ',qty:2}],
-      stats:[['赤身ステーキ','200g×2']], total:'400g',
+      stats:['赤身ステーキ','赤身ステーキ'], total:'400g',
       img:'public/images/products/drive/nikunohi-akami-steak2.jpg',
       desc:'モモの中心から取った赤身ステーキを2枚。塩だけで焼いてください。' },
 
@@ -345,7 +354,7 @@ body{
       variant:'赤身スライス200g×2＋霜降スライス200g×1 計600g',
       price:7400, listPrice:8900, stock:20,
       components:[{name:'赤身スライス',qty:2},{name:'霜降スライス',qty:1}],
-      stats:[['赤身スライス','200g×2'],['霜降スライス','200g']], total:'600g',
+      stats:['赤身スライス','赤身スライス','霜降スライス'], total:'600g',
       img:'public/images/products/drive/nikunohi-slice-akami.jpg',
       desc:'ソトモモの赤身を主役に、霜降りを1パック添えた配分です。すき焼き・しゃぶしゃぶに。' },
 
@@ -355,7 +364,7 @@ body{
       variant:'霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g',
       price:5900, listPrice:6900, stock:20,
       components:[{name:'霜降り焼肉',qty:1},{name:'赤身焼肉',qty:1},{name:'バラ焼肉',qty:1}],
-      stats:[['霜降り焼肉','200g'],['赤身焼肉','200g'],['バラ焼肉','200g']], total:'600g',
+      stats:['霜降り焼肉','赤身焼肉','バラ焼肉'], total:'600g',
       img:'public/images/products/drive/yakiniku3-kurabe-set.jpg',
       desc:'1頭の中の違う部位を並べて焼き比べていただけます。3〜4人前ほど。' }
   ];
@@ -422,14 +431,16 @@ body{
     else if (pending) stockLine = '<p class="stock-line stock-pending">在庫を確認しています</p>';
     else if (soldOut) stockLine = '<p class="stock-line">完売しました</p>';
 
-    /* 内訳の表。shop/products のセットカードと同じ組み立て
-       （構成マス → wide の「合計 ◯g」→ wide の締切）。 */
+    /* 内訳の表。shop.html / products.html の P078 のカードと同じ組み立て。
+       🔴 1パック＝1マス（同じ品が2パックでもマスを2つ並べる。「200g×2」とまとめない）。
+       🔴 箱の中に入れるのは「構成品のマス」と wide の「合計 ◯g」だけ。
+          締切は箱に入れない（P078 の .product-stats にも入っていない）。
+          締切は写真の上のリボンで出す＝P078 の .limited-countdown-eda と同じ置き場所。 */
     var statsHtml = '<div class="product-stats">' +
-      it.stats.map(function (c) {
-        return '<div class="product-stat-item">' + c[0] + ' <strong>' + c[1] + '</strong></div>';
+      it.stats.map(function (n) {
+        return '<div class="product-stat-item">' + n + ' <strong>200g</strong></div>';
       }).join('') +
       '<div class="product-stat-item wide">合計 <strong>' + it.total + '</strong></div>' +
-      '<div class="product-stat-item wide">' + END_LABEL_SHORT + '</div>' +
     '</div>';
 
     var btnText = up ? (START_LABEL + ' 発売')
@@ -439,7 +450,15 @@ body{
 
     return '' +
       '<div class="card" data-i="' + i + '">' +
-        '<div class="card-img" style="background-image:url(' + it.img + ')"></div>' +
+        '<div class="card-img" style="background-image:url(' + it.img + ')">' +
+          /* 締切のリボン。shop/products では limited-stock.js が
+             .product-card-img の中に .limited-countdown-eda を差し込んでいる。
+             このページは limited-stock.js を読み込んでいないので、同じ見え方
+             （写真の左下・白地に赤字のピル）を手で置く。
+             🔴 内訳の箱の中には入れない（2026-11-21 田崎さん指示）。
+             🔴 出すのは日付だけ。残数（残り◯セット）は出さない。 */
+          '<span class="card-deadline">' + END_LABEL_SHORT + '</span>' +
+        '</div>' +
         '<div class="card-body">' +
           '<span class="card-tag">公式LINE限定</span>' +
           '<h3>' + it.name + '</h3>' +
