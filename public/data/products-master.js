@@ -861,7 +861,7 @@
        公式LINE配信用 セット3本（2026-10-19 ryotaro指示・P063〜P065）
        ---------------------------------------------------------------------
        10/19(月)17:00  P063 サイコロステーキと鶏2種セット  ¥3,200
-       10/22(木)17:00  P064 焼肉3種食べ比べセット          ¥5,900
+       10/22(木)17:00  P064 江田和牛焼肉3種セット          ¥5,900
        10/25(日)17:00  P065 不揃い品ステーキセット          ¥5,500
 
        🔴 ローンチ＝limitedStartAt。その時刻まではカードが出ず（data-limited-prestart）、
@@ -910,7 +910,7 @@
     {
       productId: 'P064', variantId: 'YAKI3-KURABE-SET', sku: 'EDA-YAKI3-KURABE-SET',
       stripePriceId: '',
-      name: '焼肉3種食べ比べセット', variant: '霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g',
+      name: '江田和牛焼肉3種セット', variant: '霜降り焼肉200g＋赤身焼肉200g＋バラ焼肉200g 計600g',
       price: 5900, listPrice: 6900, weight: 600, stock: 20, temp: '冷凍',
       published: true,
       category: 'beef', categoryLabel: '牛肉', tagEn: 'Yakiniku 3 Cuts Tasting Set',
@@ -1752,7 +1752,7 @@
     {
       productId: 'P088', variantId: 'NIKUNOHI-SLICE-AKAMI', sku: 'EDA-NIKUNOHI-SLICE-AKAMI',
       stripePriceId: '',
-      name: '和牛スライス 赤身仕立て',
+      name: '江田和牛スライス 赤身仕立て',
       variant: '赤身スライス200g×2＋霜降スライス200g×1 計600g',
       /* price / stock は products シートのライブ値で上書きされる。ここはフォールバック */
       price: 7400, listPrice: 8900, weight: 600, stock: 20, temp: '冷凍',
@@ -1778,7 +1778,7 @@
     {
       productId: 'P089', variantId: 'NIKUNOHI-SLICE-SHIMO', sku: 'EDA-NIKUNOHI-SLICE-SHIMO',
       stripePriceId: '',
-      name: '和牛スライス 霜降り仕立て',
+      name: '江田和牛スライス 霜降り仕立て',
       variant: '霜降スライス200g×2＋赤身スライス200g×1 計600g',
       price: 7800, listPrice: 10000, weight: 600, stock: 20, temp: '冷凍',
       published: true,
@@ -1804,7 +1804,7 @@
     {
       productId: 'P090', variantId: 'NIKUNOHI-STEAK2', sku: 'EDA-NIKUNOHI-STEAK2',
       stripePriceId: '',
-      name: '和牛 赤身ステーキ 2枚セット',
+      name: '江田和牛 赤身ステーキ 2枚セット',
       variant: '赤身ステーキ200g×2 計400g',
       price: 5000, listPrice: 6800, weight: 400, stock: 20, temp: '冷凍',
       published: true,
@@ -1823,7 +1823,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.21-015-iinikunohi-rename';
+  const PRODUCTS_VERSION = '2026.11.21-016-eda-wagyu-names';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
