@@ -217,6 +217,12 @@
     var hms = pad2(h) + ':' + pad2(m) + ':' + pad2(s);
     return d > 0 ? (d + '日と' + hms) : hms;
   }
+  /* 一覧カードは日数だけ（2026-11-21 田崎さん指示。時間は出さない）。
+     丸1日を切ったら「本日まで」。切り捨てなので「残り0日」にはしない。 */
+  function fmtRemainDays(ms) {
+    var d = Math.floor(ms / 86400000);
+    return d >= 1 ? ('残り ' + d + '日') : '本日まで';
+  }
   function tickCountdowns() {
     var now = Date.now();
     document.querySelectorAll('.limited-countdown-eda[data-eda-deadline]').forEach(function (el) {
@@ -227,7 +233,12 @@
       /* 見出し「残り時間：」が別に付く場所（PDPの帯）では「残り」を重ねない。
          カード上など見出しが無い場所では従来どおり「残り 〜」と書く。 */
       var bare = !!el.closest('.lb-row-time');
-      el.textContent = (bare ? '' : '残り ') + fmtRemain(rem);
+      /* 一覧カードの上だけ日数表示にする（商品ページの帯は時間まで出す） */
+      if (el.closest('.product-card-img')) {
+        el.textContent = fmtRemainDays(rem);
+      } else {
+        el.textContent = (bare ? '' : '残り ') + fmtRemain(rem);
+      }
       el.classList.toggle('is-urgent', rem <= 3600000);   /* 残り1時間以内で強調 */
     });
   }
@@ -259,9 +270,12 @@
       + '.limited-banner-text .lb-label{opacity:.85;margin-right:2px}'
       + '.limited-countdown-eda.is-urgent{animation:edaCdPulse 1s steps(2,start) infinite}'
       + '@keyframes edaCdPulse{50%{opacity:.5}}'
+      /* カードの上は白地に赤字（2026-11-21 田崎さん指示）。
+         「今だけ超お得」のチップと同じ見え方にそろえる。 */
       + '.product-card-img .limited-countdown-eda{position:absolute;left:8px;bottom:8px;'
       + 'z-index:3;padding:2px 9px;border-radius:999px;font-size:11px;'
-      + 'background:rgba(17,17,17,.78);color:#fff}'
+      + 'background:rgba(255,255,255,.95);color:#C8102E;'
+      + 'box-shadow:0 2px 8px rgba(0,0,0,.18)}'
       + '.product-card-img .limited-countdown-eda.is-urgent{background:rgba(200,16,46,.94);color:#fff}';
     (document.head || document.documentElement).appendChild(s);
   }
