@@ -943,7 +943,7 @@
          🔴 霜降り焼肉の原料は台帳では「リブかぶり／ロースカブリ」だが、田崎さんが
             台帳との差を承知のうえで「リブロース」で出すと判断（2026-11-21）。触らない。
          🔴 上バラも同様。直近ロット(11/02)の台帳表記は「バラ」だが指示どおり「上バラ」。 */
-      description: '・霜降り焼肉：リブロースを使用\n・赤身焼肉：ウデを使用\n・バラ焼肉：上バラ（赤身の多い部位）を使用',
+      description: '・霜降り焼肉：リブロースを使用\n・赤身焼肉：ウデを使用\n・バラ焼肉：上バラを使用（赤身の多い部分を使用しています）',
       images: ['public/images/products/drive/yakiniku3-kurabe-set.jpg']
     },
 
@@ -1837,7 +1837,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.21-019-nikunohi-shiyo';
+  const PRODUCTS_VERSION = '2026.11.21-020-nikunohi-uwabara';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
