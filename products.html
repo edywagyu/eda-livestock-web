@@ -7071,6 +7071,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="NIKUNOHI SLICE SHIMO"] { background-image: url('public/images/products/drive/nikunohi-slice-shimofuri.jpg'); }
 .product-card-img[data-label="NIKUNOHI SLICE AKAMI"] { background-image: url('public/images/products/drive/nikunohi-slice-akami.jpg'); }
 .product-card-img[data-label="NIKUNOHI AKAMI STEAK2"] { background-image: url('public/images/products/drive/nikunohi-akami-steak2.jpg'); }
+/* 取り消し線の金額に添える見出し（2026-11-21 田崎さん指示で「通常」に統一）。
+   🔴 この金額はセット自体の過去の販売価格ではなく、構成品を単品で買ったときの合計。
+      文言の是非は PR 本文に書いた論点を参照すること。 */
+.product-price .was-label{font-size:11px;font-weight:600;opacity:.7;margin-right:3px;}
 .product-card-img[data-label="SHIMOFURI AKAMI KURABE"] { background-image: url('public/images/products/drive/shimofuri-akami-kurabe-set.jpg'); }
 .product-card-img[data-label="YAKI3 KURABE SET"] { background-image: url('public/images/products/drive/yakiniku3-kurabe-set.jpg'); }
 .product-card-img[data-label="FUSOROI STEAK SET"] { background-image: url('public/images/products/drive/fusoroi-steak-set.jpg'); }
@@ -9272,6 +9276,12 @@ body.is-member .product-card--organic .org-chk-lock {
  }
  /* 栄養スペック表は非表示 (重要な情報のみ重視) */
  .product-stats { display: none !important; }
+ /* 🔴 セット商品だけは内訳の表を出す（2026-11-21 田崎さん指示）。
+    上の1行は 2026-06-20 からのモバイル共通ルール（栄養スペック表を隠す）で、
+    セットの「何が何g何パック入るか」まで一緒に隠れていた。
+    中身はセットの購入判断そのものなので、セットだけ戻す。
+    単品カードの見た目は変えない。 */
+ .product-card[data-sub="set"] .product-stats { display: grid !important; }
  .product-card .product-buy { padding: 0 14px 14px !important; }
  .product-card .product-tag-row { padding-top: 10px !important; padding-bottom: 0 !important; }
  .product-card .product-tag-row,
@@ -10008,57 +10018,52 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 P064 は 10/22 に出していた商品の再開。新規作成ではない。 -->
  <div class="product-card" data-sub="set" data-limited-scope="江田和牛スライス 霜降り仕立て" data-limited-prestart="江田和牛スライス 霜降り仕立て" data-variants='[{"id":51125078000891,"t":"1セット","p":7800}]'>
  <div class="product-card-img" data-label="NIKUNOHI SLICE SHIMO"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Marbled-Heavy</span><span class="product-price"><s>&yen;10,000</s> &yen;7,800</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Marbled-Heavy</span><span class="product-price"><span class="was-label">通常</span><s>&yen;10,000</s> &yen;7,800</span></div>
  <p class="product-name"><a href="product.html?id=P089" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛スライス 霜降り仕立て</a></p>
- <p class="product-desc">霜降スライス200g×2 ＋ 赤身スライス200g×1（計600g）</p>
  <div class="product-stats">
  <div class="product-stat-item">霜降スライス <strong>200g×2</strong></div>
- <div class="product-stat-item">赤身スライス <strong>200g×1</strong></div>
- <div class="product-stat-item">合計 <strong>600g</strong></div>
- <div class="product-stat-item wide">単品合計 <strong>&yen;10,000</strong>／11/29（日）23:59まで</div>
+ <div class="product-stat-item">赤身スライス <strong>200g</strong></div>
+ <div class="product-stat-item wide">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">11/29（日）23:59まで</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
  <div class="product-card" data-sub="set" data-limited-scope="江田和牛 赤身ステーキ 2枚セット" data-limited-prestart="江田和牛 赤身ステーキ 2枚セット" data-variants='[{"id":51125050000901,"t":"1セット","p":5000}]'>
  <div class="product-card-img" data-label="NIKUNOHI AKAMI STEAK2"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Lean Steak</span><span class="product-price"><s>&yen;6,800</s> &yen;5,000</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Lean Steak</span><span class="product-price"><span class="was-label">通常</span><s>&yen;6,800</s> &yen;5,000</span></div>
  <p class="product-name"><a href="product.html?id=P090" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 赤身ステーキ 2枚セット</a></p>
- <p class="product-desc">赤身ステーキ200g×2（計400g）</p>
  <div class="product-stats">
  <div class="product-stat-item">赤身ステーキ <strong>200g×2</strong></div>
- <div class="product-stat-item">合計 <strong>400g</strong></div>
- <div class="product-stat-item">1枚あたり <strong>&yen;2,500</strong></div>
- <div class="product-stat-item wide">単品合計 <strong>&yen;6,800</strong>／11/29（日）23:59まで</div>
+ <div class="product-stat-item wide">合計 <strong>400g</strong></div>
+ <div class="product-stat-item wide">11/29（日）23:59まで</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
  <div class="product-card" data-sub="set" data-limited-scope="江田和牛スライス 赤身仕立て" data-limited-prestart="江田和牛スライス 赤身仕立て" data-variants='[{"id":51125074000881,"t":"1セット","p":7400}]'>
  <div class="product-card-img" data-label="NIKUNOHI SLICE AKAMI"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Lean-Heavy</span><span class="product-price"><s>&yen;8,900</s> &yen;7,400</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Lean-Heavy</span><span class="product-price"><span class="was-label">通常</span><s>&yen;8,900</s> &yen;7,400</span></div>
  <p class="product-name"><a href="product.html?id=P088" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛スライス 赤身仕立て</a></p>
- <p class="product-desc">赤身スライス200g×2 ＋ 霜降スライス200g×1（計600g）</p>
  <div class="product-stats">
  <div class="product-stat-item">赤身スライス <strong>200g×2</strong></div>
- <div class="product-stat-item">霜降スライス <strong>200g×1</strong></div>
- <div class="product-stat-item">合計 <strong>600g</strong></div>
- <div class="product-stat-item wide">単品合計 <strong>&yen;8,900</strong>／11/29（日）23:59まで</div>
+ <div class="product-stat-item">霜降スライス <strong>200g</strong></div>
+ <div class="product-stat-item wide">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">11/29（日）23:59まで</div>
  </div>
  <div class="product-buy"></div>
  </div>
 
  <div class="product-card" data-sub="set" data-limited-scope="江田和牛焼肉3種セット" data-limited-prestart="江田和牛焼肉3種セット" data-variants='[{"id":51022059000641,"t":"1セット","p":5900}]'>
  <div class="product-card-img" data-label="YAKI3 KURABE SET"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku 3 Cuts</span><span class="product-price"><s>&yen;6,900</s> &yen;5,900</span></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Yakiniku 3 Cuts</span><span class="product-price"><span class="was-label">通常</span><s>&yen;6,900</s> &yen;5,900</span></div>
  <p class="product-name"><a href="product.html?id=P064" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛焼肉3種セット</a></p>
- <p class="product-desc">霜降り焼肉200g ＋ 赤身焼肉200g ＋ バラ焼肉200g（計600g）</p>
  <div class="product-stats">
  <div class="product-stat-item">霜降り焼肉 <strong>200g</strong></div>
  <div class="product-stat-item">赤身焼肉 <strong>200g</strong></div>
  <div class="product-stat-item">バラ焼肉 <strong>200g</strong></div>
- <div class="product-stat-item">合計 <strong>600g</strong></div>
- <div class="product-stat-item wide">単品合計 <strong>&yen;6,900</strong>／11/29（日）23:59まで</div>
+ <div class="product-stat-item wide">合計 <strong>600g</strong></div>
+ <div class="product-stat-item wide">11/29（日）23:59まで</div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -10893,6 +10898,13 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
  /* 補助情報の一部を非表示 (情報過多防止) */
  .product-card .product-stat-item.wide,
  .product-card .product-stat-item:nth-child(n+3) { display: none !important; }
+ /* 🔴 セット商品だけは内訳を全部出す（2026-11-21 田崎さん指示）。
+    上の2行は 2026-06-20 からのモバイル共通ルールで、3マス目以降と
+    wide 行（＝「合計 ◯g」）まで一緒に消えていた。セットは
+    「何が何g何パック入るか」と合計が購入判断そのものなので戻す。
+    単品カードの見た目は変えない。 */
+ .product-card[data-sub="set"] .product-stat-item.wide,
+ .product-card[data-sub="set"] .product-stat-item:nth-child(n+3) { display: flex !important; }
  .product-card .product-stat-item {
    font-size: 10.5px !important;
    padding: 3px 5px !important;
@@ -12321,7 +12333,19 @@ body:not(.is-member) .product-card--organic-wagyu .organic-wagyu-price {
        const priceEl = card.querySelector('.product-tag-row .product-price');
        if (priceEl) {
          /* 2026-11-21 田崎さん指示で価格の「〜」は出さない */
-         priceEl.textContent = '¥' + Number(p.price).toLocaleString();
+         /* 🔴 textContent で丸ごと書き換えると、手書きカードに置いてある
+            「通常」の見出しと <s>取り消し線の金額</s> まで消える
+            （P078 の ¥6,200→¥5,980 が実際に消えていた）。
+            比較の部分はそのまま残し、売価の数字だけ差し替える。 */
+         const wasPart = priceEl.querySelector('s');
+         const labPart = priceEl.querySelector('.was-label');
+         const now = '¥' + Number(p.price).toLocaleString();
+         if (wasPart) {
+           priceEl.innerHTML =
+             (labPart ? labPart.outerHTML : '') + wasPart.outerHTML + ' ' + now;
+         } else {
+           priceEl.textContent = now;
+         }
        }
 
        /* 3. data-variants の比例更新 (multi-pack の割引率維持) + ドロップダウン同期 */
@@ -13679,7 +13703,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-21-441-eda-wagyu-names" defer></script>
+<script src="public/data/products-master.js?v=2026-11-21-443-set-stats" defer></script>
 <script src="public/js/products-loader.js?v=010" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->

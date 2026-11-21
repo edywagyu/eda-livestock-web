@@ -126,9 +126,10 @@ body{
 .card-compose b{color:var(--forest);}
 .card-detail{display:inline-block;font-size:13px;color:var(--forest);text-decoration:underline;text-underline-offset:2px;margin:0 0 14px;}
 .price-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
-/* 元の販売価格＝単品で買ったときの合計。取り消し線で出す。
-   🔴 これは「この商品が以前その値段だった」ではなく「単品で買うと合計いくらか」。
-      見出しの「単品で買うと」を必ず一緒に出す（省くと二重価格表示になる）。 */
+/* 取り消し線で出す金額。中身は「構成品を単品で買ったときの合計」。
+   🔴 2026-11-21 田崎さん指示で見出しを「通常」に変更した。
+      このセット自体をこの価格で売った実績は無いので、景表法上の論点がある。
+      詳細は PR 本文（fix/price-was-label）を参照。 */
 .price-was{font-size:14px;color:var(--muted);text-decoration:line-through;}
 .price-was-note{font-size:11.5px;color:var(--muted);display:block;margin:0 0 2px;}
 .price-now{font-family:'Shippori Mincho',serif;font-size:27px;font-weight:700;color:var(--forest);}
@@ -269,8 +270,8 @@ body{
      ------------------------------------------------------------
      price / stock は public_catalog のライブ値で上書きされる（下の数字はフォールバック）。
      🔴 name は products シートの name と1文字も変えない。決済も在庫減算も名前で引く。
-     🔴 listPrice は「単品で買ったときの合計」。カードには必ず
-        「単品で買うと」という見出しと一緒に出す（省くと二重価格表示になる）。
+     🔴 listPrice は「構成品を単品で買ったときの合計」。
+        見出しは 2026-11-21 田崎さん指示で「通常」に統一した（景表法の論点は PR 本文）。
         金額は products の実価格から計算した確定値:
           霜降スライス ¥3,700 ／ 赤身スライス ¥2,600 ／ 赤身ステーキ ¥3,400
           霜降り焼肉 ¥2,600 ／ 赤身焼肉 ¥2,400 ／ バラ焼肉 ¥1,900
@@ -380,7 +381,7 @@ body{
     var off = (it.listPrice && it.listPrice > it.price)
       ? '<span class="price-off">' + yen(it.listPrice - it.price) + ' お得</span>' : '';
     var was = (it.listPrice && it.listPrice > it.price)
-      ? '<span class="price-was-note">単品で買うと <span class="price-was">' + yen(it.listPrice) + '</span>（税込）</span>' : '';
+      ? '<span class="price-was-note">通常 <span class="price-was">' + yen(it.listPrice) + '</span>（税込）</span>' : '';
 
     var stockLine;
     if (up)           stockLine = '<p class="stock-line">' + START_LABEL + ' 発売 ／ ' + END_LABEL + 'まで</p>';
@@ -406,7 +407,10 @@ body{
             it.compose.map(function (c) { return '<li><b>' + c + '</b></li>'; }).join('') +
           '</ul>' +
           '<p class="card-variant">' + it.meta + '</p>' +
-          '<p class="card-variant">' + it.desc + '</p>' +
+          /* 🔴 散文の説明は一覧に出さない（2026-11-21 田崎さん指示）。
+             一覧に出すのは内訳と重量だけ。説明は商品詳細ページで読ませる。
+             it.desc はカートや計測では使わないが、商品ページ側の文面と
+             突き合わせるためデータとしては残してある。 */
           '<a class="card-detail" href="product.html?id=' + it.detailId + '">商品の詳細へ進む →</a>' +
           was +
           '<div class="price-row">' +
