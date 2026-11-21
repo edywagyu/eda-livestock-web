@@ -1318,7 +1318,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-21-441-eda-wagyu-names"></script>
+<script src="public/data/products-master.js?v=2026-11-21-443-set-stats"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script src="public/js/wakeari-compare.js?v=004"></script>
@@ -1458,6 +1458,14 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       '<span style="font-size:0.62em;color:var(--color-ink-muted);text-decoration:line-through;font-weight:400;margin-right:12px">¥' + v.toLocaleString() + '</span>';
     const nowHtml = (v) =>
       '<span style="color:var(--color-red)">¥' + v.toLocaleString() + '</span>';
+    /* 2026-11-21 田崎さん指示：いい肉の日の4セットだけ、取り消し線の金額に
+       「通常」の見出しを添える（カード・会員限定ページと文言をそろえるため）。
+       🔴 他の商品の見た目は変えない（この分岐は listPrice を持つ全商品が通る）。
+       🔴 この金額はセット自体の過去の販売価格ではなく、構成品を単品で買ったときの
+          合計。景表法の論点は PR 本文（fix/price-was-label）に書いた。 */
+    const wasLabel = (['P088', 'P089', 'P090', 'P064'].indexOf(product.productId) >= 0)
+      ? '<span style="font-size:0.5em;color:var(--color-ink-muted);font-weight:600;margin-right:4px">通常</span>'
+      : '';
     if (product.category === 'rice' && listPrice > price) {
       el.innerHTML =
         '<span style="color:var(--color-red)">¥' + price.toLocaleString() + '</span>' +
@@ -1467,7 +1475,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
           '<span class="rice-pn-future">12月1日から <b>¥' + listPrice.toLocaleString() + '</b>（税込）</span>' +
         '</span>';
     } else if (listPrice > price) {
-      el.innerHTML = wasHtml(listPrice) + nowHtml(price);
+      el.innerHTML = wasLabel + wasHtml(listPrice) + nowHtml(price);
     } else if (cmpTotal > price && cmpLabel) {
       el.innerHTML = wasHtml(cmpTotal) + nowHtml(price) +
         '<span class="pdp-unit-compare">' + cmpLabel + '</span>';
