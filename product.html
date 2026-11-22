@@ -2196,6 +2196,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     if (product.name === SAUCE_TITLE) return;
     /* 🫙 刃コラボ(P049/P050)は既にソース1本が同梱されている。
        枠は出すが、「すでに1本入っている」ことが必ず分かる文言に差し替える。 */
+    /* 🫙 刃ソースの追加が「本数の選択肢」に入っている商品（P050）では、
+       別建てのアドオン枠を出さない。同じものを2箇所で足せると二重になる
+       （2026-11-22 田崎さん指示で選択式に統合）。 */
+    if (Array.isArray(product.variants) && product.variants.some(function (v) { return v && v.addSauce; })) return;
     var isBundled = !!BUNDLED[String(product.name || '').trim()];
     if (isBundled) {
       var hd = document.getElementById('pdpSauceHead');
@@ -2499,12 +2503,24 @@ function pdpPushToCart() {
      一覧カードの data-variants と同じ数値）。カート内の行キーなので、
      ここを共通にすると 1つ と 3つセット が同じ行にまとめられてしまう。 */
   const sv = window.__pdpVariant || null;
-  const unitPrice = sv ? (Number(sv.p) || 0) : (product.price || 0);
+  /* 🫙 刃ソース付きの選択肢（addSauce）は、肉とソースの2行に分けてカートに積む。
+     🔴 ひとつの行にまとめてはいけない。在庫は商品名の完全一致でしか引かない
+        （GAS decrementStockAfterOrder）ので、ソースを肉のバリアントに畳むと
+        P091 の在庫が1本も減らない。
+     🔴 肉の行は base（中身が同じ、ソース追加なしの選択肢）の
+        id / ラベル / 価格をそのまま使う＝GAS の variantUnits が読む文字列が
+        従来と1文字も変わらない。選択肢の p（¥10,640）は画面の合計額で、
+        カートには積まない（積むと肉とソースで二重に請求される）。 */
+  const _svBase = (sv && sv.addSauce && Array.isArray(product.variants))
+    ? (product.variants.filter(function (x) { return x && x.id === sv.base; })[0] || null)
+    : null;
+  const _meat = _svBase || sv;
+  const unitPrice = _meat ? (Number(_meat.p) || 0) : (product.price || 0);
   const item = {
-    variantId: (sv && sv.id) ? sv.id : product.variantId,
+    variantId: (_meat && _meat.id) ? _meat.id : product.variantId,
     productId: product.productId,
     title: product.name,
-    variant: sv ? sv.t : (product.variant || ''),
+    variant: _meat ? _meat.t : (product.variant || ''),
     price: unitPrice,
     qty: qty,
     img: (product.images && product.images[0]) || '',
@@ -2517,6 +2533,27 @@ function pdpPushToCart() {
       existing.qty += qty;
     } else {
       cart.push(item);
+    }
+    /* 🫙 ソース（P091）の行。既に入っていれば本数を足す。
+       title は products シートの name と完全一致（在庫減算の照合キー）。 */
+    if (sv && sv.addSauce) {
+      var _sauceQty = (Number(sv.addSauce) || 1) * qty;
+      var _sx = cart.filter(function (c) {
+        return String((c && c.title) || '').trim() === 'YAIBA JAPANESE EXPERIENCE SAUCE';
+      })[0];
+      if (_sx) { _sx.qty += _sauceQty; }
+      else {
+        cart.push({
+          variantId: 'YAIBA-SAUCE-80', productId: 'P091',
+          title: 'YAIBA JAPANESE EXPERIENCE SAUCE', variant: '1本 80ml',
+          price: 3240, qty: _sauceQty,
+          img: 'public/images/products/drive/yaiba-set.jpg', stripePriceId: ''
+        });
+      }
+      try {
+        if (window.edaAnalytics) window.edaAnalytics.addToCart('P091', 3240 * _sauceQty,
+          { title: 'YAIBA JAPANESE EXPERIENCE SAUCE', variant: '1本 80ml', source: 'pdp-variant-addon', qty: _sauceQty });
+      } catch (e) {}
     }
     localStorage.setItem('eda-cart', JSON.stringify(cart));
     /* 🔎 計測: 商品ページからのカート追加 (2026-08-30)
