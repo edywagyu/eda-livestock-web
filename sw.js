@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-11-22-461-sauce-addon-collab';
+const CACHE_VERSION = 'eda-v2026-11-22-462-p050-sauce-variant';
 const CORE_ASSETS = [
   './',
   'index.html',
