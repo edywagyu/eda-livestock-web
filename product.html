@@ -557,6 +557,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
   border:1px solid rgba(212,169,59,.55); color:var(--color-gold); text-decoration:none;
   font-size:12px; letter-spacing:.14em; font-weight:700; }
 .pdp-yaiba-cred { text-align:center; font-size:10.5px; letter-spacing:.14em; color:rgba(237,231,218,.4); margin:22px 0 0; }
+.pdp-yaiba-back { display:block; width:fit-content; margin:26px auto 0; padding:12px 26px;
+  border:1px solid rgba(237,231,218,.45); color:#EDE7DA; font-size:12.5px; font-weight:700;
+  letter-spacing:.06em; text-decoration:none; border-radius:8px; }
+.pdp-yaiba-back:hover { background:rgba(237,231,218,.1); }
 /* 刃の紹介が終わって、ここから江田和牛の話だと分かるようにする見出し */
 .pdp-eda-lead { max-width:880px; margin:64px auto 0; padding:0 20px; text-align:center; }
 .pdp-eda-lead .eyebrow { font-size:10px; letter-spacing:.34em; color:var(--color-gold-soft); font-weight:700; margin:0 0 14px; }
@@ -950,6 +954,10 @@ details[open] .pdp-detail-summary::after { content: '−'; }
           YAIBA JAPANESE EXPERIENCE SAUCE 1本 80ml。化学調味料・保存料 不使用。同じ便で同梱してお届けします。
         </div>
         <button type="button" id="pdpSauceBtn" style="display:block;width:100%;padding:11px 16px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;border:1.5px solid var(--color-forest);background:var(--color-forest);color:#fff">追加する</button>
+        <!-- 副ボタン（2026-11-22 田崎さん指示）。主＝追加する（塗り）／副＝詳細（白地・細字）で見分ける。
+             飛び先は刃の説明がある P050 の商品ページ内セクション #pdpYaiba。
+             from= に「今いる商品のID」を持たせ、向こうで「戻る」を出す。 -->
+        <a id="pdpSauceMore" href="#" style="display:block;width:100%;margin-top:8px;padding:9px 16px;border-radius:8px;font-weight:700;font-size:12.5px;text-align:center;font-family:inherit;border:1px solid var(--color-gold);background:#fff;color:var(--color-forest);text-decoration:none">刃ソースとは（商品の詳細）→</a>
       </div>
 
       <!-- 🎁 ギフト導線 (のし・化粧箱つきで贈る) -->
@@ -1023,6 +1031,9 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       </p>
       <a class="pdp-yaiba-link" href="https://itadaki-yaiba.com/" target="_blank" rel="noopener">刃 公式サイトを見る →</a>
       <p class="pdp-yaiba-cred">YAIBA ／ MasterCraft Sauce 刃 — ITADAKI Co., Ltd.</p>
+      <!-- ⬅️ 戻る（2026-11-22 田崎さん指示）。アドオンの「刃ソースとは」から来たときだけ出す。
+           普通に P049/P050 を見ている人には出さない（?from= が無ければ hidden のまま）。 -->
+      <a class="pdp-yaiba-back" id="pdpYaibaBack" href="#" hidden>← 元の商品に戻る</a>
     </div>
   </section>
 
@@ -1549,6 +1560,66 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const _e = document.getElementById('pdpEdaLead');
     if (_e) _e.hidden = false;
   }
+  /* ⬅️ 刃ソースのアドオンの「刃ソースとは」から来たときだけ、刃の説明の下に「戻る」を出す
+     （2026-11-22 田崎さん指示）。
+     ・どの商品から来たかは URL の ?from= で持ち回る（from=商品ID、レジからは from=cart）
+     ・?from= が無い＝普通に P049/P050 を見ている人には出さない
+     ・?from= はあるが商品が見つからないときは商品一覧へ落とす（フォールバック）
+     ・#pdpYaiba はこの直前まで hidden なのでブラウザのアンカー移動が効かない。
+       出してから自分でスクロールする。 */
+  (function yaibaBackLink() {
+    var _bk = document.getElementById('pdpYaibaBack');
+    if (!_bk) return;
+    var _from = new URLSearchParams(location.search).get('from');
+    if (!_from) return;                                   // 直接見に来た人には出さない
+    if (_from === 'cart') {
+      _bk.textContent = '← ご注文手続きに戻る';
+      _bk.href = 'checkout.html';
+    } else {
+      var _p = null;
+      try { _p = (all || []).filter(function (x) { return x.productId === _from; })[0]; } catch (e) {}
+      if (_p) {
+        _bk.textContent = '← ' + _p.name + ' に戻る';
+        _bk.href = 'product.html?id=' + encodeURIComponent(_from);
+      } else {
+        _bk.textContent = '← 商品一覧に戻る';            // 元の商品が分からないとき
+        _bk.href = 'products.html#products';
+      }
+    }
+    _bk.hidden = false;
+    /* 🔴 このページは写真と在庫を後から読み込んで高さが変わるので、1回スクロール
+       しただけでは位置がズレる（実測で scrollY が 0 に戻る）。狙いの位置に
+       収まるまで短い間隔で繰り返し、収まったら止める。お客様が自分で
+       スクロールしたらそこで打ち切る（勝手に引き戻さない）。 */
+    /* 🔴 #pdpYaiba はここまで hidden なので、ブラウザのアンカー移動が効かない。
+       出してから自分でスクロールする。ただしこのページは写真と在庫を後から
+       読み込んで高さが変わるので、1回では位置がズレる。短い間隔で繰り返す。
+       🔴 behavior:'instant' が要る。html に scroll-behavior:smooth が掛かっていて、
+          普通の scrollTo だと 150ms ごとにアニメーションがやり直しになり、
+          永遠に目的地に着かない（実測で scrollY が 15 のまま動かなかった）。
+       🔴 この描画処理はライブ在庫の取得後にもう一度走ることがあるので、
+          1回だけ動くよう印を付ける（2回目に勝手に引き戻さないため）。 */
+    if (location.hash === '#pdpYaiba' && !window.__edaYaibaScrolled) {
+      window.__edaYaibaScrolled = true;
+      /* 戻ってきたときの位置復元（ブラウザの scrollRestoration）が後から働いて
+         せっかく合わせた位置を上書きするので、この遷移の間だけ止める。 */
+      try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+      var _tries = 0, _stop = false;
+      var _bail = function () { _stop = true; };
+      ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+        window.addEventListener(ev, _bail, { once: true, passive: true });
+      });
+      var _tick = setInterval(function () {
+        var _y2 = document.getElementById('pdpYaiba');
+        /* 写真が遅れて入ると高さが変わって位置がズレるので、6秒ぶん追従する */
+        if (_stop || !_y2 || ++_tries > 40) { clearInterval(_tick); return; }
+        var _target = Math.round(_y2.getBoundingClientRect().top + window.scrollY);
+        if (Math.abs(Math.round(window.scrollY) - _target) > 4) {
+          window.scrollTo({ top: _target, behavior: 'instant' });
+        }
+      }, 150);
+    }
+  })();
   document.getElementById('stickyName').textContent = product.name;
   document.getElementById('stickyPrice').textContent = '¥' + (product.price || 0).toLocaleString();
 
@@ -2077,6 +2148,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       paint();
     });
     paint();
+    /* 🔗 詳細ボタン: 刃の説明は専用ページが無く、P050 の商品ページの中の
+       #pdpYaiba セクション（class .pdp-yaiba「ABOUT YAIBA / 赤身の肉に合うタレを。」）
+       にしかない。P049/P050 のときだけ出るセクションなので、P050 を開いて
+       そこへアンカーで飛ばす。from= に今いる商品のIDを載せ、向こうで「戻る」を出す。 */
+    var more = document.getElementById('pdpSauceMore');
+    if (more) more.href = 'product.html?id=P050&from=' + encodeURIComponent(product.productId || '') + '#pdpYaiba';
     box.style.display = 'block';
   })();
 

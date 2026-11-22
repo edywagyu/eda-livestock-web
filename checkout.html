@@ -2149,6 +2149,11 @@ function sauceAddonHtml() {
      (on ? 'background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest)' : 'background:var(--color-forest);color:#fff;border:1.5px solid var(--color-forest)') + '">' +
      (on ? '追加済み／外す' : '追加する') +
     '</button>' +
+    /* 🔗 副ボタン（2026-11-22 田崎さん指示）。刃の説明は専用ページが無く、
+       product.html の #pdpYaiba セクション（P049/P050 のときだけ出る）にしかない。
+       P050 を開いてそこへ飛ばし、from=cart で「ご注文手続きに戻る」を出させる。
+       主＝追加する（塗り）／副＝詳細（白地・細字）で見分ける。 */
+    '<a href="product.html?id=P050&from=cart#pdpYaiba" style="display:block;margin-top:8px;padding:9px 14px;text-align:center;border-radius:8px;font-family:inherit;font-size:12.5px;font-weight:700;text-decoration:none;border:1px solid var(--color-gold,#D4A93B);background:#fff;color:var(--color-forest)">刃ソースとは（商品の詳細）→</a>' +
    '</div>' +
    '<div class="order-item-price">' + (on ? '¥3,240' : '<small>＋¥3,240</small>') + '</div>' +
   '</div>' +
