@@ -1492,10 +1492,10 @@
     {
       productId: 'P050', variantId: 'YAIBA-ROAST-SET', sku: 'EDA-YAIBA-ROAST',
       stripePriceId: '',
-      name: 'YAIBA × 江田和牛 プレミアム生ロースト400g', variant: 'プレミアム生ロースト 400g',
-      price: 10800, weight: 400, stock: 10, temp: '冷凍',
+      name: 'YAIBA × 江田和牛 プレミアム生ロースト200g', variant: 'プレミアム生ロースト 200g',
+      price: 7400, weight: 200, stock: 10, temp: '冷凍',
       category: 'beef', categoryLabel: '牛肉', tagEn: 'YAIBA × EDA Wagyu',
-      description: '六十年の家族の味を、最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。',
+      description: '江田和牛の赤身を、岩塩のみで仕上げたプレミアム生ロースト。味つけは岩塩だけ。余計なものを足さず、肉そのものの香りと甘みを残しました。合わせるのは、六十年の家族の味を最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。',
       images: ['public/images/products/drive/yaiba-roast.jpg?v=5']
     },
 
