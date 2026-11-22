@@ -2060,6 +2060,96 @@ var RICE_TITLES = {
 function isRiceItem(it) {
  return !!RICE_TITLES[String((it && it.title) || '').trim()];
 }
+/* ============================================================
+   🫙 「無添加 刃ソースもつける」アドオン（2026-11-22 田崎さん指示・承認待ち）
+   ------------------------------------------------------------
+   ・YAIBA JAPANESE EXPERIENCE SAUCE 80ml / ¥3,240(税込)。仕入 ¥2,000(税込)
+   ・税: 調味料＝軽減税率8%。¥3,240 を「商品小計」に足すだけで
+     renderSummary の tax8 (subTotal × 8/108) にそのまま乗る。専用の処理は要らない
+   🔴 送料の地雷: ソースは お肉と同じ冷凍便に同梱する。products シートの
+      temp を「常温」、category を「rice」にすると checkout の RICE_TITLES /
+      GAS の riceShipping_ が常温便として拾い、送料が ¥1,100 余計にかかる。
+      temp は必ず「冷凍」、category は「sauce」にすること。
+   🔴 title は products シートの name と1文字も変えない
+      （decrementStockAfterOrder は商品名の完全一致でしか在庫を引かない）
+   🔴 P049 / P050 は既に刃ソースが同梱されている。二重になるので出さない
+   🍚 お米は常温便で別口。お米しか入っていないカートには出さない
+      （ソースを足すと冷凍便 ¥1,100 が新たに乗って事故る）
+   ============================================================ */
+var SAUCE_TITLE      = 'YAIBA JAPANESE EXPERIENCE SAUCE';
+var SAUCE_PRICE      = 3240;
+var SAUCE_VARIANT    = '1本 80ml';
+var SAUCE_VARIANT_ID = 'YAIBA-SAUCE-80';
+var SAUCE_PRODUCT_ID = 'P091';
+var SAUCE_IMG        = 'public/images/products/drive/yaiba-set.jpg';
+/* 既に刃ソースが同梱されている商品（products の name と完全一致） */
+var SAUCE_BUNDLED_TITLES = {
+ 'YAIBA × 江田和牛 焼肉200g / ステーキ200g': true,
+ 'YAIBA × 江田和牛 プレミアム生ロースト200g': true
+};
+function sauceIndex() {
+ for (var i = 0; i < cartItems.length; i++) {
+  if (String((cartItems[i] && cartItems[i].title) || '').trim() === SAUCE_TITLE) return i;
+ }
+ return -1;
+}
+/* ボタンを出してよいか。定期便はプラン内容が決まっているので対象外。
+   同梱できる相手（冷凍便のお肉）が1点も無いときは出さない。 */
+function sauceEligible() {
+ if (subscription) return false;
+ var si = sauceIndex();
+ return cartItems.some(function (it, i) {
+  if (i === si || !it) return false;
+  if (isRiceItem(it)) return false;
+  return !SAUCE_BUNDLED_TITLES[String(it.title || '').trim()];
+ });
+}
+/* 押すと入る／もう一度押すと外れる。カートの行として積むので
+   小計・税・在庫減算・Stripe の明細まで既存の仕組みがそのまま効く。 */
+function toggleSauce() {
+ var idx = sauceIndex();
+ if (idx >= 0) {
+  cartItems.splice(idx, 1);
+  destinations.forEach(function (d) {
+   d.itemIds = (d.itemIds || [])
+    .filter(function (id) { return id !== idx; })
+    .map(function (id) { return id > idx ? id - 1 : id; });
+  });
+ } else {
+  cartItems.push({
+   variantId: SAUCE_VARIANT_ID, productId: SAUCE_PRODUCT_ID,
+   title: SAUCE_TITLE, variant: SAUCE_VARIANT,
+   price: SAUCE_PRICE, qty: 1, img: SAUCE_IMG, stripePriceId: ''
+  });
+  /* 同梱なので「1点目の商品と同じお届け先」に付ける。
+     ギフト注文ならギフト先に付く＝自宅送料(¥1,100)を新たに発生させない。 */
+  var newIdx = cartItems.length - 1;
+  var host = destinations.filter(function (d) { return (d.itemIds || []).length > 0; })[0] || destinations[0];
+  host.itemIds.push(newIdx);
+ }
+ try { localStorage.setItem(CART_KEY, JSON.stringify(cartItems)); } catch (e) {}
+ renderOrderList(); renderDestinations(); renderSummary();
+ try { checkCartStock(); } catch (e) {}
+}
+function sauceAddonHtml() {
+ if (!sauceEligible()) return '';
+ var on = sauceIndex() >= 0;
+ return '<div class="order-card" style="border:1px solid rgba(212,169,59,.45);background:rgba(212,169,59,.05)">' +
+  '<div class="order-item">' +
+   '<div class="order-item-img" style="background-image:url(\'' + SAUCE_IMG + '\')"></div>' +
+   '<div class="order-item-info">' +
+    '<strong>無添加 刃ソースもつける</strong>' +
+    '<span>YAIBA JAPANESE EXPERIENCE SAUCE 1本 80ml ／ 同じ便で同梱します</span>' +
+    '<div style="font-size:11.5px;color:var(--color-ink-muted);margin-top:4px">化学調味料・保存料 不使用。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。</div>' +
+    '<button type="button" onclick="toggleSauce()" style="margin-top:10px;padding:9px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;' +
+     (on ? 'background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest)' : 'background:var(--color-forest);color:#fff;border:1.5px solid var(--color-forest)') + '">' +
+     (on ? '✓ 追加済み（外す）' : '＋ つける　＋¥3,240（税込）') +
+    '</button>' +
+   '</div>' +
+   '<div class="order-item-price">' + (on ? '¥3,240' : '<small>＋¥3,240</small>') + '</div>' +
+  '</div>' +
+ '</div>';
+}
 /* 📅 予約注文（売り切れ商品）。public/js/preorder.js が出す
    { items:[{title,label,iso,date}], date, iso, label }。無ければ date:null。
    これが入っているとお届け希望日の下限が 予約日 まで上がり、注意書きが出る。 */
@@ -2374,6 +2464,8 @@ function renderOrderList() {
 
  // 2. 各商品カード（個別ギフト切替トグル付き）
  cartItems.forEach((item, i) => {
+ /* 🫙 刃ソース(アドオン)は下の専用カードで出すので、ここでは行を作らない（二重表示になる） */
+ if (String(item.title || '').trim() === SAUCE_TITLE) return;
  const dest = findItemDestination(i);
  const isGift = dest && dest.type === 'gift';
  const destIdx = isGift ? destinations.indexOf(dest) : 0;
@@ -2429,6 +2521,9 @@ function renderOrderList() {
  </div>
  `;
  });
+
+ /* 🫙 無添加 刃ソースもつける（アドオン） */
+ html += sauceAddonHtml();
 
  /* 🎁 ¥0 の特典（購入回数特典・肉の日キャンペーン特典）。お客様は増減も削除もできない */
  currentGifts().forEach(function (_rw) {
