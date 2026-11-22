@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="public/images/favicon.svg">
+<link rel="apple-touch-icon" href="public/images/favicon.svg">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>刃（YAIBA）について｜江田畜産</title>
+<meta name="description" content="JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料・保存料 不使用。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="刃（YAIBA）について | 江田畜産">
+<meta property="og:description" content="JAPANESE EXPERIENCE SAUCE「刃」。化学調味料・保存料 不使用。">
+<meta property="og:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
+<meta property="og:url" content="https://www.eda-livestock.com/yaiba.html">
+<meta property="og:site_name" content="江田畜産 / EDA-LIVESTOCK">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="刃（YAIBA）について | 江田畜産">
+<meta name="twitter:description" content="JAPANESE EXPERIENCE SAUCE「刃」。化学調味料・保存料 不使用。">
+<meta name="twitter:image" content="https://www.eda-livestock.com/public/images/logo/eda-livestock-logo.png">
+<link rel="canonical" href="https://www.eda-livestock.com/yaiba.html">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@400..700&display=swap" rel="stylesheet">
+<script src="public/js/eda-config.js"></script>
+<style>
+/* ============================================================
+   刃（YAIBA）のご紹介だけの1枚ページ — 2026-11-22 田崎さん指示
+   ------------------------------------------------------------
+   「刃の商品の詳細だけが載っているページ」。
+   🔴 ここに置かないもの（意図的に外している）:
+      価格・数量・カートに追加などの購入UI／パンくず／関連商品・他商品のカード／
+      江田和牛の説明（「合わせるのは、江田和牛。」以下）／配送・返品などPDP固有の情報。
+      買う導線は、元の商品ページとレジのアドオン枠（無添加 刃ソースもつける）が持っている。
+   🔴 見た目は product.html の .pdp-yaiba をそのまま写している。
+      product.html 側のデザインを直したら、ここも合わせること（2箇所になっている）。
+   型（head のメタ・ヘッダー・フッター・読み込むCSS/JS）は terms.html に合わせた。
+   ============================================================ */
+:root {
+  --color-forest: #0F3D2E;
+  --color-forest-deep: #0A2D21;
+  --color-gold: #D4A93B;
+  --color-cream: #FAF7F0;
+  --color-bone: #EFE8D7;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #5C5C5C;
+  --font-display: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+  --font-jp: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-jp-serif: 'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', serif;
+}
+* { box-sizing: border-box; }
+body { margin:0; font-family:'Inter','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+  background: var(--color-cream); color: var(--color-ink); line-height:1.85;
+  /* 🔴 横スクロールを出さない。.pdp-yaiba の装飾が画面幅を超えないようにする */
+  overflow-x: hidden; }
+.yaiba-top { background: var(--color-forest-deep); color:#fff; padding:28px 20px; text-align:center; }
+.yaiba-top a { color:#fff; text-decoration:none; font-family:var(--font-display);
+  font-size:14px; letter-spacing:.22em; }
+
+/* ===== 以下は product.html の .pdp-yaiba をそのまま写したもの ===== */
+.pdp-yaiba { background:#0B0B0B; color:#EDE7DA; padding:66px 20px 60px; margin:0; position:relative; overflow:hidden; }
+.pdp-yaiba::after { content:""; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,169,59,.10), transparent 62%); }
+.pdp-yaiba-in { position:relative; z-index:1; max-width:880px; margin:0 auto; }
+.pdp-yaiba-mark { width:46px; height:46px; margin:0 auto 20px; border:1px solid rgba(212,169,59,.55);
+  display:flex; align-items:center; justify-content:center; transform:rotate(45deg); }
+.pdp-yaiba-mark span { transform:rotate(-45deg); font-family:var(--font-jp-serif); font-size:22px; color:var(--color-gold); }
+.pdp-yaiba-eyebrow { text-align:center; font-size:10px; letter-spacing:.34em; color:var(--color-gold); font-weight:700; margin:0 0 16px; }
+.pdp-yaiba-lead { text-align:center; font-family:var(--font-jp-serif); font-size:26px; font-weight:500;
+  line-height:1.7; margin:0 0 26px; color:#F7F2E6; }
+.pdp-yaiba-body, .pdp-yaiba-close { max-width:640px; margin:0 auto 32px; text-align:center;
+  font-size:14.5px; line-height:2.1; color:rgba(237,231,218,.78); }
+.pdp-yaiba-body em { font-style:normal; color:var(--color-gold); }
+.pdp-yaiba-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:rgba(212,169,59,.22); border:1px solid rgba(212,169,59,.22); margin:0 0 32px; }
+.pdp-yaiba-i { background:#0B0B0B; padding:24px 14px; text-align:center; }
+.pdp-yaiba-i span { display:block; font-size:10.5px; letter-spacing:.1em; color:var(--color-gold); margin-bottom:8px; }
+.pdp-yaiba-i b { display:block; font-family:var(--font-jp-serif); font-size:16px; font-weight:600; color:#F7F2E6; margin-bottom:5px; }
+.pdp-yaiba-i em { display:block; font-style:normal; font-size:11.5px; line-height:1.7; color:rgba(237,231,218,.6); }
+.pdp-yaiba-link { display:block; width:fit-content; margin:0 auto; padding:12px 26px;
+  border:1px solid rgba(212,169,59,.55); color:var(--color-gold); text-decoration:none;
+  font-size:12px; letter-spacing:.14em; font-weight:700; }
+.pdp-yaiba-cred { text-align:center; font-size:10.5px; letter-spacing:.14em; color:rgba(237,231,218,.4); margin:22px 0 0; }
+.pdp-yaiba-back { display:block; width:fit-content; margin:26px auto 0; padding:12px 26px;
+  border:1px solid rgba(237,231,218,.45); color:#EDE7DA; font-size:12.5px; font-weight:700;
+  letter-spacing:.06em; text-decoration:none; border-radius:8px; }
+.pdp-yaiba-back:hover { background:rgba(237,231,218,.1); }
+/* 🔴 hidden 属性は「ブラウザ既定のスタイル」で display:none を効かせている。
+   上の .pdp-yaiba-back{display:block} の方が強いので、この1行が無いと
+   hidden を付けても出たままになる（2026-11-22 本番で実際に起きた・PR #447）。
+   🔴 確認は要素の .hidden プロパティではなく getComputedStyle(el).display で見る。 */
+.pdp-yaiba-back[hidden] { display:none !important; }
+@media (max-width:720px){
+  .pdp-yaiba { padding:48px 18px 44px; }
+  .pdp-yaiba-lead { font-size:21px; }
+  .pdp-yaiba-grid { grid-template-columns:repeat(2,1fr); }
+}
+.yaiba-footer { background: var(--color-forest-deep); color:#fff; padding:32px 0; text-align:center; font-size:12px; opacity:.7; }
+</style>
+<link rel="stylesheet" href="public/css/jp-typography.css?v=20260824a">
+<link rel="stylesheet" href="public/css/a11y.css?v=20260812k">
+<link rel="stylesheet" href="public/css/mobile-modern.css?v=20260812k">
+<script src="public/js/error-tracker.js?v=1"></script>
+</head>
+<body>
+
+<header class="yaiba-top">
+  <a href="index.html">EDA LIVESTOCK</a>
+</header>
+
+<main>
+  <section class="pdp-yaiba" id="pdpYaiba">
+    <div class="pdp-yaiba-in">
+      <div class="pdp-yaiba-mark"><span>刃</span></div>
+      <p class="pdp-yaiba-eyebrow">ABOUT YAIBA</p>
+      <h1 class="pdp-yaiba-lead">赤身の肉に合うタレを。</h1>
+      <p class="pdp-yaiba-body">
+        刃の原点は、祖母が 60 年以上守り続けた家族の味。<br>
+        その記憶を、最高峰の素材で再構築させました。<br>
+        味の骨格となるのは、入手困難な最高峰の果実たち。
+      </p>
+      <p class="pdp-yaiba-body">
+        刃は、何にでも合うことを目指したソースではありません。<br>
+        表面で味を主張せず、素材の中に入り込み、なじむことで完成する設計です。<br>
+        <em>赤身の肉でこそ、きれいに成立する。</em>
+      </p>
+      <div class="pdp-yaiba-grid">
+        <div class="pdp-yaiba-i"><span>沖縄</span><b>アップルバナナ</b><em>濃厚な芳醇さを放つ</em></div>
+        <div class="pdp-yaiba-i"><span>和歌山</span><b>あら川の桃</b><em>名産地の一点もの</em></div>
+        <div class="pdp-yaiba-i"><span>鳥取</span><b>西条柿</b><em>渋を抜いた深い甘み</em></div>
+        <div class="pdp-yaiba-i"><span>香川</span><b>和三盆</b><em>200年以上続く手仕事</em></div>
+      </div>
+      <p class="pdp-yaiba-close">
+        いずれも生産量が極めて限られ、安定供給が難しい希少原料。<br>
+        化学調味料や保存料に一切頼らず、素材同士のバランスだけで到達したタレです。
+      </p>
+      <a class="pdp-yaiba-link" href="https://itadaki-yaiba.com/" target="_blank" rel="noopener">刃 公式サイトを見る →</a>
+      <p class="pdp-yaiba-cred">YAIBA ／ MasterCraft Sauce 刃 — ITADAKI Co., Ltd.</p>
+      <!-- ⬅️ 戻る。アドオンの「刃ソースとは」から来たときだけ出す。
+           直接このページを開いた人には出さない（戻る先が分からないため）。 -->
+      <a class="pdp-yaiba-back" id="pdpYaibaBack" href="#" hidden>← 元の商品に戻る</a>
+    </div>
+  </section>
+</main>
+
+<footer class="yaiba-footer">
+  <p>© 2026 EDA-LIVESTOCK CO., LTD. / 江田畜産株式会社 — All Rights Reserved.</p>
+</footer>
+
+<script src="public/data/products-master.js"></script>
+<script>
+/* ⬅️ 「戻る」の行き先は URL の ?from= で決める（product.html の同じ仕組みと揃えている）。
+   ・?from= が無い＝直接このページを開いた人には出さない
+   ・from=cart        → ご注文手続き(checkout.html)へ
+   ・from=<商品ID>    → その商品ページへ。商品名も出す
+   ・見つからないID   → 商品一覧へ（フォールバック）
+   🔴 商品名は products-master.js から引く。読めなかったときは商品一覧に倒す。 */
+(function () {
+  var bk = document.getElementById('pdpYaibaBack');
+  if (!bk) return;
+  var from = new URLSearchParams(location.search).get('from');
+  if (!from) return;
+  if (from === 'cart') {
+    bk.textContent = '← ご注文手続きに戻る';
+    bk.href = 'checkout.html';
+  } else {
+    var p = null;
+    try {
+      var M = window.EDA_PRODUCTS_MASTER;
+      var list = (M && (M.products || M)) || [];
+      if (Array.isArray(list)) {
+        p = list.filter(function (x) { return x && x.productId === from; })[0];
+      }
+    } catch (e) {}
+    if (p) {
+      bk.textContent = '← ' + p.name + ' に戻る';
+      bk.href = 'product.html?id=' + encodeURIComponent(from);
+    } else {
+      bk.textContent = '← 商品一覧に戻る';
+      bk.href = 'products.html#products';
+    }
+  }
+  bk.hidden = false;
+})();
+</script>
+<script src="public/js/mobile-menu.js?v=2" defer></script>
+<script src="public/js/line-float.js" defer></script>
+<script src="public/js/mobile-tabbar.js" defer></script>
+<script src="public/js/mobile-nav-hide.js" defer></script>
+</body>
+</html>
