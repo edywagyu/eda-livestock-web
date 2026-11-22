@@ -1799,10 +1799,16 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       if (yen <= 0) return null;
       return { yen: yen, pct: Math.round(yen / full * 100) };
     }
-    /* 🔴 option に出す文字列は「見せる文字」。カートに積むのは v.t のまま（下の apply()）。 */
+    /* 🔴 option に出す文字列は「見せる文字」。カートに積むのは v.t のまま（下の apply()）。
+       🔴 v.d（表示用ラベル）があればそれを画面に出す。v.t は触らない。
+          GAS の variantUnits_ が /([2-9])\s*(?:つ|個)\s*セット/ で口数を読むため、
+          カートに入る v.t から「2つセット」が消えると 1口としか数えられず売り越す。
+          「ローストビーフ2本 ／ 刃ソース1本」のような読みやすい文言は v.d 側に書く
+          （2026-11-22 田崎さん指示）。 */
+    function labelOf(v) { return (v && v.d) ? v.d : (v && v.t) || ''; }
     sel.innerHTML = list.map((v, i) => {
       const sv = savingOf(v);
-      return '<option value="' + i + '">' + v.t + ' — ¥' + Number(v.p).toLocaleString() +
+      return '<option value="' + i + '">' + labelOf(v) + ' — ¥' + Number(v.p).toLocaleString() +
         (sv ? '（¥' + sv.yen.toLocaleString() + 'お得）' : '') + '</option>';
     }).join('');
     /* 選択肢のすぐ上に、赤字でまとめ買いのお得さを出す。 */
@@ -1811,7 +1817,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       if (!box) return;
       const lines = list.map(function (v) {
         const sv = savingOf(v);
-        return sv ? (v.t.replace(/【[^】]*】/g, '').trim() +
+        return sv ? (labelOf(v).replace(/【[^】]*】/g, '').trim() +
                      'なら ¥' + sv.yen.toLocaleString() + 'お得（' + sv.pct + '%オフ）') : null;
       }).filter(Boolean);
       if (!lines.length) return;
