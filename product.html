@@ -1563,6 +1563,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     host.replaceWith(ul);
   })();
   /* 刃（YAIBA）コラボ商品のときだけ、刃の紹介ブロックを出す — 2026-09-25 */
+  /* 🫙 P091(刃ソース単体)でも刃の紹介を出す（2026-11-22 田崎さん指示）。
+     ただし「合わせるのは、江田和牛。」(#pdpEdaLead)は、この下に和牛の話が
+     続くときの橋渡しの見出し。ソース単体のページには和牛の話が続かないので出さない。 */
+  if (productId === 'P091') {
+    const _y0 = document.getElementById('pdpYaiba');
+    if (_y0) { _y0.hidden = false; _y0.style.removeProperty('display'); }
+  }
   if (['P049', 'P050'].indexOf(productId) >= 0) {
     const _y = document.getElementById('pdpYaiba');
     if (_y) _y.hidden = false;
@@ -1686,7 +1693,21 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     ['配送', '常温便'],
     C ? ['保存方法', C.storage] : null
   ].filter(Boolean);
-  const rows = riceRows || [
+  /* 🫙 刃ソース(P091)。中身は株式会社ITADAKI(山口県下松市)のタレで、
+     江田和牛の行（部位・飼育35ヶ月・加工地宮崎・解凍方法・焼き方）はどれも当てはまらない。
+     お米(isRice)と同じやり方で、ソースはソースの行を組む。
+     🔴 ここを消さずに出すと「飼育35ヶ月以上／抗生物質不使用のタレ」という
+        事実と違う表示になる（2026-11-22 P091 のページで実際に出ていた）。 */
+  const isSauce = product.category === 'sauce';
+  const sauceRows = !isSauce ? null : [
+    ['内容量', product.variant || '1本 80ml'],
+    ['原材料', '沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆ほか'],
+    ['添加物', '化学調味料・保存料 不使用'],
+    ['製造者', '株式会社ITADAKI（山口県下松市）'],
+    ['保存方法', '直射日光を避けて保存してください'],
+    ['配送', '冷凍便（お肉と同じ便で同梱してお届けします）']
+  ];
+  const rows = sauceRows || riceRows || [
     C ? ['部位', C.cut] : null,
     ['内容量', (C && C.variant) || product.variant || ''],
     C ? ['お召し上がり人数', C.meals] : null,
@@ -1935,6 +1956,43 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         'お肉と一緒にご注文いただいた場合は、冷凍便とお米の常温便で送料を2件分頂戴します。</p>';
     }
   }
+  /* ============================================================
+     🫙 刃ソース(P091)のページ — 江田和牛向けの中身を外す（2026-11-22）
+     ------------------------------------------------------------
+     このページの中身は株式会社ITADAKI のタレ。江田和牛の話をそのまま出すと
+     「飼育35ヶ月以上・抗生物質不使用のタレ」という事実と違う表示になる。
+     🔴 hidden 属性はクラス側の display に負けることがある（.pdp-meta-row{display:flex}、
+        .pdp-yaiba-back{display:block} で実際に起きた）。インラインの
+        display:none !important で確実に消す。確認は .hidden ではなく
+        getComputedStyle(el).display で見ること。
+     ============================================================ */
+  if (isSauce) {
+    var _sauceHide = function (id) {
+      var el = document.getElementById(id);
+      if (el) { el.hidden = true; el.style.setProperty('display', 'none', 'important'); }
+    };
+    /* 数字の帯(35ヶ月以上・雌牛のみ…)／どう育てたか は牛の話 */
+    _sauceHide('pdpBand');
+    _sauceHide('pdpRaiseSec');
+    /* 解凍方法・焼き方・部位 はタレには無い */
+    _sauceHide('pdpThawItem');
+    _sauceHide('pdpCookItem');
+    _sauceHide('pdpCutItem');
+    /* 「抗生物質・成長促進剤 不使用」は家畜の話。タレに出すと誤解になる */
+    _sauceHide('pdpMetaPure');
+    var _mDeliv = document.getElementById('pdpMetaDeliv');
+    if (_mDeliv) _mDeliv.textContent = 'お肉と同じ冷凍便で同梱してお届け · 1本 80ml';
+    var _origSum = document.getElementById('pdpOriginSummary');
+    if (_origSum) _origSum.textContent = 'つくり手について';
+    var _origInfo = document.getElementById('pdpOriginInfo');
+    if (_origInfo) _origInfo.innerHTML = '<p>株式会社ITADAKI（山口県下松市）がつくる JAPANESE EXPERIENCE SAUCE「刃」です。<br>' +
+      '化学調味料・保存料は使用しておりません。</p>';
+    var _shipEl2 = document.getElementById('pdpShipInfo');
+    if (_shipEl2) _shipEl2.innerHTML = '<p>お肉と同じヤマト運輸クール宅急便（冷凍便）で同梱してお届けします。<br>' +
+      '最短 3 日でお届け（目安）。お届け日時のご指定も可能です。<br>' +
+      'ソースだけをご注文の場合の送料は ¥1,100 (税込)、北海道・沖縄は ¥2,200 (税込) です。<br>' +
+      'お肉と一緒にご注文いただいた場合、ソースのぶんの送料は頂戴しません。</p>';
+  }
   /* 原材料名・栄養成分（加工食品だけ。生鮮食品は表示義務がないので出さない） */
   if (C && C.label) {
     const L = C.label;
@@ -2157,12 +2215,12 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       paint();
     });
     paint();
-    /* 🔗 詳細ボタン: 刃の説明は専用ページが無く、P050 の商品ページの中の
-       #pdpYaiba セクション（class .pdp-yaiba「ABOUT YAIBA / 赤身の肉に合うタレを。」）
-       にしかない。P049/P050 のときだけ出るセクションなので、P050 を開いて
-       そこへアンカーで飛ばす。from= に今いる商品のIDを載せ、向こうで「戻る」を出す。 */
+    /* 🔗 詳細ボタンの飛び先は 刃ソース単体の商品ページ P091（2026-11-22 田崎さん指示）。
+       以前は P050(生ロースト)の中の #pdpYaiba に飛ばしていたが、別商品のページに
+       送ることになるのでやめた。P091 のページにも同じ ABOUT YAIBA を出している。
+       from= に今いる商品のIDを載せ、向こうで「戻る」を出す。 */
     var more = document.getElementById('pdpSauceMore');
-    if (more) more.href = 'product.html?id=P050&from=' + encodeURIComponent(product.productId || '') + '#pdpYaiba';
+    if (more) more.href = 'product.html?id=P091&from=' + encodeURIComponent(product.productId || '');
     box.style.display = 'block';
   })();
 

@@ -3,7 +3,7 @@
    - Strategy: network-first for HTML/JS/CSS, cache-first for images & fonts
    - Version bump invalidates old cache
    ============================================================ */
-const CACHE_VERSION = 'eda-v2026-11-22-458-yaiba-back-hidden-fix';
+const CACHE_VERSION = 'eda-v2026-11-22-459-yaiba-sauce-pdp';
 const CORE_ASSETS = [
   './',
   'index.html',
