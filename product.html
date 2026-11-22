@@ -2215,12 +2215,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       paint();
     });
     paint();
-    /* 🔗 詳細ボタンの飛び先は 刃ソース単体の商品ページ P091（2026-11-22 田崎さん指示）。
-       以前は P050(生ロースト)の中の #pdpYaiba に飛ばしていたが、別商品のページに
-       送ることになるのでやめた。P091 のページにも同じ ABOUT YAIBA を出している。
+    /* 🔗 詳細ボタンの飛び先は「刃の紹介だけの1枚ページ」yaiba.html（2026-11-22 田崎さん指示）。
+       経緯: P050(生ロースト)の #pdpYaiba → P091(ソースの商品ページ) → yaiba.html と変えてきた。
+       商品ページ(PDP)には価格・数量・カートに追加が付いてくるので、
+       「刃の説明だけを読ませる」用途には合わないため専用ページにした。
        from= に今いる商品のIDを載せ、向こうで「戻る」を出す。 */
     var more = document.getElementById('pdpSauceMore');
-    if (more) more.href = 'product.html?id=P091&from=' + encodeURIComponent(product.productId || '');
+    if (more) more.href = 'yaiba.html?from=' + encodeURIComponent(product.productId || '');
     box.style.display = 'block';
   })();
 
