@@ -1518,6 +1518,26 @@
       description: '江田和牛の赤身を、岩塩のみで仕上げたプレミアム生ロースト。味つけは岩塩だけ。余計なものを足さず、肉そのものの香りと甘みを残しました。合わせるのは、六十年の家族の味を最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。生ロースト200gに刃のソースを1本お付けします。2つセットは生ロースト200gが2本（計400g）で、刃のソースは1本です。',
       images: ['public/images/products/drive/yaiba-roast.jpg?v=5']
     },
+    /* ===== 刃ソース単体（アドオン用）— 2026-11-22 田崎さん指示・承認待ち =====
+       全商品の「無添加 刃ソースもつける」ボタンで積まれる行の正本。
+       🔴 temp は「冷凍」。お肉と同じ便で同梱するため。「常温」にすると
+          checkout.html の RICE_TITLES / GAS の riceShipping_ が常温便として拾い、
+          送料が ¥1,100 余計にかかる（お米と同じ扱いになる）。
+       🔴 category は 'sauce'。'rice' にしても同じ事故になる。
+       🔴 name は products シート(本番DB)の name と1文字も変えない。
+          decrementStockAfterOrder は商品名の完全一致でしか在庫を引かない。
+       🔴 本番 products シートに同じ内容の1行を足すこと（承認後）。
+          未登録だと在庫チェックが fail-open で売り越す。
+       ⚠️ 画像はソース単体の写真が無いので yaiba-set.jpg で代用中。差し替え要。 */
+    {
+      productId: 'P091', variantId: 'YAIBA-SAUCE-80', sku: 'EDA-YAIBA-SAUCE-80',
+      stripePriceId: '',
+      name: 'YAIBA JAPANESE EXPERIENCE SAUCE', variant: '1本 80ml',
+      price: 3240, weight: 80, stock: 0, temp: '冷凍',
+      category: 'sauce', categoryLabel: 'ソース', tagEn: 'YAIBA Sauce 80ml',
+      description: '六十年の家族の味を、最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。',
+      images: ['public/images/products/drive/yaiba-set.jpg?v=5']
+    },
 
     /* ===== エダチク米（自社田・ヒノヒカリ／常温便） =====
        🔴 米は常温便。送料は固定 ¥1,100(税込) で、冷凍便の「¥11,000以上 送料無料」の

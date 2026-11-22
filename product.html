@@ -939,6 +939,17 @@ details[open] .pdp-detail-summary::after { content: '−'; }
         <a class="pdp-cta-back" id="pdpBackToList" href="products.html#products">← 商品一覧に戻る</a>
       </div>
 
+      <!-- 🫙 刃ソースのアドオン（2026-11-22 田崎さん指示・承認待ち）
+           P049 / P050 は既にソースが同梱されているので出さない。お米(常温便)も出さない。 -->
+      <div id="pdpSauceAddon" style="display:none;margin-top:14px;padding:14px 16px;border:1.5px solid var(--color-gold);border-radius:12px;background:linear-gradient(180deg,#FFFDF7 0%,#FBF6E9 100%)">
+        <div style="font-size:10.5px;letter-spacing:.16em;color:var(--color-gold-soft);margin-bottom:6px">YAIBA — 一緒に</div>
+        <div style="font-family:var(--font-jp-serif,serif);font-size:16px;color:var(--color-forest);font-weight:600;margin-bottom:4px">無添加 刃ソースもつける</div>
+        <div style="font-size:11.5px;color:var(--color-ink-muted);line-height:1.6;margin-bottom:10px">
+          YAIBA JAPANESE EXPERIENCE SAUCE 1本 80ml。化学調味料・保存料 不使用。同じ便で同梱してお届けします。
+        </div>
+        <button type="button" id="pdpSauceBtn" style="display:block;width:100%;padding:11px 16px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;border:1.5px solid var(--color-forest);background:var(--color-forest);color:#fff">＋ つける　＋¥3,240（税込）</button>
+      </div>
+
       <!-- 🎁 ギフト導線 (のし・化粧箱つきで贈る) -->
       <div id="pdpGiftOption" class="pdp-gift-option" style="display:none;margin-top:18px;padding:18px 18px 16px;background:linear-gradient(135deg,#0F3D2E 0%,#061410 100%);color:#fff;border-radius:14px;border:1.5px solid var(--color-gold);position:relative;overflow:hidden">
         <div style="position:absolute;top:0;right:0;background:var(--color-gold);color:var(--color-forest-deep);font-size: 12px;font-weight:800;letter-spacing:0.12em;padding:4px 14px;border-bottom-left-radius:10px">のし・名入れ無料</div>
@@ -2015,6 +2026,57 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      スプシ subscription_plans から、この商品が含まれるプランを探し、
      最もお得な (firstMonthPrice / 商品数 最小) プランを提案 */
   loadSubscriptionUpsell(product);
+
+  /* === 🫙 「無添加 刃ソースもつける」（2026-11-22 田崎さん指示・承認待ち） ===
+     ・¥3,240(税込)。調味料＝軽減税率8%。カートの1行として積むので、
+       checkout の小計・税・在庫減算・Stripe 明細は既存の仕組みがそのまま効く
+     🔴 temp は「冷凍」。お肉と同じ便で同梱する。products シートで「常温」や
+        category='rice' にすると常温便として扱われ、送料が ¥1,100 余計にかかる
+     🔴 title は products シートの name と完全一致（在庫減算は名前一致のみ）
+     🔴 P049 / P050 は既にソース同梱。出すと二重になるので除外
+     🍚 お米は常温便で同梱できないので除外 */
+  (function pdpSauceAddon() {
+    var SAUCE_TITLE = 'YAIBA JAPANESE EXPERIENCE SAUCE';
+    var SAUCE_PRICE = 3240;
+    var BUNDLED = {
+      'YAIBA × 江田和牛 焼肉200g / ステーキ200g': 1,
+      'YAIBA × 江田和牛 プレミアム生ロースト200g': 1
+    };
+    var box = document.getElementById('pdpSauceAddon');
+    var btn = document.getElementById('pdpSauceBtn');
+    if (!box || !btn || !product) return;
+    if (product.comingSoon) return;
+    if (product.category === 'rice' || product.category === 'gift') return;
+    if (product.name === SAUCE_TITLE) return;
+    if (BUNDLED[String(product.name || '').trim()]) return;
+    function read() { try { return JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch (e) { return []; } }
+    function idx(c) { for (var i = 0; i < c.length; i++) { if (String(c[i].title || '').trim() === SAUCE_TITLE) return i; } return -1; }
+    function paint() {
+      var on = idx(read()) >= 0;
+      btn.textContent = on ? '✓ 追加済み（外す）' : '＋ つける　＋¥3,240（税込）';
+      btn.style.background = on ? '#fff' : 'var(--color-forest)';
+      btn.style.color = on ? 'var(--color-forest)' : '#fff';
+    }
+    btn.addEventListener('click', function () {
+      var cart = read(); var i = idx(cart);
+      if (i >= 0) { cart.splice(i, 1); }
+      else {
+        cart.push({
+          variantId: 'YAIBA-SAUCE-80', productId: 'P091',
+          title: SAUCE_TITLE, variant: '1本 80ml',
+          price: SAUCE_PRICE, qty: 1,
+          img: 'public/images/products/drive/yaiba-set.jpg', stripePriceId: ''
+        });
+        try {
+          if (window.edaAnalytics) window.edaAnalytics.addToCart('P091', SAUCE_PRICE, { title: SAUCE_TITLE, variant: '1本 80ml', source: 'pdp-sauce-addon', qty: 1 });
+        } catch (e) {}
+      }
+      try { localStorage.setItem('eda-cart', JSON.stringify(cart)); } catch (e) {}
+      paint();
+    });
+    paint();
+    box.style.display = 'block';
+  })();
 
   /* === 🎁 ギフト導線の表示可否 ===
      販売中の通常商品のみ。COMING SOON・価格未設定・ギフト専用商品は対象外 */
