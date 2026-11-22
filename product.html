@@ -1335,7 +1335,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-22-453-yaiba-roast-qty"></script>
+<script src="public/data/products-master.js?v=2026-11-22-454-yaiba-roast-set11000"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script src="public/js/wakeari-compare.js?v=004"></script>
@@ -1670,6 +1670,11 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const baseUnits = unitsOf(list[baseI].t) || 1;
     const perUnit   = Number(list[baseI].p) / baseUnits;      /* 1個あたりの基準額 */
     function savingOf(v) {
+      /* 🔴 hideBulkSaving: 口数の多い選択肢が「1つ×N」と中身が違う商品は
+         お得額を出さない。P050 刃コラボ生ローストは 2つセットでもソースが1本で、
+         1つ×2個（ソース2本）とは中身が違う＝差額を「お得」と書くと
+         比較対照が成立しない（2026-11-22）。 */
+      if (product.hideBulkSaving) return null;
       const u = unitsOf(v.t);
       if (u <= baseUnits) return null;
       const full = perUnit * u;
