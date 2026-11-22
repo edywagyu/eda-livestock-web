@@ -2072,7 +2072,9 @@ function isRiceItem(it) {
       temp は必ず「冷凍」、category は「sauce」にすること。
    🔴 title は products シートの name と1文字も変えない
       （decrementStockAfterOrder は商品名の完全一致でしか在庫を引かない）
-   🔴 P049 / P050 は既に刃ソースが同梱されている。二重になるので出さない
+   🔴 P049 / P050（刃コラボ）でも出す（2026-11-22 田崎さん指示で方針変更）。
+      この2つは刃ソースが1本同梱済みなので、文言だけ「もう1本追加」に差し替える
+      （sauceCollabState を見て sauceAddonHtml が切り替える）
    🍚 お米は常温便で別口。お米しか入っていないカートには出さない
       （ソースを足すと冷凍便 ¥1,100 が新たに乗って事故る）
    ============================================================ */
@@ -2100,9 +2102,22 @@ function sauceEligible() {
  var si = sauceIndex();
  return cartItems.some(function (it, i) {
   if (i === si || !it) return false;
-  if (isRiceItem(it)) return false;
-  return !SAUCE_BUNDLED_TITLES[String(it.title || '').trim()];
+  return !isRiceItem(it);
  });
+}
+/* 🫙 カートに刃コラボ(P049/P050)が入っているか／それだけか。
+   コラボ商品はソースが1本同梱済みなので、文言を変えないと
+   同梱分を知らない人が「付いていないのか」と誤解する。
+   ・コラボだけのカート → 「もう1本追加」の文言に丸ごと差し替える
+   ・コラボ＋他の商品   → 通常の文言のまま。混ざっているので言い切れない。
+                          代わりに一行の注記を足す（2026-11-22 判断） */
+function sauceCollabState() {
+ var si = sauceIndex();
+ var others = cartItems.filter(function (it, i) { return i !== si && it; });
+ if (!others.length) return 'none';
+ var collab = others.filter(function (it) { return !!SAUCE_BUNDLED_TITLES[String(it.title || '').trim()]; });
+ if (!collab.length) return 'none';
+ return (collab.length === others.length) ? 'only' : 'mixed';
 }
 /* 押すと入る／もう一度押すと外れる。カートの行として積むので
    小計・税・在庫減算・Stripe の明細まで既存の仕組みがそのまま効く。 */
@@ -2134,6 +2149,7 @@ function toggleSauce() {
 function sauceAddonHtml() {
  if (!sauceEligible()) return '';
  var on = sauceIndex() >= 0;
+ var _collab = sauceCollabState();
  return '<div class="order-card" style="border:1px solid rgba(212,169,59,.45);background:rgba(212,169,59,.05)">' +
   '<div class="order-item">' +
    '<div class="order-item-img" style="background-image:url(\'' + SAUCE_IMG + '\')"></div>' +
@@ -2142,9 +2158,14 @@ function sauceAddonHtml() {
        色はサイト共通の --color-red (#C8102E)。line-members-osusume.html の
        まとめ買い案内・product.html の訳あり価格と同じ値にそろえている。
        価格は見出しのカッコ内に入れ、ボタンからは外す。 */
-    '<strong style="color:var(--color-red,#C8102E)">無添加 刃ソースもつける（＋¥3,240税込）</strong>' +
-    '<span>YAIBA JAPANESE EXPERIENCE SAUCE 1本 80ml ／ 同じ便で同梱します</span>' +
+    '<strong style="color:var(--color-red,#C8102E)">' + (_collab === 'only' ? '刃ソースをもう1本追加（＋¥3,240税込）' : '無添加 刃ソースもつける（＋¥3,240税込）') + '</strong>' +
+    '<span>' + (_collab === 'only'
+      ? 'こちらの商品には刃ソースが1本同梱されています。もう1本追加したい方はこちら。'
+      : 'YAIBA JAPANESE EXPERIENCE SAUCE 1本 80ml ／ 同じ便で同梱します') + '</span>' +
     '<div style="font-size:11.5px;color:var(--color-ink-muted);margin-top:4px">化学調味料・保存料 不使用。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。</div>' +
+    (_collab === 'mixed'
+      ? '<div style="font-size:11.5px;color:var(--color-red,#C8102E);margin-top:4px">※ YAIBA × 江田和牛 の商品には刃ソースが1本同梱されています。</div>'
+      : '') +
     '<button type="button" onclick="toggleSauce()" style="margin-top:10px;padding:9px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;' +
      (on ? 'background:#fff;color:var(--color-forest);border:1.5px solid var(--color-forest)' : 'background:var(--color-forest);color:#fff;border:1.5px solid var(--color-forest)') + '">' +
      (on ? '追加済み／外す' : '追加する') +
