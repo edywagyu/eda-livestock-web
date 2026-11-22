@@ -953,13 +953,16 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       </div>
 
       <!-- 🫙 刃ソースのアドオン（2026-11-22 田崎さん指示・承認待ち）
-           P049 / P050 は既にソースが同梱されているので出さない。お米(常温便)も出さない。 -->
+           お米(常温便)・ギフト専用・ソース本体(P091)では出さない。
+           🔴 P049 / P050（刃コラボ）でも出す（2026-11-22 田崎さん指示で方針変更）。
+              ただし同梱済みなので、見出しと説明だけ「もう1本追加」の文言に差し替える。
+              文言の差し替えは下の pdpSauceAddon が #pdpSauceHead / #pdpSauceDesc に入れる。 -->
       <div id="pdpSauceAddon" style="display:none;margin-top:14px;padding:14px 16px;border:1.5px solid var(--color-gold);border-radius:12px;background:linear-gradient(180deg,#FFFDF7 0%,#FBF6E9 100%)">
         <div style="font-size:10.5px;letter-spacing:.16em;color:var(--color-gold-soft);margin-bottom:6px">YAIBA — 一緒に</div>
         <!-- 🔴 見出しは赤字（2026-11-22 田崎さん指示）。サイト共通の --color-red (#C8102E)。
              価格は見出しのカッコ内。ボタンは「追加する」だけにする。 -->
-        <div style="font-family:var(--font-jp-serif,serif);font-size:16px;color:var(--color-red,#C8102E);font-weight:700;margin-bottom:4px">無添加 刃ソースもつける（＋¥3,240税込）</div>
-        <div style="font-size:11.5px;color:var(--color-ink-muted);line-height:1.6;margin-bottom:10px">
+        <div id="pdpSauceHead" style="font-family:var(--font-jp-serif,serif);font-size:16px;color:var(--color-red,#C8102E);font-weight:700;margin-bottom:4px">無添加 刃ソースもつける（＋¥3,240税込）</div>
+        <div id="pdpSauceDesc" style="font-size:11.5px;color:var(--color-ink-muted);line-height:1.6;margin-bottom:10px">
           YAIBA JAPANESE EXPERIENCE SAUCE 1本 80ml。化学調味料・保存料 不使用。同じ便で同梱してお届けします。
         </div>
         <button type="button" id="pdpSauceBtn" style="display:block;width:100%;padding:11px 16px;border-radius:8px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;border:1.5px solid var(--color-forest);background:var(--color-forest);color:#fff">追加する</button>
@@ -2173,8 +2176,11 @@ details[open] .pdp-detail-summary::after { content: '−'; }
      🔴 temp は「冷凍」。お肉と同じ便で同梱する。products シートで「常温」や
         category='rice' にすると常温便として扱われ、送料が ¥1,100 余計にかかる
      🔴 title は products シートの name と完全一致（在庫減算は名前一致のみ）
-     🔴 P049 / P050 は既にソース同梱。出すと二重になるので除外
-     🍚 お米は常温便で同梱できないので除外 */
+     🔴 P049 / P050（刃コラボ）でも出す（2026-11-22 田崎さん指示で方針変更）。
+        ただし この2つは刃ソースが1本同梱済み。「もつける」と出すと
+        同梱分を知らない人が「付いていないのか」と誤解するので、
+        見出しと説明を「もう1本追加」の文言に差し替える
+     🍚 お米は常温便で同梱できないので除外。ソース本体(P091)も除外 */
   (function pdpSauceAddon() {
     var SAUCE_TITLE = 'YAIBA JAPANESE EXPERIENCE SAUCE';
     var SAUCE_PRICE = 3240;
@@ -2188,7 +2194,15 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     if (product.comingSoon) return;
     if (product.category === 'rice' || product.category === 'gift') return;
     if (product.name === SAUCE_TITLE) return;
-    if (BUNDLED[String(product.name || '').trim()]) return;
+    /* 🫙 刃コラボ(P049/P050)は既にソース1本が同梱されている。
+       枠は出すが、「すでに1本入っている」ことが必ず分かる文言に差し替える。 */
+    var isBundled = !!BUNDLED[String(product.name || '').trim()];
+    if (isBundled) {
+      var hd = document.getElementById('pdpSauceHead');
+      var dc = document.getElementById('pdpSauceDesc');
+      if (hd) hd.textContent = '刃ソースをもう1本追加（＋¥3,240税込）';
+      if (dc) dc.textContent = 'こちらの商品には刃ソースが1本同梱されています。もう1本追加したい方はこちら。';
+    }
     function read() { try { return JSON.parse(localStorage.getItem('eda-cart') || '[]'); } catch (e) { return []; } }
     function idx(c) { for (var i = 0; i < c.length; i++) { if (String(c[i].title || '').trim() === SAUCE_TITLE) return i; } return -1; }
     function paint() {
