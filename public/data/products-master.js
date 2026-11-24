@@ -1797,8 +1797,9 @@
       images: ['public/images/products/drive/mutoyaku-yakiniku-set.jpg']
     },
     /* =====================================================================
-       いい肉の日 セット4本（P088 / P089 / P090 ＋ 再開の P064）
-       2026-11-21 田崎さん決裁。価格・構成は決裁どおりで動かさない。
+       いい肉の日 セット3本（P092 / P090 ＋ 再開の P064）
+       2026-11-21 田崎さん決裁。2026-11-24 決裁で P088/P089 を外し P092 を入れた。
+       価格・構成は決裁どおりで動かさない。
        ---------------------------------------------------------------------
        会期 2026/11/25(水) 00:00 〜 2026/11/29(日) 23:59
          limitedStartAt   2026/11/25 00:00  … これ以前はカードが出ない（COMING SOON）
@@ -1811,63 +1812,41 @@
        🔴 limitedTotal 20 は表示の分母だけ。実売上限は構成品の在庫
           （3本とも components あり＝applyBomStock が構成品の最小値で stock を上書きする）。
        🔴 残数（残り◯セット）は出さない。
-       🔴 listPrice は単品合計（P026 ¥3,700 / P004 ¥2,600 / P002 ¥3,400 の実価格から計算）。
+       🔴 listPrice は単品合計（P026 ¥3,700 / P002 ¥3,400 の実価格から計算）。
        ===================================================================== */
 
-    /* ===== ① 赤身多め（P088）=====
-       赤身スライス200g×2 ＋ 霜降スライス200g×1 ＝ 600g。
-       単品合計 ¥8,900（2,600×2＋3,700）→ ¥7,400。 */
+    /* ===== ① 霜降スライス 3パック（P092）=====
+       霜降スライス200g×3 ＝ 600g。単品合計 ¥11,100（3,700×3）→ ¥7,880（29%オフ）。
+       2026-11-24 田崎さん決裁で P088 赤身仕立て / P089 霜降り仕立て と入れ替えた。
+       🔴 商品名は 2026-11-24 時点で案。田崎さんの最終確認で変わりうる。
+          変えるときは products シート E列 / shop.html / products.html /
+          line-members-nikunohi.html の4箇所を同時に直す（決済も在庫減算も名前で引く）。
+       🔴 画像は田崎さんが仕上げる。2026-11-24 時点で未支給。
+          public/images/products/drive/nikunohi-slice-shimofuri3.jpg を置けば差し替わる。
+          置くまでカードの写真枠は無地になるが、レイアウトは崩れない（P090 と同じ）。 */
     {
-      productId: 'P088', variantId: 'NIKUNOHI-SLICE-AKAMI', sku: 'EDA-NIKUNOHI-SLICE-AKAMI',
+      productId: 'P092', variantId: 'NIKUNOHI-SLICE-SHIMO3', sku: 'EDA-NIKUNOHI-SLICE-SHIMO3',
       stripePriceId: '',
-      name: '江田和牛スライス 赤身仕立て',
-      variant: '赤身スライス200g×2＋霜降スライス200g×1 計600g',
+      name: '江田和牛 霜降スライス 3パックセット',
+      variant: '霜降スライス200g×3 計600g',
       /* price / stock は products シートのライブ値で上書きされる。ここはフォールバック */
-      price: 7400, listPrice: 8900, weight: 600, stock: 20, temp: '冷凍',
+      price: 7880, listPrice: 11100, weight: 600, stock: 20, temp: '冷凍',
       published: true,
       limitedTotal: 20,
       limitedStartAt:   '2026/11/25 00:00',
       limitedSoldOutAt: '2026/11/29 23:59',
       limitedUntil:     '2026/11/29 23:59',
       limitedUnit: 'セット',
-      category: 'beef', categoryLabel: '牛肉', tagEn: 'Lean-Heavy Slice Set',
+      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled Slice Trio',
       /* 🔴 構成品名は products の name と完全一致。「霜降スライス」に「り」は入れない。 */
       components: [
-        { name: '赤身スライス', qty: 2 },
-        { name: '霜降スライス', qty: 1 }
+        { name: '霜降スライス', qty: 3 }
       ],
-      /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
-         並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
-      description: '・赤身スライス：ソトモモを使用\n・霜降スライス：肩ロースを使用',
-      images: ['public/images/products/drive/nikunohi-slice-akami.jpg']
+      /* 📝 部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
+         改行＝product.html が <ul> にする。1行だけでも箇条書きになる。 */
+      description: '・霜降スライス：肩ロースを使用',
+      images: ['public/images/products/drive/nikunohi-slice-shimofuri3.jpg']
     },
-
-    /* ===== ② 霜降り多め（P089）=====
-       霜降スライス200g×2 ＋ 赤身スライス200g×1 ＝ 600g。
-       単品合計 ¥10,000（3,700×2＋2,600）→ ¥7,800。 */
-    {
-      productId: 'P089', variantId: 'NIKUNOHI-SLICE-SHIMO', sku: 'EDA-NIKUNOHI-SLICE-SHIMO',
-      stripePriceId: '',
-      name: '江田和牛スライス 霜降り仕立て',
-      variant: '霜降スライス200g×2＋赤身スライス200g×1 計600g',
-      price: 7800, listPrice: 10000, weight: 600, stock: 20, temp: '冷凍',
-      published: true,
-      limitedTotal: 20,
-      limitedStartAt:   '2026/11/25 00:00',
-      limitedSoldOutAt: '2026/11/29 23:59',
-      limitedUntil:     '2026/11/29 23:59',
-      limitedUnit: 'セット',
-      category: 'beef', categoryLabel: '牛肉', tagEn: 'Marbled-Heavy Slice Set',
-      components: [
-        { name: '霜降スライス', qty: 2 },
-        { name: '赤身スライス', qty: 1 }
-      ],
-      /* 📝 2026-11-21 田崎さん指示。部位の箇条書きだけ（グラム数・用途・味・配送は書かない）。
-         並び順は products.html の内訳表と同じ。改行＝product.html が <ul> にする。 */
-      description: '・霜降スライス：肩ロースを使用\n・赤身スライス：ソトモモを使用',
-      images: ['public/images/products/drive/nikunohi-slice-shimofuri.jpg']
-    },
-
     /* ===== ③ 赤身ステーキ2枚（P090）=====
        赤身ステーキ200g×2 ＝ 400g。単品合計 ¥6,800（3,400×2）→ ¥5,000。
        🔴 画像は 2026-11-21 時点で未支給。
@@ -1897,7 +1876,7 @@
   ];
 
   /* バージョン情報（キャッシュバスター用） */
-  const PRODUCTS_VERSION = '2026.11.21-020-nikunohi-uwabara';
+  const PRODUCTS_VERSION = '2026.11.24-021-nikunohi-p092-shimofuri3';
 
   /* ヘルパー：カテゴリ別取得 */
   function getByCategory(cat) {
