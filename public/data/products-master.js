@@ -1826,7 +1826,7 @@
     {
       productId: 'P092', variantId: 'NIKUNOHI-SLICE-SHIMO3', sku: 'EDA-NIKUNOHI-SLICE-SHIMO3',
       stripePriceId: '',
-      name: '江田和牛 霜降スライス 3パックセット',
+      name: '江田和牛 霜降スライス お得セット',
       variant: '霜降スライス200g×3 計600g',
       /* price / stock は products シートのライブ値で上書きされる。ここはフォールバック */
       price: 7880, listPrice: 11100, weight: 600, stock: 20, temp: '冷凍',
