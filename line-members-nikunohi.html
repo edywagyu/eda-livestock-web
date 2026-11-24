@@ -320,8 +320,9 @@ body{
   var END_AT   = new Date('2026-11-29T23:59:59+09:00');
   var START_LABEL = '11月25日（水）0:00';
   var END_LABEL   = '11月29日（日）23:59';
-  /* 内訳の表の中に出す締切。shop.html / products.html のカードの wide 行と
-     1文字も同じにする（あちらは「11/29（日）23:59まで」の短い書き方）。 */
+  /* このページのカードに出す締切。shop.html / products.html 側は
+     limited-stock.js の fmtRemainDays が「残り◯日／本日まで」を出す別の作りで、
+     文言は一致しない（2026-11-24 確認）。ここは日付を明記する。 */
   var END_LABEL_SHORT = '11/29（日）23:59まで';
 
   var ITEMS = [
@@ -336,7 +337,7 @@ body{
       /* 🔴 内訳の文字列は shop.html / products.html のカードと1文字も変えない */
       stats:['霜降スライス','霜降スライス','霜降スライス'], total:'600g',
       img:'public/images/products/drive/nikunohi-slice-shimofuri3.jpg',
-      desc:'肩ロースの霜降りスライスを3パック。すき焼き・しゃぶしゃぶに。' },
+      desc:'肩ロースの霜降スライスを3パック。すき焼き・しゃぶしゃぶに。' },
 
     /* ② 赤身ステーキ2枚
        🔴 写真は 2026-11-21 時点で未支給。
@@ -483,7 +484,7 @@ body{
       '</div>';
   }
 
-  /* 並び順は ITEMS の順（② → ③ → ① → ⑤）。買えないものだけ後ろに回す。
+  /* 並び順は ITEMS の順（① P092 → ② P090 → ③ P064）。買えないものだけ後ろに回す。
      🔴 data-i は ITEMS の元の位置を渡すこと（bind が ITEMS[data-i] を引く）。 */
   function render() {
     var order = ITEMS.map(function (it, i) { return { it: it, i: i }; })

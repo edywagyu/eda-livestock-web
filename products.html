@@ -7065,8 +7065,8 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="SAIKORO CHK SET"] { background-image: url('public/images/products/drive/saikoro-chicken-set.jpg'); }
 .product-card-img[data-label="HAMBURG CHK SET"] { background-image: url('public/images/products/drive/hamburg-chicken-set.jpg'); }
 .product-card-img[data-label="MUTOYAKU YAKINIKU SET"] { background-image: url('public/images/products/drive/mutoyaku-yakiniku-set.jpg'); }
-/* いい肉の日セット（2026-11-25〜11-29）。NIKUNOHI SLICE SHIMO3 と NIKUNOHI AKAMI STEAK2 の写真は未支給。
-   nikunohi-slice-shimofuri3.jpg / nikunohi-akami-steak2.jpg を置けば自動で出る。
+/* いい肉の日セット（2026-11-25〜11-29）。NIKUNOHI SLICE SHIMO3 の写真は 2026-11-24 受領済み。
+   NIKUNOHI AKAMI STEAK2 は未支給で、nikunohi-akami-steak2.jpg を置けば自動で出る。
    置くまでは写真枠が無地になるだけで、カードの高さもレイアウトも崩れない。 */
 .product-card-img[data-label="NIKUNOHI SLICE SHIMO3"] { background-image: url('public/images/products/drive/nikunohi-slice-shimofuri3.jpg'); }
 .product-card-img[data-label="NIKUNOHI AKAMI STEAK2"] { background-image: url('public/images/products/drive/nikunohi-akami-steak2.jpg'); }
@@ -10016,7 +10016,9 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 components は products シート側（S列）にも登録する。登録しないと
          決済前の在庫チェックも決済後の在庫減算も効かない。
       🔴 P064 は 10/22 に出していた商品の再開。新規作成ではない。
-      🔴 P092 の写真は田崎さんが仕上げる。未支給の間は写真枠が無地になるだけ。 -->
+      🔴 P092 の写真は 2026-11-24 に田崎さんから受領済み（1200×1200）。
+      🔴 「通常 ¥11,100」は P026 霜降スライス ¥3,700×3 のハードコード。
+         P026 の価格を動かしたら products-master.js と会員限定ページの2箇所も直す。 -->
  <div class="product-card" data-sub="set" data-limited-scope="江田和牛 霜降スライス 3パックセット" data-limited-prestart="江田和牛 霜降スライス 3パックセット" data-variants='[{"id":51125078800921,"t":"1セット","p":7880}]'>
  <div class="product-card-img" data-label="NIKUNOHI SLICE SHIMO3"></div>
  <div class="product-tag-row"><span class="product-tag">Set &middot; Marbled Trio</span><span class="product-price"><span class="was-label">通常</span><s>&yen;11,100</s> &yen;7,880</span></div>
