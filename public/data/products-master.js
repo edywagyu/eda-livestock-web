@@ -1821,9 +1821,8 @@
        🔴 商品名は 2026-11-24 時点で案。田崎さんの最終確認で変わりうる。
           変えるときは products シート E列 / shop.html / products.html /
           line-members-nikunohi.html の4箇所を同時に直す（決済も在庫減算も名前で引く）。
-       🔴 画像は田崎さんが仕上げる。2026-11-24 時点で未支給。
-          public/images/products/drive/nikunohi-slice-shimofuri3.jpg を置けば差し替わる。
-          置くまでカードの写真枠は無地になるが、レイアウトは崩れない（P090 と同じ）。 */
+       🔴 画像は田崎さん支給（2026-11-24 受領）。
+          public/images/products/drive/nikunohi-slice-shimofuri3.jpg（1200×1200・既存と同規格）。 */
     {
       productId: 'P092', variantId: 'NIKUNOHI-SLICE-SHIMO3', sku: 'EDA-NIKUNOHI-SLICE-SHIMO3',
       stripePriceId: '',
