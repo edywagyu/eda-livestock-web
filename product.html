@@ -1371,7 +1371,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
 </div>
 
 <!-- ============ SCRIPTS ============ -->
-<script src="public/data/products-master.js?v=2026-11-22-454-yaiba-roast-set11000"></script>
+<script src="public/data/products-master.js?v=2026-11-24-456-nikunohi-p092"></script>
 <script src="public/data/pdp-content.js?v=2026-11-04-p076"></script>
 <script src="public/js/cut-map.js?v=2026-10-01c"></script>
 <script src="public/js/wakeari-compare.js?v=004"></script>
@@ -1513,12 +1513,13 @@ details[open] .pdp-detail-summary::after { content: '−'; }
       '<span style="font-size:0.62em;color:var(--color-ink-muted);text-decoration:line-through;font-weight:400;margin-right:12px">¥' + v.toLocaleString() + '</span>';
     const nowHtml = (v) =>
       '<span style="color:var(--color-red)">¥' + v.toLocaleString() + '</span>';
-    /* 2026-11-21 田崎さん指示：いい肉の日の4セットだけ、取り消し線の金額に
+    /* 2026-11-21 田崎さん指示：いい肉の日のセットだけ、取り消し線の金額に
        「通常」の見出しを添える（カード・会員限定ページと文言をそろえるため）。
        🔴 他の商品の見た目は変えない（この分岐は listPrice を持つ全商品が通る）。
        🔴 この金額はセット自体の過去の販売価格ではなく、構成品を単品で買ったときの
           合計。景表法の論点は PR 本文（fix/price-was-label）に書いた。 */
-    const wasLabel = (['P088', 'P089', 'P090', 'P064'].indexOf(product.productId) >= 0)
+    /* 🔴 2026-11-24 決裁で P088/P089 を撤去し P092 を入れた。リストもそろえる。 */
+    const wasLabel = (['P092', 'P090', 'P064'].indexOf(product.productId) >= 0)
       ? '<span style="font-size:0.5em;color:var(--color-ink-muted);font-weight:600;margin-right:4px">通常</span>'
       : '';
     if (product.category === 'rice' && listPrice > price) {
@@ -1555,7 +1556,7 @@ details[open] .pdp-detail-summary::after { content: '−'; }
     const raw   = String(product.description || '');
     /* 箇条書きの合図は「改行がある」か「行頭が・で始まる」。
        どちらも無い既存商品は、これまでどおり1段落のまま出す（1行だけの箇条書きもあるので
-       行数では判定しない。P090 は構成品が1種類＝1行）。 */
+       行数では判定しない。P090 / P092 は構成品が1種類＝1行）。 */
     const isList = /\n/.test(raw) || /^[・\u2022]/.test(raw.trim());
     const lines = raw.split('\n').map(s => s.replace(/^[・\u2022]\s*/, '').trim()).filter(Boolean);
     if (!isList || !lines.length) { host.textContent = raw; return; }

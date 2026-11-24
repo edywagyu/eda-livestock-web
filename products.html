@@ -7065,11 +7065,10 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; }
 .product-card-img[data-label="SAIKORO CHK SET"] { background-image: url('public/images/products/drive/saikoro-chicken-set.jpg'); }
 .product-card-img[data-label="HAMBURG CHK SET"] { background-image: url('public/images/products/drive/hamburg-chicken-set.jpg'); }
 .product-card-img[data-label="MUTOYAKU YAKINIKU SET"] { background-image: url('public/images/products/drive/mutoyaku-yakiniku-set.jpg'); }
-/* いい肉の日セット（2026-11-25〜11-29）。NIKUNOHI AKAMI STEAK2 の写真はまだ未支給。
-   public/images/products/drive/nikunohi-akami-steak2.jpg を置けば自動で出る。
+/* いい肉の日セット（2026-11-25〜11-29）。NIKUNOHI SLICE SHIMO3 の写真は 2026-11-24 受領済み。
+   NIKUNOHI AKAMI STEAK2 は未支給で、nikunohi-akami-steak2.jpg を置けば自動で出る。
    置くまでは写真枠が無地になるだけで、カードの高さもレイアウトも崩れない。 */
-.product-card-img[data-label="NIKUNOHI SLICE SHIMO"] { background-image: url('public/images/products/drive/nikunohi-slice-shimofuri.jpg'); }
-.product-card-img[data-label="NIKUNOHI SLICE AKAMI"] { background-image: url('public/images/products/drive/nikunohi-slice-akami.jpg'); }
+.product-card-img[data-label="NIKUNOHI SLICE SHIMO3"] { background-image: url('public/images/products/drive/nikunohi-slice-shimofuri3.jpg'); }
 .product-card-img[data-label="NIKUNOHI AKAMI STEAK2"] { background-image: url('public/images/products/drive/nikunohi-akami-steak2.jpg'); }
 /* 取り消し線の金額に添える見出し（2026-11-21 田崎さん指示で「通常」に統一）。
    🔴 この金額はセット自体の過去の販売価格ではなく、構成品を単品で買ったときの合計。
@@ -10004,9 +10003,10 @@ body.is-member .product-card--organic .org-chk-lock {
 
  <div class="product-grid cols-4 reveal" data-cat="beef">
 
- <!-- ===== いい肉の日セット4本（2026-11-21 田崎さん決裁）=====
+ <!-- ===== いい肉の日セット3本（2026-11-21 田崎さん決裁／2026-11-24 入れ替え決裁）=====
       会期 11/25(水)00:00 〜 11/29(日)23:59。11/25 18:30 の配信で「今日から」と案内する。
-      並び順は売りたい順＝② 霜降り多め → ③ 赤身ステーキ2枚 → ① 赤身多め → ⑤ 焼肉3種。
+      並び順は売りたい順＝① 霜降スライス3パック(P092) → ② 赤身ステーキ2枚(P090) → ③ 焼肉3種(P064)。
+      🔴 2026-11-24 決裁で P088 赤身仕立て / P089 霜降り仕立て は撤去した。
       🔴 .product-name は products の name と1文字も変えない（決済も在庫減算も名前で引く）。
       🔴 これらのカードに reveal を付けない（付けると表示されない）。
       🔴 残数（残り◯セット）は出さない。data-limited-left は使わない。
@@ -10015,15 +10015,18 @@ body.is-member .product-card--organic .org-chk-lock {
       🔴 P076 訳あり切り落とし・お米の締切（11/30 23:59）とは別。混ぜない。
       🔴 components は products シート側（S列）にも登録する。登録しないと
          決済前の在庫チェックも決済後の在庫減算も効かない。
-      🔴 P064 は 10/22 に出していた商品の再開。新規作成ではない。 -->
- <div class="product-card" data-sub="set" data-limited-scope="江田和牛スライス 霜降り仕立て" data-limited-prestart="江田和牛スライス 霜降り仕立て" data-variants='[{"id":51125078000891,"t":"1セット","p":7800}]'>
- <div class="product-card-img" data-label="NIKUNOHI SLICE SHIMO"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Marbled-Heavy</span><span class="product-price"><span class="was-label">通常</span><s>&yen;10,000</s> &yen;7,800</span></div>
- <p class="product-name"><a href="product.html?id=P089" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛スライス 霜降り仕立て</a></p>
+      🔴 P064 は 10/22 に出していた商品の再開。新規作成ではない。
+      🔴 P092 の写真は 2026-11-24 に田崎さんから受領済み（1200×1200）。
+      🔴 「通常 ¥11,100」は P026 霜降スライス ¥3,700×3 のハードコード。
+         P026 の価格を動かしたら products-master.js と会員限定ページの2箇所も直す。 -->
+ <div class="product-card" data-sub="set" data-limited-scope="江田和牛 霜降スライス お得セット" data-limited-prestart="江田和牛 霜降スライス お得セット" data-variants='[{"id":51125078800921,"t":"1セット","p":7880}]'>
+ <div class="product-card-img" data-label="NIKUNOHI SLICE SHIMO3"></div>
+ <div class="product-tag-row"><span class="product-tag">Set &middot; Marbled Trio</span><span class="product-price"><span class="was-label">通常</span><s>&yen;11,100</s> &yen;7,880</span></div>
+ <p class="product-name"><a href="product.html?id=P092" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛 霜降スライス お得セット</a></p>
  <div class="product-stats">
  <div class="product-stat-item">霜降スライス <strong>200g</strong></div>
  <div class="product-stat-item">霜降スライス <strong>200g</strong></div>
- <div class="product-stat-item">赤身スライス <strong>200g</strong></div>
+ <div class="product-stat-item">霜降スライス <strong>200g</strong></div>
  <div class="product-stat-item wide">合計 <strong>600g</strong></div>
  </div>
  <div class="product-buy"></div>
@@ -10037,19 +10040,6 @@ body.is-member .product-card--organic .org-chk-lock {
  <div class="product-stat-item">赤身ステーキ <strong>200g</strong></div>
  <div class="product-stat-item">赤身ステーキ <strong>200g</strong></div>
  <div class="product-stat-item wide">合計 <strong>400g</strong></div>
- </div>
- <div class="product-buy"></div>
- </div>
-
- <div class="product-card" data-sub="set" data-limited-scope="江田和牛スライス 赤身仕立て" data-limited-prestart="江田和牛スライス 赤身仕立て" data-variants='[{"id":51125074000881,"t":"1セット","p":7400}]'>
- <div class="product-card-img" data-label="NIKUNOHI SLICE AKAMI"></div>
- <div class="product-tag-row"><span class="product-tag">Set &middot; Lean-Heavy</span><span class="product-price"><span class="was-label">通常</span><s>&yen;8,900</s> &yen;7,400</span></div>
- <p class="product-name"><a href="product.html?id=P088" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">江田和牛スライス 赤身仕立て</a></p>
- <div class="product-stats">
- <div class="product-stat-item">赤身スライス <strong>200g</strong></div>
- <div class="product-stat-item">赤身スライス <strong>200g</strong></div>
- <div class="product-stat-item">霜降スライス <strong>200g</strong></div>
- <div class="product-stat-item wide">合計 <strong>600g</strong></div>
  </div>
  <div class="product-buy"></div>
  </div>
@@ -13712,7 +13702,7 @@ function copyPopCoupon() {
   else init();
 })();
 </script>
-<script src="public/data/products-master.js?v=2026-11-22-454-yaiba-roast-set11000" defer></script>
+<script src="public/data/products-master.js?v=2026-11-24-456-nikunohi-p092" defer></script>
 <script src="public/js/products-loader.js?v=010" defer></script>
 <!-- 限定品カウント（products シートの limitedTotal/limitedUntil で制御。削除不要） -->
 <!-- カート確保（他のお客様が確保中の数を残数から引く / gas/cart_holds.gs と対） -->
