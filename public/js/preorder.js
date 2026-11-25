@@ -21,6 +21,8 @@
       そのときは「今日 + LEAD_DAYS」に読み替える。
 
    🔴 日曜着はスキップして月曜。配送バー(products.html shipCountdownInit)と同じ規則。
+      例外は shipFrom の値の末尾に ! を付けたとき（'2026-11-29!'）だけ。
+      その商品はスキップせず、入れた日付ちょうどが最短着日になる。
    ============================================================ */
 (function () {
   'use strict';
@@ -76,10 +78,23 @@
      その日より前の着日を選べなくなる。原料の入荷待ちで、売りは始めたいが
      早い着日は約束できない商品のため（はじめてセット＝バラ焼肉 9/10 入荷）。
      入荷して不要になったら列を空にするだけでよく、過ぎた日付は自動で無視される。 */
+  /* 🗓 「入れた日付をそのまま下限にする」指定（2026-11-25 追加）。
+     shipFrom の値の末尾に ! を付ける（例 '2026-11-29!'）と、下の日曜スキップを
+     通さず、その日ちょうどが最短着日になる。ヤマトは日曜も配達するので、
+     加工と出荷の都合で「この日が最短」と人が決めた日付を1日後ろにずらすと、
+     お客様に伝えた着日と画面が食い違う（江田和牛焼肉3種セット＝11/27金 出荷・
+     11/29日 着が最短）。! の無い値はこれまでどおり日曜→月曜に送るので、
+     他の商品の挙動は変わらない。 */
+  function shipFromIsExact(product) {
+    var raw = product && (product.shipFrom || product.shipfrom || product.ship_from);
+    return /!\s*$/.test(String(raw == null ? '' : raw));
+  }
+
   function shipFromOf(product) {
     var d = parseDate(product && (product.shipFrom || product.shipfrom || product.ship_from));
     if (!d) return null;
-    return d.getTime() > today().getTime() ? skipSunday(d) : null;   /* 過去日は出さない */
+    if (d.getTime() <= today().getTime()) return null;               /* 過去日は出さない */
+    return shipFromIsExact(product) ? d : skipSunday(d);
   }
 
   /* 🚫 この商品は予約を受けない（products シートの noPreorder 列に TRUE）。
