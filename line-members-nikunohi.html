@@ -188,6 +188,89 @@ body{
 .btn-add:disabled{background:#B5B5B5;cursor:not-allowed;}
 .btn-add.added{background:var(--gold);color:var(--forest);}
 
+/* ---------- 一覧の2列組み（line-members.html の #cards ブロックをそのまま移植）----------
+   2026-11-25 田崎さん指示「スマホで見るとでかいので、限定商品一覧みたいに小さく」。
+   作りは line-members.html と同一:
+   ① 2列グリッド。カードの高さは行でそろえる
+   ② 高さの差は subgrid で吸収する。対応ブラウザではカード自身が #cards の
+      行トラックに乗るので、全カードの同じ行が同じ高さになる
+   ③ subgrid が無いブラウザ向けの保険として、商品名に2行ぶんの最低高さを持たせ、
+      カートボタンを下端ぞろえ（margin-top:auto）にしておく
+   🔴 品数が奇数のとき、最後の1枚は左列に単独で並ぶ（右は空のまま）。
+      line-members.html の5品目（訳あり切り落とし）と同じ見え方＝ダミーカードは作らない。
+   🔴 カードの中身は何も減らしていない。内訳の表・取り消し線・締切は全部そのまま。 */
+/* 締切の帯とカードが接していたので、line-members.html と同じだけ間を空ける（26px）。 */
+#cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;align-items:stretch;grid-auto-rows:1fr;margin-top:26px;}
+#cards .card{display:flex;flex-direction:column;height:100%;}
+#cards .card-body{flex:1 1 auto;display:flex;flex-direction:column;}
+#cards .btn-add{margin-top:auto;}
+#cards .card h3{min-height:2.9em;}            /* 15px × line-height1.45 × 2行 */
+/* 空き枠。場所だけ取って中身は見せない（読み上げにも乗らない）。 */
+#cards .card-ph{visibility:hidden;}
+@supports (grid-template-rows: subgrid){
+  /* 1(写真) + 8(本文の行: タグ/商品名/内訳/詳細リンク/価格/在庫の1行/数量/ボタン)
+     = 9 行を #cards の行トラックに直接乗せる。
+     🔴 本文の行数は cardHtml の出力と必ず一致させること。在庫の1行は
+        販売中だと空になるので .card-ph のプレースホルダを必ず描いている。 */
+  #cards{grid-auto-rows:auto;row-gap:0;}
+  #cards .card{display:grid;grid-template-rows:subgrid;grid-row:span 9;row-gap:0;height:auto;margin-bottom:14px;}
+  #cards .card-body{display:grid;grid-template-rows:subgrid;grid-row:span 8;row-gap:0;}
+  #cards .card h3{min-height:0;}
+  #cards .btn-add{margin-top:0;align-self:end;}
+}
+#cards .card{margin-bottom:0;}
+#cards .card-body{padding:12px 12px 14px;}
+#cards .card-tag{font-size:9.5px;letter-spacing:.06em;padding:3px 7px;margin-bottom:8px;}
+#cards .card h3{font-size:15px;line-height:1.45;margin:0 0 4px;overflow-wrap:anywhere;}
+#cards .card-variant{font-size:11px;margin:0 0 8px;}
+#cards .card-detail{font-size:11.5px;margin:0 0 10px;}
+#cards .price-row{gap:6px;}
+#cards .was-label{font-size:10px;margin-right:2px;}
+#cards .price-was{font-size:11.5px;}
+#cards .price-now{font-size:20px;}
+#cards .price-tax{font-size:10px;}
+#cards .price-off{font-size:10px;padding:2px 6px;}
+#cards .stock-line{font-size:11px;margin:0 0 10px;}
+#cards .card-ship{font-size:10.5px;margin:0 0 10px;}
+#cards .qty-row{gap:8px;margin-bottom:10px;}
+#cards .qty-label{font-size:11px;}
+#cards .qty-box button{width:30px;height:32px;font-size:16px;}
+#cards .qty-box span{width:28px;font-size:13px;}
+#cards .btn-add{font-size:13px;padding:12px 8px;}
+/* 写真の上の締切リボンも半分の幅に合わせて小さくする。文言は変えない。 */
+#cards .card-deadline{left:6px;bottom:6px;padding:2px 7px;font-size:9px;}
+/* 内訳の表。半分の幅では2列だと「霜降スライス 200g」が切れるので縦1列にする。
+   🔴 マスの数も文字も減らしていない（1パック＝1マスのまま）。並べ方だけ変えている。
+   🔴 shop/products にあるモバイル用の非表示ルール（.product-stats{display:none}）は
+      ここには足さない。足すと375pxで内訳が丸ごと消える。 */
+#cards .product-stats{grid-template-columns:1fr;margin:2px 0 10px;font-size:10.5px;}
+#cards .product-stat-item{
+  padding:6px 9px; border-left:0; border-bottom:1px solid rgba(212,169,59,.10);
+}
+#cards .product-stat-item:nth-last-of-type(2):not(.wide){border-bottom:0;}
+#cards .product-stat-item.wide{padding:7px 9px;font-size:10.5px;border-bottom:0;}
+/* 「商品の詳細」アコーディオン（member-extras.js）用。このページは今のところ
+   member-extras.js を読み込んでいないので効かないが、足したときに崩れないよう
+   line-members.html と同じ縮小を入れてある。 */
+#cards .lm-detail{margin:8px 0 12px;}
+#cards .lm-detail>summary{padding:10px 0;font-size:12px;}
+#cards .lm-detail-body{padding:0 0 12px;}
+#cards .lm-cut{font-size:11.5px;line-height:1.8;margin:0 0 10px;}
+#cards .lm-spec>div{grid-template-columns:1fr;gap:2px;padding:7px 0;font-size:11.5px;}
+#cards .lm-spec dt,#cards .lm-spec dd{min-width:0;overflow-wrap:anywhere;}
+#cards .lm-cook-t{font-size:11px;}
+#cards .lm-cook li{grid-template-columns:24px 1fr;gap:6px;font-size:11.5px;padding:7px 0;}
+#cards .lm-cook li>*{min-width:0;overflow-wrap:anywhere;}
+/* iPhone SE など極小幅。数量行が入りきらなくなるのでもう一段詰める。 */
+@media (max-width:360px){
+  .wrap{padding-left:12px;padding-right:12px;}
+  #cards{gap:10px;}
+  #cards .card-body{padding:10px 10px 12px;}
+  #cards .qty-row{gap:6px;}
+  #cards .qty-box button{width:28px;}
+  #cards .qty-box span{width:24px;}
+}
+
 /* ---------- カートバー ---------- */
 .cartbar{
   position:fixed;left:0;right:0;bottom:0;background:#fff;
@@ -235,9 +318,10 @@ body{
 <div class="wrap">
 
   <!-- 上部ボタン。現在地は on クラス／通常ショップへ出る導線は out クラス（既存4枚と同じ）。
-       🔴 既存の line-members*.html 側にこのページへのリンクは足していない。
-          このページの導線はLINEのリッチメッセージ直リンクだけ、という前提
-          （line-members-rice.html を足したときと同じ扱い）。 -->
+       🔴 2026-11-25 田崎さん指示で、既存4枚（line-members / -wakeari / -osusume / -rice）
+          の .pagenav にも「いい肉の日」を追加した。他のページへ移っても戻れるようにするため。
+          🔴 会期（11/29 23:59）が終わったら、この4枚のタブを外すかどうかは田崎さん判断。
+             自動で消す仕組みは入れていない。 -->
   <nav class="pagenav">
     <a href="line-members.html">限定商品一覧</a>
     <a href="line-members-wakeari.html">限定不揃い品</a>
@@ -424,6 +508,10 @@ body{
     else if (en)      stockLine = '<p class="stock-line">この商品の販売は終了しました</p>';
     else if (pending) stockLine = '<p class="stock-line stock-pending">在庫を確認しています</p>';
     else if (soldOut) stockLine = '<p class="stock-line">完売しました</p>';
+    /* 販売中は出す文言が無い。ただし2列組みは subgrid で行をそろえているので、
+       行そのものは残す（中身は見せない＝読み上げにも乗らない）。
+       line-members.html と同じ作り。 */
+    if (!stockLine) stockLine = '<p class="stock-line card-ph">&nbsp;</p>';
 
     /* 内訳の表。shop.html / products.html の P078 のカードと同じ組み立て。
        🔴 1パック＝1マス（同じ品が2パックでもマスを2つ並べる。「200g×2」とまとめない）。
