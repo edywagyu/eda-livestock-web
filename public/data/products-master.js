@@ -1548,7 +1548,7 @@
           decrementStockAfterOrder は商品名の完全一致でしか在庫を引かない。
        🔴 本番 products シートに同じ内容の1行を足すこと（承認後）。
           未登録だと在庫チェックが fail-open で売り越す。
-       ⚠️ 画像はソース単体の写真が無いので yaiba-set.jpg で代用中。差し替え要。 */
+       🖼 画像はソース単体のカット yaiba-sauce.jpg（2026-11-25 差し替え済み）。 */
     {
       productId: 'P091', variantId: 'YAIBA-SAUCE-80', sku: 'EDA-YAIBA-SAUCE-80',
       stripePriceId: '',
@@ -1556,7 +1556,7 @@
       price: 3240, weight: 80, stock: 50, temp: '冷凍',
       category: 'sauce', categoryLabel: 'ソース', tagEn: 'YAIBA Sauce 80ml',
       description: '六十年の家族の味を、最高峰の素材で再構築した JAPANESE EXPERIENCE SAUCE「刃」。沖縄産アップルバナナ、和歌山産あら川の桃、鳥取産西条柿、香川産和三盆。化学調味料も保存料も使わず、希少な果実の個性が溶け合う一点だけを掬い取ったタレです。',
-      images: ['public/images/products/drive/yaiba-set.jpg?v=5']
+      images: ['public/images/products/drive/yaiba-sauce.jpg?v=6']
     },
 
     /* ===== エダチク米（自社田・ヒノヒカリ／常温便） =====
